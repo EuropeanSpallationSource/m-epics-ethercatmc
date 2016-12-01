@@ -493,29 +493,31 @@ static void simulateMotion(int axis_no)
 
   gettimeofday(&timeNow, NULL);
 
-  if (motor_axis[axis_no].velo.JogVelocity &&
-      !soft_limits_clip(axis_no, velocity)) {
-    /* Simulate jogging  */
-    motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].velo.JogVelocity *
-      (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
-  }
-
-  if (motor_axis[axis_no].velo.PosVelocity &&
-      !soft_limits_clip(axis_no, velocity)) {
-    /* Simulate a move to postion */
-    motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].velo.PosVelocity *
-      (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
-
-    if (((motor_axis[axis_no].velo.PosVelocity > 0) &&
-         (motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].MotorPosWanted)) ||
-        ((motor_axis[axis_no].velo.PosVelocity < 0) &&
-         (motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].MotorPosWanted))) {
-      /* overshoot or undershoot. We are at the target position */
-      motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].MotorPosWanted;
-      motor_axis[axis_no].velo.PosVelocity = 0;
+  if (motor_axis[axis_no].velo.JogVelocity) {
+    clipped = soft_limits_clip(axis_no, velocity);
+    if (!clipped) {
+      /* Simulate jogging  */
+      motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].velo.JogVelocity *
+        (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
     }
   }
 
+  if (motor_axis[axis_no].velo.PosVelocity) {
+    clipped = soft_limits_clip(axis_no, velocity);
+    if (!clipped) {
+      /* Simulate a move to postion */
+      motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].velo.PosVelocity *
+        (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
+      if (((motor_axis[axis_no].velo.PosVelocity > 0) &&
+           (motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].MotorPosWanted)) ||
+          ((motor_axis[axis_no].velo.PosVelocity < 0) &&
+           (motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].MotorPosWanted))) {
+        /* overshoot or undershoot. We are at the target position */
+        motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].MotorPosWanted;
+        motor_axis[axis_no].velo.PosVelocity = 0;
+      }
+    }
+  }
   if (motor_axis[axis_no].velo.HomeVelocity) {
     /* Simulate move to home */
     motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].velo.HomeVelocity *
@@ -535,7 +537,6 @@ static void simulateMotion(int axis_no)
   }
 
   motor_axis[axis_no].lastPollTime = timeNow;
-  clipped = soft_limits_clip(axis_no, velocity);
   if (motor_axis[axis_no].highHardLimitPos > motor_axis[axis_no].lowHardLimitPos) {
     /* Hard limits defined: Clip the value  */
     if (motor_axis[axis_no].definedHighHardLimitPos &&
