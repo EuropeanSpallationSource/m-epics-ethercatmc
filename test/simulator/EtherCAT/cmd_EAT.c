@@ -45,8 +45,8 @@ static void init_axis(int axis_no)
     return;
   }
   if (!init_done[axis_no]) {
-    double valueLow = -30.0 * ReverseMRES;
-    double valueHigh = 140.0 * ReverseMRES;
+    double valueLow = -1.0 * ReverseMRES;
+    double valueHigh = 186.0 * ReverseMRES;
     hw_motor_init(axis_no,
                   MRES/ERES,              /* ReverseERES */
                   (100 + axis_no/10.0),   /* ParkingPOS */

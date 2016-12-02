@@ -10,6 +10,7 @@ builddir/
 /db/
 dbd/
 html/
+iocBoot/iocEthercatMC/
 include/
 lib/
 templates/
