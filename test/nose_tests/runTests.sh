@@ -61,6 +61,7 @@ fi || {
   exit 1
 }
 
+echo "$0" "$@"
 if test -n "$1"; then
    TESTEDMOTORAXIS=$1
    PREFIX=${1%:*}

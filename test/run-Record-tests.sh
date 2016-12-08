@@ -6,5 +6,9 @@ fi
 ./checkws.sh &&
 (
   cd nose_tests/ &&
-  ./runTests.sh "$@"
+    PV="$1"
+  shift
+    for f in $( echo *Record*.py); do
+      ./runTests.sh "$PV" "$f" "$@"
+    done
 )
