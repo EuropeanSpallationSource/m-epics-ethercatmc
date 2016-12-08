@@ -1,5 +1,12 @@
 #Which files need CRLF handling
+# Default is auto
 * text=auto
-*.sh eol=lf
-*.bat eol=crlf
-*.cmd -text
+
+# But we can help Git, because we now about some file extensions
+*.bat  text eol=crlf
+*.cmd  -text
+*.gif  -text
+*.png  -text
+*.ppt* -text  
+*.py   text eol=lf
+*.sh   text eol=lf
