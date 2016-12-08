@@ -46,7 +46,7 @@ def checkForEmergenyStop(self, motor, tc_no, wait, direction, oldRBV, TweakValue
     print '%s: wait=%f dmov=%d movn=%d lls=%d hls=%d OOR=%d oldRBV=%f rbv=%f' % \
         (tc_no, wait, dmov, movn, lls, hls, outOfRange, oldRBV, rbv)
     if ((hls and (direction > 0)) or
-        (lls and (direction <= 0)) or 
+        (lls and (direction <= 0)) or
         outOfRange != 0):
         print '%s STOP=1 CNEN=0 Emergeny stop' % (tc_no)
         epics.caput(motor + '.STOP', 1)
@@ -87,7 +87,7 @@ def waitForStop(self, motor, tc_no, wait_for_stop, direction, oldRBV):
             self, motor, tc_no + 'stop', wait_for_stop, direction, oldRBV, TweakValue)
 
         if ((hls and (direction > 0)) or
-            (lls and (direction <= 0)) or 
+            (lls and (direction <= 0)) or
             outOfRange != 0):
             return False
 
@@ -100,12 +100,12 @@ def waitForStop(self, motor, tc_no, wait_for_stop, direction, oldRBV):
 class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
-    
+
     saved_HLM = epics.caget(motor + '.HLM')
     saved_LLM = epics.caget(motor + '.LLM')
     saved_CNEN = epics.caget(motor + '.CNEN')
     TweakValue = epics.caget(motor + '.TWV')
-    
+
     # TWF/TWR
     def test_TC_091(self):
         tc_no = "TC-091-Tweak"
@@ -128,7 +128,7 @@ class Test(unittest.TestCase):
             epics.caput(motor + '.HLM', 0.0)
             epics.caput(motor + '.LLM', 0.0)
 
-	msta = int(epics.caget(motor + '.MSTA'))
+        msta = int(epics.caget(motor + '.MSTA'))
         direction = 0
         if (msta & self.lib.MSTA_BIT_PLUS_LS):
             direction = -1
@@ -144,7 +144,7 @@ class Test(unittest.TestCase):
         oldRBV = epics.caget(motor + '.RBV', use_monitor=False)
         ret1 = waitForStart(self, motor, tc_no, 0.4, direction, oldRBV)
         ret2 = waitForStop(self, motor, tc_no, 10.0, direction, oldRBV)
-	msta = int(epics.caget(motor + '.MSTA'))
+        msta = int(epics.caget(motor + '.MSTA'))
         print '%s STOP=1 CNEN=0 start=%d stop=%d' % (tc_no, ret1, ret2)
         epics.caput(motor + '.STOP', 1)
         epics.caput(motor + '.CNEN', 0)
