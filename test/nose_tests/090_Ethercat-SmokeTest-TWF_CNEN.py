@@ -117,11 +117,10 @@ class Test(unittest.TestCase):
         print '%s CNEN=1' % tc_no
         epics.caput(motor + '.CNEN', 1)
 
-        UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-
+        oldRBV = epics.caget(motor + '.RBV', use_monitor=False)
         old_high_limit = epics.caget(motor + '.HLM')
         old_low_limit = epics.caget(motor + '.LLM')
-        if UserPosition > 0:
+        if oldRBV > 0:
             epics.caput(motor + '.LLM', 0.0)
             epics.caput(motor + '.HLM', 0.0)
         else:
@@ -132,16 +131,15 @@ class Test(unittest.TestCase):
         direction = 0
         if (msta & self.lib.MSTA_BIT_PLUS_LS):
             direction = -1
-            destination = UserPosition - self.TweakValue
-            epics.caput(motor + '.TWR', 1)
-            print '%s Tweak the motor reverse' % tc_no
+            destination = oldRBV - self.TweakValue
         else:
             direction = +1
-            destination = UserPosition + self.TweakValue
-            epics.caput(motor + '.TWF', 1)
-            print '%s Tweak the motor forward' % tc_no
+            destination = oldRBV + self.TweakValue
 
-        oldRBV = epics.caget(motor + '.RBV', use_monitor=False)
+        print '%s Tweak the motor oldRBV=%f destination=%f' % (tc_no, oldRBV, destination)
+
+        epics.caput(motor + '.VAL', destination)
+
         ret1 = waitForStart(self, motor, tc_no, 0.4, direction, oldRBV)
         ret2 = waitForStop(self, motor, tc_no, 10.0, direction, oldRBV)
         msta = int(epics.caget(motor + '.MSTA'))
@@ -151,12 +149,12 @@ class Test(unittest.TestCase):
 
         epics.caput(motor + '.LLM', old_low_limit)
         epics.caput(motor + '.HLM', old_high_limit)
-        UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
+        ReadBackValue = epics.caget(motor + '.RBV', use_monitor=False)
         print '%s destination=%d postion=%f' % (
-            tc_no, destination, UserPosition)
+            tc_no, destination, ReadBackValue)
         #self.assertEqual(True, ret1, 'waitForStart return True')
         self.assertEqual(True, ret2, 'waitForStop return True')
         maxdelta = self.TweakValue * 2
-        print '%s destination=%f UserPosition=%f, maxdelta=%f' % (tc_no, destination, UserPosition, maxdelta)
-        assert calcAlmostEqual(motor, tc_no, destination, UserPosition, maxdelta)
+        print '%s destination=%f ReadBackValue=%f, maxdelta=%f' % (tc_no, destination, ReadBackValue, maxdelta)
+        assert calcAlmostEqual(motor, tc_no, destination, ReadBackValue, maxdelta)
         #assert False
