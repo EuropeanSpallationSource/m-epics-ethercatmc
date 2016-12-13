@@ -22,10 +22,15 @@ FILENAME...   EthercatMC.h
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCJVELString                 "JVEL_"
 #define EthercatMCErrMsgString               "ErrMsg"
+#define EthercatMCMCUErrMsgString            "MCUErrMsg"
 
 extern "C" {
   int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
                       int axisFlags, const char *axisOptionsStr);
+  asynStatus writeReadOnErrorDisconnect_C(asynUser *pasynUser,
+                                          const char *outdata, size_t outlen,
+                                          char *indata, size_t inlen);
+  asynStatus checkACK(const char *outdata, size_t outlen, const char *indata);
 }
 
 typedef struct {
@@ -193,12 +198,19 @@ public:
   EthercatMCController(const char *portName, const char *EthercatMCPortName, int numAxes, double movingPollPeriod, double idlePollPeriod);
 
   void report(FILE *fp, int level);
+  asynStatus setMCUErrMsg(const char *value);
+  asynStatus configController(const char *value);
   asynStatus writeReadOnErrorDisconnect(void);
   EthercatMCAxis* getAxis(asynUser *pasynUser);
   EthercatMCAxis* getAxis(int axisNo);
   protected:
   void handleStatusChange(asynStatus status);
   asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+  struct {
+    unsigned int local_no_ASYN_;
+    unsigned int hasConfigError;
+    unsigned int isConnected;
+  } ctrlLocal;
 
   /* First parameter */
   int EthercatMCErr_;
@@ -213,6 +225,7 @@ public:
   /* Add parameters here */
   int EthercatMCErrMsg_;
   int EthercatMCErrRst_;
+  int EthercatMCMCUErrMsg_;
   int EthercatMCJVEL_;
   int EthercatMCErrId_;
   /* Last parameter */

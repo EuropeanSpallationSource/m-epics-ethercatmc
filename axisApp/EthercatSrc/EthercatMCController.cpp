@@ -14,6 +14,15 @@ FILENAME... EthercatMCController.cpp
 #include <epicsExport.h>
 #include "EthercatMC.h"
 
+#ifndef ASYN_TRACE_INFO
+#define ASYN_TRACE_INFO      0x0040
+#endif
+
+const static char *const strEthercatMCCreateController = "EthercatMCCreateController";
+const static char *const strEthercatMCConfigController = "EthercatMCConfigController";
+const static char *const strEthercatMCCreateAxisDef    = "EthercatMCCreateAxis";
+const static char *const strCtrlReset = ".ctrl.ErrRst";
+
 /** Creates a new EthercatMCController object.
   * \param[in] portName          The name of the asyn port that will be created for this driver
   * \param[in] MotorPortName     The name of the drvAsynSerialPort that was created previously to connect to the EthercatMC controller
@@ -32,6 +41,11 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
 {
   asynStatus status;
 
+  /* Controller */
+  memset(&ctrlLocal, 0, sizeof(ctrlLocal));
+  createParam(EthercatMCMCUErrMsgString,     asynParamOctet,       &EthercatMCMCUErrMsg_);
+
+  /* Per axis */
   createParam(EthercatMCErrString,           asynParamInt32,       &EthercatMCErr_);
   createParam(EthercatMCErrIdString,         asynParamInt32,       &EthercatMCErrId_);
   createParam(EthercatMCErrMsgString,        asynParamOctet,       &EthercatMCErrMsg_);
@@ -75,15 +89,78 @@ extern "C" int EthercatMCCreateController(const char *portName, const char *Moto
 /** Writes a string to the controller and reads a response.
   * Disconnects in case of error
   */
-asynStatus EthercatMCController::writeReadOnErrorDisconnect(void)
+extern "C" int EthercatMCConfigController(const char *portName,
+                                          const char *configStr)
 {
-  size_t nwrite = 0;
-  asynStatus status;
+  EthercatMCController *pC;
+
+  if (!portName || !configStr)  {
+    printf("%sNULL parameter\n", strEthercatMCConfigController);
+    return asynError;
+  }
+  pC = (EthercatMCController*) findAsynPortDriver(portName);
+  if (!pC) {
+    printf("%s:%s: Error port %s not found\n",
+           __FILE__, __FUNCTION__, portName);
+    return asynError;
+  }
+  return pC->configController(configStr);
+}
+
+asynStatus EthercatMCController::configController(const char *value)
+{
+  char inString[MAX_CONTROLLER_STRING_SIZE];
+  size_t configStrLen = strlen(value);
+  asynStatus status = asynError;
+
+  if (!strcmp(value, strCtrlReset)) {
+    ctrlLocal.hasConfigError = 0;
+    setMCUErrMsg("OK");
+    return asynSuccess;
+  }
+  if (ctrlLocal.hasConfigError) {
+    printf("port %s has errors. To reset use\n %s %s %s \n",
+           portName, strEthercatMCConfigController, portName, strCtrlReset);
+    return asynError;
+  }
+
+  status = writeReadOnErrorDisconnect_C(pasynUserController_,
+                                        value, configStrLen,
+                                        inString, sizeof(inString));
+  inString[sizeof(inString) -1] = '\0';
+  if (status) {
+    ctrlLocal.isConnected = 0;
+  } else {
+    status = checkACK(value, configStrLen, inString);
+  }
+  if (status) {
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "out=%s in=\"%s\" return=%s (%d)\n",
+              value, inString,
+              pasynManager->strStatus(status), (int)status);
+    ctrlLocal.hasConfigError = 1;
+    (void)setMCUErrMsg(inString);
+  } else {
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_INFO,
+              "out=%s in=\"%s\"\n",
+              value, inString);
+  }
+
+  printf("%s\n", inString);
+  return status;
+}
+
+extern "C"
+asynStatus writeReadOnErrorDisconnect_C(asynUser *pasynUser,
+                                        const char *outdata, size_t outlen,
+                                        char *indata, size_t inlen)
+{
+  size_t nwrite;
+  asynStatus status = asynError;
   int eomReason;
-  size_t outlen = strlen(outString_);
   size_t nread;
-  status = pasynOctetSyncIO->writeRead(pasynUserController_, outString_, outlen,
-                                       inString_, sizeof(inString_),
+  status = pasynOctetSyncIO->writeRead(pasynUser, outdata, outlen,
+                                       indata, inlen,
                                        DEFAULT_CONTROLLER_TIMEOUT,
                                        &nwrite, &nread, &eomReason);
   if ((status == asynTimeout) ||
@@ -93,41 +170,96 @@ asynStatus EthercatMCController::writeReadOnErrorDisconnect(void)
 #if 1
     asynInterface *pasynInterface = NULL;
     asynCommon     *pasynCommon = NULL;
-    pasynInterface = pasynManager->findInterface(pasynUserController_,
+    pasynInterface = pasynManager->findInterface(pasynUser,
                                                  asynCommonType,
                                                  0 /* FALSE */);
     if (pasynInterface) {
       pasynCommon = (asynCommon *)pasynInterface->pinterface;
       status = pasynCommon->disconnect(pasynInterface->drvPvt,
-                                       pasynUserController_);
+                                       pasynUser);
       if (status != asynSuccess) {
-        asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+        asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "out=%s status=%s (%d)\n",
-                  outString_, pasynManager->strStatus(status), (int)status);
+                  outdata, pasynManager->strStatus(status), (int)status);
       }
     } else {
-      asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+      asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "pasynInterface=%p pasynCommon=%p\n",
                 pasynInterface, pasynCommon);
     }
 #endif
-    asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+    asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "out=%s nread=%lu status=%s (%d)\n",
-              outString_,(unsigned long)nread,
+              outdata,(unsigned long)nread,
               pasynManager->strStatus(status), status);
-    handleStatusChange(asynError);
     return asynError; /* TimeOut -> Error */
   }
   return status;
 }
 
+/** Writes a string to the controller and reads a response.
+  * Disconnects in case of error
+  */
+asynStatus EthercatMCController::writeReadOnErrorDisconnect(void)
+{
+  asynStatus status = asynError;
+  size_t outlen = strlen(outString_);
+  inString_[0] = '\0';
+  status = writeReadOnErrorDisconnect_C(pasynUserController_, outString_, outlen,
+                                        inString_, sizeof(inString_));
+  handleStatusChange(status);
+  if (status)
+  {
+    return asynError;
+  }
+  return status;
+}
+
+extern "C"
+asynStatus checkACK(const char *outdata, size_t outlen,
+                    const char *indata)
+{
+  size_t i;
+  unsigned int numOK = 1;
+  int res = 1;
+  for( i = 0; i < outlen; i++) {
+    if (outdata[i] == ';') numOK++;
+  }
+  switch(numOK) {
+    case 1: res = strcmp(indata, "OK");  break;
+    case 2: res = strcmp(indata, "OK;OK");  break;
+    case 3: res = strcmp(indata, "OK:OK;OK");  break;
+    case 4: res = strcmp(indata, "OK;OK;OK;OK");  break;
+    default:
+    ;
+  }
+  return res ? asynError : asynSuccess;
+}
+
+asynStatus EthercatMCController::setMCUErrMsg(const char *value)
+{
+  asynStatus status = setStringParam(EthercatMCMCUErrMsg_, value);
+  if (!status) status = callParamCallbacks();
+  return status;
+}
+
 void EthercatMCController::handleStatusChange(asynStatus status)
 {
-  int i;
-  for (i=0; i<numAxes_; i++) {
-    EthercatMCAxis *pAxis=getAxis(i);
-    if (!pAxis) continue;
-    pAxis->handleDisconnect();
+
+  if (status && ctrlLocal.isConnected) {
+    /* Connected -> Disconnected */
+    int i;
+    ctrlLocal.isConnected = 0;
+    setMCUErrMsg("MCU Disconnected");
+    for (i=0; i<numAxes_; i++) {
+      EthercatMCAxis *pAxis=getAxis(i);
+      if (!pAxis) continue;
+      pAxis->handleDisconnect();
+    }
+  } else if (!status && !ctrlLocal.isConnected) {
+    /* Disconnected -> Connected */
+    ctrlLocal.isConnected = 1;
+    setMCUErrMsg("MCU Cconnected");
   }
 }
 
@@ -181,17 +313,30 @@ static const iocshArg EthercatMCCreateControllerArg1 = {"EPICS ASYN TCP motor po
 static const iocshArg EthercatMCCreateControllerArg2 = {"Number of axes", iocshArgInt};
 static const iocshArg EthercatMCCreateControllerArg3 = {"Moving poll period (ms)", iocshArgInt};
 static const iocshArg EthercatMCCreateControllerArg4 = {"Idle poll period (ms)", iocshArgInt};
-static const iocshArg * const EthercatMCCreateControllerArgs[] = {&EthercatMCCreateControllerArg0,
-                                                             &EthercatMCCreateControllerArg1,
-                                                             &EthercatMCCreateControllerArg2,
-                                                             &EthercatMCCreateControllerArg3,
-                                                             &EthercatMCCreateControllerArg4};
-static const iocshFuncDef EthercatMCCreateControllerDef = {"EthercatMCCreateController", 5, EthercatMCCreateControllerArgs};
+static const iocshArg *const EthercatMCCreateControllerArgs[] = {&EthercatMCCreateControllerArg0,
+                                                            &EthercatMCCreateControllerArg1,
+                                                            &EthercatMCCreateControllerArg2,
+                                                            &EthercatMCCreateControllerArg3,
+                                                            &EthercatMCCreateControllerArg4};
+static const iocshFuncDef EthercatMCCreateControllerDef = {strEthercatMCCreateController, 5,
+                                                           EthercatMCCreateControllerArgs};
 static void EthercatMCCreateContollerCallFunc(const iocshArgBuf *args)
 {
   EthercatMCCreateController(args[0].sval, args[1].sval, args[2].ival, args[3].ival, args[4].ival);
 }
 
+
+/* EthercatMCConfigController */
+static const iocshArg EthercatMCConfigControllerArg0 = {"Controller port name", iocshArgString};
+static const iocshArg EthercatMCConfigControllerArg1 = {"ConfigString",         iocshArgString};
+static const iocshArg * const EthercatMCConfigControllerArgs[] = {&EthercatMCConfigControllerArg0,
+                                                                  &EthercatMCConfigControllerArg1};
+static const iocshFuncDef EthercatMCConfigControllerDef = {strEthercatMCConfigController, 2,
+                                                           EthercatMCConfigControllerArgs};
+static void EthercatMCConfigContollerCallFunc(const iocshArgBuf *args)
+{
+  EthercatMCConfigController(args[0].sval, args[1].sval);
+}
 
 /* EthercatMCCreateAxis */
 static const iocshArg EthercatMCCreateAxisArg0 = {"Controller port name", iocshArgString};
@@ -199,10 +344,11 @@ static const iocshArg EthercatMCCreateAxisArg1 = {"Axis number", iocshArgInt};
 static const iocshArg EthercatMCCreateAxisArg2 = {"axisFlags", iocshArgInt};
 static const iocshArg EthercatMCCreateAxisArg3 = {"axisOptionsStr", iocshArgString};
 static const iocshArg * const EthercatMCCreateAxisArgs[] = {&EthercatMCCreateAxisArg0,
-                                                       &EthercatMCCreateAxisArg1,
-                                                       &EthercatMCCreateAxisArg2,
-                                                       &EthercatMCCreateAxisArg3};
-static const iocshFuncDef EthercatMCCreateAxisDef = {"EthercatMCCreateAxis", 4, EthercatMCCreateAxisArgs};
+                                                            &EthercatMCCreateAxisArg1,
+                                                            &EthercatMCCreateAxisArg2,
+                                                            &EthercatMCCreateAxisArg3};
+static const iocshFuncDef EthercatMCCreateAxisDef = {strEthercatMCCreateAxisDef, 4,
+                                                     EthercatMCCreateAxisArgs};
 static void EthercatMCCreateAxisCallFunc(const iocshArgBuf *args)
 {
   EthercatMCCreateAxis(args[0].sval, args[1].ival, args[2].ival, args[3].sval);
@@ -211,6 +357,7 @@ static void EthercatMCCreateAxisCallFunc(const iocshArgBuf *args)
 static void EthercatMCControllerRegister(void)
 {
   iocshRegister(&EthercatMCCreateControllerDef, EthercatMCCreateContollerCallFunc);
+  iocshRegister(&EthercatMCConfigControllerDef, EthercatMCConfigContollerCallFunc);
   iocshRegister(&EthercatMCCreateAxisDef,       EthercatMCCreateAxisCallFunc);
 }
 
