@@ -20,6 +20,7 @@ FILENAME... EthercatMCController.cpp
 
 const static char *const strEthercatMCCreateController = "EthercatMCCreateController";
 const static char *const strEthercatMCConfigController = "EthercatMCConfigController";
+const static char *const strEthercatMCReadController   = "EthercatMCReadController";
 const static char *const strEthercatMCCreateAxisDef    = "EthercatMCCreateAxis";
 const static char *const strCtrlReset = ".ctrl.ErrRst";
 
@@ -89,7 +90,7 @@ extern "C" int EthercatMCCreateController(const char *portName, const char *Moto
 /** Writes a string to the controller and reads a response.
   * Disconnects in case of error
   */
-extern "C" int EthercatMCConfigController(const char *portName,
+extern "C" int EthercatMCConfigController(int needOk, const char *portName,
                                           const char *configStr)
 {
   EthercatMCController *pC;
@@ -104,10 +105,10 @@ extern "C" int EthercatMCConfigController(const char *portName,
            __FILE__, __FUNCTION__, portName);
     return asynError;
   }
-  return pC->configController(configStr);
+  return pC->configController(needOk, configStr);
 }
 
-asynStatus EthercatMCController::configController(const char *value)
+asynStatus EthercatMCController::configController(int needOk, const char *value)
 {
   char inString[MAX_CONTROLLER_STRING_SIZE];
   size_t configStrLen = strlen(value);
@@ -130,21 +131,21 @@ asynStatus EthercatMCController::configController(const char *value)
   inString[sizeof(inString) -1] = '\0';
   if (status) {
     ctrlLocal.isConnected = 0;
-  } else {
+  } else if (needOk) {
     status = checkACK(value, configStrLen, inString);
-  }
-  if (status) {
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "out=%s in=\"%s\" return=%s (%d)\n",
-              value, inString,
-              pasynManager->strStatus(status), (int)status);
-    ctrlLocal.hasConfigError = 1;
-    (void)setMCUErrMsg(inString);
-  } else {
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_INFO,
-              "out=%s in=\"%s\"\n",
-              value, inString);
-  }
+    if (status) {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "out=%s in=\"%s\" return=%s (%d)\n",
+                value, inString,
+                pasynManager->strStatus(status), (int)status);
+      ctrlLocal.hasConfigError = 1;
+      (void)setMCUErrMsg(inString);
+    } else {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_INFO,
+                "out=%s in=\"%s\"\n",
+                value, inString);
+    }
+  } /* neddOK */
 
   printf("%s\n", inString);
   return status;
@@ -333,9 +334,19 @@ static const iocshArg * const EthercatMCConfigControllerArgs[] = {&EthercatMCCon
                                                                   &EthercatMCConfigControllerArg1};
 static const iocshFuncDef EthercatMCConfigControllerDef = {strEthercatMCConfigController, 2,
                                                            EthercatMCConfigControllerArgs};
+static const iocshFuncDef EthercatMCReadControllerDef = {strEthercatMCReadController, 2,
+                                                         EthercatMCConfigControllerArgs};
+
 static void EthercatMCConfigContollerCallFunc(const iocshArgBuf *args)
 {
-  EthercatMCConfigController(args[0].sval, args[1].sval);
+  int needOk = 1;
+  EthercatMCConfigController(needOk, args[0].sval, args[1].sval);
+}
+
+static void EthercatMCReadContollerCallFunc(const iocshArgBuf *args)
+{
+  int needOk = 0;
+  EthercatMCConfigController(needOk, args[0].sval, args[1].sval);
 }
 
 /* EthercatMCCreateAxis */
@@ -358,6 +369,7 @@ static void EthercatMCControllerRegister(void)
 {
   iocshRegister(&EthercatMCCreateControllerDef, EthercatMCCreateContollerCallFunc);
   iocshRegister(&EthercatMCConfigControllerDef, EthercatMCConfigContollerCallFunc);
+  iocshRegister(&EthercatMCReadControllerDef,   EthercatMCReadContollerCallFunc);
   iocshRegister(&EthercatMCCreateAxisDef,       EthercatMCCreateAxisCallFunc);
 }
 
