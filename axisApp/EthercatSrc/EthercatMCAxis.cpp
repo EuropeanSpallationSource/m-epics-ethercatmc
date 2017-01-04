@@ -262,8 +262,7 @@ asynStatus EthercatMCAxis::initialUpdate(void)
   }
   status = readConfigFile();
   if (status) return status;
-  status = updateMresSoftLimitsIfDirty(__LINE__);
-  if (status) return status;
+  (void)updateMresSoftLimitsIfDirty(__LINE__);
   if ((status == asynSuccess) &&
       (drvlocal.axisFlags & AMPLIFIER_ON_FLAG_CREATE_AXIS)) {
     /* Enable the amplifier when the axis is created,
