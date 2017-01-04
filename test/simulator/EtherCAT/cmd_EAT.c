@@ -60,6 +60,7 @@ static void init_axis(int axis_no)
     cmd_Motor_cmd[axis_no].maximumVelocity = 50;
     cmd_Motor_cmd[axis_no].homeVeloTowardsHomeSensor = 10;
     cmd_Motor_cmd[axis_no].homeVeloFromHomeSensor = 5;
+    cmd_Motor_cmd[axis_no].position = getMotorPos(axis_no);
 
     init_done[axis_no] = 1;
   }
