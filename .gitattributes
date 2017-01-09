@@ -6,6 +6,7 @@
 *.bat  text eol=crlf
 *.cmd  -text
 *.gif  -text
+*.opi  -text
 *.png  -text
 *.ppt* -text  
 *.py   text eol=lf
