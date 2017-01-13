@@ -22,6 +22,15 @@ record(axis,"$(PREFIX)$(MOTOR_NAME)")
 	field(TWV,"1")
 }
 
+# The message text
+record(waveform, "$(PREFIX)$(R)MsgTxt") {
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MESSAGE_TEXT")
+    field(FTVL, "CHAR")
+    field(NELM, "80")
+    field(SCAN, "I/O Intr")
+}
+
 # These records make the motor resolution, offset and direction available to the driver
 # which is needed for profile moves and other applications
 
@@ -37,7 +46,7 @@ record(longout,"$(PREFIX)$(R)DIR_") {
 record(longin, "$(PREFIX)$(R)Err")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Err")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MCUErr")
     field(SCAN, "I/O Intr")
 }
 
@@ -45,14 +54,6 @@ record(longin, "$(PREFIX)$(R)ErrId")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrId")
-    field(SCAN, "I/O Intr")
-}
-
-record(waveform, "$(PREFIX)$(R)ErrMsg") {
-    field(DTYP, "asynOctetRead")
-    field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrMsg")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
 
@@ -92,16 +93,6 @@ record(ao,"$(PREFIX)$(R)MRES_") {
     field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_RESOLUTION")
     field(PREC, "$(PREC)")
 }
-
-grecord(ai,"$(PREFIX)$(R)Pos-RB") {
-    field(DESC,"Readback")
-    field(PREC,"4")
-    field(PINI, "1")
-    field(DTYP, "asynFloat64")
-    field(SCAN, "I/O Intr")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POSITION")
-}
-
 
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {

@@ -16,12 +16,11 @@ FILENAME...   EthercatMC.h
 #define motorRecResolutionString        "MOTOR_REC_RESOLUTION"
 #endif
 
-#define EthercatMCErrString                  "Err"
+#define EthercatMCErrString                  "MCUErr"
 #define EthercatMCErrIdString                "ErrId"
 #define EthercatMCProcHomString              "ProcHom"
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCJVELString                 "JVEL_"
-#define EthercatMCErrMsgString               "ErrMsg"
 #define EthercatMCMCUErrMsgString            "MCUErrMsg"
 
 extern "C" {
@@ -83,7 +82,9 @@ private:
     eeAxisErrorMCUError,
     eeAxisErrorIOCcomError,
     eeAxisErrorIOCcfgError,
-    eeAxisErrorNotHomed
+    eeAxisErrorNotHomed,
+    eeAxisErrorCmdError
+
   } eeAxisErrorType;
   EthercatMCController *pC_;          /**< Pointer to the asynAxisController to which this axis belongs.
                                    *   Abbreviated because it is used very frequently */
@@ -127,6 +128,9 @@ private:
     struct {
       unsigned int stAxisStatus_V00 :1;
     }  supported;
+    /* Error texts when we talk to the controller, there is not an "OK"
+       Or, failure in setValueOnAxisVerify() */
+    char cmdErrorMessage[80];
   } drvlocal;
 
   asynStatus handleDisconnect(void);
@@ -223,7 +227,6 @@ public:
 #endif
 
   /* Add parameters here */
-  int EthercatMCErrMsg_;
   int EthercatMCErrRst_;
   int EthercatMCMCUErrMsg_;
   int EthercatMCJVEL_;

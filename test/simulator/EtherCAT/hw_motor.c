@@ -63,7 +63,6 @@ typedef struct
   double ParkingPos;
   double ReverseERES;
   int homed;
-  int bError;
   int nErrorId;
   char pLimits;
 } motor_axis_type;
@@ -486,7 +485,6 @@ static void simulateMotion(int axis_no)
     if (velocity) {
       /* Amplifier off, while moving */
       set_nErrorId(axis_no, 16992);
-      set_bError(axis_no, 1);
       StopInternal(axis_no);
     }
   }
@@ -825,14 +823,7 @@ int getPosLimitSwitch(int axis_no)
 int get_bError(int axis_no)
 {
   AXIS_CHECK_RETURN_ZERO(axis_no);
-  return motor_axis[axis_no].bError;
-}
-
-int set_bError(int axis_no, int value)
-{
-  AXIS_CHECK_RETURN_ZERO(axis_no);
-  motor_axis[axis_no].bError = value;
-  return 0;
+  return motor_axis[axis_no].nErrorId ? 1 : 0;
 }
 
 int get_nErrorId(int axis_no)

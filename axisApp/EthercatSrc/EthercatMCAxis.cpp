@@ -146,7 +146,7 @@ asynStatus EthercatMCAxis::readConfigFile(void)
              strerror(saved_errno),
              mypwd ? mypwd : "",
              drvlocal.cfgfileStr);
-    setStringParam(pC_->EthercatMCErrMsg_, errbuf);
+    updateMsgTxtFromDriver(errbuf);
     return asynError;
   }
   while (ret && !status && !errorTxt) {
@@ -226,7 +226,7 @@ asynStatus EthercatMCAxis::readConfigFile(void)
 
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "readConfigFile %s\n", errbuf);
-      setStringParam(pC_->EthercatMCErrMsg_, errbuf);
+      updateMsgTxtFromDriver(errbuf);
     }
   } /* while */
 
@@ -257,7 +257,7 @@ asynStatus EthercatMCAxis::initialUpdate(void)
   /*  Check for Axis ID */
   int axisID = getMotionAxisID();
   if (axisID != axisNo_) {
-    setStringParam(pC_->EthercatMCErrMsg_, "ConfigError AxisID");
+    updateMsgTxtFromDriver("ConfigError AxisID");
     return asynError;
   }
   status = readConfigFile();
@@ -332,6 +332,12 @@ asynStatus EthercatMCAxis::writeReadACK(void)
                   "out=%s in=%s return=%s (%d)\n",
                   pC_->outString_, pC_->inString_,
                   pasynManager->strStatus(status), (int)status);
+        if (!drvlocal.cmdErrorMessage[0]) {
+          snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+                   "writeReadACK() out=%s in=%s\n",
+                   pC_->outString_, pC_->inString_);
+          /* The poller co-ordinates the writing into the parameter library */
+        }
         return status;
       }
     }
@@ -371,17 +377,30 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
   asynStatus status = asynSuccess;
   unsigned int counter = 0;
   int rbvalue = 0 - value;
-  while (counter < retryCount) {
+  while (counter <= retryCount) {
     status = getValueFromAxis(rbvar, &rbvalue);
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "setValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
+              axisNo_,pC_->outString_, pC_->inString_,
+              pasynManager->strStatus(status), (int)status);
     if (status) break;
     if (rbvalue == value) break;
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setValueOnAxisVerify(%d) out=%s in=%s\n",
-              axisNo_,pC_->outString_, pC_->inString_);
     status = setValueOnAxis(var, value);
     counter++;
     if (status) break;
     epicsThreadSleep(.1);
+  }
+  /* Verification failed.
+     Store the error (unless there was an error before) */
+  if ((rbvalue != value) && !drvlocal.cmdErrorMessage[0]) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+               "setValueOnAxisV(%d) var=%s value=%d rbvalue=%d",
+               axisNo_,var, value, rbvalue);
+      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+               "setValueOnAxisV(%s) value=%d rbvalue=%d",
+               var, value, rbvalue);
+
+      /* The poller co-ordinates the writing into the parameter library */
   }
   return status;
 }
@@ -809,17 +828,27 @@ asynStatus EthercatMCAxis::updateMresSoftLimitsIfDirty(int line)
 
 asynStatus EthercatMCAxis::resetAxis(void)
 {
-  asynStatus status;
-  status = setValueOnAxis("bExecute", 0);
-  if (status) goto resetAxisReturn;
+  asynStatus status = asynSuccess;
+  int EthercatMCErr;
+  /* Reset command error, if any */
+  drvlocal.cmdErrorMessage[0] = 0;
+  status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCErr_, &EthercatMCErr);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "bReset(%d)=1\n",  axisNo_);
-  status = setValueOnAxisVerify("bReset", "bReset", 1, 20);
-  if (status) goto resetAxisReturn;
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "bReset(%d)=0\n",  axisNo_);
-  status = setValueOnAxisVerify("bReset", "bReset", 0, 20);
+            "resetAxis(%d status=%d EthercatMCErr)=%d\n",
+            axisNo_, (int)status, EthercatMCErr);
 
+  if (EthercatMCErr) {
+    /* Soft reset of the axis */
+    status = setValueOnAxis("bExecute", 0);
+    if (status) goto resetAxisReturn;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "bReset(%d)=1\n",  axisNo_);
+    status = setValueOnAxisVerify("bReset", "bReset", 1, 20);
+    if (status) goto resetAxisReturn;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "bReset(%d)=0\n",  axisNo_);
+    status = setValueOnAxisVerify("bReset", "bReset", 0, 20);
+  }
   resetAxisReturn:
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "resetAxis(%d) status=%s (%d)\n",
@@ -834,7 +863,7 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
 {
   asynStatus status = asynSuccess;
   if (status) return status;
-  return setValueOnAxisVerify("bEnable", "bEnabled", on ? 1 : 0, 100);
+  return setValueOnAxisVerify("bEnable", "bEnabled", on ? 1 : 0, 10);
 }
 
 /** Stop the axis
@@ -872,28 +901,34 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
   } else if (drvlocal.dirty.readConfigFile) {
     EPICS_nErrorId = ERROR_CONFIG_ERROR;
     drvlocal.eeAxisError = eeAxisErrorIOCcfgError;
-    setStringParam(pC_->EthercatMCErrMsg_, "ConfigError Config File");
+          updateMsgTxtFromDriver("ConfigError Config File");
   } else if (drvlocal.dirty.initialUpdate) {
     EPICS_nErrorId = ERROR_CONFIG_ERROR;
-    setStringParam(pC_->EthercatMCErrMsg_, "ConfigError");
+    updateMsgTxtFromDriver("ConfigError");
   } else if (drvlocal.dirty.nMotionAxisID != axisNo_) {
     EPICS_nErrorId = ERROR_CONFIG_ERROR;
-    setStringParam(pC_->EthercatMCErrMsg_, "ConfigError: AxisID");
+    updateMsgTxtFromDriver("ConfigError: AxisID");
   } else if (drvlocal.dirty.motorLimits) {
-    setStringParam(pC_->EthercatMCErrMsg_, "ConfigError: Soft limits");
+    EPICS_nErrorId = ERROR_CONFIG_ERROR;
+    updateMsgTxtFromDriver("ConfigError: Soft limits");
+  } else if (drvlocal.cmdErrorMessage[0]) {
+    drvlocal.eeAxisError = eeAxisErrorCmdError;
   }
 
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId) {
 
-    if (!EPICS_nErrorId) setStringParam(pC_->EthercatMCErrMsg_, "");
+    if (!EPICS_nErrorId) updateMsgTxtFromDriver(NULL);
 
     switch (drvlocal.eeAxisError) {
     case eeAxisErrorNoError:
-      setStringParam(pC_->EthercatMCErrMsg_, "");
+      updateMsgTxtFromDriver(NULL);
       break;
     case eeAxisErrorIOCcomError:
-      setStringParam(pC_->EthercatMCErrMsg_, "CommunicationError");
+      updateMsgTxtFromDriver("CommunicationError");
+      break;
+    case eeAxisErrorCmdError:
+      updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
       break;
     default:
       ;
@@ -1137,11 +1172,12 @@ asynStatus EthercatMCAxis::poll(bool *moving)
           break;
       }
       if (sErrorMessage[0]) {
-        setStringParam(pC_->EthercatMCErrMsg_, sErrorMessage);
+        updateMsgTxtFromDriver(sErrorMessage);
       } else if (!sErrorMessage[0] && st_axis_status.nErrorId) {
         asynStatus status;
         status = getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0], sizeof(sErrorMessage));
-        if (status == asynSuccess) setStringParam(pC_->EthercatMCErrMsg_, sErrorMessage);
+        
+        if (status == asynSuccess) updateMsgTxtFromDriver(sErrorMessage);
       }
     }
     callParamCallbacksUpdateError();
@@ -1340,12 +1376,6 @@ asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
      but modern have, as they have profileMoveModeString.
      We could check for VERSION, but this simple #ifdef
      works for our needs */
-#ifdef EthercatMCErrMsgString
-  if (function == pC_->EthercatMCErrMsg_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setStringParam(%d EthercatMCErrMsg_)=%s\n", axisNo_, value);
-  }
-#endif
 
   /* Call base class method */
   status = asynAxisAxis::setStringParam(function, value);
