@@ -995,6 +995,11 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 
   if (nvals == 24) {
     if (axisNo_ != motor_axis_no) return asynError;
+    if (!drvlocal.supported.stAxisStatus_V00) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "pollAll(%d) fActPosition=%f\n",
+                axisNo_, pst_axis_status->fActPosition);
+    }
     drvlocal.supported.stAxisStatus_V00 = 1;
     return asynSuccess;
   }
