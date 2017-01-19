@@ -40,53 +40,53 @@ class motor_lib(object):
     MSTA_BIT_DONE         =  1 << (2 -1)     #0002
     MSTA_BIT_DIRECTION    =  1 << (1 -1)     #0001
 
-    def getMSTAtext(msta):
+    def getMSTAtext(self, msta):
         ret = ''
-        if (msta & MSTA_BIT_HOMED):
-            ret = ret + 'Hd'
-        else:
-            ret = ret +'..'
-        if (msta & MSTA_BIT_MINUS_LS):
-            ret = ret + 'LLS'
+        if (msta & self.MSTA_BIT_HOMED):
+            ret = ret + 'Hmd'
         else:
             ret = ret +'...'
-        #if (msta & MSTA_BIT_GAIN_SUPPORT):
+        if (msta & self.MSTA_BIT_MINUS_LS):
+            ret = ret + 'Lls'
+        else:
+            ret = ret +'...'
+        #if (msta & self.MSTA_BIT_GAIN_SUPPORT):
         #    ret = ret + 'G'
         #else:
         #    ret = ret +'.'
-        if (msta & MSTA_BIT_MOVING):
+        if (msta & self.MSTA_BIT_MOVING):
             ret = ret + 'Mov'
         else:
             ret = ret +'...'
-        if (msta & MSTA_BIT_PROBLEM):
-            ret = ret + 'P'
+        if (msta & self.MSTA_BIT_PROBLEM):
+            ret = ret + 'Prb'
         else:
             ret = ret +'.'
-        if (msta & MSTA_BIT_PRESENT):
+        if (msta & self.MSTA_BIT_PRESENT):
             ret = ret + 'Enc'
         else:
             ret = ret +'...'
-        if (msta & MSTA_BIT_HOME):
-            ret = ret + 'Ho'
+        if (msta & self.MSTA_BIT_HOME):
+            ret = ret + 'Hom'
         else:
             ret = ret +'..'
-        if (msta & MSTA_BIT_SLIP_STALL    ):
-            ret = ret + 'Slip'
+        if (msta & self.MSTA_BIT_SLIP_STALL    ):
+            ret = ret + 'Slp'
         else:
             ret = ret +'....'
-        if (msta & MSTA_BIT_AMPON):
+        if (msta & self.MSTA_BIT_AMPON):
             ret = ret + 'Amp'
         else:
             ret = ret +'...'
-        if (msta & MSTA_BIT_HOMELS):
+        if (msta & self.MSTA_BIT_HOMELS):
             ret = ret + 'Hsw'
         else:
             ret = ret +'...'
-        if (msta & MSTA_BIT_PLUS_LS):
-            ret = ret + 'HLS'
+        if (msta & self.MSTA_BIT_PLUS_LS):
+            ret = ret + 'Hls'
         else:
             ret = ret +'...'
-        if (msta & MSTA_BIT_DONE):
+        if (msta & self.MSTA_BIT_DONE):
             ret = ret + 'Don'
         else:
             ret = ret +'...'
@@ -172,7 +172,7 @@ class motor_lib(object):
         else:
             epics.caput(motor + '.JOGR', 1)
 
-        done = waitForStartAndDone(motor, tc_no + " jogDirection", 30 + time_to_wait + 3.0)
+        done = self.waitForStartAndDone(motor, tc_no + " jogDirection", 30 + time_to_wait + 3.0)
 
         if direction > 0:
             epics.caput(motor + '.JOGF', 0)
