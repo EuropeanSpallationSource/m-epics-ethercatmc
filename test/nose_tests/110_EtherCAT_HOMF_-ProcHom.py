@@ -42,7 +42,8 @@ def homeTheMotor(tself, motor, tc_no, procHome, jogToLSBefore):
 
     tself.pv_ProcHom.put(procHome)
     msta = int(epics.caget(motor + '.MSTA'))
-    if (msta & tself.lib.MSTA_BIT_PLUS_LS):
+    # We can home while sitting on a limit switch
+    if (msta & tself.lib.MSTA_BIT_MINUS_LS):
         epics.caput(motor + '.HOMR', 1)
     else:
         epics.caput(motor + '.HOMF', 1)
@@ -87,20 +88,24 @@ class Test(unittest.TestCase):
         print 'clean up'
 
     # Home against low limit switch
-    #def test_TC_11110(self):
-    #    tc_no = "TC-11110"
-    #    print '%s Home ' % tc_no
-    #    homeTheMotor(self, self.m1, tc_no, 1, 1)
+    # Jog against LLS, then home
+    def test_TC_11110(self):
+        tc_no = "TC-11110"
+        print '%s Home ' % tc_no
+        homeTheMotor(self, self.m1, tc_no, 1, -1)
 
+    # Move awy from LLS, then home
     def test_TC_11111(self):
         tc_no = "TC-11111"
         print '%s Home ' % tc_no
         homeTheMotor(self, self.m1, tc_no, 1, 0)
 
-    #def test_TC_11112(self):
-    #    tc_no = "TC-11112"
-    #    print '%s Home ' % tc_no
-    #    homeTheMotor(self, self.m1, tc_no, 1, -1)
+    # Home against high limit switch
+    # Jog against LLS, then home
+    def test_TC_11112(self):
+        tc_no = "TC-11112"
+        print '%s Home ' % tc_no
+        homeTheMotor(self, self.m1, tc_no, 1, 1)
 
     # Home against high limit switch
     #def test_TC_11120(self):
@@ -108,6 +113,7 @@ class Test(unittest.TestCase):
     #    print '%s Home ' % tc_no
     #    homeTheMotor(self, self.m1, tc_no, 2, 1)
 
+    # Move awy from HLS, then home
     def test_TC_11121(self):
         tc_no = "TC-11121"
         print '%s Home ' % tc_no
