@@ -798,15 +798,23 @@ asynStatus EthercatMCAxis::setMotorLimitsOnAxisIfDefined(void)
     if (axisID < 0) return asynError;
     indexGroupA = 0x5000 + (unsigned int)axisID;
     enable = drvlocal.motorLowLimit < drvlocal.motorHighLimit ? 1 : 0;
-    snprintf(pC_->outString_, sizeof(pC_->outString_),
-             "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g;"
-             "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g;"
-             "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d;"
-             "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d",
-             adsport, indexGroupA, 0xD, drvlocal.motorLowLimit * drvlocal.mres,
-             adsport, indexGroupA, 0xE, drvlocal.motorHighLimit * drvlocal.mres,
-             adsport, indexGroupA, 0XB, enable,
-             adsport, indexGroupA, 0XC, enable);
+    if (enable) {
+      snprintf(pC_->outString_, sizeof(pC_->outString_),
+               "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g;"
+               "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g;"
+               "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d;"
+               "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d",
+               adsport, indexGroupA, 0xD, drvlocal.motorLowLimit * drvlocal.mres,
+               adsport, indexGroupA, 0xE, drvlocal.motorHighLimit * drvlocal.mres,
+               adsport, indexGroupA, 0XB, 1,
+               adsport, indexGroupA, 0XC, 1);
+    } else {
+      snprintf(pC_->outString_, sizeof(pC_->outString_),
+               "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d;"
+               "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d",
+               adsport, indexGroupA, 0XB, 0,
+               adsport, indexGroupA, 0XC, 0);
+    }
     status = writeReadACK();
   }
   drvlocal.dirty.motorLimits =  (status != asynSuccess);
