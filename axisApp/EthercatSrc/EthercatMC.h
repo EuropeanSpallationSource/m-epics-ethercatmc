@@ -21,6 +21,9 @@ FILENAME...   EthercatMC.h
 #define EthercatMCProcHomString              "ProcHom"
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCJVELString                 "JVEL_"
+#define EthercatMCVelActString               "VelAct"
+#define EthercatMCAccActString               "AccAct"
+#define EthercatMCDecActString               "DecAct"
 #define EthercatMCMCUErrMsgString            "MCUErrMsg"
 
 extern "C" {
@@ -230,6 +233,9 @@ public:
   int EthercatMCErrRst_;
   int EthercatMCMCUErrMsg_;
   int EthercatMCJVEL_;
+  int EthercatMCVelAct_;
+  int EthercatMCAccAct_;
+  int EthercatMCDecAct_;
   int EthercatMCErrId_;
   /* Last parameter */
 

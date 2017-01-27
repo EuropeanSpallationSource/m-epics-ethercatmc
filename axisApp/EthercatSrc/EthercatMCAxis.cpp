@@ -1083,6 +1083,11 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setIntegerParam(pC_->motorStatusHighLimit_, !st_axis_status.bLimitFwd);
   setIntegerParam(pC_->motorStatusPowerOn_, st_axis_status.bEnabled);
 
+  setDoubleParam(pC_->EthercatMCVelAct_, st_axis_status.fActVelocity);
+  setDoubleParam(pC_->EthercatMCAccAct_, st_axis_status.fAcceleration);
+  setDoubleParam(pC_->EthercatMCDecAct_, st_axis_status.fDecceleration);
+
+
   nowMoving = st_axis_status.bBusy && st_axis_status.bExecute && st_axis_status.bEnabled;
   if (drvlocal.waitNumPollsBeforeReady) {
     *moving = true;

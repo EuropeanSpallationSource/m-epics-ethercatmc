@@ -50,6 +50,27 @@ record(longin, "$(PREFIX)$(R)Err")
     field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(PREFIX)$(R)VelAct")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))VelAct")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PREFIX)$(R)AccAct")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AccAct")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PREFIX)$(R)DecAct")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))DecAct")
+    field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(PREFIX)$(R)ErrId")
 {
     field(DTYP, "asynInt32")
