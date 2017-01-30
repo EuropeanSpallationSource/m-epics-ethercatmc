@@ -190,7 +190,7 @@ private:
   asynStatus updateMresSoftLimitsIfDirty(int);
   asynStatus resetAxis(void);
   asynStatus enableAmplifier(int);
-  asynStatus sendVelocityAndAccelExecute(double maxVelocity, double acceleration);
+  asynStatus sendVelocityAndExecute(double maxVelocity);
   asynStatus setClosedLoop(bool closedLoop);
   asynStatus setIntegerParam(int function, int value);
   asynStatus setDoubleParam(int function, double value);
