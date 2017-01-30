@@ -169,7 +169,7 @@ def tweakToLimit(self, motor, tc_no, direction):
         count += 1
         if (count > maxTweaks):
             stopTheLoop = 1
-            
+
         inPosition = calcAlmostEqual(motor, tc_no, destination, drbv, maxDeltaAfterMove)
         if not inPosition:
             stopTheLoop = 1
@@ -179,7 +179,7 @@ def tweakToLimit(self, motor, tc_no, direction):
 
         print '%s count=%d maxTweaks=%d stopTheLoop=%d inPosition=%d' \
             % (tc_no, count, maxTweaks, stopTheLoop, inPosition)
-            
+
     # Put back the limits
     epics.caput(motor + '.LLM', old_low_limit)
     epics.caput(motor + '.HLM', old_high_limit)
