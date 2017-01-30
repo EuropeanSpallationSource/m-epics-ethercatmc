@@ -61,6 +61,7 @@ static void init_axis(int axis_no)
                   0);                     /* homeSwitchPos */
 
     cmd_Motor_cmd[axis_no].maximumVelocity = 50;
+    cmd_Motor_cmd[axis_no].acceleration = 23;
     cmd_Motor_cmd[axis_no].homeVeloTowardsHomeSensor = 10;
     cmd_Motor_cmd[axis_no].homeVeloFromHomeSensor = 5;
     cmd_Motor_cmd[axis_no].position = getMotorPos(axis_no);
@@ -518,7 +519,7 @@ static void motorHandleOneArg(const char *myarg_1)
     unsigned nCmdData = cmd_Motor_cmd[motor_axis_no].nCmdData;
     double fVelocity = 0;
     double fPosition = 0;
-    double fAcceleration = 0;
+    double fAcceleration = cmd_Motor_cmd[motor_axis_no].acceleration;
     double fDecceleration = 0;
     int bJogFwd = 0;
     int bJogBwd = 0;
