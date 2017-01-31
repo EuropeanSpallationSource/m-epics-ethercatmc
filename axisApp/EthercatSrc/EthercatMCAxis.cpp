@@ -54,6 +54,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   if (axisOptionsStr && axisOptionsStr[0]) {
     const char * const encoder_is_str = "encoder=";
     const char * const cfgfile_str = "cfgFile=";
+    const char * const cfgDebug_str = "getDebugText=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -69,10 +70,12 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
         pThisOption += strlen(encoder_is_str);
         drvlocal.externalEncoderStr = strdup(pThisOption);
         setIntegerParam(pC->motorStatusHasEncoder_, 1);
-      }
-      if (!strncmp(pThisOption, cfgfile_str, strlen(cfgfile_str))) {
+      }  else if (!strncmp(pThisOption, cfgfile_str, strlen(cfgfile_str))) {
         pThisOption += strlen(cfgfile_str);
         drvlocal.cfgfileStr = strdup(pThisOption);
+      } else if (!strncmp(pThisOption, cfgDebug_str, strlen(cfgDebug_str))) {
+        pThisOption += strlen(cfgDebug_str);
+        drvlocal.cfgDebug_str = strdup(pThisOption);
       }
       pThisOption = pNextOption;
     }
@@ -917,20 +920,23 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId) {
 
-    if (!EPICS_nErrorId) updateMsgTxtFromDriver(NULL);
+    if (!drvlocal.cfgDebug_str) {
+      if (!EPICS_nErrorId)
+        updateMsgTxtFromDriver(NULL);
 
-    switch (drvlocal.eeAxisError) {
-    case eeAxisErrorNoError:
-      updateMsgTxtFromDriver(NULL);
-      break;
-    case eeAxisErrorIOCcomError:
-      updateMsgTxtFromDriver("CommunicationError");
-      break;
-    case eeAxisErrorCmdError:
-      updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
-      break;
-    default:
-      ;
+      switch (drvlocal.eeAxisError) {
+        case eeAxisErrorNoError:
+          updateMsgTxtFromDriver(NULL);
+          break;
+        case eeAxisErrorIOCcomError:
+          updateMsgTxtFromDriver("CommunicationError");
+          break;
+        case eeAxisErrorCmdError:
+          updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
+          break;
+        default:
+          ;
+      }
     }
     /* Axis has a problem: Report to motor record */
     setIntegerParam(pC_->motorStatusProblem_,
@@ -1066,6 +1072,16 @@ asynStatus EthercatMCAxis::poll(bool *moving)
               pasynManager->strStatus(comStatus), (int)comStatus);
     goto skip;
   }
+
+  if (drvlocal.cfgDebug_str) {
+    asynStatus comStatus;
+    sprintf(pC_->outString_, "%s", drvlocal.cfgDebug_str);
+    comStatus = pC_->writeReadOnErrorDisconnect();
+    if (!comStatus) {
+      updateMsgTxtFromDriver(pC_->inString_);
+    }
+  }
+
   setIntegerParam(pC_->motorStatusHomed_, st_axis_status.bHomed);
   drvlocal.homed = st_axis_status.bHomed;
   setIntegerParam(pC_->motorStatusCommsError_, 0);
@@ -1147,7 +1163,10 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     setIntegerParam(pC_->motorStatusDone_, !nowMoving);
 
     drvlocal.MCU_nErrorId = st_axis_status.nErrorId;
-    if (drvlocal.old_bError != st_axis_status.bError ||
+
+    if (drvlocal.cfgDebug_str) {
+      ; /* Do not do the following */
+    } else if (drvlocal.old_bError != st_axis_status.bError ||
         drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
         drvlocal.dirty.sErrorMessage) {
       char sErrorMessage[256];

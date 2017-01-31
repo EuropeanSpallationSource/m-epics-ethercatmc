@@ -782,6 +782,19 @@ int getAmplifierOn(int axis_no)
 }
 
 
+void getAxisDebugInfoData(int axis_no, char *buf, size_t maxlen)
+{
+  snprintf(buf, maxlen,
+           "rvel=%g VAL=%g JVEL=%g VELO=%g HVEL=%g athome=%d RBV=%g",
+           getMotorVelocity(axis_no),
+           motor_axis[axis_no].MotorPosWanted,
+           motor_axis[axis_no].velo.JogVelocity,
+           motor_axis[axis_no].velo.PosVelocity,
+           motor_axis[axis_no].velo.HomeVelocity,
+           getAxisHome(axis_no),
+           motor_axis[axis_no].MotorPosNow);
+}
+
 int getNegLimitSwitch(int axis_no)
 {
   motor_axis[axis_no].hitNegLimitSwitch =

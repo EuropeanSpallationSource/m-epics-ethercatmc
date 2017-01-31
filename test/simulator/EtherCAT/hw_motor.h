@@ -193,4 +193,11 @@ int setAmplifierPercent(int axis_no, int percent);
  */
 int getAmplifierOn(int axis_no);
 
+
+
+/*
+ *  Debug info.
+ */
+void getAxisDebugInfoData(int axis_no, char *buf, size_t maxlen);
+
 #endif /* MOTOR_H */

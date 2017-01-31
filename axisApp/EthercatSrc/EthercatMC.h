@@ -98,6 +98,7 @@ private:
     double motorLowLimit;
     const char *externalEncoderStr;
     const char *cfgfileStr;
+    const char *cfgDebug_str;
     int axisFlags;
     int oldNowMoving;
     int MCU_nErrorId;     /* nErrorID from MCU */

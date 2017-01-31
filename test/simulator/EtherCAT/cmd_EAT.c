@@ -72,6 +72,7 @@ static void init_axis(int axis_no)
 
 static const char * const ADSPORT_equals_str = "ADSPORT=";
 static const char * const Main_dot_str = "Main.";
+static const char * const getAxisDebugInfoData_str = "getAxisDebugInfoData";
 
 static const char *seperator_seperator = ";";
 
@@ -400,6 +401,21 @@ static void motorHandleOneArg(const char *myarg_1)
                   __FILE__, __FUNCTION__, __LINE__,
                   myarg_1,
                   err_code);
+  }
+  /* getAxisDebugInfoData(1) */
+  if (!strncmp(myarg_1, getAxisDebugInfoData_str, strlen(getAxisDebugInfoData_str))) {
+    myarg_1 += strlen(getAxisDebugInfoData_str);
+    nvals = sscanf(myarg_1, "(%d)", &motor_axis_no);
+    if (nvals == 1) {
+      char buf[80];
+      getAxisDebugInfoData(motor_axis_no, buf, sizeof(buf));
+      cmd_buf_printf("%s", buf);
+      return;
+    } else {
+      RETURN_OR_DIE("%s/%s:%d line=%s nvals=%d",
+                    __FILE__, __FUNCTION__, __LINE__,
+                    myarg, nvals);
+    }
   }
 
   /* Main.*/
