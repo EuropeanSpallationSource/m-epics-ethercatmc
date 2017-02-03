@@ -683,6 +683,12 @@ static void motorHandleOneArg(const char *myarg_1)
         cmd_buf_printf("OK");
         return;
       }
+      if (isMotorMoving(motor_axis_no)) {
+        int nErrorId = 0x1431C;
+        cmd_buf_printf("Error: %d", nErrorId);
+        set_nErrorId(motor_axis_no, nErrorId);
+        return;
+      }
       switch (cmd_Motor_cmd[motor_axis_no].command_no) {
         case 1:
         {

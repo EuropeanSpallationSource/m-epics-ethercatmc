@@ -18,6 +18,8 @@
 
 #define MOTOR_VEL_HOME_MAX 5.0
 
+#define RAMPDOWNONLIMIT 3
+
 typedef struct
 {
   struct timeval lastPollTime;
@@ -48,23 +50,26 @@ typedef struct
   int definedHighHardLimitPos;
   int enabledLowSoftLimitPos;
   int enabledHighSoftLimitPos;
-  int hitPosLimitSwitch;
-  int hitNegLimitSwitch;
   double MotorPosNow;
   double MotorPosWanted;
   double HomeVelocityAbsWanted;
   double MaxHomeVelocityAbs;
   struct {
-    double HomeVelocity;
-    double PosVelocity;
-    double JogVelocity;
-  } velo;
+    struct {
+      double HomeVelocity;
+      double PosVelocity;
+      double JogVelocity;
+    } velo;
+    int hitPosLimitSwitch;
+    int hitNegLimitSwitch;
+    unsigned int rampDownOnLimit;
+    int clipped;
+  } moving;
   double EncoderPos;
   double ParkingPos;
   double ReverseERES;
   int homed;
   int nErrorId;
-  char pLimits;
 } motor_axis_type;
 
 
@@ -242,9 +247,9 @@ void setMaxHomeVelocityAbs(int axis_no, double value)
 
 static double getMotorVelocityInt(int axis_no)
 {
-  if (motor_axis[axis_no].velo.JogVelocity) return motor_axis[axis_no].velo.JogVelocity;
-  if (motor_axis[axis_no].velo.PosVelocity) return motor_axis[axis_no].velo.PosVelocity;
-  if (motor_axis[axis_no].velo.HomeVelocity) return motor_axis[axis_no].velo.HomeVelocity;
+  if (motor_axis[axis_no].moving.velo.JogVelocity) return motor_axis[axis_no].moving.velo.JogVelocity;
+  if (motor_axis[axis_no].moving.velo.PosVelocity) return motor_axis[axis_no].moving.velo.PosVelocity;
+  if (motor_axis[axis_no].moving.velo.HomeVelocity) return motor_axis[axis_no].moving.velo.HomeVelocity;
   return 0;
 }
 
@@ -259,6 +264,10 @@ double getMotorVelocity(int axis_no)
 int isMotorMoving(int axis_no)
 {
   AXIS_CHECK_RETURN_ZERO(axis_no);
+  if (motor_axis[axis_no].moving.rampDownOnLimit) {
+    motor_axis[axis_no].moving.rampDownOnLimit--;
+    return 1;
+  }
   return getMotorVelocityInt(axis_no) ? 1 : 0;
 }
 
@@ -443,8 +452,50 @@ static int soft_limits_clip(int axis_no, double velocity)
     motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].lowSoftLimitPos;
     clipped = 1;
   }
+  if (clipped) {
+    motor_axis[axis_no].moving.rampDownOnLimit = RAMPDOWNONLIMIT;
+  }
   return clipped;
 } /* Soft limits */
+
+
+static int hard_limits_clip(int axis_no, double velocity)
+{
+  int clipped = 0;
+
+  if (motor_axis[axis_no].highHardLimitPos > motor_axis[axis_no].lowHardLimitPos) {
+    /* Hard limits defined: Clip the value  */
+    if (motor_axis[axis_no].definedHighHardLimitPos &&
+        velocity > 0 &&
+        motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].highHardLimitPos) {
+      fprintf(stdlog,
+              "%s/%s:%d axis_no=%d CLIP HLS MotorPosNow=%g highHardLimitPos=%g\n",
+              __FILE__, __FUNCTION__, __LINE__,
+              axis_no,
+              motor_axis[axis_no].MotorPosNow,
+              motor_axis[axis_no].highHardLimitPos);
+      motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].highHardLimitPos;
+      clipped = 1;
+    }
+    if (motor_axis[axis_no].definedLowHardLimitPos &&
+        velocity < 0 &&
+        motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].lowHardLimitPos) {
+      fprintf(stdlog,
+              "%s/%s:%d axis_no=%d CLIP LLS MotorPosNow=%g lowHardLimitPos=%g\n",
+              __FILE__, __FUNCTION__, __LINE__,
+              axis_no,
+              motor_axis[axis_no].MotorPosNow,
+              motor_axis[axis_no].lowHardLimitPos);
+      motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].lowHardLimitPos;
+      clipped = 1;
+    }
+  }
+  if (clipped) {
+    motor_axis[axis_no].moving.rampDownOnLimit = RAMPDOWNONLIMIT;
+  }
+  return clipped;
+}  /* Hard limits */
+
 
 void setHWlowPos (int axis_no, double value)
 {
@@ -491,98 +542,82 @@ static void simulateMotion(int axis_no)
 
   gettimeofday(&timeNow, NULL);
 
-  if (motor_axis[axis_no].velo.JogVelocity) {
+  if (motor_axis[axis_no].moving.velo.JogVelocity) {
     clipped = soft_limits_clip(axis_no, velocity);
     if (!clipped) {
       /* Simulate jogging  */
-      motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].velo.JogVelocity *
+      motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].moving.velo.JogVelocity *
         (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
     }
   }
 
-  if (motor_axis[axis_no].velo.PosVelocity) {
+  if (motor_axis[axis_no].moving.velo.PosVelocity) {
     clipped = soft_limits_clip(axis_no, velocity);
     if (!clipped) {
       /* Simulate a move to postion */
-      motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].velo.PosVelocity *
+      motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].moving.velo.PosVelocity *
         (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
-      if (((motor_axis[axis_no].velo.PosVelocity > 0) &&
+      if (((motor_axis[axis_no].moving.velo.PosVelocity > 0) &&
            (motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].MotorPosWanted)) ||
-          ((motor_axis[axis_no].velo.PosVelocity < 0) &&
+          ((motor_axis[axis_no].moving.velo.PosVelocity < 0) &&
            (motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].MotorPosWanted))) {
         /* overshoot or undershoot. We are at the target position */
         motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].MotorPosWanted;
-        motor_axis[axis_no].velo.PosVelocity = 0;
+        motor_axis[axis_no].moving.velo.PosVelocity = 0;
       }
     }
   }
-  if (motor_axis[axis_no].velo.HomeVelocity) {
+  if (motor_axis[axis_no].moving.velo.HomeVelocity) {
     /* Simulate move to home */
-    motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].velo.HomeVelocity *
+    motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].moving.velo.HomeVelocity *
       (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
 
-    if (((motor_axis[axis_no].velo.HomeVelocity > 0) &&
+    if (((motor_axis[axis_no].moving.velo.HomeVelocity > 0) &&
          (motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].HomeProcPos)) ||
-        ((motor_axis[axis_no].velo.HomeVelocity < 0) &&
+        ((motor_axis[axis_no].moving.velo.HomeVelocity < 0) &&
          (motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].HomeProcPos))) {
       /* overshoot or undershoot. We are at home */
       motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].HomeProcPos;
     }
   }
   if (motor_axis[axis_no].MotorPosNow == motor_axis[axis_no].HomeProcPos) {
-    motor_axis[axis_no].velo.HomeVelocity = 0;
+    motor_axis[axis_no].moving.velo.HomeVelocity = 0;
     motor_axis[axis_no].homed = 1;
   }
 
   motor_axis[axis_no].lastPollTime = timeNow;
-  if (motor_axis[axis_no].highHardLimitPos > motor_axis[axis_no].lowHardLimitPos) {
-    /* Hard limits defined: Clip the value  */
-    if (motor_axis[axis_no].definedHighHardLimitPos &&
-        velocity > 0 &&
-        motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].highHardLimitPos) {
-      fprintf(stdlog,
-              "%s/%s:%d axis_no=%d CLIP HLS MotorPosNow=%g highHardLimitPos=%g\n",
-              __FILE__, __FUNCTION__, __LINE__,
-              axis_no,
-              motor_axis[axis_no].MotorPosNow,
-              motor_axis[axis_no].highHardLimitPos);
-      motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].highHardLimitPos;
-      clipped = 1;
-    }
-    if (motor_axis[axis_no].definedLowHardLimitPos &&
-        velocity < 0 &&
-        motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].lowHardLimitPos) {
-      fprintf(stdlog,
-              "%s/%s:%d axis_no=%d CLIP LLS MotorPosNow=%g lowHardLimitPos=%g\n",
-              __FILE__, __FUNCTION__, __LINE__,
-              axis_no,
-              motor_axis[axis_no].MotorPosNow,
-              motor_axis[axis_no].lowHardLimitPos);
-      motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].lowHardLimitPos;
-      clipped = 1;
-    }
-  } /* Hard limits */
+  clipped |= hard_limits_clip(axis_no, velocity);
 
-  if (memcmp(&motor_axis_last[axis_no].velo, &motor_axis[axis_no].velo, sizeof(motor_axis[axis_no].velo)) ||
+  /* Compare moving to see if there is anything new */
+  if (memcmp(&motor_axis_last[axis_no].moving, &motor_axis[axis_no].moving, sizeof(motor_axis[axis_no].moving)) ||
       motor_axis_last[axis_no].MotorPosNow     != motor_axis[axis_no].MotorPosNow ||
       motor_axis_last[axis_no].MotorPosWanted  != motor_axis[axis_no].MotorPosWanted ||
       clipped) {
     fprintf(stdlog,
-            "%s/%s:%d axis_no=%d velocity=%g MotorPosWanted=%g JogVelocity=%g PosVelocity=%g HomeVelocity=%g home=%d MotorPosNow=%g\n",
+            "%s/%s:%d axis_no=%d vel=%g MotorPosWanted=%g JogVel=%g PosVel=%g HomeVel=%g RampDown=%d home=%d MotorPosNow=%g\n",
             __FILE__, __FUNCTION__, __LINE__,
             axis_no,
             velocity,
             motor_axis[axis_no].MotorPosWanted,
-            motor_axis[axis_no].velo.JogVelocity,
-            motor_axis[axis_no].velo.PosVelocity,
-            motor_axis[axis_no].velo.HomeVelocity,
+            motor_axis[axis_no].moving.velo.JogVelocity,
+            motor_axis[axis_no].moving.velo.PosVelocity,
+            motor_axis[axis_no].moving.velo.HomeVelocity,
+            motor_axis[axis_no].moving.rampDownOnLimit,
             getAxisHome(axis_no),
             motor_axis[axis_no].MotorPosNow);
     memcpy(&motor_axis_last[axis_no], &motor_axis[axis_no], sizeof(motor_axis[axis_no]));
   }
+  /*
+    homing against a limit switch does not clip,
+    jogging and positioning does, and cause a
+    rampdown, which needs to be handled correctly
+    by the driver and the motor/axisRecord
+  */
   if (clipped) {
     StopInternal(axis_no);
   }
+  motor_axis[axis_no].moving.clipped = clipped;
+
 }
 
 double getMotorPos(int axis_no)
@@ -612,12 +647,17 @@ double getEncoderPos(int axis_no)
 */
 void StopInternal_fl(int axis_no, const char *file, int line_no)
 {
-  fprintf(stdlog, "%s/%s:%d axis_no=%d file=%s line_no=%d\n",
+  unsigned int rampDownOnLimit;
+  rampDownOnLimit = motor_axis[axis_no].moving.rampDownOnLimit;
+
+  fprintf(stdlog, "%s/%s:%d axis_no=%d rampDownOnLimit=%d file=%s line_no=%d\n",
           __FILE__, __FUNCTION__, __LINE__,
-          axis_no, file, line_no);
+          axis_no, rampDownOnLimit, file, line_no);
   AXIS_CHECK_RETURN(axis_no);
-  memset(&motor_axis[axis_no].velo, 0,
-         sizeof(motor_axis[axis_no].velo));
+  memset(&motor_axis[axis_no].moving.velo, 0,
+         sizeof(motor_axis[axis_no].moving.velo));
+  /* Restore the ramp down */
+  motor_axis[axis_no].moving.rampDownOnLimit = rampDownOnLimit;
 }
 
 
@@ -646,11 +686,11 @@ int movePosition(int axis_no,
   motor_axis[axis_no].MotorPosWanted = position;
 
   if (position > motor_axis[axis_no].MotorPosNow) {
-    motor_axis[axis_no].velo.PosVelocity = max_velocity;
+    motor_axis[axis_no].moving.velo.PosVelocity = max_velocity;
   } else if (position < motor_axis[axis_no].MotorPosNow) {
-    motor_axis[axis_no].velo.PosVelocity = -max_velocity;
+    motor_axis[axis_no].moving.velo.PosVelocity = -max_velocity;
   } else {
-    motor_axis[axis_no].velo.PosVelocity = 0;
+    motor_axis[axis_no].moving.velo.PosVelocity = 0;
   }
 
   return 0;
@@ -713,11 +753,11 @@ int moveHomeProc(int axis_no,
   gettimeofday(&motor_axis[axis_no].lastPollTime, NULL);
 
   if (position > motor_axis[axis_no].MotorPosNow) {
-    motor_axis[axis_no].velo.HomeVelocity = velocity;
+    motor_axis[axis_no].moving.velo.HomeVelocity = velocity;
   } else if (position < motor_axis[axis_no].MotorPosNow) {
-    motor_axis[axis_no].velo.HomeVelocity = -velocity;
+    motor_axis[axis_no].moving.velo.HomeVelocity = -velocity;
   } else {
-    motor_axis[axis_no].velo.HomeVelocity = 0;
+    motor_axis[axis_no].moving.velo.HomeVelocity = 0;
     motor_axis[axis_no].homed = 1; /* homed again */
   }
 
@@ -758,7 +798,7 @@ int moveVelocity(int axis_no,
   if (direction < 0) {
     velocity = -velocity;
   }
-  motor_axis[axis_no].velo.JogVelocity = velocity;
+  motor_axis[axis_no].moving.velo.JogVelocity = velocity;
   return 0;
 };
 
@@ -788,49 +828,56 @@ void getAxisDebugInfoData(int axis_no, char *buf, size_t maxlen)
            "rvel=%g VAL=%g JVEL=%g VELO=%g HVEL=%g athome=%d RBV=%g",
            getMotorVelocity(axis_no),
            motor_axis[axis_no].MotorPosWanted,
-           motor_axis[axis_no].velo.JogVelocity,
-           motor_axis[axis_no].velo.PosVelocity,
-           motor_axis[axis_no].velo.HomeVelocity,
+           motor_axis[axis_no].moving.velo.JogVelocity,
+           motor_axis[axis_no].moving.velo.PosVelocity,
+           motor_axis[axis_no].moving.velo.HomeVelocity,
            getAxisHome(axis_no),
            motor_axis[axis_no].MotorPosNow);
 }
 
 int getNegLimitSwitch(int axis_no)
 {
-  motor_axis[axis_no].hitNegLimitSwitch =
+  int clipped =
     motor_axis[axis_no].definedLowHardLimitPos &&
     (motor_axis[axis_no].MotorPosNow <= motor_axis[axis_no].lowHardLimitPos);
 
-  if (motor_axis_reported[axis_no].hitNegLimitSwitch != motor_axis[axis_no].hitNegLimitSwitch) {
+  if (motor_axis_reported[axis_no].moving.hitNegLimitSwitch != motor_axis[axis_no].moving.hitNegLimitSwitch) {
     fprintf(stdlog, "%s/%s:%d axis_no=%d definedLowHardLimitPos=%d MotorPosNow=%g lowHardLimitPos=%g hitNegLimitSwitch=%d\n",
             __FILE__, __FUNCTION__, __LINE__,
             axis_no,
             motor_axis[axis_no].definedLowHardLimitPos,
             motor_axis[axis_no].MotorPosNow,
             motor_axis[axis_no].lowHardLimitPos,
-            motor_axis[axis_no].hitNegLimitSwitch);
-    motor_axis_reported[axis_no].hitNegLimitSwitch = motor_axis[axis_no].hitNegLimitSwitch;
+            motor_axis[axis_no].moving.hitNegLimitSwitch);
+    motor_axis_reported[axis_no].moving.hitNegLimitSwitch = motor_axis[axis_no].moving.hitNegLimitSwitch;
+    if (clipped) {
+      motor_axis[axis_no].moving.rampDownOnLimit = RAMPDOWNONLIMIT;
+    }
   }
-  return motor_axis[axis_no].hitNegLimitSwitch;
+  motor_axis[axis_no].moving.hitNegLimitSwitch = clipped;
+  return clipped;
 }
 
 int getPosLimitSwitch(int axis_no)
 {
-  motor_axis[axis_no].hitPosLimitSwitch =
-    motor_axis[axis_no].definedHighHardLimitPos &&
+  int clipped =
     (motor_axis[axis_no].MotorPosNow >= motor_axis[axis_no].highHardLimitPos);
 
-  if (motor_axis_reported[axis_no].hitPosLimitSwitch != motor_axis[axis_no].hitPosLimitSwitch) {
+  if (motor_axis_reported[axis_no].moving.hitPosLimitSwitch != motor_axis[axis_no].moving.hitPosLimitSwitch) {
     fprintf(stdlog, "%s/%s:%d axis_no=%d definedHighHardLimitPos=%d MotorPosNow=%g highHardLimitPos=%g hitPosLimitSwitch=%d\n",
             __FILE__, __FUNCTION__, __LINE__,
             axis_no,
             motor_axis[axis_no].definedHighHardLimitPos,
             motor_axis[axis_no].MotorPosNow,
             motor_axis[axis_no].highHardLimitPos,
-            motor_axis[axis_no].hitPosLimitSwitch);
-    motor_axis_reported[axis_no].hitPosLimitSwitch = motor_axis[axis_no].hitPosLimitSwitch;
+            motor_axis[axis_no].moving.hitPosLimitSwitch);
+    motor_axis_reported[axis_no].moving.hitPosLimitSwitch = motor_axis[axis_no].moving.hitPosLimitSwitch;
+    if (clipped) {
+      motor_axis[axis_no].moving.rampDownOnLimit = RAMPDOWNONLIMIT;
+    }
   }
-  return motor_axis[axis_no].hitPosLimitSwitch;
+  motor_axis[axis_no].definedHighHardLimitPos = clipped;
+  return clipped;
 }
 
 int get_bError(int axis_no)

@@ -375,23 +375,34 @@ asynStatus EthercatMCAxis::setValueOnAxis(const char* var, int value)
  * \param[in] number of retries
  */
 asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbvar,
-                                           int value, unsigned int retryCount)
+                                                int value, unsigned int retryCount)
 {
   asynStatus status = asynSuccess;
   unsigned int counter = 0;
   int rbvalue = 0 - value;
   while (counter <= retryCount) {
-    status = getValueFromAxis(rbvar, &rbvalue);
+    sprintf(pC_->outString_, "Main.M%d.%s=%d;Main.M%d.%s?",
+            axisNo_, var, value, axisNo_, rbvar);
+    status = pC_->writeReadOnErrorDisconnect();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "setValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
               axisNo_,pC_->outString_, pC_->inString_,
               pasynManager->strStatus(status), (int)status);
-    if (status) break;
-    if (rbvalue == value) break;
-    status = setValueOnAxis(var, value);
-    counter++;
-    if (status) break;
-    epicsThreadSleep(.1);
+    if (status) {
+      return status;
+    } else {
+      int nvals = sscanf(pC_->inString_, "OK;%d", &rbvalue);
+      if (nvals != 1) {
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                  "nvals=%d command=\"%s\" response=\"%s\"\n",
+                  nvals, pC_->outString_, pC_->inString_);
+        return asynError;
+      }
+      if (status) break;
+      if (rbvalue == value) break;
+      counter++;
+      epicsThreadSleep(.1);
+    }
   }
   /* Verification failed.
      Store the error (unless there was an error before) */
@@ -694,7 +705,7 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
   asynStatus status = asynSuccess;
   int nCommand = relative ? 2 : 3;
   (void)acceleration; /* We use the default values in the controller */
-  if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
+  if (status == asynSuccess) status = setValueOnAxisVerify("bExecute", "bBusy", 0, 3);
   if (status == asynSuccess) status = updateMresSoftLimitsIfDirty(__LINE__);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
@@ -732,6 +743,7 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if ((drvlocal.axisFlags & AMPLIFIER_ON_FLAG_WHEN_HOMING) &&
       (status == asynSuccess)) status = enableAmplifier(1);
+  if (status == asynSuccess) status = setValueOnAxisVerify("bExecute", "bBusy", 0, 3);
   if (status == asynSuccess) status = setValueOnAxis("fHomePosition", 0);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
   if (status == asynSuccess) drvlocal.nCommand = nCommand;
@@ -753,7 +765,7 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
   asynStatus status = asynSuccess;
 
   (void)acceleration; /* We use the default values in the controller */
-  if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
+  if (status == asynSuccess) status = setValueOnAxisVerify("bExecute", "bBusy", 0, 3);
   if (status == asynSuccess) status = updateMresSoftLimitsIfDirty(__LINE__);
   if (status == asynSuccess) setValueOnAxis("nCommand", 1);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
@@ -1027,7 +1039,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 asynStatus EthercatMCAxis::poll(bool *moving)
 {
   asynStatus comStatus = asynSuccess;
-  int nowMoving = 0;
+  int fastPoll = 0;
   st_axis_status_type st_axis_status;
 
   /* Driver not yet initialized, do nothing */
@@ -1095,18 +1107,18 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setDoubleParam(pC_->EthercatMCDecAct_, st_axis_status.fDecceleration);
 
 
-  nowMoving = st_axis_status.bBusy && st_axis_status.bExecute && st_axis_status.bEnabled;
+  fastPoll = st_axis_status.bBusy;
   if (drvlocal.waitNumPollsBeforeReady) {
     *moving = true;
   } else {
-    *moving = nowMoving ? true : false;
-    if (!nowMoving) drvlocal.nCommand = 0;
+    *moving = fastPoll ? true : false;
+    if (!fastPoll) drvlocal.nCommand = 0;
   }
 
   if (drvlocal.nCommand != NCOMMANDHOME) {
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.mres;
     /* If not moving, trigger a record processing at low rate */
-    if (!nowMoving) setDoubleParam(pC_->motorPosition_, newPositionInSteps + 1);
+    if (!fastPoll) setDoubleParam(pC_->motorPosition_, newPositionInSteps + 1);
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
     /* Use previous fActPosition and current fActPosition to calculate direction.*/
     if (st_axis_status.fActPosition > drvlocal.old_st_axis_status.fActPosition) {
@@ -1139,28 +1151,28 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     drvlocal.old_st_axis_status.bLimitFwd = st_axis_status.bLimitFwd;
   }
 
-  if (drvlocal.oldNowMoving != nowMoving) {
+  if (drvlocal.oldFastPoll != fastPoll) {
     drvlocal.waitNumPollsBeforeReady = 0;
   }
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) nowMoving=%d bBusy=%d bExecute=%d waitNumPollsBeforeReady=%d\n",
-              axisNo_, nowMoving,
+              "poll(%d) fastPoll=%d bBusy=%d bExecute=%d waitNumPollsBeforeReady=%d\n",
+              axisNo_, fastPoll,
               st_axis_status.bBusy, st_axis_status.bExecute,
               drvlocal.waitNumPollsBeforeReady);
     drvlocal.waitNumPollsBeforeReady--;
     callParamCallbacks();
   } else {
-    if (drvlocal.oldNowMoving != nowMoving) {
+    if (drvlocal.oldFastPoll != fastPoll) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "poll(%d) nowMoving=%d bBusy=%d bExecute=%d fActPosition=%g\n",
-                axisNo_, nowMoving,
+                "poll(%d) fastPoll=%d bBusy=%d bExecute=%d fActPosition=%g\n",
+                axisNo_, fastPoll,
                 st_axis_status.bBusy, st_axis_status.bExecute, st_axis_status.fActPosition);
-      drvlocal.oldNowMoving = nowMoving;
+      drvlocal.oldFastPoll = fastPoll;
     }
-    setIntegerParam(pC_->motorStatusMoving_, nowMoving);
-    setIntegerParam(pC_->motorStatusDone_, !nowMoving);
+    setIntegerParam(pC_->motorStatusMoving_, st_axis_status.bBusy);
+    setIntegerParam(pC_->motorStatusDone_, !st_axis_status.bBusy);
 
     drvlocal.MCU_nErrorId = st_axis_status.nErrorId;
 
