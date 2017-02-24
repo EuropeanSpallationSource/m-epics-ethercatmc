@@ -927,6 +927,17 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     updateMsgTxtFromDriver("ConfigError: Soft limits");
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
+  } else if (!drvlocal.homed &&
+	     drvlocal.nCommand != NCOMMANDHOME) {
+    int motorHomeProc = -1;
+    pC_->getIntegerParam(axisNo_,
+                         pC_->EthercatMCProcHom_,
+                         &motorHomeProc);
+    if (motorHomeProc &&
+        drvlocal.defined.motorHighLimit &&
+        drvlocal.defined.motorLowLimit &&
+        (drvlocal.motorHighLimit > drvlocal.motorLowLimit))
+      drvlocal.eeAxisError = eeAxisErrorNotHomed;
   }
 
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
@@ -945,6 +956,9 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
           break;
         case eeAxisErrorCmdError:
           updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
+          break;
+        case eeAxisErrorNotHomed:
+          updateMsgTxtFromDriver("Axis not homed");
           break;
         default:
           ;
