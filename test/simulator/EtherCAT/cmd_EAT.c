@@ -21,6 +21,7 @@ typedef struct
   double position;
   double velocity;
   double acceleration;
+  double deceleration;
   double homeVeloTowardsHomeSensor;
   double homeVeloFromHomeSensor;
   double manualVelocitySlow;
@@ -633,6 +634,13 @@ static void motorHandleOneArg(const char *myarg_1)
   nvals = sscanf(myarg_1, "fAcceleration=%lf", &fValue);
   if (nvals == 1) {
     cmd_Motor_cmd[motor_axis_no].acceleration = fValue;
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* fDeceleration=1000 */
+  nvals = sscanf(myarg_1, "fDeceleration=%lf", &fValue);
+  if (nvals == 1) {
+    cmd_Motor_cmd[motor_axis_no].deceleration = fValue;
     cmd_buf_printf("OK");
     return;
   }

@@ -149,6 +149,7 @@ private:
   asynStatus setValueOnAxisVerify(const char *var, const char *rbvar,
                                   int value, unsigned int retryCount);
   asynStatus setValueOnAxis(const char* var, double value);
+  asynStatus setValuesOnAxis(const char* var1, double value1, const char* var2, double value2);
   int getMotionAxisID(void);
   asynStatus setADRValueOnAxis(unsigned adsport,
                                unsigned indexGroup,
@@ -191,7 +192,7 @@ private:
   asynStatus updateMresSoftLimitsIfDirty(int);
   asynStatus resetAxis(void);
   asynStatus enableAmplifier(int);
-  asynStatus sendVelocityAndExecute(double maxVelocity);
+  asynStatus sendVelocityAndAccelExecute(double maxVelocity, double acceleration_time);
   asynStatus setClosedLoop(bool closedLoop);
   asynStatus setIntegerParam(int function, int value);
   asynStatus setDoubleParam(int function, double value);

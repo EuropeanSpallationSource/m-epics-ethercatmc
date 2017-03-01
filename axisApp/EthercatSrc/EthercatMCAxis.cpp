@@ -431,6 +431,21 @@ asynStatus EthercatMCAxis::setValueOnAxis(const char* var, double value)
   return writeReadACK();
 }
 
+/** Sets 2 floating point value on an axis
+ * the values in the controller must be updated
+ * \param[in] name of the variable to be updated
+ * \param[in] value the (floating point) variable to be updated
+ *
+ */
+asynStatus EthercatMCAxis::setValuesOnAxis(const char* var1, double value1,
+                                           const char* var2, double value2)
+{
+  sprintf(pC_->outString_, "Main.M%d.%s=%g;Main.M%d.%s=%g",
+          axisNo_, var1, value1, axisNo_, var2, value2);
+  return writeReadACK();
+}
+
+
 int EthercatMCAxis::getMotionAxisID(void)
 {
   int ret = drvlocal.dirty.nMotionAxisID;
@@ -676,15 +691,27 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
  * \param[in] acceleration ???
  *
  */
-asynStatus EthercatMCAxis::sendVelocityAndExecute(double maxVelocity)
+asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, double acceleration_time)
 {
   asynStatus status;
   /* We don't use minVelocity */
   double maxVelocityEGU = maxVelocity * drvlocal.mres;
   if (!drvlocal.mres) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "sendVelocityAndExecute(%d) mres==0.0\n",  axisNo_);
+              "sendVelocityAndAccelExecute(%d) mres==0.0\n",  axisNo_);
     return asynError; /* No mres, no move */
+  }
+  if (acceleration_time > 0.0001) {
+    double acc_in_seconds = maxVelocity / acceleration_time;
+    double acc_in_EGU_sec2 = maxVelocityEGU / acc_in_seconds;
+    if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
+    status = setValuesOnAxis("fAcceleration", acc_in_EGU_sec2,
+                             "fDeceleration", acc_in_EGU_sec2);
+    if (status) return status;
+  } else {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "sendVelocityAndAccelExecute(%d) maxVelocityEGU=%g acceleration_time=%g\n",
+              axisNo_, maxVelocityEGU, acceleration_time);
   }
   status = setValueOnAxis("fVelocity", maxVelocityEGU);
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
@@ -704,14 +731,13 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
 {
   asynStatus status = asynSuccess;
   int nCommand = relative ? 2 : 3;
-  (void)acceleration; /* We use the default values in the controller */
-  if (status == asynSuccess) status = setValueOnAxisVerify("bExecute", "bBusy", 0, 3);
+  if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = updateMresSoftLimitsIfDirty(__LINE__);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
   if (status == asynSuccess) drvlocal.nCommand = nCommand;
   if (status == asynSuccess) status = setValueOnAxis("fPosition", position * drvlocal.mres);
-  if (status == asynSuccess) status = sendVelocityAndExecute(maxVelocity);
+  if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
 
   return status;
 }
@@ -743,7 +769,6 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if ((drvlocal.axisFlags & AMPLIFIER_ON_FLAG_WHEN_HOMING) &&
       (status == asynSuccess)) status = enableAmplifier(1);
-  if (status == asynSuccess) status = setValueOnAxisVerify("bExecute", "bBusy", 0, 3);
   if (status == asynSuccess) status = setValueOnAxis("fHomePosition", 0);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
   if (status == asynSuccess) drvlocal.nCommand = nCommand;
@@ -764,12 +789,11 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
 {
   asynStatus status = asynSuccess;
 
-  (void)acceleration; /* We use the default values in the controller */
-  if (status == asynSuccess) status = setValueOnAxisVerify("bExecute", "bBusy", 0, 3);
+  if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = updateMresSoftLimitsIfDirty(__LINE__);
   if (status == asynSuccess) setValueOnAxis("nCommand", 1);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
-  if (status == asynSuccess) status = sendVelocityAndExecute(maxVelocity);
+  if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
 
   return status;
 }
