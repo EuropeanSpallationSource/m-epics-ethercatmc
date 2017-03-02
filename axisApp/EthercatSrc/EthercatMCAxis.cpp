@@ -997,8 +997,10 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
                     drvlocal.eeAxisError == eeAxisErrorMCUError);
     setIntegerParam(pC_->EthercatMCErrId_, EPICS_nErrorId);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) callParamCallbacksUpdateError drvlocal.eeAxisError=%d\n",
-              axisNo_, drvlocal.eeAxisError);
+              "poll(%d) callParamCallbacksUpdateError eeAxisError=%d old=%d ErrID=0x%x old=0x%x\n",
+              axisNo_, drvlocal.eeAxisError, drvlocal.old_eeAxisError,
+              EPICS_nErrorId, drvlocal.old_EPICS_nErrorId);
+
     drvlocal.old_eeAxisError = drvlocal.eeAxisError;
     drvlocal.old_EPICS_nErrorId = EPICS_nErrorId;
   }
@@ -1247,6 +1249,14 @@ asynStatus EthercatMCAxis::poll(bool *moving)
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
                    "%x Homing not successful or not started (home sensor?)",
                    st_axis_status.nErrorId);
+          break;
+        case 0x4460:
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "%x Low soft limit", st_axis_status.nErrorId);
+          break;
+        case 0x4461:
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "%x High soft limit", st_axis_status.nErrorId);
           break;
         default:
           break;
