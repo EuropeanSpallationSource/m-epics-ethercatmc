@@ -1079,7 +1079,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 asynStatus EthercatMCAxis::poll(bool *moving)
 {
   asynStatus comStatus = asynSuccess;
-  int fastPoll = 0;
+  int mvnNotRdy = 0;
   st_axis_status_type st_axis_status;
 
   /* Driver not yet initialized, do nothing */
@@ -1146,19 +1146,19 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setDoubleParam(pC_->EthercatMCAccAct_, st_axis_status.fAcceleration);
   setDoubleParam(pC_->EthercatMCDecAct_, st_axis_status.fDecceleration);
 
-
-  fastPoll = st_axis_status.bBusy;
+  mvnNotRdy = st_axis_status.bBusy && st_axis_status.bEnabled;
+    
   if (drvlocal.waitNumPollsBeforeReady) {
     *moving = true;
   } else {
-    *moving = fastPoll ? true : false;
-    if (!fastPoll) drvlocal.nCommand = 0;
+    *moving = mvnNotRdy ? true : false;
+    if (!mvnNotRdy) drvlocal.nCommand = 0;
   }
 
   if (drvlocal.nCommand != NCOMMANDHOME) {
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.mres;
     /* If not moving, trigger a record processing at low rate */
-    if (!fastPoll) setDoubleParam(pC_->motorPosition_, newPositionInSteps + 1);
+    if (!mvnNotRdy) setDoubleParam(pC_->motorPosition_, newPositionInSteps + 1);
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
     /* Use previous fActPosition and current fActPosition to calculate direction.*/
     if (st_axis_status.fActPosition > drvlocal.old_st_axis_status.fActPosition) {
@@ -1191,28 +1191,29 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     drvlocal.old_st_axis_status.bLimitFwd = st_axis_status.bLimitFwd;
   }
 
-  if (drvlocal.oldFastPoll != fastPoll) {
+  if (drvlocal.oldMvnNotRdy != mvnNotRdy) {
     drvlocal.waitNumPollsBeforeReady = 0;
   }
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) fastPoll=%d bBusy=%d bExecute=%d waitNumPollsBeforeReady=%d\n",
-              axisNo_, fastPoll,
+              "poll(%d) mvnNotRdy=%d bBusy=%d bExecute=%d bEnabled=%d waitNumPollsBeforeReady=%d\n",
+              axisNo_, mvnNotRdy,
               st_axis_status.bBusy, st_axis_status.bExecute,
-              drvlocal.waitNumPollsBeforeReady);
+              st_axis_status.bEnabled, drvlocal.waitNumPollsBeforeReady);
     drvlocal.waitNumPollsBeforeReady--;
     callParamCallbacks();
   } else {
-    if (drvlocal.oldFastPoll != fastPoll) {
+    if (drvlocal.oldMvnNotRdy != mvnNotRdy) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "poll(%d) fastPoll=%d bBusy=%d bExecute=%d fActPosition=%g\n",
-                axisNo_, fastPoll,
-                st_axis_status.bBusy, st_axis_status.bExecute, st_axis_status.fActPosition);
-      drvlocal.oldFastPoll = fastPoll;
+                "poll(%d) mvnNotRdy=%d bBusy=%d bExecute=%d bEnabled=%d fActPosition=%g\n",
+                axisNo_, mvnNotRdy,
+                st_axis_status.bBusy, st_axis_status.bExecute,
+                st_axis_status.bEnabled, st_axis_status.fActPosition);
+      drvlocal.oldMvnNotRdy = mvnNotRdy;
     }
-    setIntegerParam(pC_->motorStatusMoving_, st_axis_status.bBusy);
-    setIntegerParam(pC_->motorStatusDone_, !st_axis_status.bBusy);
+    setIntegerParam(pC_->motorStatusMoving_, mvnNotRdy);
+    setIntegerParam(pC_->motorStatusDone_, !mvnNotRdy);
 
     drvlocal.MCU_nErrorId = st_axis_status.nErrorId;
 

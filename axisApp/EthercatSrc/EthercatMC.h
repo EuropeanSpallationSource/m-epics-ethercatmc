@@ -100,7 +100,7 @@ private:
     const char *cfgfileStr;
     const char *cfgDebug_str;
     int axisFlags;
-    int oldFastPoll;
+    int oldMvnNotRdy;
     int MCU_nErrorId;     /* nErrorID from MCU */
     int old_MCU_nErrorId; /* old nErrorID from MCU */
     int old_EPICS_nErrorId; /* old nErrorID from MCU */
