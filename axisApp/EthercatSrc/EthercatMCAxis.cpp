@@ -1058,6 +1058,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
                 axisNo_, pst_axis_status->fActPosition);
       
       setIntegerParam(pC_->motorStatusHomeOnLs_, 1);
+      setIntegerParam(pC_->motorStopOnProblem_, 0);
     }
     drvlocal.supported.stAxisStatus_V00 = 1;
     return asynSuccess;
