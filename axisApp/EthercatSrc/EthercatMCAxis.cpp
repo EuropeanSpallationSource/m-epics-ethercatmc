@@ -879,12 +879,9 @@ asynStatus EthercatMCAxis::resetAxis(void)
     /* Soft reset of the axis */
     status = setValueOnAxis("bExecute", 0);
     if (status) goto resetAxisReturn;
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "bReset(%d)=1\n",  axisNo_);
     status = setValueOnAxisVerify("bReset", "bReset", 1, 20);
     if (status) goto resetAxisReturn;
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "bReset(%d)=0\n",  axisNo_);
+    epicsThreadSleep(.1);
     status = setValueOnAxisVerify("bReset", "bReset", 0, 20);
   }
   resetAxisReturn:
@@ -1311,11 +1308,14 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #endif
 #ifdef EthercatMCErrRstString
   } else if (function == pC_->EthercatMCErrRst_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setIntegerParam(%d TwinCATmotorErrRst_)=%d\n", axisNo_, value);
     if (value) {
-      resetAxis();
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "setIntegerParam(%d TwinCATmotorErrRst_)=%d\n", axisNo_, value);
+      /*  We do not want to call the base class */
+      return resetAxis();
     }
+    /* If someone writes 0 to the field, just ignore it */
+    return asynSuccess;
 #endif
   }
 
