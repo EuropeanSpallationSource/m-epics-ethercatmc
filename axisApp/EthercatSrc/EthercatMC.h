@@ -214,7 +214,6 @@ public:
   EthercatMCAxis* getAxis(int axisNo);
   protected:
   void handleStatusChange(asynStatus status);
-  asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
   struct {
     unsigned int local_no_ASYN_;
     unsigned int hasConfigError;

@@ -299,17 +299,6 @@ EthercatMCAxis* EthercatMCController::getAxis(int axisNo)
 }
 
 
-asynStatus EthercatMCController::writeInt32(asynUser *pasynUser, epicsInt32 value)
-{
-  int function = pasynUser->reason;
-  EthercatMCAxis *pAxis;
-  pAxis = getAxis(pasynUser);
-  if (!pAxis) return asynError;
-
-  (void)pAxis->setIntegerParam(function, value);
-  return asynAxisController::writeInt32(pasynUser, value);
-}
-
 /** Code for iocsh registration */
 static const iocshArg EthercatMCCreateControllerArg0 = {"Port name", iocshArgString};
 static const iocshArg EthercatMCCreateControllerArg1 = {"EPICS ASYN TCP motor port name", iocshArgString};
