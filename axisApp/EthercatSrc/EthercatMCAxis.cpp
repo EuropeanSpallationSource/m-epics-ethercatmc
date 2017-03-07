@@ -922,8 +922,33 @@ asynStatus EthercatMCAxis::resetAxis(void)
 asynStatus EthercatMCAxis::enableAmplifier(int on)
 {
   asynStatus status = asynSuccess;
-  if (status) return status;
-  return setValueOnAxisVerify("bEnable", "bEnabled", on ? 1 : 0, 10);
+  unsigned counter = 10;
+  int ret;
+  on = on ? 1 : 0; /* either 0 or 1 */
+  status = getValueFromAxis("bEnabled", &ret);
+  /* Either it went wrong OR the amplifier IS as it should be */
+  if (status || (ret == on)) return status;
+    
+  status = setValueOnAxis("bEnable", on);
+  if (status || !on) return status; /* this went wrong OR it should be turned off */
+  while (counter) {
+    epicsThreadSleep(.1);
+    sprintf(pC_->outString_, "Main.M%d.%s?;Main.M%d.%s?", axisNo_, "bBusy", axisNo_, "bEnabled");
+    status = pC_->writeReadOnErrorDisconnect();
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "out=%s in=%s status=%s (%d)\n",
+              pC_->outString_, pC_->inString_,
+              pasynManager->strStatus(status), (int)status);
+    if (status) return status;
+    if (!strcmp("0;1", pC_->inString_)) {
+      /* bBusy == 0; bEnabled == 1 */
+      return status;
+    }
+    counter--;
+  }
+  /* if we come here, it went wrong */
+  return asynError;
+
 }
 
 /** Stop the axis
