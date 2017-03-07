@@ -13,7 +13,7 @@ record(axis,"$(PREFIX)$(MOTOR_NAME)")
 	field(BACC,"$(BACC=0)")
 	field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))")
 	field(MRES,"$(MRES)")
-	field(RDBD,"$(RDBD)")
+	field(RDBD,"$(RDBD=0)")
 	field(ERES,"$(ERES=0)")
 	field(PREC,"$(PREC)")
 	field(EGU,"$(EGU=mm)")
@@ -77,14 +77,6 @@ record(longin, "$(PREFIX)$(R)ErrId")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrId")
     field(SCAN, "I/O Intr")
-}
-
-record(longout,"$(PREFIX)$(R)ProcHom") {
-    field(DESC, "Homing Procedure")
-    field(VAL, "$(HOMEPROC)")
-    field(DTYP, "asynInt32")
-    field(PINI, "YES")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ProcHom")
 }
 
 record(longout,"$(PREFIX)$(R)ErrRst") {

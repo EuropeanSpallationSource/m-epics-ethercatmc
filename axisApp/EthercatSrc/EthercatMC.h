@@ -19,8 +19,12 @@ FILENAME...   EthercatMC.h
 #define EthercatMCErrString                  "MCUErr"
 #define EthercatMCErrIdString                "ErrId"
 #define EthercatMCProcHomString              "ProcHom"
+#define EthercatMCPosHomString               "PosHom"
+#define EthercatMCVelToHomString             "VelToHom"
+#define EthercatMCVelFrmHomString            "VelFrmHom"
+#define EthercatMCAccHomString               "AccHom"
+#define EthercatMCDecHomString               "DecHom"
 #define EthercatMCErrRstString               "ErrRst"
-#define EthercatMCJVELString                 "JVEL_"
 #define EthercatMCVelActString               "VelAct"
 #define EthercatMCAccActString               "AccAct"
 #define EthercatMCDecActString               "DecAct"
@@ -233,7 +237,11 @@ public:
   /* Add parameters here */
   int EthercatMCErrRst_;
   int EthercatMCMCUErrMsg_;
-  int EthercatMCJVEL_;
+  int EthercatMCPosHom_;
+  int EthercatMCVelToHom_;
+  int EthercatMCVelFrmHom_;
+  int EthercatMCAccHom_;
+  int EthercatMCDecHom_;
   int EthercatMCVelAct_;
   int EthercatMCAccAct_;
   int EthercatMCDecAct_;
