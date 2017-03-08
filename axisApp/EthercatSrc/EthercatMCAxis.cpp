@@ -1205,8 +1205,6 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 
   if (drvlocal.nCommand != NCOMMANDHOME) {
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.mres;
-    /* If not moving, trigger a record processing at low rate */
-    if (!mvnNotRdy) setDoubleParam(pC_->motorPosition_, newPositionInSteps + 1);
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
     /* Use previous fActPosition and current fActPosition to calculate direction.*/
     if (st_axis_status.fActPosition > drvlocal.old_st_axis_status.fActPosition) {
