@@ -1,0 +1,8 @@
+record(stringout, "$(PREFIX)$(R)DbgStrToMCU") {
+    field(DESC, "Send Debug String to $(PREFIX)$(M)")
+    field(VAL, "")
+    field(DTYP, "asynOctetWrite")
+    field(PINI, "YES")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToMCU")
+}
+

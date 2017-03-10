@@ -928,7 +928,7 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
   status = getValueFromAxis("bEnabled", &ret);
   /* Either it went wrong OR the amplifier IS as it should be */
   if (status || (ret == on)) return status;
-    
+
   status = setValueOnAxis("bEnable", on);
   if (status || !on) return status; /* this went wrong OR it should be turned off */
   while (counter) {
@@ -1520,15 +1520,56 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 
 asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
 {
-  asynStatus status = asynSuccess;
-#ifdef profileMoveModeString
-  /* motorRecord 6.8.1 doesn't have setStringParam(),
-     but modern have, as they have profileMoveModeString.
-     We could check for VERSION, but this simple #ifdef
-     works for our needs */
+  if (function == pC_->EthercatMCDbgStrToMcu_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "setStringParam(%d EthercatMCDbgStrToMcu_)=%s\n", axisNo_, value);
+    unsigned adsport;
+    unsigned indexGroup;
+    unsigned indexOffset;
+    int      ivalue;
+    double   fvalue;
+    int nvals = 0;
+    int retryCount = 1;
 
-  /* Call base class method */
-  status = asynAxisAxis::setStringParam(function, value);
-#endif
-  return status;
+    /* Check the string. E.g. Main.M1 and Sim.M1 are passed
+       "as is". ADR commands are handled below */
+    nvals = sscanf(value, "Main.M%u.", &ivalue);
+    if (nvals == 1) {
+      sprintf(pC_->outString_, "%s", value);
+      return writeReadACK();
+    }
+    /* caput IOC:m1-DbgStrToMCU Sim.M1.dbgOpenLogFile=M1.log */
+    nvals = sscanf(value, "Sim.M%u.", &ivalue);
+    if (nvals == 1) {
+      sprintf(pC_->outString_, "%s", value);
+      return writeReadACK();
+    }
+    /* ADR commands integer
+     *  # in  target position monitoring
+     *  setADRinteger 501 0x4000 0x15 1
+     */
+    nvals = sscanf(value, "setADRinteger %u %x %x %d",
+                   &adsport, &indexGroup, &indexOffset, &ivalue);
+    if (nvals == 4) {
+      return setADRValueOnAxisVerify(adsport, indexGroup, indexOffset,
+                                     ivalue, retryCount);
+    }
+    /* ADR commands floating point
+     *  # Target position monitoring window, mm
+     *  setADRdouble  501 0x4000 0x6 0.1 */
+    nvals = sscanf(value, "setADRdouble %u %x %x %lf",
+                   &adsport, &indexGroup, &indexOffset, &fvalue);
+
+    if (nvals == 4) {
+      return setADRValueOnAxisVerify(adsport, indexGroup, indexOffset,
+                                     fvalue, retryCount);
+    }
+
+    /* If we come here, the command was not understood */
+    return asynError;
+
+  } else {
+    /* Call base class method */
+    return asynAxisAxis::setStringParam(function, value);
+  }
 }

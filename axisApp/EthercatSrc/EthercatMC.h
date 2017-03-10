@@ -29,6 +29,7 @@ FILENAME...   EthercatMC.h
 #define EthercatMCAccActString               "AccAct"
 #define EthercatMCDecActString               "DecAct"
 #define EthercatMCMCUErrMsgString            "MCUErrMsg"
+#define EthercatMCDbgStrToMcuString          "StrToMCU"
 
 extern "C" {
   int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
@@ -237,6 +238,7 @@ public:
   /* Add parameters here */
   int EthercatMCErrRst_;
   int EthercatMCMCUErrMsg_;
+  int EthercatMCDbgStrToMcu_;
   int EthercatMCPosHom_;
   int EthercatMCVelToHom_;
   int EthercatMCVelFrmHom_;
