@@ -537,7 +537,7 @@ static void motorHandleOneArg(const char *myarg_1)
     double fVelocity = 0;
     double fPosition = 0;
     double fAcceleration = cmd_Motor_cmd[motor_axis_no].acceleration;
-    double fDecceleration = 0;
+    double fDecceleration = cmd_Motor_cmd[motor_axis_no].deceleration;
     int bJogFwd = 0;
     int bJogBwd = 0;
     int bLimitFwd = getPosLimitSwitch(motor_axis_no) ? 0 : 1;
