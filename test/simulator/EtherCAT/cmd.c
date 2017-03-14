@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "sock-util.h"
+#include "cmd_sim.h"
 #include "cmd_EAT.h"
 #include "cmd_IcePAP.h"
 #include "cmd_TCPsim.h"
@@ -172,6 +173,7 @@ int handle_input_line(int socket_fd, const char *input_line, int had_cr, int had
   static const char *seperator_seperator = ";";
   static const char *terminator_terminator = "\n";
   const char *this_stSettings_iTimeOut_str_s = ".THIS.stSettings.iTimeOut=";
+  const char *sim_str_s = "Sim.";
 
   static unsigned int counter;
 
@@ -198,7 +200,9 @@ int handle_input_line(int socket_fd, const char *input_line, int had_cr, int had
                      terminator_terminator);
     }
   }
-  else if (is_EAT_cmd) {
+  else if (!strncmp(argv1, sim_str_s, strlen(sim_str_s))) {
+    cmd_Sim(argc, my_argv);
+  } else if (is_EAT_cmd) {
     cmd_EAT(argc, my_argv);
   }
   else if ((argc > 1) && (0 == strcmp(argv1, "bye"))) {

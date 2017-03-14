@@ -70,6 +70,7 @@ typedef struct
   double ReverseERES;
   int homed;
   int nErrorId;
+  FILE *logFile;
 } motor_axis_type;
 
 
@@ -669,6 +670,21 @@ int movePosition(int axis_no,
                  double acceleration)
 {
   AXIS_CHECK_RETURN_ZERO(axis_no);
+  if (motor_axis[axis_no].logFile) {
+    if (relative) {
+      fprintf(motor_axis[axis_no].logFile,
+              "move relative delta=%g max_velocity=%g acceleration=%g MotorPosNow=%g\n",
+              position, max_velocity, acceleration,
+              motor_axis[axis_no].MotorPosNow);
+    } else {
+      fprintf(motor_axis[axis_no].logFile,
+              "move absolute position=%g max_velocity=%g acceleration=%g MotorPosNow=%g\n",
+              position, max_velocity, acceleration,
+              motor_axis[axis_no].MotorPosNow);
+    }
+    fflush(motor_axis[axis_no].logFile);
+  }
+
   fprintf(stdlog, "%s/%s:%d axis_no=%d relative=%d position=%g max_velocity=%g acceleration=%g MotorPosNow=%g\n",
           __FILE__, __FUNCTION__, __LINE__,
           axis_no,
@@ -713,6 +729,19 @@ int moveHomeProc(int axis_no,
           max_velocity,
           velocity,
           acceleration);
+  if (motor_axis[axis_no].logFile) {
+    fprintf(motor_axis[axis_no].logFile,
+            "moveHomeProc axis_no=%d nCmdData=%d max_velocity=%g "
+            "velocity=%g acceleration=%g MotorPosNow=%g\n",
+            axis_no,
+            nCmdData,
+            max_velocity,
+            velocity,
+            acceleration,
+            motor_axis[axis_no].MotorPosNow);
+    fflush(motor_axis[axis_no].logFile);
+  }
+
   recalculate_pos(axis_no, nCmdData);
   position = motor_axis[axis_no].HomeProcPos;
   switch (nCmdData) {
@@ -789,6 +818,17 @@ int moveVelocity(int axis_no,
 
   StopInternal(axis_no);
 
+  if (motor_axis[axis_no].logFile) {
+    fprintf(motor_axis[axis_no].logFile,
+            "move velocity axis_no=%d direction=%d max_velocity=%g "
+            "acceleration=%g MotorPosNow=%g\n",
+            axis_no,
+            direction,
+            max_velocity,
+            acceleration,
+            motor_axis[axis_no].MotorPosNow);
+    fflush(motor_axis[axis_no].logFile);
+  }
   fprintf(stdlog, "%s/%s:%d axis_no=%d direction=%d max_velocity=%g acceleration=%g\n",
           __FILE__, __FUNCTION__, __LINE__,
           axis_no,
@@ -899,3 +939,22 @@ int set_nErrorId(int axis_no, int value)
   return 0;
 }
 
+/*
+ *  Debug logfile.
+ */
+int openLogFile(int axis_no, const char *filename)
+{
+  AXIS_CHECK_RETURN_EINVAL(axis_no);
+  motor_axis[axis_no].logFile = fopen(filename, "w");
+  if (!motor_axis[axis_no].logFile) return errno;
+
+  return 0;
+}
+
+void closeLogFile(int axis_no)
+{
+  if (motor_axis[axis_no].logFile) {
+    fclose(motor_axis[axis_no].logFile);
+    motor_axis[axis_no].logFile = NULL;
+  }
+}

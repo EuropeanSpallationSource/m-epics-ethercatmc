@@ -67,6 +67,7 @@ unkown:
 endif
 
 MOTOROBJS=\
+ $(BIN)/cmd_Sim.o \
  $(BIN)/cmd_EAT.o \
  $(BIN)/cmd_IcePAP.o \
  $(BIN)/cmd_TCPsim.o \
@@ -126,6 +127,13 @@ $(BIN)/cmd_buf.o: \
  cmd_buf.h \
  cmd_buf.c
 	$(CC) -c $(CFLAGS) cmd_buf.c -o $@
+
+$(BIN)/cmd_Sim.o: \
+ Makefile \
+ cmd_Sim.c \
+ hw_motor.h \
+ cmd_Sim.h
+	$(CC) -c $(CFLAGS) cmd_Sim.c -o $@
 
 $(BIN)/cmd_EAT.o: \
  Makefile \

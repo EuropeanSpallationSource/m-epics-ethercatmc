@@ -1,11 +1,13 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
+#include <errno.h>
 /* Axis 0 is not used, we use 1..8 */
 #define MAX_AXES 9
 #define AXIS_CHECK_RETURN(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return;}
 #define AXIS_CHECK_RETURN_ZERO(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return 0;}
 #define AXIS_CHECK_RETURN_ERROR(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return (-1);}
+#define AXIS_CHECK_RETURN_EINVAL(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return (EINVAL);}
 
 int getAxisDone(int axis_no);
 int getAxisHome(int axis_no);
@@ -200,4 +202,9 @@ int getAmplifierOn(int axis_no);
  */
 void getAxisDebugInfoData(int axis_no, char *buf, size_t maxlen);
 
+/*
+ *  Debug logfile.
+ */
+int openLogFile(int axis_no, const char *filename);
+void closeLogFile(int axis_no);
 #endif /* MOTOR_H */
