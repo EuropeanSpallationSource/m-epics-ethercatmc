@@ -23,6 +23,7 @@ epicsEnvSet("ACCL",          "$(SM_ACCL=1)")
 epicsEnvSet("MRES",          "$(SM_MRES=0.001)")
 epicsEnvSet("RDBD",          "$(SM_RDBD=0.1)")
 epicsEnvSet("NTMF",          "$(SM_NTMF=3)")
+epicsEnvSet("MRES",          "$(SM_MRES=0.01)")
 epicsEnvSet("DLLM",          "$(SM_DLLM=15)")
 epicsEnvSet("DHLM",          "$(SM_DHLM=170)")
 
