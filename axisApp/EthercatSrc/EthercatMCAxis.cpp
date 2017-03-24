@@ -1518,11 +1518,12 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
   return status;
 }
 
-asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
+asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
 {
-  if (function == pC_->EthercatMCDbgStrToMcu_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setStringParam(%d EthercatMCDbgStrToMcu_)=%s\n", axisNo_, value);
+              "setStringParamDbgStrToMcu(%d)=%s\n", axisNo_, value);
+    const char * const Main_this_str = "Main.this.";
+    const char * const Sim_this_str = "Sim.this.";
     unsigned adsport;
     unsigned indexGroup;
     unsigned indexOffset;
@@ -1531,14 +1532,21 @@ asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
     int nvals = 0;
     int retryCount = 1;
 
-    /* Check the string. E.g. Main.M1 and Sim.M1 are passed
-       "as is". ADR commands are handled below */
-    nvals = sscanf(value, "Main.M%u.", &ivalue);
-    if (nvals == 1) {
-      sprintf(pC_->outString_, "%s", value);
+    /* Check the string. E.g. Main.this. and Sim.this. are passed
+       as Main.M1 or Sim.M1
+       ADR commands are handled below */
+    if (!strncmp(value, Main_this_str, strlen(Main_this_str))) {
+      sprintf(pC_->outString_, "Main.M%d.%s",
+              axisNo_, value + strlen(Main_this_str));
       return writeReadACK();
     }
-    /* caput IOC:m1-DbgStrToMCU Sim.M1.dbgOpenLogFile=M1.log */
+    /* caput IOC:m1-DbgStrToMCU Sim.this.log=M1.log */
+    if (!strncmp(value, Sim_this_str, strlen(Sim_this_str))) {
+      sprintf(pC_->outString_, "Sim.M%d.%s",
+              axisNo_, value + strlen(Sim_this_str));
+      return writeReadACK();
+    }
+#if 0        
     nvals = sscanf(value, "Sim.M%u.", &ivalue);
     if (nvals == 1) {
       sprintf(pC_->outString_, "%s", value);
@@ -1564,10 +1572,15 @@ asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
       return setADRValueOnAxisVerify(adsport, indexGroup, indexOffset,
                                      fvalue, retryCount);
     }
-
+#endif
     /* If we come here, the command was not understood */
     return asynError;
+}
 
+  asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
+{
+  if (function == pC_->EthercatMCDbgStrToMcu_) {
+    return setStringParamDbgStrToMcu(value);
   } else {
     /* Call base class method */
     return asynAxisAxis::setStringParam(function, value);

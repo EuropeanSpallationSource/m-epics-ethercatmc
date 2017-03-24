@@ -12,6 +12,7 @@
 int getAxisDone(int axis_no);
 int getAxisHome(int axis_no);
 int getAxisHomed(int axis_no);
+void setAxisHomed(int axis_no, int value);
 
 static void init_axis(int);
 #if 0
@@ -57,6 +58,8 @@ double getMRES_24(int axis_no);
 int    setMRES_24(int axis_no, double value);
 
 double getMotorPos(int axis_no);
+void   setMotorPos(int axis_no, double value);
+
 double getEncoderPos(int axis_no);
 
 int getNegLimitSwitch(int axis_no);
@@ -207,4 +210,13 @@ void getAxisDebugInfoData(int axis_no, char *buf, size_t maxlen);
  */
 int openLogFile(int axis_no, const char *filename);
 void closeLogFile(int axis_no);
+
+/*
+ * Make it possible to disable the simulator
+ * All data must be feed in by hand in e.g. cmd_EAT.c
+ */
+int getManualSimulatorMode(int axis_no);
+void setManualSimulatorMode(int axis_no, int manualMode);
+
+
 #endif /* MOTOR_H */

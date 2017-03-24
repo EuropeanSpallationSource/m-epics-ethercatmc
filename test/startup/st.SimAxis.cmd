@@ -37,4 +37,5 @@ epicsEnvSet("HOMEDEC",       "$(SM_HOMEDEC=26)")
 < EthercatMCController.cmd
 < EthercatMCAxis.cmd
 < EthercatMCAxisdebug.cmd
-
+< EthercatMCAxisConfigSim.cmd
+###< EthercatMCconfigSimulator.cmd

@@ -201,6 +201,7 @@ private:
   asynStatus setClosedLoop(bool closedLoop);
   asynStatus setIntegerParam(int function, int value);
   asynStatus setDoubleParam(int function, double value);
+  asynStatus setStringParamDbgStrToMcu(const char *value);
   asynStatus setStringParam(int function, const char *value);
   asynStatus stopAxisInternal(const char *function_name, double acceleration);
 

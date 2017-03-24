@@ -10,7 +10,7 @@
 #include "cmd_Sim.h"
 
 static const char * const Sim_dot_str = "Sim.";
-static const char * const dbgOpenLogFile_equals_str = "dbgOpenLogFile=";
+static const char * const log_equals_str = "log=";
 static const char * const dbgCloseLogFile_str = "dbgCloseLogFile";
 
 static const char *seperator_seperator = ";";
@@ -37,7 +37,6 @@ static void motorHandleOneArg(const char *myarg_1)
   }
 
   /* From here on, only M1. commands */
-  /* e.g. M1.nCommand=3 */
   nvals = sscanf(myarg_1, "M%d.", &motor_axis_no);
   if (nvals != 1) {
     RETURN_OR_DIE("%s/%s:%d line=%s nvals=%d",
@@ -53,10 +52,10 @@ static void motorHandleOneArg(const char *myarg_1)
   }
   myarg_1++; /* Jump over '.' */
 
-  /* dbgOpenLogFile= */
-  if (!strncmp(myarg_1, dbgOpenLogFile_equals_str, strlen(dbgOpenLogFile_equals_str))) {
+  /* log= */
+  if (!strncmp(myarg_1, log_equals_str, strlen(log_equals_str))) {
     int ret;
-    myarg_1 += strlen(dbgOpenLogFile_equals_str);
+    myarg_1 += strlen(log_equals_str);
     ret = openLogFile(motor_axis_no, myarg_1);
     if (!ret)
       cmd_buf_printf("OK");
@@ -72,11 +71,69 @@ static void motorHandleOneArg(const char *myarg_1)
     return;
   }
 
+  /* fMotorParkingPosition=100 */
+  nvals = sscanf(myarg_1, "fMotorParkingPosition=%lf", &fValue);
+  if (nvals == 1) {
+    setMotorParkingPosition(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* fLowHardLimitPos=15 */
+  nvals = sscanf(myarg_1, "fLowHardLimitPos=%lf", &fValue);
+  if (nvals == 1) {
+    setLowHardLimitPos(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* fHighHardLimitPos=165 */
+  nvals = sscanf(myarg_1, "fHighHardLimitPos=%lf", &fValue);
+  if (nvals == 1) {
+    setHighHardLimitPos(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* fHWhomeSwitchpos=30 */
+  nvals = sscanf(myarg_1, "fHWhomeSwitchpos=%lf", &fValue);
+  if (nvals == 1) {
+    setHWhomeSwitchpos(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
 
+  /* fActPosition=30 */
+  nvals = sscanf(myarg_1, "fActPosition=%lf", &fValue);
+  if (nvals == 1) {
+    //setActPosition(motor_axis_no, fValue);
+    setMotorPos(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+
+  /* bManualSimulatorMode=1 */
+  nvals = sscanf(myarg_1, "bManualSimulatorMode=%d", &iValue);
+  if (nvals == 1) {
+    setManualSimulatorMode(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* bAxisHomede=1 */
+  nvals = sscanf(myarg_1, "bAxisHomed=%d", &iValue);
+  if (nvals == 1) {
+    setAxisHomed(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* nAmplifierPercent=1 */
+  nvals = sscanf(myarg_1, "nAmplifierPercent=%d", &iValue);
+  if (nvals == 1) {
+    setAmplifierPercent(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return;
+  }
   /* if we come here, we do not understand the command */
-  RETURN_OR_DIE("%s/%s:%d line=%s",
+  RETURN_OR_DIE("%s/%s:%d line=%s myarg_1=%s",
                 __FILE__, __FUNCTION__, __LINE__,
-                myarg);
+                myarg, myarg_1);
 }
 
 void cmd_Sim(int argc, const char *argv[])

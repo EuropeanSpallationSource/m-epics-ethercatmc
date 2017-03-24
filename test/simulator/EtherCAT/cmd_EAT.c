@@ -18,10 +18,10 @@ typedef struct
   unsigned nCmdData;
   int    bExecute;
   int    bReset;
-  double position;
-  double velocity;
-  double acceleration;
-  double deceleration;
+  double fPosition;
+  double fVelocity;
+  double fAcceleration;
+  double fDeceleration;
   double homeVeloTowardsHomeSensor;
   double homeVeloFromHomeSensor;
   double manualVelocitySlow;
@@ -37,7 +37,36 @@ typedef struct
   int inTargetPositionMonitoring;
 } cmd_Motor_cmd_type;
 
+typedef struct
+{
+  double fActPostion;
+  int bEnable;
+  int bReset;
+  int bExecute;
+  unsigned nCommand;
+  unsigned nCmdData;
+  double fVelocity;
+  double fPosition;
+  //double fAcceleration;
+  //double fDecceleration;
+  int bLimitFwd;
+  int bLimitBwd;
+  int bHomeSensor;
+  int bEnabled;
+  int bError;
+  int nErrorId;
+  double fActVelocity;
+  double fActDiff;
+  int bHomed;
+  int bBusy;
+} cmd_Motor_status_type;
+
+/* values commanded to the motor */
 static cmd_Motor_cmd_type cmd_Motor_cmd[MAX_AXES];
+
+/* values reported back from the motor */
+static cmd_Motor_status_type cmd_Motor_status[MAX_AXES];
+
 static void init_axis(int axis_no)
 {
   static char init_done[MAX_AXES];
@@ -62,10 +91,9 @@ static void init_axis(int axis_no)
                   0);                     /* homeSwitchPos */
 
     cmd_Motor_cmd[axis_no].maximumVelocity = 50;
-    cmd_Motor_cmd[axis_no].acceleration = 23;
     cmd_Motor_cmd[axis_no].homeVeloTowardsHomeSensor = 10;
     cmd_Motor_cmd[axis_no].homeVeloFromHomeSensor = 5;
-    cmd_Motor_cmd[axis_no].position = getMotorPos(axis_no);
+    cmd_Motor_cmd[axis_no].fPosition = getMotorPos(axis_no);
 
     init_done[axis_no] = 1;
   }
@@ -492,7 +520,7 @@ static void motorHandleOneArg(const char *myarg_1)
   }
   /* fAcceleration? */
   if (0 == strcmp(myarg_1, "fAcceleration?")) {
-    cmd_buf_printf("%g", cmd_Motor_cmd[motor_axis_no].acceleration);
+    cmd_buf_printf("%g", cmd_Motor_cmd[motor_axis_no].fAcceleration);
     return;
   }
   /* fActPosition? */
@@ -508,7 +536,7 @@ static void motorHandleOneArg(const char *myarg_1)
   /* fPosition? */
   if (0 == strcmp(myarg_1, "fPosition?")) {
     /* The "set" value */
-    cmd_buf_printf("%g", cmd_Motor_cmd[motor_axis_no].position);
+    cmd_buf_printf("%g", cmd_Motor_cmd[motor_axis_no].fPosition);
     return;
   }
   /* nCommand? */
@@ -526,59 +554,49 @@ static void motorHandleOneArg(const char *myarg_1)
   }
   /* stAxisStatus? */
   if (0 == strcmp(myarg_1, "stAxisStatus?")) {
-    /* getMotorPos must be first, it calls
-       simulateMotion() */
-    double fActPostion = getMotorPos(motor_axis_no);
-    int bEnable = getAmplifierOn(motor_axis_no);
-    int bReset = 0;
-    int bExecute = cmd_Motor_cmd[motor_axis_no].bExecute;
-    unsigned nCommand = 0;
-    unsigned nCmdData = cmd_Motor_cmd[motor_axis_no].nCmdData;
-    double fVelocity = 0;
-    double fPosition = 0;
-    double fAcceleration = cmd_Motor_cmd[motor_axis_no].acceleration;
-    double fDecceleration = cmd_Motor_cmd[motor_axis_no].deceleration;
     int bJogFwd = 0;
     int bJogBwd = 0;
-    int bLimitFwd = getPosLimitSwitch(motor_axis_no) ? 0 : 1;
-    int bLimitBwd = getNegLimitSwitch(motor_axis_no) ? 0 : 1;
     double fOverride = 0;
-    int bHomeSensor = getAxisHome(motor_axis_no);
-    int bEnabled = bEnable;
-    int bError = get_bError(motor_axis_no);
-    int nErrorId = get_nErrorId(motor_axis_no);
-    double fActVelocity = getMotorVelocity(motor_axis_no);
-    double fActDiff = 0;
-    int bHomed = getAxisHomed(motor_axis_no);
-    int bBusy = isMotorMoving(motor_axis_no);
+    /* getMotorPos must be first, it calls simulateMotion() */
+    cmd_Motor_status[motor_axis_no].fActPostion = getMotorPos(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].bEnable = getAmplifierOn(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].bEnabled = getAmplifierOn(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].bLimitFwd = getPosLimitSwitch(motor_axis_no) ? 0 : 1;
+    cmd_Motor_status[motor_axis_no].bLimitBwd = getNegLimitSwitch(motor_axis_no) ? 0 : 1;
+    cmd_Motor_status[motor_axis_no].bHomeSensor = getAxisHome(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].bError = get_bError(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].nErrorId = get_nErrorId(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].fActVelocity = getMotorVelocity(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].bHomed = getAxisHomed(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].bBusy = isMotorMoving(motor_axis_no);
 
     cmd_buf_printf("Main.M%d.stAxisStatus="
                    "%d,%d,%d,%u,%u,%g,%g,%g,%g,%d,"
                    "%d,%d,%d,%g,%d,%d,%d,%u,%g,%g,%g,%d,%d",
                    motor_axis_no,
-                   bEnable,        /*  1 */
-                   bReset,         /*  2 */
-                   bExecute,       /*  3 */
-                   nCommand,       /*  4 */
-                   nCmdData,       /*  5 */
-                   fVelocity,      /*  6 */
-                   fPosition,      /*  7 */
-                   fAcceleration,  /*  8 */
-                   fDecceleration, /*  9 */
+                   cmd_Motor_status[motor_axis_no].bEnable,        /*  1 */
+                   cmd_Motor_status[motor_axis_no].bReset,         /*  2 */
+                   cmd_Motor_cmd[motor_axis_no].bExecute,          /*  3 */
+                   cmd_Motor_status[motor_axis_no].nCommand,       /*  4 */
+                   cmd_Motor_cmd[motor_axis_no].nCmdData,          /*  5 */
+                   cmd_Motor_status[motor_axis_no].fVelocity,      /*  6 */
+                   cmd_Motor_status[motor_axis_no].fPosition,      /*  7 */
+                   cmd_Motor_cmd[motor_axis_no].fAcceleration,     /*  8 */
+                   cmd_Motor_cmd[motor_axis_no].fDeceleration,     /*  9 */
                    bJogFwd,        /* 10 */
                    bJogBwd,        /* 11 */
-                   bLimitFwd,      /* 12 */
-                   bLimitBwd,      /* 13 */
+                   cmd_Motor_status[motor_axis_no].bLimitFwd,      /* 12 */
+                   cmd_Motor_status[motor_axis_no].bLimitBwd,      /* 13 */
                    fOverride,      /* 14 */
-                   bHomeSensor,    /* 15 */
-                   bEnabled,       /* 16 */
-                   bError,         /* 17 */
-                   nErrorId,       /* 18 */
-                   fActVelocity,   /* 19 */
-                   fActPostion,    /* 20 */
-                   fActDiff,       /* 21 */
-                   bHomed,         /* 22 */
-                   bBusy           /* 23 */
+                   cmd_Motor_status[motor_axis_no].bHomeSensor,    /* 15 */
+                   cmd_Motor_status[motor_axis_no].bEnabled,       /* 16 */
+                   cmd_Motor_status[motor_axis_no].bError,         /* 17 */
+                   cmd_Motor_status[motor_axis_no].nErrorId,       /* 18 */
+                   cmd_Motor_status[motor_axis_no].fActVelocity,   /* 19 */
+                   cmd_Motor_status[motor_axis_no].fActPostion,    /* 20 */
+                   cmd_Motor_status[motor_axis_no].fActDiff,       /* 21 */
+                   cmd_Motor_status[motor_axis_no].bHomed,         /* 22 */
+                   cmd_Motor_status[motor_axis_no].bBusy           /* 23 */
                    );
     return;
   }
@@ -610,7 +628,7 @@ static void motorHandleOneArg(const char *myarg_1)
   /* fPosition=100 */
   nvals = sscanf(myarg_1, "fPosition=%lf", &fValue);
   if (nvals == 1) {
-    cmd_Motor_cmd[motor_axis_no].position = fValue;
+    cmd_Motor_cmd[motor_axis_no].fPosition = fValue;
     cmd_buf_printf("OK");
     return;
   }
@@ -626,21 +644,21 @@ static void motorHandleOneArg(const char *myarg_1)
   /* fVelocity=20 */
   nvals = sscanf(myarg_1, "fVelocity=%lf", &fValue);
   if (nvals == 1) {
-    cmd_Motor_cmd[motor_axis_no].velocity = fValue;
+    cmd_Motor_cmd[motor_axis_no].fVelocity = fValue;
     cmd_buf_printf("OK");
     return;
   }
   /* fAcceleration=1000 */
   nvals = sscanf(myarg_1, "fAcceleration=%lf", &fValue);
   if (nvals == 1) {
-    cmd_Motor_cmd[motor_axis_no].acceleration = fValue;
+    cmd_Motor_cmd[motor_axis_no].fAcceleration = fValue;
     cmd_buf_printf("OK");
     return;
   }
   /* fDeceleration=1000 */
   nvals = sscanf(myarg_1, "fDeceleration=%lf", &fValue);
   if (nvals == 1) {
-    cmd_Motor_cmd[motor_axis_no].deceleration = fValue;
+    cmd_Motor_cmd[motor_axis_no].fDeceleration = fValue;
     cmd_buf_printf("OK");
     return;
   }
@@ -680,12 +698,12 @@ static void motorHandleOneArg(const char *myarg_1)
       cmd_buf_printf("OK");
       return;
     } else if (iValue == 1) {
-      if (cmd_Motor_cmd[motor_axis_no].velocity >
+      if (cmd_Motor_cmd[motor_axis_no].fVelocity >
           cmd_Motor_cmd[motor_axis_no].maximumVelocity) {
         fprintf(stdlog, "%s/%s:%d axis_no=%d velocity=%g maximumVelocity=%g\n",
                 __FILE__, __FUNCTION__, __LINE__,
                 motor_axis_no,
-                cmd_Motor_cmd[motor_axis_no].velocity,
+                cmd_Motor_cmd[motor_axis_no].fVelocity,
                 cmd_Motor_cmd[motor_axis_no].maximumVelocity);
         set_nErrorId(motor_axis_no, 0x512);
         cmd_buf_printf("OK");
@@ -701,31 +719,31 @@ static void motorHandleOneArg(const char *myarg_1)
         case 1:
         {
           int direction = 1;
-          if (cmd_Motor_cmd[motor_axis_no].velocity < 0) {
+          if (cmd_Motor_cmd[motor_axis_no].fVelocity < 0) {
             direction = 0;
-            cmd_Motor_cmd[motor_axis_no].velocity = -cmd_Motor_cmd[motor_axis_no].velocity;
+            cmd_Motor_cmd[motor_axis_no].fVelocity = -cmd_Motor_cmd[motor_axis_no].fVelocity;
           }
           (void)moveVelocity(motor_axis_no,
                              direction,
-                             cmd_Motor_cmd[motor_axis_no].velocity,
-                             cmd_Motor_cmd[motor_axis_no].acceleration);
+                             cmd_Motor_cmd[motor_axis_no].fVelocity,
+                             cmd_Motor_cmd[motor_axis_no].fAcceleration);
           cmd_buf_printf("OK");
         }
         break;
         case 2:
           (void)movePosition(motor_axis_no,
-                             cmd_Motor_cmd[motor_axis_no].position,
+                             cmd_Motor_cmd[motor_axis_no].fPosition,
                              1, /* int relative, */
-                             cmd_Motor_cmd[motor_axis_no].velocity,
-                             cmd_Motor_cmd[motor_axis_no].acceleration);
+                             cmd_Motor_cmd[motor_axis_no].fVelocity,
+                             cmd_Motor_cmd[motor_axis_no].fAcceleration);
           cmd_buf_printf("OK");
           break;
         case 3:
           (void)movePosition(motor_axis_no,
-                             cmd_Motor_cmd[motor_axis_no].position,
+                             cmd_Motor_cmd[motor_axis_no].fPosition,
                              0, /* int relative, */
-                             cmd_Motor_cmd[motor_axis_no].velocity,
-                             cmd_Motor_cmd[motor_axis_no].acceleration);
+                             cmd_Motor_cmd[motor_axis_no].fVelocity,
+                             cmd_Motor_cmd[motor_axis_no].fAcceleration);
           cmd_buf_printf("OK");
           break;
         case 10:
@@ -736,7 +754,7 @@ static void motorHandleOneArg(const char *myarg_1)
                                0, /* direction, */
                                cmd_Motor_cmd[motor_axis_no].nCmdData,
                                cmd_Motor_cmd[motor_axis_no].homeVeloTowardsHomeSensor,
-                               cmd_Motor_cmd[motor_axis_no].acceleration);
+                               cmd_Motor_cmd[motor_axis_no].fAcceleration);
             cmd_buf_printf("OK");
           } else {
             cmd_buf_printf("Error : %d %g %g",
