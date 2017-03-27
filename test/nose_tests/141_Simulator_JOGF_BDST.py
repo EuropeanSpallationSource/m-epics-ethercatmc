@@ -79,18 +79,18 @@ def compareExpectedActual(tself, expFileName, actFileName):
         file = open(expFileName, 'r')
         for line in file:
             if line[-1] == '\n':
-                line = line[0:-1]        
+                line = line[0:-1]
             print ("%s: %s" % (expFileName, str(line)));
         file.close();
         file = open(actFileName, 'r')
         for line in file:
             if line[-1] == '\n':
-                line = line[0:-1]        
+                line = line[0:-1]
             print ("%s: %s" % (actFileName, str(line)));
         file.close();
         assert(same)
 
-    
+
 def jogAndBacklash(tself, motor, tc_no, motorStartPos, motorEndPos, myJOGX):
         # expected and actual
         expFileName = "/tmp/" + motor + tc_no + ".exp"
@@ -133,7 +133,7 @@ def jogAndBacklash(tself, motor, tc_no, motorStartPos, motorEndPos, myJOGX):
 
         compareExpectedActual(tself, expFileName, actFileName)
 
-        
+
 class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
@@ -147,7 +147,7 @@ class Test(unittest.TestCase):
         myJOGX = 'JOGF'
         jogAndBacklash(self, motor, tc_no, motorStartPos, motorEndPos, myJOGX)
 
-        
+
     # JOG backward & backlash compensation
     def test_TC_1412(self):
         tc_no = "1412"
@@ -156,7 +156,7 @@ class Test(unittest.TestCase):
         motorEndPos   = 40 # That's where we stop the jogging
         myJOGX = 'JOGR'
         jogAndBacklash(self, motor, tc_no, motorStartPos, motorEndPos, myJOGX)
-        
+
     # position forward & backlash compensation
     def test_TC_1413(self):
         tc_no = "1413"
@@ -169,7 +169,7 @@ class Test(unittest.TestCase):
         # expected and actual
         expFileName = "/tmp/" + motor + tc_no + ".exp"
         actFileName = "/tmp/" + motor + tc_no + ".act"
-        
+
         motorInit(tself, motor, tc_no)
         setMotorStartPos(tself, motor, tc_no, motorStartPos)
         setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 0)
@@ -202,7 +202,7 @@ class Test(unittest.TestCase):
         # expected and actual
         expFileName = "/tmp/" + motor + tc_no + ".exp"
         actFileName = "/tmp/" + motor + tc_no + ".act"
-        
+
         motorInit(tself, motor, tc_no)
         setMotorStartPos(tself, motor, tc_no, motorStartPos)
         setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 0)
@@ -222,4 +222,4 @@ class Test(unittest.TestCase):
         expFile.close()
 
         compareExpectedActual(tself, expFileName, actFileName)
-        
+

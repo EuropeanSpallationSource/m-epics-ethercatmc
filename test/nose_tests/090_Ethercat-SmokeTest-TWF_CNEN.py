@@ -161,7 +161,7 @@ def tweakToLimit(self, motor, tc_no, direction):
         count += 1
         if (count > maxTweaks):
             stopTheLoop = 1
-        if not lls and not hls:    
+        if not lls and not hls:
             inPosition = calcAlmostEqual(motor, tc_no, destination, rbv, maxDeltaAfterMove)
             if not inPosition:
                 stopTheLoop = 1
@@ -173,7 +173,7 @@ def tweakToLimit(self, motor, tc_no, direction):
 
         print '%s count=%d maxTweaks=%d stopTheLoop=%d inPosition=%d' \
             % (tc_no, count, maxTweaks, stopTheLoop, inPosition)
-            
+
     print '%s direction=%d hls=%d lls=%d' \
             % (tc_no, direction, hls, lls)
     # Put back the limits for the next run
