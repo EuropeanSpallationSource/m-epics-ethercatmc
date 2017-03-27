@@ -58,17 +58,17 @@ record(ai, "$(PREFIX)$(R)VelAct")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(PREFIX)$(R)AccAct")
+record(ai, "$(PREFIX)$(R)Acc-RB")
 {
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AccAct")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Acc-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(PREFIX)$(R)DecAct")
+record(ai, "$(PREFIX)$(R)Dec-RB")
 {
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))DecAct")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Dec-RB")
     field(SCAN, "I/O Intr")
 }
 

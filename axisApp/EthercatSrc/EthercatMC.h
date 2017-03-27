@@ -26,8 +26,8 @@ FILENAME...   EthercatMC.h
 #define EthercatMCDecHomString               "DecHom"
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCVelActString               "VelAct"
-#define EthercatMCAccActString               "AccAct"
-#define EthercatMCDecActString               "DecAct"
+#define EthercatMCAcc_RBString               "Acc-RB"
+#define EthercatMCDec_RBString               "Dec-RB"
 #define EthercatMCMCUErrMsgString            "MCUErrMsg"
 #define EthercatMCDbgStrToMcuString          "StrToMCU"
 
@@ -246,8 +246,8 @@ public:
   int EthercatMCAccHom_;
   int EthercatMCDecHom_;
   int EthercatMCVelAct_;
-  int EthercatMCAccAct_;
-  int EthercatMCDecAct_;
+  int EthercatMCAcc_RB_;
+  int EthercatMCDec_RB_;
   int EthercatMCErrId_;
   /* Last parameter */
 

@@ -1191,8 +1191,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setIntegerParam(pC_->motorStatusPowerOn_, st_axis_status.bEnabled);
 
   setDoubleParam(pC_->EthercatMCVelAct_, st_axis_status.fActVelocity);
-  setDoubleParam(pC_->EthercatMCAccAct_, st_axis_status.fAcceleration);
-  setDoubleParam(pC_->EthercatMCDecAct_, st_axis_status.fDecceleration);
+  setDoubleParam(pC_->EthercatMCAcc_RB_, st_axis_status.fAcceleration);
+  setDoubleParam(pC_->EthercatMCDec_RB_, st_axis_status.fDecceleration);
 
   mvnNotRdy = st_axis_status.bBusy && st_axis_status.bEnabled;
 
