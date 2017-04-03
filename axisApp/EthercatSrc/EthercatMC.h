@@ -64,6 +64,7 @@ typedef struct {
   double fActDiff;       /* 21 */
   int bHomed;            /* 22 */
   int bBusy;             /* 23 */
+  int mvnNRdyNex; /* Not in struct. Calculated in poll() */
 } st_axis_status_type;
 
 class epicsShareClass EthercatMCAxis : public asynAxisAxis
@@ -127,6 +128,7 @@ private:
       unsigned int initialUpdate    :1;
       unsigned int sErrorMessage    :1; /* From MCU */
       unsigned int readConfigFile   :1;
+      unsigned int bBusyOldStyle    :1;
     }  dirty;
 
     /* Which values have been defined: at startup none */
@@ -136,6 +138,7 @@ private:
     }  defined;
     struct {
       unsigned int stAxisStatus_V00 :1;
+      unsigned int bBusyOldStyle    :1;
     }  supported;
     /* Error texts when we talk to the controller, there is not an "OK"
        Or, failure in setValueOnAxisVerify() */

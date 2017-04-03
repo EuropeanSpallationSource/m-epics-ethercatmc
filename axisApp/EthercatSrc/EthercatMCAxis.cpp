@@ -256,6 +256,7 @@ asynStatus EthercatMCAxis::readConfigFile(void)
 asynStatus EthercatMCAxis::initialUpdate(void)
 {
   asynStatus status = asynSuccess;
+  const char *  const stv1_str = "stv1";
 
   /*  Check for Axis ID */
   int axisID = getMotionAxisID();
@@ -265,6 +266,24 @@ asynStatus EthercatMCAxis::initialUpdate(void)
   }
   status = readConfigFile();
   if (status) return status;
+
+  if (drvlocal.dirty.bBusyOldStyle) {
+    sprintf(pC_->outString_, "%s", "ADSPORT=852/.THIS.sFeatures?");
+    pC_->inString_[0] = 0;
+    status = pC_->writeReadController();
+    if (!strncmp(pC_->inString_, stv1_str, strlen(stv1_str)) &&
+        ((pC_->inString_[strlen(stv1_str)] == ';') ||
+         (pC_->inString_[strlen(stv1_str)] == '\0'))) {
+      drvlocal.supported.bBusyOldStyle = 1;
+    }
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "initialUpdate(%d) out=%s in=%s bBusyOldStyl=%d status=%s (%d)\n",
+              axisNo_,pC_->outString_, pC_->inString_,
+              drvlocal.supported.bBusyOldStyle,
+              pasynManager->strStatus(status), (int)status);
+    drvlocal.dirty.bBusyOldStyle = 0;
+  }
+
   (void)updateMresSoftLimitsIfDirty(__LINE__);
   if ((status == asynSuccess) &&
       (drvlocal.axisFlags & AMPLIFIER_ON_FLAG_CREATE_AXIS)) {
@@ -1108,6 +1127,14 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
       setIntegerParam(pC_->motorStopOnProblem_, 0);
     }
     drvlocal.supported.stAxisStatus_V00 = 1;
+
+    /* default: mvnNRdyNex follows bBusy */
+    pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
+    if (drvlocal.supported.bBusyOldStyle) {
+      /* "Old style":done (and not busy) when bEcecute is 0 */
+      pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
+    }
+
     return asynSuccess;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -1127,7 +1154,6 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 asynStatus EthercatMCAxis::poll(bool *moving)
 {
   asynStatus comStatus = asynSuccess;
-  int mvnNotRdy = 0;
   st_axis_status_type st_axis_status;
 
   /* Driver not yet initialized, do nothing */
@@ -1194,13 +1220,11 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setDoubleParam(pC_->EthercatMCAcc_RB_, st_axis_status.fAcceleration);
   setDoubleParam(pC_->EthercatMCDec_RB_, st_axis_status.fDecceleration);
 
-  mvnNotRdy = st_axis_status.bBusy && st_axis_status.bEnabled;
-
   if (drvlocal.waitNumPollsBeforeReady) {
     *moving = true;
   } else {
-    *moving = mvnNotRdy ? true : false;
-    if (!mvnNotRdy) drvlocal.nCommand = 0;
+    *moving = st_axis_status.mvnNRdyNex ? true : false;
+    if (!st_axis_status.mvnNRdyNex) drvlocal.nCommand = 0;
   }
 
   if (drvlocal.nCommand != NCOMMANDHOME) {
@@ -1237,29 +1261,29 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     drvlocal.old_st_axis_status.bLimitFwd = st_axis_status.bLimitFwd;
   }
 
-  if (drvlocal.oldMvnNotRdy != mvnNotRdy) {
+  if (drvlocal.oldMvnNotRdy != st_axis_status.mvnNRdyNex) {
     drvlocal.waitNumPollsBeforeReady = 0;
   }
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) mvnNotRdy=%d bBusy=%d bExecute=%d bEnabled=%d waitNumPollsBeforeReady=%d\n",
-              axisNo_, mvnNotRdy,
+              "poll(%d) mvnNRdyNex=%d bBusy=%d bExecute=%d bEnabled=%d waitNumPollsBeforeReady=%d\n",
+              axisNo_, st_axis_status.mvnNRdyNex,
               st_axis_status.bBusy, st_axis_status.bExecute,
               st_axis_status.bEnabled, drvlocal.waitNumPollsBeforeReady);
     drvlocal.waitNumPollsBeforeReady--;
     callParamCallbacks();
   } else {
-    if (drvlocal.oldMvnNotRdy != mvnNotRdy) {
+    if (drvlocal.oldMvnNotRdy != st_axis_status.mvnNRdyNex) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "poll(%d) mvnNotRdy=%d bBusy=%d bExecute=%d bEnabled=%d fActPosition=%g\n",
-                axisNo_, mvnNotRdy,
+                "poll(%d) mvnNRdyNex=%d bBusy=%d bExecute=%d bEnabled=%d fActPosition=%g\n",
+                axisNo_, st_axis_status.mvnNRdyNex,
                 st_axis_status.bBusy, st_axis_status.bExecute,
                 st_axis_status.bEnabled, st_axis_status.fActPosition);
-      drvlocal.oldMvnNotRdy = mvnNotRdy;
+      drvlocal.oldMvnNotRdy = st_axis_status.mvnNRdyNex;
     }
-    setIntegerParam(pC_->motorStatusMoving_, mvnNotRdy);
-    setIntegerParam(pC_->motorStatusDone_, !mvnNotRdy);
+    setIntegerParam(pC_->motorStatusMoving_, st_axis_status.mvnNRdyNex);
+    setIntegerParam(pC_->motorStatusDone_, !st_axis_status.mvnNRdyNex);
 
     drvlocal.MCU_nErrorId = st_axis_status.nErrorId;
 
