@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "sock-util.h"
-#include "cmd_sim.h"
+#include "cmd_Sim.h"
 #include "cmd_EAT.h"
 #include "cmd_IcePAP.h"
 #include "cmd_TCPsim.h"
