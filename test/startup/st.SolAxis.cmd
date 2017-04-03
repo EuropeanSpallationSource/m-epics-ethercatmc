@@ -1,4 +1,4 @@
-require asyn,4.27
+require asyn,4.31
 require axis,USER
 
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
