@@ -410,11 +410,18 @@ static int motorHandleADS_ADR(const char *arg)
 
 static void motorHandleOneArg(const char *myarg_1)
 {
+  static const char * const ADSPORT_sFeaturesQ_str = "ADSPORT=852/.THIS.sFeatures?";
   const char *myarg = myarg_1;
   int iValue = 0;
   double fValue = 0;
   int motor_axis_no = 0;
   int nvals = 0;
+
+  /* ADSPORT=852/.THIS.sFeatures? */
+  if (0 == strcmp(myarg_1, ADSPORT_sFeaturesQ_str)) {
+    cmd_buf_printf("%s", "stv1");
+    return;
+  }
 
   /* ADSPORT= */
   if (!strncmp(myarg_1, ADSPORT_equals_str, strlen(ADSPORT_equals_str))) {
