@@ -947,7 +947,12 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
   status = getValueFromAxis("bEnabled", &ret);
   /* Either it went wrong OR the amplifier IS as it should be */
   if (status || (ret == on)) return status;
-
+  if (!on) {
+    /* Amplifier is on and should be turned off.
+       Stop the axis by setting bEnable to 0 */
+    status = stopAxisInternal(__FUNCTION__, 0);
+    if (status) return status;
+  }
   status = setValueOnAxis("bEnable", on);
   if (status || !on) return status; /* this went wrong OR it should be turned off */
   while (counter) {
