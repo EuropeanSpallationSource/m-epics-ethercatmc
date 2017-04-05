@@ -5,6 +5,14 @@ if test -z "$1" ; then
 fi
 ./checkws.sh &&
 (
+  OLDPWD=$PWD
+  cd ../axisApp/EthercatSrc/ &&
+  $OLDPWD/checkws.sh
+) || {
+  echo >&2   $OLDPWD/checkws.sh failed
+  exit 1
+}
+(
   cd nose_tests/ &&
     PV="$1"
     shift
