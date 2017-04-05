@@ -90,6 +90,7 @@ export MOTORIP MOTORPORT
       echo >&2 can not create stcmddst $stcmddst
       exit 1
     }
+    rm -fv  require.lock* &&
     chmod +x $stcmddst &&
     cmd=$(echo iocsh $stcmddst) &&
     echo PWD=$PWD cmd=$cmd &&
