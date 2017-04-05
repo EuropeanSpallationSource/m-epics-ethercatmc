@@ -65,6 +65,8 @@ typedef struct {
   int bHomed;            /* 22 */
   int bBusy;             /* 23 */
   int mvnNRdyNex; /* Not in struct. Calculated in poll() */
+  int motorStatusDirection; /* Not in struct. Calculated in pollAll() */
+  int motorDiffPostion;     /* Not in struct. Calculated in poll() */
 } st_axis_status_type;
 
 class epicsShareClass EthercatMCAxis : public asynAxisAxis

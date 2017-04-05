@@ -1023,7 +1023,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
   } else if (!drvlocal.homed &&
-	     drvlocal.nCommand != NCOMMANDHOME) {
+             drvlocal.nCommand != NCOMMANDHOME) {
     int procHom = -1;
     pC_->getIntegerParam(axisNo_,
                          pC_->EthercatMCProcHom_,
@@ -1140,6 +1140,18 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
       pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
     }
 
+    /* Use previous fActPosition and current fActPosition to calculate direction.*/
+    if (pst_axis_status->fActPosition > drvlocal.old_st_axis_status.fActPosition) {
+      pst_axis_status->motorDiffPostion = 1;
+      pst_axis_status->motorStatusDirection = 1;
+    } else if (pst_axis_status->fActPosition < drvlocal.old_st_axis_status.fActPosition) {
+      pst_axis_status->motorDiffPostion = 1;
+      pst_axis_status->motorStatusDirection = 0;
+    }
+    if (!pst_axis_status->bEnabled) {
+      /* if the motor is moved by with amplifier off, report this */
+      pst_axis_status->mvnNRdyNex |= pst_axis_status->motorDiffPostion;
+    }
     return asynSuccess;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -1235,12 +1247,6 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.nCommand != NCOMMANDHOME) {
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.mres;
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
-    /* Use previous fActPosition and current fActPosition to calculate direction.*/
-    if (st_axis_status.fActPosition > drvlocal.old_st_axis_status.fActPosition) {
-      setIntegerParam(pC_->motorStatusDirection_, 1);
-    } else if (st_axis_status.fActPosition < drvlocal.old_st_axis_status.fActPosition) {
-      setIntegerParam(pC_->motorStatusDirection_, 0);
-    }
     drvlocal.old_st_axis_status.fActPosition = st_axis_status.fActPosition;
   }
 
@@ -1272,21 +1278,25 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) mvnNRdyNex=%d bBusy=%d bExecute=%d bEnabled=%d waitNumPollsBeforeReady=%d\n",
-              axisNo_, st_axis_status.mvnNRdyNex,
+              "poll(%d) mvnNRdyNex=%d Old=%d bBusy=%d bExecute=%d bEnabled=%d motorDiff=%d waitNumPollsBeforeReady=%d\n",
+              axisNo_, st_axis_status.mvnNRdyNex, drvlocal.supported.bBusyOldStyle,
               st_axis_status.bBusy, st_axis_status.bExecute,
-              st_axis_status.bEnabled, drvlocal.waitNumPollsBeforeReady);
+              st_axis_status.bEnabled, st_axis_status.motorDiffPostion,
+              drvlocal.waitNumPollsBeforeReady);
     drvlocal.waitNumPollsBeforeReady--;
     callParamCallbacks();
   } else {
     if (drvlocal.oldMvnNotRdy != st_axis_status.mvnNRdyNex) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "poll(%d) mvnNRdyNex=%d bBusy=%d bExecute=%d bEnabled=%d fActPosition=%g\n",
+                "poll(%d) mvnNRdyNex=%d Old=%d bBusy=%d bExecute=%d bEnabled=%d motorDiff=%d fActPosition=%g\n",
                 axisNo_, st_axis_status.mvnNRdyNex,
+                drvlocal.supported.bBusyOldStyle,
                 st_axis_status.bBusy, st_axis_status.bExecute,
-                st_axis_status.bEnabled, st_axis_status.fActPosition);
+                st_axis_status.bEnabled, st_axis_status.motorDiffPostion,
+                st_axis_status.fActPosition);
       drvlocal.oldMvnNotRdy = st_axis_status.mvnNRdyNex;
     }
+    setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);
     setIntegerParam(pC_->motorStatusMoving_, st_axis_status.mvnNRdyNex);
     setIntegerParam(pC_->motorStatusDone_, !st_axis_status.mvnNRdyNex);
 
@@ -1575,7 +1585,7 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
               axisNo_, value + strlen(Sim_this_str));
       return writeReadACK();
     }
-#if 0        
+#if 0
     nvals = sscanf(value, "Sim.M%u.", &ivalue);
     if (nvals == 1) {
       sprintf(pC_->outString_, "%s", value);
