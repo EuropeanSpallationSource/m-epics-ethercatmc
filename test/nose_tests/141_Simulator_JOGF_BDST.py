@@ -45,7 +45,7 @@ def setValueOnSimulator(self, motor, tc_no, var, value):
     assert (not err)
 
 
-def motorInit(tself, motor, tc_no):
+def motorInit(tself, motor, tc_no, encRel):
     setValueOnSimulator(tself, motor, tc_no, "nAmplifierPercent", 100)
     setValueOnSimulator(tself, motor, tc_no, "bAxisHomed",          1)
     setValueOnSimulator(tself, motor, tc_no, "fLowHardLimitPos",   15)
@@ -61,6 +61,7 @@ def motorInit(tself, motor, tc_no):
     epics.caput(motor + '.BVEL', myBVEL)
     epics.caput(motor + '.BACC', myBACC)
     epics.caput(motor + '.BDST', myBDST)
+    epics.caput(motor + '.UEIP', encRel)
 
 
 def setMotorStartPos(tself, motor, tc_no, startpos):
@@ -74,8 +75,8 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
 
 def compareExpectedActual(tself, expFileName, actFileName):
     # compare actual and expFile
-    same = filecmp.cmp(expFileName, actFileName, shallow=False)
-    if not same:
+    sameContent= filecmp.cmp(expFileName, actFileName, shallow=False)
+    if not sameContent:
         file = open(expFileName, 'r')
         for line in file:
             if line[-1] == '\n':
@@ -88,15 +89,15 @@ def compareExpectedActual(tself, expFileName, actFileName):
                 line = line[0:-1]
             print ("%s: %s" % (actFileName, str(line)));
         file.close();
-        assert(same)
+        assert(sameContent)
 
 
-def jogAndBacklash(tself, motor, tc_no, motorStartPos, motorEndPos, myJOGX):
+def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX):
         # expected and actual
-        expFileName = "/tmp/" + motor + tc_no + ".exp"
-        actFileName = "/tmp/" + motor + tc_no + ".act"
+        expFileName = "/tmp/" + motor + "-" + tc_no + ".exp"
+        actFileName = "/tmp/" + motor + "-" + tc_no + ".act"
 
-        motorInit(tself, motor, tc_no)
+        motorInit(tself, motor, tc_no, encRel)
         setMotorStartPos(tself, motor, tc_no, motorStartPos)
         setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 1)
         setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
@@ -122,16 +123,59 @@ def jogAndBacklash(tself, motor, tc_no, motorStartPos, motorEndPos, myJOGX):
         # The jogging command
         line1 = "move velocity axis_no=1 direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
                 (myDirection, myJVEL, myJAR, motorStartPos)
-        # Move back in positioning mode
-        line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos - myBDST, myVELO, myAR, motorEndPos)
-        # Move forward with backlash parameters
-        line3 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+        if encRel:
+            # Move back in relative mode
+            line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (0 - myBDST, myVELO, myAR, motorEndPos)
+            # Move relative forward with backlash parameters
+            line3 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
+        else:
+            # Move back in positioning mode
+            line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (motorEndPos - myBDST, myVELO, myAR, motorEndPos)
+            # Move forward with backlash parameters
+            line3 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
                 (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
+
         expFile.write('%s\n%s\n%s\n' % (line1, line2, line3))
         expFile.close()
 
         compareExpectedActual(tself, expFileName, actFileName)
+
+def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos):
+    ###########
+    # expected and actual
+    expFileName = "/tmp/" + motor + "-" + tc_no + ".exp"
+    actFileName = "/tmp/" + motor + "-" + tc_no + ".act"
+
+    motorInit(tself, motor, tc_no, encRel)
+    setMotorStartPos(tself, motor, tc_no, motorStartPos)
+    setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 0)
+    setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
+    #
+    epics.caput(motor + '.VAL', motorEndPos, wait=True)
+    # Create a "expected" file
+    expFile=open(expFileName, 'w')
+
+    # Positioning
+    if encRel:
+        line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (motorEndPos - motorStartPos - myBDST, myVELO, myAR, motorStartPos)
+        # Move forward with backlash parameters
+        line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
+    else:
+        line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (motorEndPos - myBDST, myVELO, myAR, motorStartPos)
+        # Move forward with backlash parameters
+        line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
+    expFile.write('%s\n%s\n' % (line1, line2))
+    expFile.close()
+
+    compareExpectedActual(tself, expFileName, actFileName)
+
 
 
 class Test(unittest.TestCase):
@@ -145,81 +189,51 @@ class Test(unittest.TestCase):
         motorStartPos = 60 # That's where we start the jogging
         motorEndPos   = 80 # That's where we stop the jogging
         myJOGX = 'JOGF'
-        jogAndBacklash(self, motor, tc_no, motorStartPos, motorEndPos, myJOGX)
+        encRel = 0
+        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
+        tc_no = "1412"
+        encRel = 1
+        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
 
 
     # JOG backward & backlash compensation
-    def test_TC_1412(self):
-        tc_no = "1412"
-        motor = self.motor
-        motorStartPos = 60 # That's where we start the jogging
-        motorEndPos   = 40 # That's where we stop the jogging
-        myJOGX = 'JOGR'
-        jogAndBacklash(self, motor, tc_no, motorStartPos, motorEndPos, myJOGX)
-
-    # position forward & backlash compensation
     def test_TC_1413(self):
         tc_no = "1413"
         motor = self.motor
         motorStartPos = 60 # That's where we start the jogging
+        motorEndPos   = 40 # That's where we stop the jogging
+        myJOGX = 'JOGR'
+        encRel = 0
+        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
+        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
+        tc_no = "1414"
+        encRel = 1
+        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
+
+    # position forward & backlash compensation
+    def test_TC_1415(self):
+        tc_no = "1415"
+        motor = self.motor
+        motorStartPos = 60 # That's where we start the jogging
         motorEndPos   = 80 # That's where we stop the jogging
 
-        ###########
-        tself = self
-        # expected and actual
-        expFileName = "/tmp/" + motor + tc_no + ".exp"
-        actFileName = "/tmp/" + motor + tc_no + ".act"
+        encRel = 0
+        positionAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos)
 
-        motorInit(tself, motor, tc_no)
-        setMotorStartPos(tself, motor, tc_no, motorStartPos)
-        setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 0)
-        setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
-        #
-        epics.caput(motor + '.VAL', motorEndPos, wait=True)
-        # Create a "expected" file
-        expFile=open(expFileName, 'w')
-
-        # Positioning
-        line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos - myBDST, myVELO, myAR, motorStartPos)
-        # Move forward with backlash parameters
-        line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
-        expFile.write('%s\n%s\n' % (line1, line2))
-        expFile.close()
-
-        compareExpectedActual(tself, expFileName, actFileName)
+        tc_no = "1416"
+        encRel = 1
+        positionAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos)
 
     # position backward & backlash compensation
-    def test_TC_1414(self):
-        tc_no = "1414"
+    def test_TC_1417(self):
+        tc_no = "1417"
         motor = self.motor
         motorStartPos = 80 # That's where we start the jogging
         motorEndPos   = 60 # That's where we stop the jogging
 
-        ###########
-        tself = self
-        # expected and actual
-        expFileName = "/tmp/" + motor + tc_no + ".exp"
-        actFileName = "/tmp/" + motor + tc_no + ".act"
+        encRel = 0
+        positionAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos)
 
-        motorInit(tself, motor, tc_no)
-        setMotorStartPos(tself, motor, tc_no, motorStartPos)
-        setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 0)
-        setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
-        #
-        epics.caput(motor + '.VAL', motorEndPos, wait=True)
-        # Create a "expected" file
-        expFile=open(expFileName, 'w')
-
-        # Positioning
-        line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos - myBDST, myVELO, myAR, motorStartPos)
-        # Move forward with backlash parameters
-        line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
-        expFile.write('%s\n%s\n' % (line1, line2))
-        expFile.close()
-
-        compareExpectedActual(tself, expFileName, actFileName)
-
+        tc_no = "1418"
+        encRel = 1
+        positionAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos)
