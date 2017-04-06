@@ -3317,12 +3317,12 @@ $(pv_value)</tooltip>
       </rule>
     </rules>
     <effect_3d>true</effect_3d>
-    <bit>15</bit>
+    <bit>0</bit>
     <pv_value />
     <height>40</height>
     <border_width>2</border_width>
     <visible>true</visible>
-    <pv_name>$(P)$(M).MSTA</pv_name>
+    <pv_name>$(P)$(M).MFLG</pv_name>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
     </border_color>
@@ -3582,7 +3582,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color name="IO Background" red="255" green="255" blue="205" />
     </background_color>
-    <width>43</width>
+    <width>45</width>
     <x>16</x>
     <name>Label Template_21</name>
     <y>171</y>
@@ -3664,7 +3664,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color name="IO Background" red="255" green="255" blue="205" />
     </background_color>
-    <width>43</width>
+    <width>45</width>
     <x>230</x>
     <name>Label Template_23</name>
     <y>171</y>
