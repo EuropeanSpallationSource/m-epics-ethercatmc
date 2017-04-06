@@ -6,9 +6,6 @@ epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-#epicsEnvSet("AXISCONFIG",    "cfgFile=../iocBoot/iocEthercatMC/SolAxis-48-1.cfg")
-#epicsEnvSet("AXISCONFIG",    "getDebugText=getAxisDebugInfoData(1)")
-epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=IOC:)")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
 epicsEnvSet("M",             "$(SM_M=m1)")
@@ -26,6 +23,13 @@ epicsEnvSet("RDBD",          "$(SM_RDBD=0.1)")
 epicsEnvSet("NTMF",          "$(SM_NTMF=3)")
 epicsEnvSet("DLLM",          "$(SM_DLLM=15)")
 epicsEnvSet("DHLM",          "$(SM_DHLM=170)")
+
+
+#epicsEnvSet("AXISCONFIG",    "cfgFile=../iocBoot/iocEthercatMC/SolAxis-48-1.cfg")
+#epicsEnvSet("AXISCONFIG",    "getDebugText=getAxisDebugInfoData(1)")
+
+epicsEnvSet("AXISCONFIG",    "encoder=Main.M$(AXIS_NO).fActPosition")
+epicsEnvSet("ERES",          "$(SM_ERES=1)")
 
 epicsEnvSet("HOMEPROC",      "$(SM_HOMEPROC=1)")
 epicsEnvSet("HOMEPOS",       "$(SM_HOMEPOS=0.0)")
