@@ -1022,19 +1022,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     updateMsgTxtFromDriver("ConfigError: Soft limits");
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
-  } else if (!drvlocal.homed &&
-             drvlocal.nCommand != NCOMMANDHOME) {
-    int procHom = -1;
-    pC_->getIntegerParam(axisNo_,
-                         pC_->EthercatMCProcHom_,
-                         &procHom);
-    if (procHom &&
-        drvlocal.defined.motorHighLimit &&
-        drvlocal.defined.motorLowLimit &&
-        (drvlocal.motorHighLimit > drvlocal.motorLowLimit))
-      drvlocal.eeAxisError = eeAxisErrorNotHomed;
   }
-
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId) {
 
@@ -1051,9 +1039,6 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
           break;
         case eeAxisErrorCmdError:
           updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
-          break;
-        case eeAxisErrorNotHomed:
-          updateMsgTxtFromDriver("Axis not homed");
           break;
         default:
           ;
@@ -1395,6 +1380,8 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #endif
 #ifdef EthercatMCProcHomString
   } else if (function == pC_->EthercatMCProcHom_) {
+    /* If value != 0 the axis can be homed. Show warning if it isn't homed */
+    setIntegerParam(pC_->motorShowNotHomed_, value);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "setIntegerParam(%d ProcHom_)=%d\n", axisNo_, value);
 #endif

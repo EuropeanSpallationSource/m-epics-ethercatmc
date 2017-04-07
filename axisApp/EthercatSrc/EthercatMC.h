@@ -93,7 +93,6 @@ private:
     eeAxisErrorMCUError,
     eeAxisErrorIOCcomError,
     eeAxisErrorIOCcfgError,
-    eeAxisErrorNotHomed,
     eeAxisErrorCmdError
 
   } eeAxisErrorType;
