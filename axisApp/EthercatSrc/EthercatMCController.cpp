@@ -24,6 +24,8 @@ const static char *const strEthercatMCReadController   = "EthercatMCReadControll
 const static char *const strEthercatMCCreateAxisDef    = "EthercatMCCreateAxis";
 const static char *const strCtrlReset = ".ctrl.ErrRst";
 
+const static char *const modulName = "EthercatMCAxis::";
+
 /** Creates a new EthercatMCController object.
   * \param[in] portName          The name of the asyn port that will be created for this driver
   * \param[in] MotorPortName     The name of the drvAsynSerialPort that was created previously to connect to the EthercatMC controller
@@ -73,7 +75,7 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
   status = pasynOctetSyncIO->connect(MotorPortName, 0, &pasynUserController_, NULL);
   if (status) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "cannot connect to motor controller\n");
+              "%s cannot connect to motor controller\n", modulName);
   }
   startPoller(movingPollPeriod, idlePollPeriod, 2);
 }
@@ -142,15 +144,15 @@ asynStatus EthercatMCController::configController(int needOk, const char *value)
     status = checkACK(value, configStrLen, inString);
     if (status) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "out=%s in=\"%s\" return=%s (%d)\n",
-                value, inString,
+                "%s out=%s in=\"%s\" return=%s (%d)\n",
+                modulName, value, inString,
                 pasynManager->strStatus(status), (int)status);
       ctrlLocal.hasConfigError = 1;
       (void)setMCUErrMsg(inString);
     } else {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_INFO,
-                "out=%s in=\"%s\"\n",
-                value, inString);
+                "%s out=%s in=\"%s\"\n",
+                modulName, value, inString);
     }
   } /* neddOK */
 
@@ -187,18 +189,18 @@ asynStatus writeReadOnErrorDisconnect_C(asynUser *pasynUser,
                                        pasynUser);
       if (status != asynSuccess) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "out=%s status=%s (%d)\n",
-                  outdata, pasynManager->strStatus(status), (int)status);
+                  "%s out=%s status=%s (%d)\n",
+                  modulName, outdata, pasynManager->strStatus(status), (int)status);
       }
     } else {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "pasynInterface=%p pasynCommon=%p\n",
-                pasynInterface, pasynCommon);
+                "%s pasynInterface=%p pasynCommon=%p\n",
+                modulName, pasynInterface, pasynCommon);
     }
 #endif
     asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "out=%s nread=%lu status=%s (%d)\n",
-              outdata,(unsigned long)nread,
+              "%s out=%s nread=%lu status=%s (%d)\n",
+              modulName, outdata,(unsigned long)nread,
               pasynManager->strStatus(status), status);
     return asynError; /* TimeOut -> Error */
   }

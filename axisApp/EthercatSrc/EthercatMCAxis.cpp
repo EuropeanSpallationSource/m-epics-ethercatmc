@@ -28,6 +28,8 @@
 
 #define NCOMMANDHOME 10
 
+const static char *const modulName = "EthercatMCAxis::";
+
 //
 // These are the EthercatMCAxis methods
 //
@@ -112,7 +114,7 @@ asynStatus EthercatMCAxis::handleDisconnect()
   asynStatus status = asynSuccess;
   if (!drvlocal.dirty.oldStatusDisconnected) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "Communication error(%d)\n", axisNo_);
+              "%s Communication error(%d)\n", modulName, axisNo_);
   }
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
   setIntegerParam(pC_->motorStatusCommsError_, 1);
@@ -170,7 +172,8 @@ asynStatus EthercatMCAxis::readConfigFile(void)
     len = strlen(ret);
     if (!len) continue; /* empty line with LF */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "readConfigFile %s:%u %s\n",
+              "%s readConfigFile %s:%u %s\n",
+              modulName,
               drvlocal.cfgfileStr, line_no, rdbuf);
 
     if (rdbuf[0] == '#') {
@@ -228,7 +231,7 @@ asynStatus EthercatMCAxis::readConfigFile(void)
       }
 
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "readConfigFile %s\n", errbuf);
+                "%s readConfigFile %s\n", modulName, errbuf);
       updateMsgTxtFromDriver(errbuf);
     }
   } /* while */
@@ -236,7 +239,8 @@ asynStatus EthercatMCAxis::readConfigFile(void)
   if (ferror(fp) || status || errorTxt) {
     if (ferror(fp)) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "readConfigFile ferror (%s)\n",
+                "%s readConfigFile ferror (%s)\n",
+                 modulName,
                 drvlocal.cfgfileStr);
     }
     fclose(fp);
@@ -277,7 +281,8 @@ asynStatus EthercatMCAxis::initialUpdate(void)
       drvlocal.supported.bBusyOldStyle = 1;
     }
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "initialUpdate(%d) out=%s in=%s bBusyOldStyl=%d status=%s (%d)\n",
+              "%s initialUpdate(%d) out=%s in=%s bBusyOldStyl=%d status=%s (%d)\n",
+               modulName,
               axisNo_,pC_->outString_, pC_->inString_,
               drvlocal.supported.bBusyOldStyle,
               pasynManager->strStatus(status), (int)status);
@@ -351,7 +356,8 @@ asynStatus EthercatMCAxis::writeReadACK(void)
       if (res) {
         status = asynError;
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "out=%s in=%s return=%s (%d)\n",
+                  "%s out=%s in=%s return=%s (%d)\n",
+                   modulName,
                   pC_->outString_, pC_->inString_,
                   pasynManager->strStatus(status), (int)status);
         if (!drvlocal.cmdErrorMessage[0]) {
@@ -367,7 +373,8 @@ asynStatus EthercatMCAxis::writeReadACK(void)
       break;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "out=%s in=%s status=%s (%d)\n",
+            "%s out=%s in=%s status=%s (%d)\n",
+             modulName,
             pC_->outString_, pC_->inString_,
             pasynManager->strStatus(status), (int)status);
   return status;
@@ -404,7 +411,8 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
             axisNo_, var, value, axisNo_, rbvar);
     status = pC_->writeReadOnErrorDisconnect();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
+              "%s setValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
+               modulName,
               axisNo_,pC_->outString_, pC_->inString_,
               pasynManager->strStatus(status), (int)status);
     if (status) {
@@ -413,7 +421,8 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
       int nvals = sscanf(pC_->inString_, "OK;%d", &rbvalue);
       if (nvals != 1) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "nvals=%d command=\"%s\" response=\"%s\"\n",
+                  "%s nvals=%d command=\"%s\" response=\"%s\"\n",
+                   modulName,
                   nvals, pC_->outString_, pC_->inString_);
         return asynError;
       }
@@ -427,8 +436,8 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
      Store the error (unless there was an error before) */
   if ((rbvalue != value) && !drvlocal.cmdErrorMessage[0]) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-               "setValueOnAxisV(%d) var=%s value=%d rbvalue=%d",
-               axisNo_,var, value, rbvalue);
+               "%s setValueOnAxisV(%d) var=%s value=%d rbvalue=%d",
+                 modulName, axisNo_,var, value, rbvalue);
       snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
                "setValueOnAxisV(%s) value=%d rbvalue=%d",
                var, value, rbvalue);
@@ -471,8 +480,8 @@ int EthercatMCAxis::getMotionAxisID(void)
   if (ret < 0) {
     asynStatus comStatus = getValueFromAxis("nMotionAxisID", &ret);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "getMotionAxisID(%d) comStatus=%d ret=%d\n",
-              axisNo_, (int)comStatus, ret);
+              "%s getMotionAxisID(%d) comStatus=%d ret=%d\n",
+               modulName, axisNo_, (int)comStatus, ret);
     if (comStatus) return -1;
   }
 
@@ -507,8 +516,8 @@ asynStatus EthercatMCAxis::setADRValueOnAxisVerify(unsigned adsport,
     if (status) break;
     if (rbvalue == value) break;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setValueOnAxisVerify(%d) out=%s in=%s\n",
-              axisNo_,pC_->outString_, pC_->inString_);
+              "%s setValueOnAxisVerify(%d) out=%s in=%s\n",
+               modulName, axisNo_,pC_->outString_, pC_->inString_);
     status = setADRValueOnAxis(adsport, indexGroup, indexOffset, value);
     counter++;
     if (status) break;
@@ -543,8 +552,8 @@ asynStatus EthercatMCAxis::setADRValueOnAxisVerify(unsigned adsport,
     if (status) break;
     if (rbvalue == value) break;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setValueOnAxisVerify(%d) out=%s in=%s\n",
-              axisNo_,pC_->outString_, pC_->inString_);
+              "%s setValueOnAxisVerify(%d) out=%s in=%s\n",
+               modulName, axisNo_, pC_->outString_, pC_->inString_);
     status = setADRValueOnAxis(adsport, indexGroup, indexOffset, value);
     counter++;
     if (status) break;
@@ -571,8 +580,8 @@ asynStatus EthercatMCAxis::getADRValueFromAxis(unsigned adsport,
   nvals = sscanf(pC_->inString_, "%d", &res);
   if (nvals != 1) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "nvals=%d command=\"%s\" response=\"%s\"\n",
-              nvals, pC_->outString_, pC_->inString_);
+              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
+               modulName, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   *value = res;
@@ -597,8 +606,8 @@ asynStatus EthercatMCAxis::getADRValueFromAxis(unsigned adsport,
   nvals = sscanf(pC_->inString_, "%lf", &res);
   if (nvals != 1) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "nvals=%d command=\"%s\" response=\"%s\"\n",
-              nvals, pC_->outString_, pC_->inString_);
+              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
+               modulName, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   *value = res;
@@ -626,16 +635,16 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
       res = 1;
     } else {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "command=\"%s\" response=\"%s\"\n",
-                pC_->outString_, pC_->inString_);
+                "%s command=\"%s\" response=\"%s\"\n",
+                 modulName, pC_->outString_, pC_->inString_);
       return asynError;
     }
   } else {
     int nvals = sscanf(pC_->inString_, "%d", &res);
     if (nvals != 1) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "nvals=%d command=\"%s\" response=\"%s\"\n",
-                nvals, pC_->outString_, pC_->inString_);
+                "%s nvals=%d command=\"%s\" response=\"%s\"\n",
+                 modulName, nvals, pC_->outString_, pC_->inString_);
       return asynError;
     }
   }
@@ -661,8 +670,8 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
   nvals = sscanf(pC_->inString_, "%lf", &res);
   if (nvals != 1) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "nvals=%d command=\"%s\" response=\"%s\"\n",
-              nvals, pC_->outString_, pC_->inString_);
+              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
+               modulName, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   *value = res;
@@ -697,8 +706,8 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
   nvals = sscanf(pC_->inString_, "%lf", &res);
   if (nvals != 1) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "nvals=%d command=\"%s\" response=\"%s\"\n",
-              nvals, pC_->outString_, pC_->inString_);
+              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
+               modulName, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   *value = res;
@@ -717,7 +726,8 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
   double maxVelocityEGU = maxVelocity * drvlocal.mres;
   if (!drvlocal.mres) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "sendVelocityAndAccelExecute(%d) mres==0.0\n",  axisNo_);
+              "%s sendVelocityAndAccelExecute(%d) mres==0.0\n",
+              modulName, axisNo_);
     return asynError; /* No mres, no move */
   }
   if (acceleration_time > 0.0001) {
@@ -729,8 +739,8 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
     if (status) return status;
   } else {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "sendVelocityAndAccelExecute(%d) maxVelocityEGU=%g acceleration_time=%g\n",
-              axisNo_, maxVelocityEGU, acceleration_time);
+              "%s sendVelocityAndAccelExecute(%d) maxVelocityEGU=%g acceleration_time=%g\n",
+               modulName, axisNo_, maxVelocityEGU, acceleration_time);
   }
   status = setValueOnAxis("fVelocity", maxVelocityEGU);
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
@@ -850,8 +860,8 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
 asynStatus EthercatMCAxis::setPosition(double value)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "setPosition(%d position=%g egu=%g\n",
-            axisNo_, value, value * drvlocal.mres);
+            "%s setPosition(%d position=%g egu=%g\n",
+             modulName, axisNo_, value, value * drvlocal.mres);
   return asynSuccess;
 }
 
@@ -903,7 +913,7 @@ asynStatus EthercatMCAxis::updateMresSoftLimitsIfDirty(int line)
 {
   asynStatus status = asynSuccess;
   asynPrint(pC_->pasynUserController_, ASYN_TRACEIO_DRIVER,
-            "called from %d\n",line);
+            "%s called from %d\n", modulName, line);
   if (drvlocal.dirty.motorLimits && status == asynSuccess) status = setMotorLimitsOnAxisIfDefined();
   return status;
 }
@@ -916,8 +926,8 @@ asynStatus EthercatMCAxis::resetAxis(void)
   drvlocal.cmdErrorMessage[0] = 0;
   status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCErr_, &EthercatMCErr);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "resetAxis(%d status=%d EthercatMCErr)=%d\n",
-            axisNo_, (int)status, EthercatMCErr);
+            "%s resetAxis(%d status=%d EthercatMCErr)=%d\n",
+             modulName, axisNo_, (int)status, EthercatMCErr);
 
   if (EthercatMCErr) {
     /* Soft reset of the axis */
@@ -930,8 +940,8 @@ asynStatus EthercatMCAxis::resetAxis(void)
   }
   resetAxisReturn:
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "resetAxis(%d) status=%s (%d)\n",
-            axisNo_, pasynManager->strStatus(status), (int)status);
+            "%s resetAxis(%d) status=%s (%d)\n",
+             modulName, axisNo_, pasynManager->strStatus(status), (int)status);
   return status;
 }
 
@@ -960,8 +970,8 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
     sprintf(pC_->outString_, "Main.M%d.%s?;Main.M%d.%s?", axisNo_, "bBusy", axisNo_, "bEnabled");
     status = pC_->writeReadOnErrorDisconnect();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "out=%s in=%s status=%s (%d)\n",
-              pC_->outString_, pC_->inString_,
+              "%s out=%s in=%s status=%s (%d)\n",
+               modulName, pC_->outString_, pC_->inString_,
               pasynManager->strStatus(status), (int)status);
     if (status) return status;
     if (!strcmp("0;1", pC_->inString_)) {
@@ -983,7 +993,7 @@ asynStatus EthercatMCAxis::stopAxisInternal(const char *function_name, double ac
   asynStatus status;
   drvlocal.nCommand = 0;
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "stopAxisInternal(%d) (%s)\n",  axisNo_, function_name);
+            "%s stopAxisInternal(%d) (%s)\n",   modulName, axisNo_, function_name);
   status = setValueOnAxisVerify("bExecute", "bExecute", 0, 1);
   if (status) drvlocal.mustStop = 1;
   return status;
@@ -1053,8 +1063,8 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
                     drvlocal.eeAxisError == eeAxisErrorMCUError);
     setIntegerParam(pC_->EthercatMCErrId_, EPICS_nErrorId);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) callParamCallbacksUpdateError eeAxisError=%d old=%d ErrID=0x%x old=0x%x\n",
-              axisNo_, drvlocal.eeAxisError, drvlocal.old_eeAxisError,
+              "%s poll(%d) callParamCallbacksUpdateError eeAxisError=%d old=%d ErrID=0x%x old=0x%x\n",
+               modulName, axisNo_, drvlocal.eeAxisError, drvlocal.old_eeAxisError,
               EPICS_nErrorId, drvlocal.old_EPICS_nErrorId);
 
     drvlocal.old_eeAxisError = drvlocal.eeAxisError;
@@ -1110,8 +1120,8 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     if (axisNo_ != motor_axis_no) return asynError;
     if (!drvlocal.supported.stAxisStatus_V00) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "pollAll(%d) fActPosition=%f\n",
-                axisNo_, pst_axis_status->fActPosition);
+                "%s pollAll(%d) fActPosition=%f\n",
+                 modulName, axisNo_, pst_axis_status->fActPosition);
 
       setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
       setIntegerParam(pC_->motorFlagsStopOnProblem_, 0);
@@ -1140,8 +1150,8 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     return asynSuccess;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "pollAll(%d) line=%d nvals=%d\n",
-            axisNo_, __LINE__, nvals);
+            "%s pollAll(%d) line=%d nvals=%d\n",
+             modulName, axisNo_, __LINE__, nvals);
   drvlocal.supported.stAxisStatus_V00 = 0;
   return asynError;
 }
@@ -1183,7 +1193,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     }
     if (drvlocal.dirty.oldStatusDisconnected) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "connected(%d)\n", axisNo_);
+                "%s connected(%d)\n",  modulName, axisNo_);
       drvlocal.dirty.oldStatusDisconnected = 0;
     }
   }
@@ -1195,8 +1205,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   }
   if (comStatus) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "out=%s in=%s return=%s (%d)\n",
-              pC_->outString_, pC_->inString_,
+              "%s out=%s in=%s return=%s (%d)\n",
+               modulName, pC_->outString_, pC_->inString_,
               pasynManager->strStatus(comStatus), (int)comStatus);
     goto skip;
   }
@@ -1243,17 +1253,20 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 
   if (drvlocal.old_st_axis_status.bHomed != st_axis_status.bHomed) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) homed=%d\n", axisNo_, st_axis_status.bHomed);
+              "%s poll(%d) homed=%d\n",
+              modulName, axisNo_, st_axis_status.bHomed);
     drvlocal.old_st_axis_status.bHomed =  st_axis_status.bHomed;
   }
   if (drvlocal.old_st_axis_status.bLimitBwd != st_axis_status.bLimitBwd) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) LLS=%d\n", axisNo_, !st_axis_status.bLimitBwd);
+              "%s poll(%d) LLS=%d\n",
+              modulName, axisNo_, !st_axis_status.bLimitBwd);
     drvlocal.old_st_axis_status.bLimitBwd =  st_axis_status.bLimitBwd;
   }
   if (drvlocal.old_st_axis_status.bLimitFwd != st_axis_status.bLimitFwd) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) HLS=%d\n", axisNo_,!st_axis_status.bLimitFwd);
+              "%s poll(%d) HLS=%d\n",
+              modulName, axisNo_,!st_axis_status.bLimitFwd);
     drvlocal.old_st_axis_status.bLimitFwd = st_axis_status.bLimitFwd;
   }
 
@@ -1263,7 +1276,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "poll(%d) mvnNRdyNex=%d Old=%d bBusy=%d bExecute=%d bEnabled=%d motorDiff=%d waitNumPollsBeforeReady=%d\n",
+              "%s poll(%d) mvnNRdyNex=%d Old=%d bBusy=%d bExecute=%d bEnabled=%d motorDiff=%d waitNumPollsBeforeReady=%d\n",
+               modulName,
               axisNo_, st_axis_status.mvnNRdyNex, drvlocal.supported.bBusyOldStyle,
               st_axis_status.bBusy, st_axis_status.bExecute,
               st_axis_status.bEnabled, st_axis_status.motorDiffPostion,
@@ -1273,8 +1287,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   } else {
     if (drvlocal.oldMvnNotRdy != st_axis_status.mvnNRdyNex) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "poll(%d) mvnNRdyNex=%d Old=%d bBusy=%d bExecute=%d bEnabled=%d motorDiff=%d fActPosition=%g\n",
-                axisNo_, st_axis_status.mvnNRdyNex,
+                "%s poll(%d) mvnNRdyNex=%d Old=%d bBusy=%d bExecute=%d bEnabled=%d motorDiff=%d fActPosition=%g\n",
+                 modulName, axisNo_, st_axis_status.mvnNRdyNex,
                 drvlocal.supported.bBusyOldStyle,
                 st_axis_status.bBusy, st_axis_status.bExecute,
                 st_axis_status.bEnabled, st_axis_status.motorDiffPostion,
@@ -1295,8 +1309,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
       char sErrorMessage[256];
       memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "poll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
-                axisNo_, st_axis_status.bError,
+                "%s poll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
+                 modulName, axisNo_, st_axis_status.bError,
                 st_axis_status.nErrorId);
       drvlocal.old_bError = st_axis_status.bError;
       drvlocal.old_MCU_nErrorId = st_axis_status.nErrorId;
@@ -1361,7 +1375,7 @@ asynStatus EthercatMCAxis::setClosedLoop(bool closedLoop)
 {
   int value = closedLoop ? 1 : 0;
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setClosedLoop(%d)=%d\n", axisNo_, value);
+            "%s setClosedLoop(%d)=%d\n",  modulName, axisNo_, value);
   if (drvlocal.axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
     return enableAmplifier(value);
   }
@@ -1376,20 +1390,22 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #ifdef motorRecDirectionString
   } else if (function == pC_->motorRecDirection_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setIntegerParam(%d motorRecDirection_)=%d\n", axisNo_, value);
+              "%s setIntegerParam(%d motorRecDirection_)=%d\n",
+              modulName, axisNo_, value);
 #endif
 #ifdef EthercatMCProcHomString
   } else if (function == pC_->EthercatMCProcHom_) {
     /* If value != 0 the axis can be homed. Show warning if it isn't homed */
     setIntegerParam(pC_->motorFlagsShowNotHomed_, value);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setIntegerParam(%d ProcHom_)=%d\n", axisNo_, value);
+              "%s setIntegerParam(%d ProcHom_)=%d\n",  modulName, axisNo_, value);
 #endif
 #ifdef EthercatMCErrRstString
   } else if (function == pC_->EthercatMCErrRst_) {
     if (value) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "setIntegerParam(%d ErrRst_)=%d\n", axisNo_, value);
+                "%s setIntegerParam(%d ErrRst_)=%d\n",
+                modulName, axisNo_, value);
       /*  We do not want to call the base class */
       return resetAxis();
     }
@@ -1415,14 +1431,16 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
   asynStatus status;
   if (function == pC_->motorHighLimit_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorHighLimit_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorHighLimit_)=%g\n",
+               modulName, axisNo_, value);
     drvlocal.motorHighLimit = value;
     drvlocal.defined.motorHighLimit = 1;
     drvlocal.dirty.motorLimits = 1;
     setMotorLimitsOnAxisIfDefined();
   } else if (function == pC_->motorLowLimit_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorLowLimit_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorLowLimit_)=%g\n",
+               modulName, axisNo_, value);
     drvlocal.motorLowLimit = value;
     drvlocal.defined.motorLowLimit = 1;
     drvlocal.dirty.motorLimits = 1;
@@ -1430,7 +1448,8 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 #ifdef motorRecResolutionString
   } else if (function == pC_->motorRecResolution_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorRecResolution_=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorRecResolution_=%g\n",
+              modulName, axisNo_, value);
     drvlocal.mres = value;
     status = setMotorLimitsOnAxisIfDefined();
 #endif
@@ -1438,28 +1457,28 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 
   if (function == pC_->motorMoveRel_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorMoveRel_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorMoveRel_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorMoveAbs_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorMoveAbs_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorMoveAbs_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorMoveVel_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorMoveVel_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorMoveVel_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorHome_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorHome__)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorHome__)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorStop_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorStop_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorStop_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorVelocity_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorVelocity_=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorVelocity_=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorVelBase_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorVelBase_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorVelBase_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorAccel_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorAccel_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorAccel_)=%g\n", modulName, axisNo_, value);
 #if 0
   } else if (function == pC_->motorPosition_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -1470,72 +1489,72 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 #endif
   } else if (function == pC_->motorDeferMoves_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motmotorDeferMoves_=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motmotorDeferMoves_=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorMoveToHome_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motmotorMoveToHome_=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motmotorMoveToHome_=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorResolution_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorResolution_=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorResolution_=%g\n",  modulName, axisNo_, value);
   } else if (function == pC_->motorEncoderRatio_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorEncoderRatio_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorEncoderRatio_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorPGain_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorPGain_oveRel_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorPGain_oveRel_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorIGain_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorIGain_oveRel_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorIGain_oveRel_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorDGain_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoublmotor(%d motorDGain_oveRel_)=%g\n", axisNo_, value);
+              "%s setDoublmotor(%d motorDGain_oveRel_)=%g\n", modulName, axisNo_, value);
     /* Limits handled above */
 
 #ifdef motorPowerAutoOnOffString
   } else if (function == pC_->motorPowerAutoOnOff_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorPowerAutoOnOff_%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorPowerAutoOnOff_%g\n", modulName, axisNo_, value);
 #endif
 #ifdef motorPowerOnDelayString
   } else if (function == pC_->motorPowerOnDelay_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorPowerOnDelay_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorPowerOnDelay_)=%g\n", modulName, axisNo_, value);
 #endif
 #ifdef motorPowerOffDelayString
   } else if (function == pC_->motorPowerOffDelay_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorPowerOffDelay_=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorPowerOffDelay_=%g\n", modulName, axisNo_, value);
 #endif
 #ifdef motorPowerOffFractionString
   } else if (function == pC_->motorPowerOffFraction_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motomotorPowerOffFraction_=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motomotorPowerOffFraction_=%g\n", modulName, axisNo_, value);
 #endif
 #ifdef motorPostMoveDelayString
   } else if (function == pC_->motorPostMoveDelay_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorPostMoveDelay_=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorPostMoveDelay_=%g\n", modulName, axisNo_, value);
 #endif
   } else if (function == pC_->motorStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorStatus_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorStatus_)=%g\n", modulName, axisNo_, value);
   } else if (function == pC_->motorUpdateStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorUpdateStatus_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorUpdateStatus_)=%g\n", modulName, axisNo_, value);
 #ifdef motorRecOffsetString
   } else if (function == pC_->motorRecOffset_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d motorRecOffset_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d motorRecOffset_)=%g\n", modulName, axisNo_, value);
 #endif
 #ifdef EthercatMCHVELFRMString
   } else if (function == pC_->EthercatMCHVELfrm_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d HVELfrm_)=%g\n", axisNo_, value);
+              "%s setDoubleParam(%d HVELfrm_)=%g\n", modulName, axisNo_, value);
 #endif
 #ifdef EthercatMCPosHomString
   } else if (function == pC_->EthercatMCPosHom_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setDoubleParam(%d PosHom_)=%f\n", axisNo_, value);
+              "%s setDoubleParam(%d PosHom_)=%f\n", modulName, axisNo_, value);
 #endif
   }
 
@@ -1547,9 +1566,11 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
 {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "setStringParamDbgStrToMcu(%d)=%s\n", axisNo_, value);
+              "%s setStringParamDbgStrToMcu(%d)=%s\n",
+              modulName, axisNo_, value);
     const char * const Main_this_str = "Main.this.";
     const char * const Sim_this_str = "Sim.this.";
+#if 0
     unsigned adsport;
     unsigned indexGroup;
     unsigned indexOffset;
@@ -1557,7 +1578,8 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
     double   fvalue;
     int nvals = 0;
     int retryCount = 1;
-
+#endif
+    
     /* Check the string. E.g. Main.this. and Sim.this. are passed
        as Main.M1 or Sim.M1
        ADR commands are handled below */
