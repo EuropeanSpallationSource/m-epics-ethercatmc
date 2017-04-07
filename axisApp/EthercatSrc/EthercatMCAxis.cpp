@@ -1113,8 +1113,8 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
                 "pollAll(%d) fActPosition=%f\n",
                 axisNo_, pst_axis_status->fActPosition);
 
-      setIntegerParam(pC_->motorStatusHomeOnLs_, 1);
-      setIntegerParam(pC_->motorStopOnProblem_, 0);
+      setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
+      setIntegerParam(pC_->motorFlagsStopOnProblem_, 0);
     }
     drvlocal.supported.stAxisStatus_V00 = 1;
 
@@ -1381,7 +1381,7 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #ifdef EthercatMCProcHomString
   } else if (function == pC_->EthercatMCProcHom_) {
     /* If value != 0 the axis can be homed. Show warning if it isn't homed */
-    setIntegerParam(pC_->motorShowNotHomed_, value);
+    setIntegerParam(pC_->motorFlagsShowNotHomed_, value);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "setIntegerParam(%d ProcHom_)=%d\n", axisNo_, value);
 #endif
