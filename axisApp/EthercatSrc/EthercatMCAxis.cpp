@@ -800,6 +800,7 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   if (status == asynSuccess) status = pC_->getDoubleParam(axisNo_,
                                                           pC_->EthercatMCVelToHom_,
                                                           &velToHom);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCVel_RB_, velToHom);
   if (status == asynSuccess) status = pC_->getDoubleParam(axisNo_,
                                                           pC_->EthercatMCVelFrmHom_,
                                                           &velFrmHom);
@@ -1243,6 +1244,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.mres;
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
     drvlocal.old_st_axis_status.fActPosition = st_axis_status.fActPosition;
+    setDoubleParam(pC_->EthercatMCVel_RB_, st_axis_status.fVelocity);
   }
 
   if (drvlocal.externalEncoderStr) {
@@ -1579,7 +1581,7 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
     int nvals = 0;
     int retryCount = 1;
 #endif
-    
+
     /* Check the string. E.g. Main.this. and Sim.this. are passed
        as Main.M1 or Sim.M1
        ADR commands are handled below */

@@ -59,6 +59,13 @@ record(ai, "$(PREFIX)$(R)VelAct")
     field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(PREFIX)$(R)Vel-RB")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Vel-RB")
+    field(SCAN, "I/O Intr")
+}
+
 record(ai, "$(PREFIX)$(R)Acc-RB")
 {
     field(DTYP, "asynFloat64")

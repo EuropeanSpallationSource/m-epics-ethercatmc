@@ -3445,13 +3445,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <auto_size>false</auto_size>
     <read_only>false</read_only>
-    <text>VelAct</text>
+    <text>Vel-RB</text>
     <show_units>false</show_units>
     <height>26</height>
     <multiline_input>false</multiline_input>
     <border_width>2</border_width>
     <visible>true</visible>
-    <pv_name>$(P)$(R)VelAct</pv_name>
+    <pv_name>$(P)$(R)Vel-RB</pv_name>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
     </border_color>
@@ -3481,8 +3481,8 @@ $(pv_value)</tooltip>
       <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
     </background_color>
     <password_input>false</password_input>
-    <width>71</width>
-    <x>114</x>
+    <width>63</width>
+    <x>145</x>
     <y>183</y>
     <foreground_color>
       <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
@@ -3604,7 +3604,7 @@ $(pv_value)</tooltip>
     <wuid>4af446dc:159df091b0b:-7d67</wuid>
     <transparent>true</transparent>
     <auto_size>true</auto_size>
-    <text>VelAct</text>
+    <text>VelAct Vel-RB</text>
     <scripts />
     <height>15</height>
     <border_width>2</border_width>
@@ -3623,8 +3623,8 @@ $(pv_value)</tooltip>
     <background_color>
       <color name="IO Background" red="255" green="255" blue="205" />
     </background_color>
-    <width>38</width>
-    <x>128</x>
+    <width>82</width>
+    <x>109</x>
     <name>Label Template_22</name>
     <y>171</y>
     <foreground_color>
@@ -3909,5 +3909,68 @@ $(pv_value)</tooltip>
       <opifont.name fontName="arial" height="10" style="0">IO Normal</opifont.name>
     </font>
     <off_label>stpr</off_label>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
+    <alarm_pulsing>false</alarm_pulsing>
+    <precision>1</precision>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <horizontal_alignment>0</horizontal_alignment>
+    <rules>
+      <rule name="BorderRule" prop_id="border_style" out_exp="false">
+        <exp bool_exp="pv0==1">
+          <value>9</value>
+        </exp>
+        <pv trig="true">$(pv_name)</pv>
+      </rule>
+    </rules>
+    <pv_value />
+    <auto_size>false</auto_size>
+    <read_only>false</read_only>
+    <text>VelAct</text>
+    <show_units>false</show_units>
+    <height>26</height>
+    <multiline_input>false</multiline_input>
+    <border_width>2</border_width>
+    <visible>true</visible>
+    <pv_name>$(P)$(R)VelAct</pv_name>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <precision_from_pv>false</precision_from_pv>
+    <widget_type>Text Input</widget_type>
+    <confirm_message></confirm_message>
+    <name>Text Input Template_49</name>
+    <style>1</style>
+    <actions hook="false" hook_all="false" />
+    <border_style>6</border_style>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <show_native_border>true</show_native_border>
+    <enabled>true</enabled>
+    <wuid>2b497d58:15aeada183a:-619d</wuid>
+    <next_focus>0</next_focus>
+    <scripts />
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <format_type>0</format_type>
+    <limits_from_pv>true</limits_from_pv>
+    <background_color>
+      <color name="IO OutputPV Bg" red="121" green="123" blue="126" />
+    </background_color>
+    <password_input>false</password_input>
+    <width>64</width>
+    <x>88</x>
+    <y>183</y>
+    <foreground_color>
+      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+    </foreground_color>
+    <font>
+      <opifont.name fontName="arial" height="10" style="1">IO Output 1</opifont.name>
+    </font>
   </widget>
 </display>
