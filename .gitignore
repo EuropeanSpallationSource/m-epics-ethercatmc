@@ -11,6 +11,7 @@ builddir/
 dbd/
 html/
 iocBoot/iocEthercatMC/
+iocBoot/iocIcePAP/
 include/
 lib/
 templates/
