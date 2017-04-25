@@ -42,6 +42,7 @@ extern "C" {
 }
 
 typedef struct {
+  /* V1 members */
   int bEnable;           /*  1 */
   int bReset;            /*  2 */
   int bExecute;          /*  3 */
@@ -65,6 +66,10 @@ typedef struct {
   double fActDiff;       /* 21 */
   int bHomed;            /* 22 */
   int bBusy;             /* 23 */
+  /* V2 members */
+  double positionRaw;
+  int atTarget;
+  /* neither V1 nor V2, but calculated here */
   int mvnNRdyNex; /* Not in struct. Calculated in poll() */
   int motorStatusDirection; /* Not in struct. Calculated in pollAll() */
   int motorDiffPostion;     /* Not in struct. Calculated in poll() */
@@ -108,7 +113,6 @@ private:
     const char *cfgfileStr;
     const char *cfgDebug_str;
     int axisFlags;
-    int oldMvnNotRdy;
     int MCU_nErrorId;     /* nErrorID from MCU */
     int old_MCU_nErrorId; /* old nErrorID from MCU */
     int old_EPICS_nErrorId; /* old nErrorID from MCU */
@@ -125,12 +129,11 @@ private:
     struct {
       int          nMotionAxisID;     /* Needed for ADR commands */
       unsigned int motorLimits      :1;
-      unsigned int stAxisStatus_V00 :1;
+      unsigned int stAxisStatus_Vxx :1;
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialUpdate    :1;
       unsigned int sErrorMessage    :1; /* From MCU */
       unsigned int readConfigFile   :1;
-      unsigned int bBusyOldStyle    :1;
     }  dirty;
 
     /* Which values have been defined: at startup none */
@@ -139,8 +142,11 @@ private:
       unsigned int motorLowLimit    :1;
     }  defined;
     struct {
-      unsigned int stAxisStatus_V00 :1;
+      unsigned int stAxisStatus_V1  :1;
+      unsigned int stAxisStatus_V2  :1;
       unsigned int bBusyOldStyle    :1;
+      int          statusVer;           /* 0==V1, busy old style 1==V1, new style*/
+                                        /* 2==V2 */
     }  supported;
     /* Error texts when we talk to the controller, there is not an "OK"
        Or, failure in setValueOnAxisVerify() */

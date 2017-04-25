@@ -260,7 +260,6 @@ asynStatus EthercatMCAxis::readConfigFile(void)
 asynStatus EthercatMCAxis::initialUpdate(void)
 {
   asynStatus status = asynSuccess;
-  const char *  const stv1_str = "stv1";
 
   /*  Check for Axis ID */
   int axisID = getMotionAxisID();
@@ -270,24 +269,6 @@ asynStatus EthercatMCAxis::initialUpdate(void)
   }
   status = readConfigFile();
   if (status) return status;
-
-  if (drvlocal.dirty.bBusyOldStyle) {
-    sprintf(pC_->outString_, "%s", "ADSPORT=852/.THIS.sFeatures?");
-    pC_->inString_[0] = 0;
-    status = pC_->writeReadController();
-    if (!strncmp(pC_->inString_, stv1_str, strlen(stv1_str)) &&
-        ((pC_->inString_[strlen(stv1_str)] == ';') ||
-         (pC_->inString_[strlen(stv1_str)] == '\0'))) {
-      drvlocal.supported.bBusyOldStyle = 1;
-    }
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s initialUpdate(%d) out=%s in=%s bBusyOldStyl=%d status=%s (%d)\n",
-               modulName,
-              axisNo_,pC_->outString_, pC_->inString_,
-              drvlocal.supported.bBusyOldStyle,
-              pasynManager->strStatus(status), (int)status);
-    drvlocal.dirty.bBusyOldStyle = 0;
-  }
 
   (void)updateMresSoftLimitsIfDirty(__LINE__);
   if ((status == asynSuccess) &&
@@ -1082,78 +1063,160 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 
   int motor_axis_no = 0;
   int nvals;
-
-  /* Read the complete Axis status */
-  sprintf(pC_->outString_, "Main.M%d.stAxisStatus?", axisNo_);
-  comStatus = pC_->writeReadOnErrorDisconnect();
-  if (comStatus) return comStatus;
-  drvlocal.dirty.stAxisStatus_V00 = 0;
-  nvals = sscanf(pC_->inString_,
-                 "Main.M%d.stAxisStatus="
-                 "%d,%d,%d,%u,%u,%lf,%lf,%lf,%lf,%d,"
-                 "%d,%d,%d,%lf,%d,%d,%d,%u,%lf,%lf,%lf,%d,%d",
-                 &motor_axis_no,
-                 &pst_axis_status->bEnable,        /*  1 */
-                 &pst_axis_status->bReset,         /*  2 */
-                 &pst_axis_status->bExecute,       /*  3 */
-                 &pst_axis_status->nCommand,       /*  4 */
-                 &pst_axis_status->nCmdData,       /*  5 */
-                 &pst_axis_status->fVelocity,      /*  6 */
-                 &pst_axis_status->fPosition,      /*  7 */
-                 &pst_axis_status->fAcceleration,  /*  8 */
-                 &pst_axis_status->fDecceleration, /*  9 */
-                 &pst_axis_status->bJogFwd,        /* 10 */
-                 &pst_axis_status->bJogBwd,        /* 11 */
-                 &pst_axis_status->bLimitFwd,      /* 12 */
-                 &pst_axis_status->bLimitBwd,      /* 13 */
-                 &pst_axis_status->fOverride,      /* 14 */
-                 &pst_axis_status->bHomeSensor,    /* 15 */
-                 &pst_axis_status->bEnabled,       /* 16 */
-                 &pst_axis_status->bError,         /* 17 */
-                 &pst_axis_status->nErrorId,       /* 18 */
-                 &pst_axis_status->fActVelocity,   /* 19 */
-                 &pst_axis_status->fActPosition,   /* 20 */
-                 &pst_axis_status->fActDiff,       /* 21 */
-                 &pst_axis_status->bHomed,         /* 22 */
-                 &pst_axis_status->bBusy           /* 23 */);
-
-  if (nvals == 24) {
-    if (axisNo_ != motor_axis_no) return asynError;
-    if (!drvlocal.supported.stAxisStatus_V00) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s pollAll(%d) fActPosition=%f\n",
-                 modulName, axisNo_, pst_axis_status->fActPosition);
-
-      setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
-      setIntegerParam(pC_->motorFlagsStopOnProblem_, 0);
+  struct {
+    double velocitySetpoint;
+    int cycleCounter;
+    unsigned int EtherCATtime_low32;
+    unsigned int EtherCATtime_high32;
+    int command;
+    int cmdData;
+    int reset;
+    int moving;
+    int stall;
+  } notUsed;
+  if (drvlocal.supported.stAxisStatus_V2 || drvlocal.dirty.stAxisStatus_Vxx) {
+    /* V2 is supported, use it. Or. unkown: try it as well */
+    sprintf(pC_->outString_, "Main.M%d.stAxisStatusV2?", axisNo_);
+    comStatus = pC_->writeReadOnErrorDisconnect();
+    nvals = sscanf(pC_->inString_,
+                   "Main.M%d.stAxisStatusV2="
+                   "%lf,%lf,%lf,%lf,%lf,%lf,%lf,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
+                   &motor_axis_no,
+                   &pst_axis_status->fPosition,
+                   &pst_axis_status->fActPosition,
+                   &pst_axis_status->positionRaw,          /* Send as uint64; parsed as double ! */
+                   &notUsed.velocitySetpoint,
+                   &pst_axis_status->fActVelocity,
+                   &pst_axis_status->fAcceleration,
+                   &pst_axis_status->fDecceleration,
+                   &notUsed.cycleCounter,
+                   &notUsed.EtherCATtime_low32,
+                   &notUsed.EtherCATtime_high32,
+                   &pst_axis_status->bEnable,
+                   &pst_axis_status->bEnabled,
+                   &pst_axis_status->bExecute,
+                   &notUsed.command,
+                   &notUsed.cmdData,
+                   &pst_axis_status->bLimitBwd,
+                   &pst_axis_status->bLimitFwd,
+                   &pst_axis_status->bHomeSensor,
+                   &pst_axis_status->bError,
+                   &pst_axis_status->nErrorId,
+                   &notUsed.reset,
+                   &pst_axis_status->bHomed,
+                   &pst_axis_status->bBusy,
+                   &pst_axis_status->atTarget,
+                   &notUsed.moving,
+                   &notUsed.stall);
+    if (nvals == 27) {
+      if (drvlocal.dirty.stAxisStatus_Vxx) {
+        drvlocal.supported.stAxisStatus_V2 = 1;
+        setIntegerParam(pC_->motorStatusHasEncoder_, 1);
+      }
+      pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy || !pst_axis_status->atTarget;
     }
-    drvlocal.supported.stAxisStatus_V00 = 1;
+  }
+  if (!drvlocal.supported.stAxisStatus_V2) {
+    /* Read the complete Axis status */
+    sprintf(pC_->outString_, "Main.M%d.stAxisStatus?", axisNo_);
+    comStatus = pC_->writeReadOnErrorDisconnect();
+    if (comStatus) return comStatus;
+    nvals = sscanf(pC_->inString_,
+                   "Main.M%d.stAxisStatus="
+                   "%d,%d,%d,%u,%u,%lf,%lf,%lf,%lf,%d,"
+                   "%d,%d,%d,%lf,%d,%d,%d,%u,%lf,%lf,%lf,%d,%d",
+                   &motor_axis_no,
+                   &pst_axis_status->bEnable,        /*  1 */
+                   &pst_axis_status->bReset,         /*  2 */
+                   &pst_axis_status->bExecute,       /*  3 */
+                   &pst_axis_status->nCommand,       /*  4 */
+                   &pst_axis_status->nCmdData,       /*  5 */
+                   &pst_axis_status->fVelocity,      /*  6 */
+                   &pst_axis_status->fPosition,      /*  7 */
+                   &pst_axis_status->fAcceleration,  /*  8 */
+                   &pst_axis_status->fDecceleration, /*  9 */
+                   &pst_axis_status->bJogFwd,        /* 10 */
+                   &pst_axis_status->bJogBwd,        /* 11 */
+                   &pst_axis_status->bLimitFwd,      /* 12 */
+                   &pst_axis_status->bLimitBwd,      /* 13 */
+                   &pst_axis_status->fOverride,      /* 14 */
+                   &pst_axis_status->bHomeSensor,    /* 15 */
+                   &pst_axis_status->bEnabled,       /* 16 */
+                   &pst_axis_status->bError,         /* 17 */
+                   &pst_axis_status->nErrorId,       /* 18 */
+                   &pst_axis_status->fActVelocity,   /* 19 */
+                   &pst_axis_status->fActPosition,   /* 20 */
+                   &pst_axis_status->fActDiff,       /* 21 */
+                   &pst_axis_status->bHomed,         /* 22 */
+                   &pst_axis_status->bBusy           /* 23 */);
 
-    /* default: mvnNRdyNex follows bBusy */
+    if (nvals != 24) {
+      drvlocal.supported.stAxisStatus_V1 = 0;
+      goto pollAllWrongnvals;
+    }
+    drvlocal.supported.stAxisStatus_V1 = 1;
+    /* V1 comes in 2 flavours, old and new busy handling */
+    if (drvlocal.dirty.stAxisStatus_Vxx) {
+      const char *  const stv1_str = "stv1";
+      sprintf(pC_->outString_, "%s", "ADSPORT=852/.THIS.sFeatures?");
+      pC_->inString_[0] = 0;
+      comStatus = pC_->writeReadController();
+      if (comStatus) return comStatus;
+      if (!strncmp(pC_->inString_, stv1_str, strlen(stv1_str)) &&
+          ((pC_->inString_[strlen(stv1_str)] == ';') ||
+           (pC_->inString_[strlen(stv1_str)] == '\0'))) {
+        drvlocal.supported.bBusyOldStyle = 1;
+      }
+    }
+    /* V1 new style: mvnNRdyNex follows bBusy */
     pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
     if (drvlocal.supported.bBusyOldStyle) {
-      /* "Old style":done (and not busy) when bEcecute is 0 */
+      /* "V1 old style":done when bEcecute is 0 */
       pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
     }
+  } /* End of V1 */
 
-    /* Use previous fActPosition and current fActPosition to calculate direction.*/
-    if (pst_axis_status->fActPosition > drvlocal.old_st_axis_status.fActPosition) {
-      pst_axis_status->motorDiffPostion = 1;
-      pst_axis_status->motorStatusDirection = 1;
-    } else if (pst_axis_status->fActPosition < drvlocal.old_st_axis_status.fActPosition) {
-      pst_axis_status->motorDiffPostion = 1;
-      pst_axis_status->motorStatusDirection = 0;
-    }
-    if (!pst_axis_status->bEnabled) {
-      /* if the motor is moved by with amplifier off, report this */
-      pst_axis_status->mvnNRdyNex |= pst_axis_status->motorDiffPostion;
-    }
-    return asynSuccess;
+  /* From here on, either V1 or V2 is supported */
+  if (drvlocal.dirty.stAxisStatus_Vxx) {
+    if (drvlocal.supported.stAxisStatus_V1 && drvlocal.supported.bBusyOldStyle)
+      drvlocal.supported.statusVer = 0;
+    else if (drvlocal.supported.stAxisStatus_V1 && !drvlocal.supported.bBusyOldStyle)
+      drvlocal.supported.statusVer = 1;
+    else if (drvlocal.supported.stAxisStatus_V2)
+      drvlocal.supported.statusVer = 2;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s pollAll(%d) nvals=%d V1=%d V2=%d bBusyOldStyle=%d Ver=%d fActPosition=%f\n",
+              modulName, axisNo_, nvals,
+              drvlocal.supported.stAxisStatus_V1,
+              drvlocal.supported.stAxisStatus_V2,
+              drvlocal.supported.bBusyOldStyle,
+              drvlocal.supported.statusVer,
+              pst_axis_status->fActPosition);
+    setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
+    setIntegerParam(pC_->motorFlagsStopOnProblem_, 0);
+    drvlocal.dirty.stAxisStatus_Vxx = 0;
   }
+  if (axisNo_ != motor_axis_no) return asynError;
+
+  /* Use previous fActPosition and current fActPosition to calculate direction.*/
+  if (pst_axis_status->fActPosition > drvlocal.old_st_axis_status.fActPosition) {
+    pst_axis_status->motorDiffPostion = 1;
+    pst_axis_status->motorStatusDirection = 1;
+  } else if (pst_axis_status->fActPosition < drvlocal.old_st_axis_status.fActPosition) {
+    pst_axis_status->motorDiffPostion = 1;
+    pst_axis_status->motorStatusDirection = 0;
+  }
+  if (!pst_axis_status->bEnabled) {
+    /* if the motor is moved by with amplifier off, report this */
+    pst_axis_status->mvnNRdyNex |= pst_axis_status->motorDiffPostion;
+  }
+  return asynSuccess;
+
+
+pollAllWrongnvals:
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s pollAll(%d) line=%d nvals=%d\n",
-             modulName, axisNo_, __LINE__, nvals);
-  drvlocal.supported.stAxisStatus_V00 = 0;
+            "%s pollAll(%d) nvals=%d in=%s\n",
+            modulName, axisNo_, nvals, pC_->inString_);
   return asynError;
 }
 
@@ -1199,11 +1262,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     }
   }
 
-  if (drvlocal.supported.stAxisStatus_V00 || drvlocal.dirty.stAxisStatus_V00) {
-    comStatus = pollAll(moving, &st_axis_status);
-  } else {
-    comStatus = asynError;
-  }
+  comStatus = pollAll(moving, &st_axis_status);
   if (comStatus) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s out=%s in=%s return=%s (%d)\n",
@@ -1251,6 +1310,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     double fEncPosition;
     comStatus = getValueFromController(drvlocal.externalEncoderStr, &fEncPosition);
     if (!comStatus) setDoubleParam(pC_->motorEncoderPosition_, fEncPosition);
+  } else if (drvlocal.supported.stAxisStatus_V2) {
+    setDoubleParam(pC_->motorEncoderPosition_, st_axis_status.positionRaw);
   }
 
   if (drvlocal.old_st_axis_status.bHomed != st_axis_status.bHomed) {
@@ -1272,30 +1333,34 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     drvlocal.old_st_axis_status.bLimitFwd = st_axis_status.bLimitFwd;
   }
 
-  if (drvlocal.oldMvnNotRdy != st_axis_status.mvnNRdyNex) {
+  if (drvlocal.old_st_axis_status.mvnNRdyNex != st_axis_status.mvnNRdyNex) {
     drvlocal.waitNumPollsBeforeReady = 0;
   }
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s poll(%d) mvnNRdyNex=%d Old=%d bBusy=%d bExecute=%d bEnabled=%d motorDiff=%d waitNumPollsBeforeReady=%d\n",
+              "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d waitNumPollsBeforeReady=%d\n",
                modulName,
-              axisNo_, st_axis_status.mvnNRdyNex, drvlocal.supported.bBusyOldStyle,
+              axisNo_, st_axis_status.mvnNRdyNex,
+              drvlocal.supported.statusVer,
               st_axis_status.bBusy, st_axis_status.bExecute,
-              st_axis_status.bEnabled, st_axis_status.motorDiffPostion,
+              st_axis_status.bEnabled, st_axis_status.atTarget,
               drvlocal.waitNumPollsBeforeReady);
     drvlocal.waitNumPollsBeforeReady--;
     callParamCallbacks();
   } else {
-    if (drvlocal.oldMvnNotRdy != st_axis_status.mvnNRdyNex) {
+    if (drvlocal.old_st_axis_status.mvnNRdyNex != st_axis_status.mvnNRdyNex ||
+        drvlocal.old_st_axis_status.bBusy      != st_axis_status.bBusy ||
+        drvlocal.old_st_axis_status.bEnabled   != st_axis_status.bEnabled ||
+        drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
+        drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s poll(%d) mvnNRdyNex=%d Old=%d bBusy=%d bExecute=%d bEnabled=%d motorDiff=%d fActPosition=%g\n",
+                "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d motorDiff=%d fActPosition=%g\n",
                  modulName, axisNo_, st_axis_status.mvnNRdyNex,
-                drvlocal.supported.bBusyOldStyle,
+                drvlocal.supported.statusVer,
                 st_axis_status.bBusy, st_axis_status.bExecute,
-                st_axis_status.bEnabled, st_axis_status.motorDiffPostion,
-                st_axis_status.fActPosition);
-      drvlocal.oldMvnNotRdy = st_axis_status.mvnNRdyNex;
+                st_axis_status.bEnabled, st_axis_status.atTarget,
+                st_axis_status.motorDiffPostion, st_axis_status.fActPosition);
     }
     setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);
     setIntegerParam(pC_->motorStatusMoving_, st_axis_status.mvnNRdyNex);
@@ -1364,6 +1429,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     }
     callParamCallbacksUpdateError();
   }
+  memcpy(&drvlocal.old_st_axis_status, &st_axis_status,
+         sizeof(drvlocal.old_st_axis_status));
   return asynSuccess;
 
   skip:
