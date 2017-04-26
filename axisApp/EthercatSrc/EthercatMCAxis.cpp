@@ -1307,9 +1307,10 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   }
 
   if (drvlocal.externalEncoderStr) {
-    double fEncPosition;
-    comStatus = getValueFromController(drvlocal.externalEncoderStr, &fEncPosition);
-    if (!comStatus) setDoubleParam(pC_->motorEncoderPosition_, fEncPosition);
+    comStatus = getValueFromController(drvlocal.externalEncoderStr,
+                                       &st_axis_status.positionRaw);
+    if (!comStatus) setDoubleParam(pC_->motorEncoderPosition_,
+                                   st_axis_status.positionRaw);
   } else if (drvlocal.supported.stAxisStatus_V2) {
     setDoubleParam(pC_->motorEncoderPosition_, st_axis_status.positionRaw);
   }
@@ -1355,12 +1356,12 @@ asynStatus EthercatMCAxis::poll(bool *moving)
         drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
         drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d motorDiff=%d fActPosition=%g\n",
+                "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d ENC=%g fActPosition=%g\n",
                  modulName, axisNo_, st_axis_status.mvnNRdyNex,
                 drvlocal.supported.statusVer,
                 st_axis_status.bBusy, st_axis_status.bExecute,
                 st_axis_status.bEnabled, st_axis_status.atTarget,
-                st_axis_status.motorDiffPostion, st_axis_status.fActPosition);
+                st_axis_status.positionRaw, st_axis_status.fActPosition);
     }
     setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);
     setIntegerParam(pC_->motorStatusMoving_, st_axis_status.mvnNRdyNex);
