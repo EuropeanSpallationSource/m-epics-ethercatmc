@@ -71,6 +71,24 @@ static void motorHandleOneArg(const char *myarg_1)
     return;
   }
 
+  /* bAmplifierLockedToBeOff? */
+  if (!strcmp(myarg_1, "bAmplifierLockedToBeOff?")) {
+    cmd_buf_printf("%d", getAmplifierLockedToBeOff(motor_axis_no));
+    return;
+  }
+
+  /******************************************************/
+  /* bAmplifierLockedToBeOff= */
+  nvals = sscanf(myarg_1, "bAmplifierLockedToBeOff=%d", &iValue);
+  if (nvals == 1) {
+    setAmplifierLockedToBeOff(motor_axis_no, iValue);
+    if (iValue) {
+      setAmplifierPercent(motor_axis_no, 0);
+    }
+    cmd_buf_printf("OK");
+    return;
+  }
+
   /* fMotorParkingPosition=100 */
   nvals = sscanf(myarg_1, "fMotorParkingPosition=%lf", &fValue);
   if (nvals == 1) {

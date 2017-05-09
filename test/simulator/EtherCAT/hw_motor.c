@@ -72,6 +72,7 @@ typedef struct
   int nErrorId;
   FILE *logFile;
   int bManualSimulatorMode;
+  int amplifierLockedToBeOff;
 } motor_axis_type;
 
 
@@ -988,7 +989,7 @@ void closeLogFile(int axis_no)
           axis_no);
 
   AXIS_CHECK_RETURN(axis_no);
-          if (motor_axis[axis_no].logFile) {
+  if (motor_axis[axis_no].logFile) {
     fclose(motor_axis[axis_no].logFile);
     motor_axis[axis_no].logFile = NULL;
   }
@@ -1005,3 +1006,22 @@ void setManualSimulatorMode(int axis_no, int manualMode)
   AXIS_CHECK_RETURN(axis_no);
   motor_axis[axis_no].bManualSimulatorMode = manualMode;
 }
+
+
+int getAmplifierLockedToBeOff(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].amplifierLockedToBeOff;
+}
+
+void setAmplifierLockedToBeOff(int axis_no, int value)
+{
+  AXIS_CHECK_RETURN(axis_no);
+  fprintf(stdlog, "%s%s/%s:%d axis_no=%d value=%d\n",
+          motor_axis[axis_no].logFile ? "LLLL " : "",
+          __FILE__, __FUNCTION__, __LINE__,
+          axis_no, value);
+  motor_axis[axis_no].amplifierLockedToBeOff = value;
+}
+
+

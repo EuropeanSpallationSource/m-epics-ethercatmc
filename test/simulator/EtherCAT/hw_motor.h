@@ -218,5 +218,13 @@ void closeLogFile(int axis_no);
 int getManualSimulatorMode(int axis_no);
 void setManualSimulatorMode(int axis_no, int manualMode);
 
+/*
+ * Lock the amplifier to off (even if it should be on)
+ */
+#define AMPLIFIER_LOCKED_TO_BE_OFF_SILENT 1
+#define AMPLIFIER_LOCKED_TO_BE_OFF_LOUD   2
+
+int getAmplifierLockedToBeOff(int axis_no);
+void setAmplifierLockedToBeOff(int axis_no, int value);
 
 #endif /* MOTOR_H */

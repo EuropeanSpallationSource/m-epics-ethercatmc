@@ -9,9 +9,6 @@
 #include "hw_motor.h"
 #include "cmd_EAT.h"
 
-#define AMPLIFIER_LOCKED_TO_BE_OFF_SILENT 1
-#define AMPLIFIER_LOCKED_TO_BE_OFF_LOUD   2
-
 typedef struct
 {
   int    command_no;
@@ -32,7 +29,6 @@ typedef struct
   double positionLagFilterTime;
   double deadTimeCompensation;
   int    positionLagMonitorEnable;
-  int    amplifierLockedToBeOff;
   unsigned nErrorId;
   int inTargetPositionMonitoring;
 } cmd_Motor_cmd_type;
@@ -479,11 +475,6 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("%d", isMotorMoving(motor_axis_no));
     return;
   }
-  /* bAmplifierLockedToBeOff? */
-  if (!strcmp(myarg_1, "bAmplifierLockedToBeOff?")) {
-    cmd_buf_printf("%d", cmd_Motor_cmd[motor_axis_no].amplifierLockedToBeOff);
-    return;
-  }
   /* bError?  */
   if (!strcmp(myarg_1, "bError?")) {
     cmd_buf_printf("%d", get_bError(motor_axis_no));
@@ -672,7 +663,7 @@ static void motorHandleOneArg(const char *myarg_1)
   /* bEnable= */
   nvals = sscanf(myarg_1, "bEnable=%d", &iValue);
   if (nvals == 1) {
-    int amplifierLockedToBeOff = cmd_Motor_cmd[motor_axis_no].amplifierLockedToBeOff;
+    int amplifierLockedToBeOff = getAmplifierLockedToBeOff(motor_axis_no);
     if (amplifierLockedToBeOff) {
       setAmplifierPercent(motor_axis_no, 0);
       if (amplifierLockedToBeOff == AMPLIFIER_LOCKED_TO_BE_OFF_LOUD) {
@@ -682,16 +673,6 @@ static void motorHandleOneArg(const char *myarg_1)
       iValue = 0;
     }
     setAmplifierPercent(motor_axis_no, iValue ? 100 : 0);
-    cmd_buf_printf("OK");
-    return;
-  }
-  /* bAmplifierLockedToBeOff= */
-  nvals = sscanf(myarg_1, "bAmplifierLockedToBeOff=%d", &iValue);
-  if (nvals == 1) {
-    cmd_Motor_cmd[motor_axis_no].amplifierLockedToBeOff = iValue;
-    if (iValue) {
-      setAmplifierPercent(motor_axis_no, 0);
-    }
     cmd_buf_printf("OK");
     return;
   }
