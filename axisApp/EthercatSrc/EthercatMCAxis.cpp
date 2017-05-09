@@ -904,6 +904,7 @@ asynStatus EthercatMCAxis::resetAxis(void)
 {
   asynStatus status = asynSuccess;
   int EthercatMCErr;
+  bool moving;
   /* Reset command error, if any */
   drvlocal.cmdErrorMessage[0] = 0;
   status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCErr_, &EthercatMCErr);
@@ -924,6 +925,8 @@ asynStatus EthercatMCAxis::resetAxis(void)
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s resetAxis(%d) status=%s (%d)\n",
              modulName, axisNo_, pasynManager->strStatus(status), (int)status);
+  /* do a poll */
+  poll(&moving);
   return status;
 }
 
@@ -934,6 +937,7 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
 {
   asynStatus status = asynSuccess;
   unsigned counter = 10;
+  bool moving;
   int ret;
   on = on ? 1 : 0; /* either 0 or 1 */
   status = getValueFromAxis("bEnabled", &ret);
@@ -958,12 +962,21 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
     if (status) return status;
     if (!strcmp("0;1", pC_->inString_)) {
       /* bBusy == 0; bEnabled == 1 */
-      return status;
+      goto enableAmplifierPollAndReturn;
     }
     counter--;
   }
   /* if we come here, it went wrong */
-  return asynError;
+  status = asynError;
+  if (!drvlocal.cmdErrorMessage[0]) {
+    snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+             "enableAmplifier(%d) failed. out=%s in=%s\n",
+             axisNo_, pC_->outString_, pC_->inString_);
+    /* The poller co-ordinates the writing into the parameter library */
+  }
+enableAmplifierPollAndReturn:
+  poll(&moving);
+  return status;
 
 }
 
