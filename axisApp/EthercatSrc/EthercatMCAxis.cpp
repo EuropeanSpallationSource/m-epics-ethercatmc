@@ -967,7 +967,6 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
     counter--;
   }
   /* if we come here, it went wrong */
-  status = asynError;
   if (!drvlocal.cmdErrorMessage[0]) {
     snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
              "enableAmplifier(%d) failed. out=%s in=%s\n",
@@ -1300,6 +1299,12 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setIntegerParam(pC_->motorStatusLowLimit_, !st_axis_status.bLimitBwd);
   setIntegerParam(pC_->motorStatusHighLimit_, !st_axis_status.bLimitFwd);
   setIntegerParam(pC_->motorStatusPowerOn_, st_axis_status.bEnabled);
+  /*
+   * Special : "-En" reflects the hardware status. So if the value changes
+   * in the controller, the PV will reflect it.
+   * See info(asyn:READBACK,"1") in EthercatMC.template
+  */
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCEn_, st_axis_status.bEnabled);
 
   setDoubleParam(pC_->EthercatMCVelAct_, st_axis_status.fActVelocity);
   setDoubleParam(pC_->EthercatMCAcc_RB_, st_axis_status.fAcceleration);
@@ -1468,8 +1473,15 @@ asynStatus EthercatMCAxis::setClosedLoop(bool closedLoop)
 asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 {
   asynStatus status;
-  if (function == pC_->motorClosedLoop_) {
-    ; /* handled via setClosedLoop() */
+  if (function == pC_->EthercatMCEn_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setIntegerParam(%d EthercatMCEn_)=%d\n",
+              modulName, axisNo_, value);
+    /* Set it in the parameter lib; the poller may update it later */
+    pC_->setIntegerParam(axisNo_, pC_->EthercatMCEn_, value);
+    status = enableAmplifier(value);
+    return status;
+
 #ifdef motorRecDirectionString
   } else if (function == pC_->motorRecDirection_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,

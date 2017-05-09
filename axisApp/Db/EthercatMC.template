@@ -95,6 +95,14 @@ record(longout,"$(PREFIX)$(R)ErrRst") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ErrRst")
 }
 
+record(longout,"$(PREFIX)$(R)En") {
+    field(DESC, "Enable Amplifier")
+    field(VAL,  0)
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))En")
+    info(asyn:READBACK,"1")
+}
+
 # Motor offset for this axis
 record(ao,"$(PREFIX)$(R)OFF_") {
     field(DESC, "$(MOTOR_NAME) offset")
