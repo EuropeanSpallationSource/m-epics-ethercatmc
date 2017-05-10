@@ -33,14 +33,14 @@ class Test(unittest.TestCase):
 
     saved_HLM = epics.caget(m1 + '.HLM')
     saved_LLM = epics.caget(m1 + '.LLM')
-    saved_CNEN = epics.caget(m1 + '.CNEN')
+    saved_Enable = epics.caget(m1 + '-En')
 
     # 10% UserPosition
     def test_TC_201(self):
         motor = self.m1
         tc_no = "TC-201-10-percent-dialPosition"
         print '%s' % tc_no
-        epics.caput(motor + '.CNEN', 1)
+        epics.caput(motor + '-En', 1)
         destination =  (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
         epics.caput(motor + '.VAL', destination, wait=True)
 
@@ -48,8 +48,8 @@ class Test(unittest.TestCase):
     # Jog, wait for start, power off, check error, reset error
     def test_TC_202(self):
         motor = self.m1
-        tc_no = "TC-202-JOG-_CNEN"
-        epics.caput(motor + '.CNEN', 0)
+        tc_no = "TC-202-JOG-_Enable"
+        epics.caput(motor + '-En', 0)
         epics.caput(motor + '.JOGF', 1)
         ret = self.lib.waitForStart(motor, tc_no, 2.0)
         # dummy wait
