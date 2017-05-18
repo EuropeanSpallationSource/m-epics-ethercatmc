@@ -70,7 +70,7 @@
 # @type  INTEGER
 # Homing procedure
 
-EthercatMCCreateAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "4", "$(AXISCONFIG)")
+EthercatMCCreateAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "2", "$(AXISCONFIG)")
 
 dbLoadRecords("EthercatMC.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC), VELO=$(VELO), JVEL=$(JVEL), JAR=$(JAR), ACCL=$(ACCL), MRES=$(MRES), ERES=$(ERES), RDBD=$(RDBD), NTMF=$(NTMF), DLLM=$(DLLM), DHLM=$(DHLM), HOMEPROC=$(HOMEPROC)")
 
