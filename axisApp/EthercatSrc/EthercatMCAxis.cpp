@@ -1421,6 +1421,16 @@ asynStatus EthercatMCAxis::poll(bool *moving)
                    "%x ...is still being processed",
                    st_axis_status.nErrorId);
           break;
+        case 0x4550:
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "%x Following err mon pos",
+                   st_axis_status.nErrorId);
+          break;
+        case 0x4551:
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "%x Following err mon vel",
+                   st_axis_status.nErrorId);
+          break;
         case 0x4B0A:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
                    "%x Homing not successful or not started (home sensor?)",
