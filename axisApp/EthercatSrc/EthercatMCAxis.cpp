@@ -963,6 +963,9 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
     if (!strcmp("0;1", pC_->inString_)) {
       /* bBusy == 0; bEnabled == 1 */
       goto enableAmplifierPollAndReturn;
+    } else if (drvlocal.supported.bBusyOldStyle && !strcmp("1;1", pC_->inString_)) {
+      /* Old Busy handling: bBusy=1 is OK */
+      goto enableAmplifierPollAndReturn;
     }
     counter--;
   }
