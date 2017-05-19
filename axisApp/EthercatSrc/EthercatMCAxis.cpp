@@ -1424,6 +1424,14 @@ asynStatus EthercatMCAxis::poll(bool *moving)
                    "%x ...is still being processed",
                    st_axis_status.nErrorId);
           break;
+        case 0x4460:
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "%x Low soft limit", st_axis_status.nErrorId);
+          break;
+        case 0x4461:
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "%x High soft limit", st_axis_status.nErrorId);
+          break;
         case 0x4550:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
                    "%x Following err mon pos",
@@ -1434,18 +1442,15 @@ asynStatus EthercatMCAxis::poll(bool *moving)
                    "%x Following err mon vel",
                    st_axis_status.nErrorId);
           break;
+        case 0x4655:
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "%x Invalid IO data...",
+                   st_axis_status.nErrorId);
+          break;
         case 0x4B0A:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
                    "%x Homing not successful or not started (home sensor?)",
                    st_axis_status.nErrorId);
-          break;
-        case 0x4460:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x Low soft limit", st_axis_status.nErrorId);
-          break;
-        case 0x4461:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x High soft limit", st_axis_status.nErrorId);
           break;
         default:
           break;
