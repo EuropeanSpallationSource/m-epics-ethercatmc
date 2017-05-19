@@ -94,8 +94,10 @@ def compareExpectedActual(tself, expFileName, actFileName):
 
 def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX):
         # expected and actual
-        expFileName = "/tmp/" + motor + "-" + tc_no + ".exp"
-        actFileName = "/tmp/" + motor + "-" + tc_no + ".act"
+        fileName = "/tmp/" + motor + "-" + str(tc_no)
+        fileName.replace(':', '-')
+        expFileName = fileName + ".exp"
+        actFileName = fileName + ".act"
 
         motorInit(tself, motor, tc_no, encRel)
         setMotorStartPos(tself, motor, tc_no, motorStartPos)
@@ -146,8 +148,10 @@ def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJO
 def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos):
     ###########
     # expected and actual
-    expFileName = "/tmp/" + motor + "-" + tc_no + ".exp"
-    actFileName = "/tmp/" + motor + "-" + tc_no + ".act"
+    fileName = "/tmp/" + motor + "-" + str(tc_no)
+    fileName.replace(':', '-')
+    expFileName = fileName + ".exp"
+    actFileName = fileName + ".act"
 
     motorInit(tself, motor, tc_no, encRel)
     setMotorStartPos(tself, motor, tc_no, motorStartPos)
@@ -182,58 +186,29 @@ class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
 
-    # JOG forward & backlash compensation
+    # JOG forward & backlash compensation, absolute
     def test_TC_1411(self):
-        tc_no = "1411"
-        motor = self.motor
-        motorStartPos = 60 # That's where we start the jogging
-        motorEndPos   = 80 # That's where we stop the jogging
-        myJOGX = 'JOGF'
-        encRel = 0
-        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
-        tc_no = "1412"
-        encRel = 1
-        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
+        jogAndBacklash(self, self.motor, 1411, 0, 40, 60, 'JOGF')
+
+    # JOG forward & backlash compensation, relative
+    def test_TC_1412(self):
+        jogAndBacklash(self, self.motor, 1412, 1, 40, 60, 'JOGF')
 
 
-    # JOG backward & backlash compensation
-    def test_TC_1413(self):
-        tc_no = "1413"
-        motor = self.motor
-        motorStartPos = 60 # That's where we start the jogging
-        motorEndPos   = 40 # That's where we stop the jogging
-        myJOGX = 'JOGR'
-        encRel = 0
-        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
-        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
-        tc_no = "1414"
-        encRel = 1
-        jogAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX)
+    # JOG backward & backlash compensation, absolute
+    def test_TC_1421(self):
+        jogAndBacklash(self, self.motor, 1421, 0, 60, 40, 'JOGR')
 
-    # position forward & backlash compensation
-    def test_TC_1415(self):
-        tc_no = "1415"
-        motor = self.motor
-        motorStartPos = 60 # That's where we start the jogging
-        motorEndPos   = 80 # That's where we stop the jogging
+    # JOG backward & backlash compensation, relative
+    def test_TC_1422(self):
+        jogAndBacklash(self, self.motor, 1422, 1, 60, 40, 'JOGR')
 
-        encRel = 0
-        positionAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos)
 
-        tc_no = "1416"
-        encRel = 1
-        positionAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos)
+    # position forward & backlash compensation, absolute
+    def test_TC_1431(self):
+        positionAndBacklash(self, self.motor, 1431, 0, 60, 80)
 
-    # position backward & backlash compensation
-    def test_TC_1417(self):
-        tc_no = "1417"
-        motor = self.motor
-        motorStartPos = 80 # That's where we start the jogging
-        motorEndPos   = 60 # That's where we stop the jogging
+    # position forward & backlash compensation, relative
+    def test_TC_1432(self):
+        positionAndBacklash(self, self.motor, 1432, 1, 60, 80)
 
-        encRel = 0
-        positionAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos)
-
-        tc_no = "1418"
-        encRel = 1
-        positionAndBacklash(self, motor, tc_no, encRel, motorStartPos, motorEndPos)
