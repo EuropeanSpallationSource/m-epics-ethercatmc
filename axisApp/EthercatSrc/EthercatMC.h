@@ -30,6 +30,16 @@ FILENAME...   EthercatMC.h
 #define EthercatMCAcc_RBString               "Acc-RB"
 #define EthercatMCDec_RBString               "Dec-RB"
 #define EthercatMCEnString                   "En"
+#define EthercatMCScalSREV_RBString          "SCALSREV-RB"
+#define EthercatMCScalUREV_RBString          "SCALUREV-RB"
+#define EthercatMCScalNUM_RBString           "SCALNUM-RB"
+#define EthercatMCScalMDIR_RBString          "SCALMDIR-RB"
+#define EthercatMCScalEDIR_RBString          "SCALEDIR-RB"
+#define EthercatMCScalRDBD_RBString          "SCALRDBD-RB"
+#define EthercatMCScalRDBD_Tim_RBString      "SCALRDBD-Tim-RB"
+#define EthercatMCScalRDBD_En_RBString       "SCALRDBD-En-RB"
+
+
 #define EthercatMCMCUErrMsgString            "MCUErrMsg"
 #define EthercatMCDbgStrToMcuString          "StrToMCU"
 
@@ -157,6 +167,7 @@ private:
   asynStatus handleDisconnect(void);
   asynStatus handleConnect(void);
   asynStatus readConfigFile(void);
+  void readBackConfig(void);
   asynStatus initialUpdate(void);
 
   asynStatus handleStatusChange(asynStatus status);
@@ -263,6 +274,14 @@ public:
   int EthercatMCDec_RB_;
   int EthercatMCEn_;
   int EthercatMCErrId_;
+  int EthercatMCScalSREV_RB_;
+  int EthercatMCScalUREV_RB_;
+  int EthercatMCScalNUM_RB_;
+  int EthercatMCScalMDIR_RB_;
+  int EthercatMCScalEDIR_RB_;
+  int EthercatMCScalRDBD_RB_;
+  int EthercatMCScalRDBD_Tim_RB_;
+  int EthercatMCScalRDBD_En_RB_;
   /* Last parameter */
 
   #define FIRST_VIRTUAL_PARAM EthercatMCErr_

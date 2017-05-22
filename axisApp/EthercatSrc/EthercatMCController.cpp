@@ -66,6 +66,16 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
   createParam(EthercatMCDec_RBString,        asynParamFloat64,     &EthercatMCDec_RB_);
   createParam(EthercatMCEnString,            asynParamInt32,       &EthercatMCEn_);
 
+  createParam(EthercatMCScalSREV_RBString,   asynParamFloat64,     &EthercatMCScalSREV_RB_);
+  createParam(EthercatMCScalUREV_RBString,   asynParamFloat64,     &EthercatMCScalUREV_RB_);
+  createParam(EthercatMCScalNUM_RBString,    asynParamFloat64,     &EthercatMCScalNUM_RB_);
+  createParam(EthercatMCScalMDIR_RBString,   asynParamInt32,       &EthercatMCScalMDIR_RB_);
+  createParam(EthercatMCScalEDIR_RBString,   asynParamInt32,       &EthercatMCScalEDIR_RB_);
+  createParam(EthercatMCScalRDBD_RBString,   asynParamFloat64,     &EthercatMCScalRDBD_RB_);
+  createParam(EthercatMCScalRDBD_Tim_RBString,asynParamFloat64,    &EthercatMCScalRDBD_Tim_RB_);
+  createParam(EthercatMCScalRDBD_En_RBString, asynParamInt32,      &EthercatMCScalRDBD_En_RB_);
+
+
 #ifdef CREATE_MOTOR_REC_RESOLUTION
   /* Latest asynAxisController does this, but not the version in 6.81 (or 6.9x) */
   createParam(motorRecResolutionString,        asynParamFloat64,      &motorRecResolution_);

@@ -257,6 +257,90 @@ asynStatus EthercatMCAxis::readConfigFile(void)
  *
  * Sets the dirty bits
  */
+void EthercatMCAxis::readBackConfig(void)
+{
+  asynStatus status;
+  int iValue;
+  double fValue;
+  /* (Micro) steps per revolution */
+  status = getADRValueFromAxis(501, 0x5000, 0x24, &fValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalSREV_RB_, fValue);
+
+  /* EGU per revolution */
+  status = getADRValueFromAxis(501, 0x5000, 0x23, &fValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalUREV_RB_, fValue);
+
+  /* Reference Velocity */
+  status = getADRValueFromAxis(501, 0x7000, 0x101, &fValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalNUM_RB_, fValue);
+  /* Motor DIRection */
+  status = getADRValueFromAxis(501, 0x7000, 0x6, &iValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, iValue);
+  if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalMDIR_RB_, iValue);
+  /* Encoder DIRection */
+  status = getADRValueFromAxis(501, 0x5000, 0x8, &iValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, iValue);
+  if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalEDIR_RB_, iValue);
+
+  /* In target position monitor window */
+  status = getADRValueFromAxis(501, 0x4000, 0x16, &fValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_RB_,
+                                            fValue);
+  /* In target position monitor time */
+  status = getADRValueFromAxis(501, 0x4000, 0x17, &fValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_Tim_RB_,
+                                            fValue);
+
+  /* In target position monitor enabled */
+  status = getADRValueFromAxis(501, 0x4000, 0x15, &iValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, iValue);
+  if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_,
+                                             iValue);
+}
+
+/** Connection status is changed, the dirty bits must be set and
+ *  the values in the controller must be updated
+ * \param[in] AsynStatus status
+ *
+ * Sets the dirty bits
+ */
 asynStatus EthercatMCAxis::initialUpdate(void)
 {
   asynStatus status = asynSuccess;
@@ -279,6 +363,7 @@ asynStatus EthercatMCAxis::initialUpdate(void)
        See AMPLIFIER_ON_FLAG */
     status = enableAmplifier(1);
   }
+  if (status == asynSuccess) readBackConfig();
 
   if (!status) drvlocal.dirty.initialUpdate = 0;
   return status;

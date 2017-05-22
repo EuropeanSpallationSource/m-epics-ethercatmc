@@ -124,6 +124,69 @@ record(ao,"$(PREFIX)$(R)MRES_") {
     field(PREC, "$(PREC)")
 }
 
+record(ai,"$(PREFIX)$(R)ScalSREV-RB") {
+    field(DESC, "Micro Steps / Revolution")
+    field(DTYP, "asynFloat64")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALSREV-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(R)ScalUREV-RB") {
+    field(DESC, "EGU / Revolution")
+    field(DTYP, "asynFloat64")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALUREV-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(R)ScalNUM-RB") {
+    field(DESC, "Reference Velocity")
+    field(DTYP, "asynFloat64")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALNUM-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi,"$(PREFIX)$(R)ScalMDIR-RB") {
+    field(DESC, "Invert Motor Direction")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALMDIR-RB")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "False")
+    field(ONAM, "True")
+}
+
+record(bi,"$(PREFIX)$(R)ScalEDIR-RB") {
+    field(DESC, "Invert Encoder Direction")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALEDIR-RB")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "False")
+    field(ONAM, "True")
+}
+
+record(ai,"$(PREFIX)$(R)ScalRDBD-RB") {
+    field(DESC, "In target position window")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALRDBD-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(R)ScalRDBD-Tim-RB") {
+    field(DESC, "In target position time")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALRDBD-Tim-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin,"$(PREFIX)$(R)ScalRDBD-En-RB") {
+    field(DESC, "In target position enabled")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ScalRDBD-En-RB")
+    field(SCAN, "I/O Intr")
+}
+
+
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {
 }

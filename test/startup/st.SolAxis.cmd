@@ -35,5 +35,7 @@ epicsEnvSet("HVELFRM",       "$(SM_HVELTP=4)")
 epicsEnvSet("HOMEACC",       "$(SM_HOMEACC=24)")
 epicsEnvSet("HOMEDEC",       "$(SM_HOMEDEC=26)")
 
+epicsEnvSet("SCALRDBD",      "$(RDBD)")
+
 < EthercatMCController.cmd
 < EthercatMCAxis.cmd
