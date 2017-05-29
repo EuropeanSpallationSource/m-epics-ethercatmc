@@ -272,8 +272,6 @@ public:
   int EthercatMCVel_RB_;
   int EthercatMCAcc_RB_;
   int EthercatMCDec_RB_;
-  int EthercatMCEn_;
-  int EthercatMCErrId_;
   int EthercatMCScalSREV_RB_;
   int EthercatMCScalUREV_RB_;
   int EthercatMCScalNUM_RB_;
@@ -282,6 +280,8 @@ public:
   int EthercatMCScalRDBD_RB_;
   int EthercatMCScalRDBD_Tim_RB_;
   int EthercatMCScalRDBD_En_RB_;
+  int EthercatMCEn_;
+  int EthercatMCErrId_;
   /* Last parameter */
 
   #define FIRST_VIRTUAL_PARAM EthercatMCErr_
