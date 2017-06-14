@@ -1,11 +1,9 @@
 # @field ASYN_PORT
 # @type  STRING
-# @uniqueness IOC
 # MC_CPU1
 
 # @field MOTOR_PORT
 # @type  STRING
-# @uniqueness IOC
 # MCU1
 
 # @field IPADDR

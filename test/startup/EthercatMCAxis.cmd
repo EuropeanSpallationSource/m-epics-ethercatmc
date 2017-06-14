@@ -1,6 +1,6 @@
 # @field AXISCONFIG
 # @type  STRING
-# File name for axis configuration
+# File name for axis configuration, leave empty
 
 # @field PREFIX
 # @type  STRING
@@ -11,7 +11,6 @@
 
 # @field MOTOR_PORT
 # @type  STRING
-# @uniqueness IOC
 # MCU1, MCU2
 
 # @field AXIS_NO
@@ -44,11 +43,11 @@
 
 # @field MRES
 # @type  FLOAT
-# Size of a motor step
+# Size of a motor step, set to 0.001
 
 # @field ERES
 # @type  FLOAT
-# Size of an encoder step
+# Size of an encoder step, set to 1
 
 # @field RDBD
 # @type  FLOAT
@@ -56,7 +55,7 @@
 
 # @field NTMF
 # @type  INTEGER
-# New Target Monitor Deadband Factor
+# New Target Monitor Deadband Factor (stop at overshoot), >= 2
 
 # @field DLLM
 # @type  FLOAT
