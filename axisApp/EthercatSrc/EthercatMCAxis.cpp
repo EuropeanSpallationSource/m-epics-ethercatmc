@@ -147,7 +147,7 @@ asynStatus EthercatMCAxis::readConfigFile(void)
 
     char *mypwd = getcwd(cwdbuf, sizeof(cwdbuf));
     snprintf(errbuf, sizeof(errbuf)-1,
-             "readConfigFile: %s\n%s/%s",
+             "E: readConfigFile: %s\n%s/%s",
              strerror(saved_errno),
              mypwd ? mypwd : "",
              drvlocal.cfgfileStr);
@@ -222,11 +222,11 @@ asynStatus EthercatMCAxis::readConfigFile(void)
       errbuf[sizeof(errbuf)-1] = 0;
       if (status) {
         snprintf(errbuf, sizeof(errbuf)-1,
-                 "%s:%d out=%s\nin=%s",
+                 "E: %s:%d out=%s\nin=%s",
                  drvlocal.cfgfileStr, line_no, pC_->outString_, pC_->inString_);
       } else {
         snprintf(errbuf, sizeof(errbuf)-1,
-                 "%s:%d \"%s\"\n%s",
+                 "E: %s:%d \"%s\"\n%s",
                  drvlocal.cfgfileStr, line_no, rdbuf, errorTxt);
       }
 
@@ -428,7 +428,7 @@ asynStatus EthercatMCAxis::writeReadACK(void)
                   pasynManager->strStatus(status), (int)status);
         if (!drvlocal.cmdErrorMessage[0]) {
           snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-                   "writeReadACK() out=%s in=%s\n",
+                   "E: writeReadACK() out=%s in=%s\n",
                    pC_->outString_, pC_->inString_);
           /* The poller co-ordinates the writing into the parameter library */
         }
@@ -505,7 +505,7 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
                "%s setValueOnAxisV(%d) var=%s value=%d rbvalue=%d",
                  modulName, axisNo_,var, value, rbvalue);
       snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-               "setValueOnAxisV(%s) value=%d rbvalue=%d",
+               "E: setValueOnAxisV(%s) value=%d rbvalue=%d",
                var, value, rbvalue);
 
       /* The poller co-ordinates the writing into the parameter library */
@@ -1057,7 +1057,7 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
   /* if we come here, it went wrong */
   if (!drvlocal.cmdErrorMessage[0]) {
     snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-             "enableAmplifier(%d) failed. out=%s in=%s\n",
+             "E: enableAmplifier(%d) failed. out=%s in=%s\n",
              axisNo_, pC_->outString_, pC_->inString_);
     /* The poller co-ordinates the writing into the parameter library */
   }
@@ -1492,52 +1492,55 @@ asynStatus EthercatMCAxis::poll(bool *moving)
       switch(st_axis_status.nErrorId) {
         case 0x4223:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x Axis positioning enable (sensor? limit?)",
+                   "E: Axis positioning enable%x ",
                    st_axis_status.nErrorId);
           break;
         case 0x4450:
         case 0x4451:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,"%x Following error",
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,"E: Following error %x",
                    st_axis_status.nErrorId);
           break;
         case 0x4260:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,"%x Amplifier off",
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,"E: Amplifier off %x",
                    st_axis_status.nErrorId);
           break;
         case 0x4263:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x ...is still being processed",
+                   "E: Is still being processed %x",
                    st_axis_status.nErrorId);
           break;
         case 0x4460:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x Low soft limit", st_axis_status.nErrorId);
+                   "E: Low soft limit %x", st_axis_status.nErrorId);
           break;
         case 0x4461:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x High soft limit", st_axis_status.nErrorId);
+                   "E: High soft limit %x", st_axis_status.nErrorId);
           break;
         case 0x4550:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x Following err mon pos",
+                   "E: Following err mon pos %x",
                    st_axis_status.nErrorId);
           break;
         case 0x4551:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x Following err mon vel",
+                   "E: Following err mon vel %x",
                    st_axis_status.nErrorId);
           break;
         case 0x4655:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x Invalid IO data...",
+                   "E: Invalid IO data %x",
                    st_axis_status.nErrorId);
           break;
         case 0x4B0A:
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "%x Homing not successful or not started (home sensor?)",
+                   "E: Homing not successful or not started %x",
                    st_axis_status.nErrorId);
           break;
         default:
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "E: Controller error %x",
+                   st_axis_status.nErrorId);
           break;
       }
       if (sErrorMessage[0]) {
