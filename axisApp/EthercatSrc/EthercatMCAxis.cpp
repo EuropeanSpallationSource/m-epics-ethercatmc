@@ -1048,8 +1048,8 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
     if (!strcmp("0;1", pC_->inString_)) {
       /* bBusy == 0; bEnabled == 1 */
       goto enableAmplifierPollAndReturn;
-    } else if (drvlocal.supported.bBusyOldStyle && !strcmp("1;1", pC_->inString_)) {
-      /* Old Busy handling: bBusy=1 is OK */
+    } else if (drvlocal.supported.bBusyNewStyle && !strcmp("1;1", pC_->inString_)) {
+      /* New Busy handling: bBusy=1 is OK */
       goto enableAmplifierPollAndReturn;
     }
     counter--;
@@ -1258,9 +1258,9 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     /* V1 comes in 2 flavours, old and new busy handling */
     if (drvlocal.dirty.stAxisStatus_Vxx) {
       /* The features we know about */
-      const char * const stv1_str = "stv1";
+      const char * const sim_str = "sim";
       const char * const stECMC_str = "ecmc";
-      
+
       sprintf(pC_->outString_, "%s", "ADSPORT=852/.THIS.sFeatures?");
       pC_->inString_[0] = 0;
       comStatus = pC_->writeReadController();
@@ -1270,7 +1270,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
                 pasynManager->strStatus(comStatus), (int)comStatus);
 
       if (comStatus) return comStatus;
-      
+
       /* loop through the features */
       char *pFeatures = strdup(pC_->inString_);
       char *pThisFeature = pFeatures;
@@ -1282,18 +1282,21 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
           *pNextFeature = '\0'; /* Terminate */
           pNextFeature++;       /* Jump to (possible) next */
         }
-        if (!strncmp(pThisFeature, stv1_str, strlen(stv1_str))) {
-          drvlocal.supported.bBusyOldStyle = 1;
+        /* Both simulator and ecmc have the new busy style */
+        if (!strncmp(pThisFeature, sim_str, strlen(sim_str))) {
+          drvlocal.supported.bSIM = 1;
+          drvlocal.supported.bBusyNewStyle = 1;
         } else if (!strncmp(pThisFeature, stECMC_str, strlen(stECMC_str))) {
           drvlocal.supported.bECMC = 1;
+          drvlocal.supported.bBusyNewStyle = 1;
         }
         pThisFeature = pNextFeature;
       }
       free(pFeatures);
-      
+
       /* V1 new style: mvnNRdyNex follows bBusy */
       pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
-      if (drvlocal.supported.bBusyOldStyle) {
+      if (!drvlocal.supported.bBusyNewStyle) {
         /* "V1 old style":done when bEcecute is 0 */
         pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
       }
@@ -1301,19 +1304,20 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
   }
   /* From here on, either V1 or V2 is supported */
   if (drvlocal.dirty.stAxisStatus_Vxx) {
-    if (drvlocal.supported.stAxisStatus_V1 && drvlocal.supported.bBusyOldStyle)
-      drvlocal.supported.statusVer = 0;
-    else if (drvlocal.supported.stAxisStatus_V1 && !drvlocal.supported.bBusyOldStyle)
-      drvlocal.supported.statusVer = 1;
-    else if (drvlocal.supported.stAxisStatus_V2)
+    if (drvlocal.supported.stAxisStatus_V2)
       drvlocal.supported.statusVer = 2;
+    else if (drvlocal.supported.stAxisStatus_V1 && !drvlocal.supported.bBusyNewStyle)
+      drvlocal.supported.statusVer = 0;
+    else if (drvlocal.supported.stAxisStatus_V1 && drvlocal.supported.bBusyNewStyle)
+      drvlocal.supported.statusVer = 1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s pollAll(%d) nvals=%d V1=%d V2=%d ecmc=%d bBusyOldStyle=%d Ver=%d fActPosition=%f\n",
+              "%s pollAll(%d) nvals=%d V1=%d V2=%d sim=%d ecmc=%d bBusyNewStyle=%d Ver=%d fActPosition=%f\n",
               modulName, axisNo_, nvals,
               drvlocal.supported.stAxisStatus_V1,
               drvlocal.supported.stAxisStatus_V2,
+              drvlocal.supported.bSIM,
               drvlocal.supported.bECMC,
-              drvlocal.supported.bBusyOldStyle,
+              drvlocal.supported.bBusyNewStyle,
               drvlocal.supported.statusVer,
               pst_axis_status->fActPosition);
     setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
