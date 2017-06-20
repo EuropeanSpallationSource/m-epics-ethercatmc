@@ -1048,8 +1048,8 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
     if (!strcmp("0;1", pC_->inString_)) {
       /* bBusy == 0; bEnabled == 1 */
       goto enableAmplifierPollAndReturn;
-    } else if (drvlocal.supported.bBusyNewStyle && !strcmp("1;1", pC_->inString_)) {
-      /* New Busy handling: bBusy=1 is OK */
+    } else if (!strcmp("1;1", pC_->inString_)) {
+      /* bBusy=1 is OK */
       goto enableAmplifierPollAndReturn;
     }
     counter--;
@@ -1293,15 +1293,14 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
         pThisFeature = pNextFeature;
       }
       free(pFeatures);
-
-      /* V1 new style: mvnNRdyNex follows bBusy */
-      pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
-      if (!drvlocal.supported.bBusyNewStyle) {
-        /* "V1 old style":done when bEcecute is 0 */
-        pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
-      }
-    } /* End of V1 */
-  }
+    } /* dirty */
+    /* V1 new style: mvnNRdyNex follows bBusy */
+    pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
+    if (!drvlocal.supported.bBusyNewStyle) {
+      /* "V1 old style":done when bEcecute is 0 */
+      pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
+    }
+  } /* End of V1 */
   /* From here on, either V1 or V2 is supported */
   if (drvlocal.dirty.stAxisStatus_Vxx) {
     if (drvlocal.supported.stAxisStatus_V2)
