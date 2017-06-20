@@ -451,7 +451,7 @@ static void motorHandleOneArg(const char *myarg_1)
 
   /* ADSPORT=852/.THIS.sFeatures? */
   if (0 == strcmp(myarg_1, ADSPORT_sFeaturesQ_str)) {
-    cmd_buf_printf("%s", "ecmc");
+    cmd_buf_printf("%s", "sim;ecmc");
     return;
   }
 

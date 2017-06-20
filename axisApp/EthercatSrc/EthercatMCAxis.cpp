@@ -1257,25 +1257,48 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     drvlocal.supported.stAxisStatus_V1 = 1;
     /* V1 comes in 2 flavours, old and new busy handling */
     if (drvlocal.dirty.stAxisStatus_Vxx) {
-      const char *  const stv1_str = "stv1";
+      /* The features we know about */
+      const char * const stv1_str = "stv1";
+      const char * const stECMC_str = "ecmc";
+      
       sprintf(pC_->outString_, "%s", "ADSPORT=852/.THIS.sFeatures?");
       pC_->inString_[0] = 0;
       comStatus = pC_->writeReadController();
-      if (comStatus) return comStatus;
-      if (!strncmp(pC_->inString_, stv1_str, strlen(stv1_str)) &&
-          ((pC_->inString_[strlen(stv1_str)] == ';') ||
-           (pC_->inString_[strlen(stv1_str)] == '\0'))) {
-        drvlocal.supported.bBusyOldStyle = 1;
-      }
-    }
-    /* V1 new style: mvnNRdyNex follows bBusy */
-    pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
-    if (drvlocal.supported.bBusyOldStyle) {
-      /* "V1 old style":done when bEcecute is 0 */
-      pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
-    }
-  } /* End of V1 */
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%s out=%s in=%s status=%s (%d)\n",
+                modulName, pC_->outString_, pC_->inString_,
+                pasynManager->strStatus(comStatus), (int)comStatus);
 
+      if (comStatus) return comStatus;
+      
+      /* loop through the features */
+      char *pFeatures = strdup(pC_->inString_);
+      char *pThisFeature = pFeatures;
+      char *pNextFeature = pFeatures;
+
+      while (pNextFeature && pNextFeature[0]) {
+        pNextFeature = strchr(pNextFeature, ';');
+        if (pNextFeature) {
+          *pNextFeature = '\0'; /* Terminate */
+          pNextFeature++;       /* Jump to (possible) next */
+        }
+        if (!strncmp(pThisFeature, stv1_str, strlen(stv1_str))) {
+          drvlocal.supported.bBusyOldStyle = 1;
+        } else if (!strncmp(pThisFeature, stECMC_str, strlen(stECMC_str))) {
+          drvlocal.supported.bECMC = 1;
+        }
+        pThisFeature = pNextFeature;
+      }
+      free(pFeatures);
+      
+      /* V1 new style: mvnNRdyNex follows bBusy */
+      pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
+      if (drvlocal.supported.bBusyOldStyle) {
+        /* "V1 old style":done when bEcecute is 0 */
+        pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
+      }
+    } /* End of V1 */
+  }
   /* From here on, either V1 or V2 is supported */
   if (drvlocal.dirty.stAxisStatus_Vxx) {
     if (drvlocal.supported.stAxisStatus_V1 && drvlocal.supported.bBusyOldStyle)
@@ -1285,10 +1308,11 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     else if (drvlocal.supported.stAxisStatus_V2)
       drvlocal.supported.statusVer = 2;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s pollAll(%d) nvals=%d V1=%d V2=%d bBusyOldStyle=%d Ver=%d fActPosition=%f\n",
+              "%s pollAll(%d) nvals=%d V1=%d V2=%d ecmc=%d bBusyOldStyle=%d Ver=%d fActPosition=%f\n",
               modulName, axisNo_, nvals,
               drvlocal.supported.stAxisStatus_V1,
               drvlocal.supported.stAxisStatus_V2,
+              drvlocal.supported.bECMC,
               drvlocal.supported.bBusyOldStyle,
               drvlocal.supported.statusVer,
               pst_axis_status->fActPosition);
