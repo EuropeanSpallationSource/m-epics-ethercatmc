@@ -114,9 +114,9 @@ def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJO
         time.sleep(3)
         setValueOnSimulator(tself, motor, tc_no, "fActPosition", motorEndPos)
         epics.caput(motor + '.' + myJOGX, 0)
-        setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", "0")
         time.sleep(12)
         setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
+        setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", "0")
 
 
         # Create a "expected" file
@@ -163,19 +163,42 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
     expFile=open(expFileName, 'w')
 
     # Positioning
-    if encRel:
-        line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos - motorStartPos - myBDST, myVELO, myAR, motorStartPos)
-        # Move forward with backlash parameters
-        line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
+    # 2 different ways to move:
+    # - Within the backlash distance and into the backlash direction:
+    #   single move with back lash parameters
+    # - against the backlash direction -or- bigger than the backlash distance:
+    #   two moves, first with moving, second with backlash parameters
+    if motorEndPos - motorStartPos > 0:
+        directionOfMove = 1
     else:
-        line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos - myBDST, myVELO, myAR, motorStartPos)
-        # Move forward with backlash parameters
-        line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
-    expFile.write('%s\n%s\n' % (line1, line2))
+        directionOfMove = -1
+    if myBDST > 0:
+        directionOfBL = 1
+    else:
+        directionOfBL = -1
+
+    if abs(motorEndPos - motorStartPos) < abs(myBDST) and directionOfMove == directionOfBL:
+        if encRel:
+            line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (motorEndPos - motorStartPos, myBVEL, myBAR, motorStartPos)
+        else:
+            line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (motorEndPos, myBVEL, myBAR, motorStartPos)
+        expFile.write('%s\n' % (line1))
+    else:
+        if encRel:
+            line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (motorEndPos - motorStartPos - myBDST, myVELO, myAR, motorStartPos)
+            # Move forward with backlash parameters
+            line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
+        else:
+            line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (motorEndPos - myBDST, myVELO, myAR, motorStartPos)
+            # Move forward with backlash parameters
+            line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
+        expFile.write('%s\n%s\n' % (line1, line2))
     expFile.close()
 
     compareExpectedActual(tself, expFileName, actFileName)
@@ -203,7 +226,6 @@ class Test(unittest.TestCase):
     def test_TC_1422(self):
         jogAndBacklash(self, self.motor, 1422, 1, 60, 40, 'JOGR')
 
-
     # position forward & backlash compensation, absolute
     def test_TC_1431(self):
         positionAndBacklash(self, self.motor, 1431, 0, 60, 80)
@@ -211,4 +233,21 @@ class Test(unittest.TestCase):
     # position forward & backlash compensation, relative
     def test_TC_1432(self):
         positionAndBacklash(self, self.motor, 1432, 1, 60, 80)
+
+
+    # position backward & backlash compensation, absolute
+    def test_TC_1441(self):
+        positionAndBacklash(self, self.motor, 1441, 0, 80, 60)
+
+    # position backward & backlash compensation, relative
+    def test_TC_1442(self):
+        positionAndBacklash(self, self.motor, 1442, 1, 80, 60)
+
+    # position forward inside backlash range, absolute
+    def test_TC_1431(self):
+        positionAndBacklash(self, self.motor, 1451, 0, 60, 70)
+
+    # position forward inside backlash range, relative
+    def test_TC_1432(self):
+        positionAndBacklash(self, self.motor, 1452, 1, 60, 70)
 
