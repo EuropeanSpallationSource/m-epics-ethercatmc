@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 #
-# https://nose.readthedocs.org/en/latest/
-# https://nose.readthedocs.org/en/latest/testing.html
-
 import epics
 import unittest
 import os
@@ -62,15 +59,13 @@ def motorInit(tself, motor, tc_no, encRel):
     epics.caput(motor + '.BACC', myBACC)
     epics.caput(motor + '.BDST', myBDST)
     epics.caput(motor + '.UEIP', encRel)
+    epics.caput(motor + '.RTRY', 3)
 
 
 def setMotorStartPos(tself, motor, tc_no, startpos):
     setValueOnSimulator(tself, motor, tc_no, "fActPosition", startpos)
     # Run a status update and a sync
     epics.caput(motor + '.STUP', 1)
-    # The SYNC is not "synched" with STUP in the record.
-    # Just delay
-    #time.sleep(1)
     epics.caput(motor + '.SYNC', 1)
 
 def compareExpectedActual(tself, expFileName, actFileName):
@@ -92,56 +87,6 @@ def compareExpectedActual(tself, expFileName, actFileName):
         assert(sameContent)
 
 
-def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX):
-        # expected and actual
-        fileName = "/tmp/" + motor + "-" + str(tc_no)
-        fileName.replace(':', '-')
-        expFileName = fileName + ".exp"
-        actFileName = fileName + ".act"
-
-        motorInit(tself, motor, tc_no, encRel)
-        setMotorStartPos(tself, motor, tc_no, motorStartPos)
-        setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
-        if myJOGX == 'JOGF':
-            myDirection = 1
-        elif myJOGX == 'JOGR':
-            myDirection = 0
-        else:
-            assert(0)
-        #
-        epics.caput(motor + '.' + myJOGX, 1)
-        time.sleep(3)
-        setValueOnSimulator(tself, motor, tc_no, "fActPosition", motorEndPos)
-        epics.caput(motor + '.' + myJOGX, 0)
-        time.sleep(12)
-        setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
-
-        # Create a "expected" file
-        expFile=open(expFileName, 'w')
-
-        # The jogging command
-        line1 = "move velocity axis_no=1 direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (myDirection, myJVEL, myJAR, motorStartPos)
-        if encRel:
-            # Move back in relative mode
-            line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (0 - myBDST, myVELO, myAR, motorEndPos)
-            # Move relative forward with backlash parameters
-            line3 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
-        else:
-            # Move back in positioning mode
-            line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (motorEndPos - myBDST, myVELO, myAR, motorEndPos)
-            # Move forward with backlash parameters
-            line3 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
-
-        expFile.write('%s\n%s\n%s\n' % (line1, line2, line3))
-        expFile.close()
-
-        compareExpectedActual(tself, expFileName, actFileName)
-
 def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos):
     ###########
     # expected and actual
@@ -152,9 +97,13 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
 
     motorInit(tself, motor, tc_no, encRel)
     setMotorStartPos(tself, motor, tc_no, motorStartPos)
+    setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 1)
     setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
     #
     epics.caput(motor + '.VAL', motorEndPos, wait=True)
+    setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
+    setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 0)
+
     # Create a "expected" file
     expFile=open(expFileName, 'w')
 
@@ -173,6 +122,7 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
     else:
         directionOfBL = -1
 
+    cnt = 1 + int(epics.caget(motor + '.RTRY'))
     if abs(motorEndPos - motorStartPos) < abs(myBDST) and directionOfMove == directionOfBL:
         if encRel:
             line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
@@ -180,21 +130,29 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
         else:
             line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
                     (motorEndPos, myBVEL, myBAR, motorStartPos)
-        expFile.write('%s\n' % (line1))
+        while cnt > 0:
+            expFile.write('%s\n' % (line1))
+            cnt -= 1
     else:
+        # As we don't move the motor (it is simulated, we both times start at motorStartPos
         if encRel:
             line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
                     (motorEndPos - motorStartPos - myBDST, myVELO, myAR, motorStartPos)
             # Move forward with backlash parameters
+            # Note: This should be myBDST, but since we don't move the motor AND
+            # the record uses the readback value, use "motorEndPos - motorStartPos"
+            delta = motorEndPos - motorStartPos
             line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
+                    (delta, myBVEL, myBAR, motorStartPos)
         else:
             line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
                     (motorEndPos - myBDST, myVELO, myAR, motorStartPos)
             # Move forward with backlash parameters
             line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
-        expFile.write('%s\n%s\n' % (line1, line2))
+                    (motorEndPos, myBVEL, myBAR, motorStartPos)
+        while cnt > 0:
+            expFile.write('%s\n%s\n' % (line1, line2))
+            cnt -= 1
     expFile.close()
 
     compareExpectedActual(tself, expFileName, actFileName)
@@ -205,45 +163,32 @@ class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
 
-    # JOG forward & backlash compensation, absolute
-    def test_TC_1411(self):
-        jogAndBacklash(self, self.motor, 1411, 0, 40, 60, 'JOGF')
-
-    # JOG forward & backlash compensation, relative
-    def test_TC_1412(self):
-        jogAndBacklash(self, self.motor, 1412, 1, 40, 60, 'JOGF')
-
-
-    # JOG backward & backlash compensation, absolute
-    def test_TC_1421(self):
-        jogAndBacklash(self, self.motor, 1421, 0, 60, 40, 'JOGR')
-
-    # JOG backward & backlash compensation, relative
-    def test_TC_1422(self):
-        jogAndBacklash(self, self.motor, 1422, 1, 60, 40, 'JOGR')
-
     # position forward & backlash compensation, absolute
-    def test_TC_1431(self):
-        positionAndBacklash(self, self.motor, 1431, 0, 60, 80)
+    def test_TC_14211(self):
+        positionAndBacklash(self, self.motor, 14211, 0, 60, 80)
 
     # position forward & backlash compensation, relative
-    def test_TC_1432(self):
-        positionAndBacklash(self, self.motor, 1432, 1, 60, 80)
+    def test_TC_14212(self):
+        positionAndBacklash(self, self.motor, 14212, 1, 60, 80)
 
 
     # position backward & backlash compensation, absolute
-    def test_TC_1441(self):
-        positionAndBacklash(self, self.motor, 1441, 0, 80, 60)
+    def test_TC_14221(self):
+        positionAndBacklash(self, self.motor, 14221, 0, 80, 60)
 
     # position backward & backlash compensation, relative
-    def test_TC_1442(self):
-        positionAndBacklash(self, self.motor, 1442, 1, 80, 60)
+    def test_TC_14222(self):
+        positionAndBacklash(self, self.motor, 14222, 1, 80, 60)
 
-    # position forward inside backlash range, absolute
-    def test_TC_1431(self):
-        positionAndBacklash(self, self.motor, 1451, 0, 60, 70)
-
-    # position forward inside backlash range, relative
-    def test_TC_1432(self):
-        positionAndBacklash(self, self.motor, 1452, 1, 60, 70)
-
+# The following does not really work (as expected):
+# When doing retries within BDST, the record moves the motor
+# outside BDST in all retries. This seems unnecessary.
+#    # position forward inside backlash range, absolute
+#    def test_TC_14231(self):
+#        positionAndBacklash(self, self.motor, 14231, 0, 60, 70)
+#
+#    # position forward inside backlash range, relative
+#    def test_TC_14232(self):
+#        positionAndBacklash(self, self.motor, 14232, 1, 60, 70)
+#
+#

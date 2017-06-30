@@ -267,6 +267,9 @@ double getMotorVelocity(int axis_no)
 int isMotorMoving(int axis_no)
 {
   AXIS_CHECK_RETURN_ZERO(axis_no);
+  if (motor_axis[axis_no].bManualSimulatorMode) {
+    return 0;
+  }
   if (motor_axis[axis_no].moving.rampDownOnLimit) {
     motor_axis[axis_no].moving.rampDownOnLimit--;
     return 1;
@@ -1004,6 +1007,14 @@ int getManualSimulatorMode(int axis_no)
 void setManualSimulatorMode(int axis_no, int manualMode)
 {
   AXIS_CHECK_RETURN(axis_no);
+  fprintf(stdlog, "%s/%s:%d axis_no=%d manualMode=%d\n",
+          __FILE__, __FUNCTION__, __LINE__,
+          axis_no, manualMode);
+  if (motor_axis[axis_no].bManualSimulatorMode && !manualMode) {
+    /* Manual mode switched off, stop to prevent the motor to
+       start moving */
+    StopInternal(axis_no);
+  }
   motor_axis[axis_no].bManualSimulatorMode = manualMode;
 }
 
