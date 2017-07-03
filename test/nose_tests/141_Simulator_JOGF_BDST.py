@@ -8,7 +8,6 @@ import unittest
 import os
 import sys
 import time
-import filecmp
 from motor_lib import motor_lib
 ###
 
@@ -93,56 +92,58 @@ def compareExpectedActual(tself, expFileName, actFileName):
 
 
 def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX):
-        # expected and actual
-        fileName = "/tmp/" + motor + "-" + str(tc_no)
-        fileName.replace(':', '-')
-        expFileName = fileName + ".exp"
-        actFileName = fileName + ".act"
+    lib = motor_lib()
+    # expected and actual
+    fileName = "/tmp/" + motor + "-" + str(tc_no)
+    fileName.replace(':', '-')
+    expFileName = fileName + ".exp"
+    actFileName = fileName + ".act"
 
-        motorInit(tself, motor, tc_no, encRel)
-        setMotorStartPos(tself, motor, tc_no, motorStartPos)
-        setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
-        if myJOGX == 'JOGF':
-            myDirection = 1
-        elif myJOGX == 'JOGR':
-            myDirection = 0
-        else:
-            assert(0)
-        #
-        epics.caput(motor + '.' + myJOGX, 1)
-        time.sleep(3)
-        setValueOnSimulator(tself, motor, tc_no, "fActPosition", motorEndPos)
-        epics.caput(motor + '.' + myJOGX, 0)
-        time.sleep(12)
-        setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
+    motorInit(tself, motor, tc_no, encRel)
+    setMotorStartPos(tself, motor, tc_no, motorStartPos)
+    setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
+    if myJOGX == 'JOGF':
+        myDirection = 1
+    elif myJOGX == 'JOGR':
+        myDirection = 0
+    else:
+        assert(0)
+    #
+    epics.caput(motor + '.' + myJOGX, 1)
+    time.sleep(3)
+    setValueOnSimulator(tself, motor, tc_no, "fActPosition", motorEndPos)
+    epics.caput(motor + '.' + myJOGX, 0)
+    time.sleep(12)
+    setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
 
-        # Create a "expected" file
-        expFile=open(expFileName, 'w')
+    # Create a "expected" file
+    expFile=open(expFileName, 'w')
 
-        # The jogging command
-        line1 = "move velocity axis_no=1 direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (myDirection, myJVEL, myJAR, motorStartPos)
-        if encRel:
-            # Move back in relative mode
-            line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (0 - myBDST, myVELO, myAR, motorEndPos)
-            # Move relative forward with backlash parameters
-            line3 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
-        else:
-            # Move back in positioning mode
-            line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (motorEndPos - myBDST, myVELO, myAR, motorEndPos)
-            # Move forward with backlash parameters
-            line3 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
+    # The jogging command
+    line1 = "move velocity axis_no=1 direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
+            (myDirection, myJVEL, myJAR, motorStartPos)
+    if encRel:
+        # Move back in relative mode
+        line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (0 - myBDST, myVELO, myAR, motorEndPos)
+        # Move relative forward with backlash parameters
+        line3 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+            (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
+    else:
+        # Move back in positioning mode
+        line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (motorEndPos - myBDST, myVELO, myAR, motorEndPos)
+        # Move forward with backlash parameters
+        line3 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+            (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
 
-        expFile.write('%s\n%s\n%s\n' % (line1, line2, line3))
-        expFile.close()
+    expFile.write('%s\n%s\n%s\n' % (line1, line2, line3))
+    expFile.close()
 
-        compareExpectedActual(tself, expFileName, actFileName)
+    lib.cmpUnlinkExpectedActualFile(expFileName, actFileName)
 
 def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos):
+    lib = motor_lib()
     ###########
     # expected and actual
     fileName = "/tmp/" + motor + "-" + str(tc_no)
@@ -197,7 +198,7 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
         expFile.write('%s\n%s\n' % (line1, line2))
     expFile.close()
 
-    compareExpectedActual(tself, expFileName, actFileName)
+    lib.cmpUnlinkExpectedActualFile(expFileName, actFileName)
 
 
 

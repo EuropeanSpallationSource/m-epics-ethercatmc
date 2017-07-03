@@ -5,7 +5,6 @@ import unittest
 import os
 import sys
 import time
-import filecmp
 from motor_lib import motor_lib
 ###
 
@@ -68,26 +67,9 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
     epics.caput(motor + '.STUP', 1)
     epics.caput(motor + '.SYNC', 1)
 
-def compareExpectedActual(tself, expFileName, actFileName):
-    # compare actual and expFile
-    sameContent= filecmp.cmp(expFileName, actFileName, shallow=False)
-    if not sameContent:
-        file = open(expFileName, 'r')
-        for line in file:
-            if line[-1] == '\n':
-                line = line[0:-1]
-            print ("%s: %s" % (expFileName, str(line)));
-        file.close();
-        file = open(actFileName, 'r')
-        for line in file:
-            if line[-1] == '\n':
-                line = line[0:-1]
-            print ("%s: %s" % (actFileName, str(line)));
-        file.close();
-        assert(sameContent)
-
 
 def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos):
+    lib = motor_lib()
     ###########
     # expected and actual
     fileName = "/tmp/" + motor + "-" + str(tc_no)
@@ -155,7 +137,7 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
             cnt -= 1
     expFile.close()
 
-    compareExpectedActual(tself, expFileName, actFileName)
+    lib.cmpUnlinkExpectedActualFile(expFileName, actFileName)
 
 
 

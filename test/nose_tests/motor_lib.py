@@ -10,6 +10,8 @@ Description: Class to hold utility functions
 import sys
 import math
 import time
+import os
+import filecmp
 
 from epics import caput, caget
 import epics
@@ -316,4 +318,37 @@ class motor_lib(object):
 
 
 
+
+    def cmpUnlinkExpectedActualFile(self, expFileName, actFileName):
+        # compare actual and expFile
+        sameContent= filecmp.cmp(expFileName, actFileName, shallow=False)
+        if not sameContent:
+            file = open(expFileName, 'r')
+            for line in file:
+                if line[-1] == '\n':
+                    line = line[0:-1]
+                print ("%s: %s" % (expFileName, str(line)));
+            file.close();
+            file = open(actFileName, 'r')
+            for line in file:
+                if line[-1] == '\n':
+                    line = line[0:-1]
+                print ("%s: %s" % (actFileName, str(line)));
+            file.close();
+            assert(sameContent)
+        else:
+            unlinkOK = True
+            try:
+                os.unlink(expFileName)
+            except:
+                unlinkOK = False
+                e = sys.exc_info()
+                print str(e)
+            try:
+                os.unlink(actFileName)
+            except:
+                unlinkOK = False
+                e = sys.exc_info()
+                print str(e)
+            assert(unlinkOK)
 
