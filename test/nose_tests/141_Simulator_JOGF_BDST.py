@@ -72,25 +72,6 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
     #time.sleep(1)
     epics.caput(motor + '.SYNC', 1)
 
-def compareExpectedActual(tself, expFileName, actFileName):
-    # compare actual and expFile
-    sameContent= filecmp.cmp(expFileName, actFileName, shallow=False)
-    if not sameContent:
-        file = open(expFileName, 'r')
-        for line in file:
-            if line[-1] == '\n':
-                line = line[0:-1]
-            print ("%s: %s" % (expFileName, str(line)));
-        file.close();
-        file = open(actFileName, 'r')
-        for line in file:
-            if line[-1] == '\n':
-                line = line[0:-1]
-            print ("%s: %s" % (actFileName, str(line)));
-        file.close();
-        assert(sameContent)
-
-
 def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX):
     lib = motor_lib()
     # expected and actual
@@ -207,44 +188,43 @@ class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
 
     # JOG forward & backlash compensation, absolute
-    def test_TC_1411(self):
-        jogAndBacklash(self, self.motor, 1411, 0, 40, 60, 'JOGF')
+    def test_TC_14111(self):
+        jogAndBacklash(self, self.motor, 14111, 0, 40, 60, 'JOGF')
 
     # JOG forward & backlash compensation, relative
-    def test_TC_1412(self):
-        jogAndBacklash(self, self.motor, 1412, 1, 40, 60, 'JOGF')
-
+    def test_TC_14112(self):
+        jogAndBacklash(self, self.motor, 14112, 1, 40, 60, 'JOGF')
 
     # JOG backward & backlash compensation, absolute
-    def test_TC_1421(self):
-        jogAndBacklash(self, self.motor, 1421, 0, 60, 40, 'JOGR')
+    def test_TC_14121(self):
+        jogAndBacklash(self, self.motor, 14121, 0, 60, 40, 'JOGR')
 
     # JOG backward & backlash compensation, relative
-    def test_TC_1422(self):
-        jogAndBacklash(self, self.motor, 1422, 1, 60, 40, 'JOGR')
+    def test_TC_14122(self):
+        jogAndBacklash(self, self.motor, 14122, 1, 60, 40, 'JOGR')
 
     # position forward & backlash compensation, absolute
-    def test_TC_1431(self):
-        positionAndBacklash(self, self.motor, 1431, 0, 60, 80)
+    def test_TC_14131(self):
+        positionAndBacklash(self, self.motor, 14131, 0, 60, 80)
 
     # position forward & backlash compensation, relative
-    def test_TC_1432(self):
-        positionAndBacklash(self, self.motor, 1432, 1, 60, 80)
-
+    def test_TC_14132(self):
+        positionAndBacklash(self, self.motor, 14132, 1, 60, 80)
 
     # position backward & backlash compensation, absolute
-    def test_TC_1441(self):
-        positionAndBacklash(self, self.motor, 1441, 0, 80, 60)
+    def test_TC_14141(self):
+        positionAndBacklash(self, self.motor, 14141, 0, 80, 60)
 
     # position backward & backlash compensation, relative
-    def test_TC_1442(self):
-        positionAndBacklash(self, self.motor, 1442, 1, 80, 60)
+    def test_TC_14142(self):
+        positionAndBacklash(self, self.motor, 14142, 1, 80, 60)
 
     # position forward inside backlash range, absolute
-    def test_TC_1431(self):
-        positionAndBacklash(self, self.motor, 1451, 0, 60, 70)
+    def test_TC_14131(self):
+        positionAndBacklash(self, self.motor, 14151, 0, 60, 70)
 
     # position forward inside backlash range, relative
-    def test_TC_1432(self):
-        positionAndBacklash(self, self.motor, 1452, 1, 60, 70)
+    def test_TC_14132(self):
+        positionAndBacklash(self, self.motor, 14152, 1, 60, 70)
+
 

@@ -162,15 +162,12 @@ class Test(unittest.TestCase):
     def test_TC_14222(self):
         positionAndBacklash(self, self.motor, 14222, 1, 80, 60)
 
-# The following does not really work (as expected):
-# When doing retries within BDST, the record moves the motor
-# outside BDST in all retries. This seems unnecessary.
-#    # position forward inside backlash range, absolute
-#    def test_TC_14231(self):
-#        positionAndBacklash(self, self.motor, 14231, 0, 60, 70)
-#
-#    # position forward inside backlash range, relative
-#    def test_TC_14232(self):
-#        positionAndBacklash(self, self.motor, 14232, 1, 60, 70)
-#
-#
+    # position forward inside backlash range, absolute
+    def test_TC_14231(self):
+        positionAndBacklash(self, self.motor, 14231, 0, 60, 70)
+
+    # position forward inside backlash range, relative
+    def test_TC_14232(self):
+        positionAndBacklash(self, self.motor, 14232, 1, 60, 70)
+
+
