@@ -136,6 +136,7 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
             expFile.write('%s\n%s\n' % (line1, line2))
             cnt -= 1
     expFile.close()
+    setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
 
     lib.cmpUnlinkExpectedActualFile(expFileName, actFileName)
 

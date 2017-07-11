@@ -67,10 +67,8 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
     setValueOnSimulator(tself, motor, tc_no, "fActPosition", startpos)
     # Run a status update and a sync
     epics.caput(motor + '.STUP', 1)
-    # The SYNC is not "synched" with STUP in the record.
-    # Just delay
-    #time.sleep(1)
     epics.caput(motor + '.SYNC', 1)
+
 
 def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX):
     lib = motor_lib()
@@ -178,6 +176,7 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
                     (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
         expFile.write('%s\n%s\n' % (line1, line2))
     expFile.close()
+    setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
 
     lib.cmpUnlinkExpectedActualFile(expFileName, actFileName)
 
@@ -220,11 +219,11 @@ class Test(unittest.TestCase):
         positionAndBacklash(self, self.motor, 14142, 1, 80, 60)
 
     # position forward inside backlash range, absolute
-    def test_TC_14131(self):
+    def test_TC_14151(self):
         positionAndBacklash(self, self.motor, 14151, 0, 60, 70)
 
     # position forward inside backlash range, relative
-    def test_TC_14132(self):
+    def test_TC_14152(self):
         positionAndBacklash(self, self.motor, 14152, 1, 60, 70)
 
 
