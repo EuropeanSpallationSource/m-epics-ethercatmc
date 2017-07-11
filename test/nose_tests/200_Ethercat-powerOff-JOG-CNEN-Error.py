@@ -33,7 +33,6 @@ class Test(unittest.TestCase):
 
     saved_HLM = epics.caget(m1 + '.HLM')
     saved_LLM = epics.caget(m1 + '.LLM')
-    saved_Enable = epics.caget(m1 + '-En')
 
     # 10% UserPosition
     def test_TC_201(self):
@@ -49,6 +48,7 @@ class Test(unittest.TestCase):
     def test_TC_202(self):
         motor = self.m1
         tc_no = "TC-202-JOG-_Enable"
+        saved_Enable = epics.caget(motor + '-En')
         epics.caput(motor + '-En', 0)
         epics.caput(motor + '.JOGF', 1)
         ret = self.lib.waitForStart(motor, tc_no, 2.0)
@@ -88,6 +88,7 @@ class Test(unittest.TestCase):
             if counter == 0:
                 break
 
+        epics.caput(motor + '-En', saved_Enable)
         self.assertEqual(0, msta & self.lib.MSTA_BIT_MOVING,  'Clean MSTA.Moving)')
         self.assertEqual(0, bError,   'bError')
         self.assertEqual(0, nErrorId, 'nErrorId')
