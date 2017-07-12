@@ -211,7 +211,7 @@ class Test(unittest.TestCase):
         print '%s' % tc_no
         motor = self.motor
         resetAxis(motor, tc_no)
-        print '%s CNEN=1' % tc_no
+        print '%s .En=1' % tc_no
         epics.caput(motor + '-En', 1)
 
         oldRBV = epics.caget(motor + '.RBV', use_monitor=False)
@@ -240,7 +240,7 @@ class Test(unittest.TestCase):
         ret1 = waitForStart(self, motor, tc_no, 0.4, direction, oldRBV)
         ret2 = waitForStop(self, motor, tc_no, 10.0, direction, oldRBV, self.TweakValue)
         msta = int(epics.caget(motor + '.MSTA'))
-        #print '%s STOP=1 CNEN=0 start=%d stop=%d' % (tc_no, ret1, ret2)
+        #print '%s STOP=1 -En=0 start=%d stop=%d' % (tc_no, ret1, ret2)
         #epics.caput(motor + '-En', 0)
         print '%s STOP=1 start=%d stop=%d' % (tc_no, ret1, ret2)
         epics.caput(motor + '.STOP', 1)

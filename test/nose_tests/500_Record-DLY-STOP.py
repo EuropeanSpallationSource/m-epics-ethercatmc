@@ -24,12 +24,9 @@ class Test(unittest.TestCase):
         saved_LLM = epics.caget(motor + '.LLM')
 
         destination =  (1 * saved_HLM + 9 * saved_LLM) / 10
-        saved_CNEN = epics.caget(motor + '.CNEN')
 
-        epics.caput(motor + '.CNEN',1)
         epics.caput(motor + '.VAL', destination, wait=True)
         rbv = epics.caget(motor + '.RBV')
-        epics.caput(motor + '.CNEN', saved_CNEN)
         inpos = self.lib.calcAlmostEqual(motor, tc_no, destination, rbv, 2)
         print '%s destination=%f RBV=%f inpos=%d' % (tc_no, destination, rbv, inpos)
         assert inpos
@@ -43,9 +40,7 @@ class Test(unittest.TestCase):
         saved_DLY  = epics.caget(motor + '.DLY')
         saved_VELO = epics.caget(motor + '.VELO')
         saved_ACCL = epics.caget(motor + '.ACCL')
-        saved_CNEN = epics.caget(motor + '.CNEN')
 
-        epics.caput(motor + '.CNEN',1)
         epics.caput(motor + '.DLY',5.2)
         epics.caput(motor + '.VELO', 1)
         epics.caput(motor + '.ACCL', 1)
@@ -63,4 +58,3 @@ class Test(unittest.TestCase):
         epics.caput(motor + '.DLY',  saved_DLY)
         epics.caput(motor + '.VELO', saved_VELO)
         epics.caput(motor + '.ACCL', saved_ACCL)
-        epics.caput(motor + '.CNEN', saved_CNEN)
