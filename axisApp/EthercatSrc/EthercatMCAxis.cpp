@@ -117,6 +117,7 @@ asynStatus EthercatMCAxis::handleDisconnect()
               "%s Communication error(%d)\n", modulName, axisNo_);
   }
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
+  drvlocal.MCU_nErrorId = 0;
   setIntegerParam(pC_->motorStatusCommsError_, 1);
   callParamCallbacksUpdateError();
   return status;
@@ -152,6 +153,8 @@ asynStatus EthercatMCAxis::readConfigFile(void)
              mypwd ? mypwd : "",
              drvlocal.cfgfileStr);
     updateMsgTxtFromDriver(errbuf);
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s (%d)%s\n", modulName, axisNo_, errbuf);
     return asynError;
   }
   while (ret && !status && !errorTxt) {
