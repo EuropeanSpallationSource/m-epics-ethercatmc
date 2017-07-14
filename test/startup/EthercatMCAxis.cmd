@@ -41,10 +41,6 @@
 # @type  FLOAT
 # acceleration to velocity in seconds
 
-# @field MRES
-# @type  FLOAT
-# Size of a motor step, set to 0.001
-
 # @field ERES
 # @type  FLOAT
 # Size of an encoder step, set to 1
@@ -53,9 +49,9 @@
 # @type  FLOAT
 # Retry deadband
 
-# @field NTMF
-# @type  INTEGER
-# New Target Monitor Deadband Factor (stop at overshoot), >= 2
+# @field SDBD
+# @type  FLOAT
+# Setpoint deadband
 
 # @field DLLM
 # @type  FLOAT
@@ -65,13 +61,9 @@
 # @type  FLOAT
 # high soft limit in dial coordinates
 
-# @field HOMEPROC
-# @type  INTEGER
-# Homing procedure
-
 EthercatMCCreateAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "2", "$(AXISCONFIG)")
 
-dbLoadRecords("EthercatMC.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC), VELO=$(VELO), JVEL=$(JVEL), JAR=$(JAR), ACCL=$(ACCL), MRES=$(MRES), ERES=$(ERES), RDBD=$(RDBD), NTMF=$(NTMF), DLLM=$(DLLM), DHLM=$(DHLM), HOMEPROC=$(HOMEPROC)")
+dbLoadRecords("EthercatMC.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC), VELO=$(VELO), JVEL=$(JVEL), JAR=$(JAR), ACCL=$(ACCL), ERES=$(ERES), SDBD=$(SDBD), RDBD=$(RDBD), DLLM=$(DLLM), DHLM=$(DHLM)")
 
 
 dbLoadRecords("EthercatMChome.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO),  HOMEPROC=$(HOMEPROC), HOMEPOS=$(HOMEPOS), HVELTO=$(HVELTO), HVELFRM=$(HVELFRM), HOMEACC=$(HOMEACC), HOMEDEC=$(HOMEDEC)")

@@ -20,6 +20,7 @@ epicsEnvSet("JAR",           "$(SM_JAR=21)")
 epicsEnvSet("ACCL",          "$(SM_ACCL=0.4)")
 epicsEnvSet("MRES",          "$(SM_MRES=0.001)")
 epicsEnvSet("ERES",          "$(SM_MRES=0.0)")
+epicsEnvSet("SDBD",          "$(SM_RDBD=0.03)")
 epicsEnvSet("RDBD",          "$(SM_RDBD=0.1)")
 epicsEnvSet("NTMF",          "$(SM_NTMF=3)")
 epicsEnvSet("MRES",          "$(SM_MRES=0.01)")
@@ -32,8 +33,6 @@ epicsEnvSet("HVELTO",        "$(SM_HVELTP=9)")
 epicsEnvSet("HVELFRM",       "$(SM_HVELTP=4)")
 epicsEnvSet("HOMEACC",       "$(SM_HOMEACC=24)")
 epicsEnvSet("HOMEDEC",       "$(SM_HOMEDEC=26)")
-
-epicsEnvSet("SCALRDBD",      "$(RDBD)")
 
 < EthercatMCController.cmd
 < EthercatMCAxis.cmd
