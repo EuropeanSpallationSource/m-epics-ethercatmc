@@ -6,7 +6,7 @@ epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-#epicsEnvSet("AXISCONFIG",    "cfgFile=../iocBoot/iocEthercatMC/SolAxis-48-1.cfg")
+#epicsEnvSet("AXISCONFIG",    "cfgFile=./SolAxis-48-1.cfg")
 #epicsEnvSet("AXISCONFIG",    "getDebugText=getAxisDebugInfoData(1)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("AXISCONFIG",    "encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
@@ -40,7 +40,7 @@ epicsEnvSet("HOMEDEC",       "$(SM_HOMEDEC=26)")
 < EthercatMCAxis.cmd
 
 #############################
-Axis 2
+#Axis 2
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("R",             "$(SM_R=m2-)")

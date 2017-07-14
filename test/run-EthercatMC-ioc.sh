@@ -124,7 +124,7 @@ EOF
       -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
       -e "s/127.0.0.1/$MOTORIP/" \
       -e "s/5000/$MOTORPORT/" \
-      -e "s%cfgFile=./%cfgFile=./startup/%"    \
+      -e "s%cfgFile=./%cfgFile=./test/startup/%"    \
       -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
       -e "s%require%#require%" \
       | grep -v '^  *#' >>$stcmddst &&

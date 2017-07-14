@@ -24,12 +24,6 @@ epicsEnvSet("NTMF",          "$(SM_NTMF=3)")
 epicsEnvSet("DLLM",          "$(SM_DLLM=15)")
 epicsEnvSet("DHLM",          "$(SM_DHLM=170)")
 
-# Test the config file reader, currently not used
-#epicsEnvSet("AXISCONFIG",    "cfgFile=../iocBoot/iocEthercatMC/SolAxis-48-1.cfg")
-
-# Test the debug string, which is shown in "-MsgTxt"
-#epicsEnvSet("AXISCONFIG",    "getDebugText=getAxisDebugInfoData(1)")
-
 # Simulate the readback of the actual position as an "external encoder"
 # Note that the encoder readback is in mm, not steps.
 # To fiddle mm like 1.234 into the record.RBV without rounding it
