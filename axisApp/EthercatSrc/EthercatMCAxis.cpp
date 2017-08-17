@@ -278,6 +278,10 @@ void EthercatMCAxis::readBackHighSoftLimit(void)
   if (status != asynSuccess) return;
   setIntegerParam(pC_->motorFlagsHighLimitRO_, iValue);
   setDoubleParam(pC_->motorHighLimitRO_, fValue);
+  /* EthercatMCDHLMXX are info(asyn:READBACK,"1"),
+     so we must use pC_->setXXX here */
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCDHLM_En_, iValue);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCDHLM_, fValue);
 }
 
 
@@ -303,6 +307,10 @@ void EthercatMCAxis::readBackLowSoftLimit(void)
   if (status != asynSuccess) return;
   setDoubleParam(pC_->motorLowLimitRO_, fValue);
   setIntegerParam(pC_->motorFlagsLowLimitRO_, iValue);
+  /* EthercatMCDHLMXX are info(asyn:READBACK,"1"),
+     so we must use pC_->setXXX(axisNo_..)  here */
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCDLLM_En_, iValue);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCDLLM_, fValue);
 }
 
 /** Connection status is changed, the dirty bits must be set and
@@ -390,6 +398,7 @@ void EthercatMCAxis::readBackConfig(void)
   readBackHighSoftLimit();
   readBackLowSoftLimit();
 }
+
 
 /** Connection status is changed, the dirty bits must be set and
  *  the values in the controller must be updated
@@ -1603,6 +1612,8 @@ asynStatus EthercatMCAxis::setClosedLoop(bool closedLoop)
 asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 {
   asynStatus status;
+  unsigned int adsport = 501;
+  unsigned indexGroup5000 = 0x5000;
   if (function == pC_->EthercatMCEn_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d EthercatMCEn_)=%d\n",
@@ -1641,6 +1652,24 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
 #endif
+#ifdef EthercatMCDHLM_EnString
+  } else if (function == pC_->EthercatMCDHLM_En_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setIntegerParam(%d EthercatMCDHLM_En)=%d\n",
+              modulName, axisNo_, value);
+    status = setADRValueOnAxis(adsport, indexGroup5000, 0xC, value);
+    readBackHighSoftLimit();
+    return status;
+#endif
+#ifdef EthercatMCDLLM_EnString
+  } else if (function == pC_->EthercatMCDLLM_En_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setIntegerParam(%d EthercatMCDLLM_En)=%d\n",
+              modulName, axisNo_, value);
+    status = setADRValueOnAxis(adsport, indexGroup5000, 0xB, value);
+    readBackLowSoftLimit();
+    return status;
+#endif
   }
 
   //Call base class method
@@ -1658,6 +1687,8 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 {
   asynStatus status;
+  unsigned int adsport = 501;
+  unsigned indexGroup5000 = 0x5000;
 
 #ifdef motorRecResolutionString
   if (function == pC_->motorRecResolution_) {
@@ -1766,8 +1797,23 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d PosHom_)=%f\n", modulName, axisNo_, value);
 #endif
+#ifdef EthercatMCDHLMString
+  } else if (function == pC_->EthercatMCDHLM_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setDoubleParam(%d EthercatMCDHLM_)=%f\n", modulName, axisNo_, value);
+    status = setADRValueOnAxis(adsport, indexGroup5000, 0xE, value);
+    readBackHighSoftLimit();
+    return status;
+#endif
+#ifdef EthercatMCDLLMString
+  } else if (function == pC_->EthercatMCDLLM_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setDoubleParam(%d EthercatMCDLLM_)=%f\n", modulName, axisNo_, value);
+    status = setADRValueOnAxis(adsport, indexGroup5000, 0xD, value);
+    readBackLowSoftLimit();
+    return status;
+#endif
   }
-
   // Call the base class method
   status = asynAxisAxis::setDoubleParam(function, value);
   return status;

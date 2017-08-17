@@ -6,3 +6,36 @@ record(stringout, "$(PREFIX)$(R)DbgStrToMCU") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToMCU")
 }
 
+record(ao,"$(PREFIX)$(R)CHLM") {
+    field(DESC, "Controller High Soft Limit")
+    field(VAL,  0.0)
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DHLM")
+    info(asyn:READBACK,"1")
+}
+
+record(ao,"$(PREFIX)$(R)CLLM") {
+    field(DESC, "Controller Low Soft Limit")
+    field(VAL,  0.0)
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DLLM")
+    info(asyn:READBACK,"1")
+}
+
+record(longout,"$(PREFIX)$(R)CHLM-En") {
+    field(DESC, "Controller High Soft Limit enabled")
+    field(VAL,  0)
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DHLM-En")
+    info(asyn:READBACK,"1")
+}
+
+record(longout,"$(PREFIX)$(R)CLLM-En") {
+    field(DESC, "Controller Low Soft Limit enabled")
+    field(VAL,  0)
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DLLM-En")
+    info(asyn:READBACK,"1")
+}

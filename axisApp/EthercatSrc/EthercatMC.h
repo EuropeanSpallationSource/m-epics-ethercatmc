@@ -29,6 +29,10 @@ FILENAME...   EthercatMC.h
 #define EthercatMCVel_RBString               "Vel-RB"
 #define EthercatMCAcc_RBString               "Acc-RB"
 #define EthercatMCDec_RBString               "Dec-RB"
+#define EthercatMCDHLMString                 "DHLM"
+#define EthercatMCDLLMString                 "DLLM"
+#define EthercatMCDHLM_EnString              "DHLM-En"
+#define EthercatMCDLLM_EnString              "DLLM-En"
 #define EthercatMCEnString                   "En"
 #define EthercatMCScalSREV_RBString          "SCALSREV-RB"
 #define EthercatMCScalUREV_RBString          "SCALUREV-RB"
@@ -118,8 +122,6 @@ private:
   struct {
     st_axis_status_type old_st_axis_status;
     double mres;
-    double motorHighLimit;
-    double motorLowLimit;
     const char *externalEncoderStr;
     const char *cfgfileStr;
     const char *cfgDebug_str;
@@ -139,7 +141,6 @@ private:
        motion controller */
     struct {
       int          nMotionAxisID;     /* Needed for ADR commands */
-      unsigned int motorLimits      :1;
       unsigned int stAxisStatus_Vxx :1;
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialUpdate    :1;
@@ -147,11 +148,6 @@ private:
       unsigned int readConfigFile   :1;
     }  dirty;
 
-    /* Which values have been defined: at startup none */
-    struct {
-      unsigned int motorHighLimit   :1;
-      unsigned int motorLowLimit    :1;
-    }  defined;
     struct {
       unsigned int stAxisStatus_V1  :1;
       unsigned int stAxisStatus_V2  :1;
@@ -220,8 +216,6 @@ private:
   asynStatus getStringFromAxis(const char* var, char *value, size_t maxlen);
   asynStatus getValueFromController(const char* var, double *value);
 
-  asynStatus setMotorLimitsOnAxisIfDefined(void);
-  asynStatus updateMresSoftLimitsIfDirty(int);
   asynStatus resetAxis(void);
   asynStatus enableAmplifier(int);
   asynStatus sendVelocityAndAccelExecute(double maxVelocity, double acceleration_time);
@@ -284,6 +278,10 @@ public:
   int EthercatMCScalRDBD_RB_;
   int EthercatMCScalRDBD_Tim_RB_;
   int EthercatMCScalRDBD_En_RB_;
+  int EthercatMCDHLM_;
+  int EthercatMCDLLM_;
+  int EthercatMCDHLM_En_;
+  int EthercatMCDLLM_En_;
   int EthercatMCEn_;
   int EthercatMCErrId_;
   /* Last parameter */
