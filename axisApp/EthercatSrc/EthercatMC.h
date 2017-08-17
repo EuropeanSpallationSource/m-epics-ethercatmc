@@ -169,6 +169,8 @@ private:
   asynStatus handleDisconnect(void);
   asynStatus handleConnect(void);
   asynStatus readConfigFile(void);
+  void readBackHighSoftLimit(void);
+  void readBackLowSoftLimit(void);
   void readBackConfig(void);
   asynStatus initialUpdate(void);
 

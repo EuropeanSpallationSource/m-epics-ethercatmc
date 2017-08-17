@@ -187,6 +187,35 @@ record(longin,"$(PREFIX)$(R)ScalRDBD-En-RB") {
     field(SCAN, "I/O Intr")
 }
 
+record(ai,"$(PREFIX)$(R)CHLM-RB") {
+    field(DESC, "Controller High Soft Limit RB")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_HIGH_LIMIT_RO")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(R)CLLM-RB") {
+    field(DESC, "Controller Low Soft Limit RB")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_LOW_LIMIT_RO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin,"$(PREFIX)$(R)CHLM-En-RB") {
+    field(DESC, "Controller High Soft Limit enabled RB")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_HIGH_LIMIT_RO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin,"$(PREFIX)$(R)CLLM-En-RB") {
+    field(DESC, "Controller Low Soft Limit enabled RB")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_LOW_LIMIT_RO")
+    field(SCAN, "I/O Intr")
+}
 
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {

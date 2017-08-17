@@ -254,6 +254,57 @@ asynStatus EthercatMCAxis::readConfigFile(void)
   return asynSuccess;
 }
 
+void EthercatMCAxis::readBackHighSoftLimit(void)
+{
+  asynStatus status;
+  int iValue = 0;
+  double fValue = 0.0;
+  /* Soft limits High Enable */
+  iValue = 0; fValue = 0.0;
+  status = getADRValueFromAxis(501, 0x5000, 0xC, &iValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, iValue);
+  if (status != asynSuccess) return;
+  /* Soft limits High Value*/
+  status = getADRValueFromAxis(501, 0x5000, 0xE, &fValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
+            modulName, pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, fValue);
+
+  if (status != asynSuccess) return;
+  setIntegerParam(pC_->motorFlagsHighLimitRO_, iValue);
+  setDoubleParam(pC_->motorHighLimitRO_, fValue);
+}
+
+
+void EthercatMCAxis::readBackLowSoftLimit(void)
+{
+  asynStatus status;
+  int iValue = 0;
+  double fValue = 0.0;
+  /* Soft limits Low Enable */
+  status = getADRValueFromAxis(501, 0x5000, 0xB, &iValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
+            modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, iValue);
+  if (status != asynSuccess) return;
+  /* Soft limits Low Value*/
+  status = getADRValueFromAxis(501, 0x5000, 0xD, &fValue);
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
+            modulName, pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status, fValue);
+  if (status != asynSuccess) return;
+  setDoubleParam(pC_->motorLowLimitRO_, fValue);
+  setIntegerParam(pC_->motorFlagsLowLimitRO_, iValue);
+}
+
 /** Connection status is changed, the dirty bits must be set and
  *  the values in the controller must be updated
  * \param[in] AsynStatus status
@@ -336,6 +387,8 @@ void EthercatMCAxis::readBackConfig(void)
             pasynManager->strStatus(status), (int)status, iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_,
                                              iValue);
+  readBackHighSoftLimit();
+  readBackLowSoftLimit();
 }
 
 /** Connection status is changed, the dirty bits must be set and
@@ -357,7 +410,6 @@ asynStatus EthercatMCAxis::initialUpdate(void)
   status = readConfigFile();
   if (status) return status;
 
-  (void)updateMresSoftLimitsIfDirty(__LINE__);
   if ((status == asynSuccess) &&
       (drvlocal.axisFlags & AMPLIFIER_ON_FLAG_CREATE_AXIS)) {
     /* Enable the amplifier when the axis is created,
@@ -830,7 +882,6 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
   asynStatus status = asynSuccess;
   int nCommand = relative ? 2 : 3;
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-  if (status == asynSuccess) status = updateMresSoftLimitsIfDirty(__LINE__);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
   if (status == asynSuccess) drvlocal.nCommand = nCommand;
@@ -914,7 +965,6 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
   asynStatus status = asynSuccess;
 
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-  if (status == asynSuccess) status = updateMresSoftLimitsIfDirty(__LINE__);
   if (status == asynSuccess) setValueOnAxis("nCommand", 1);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
   if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
@@ -933,59 +983,6 @@ asynStatus EthercatMCAxis::setPosition(double value)
             "%s setPosition(%d position=%g egu=%g\n",
              modulName, axisNo_, value, value * drvlocal.mres);
   return asynSuccess;
-}
-
-/** Set the low soft-limit on an axis
- *
- */
-asynStatus EthercatMCAxis::setMotorLimitsOnAxisIfDefined(void)
-{
-  asynStatus status = asynError;
-  drvlocal.dirty.motorLimits = 0;
-
-  if (drvlocal.defined.motorLowLimit &&
-      drvlocal.defined.motorHighLimit && drvlocal.mres) {
-    unsigned int adsport = 501;
-    unsigned int indexGroupA;
-    int enable;
-    int axisID = getMotionAxisID();
-    if (axisID < 0) return asynError;
-    indexGroupA = 0x5000 + (unsigned int)axisID;
-    enable = drvlocal.motorLowLimit < drvlocal.motorHighLimit ? 1 : 0;
-    if (enable) {
-      snprintf(pC_->outString_, sizeof(pC_->outString_),
-               "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g;"
-               "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g;"
-               "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d;"
-               "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d",
-               adsport, indexGroupA, 0xD, drvlocal.motorLowLimit * drvlocal.mres,
-               adsport, indexGroupA, 0xE, drvlocal.motorHighLimit * drvlocal.mres,
-               adsport, indexGroupA, 0XB, 1,
-               adsport, indexGroupA, 0XC, 1);
-    } else {
-      snprintf(pC_->outString_, sizeof(pC_->outString_),
-               "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d;"
-               "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d",
-               adsport, indexGroupA, 0XB, 0,
-               adsport, indexGroupA, 0XC, 0);
-    }
-    status = writeReadACK();
-  }
-  drvlocal.dirty.motorLimits =  (status != asynSuccess);
-  return status;
-}
-
-
-/** Update the soft limits in the controller, if needed
- *
- */
-asynStatus EthercatMCAxis::updateMresSoftLimitsIfDirty(int line)
-{
-  asynStatus status = asynSuccess;
-  asynPrint(pC_->pasynUserController_, ASYN_TRACEIO_DRIVER,
-            "%s called from %d\n", modulName, line);
-  if (drvlocal.dirty.motorLimits && status == asynSuccess) status = setMotorLimitsOnAxisIfDefined();
-  return status;
 }
 
 asynStatus EthercatMCAxis::resetAxis(void)
@@ -1112,9 +1109,6 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
   } else if (drvlocal.dirty.nMotionAxisID != axisNo_) {
     EPICS_nErrorId = ERROR_CONFIG_ERROR;
     updateMsgTxtFromDriver("ConfigError: AxisID");
-  } else if (drvlocal.dirty.motorLimits) {
-    EPICS_nErrorId = ERROR_CONFIG_ERROR;
-    updateMsgTxtFromDriver("ConfigError: Soft limits");
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
   }
@@ -1618,6 +1612,10 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     status = enableAmplifier(value);
     return status;
 
+  } else if (function == pC_->motorUpdateStatus_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setIntegerParam(%d motorUpdateStatus_)=%d\n", modulName, axisNo_, value);
+    readBackConfig();
 #ifdef motorRecDirectionString
   } else if (function == pC_->motorRecDirection_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -1660,29 +1658,13 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 {
   asynStatus status;
-  if (function == pC_->motorHighLimit_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setDoubleParam(%d motorHighLimit_)=%g\n",
-               modulName, axisNo_, value);
-    drvlocal.motorHighLimit = value;
-    drvlocal.defined.motorHighLimit = 1;
-    drvlocal.dirty.motorLimits = 1;
-    setMotorLimitsOnAxisIfDefined();
-  } else if (function == pC_->motorLowLimit_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setDoubleParam(%d motorLowLimit_)=%g\n",
-               modulName, axisNo_, value);
-    drvlocal.motorLowLimit = value;
-    drvlocal.defined.motorLowLimit = 1;
-    drvlocal.dirty.motorLimits = 1;
-    setMotorLimitsOnAxisIfDefined();
+
 #ifdef motorRecResolutionString
-  } else if (function == pC_->motorRecResolution_) {
+  if (function == pC_->motorRecResolution_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d motorRecResolution_=%g\n",
               modulName, axisNo_, value);
     drvlocal.mres = value;
-    status = setMotorLimitsOnAxisIfDefined();
 #endif
   }
 
@@ -1769,9 +1751,6 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
   } else if (function == pC_->motorStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d motorStatus_)=%g\n", modulName, axisNo_, value);
-  } else if (function == pC_->motorUpdateStatus_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setDoubleParam(%d motorUpdateStatus_)=%g\n", modulName, axisNo_, value);
 #ifdef motorRecOffsetString
   } else if (function == pC_->motorRecOffset_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,

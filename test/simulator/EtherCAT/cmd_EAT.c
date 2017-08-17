@@ -130,6 +130,12 @@ static int motorHandleADS_ADR_getInt(unsigned adsport,
         /* Encoder direction axis1: Negative; axis2: positive */
         *iValue = motor_axis_no & 1 ? 1 : 0;
         return 0;
+      case 0xB:
+        *iValue = getEnableLowSoftLimit(motor_axis_no);
+        return 0;
+      case 0xC:
+        *iValue = getEnableHighSoftLimit(motor_axis_no);
+        return 0;
     }
   } else if (indexGroup >= 0x6000 && indexGroup < 0x7000) {
     int motor_axis_no = (int)indexGroup - 0x6000;
@@ -171,11 +177,11 @@ static int motorHandleADS_ADR_putInt(unsigned adsport,
   if (indexGroup >= 0x5000 && indexGroup < 0x6000) {
     int motor_axis_no = (int)indexGroup - 0x5000;
     if (indexOffset == 0xB) {
-      enableLowSoftLimit(motor_axis_no, iValue);
+      setEnableLowSoftLimit(motor_axis_no, iValue);
       return 0;
     }
     if (indexOffset == 0xC) {
-      enableHighSoftLimit(motor_axis_no, iValue);
+      setEnableHighSoftLimit(motor_axis_no, iValue);
       return 0;
     }
   }

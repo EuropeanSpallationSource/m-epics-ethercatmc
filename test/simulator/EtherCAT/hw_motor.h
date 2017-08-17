@@ -44,12 +44,14 @@ void setHWhomeSwitchpos(int axis_no, double value);
 
 double getLowSoftLimitPos(int axis_no);
 void   setLowSoftLimitPos(int axis_no, double value);
-void   enableLowSoftLimit(int axis_no, int value);
+int    getEnableLowSoftLimit(int axis_no);
+void   setEnableLowSoftLimit(int axis_no, int value);
 void   setLowHardLimitPos(int axis_no, double value);
 
 double getHighSoftLimitPos(int axis_no);
 void   setHighSoftLimitPos(int axis_no, double value);
-void   enableHighSoftLimit(int axis_no, int value);
+int    getEnableHighSoftLimit(int axis_no);
+void   setEnableHighSoftLimit(int axis_no, int value);
 void   setHighHardLimitPos(int axis_no, double value);
 
 double getMRES_23(int axis_no);
