@@ -740,6 +740,18 @@ int movePosition(int axis_no,
   if (relative) {
     position += motor_axis[axis_no].MotorPosNow;
   }
+  if (motor_axis[axis_no].enabledLowSoftLimitPos &&
+      position < motor_axis[axis_no].lowSoftLimitPos) {
+    set_nErrorId(axis_no, 0x4460);
+    StopInternal(axis_no);
+    return 0;
+  }
+  else if (motor_axis[axis_no].enabledHighSoftLimitPos &&
+           position > motor_axis[axis_no].highSoftLimitPos) {
+    set_nErrorId(axis_no, 0x4461);
+    StopInternal(axis_no);
+    return 0;
+  }
   motor_axis[axis_no].MotorPosWanted = position;
 
   if (position > motor_axis[axis_no].MotorPosNow) {
