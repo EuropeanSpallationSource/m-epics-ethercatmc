@@ -76,6 +76,15 @@ def motorInitLimitsNoC(tself, motor, tc_no):
     epics.caput(motor + '.DHLM', myDHLM)
     epics.caput(motor + '.DLLM', myDLLM)
     
+def motorInitLimitsWithC(tself, motor, tc_no):
+    epics.caput(motor + '-CLLM', myCLLM)
+    epics.caput(motor + '-CLLM-En', 1)
+    epics.caput(motor + '-CHLM', myCHLM)
+    epics.caput(motor + '-CHLM-En', 1)
+
+    epics.caput(motor + '.DHLM', myDHLM)
+    epics.caput(motor + '.DLLM', myDLLM)
+
 def setMresDirOff(tself, motor, tc_no, mres, dir, off):
     epics.caput(motor + '.MRES', mres)
     epics.caput(motor + '.DIR',  dir)
@@ -251,4 +260,133 @@ class Test(unittest.TestCase):
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "LLM", -5.4, 5.9,     -5.3,    5.8,    -5.4,    53.0,      -59.0)
 
+
+#########################################################################################################
+# Test clipping
+    def test_TC_90050(self):
+        tc_no = 90050
+        encRel = 0
+        #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
+        motorInitVeloAcc(self, self.motor, tc_no, encRel)
+        mres = 0.1
+        dir = 0
+        off = 0.5
+        setMresDirOff(self, self.motor, tc_no, mres, dir, off)
+        motorInitLimitsWithC(self, self.motor, tc_no)
+
+    def test_TC_90051(self):
+        tc_no = 90051
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "DHLM", 10,  6.0,    -5.0,    6.5,    -4.5,   60.0,      -50.0)
+
+    def test_TC_90052(self):
+        tc_no = 90052
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "HLM",  10,  6.0,    -5.0,    6.5,    -4.5,    60.0,      -50.0)
+
+    def test_TC_90053(self):
+        tc_no = 90053
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "DLLM", -10.0, 6.0,    -7.0,    6.5,    -6.5,  60.0,     -70.0)
+
+    def test_TC_90054(self):
+        tc_no = 90054
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "LLM", -10.0,  6.0,    -7.0,    6.5,    -6.5,  60.0,      -70.0)
+
+    #Invert mres
+    def test_TC_90060(self):
+        tc_no = 90060
+        encRel = 0
+        #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
+        motorInitVeloAcc(self, self.motor, tc_no, encRel)
+        mres = -0.1
+        dir = 0
+        off = 0.5
+        setMresDirOff(self, self.motor, tc_no, mres, dir, off)
+        motorInitLimitsWithC(self, self.motor, tc_no)
+
+    def test_TC_90061(self):
+        tc_no = 90061
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "DHLM", 10,  6.0,    -5.0,    6.5,    -4.5,    50.0,      -60.0)
+
+    def test_TC_90062(self):
+        tc_no = 90062
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "HLM",  10,  6.0,    -5.0,    6.5,    -4.5,    50.0,      -60.0)
+
+    def test_TC_90063(self):
+        tc_no = 90063
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "DLLM", -10.0, 6.0,    -7.0,    6.5,    -6.5,  70.0,     -60.0)
+
+    def test_TC_90064(self):
+        tc_no = 90064
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "LLM", -10.0,  6.0,    -7.0,    6.5,    -6.5,  70.0,      -60.0)
+
+    #Invert dir
+    def test_TC_90070(self):
+        tc_no = 90070
+        encRel = 0
+        #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
+        motorInitVeloAcc(self, self.motor, tc_no, encRel)
+        mres = 0.1
+        dir = 1
+        off = 0.5
+        setMresDirOff(self, self.motor, tc_no, mres, dir, off)
+        motorInitLimitsWithC(self, self.motor, tc_no)
+
+    def test_TC_90071(self):
+        tc_no = 90071
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "DHLM", 10,  6.0,     -5.0,    5.5,    -5.5,    60.0,      -50.0)
+
+    def test_TC_90072(self):
+        tc_no = 90072
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "HLM",  10,  6.0,     -7.0,    7.5,    -5.5,    60.0,      -70.0)
+
+    def test_TC_90073(self):
+        tc_no = 90073
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "DLLM", -10.0, 6.0,    -7.0,    7.5,    -5.5,  60.0,     -70.0)
+
+    def test_TC_90074(self):
+        tc_no = 90074
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "LLM", -10.0,  6.0,    -7.0,    7.5,    -5.5,  60.0,      -70.0)
+
+    #Invert MRES and dir
+    def test_TC_90080(self):
+        tc_no = 90080
+        encRel = 0
+        #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
+        motorInitVeloAcc(self, self.motor, tc_no, encRel)
+        mres = -0.1
+        dir = 1
+        off = 0.5
+        setMresDirOff(self, self.motor, tc_no, mres, dir, off)
+        motorInitLimitsWithC(self, self.motor, tc_no)
+
+    def test_TC_90081(self):
+        tc_no = 90081
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "DHLM", 10,  6.0,     -5.0,    5.5,    -5.5,    50.0,      -60.0)
+
+    def test_TC_90082(self):
+        tc_no = 90082
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "HLM",  10,  6.0,     -7.0,    7.5,    -5.5,    70.0,      -60.0)
+
+    def test_TC_90083(self):
+        tc_no = 90083
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "DLLM", -10.0, 6.0,    -7.0,    7.5,    -5.5,  70.0,     -60.0)
+
+    def test_TC_90084(self):
+        tc_no = 90084
+        #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
+        setLimit(self, self.motor, tc_no, "LLM", -10.0,  6.0,    -7.0,    7.5,    -5.5,  70.0,      -60.0)
 
