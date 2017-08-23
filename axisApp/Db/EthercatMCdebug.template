@@ -37,5 +37,40 @@ record(longout,"$(PREFIX)$(R)CLLM-En") {
     field(VAL,  0)
     field(DTYP, "asynInt32")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DLLM-En")
+}
+
+# Help records, to read what the record sends to the model 3 driver
+record(ai,"$(PREFIX)$(R)M3RHLM") {
+    field(DESC, "Driver High Soft Limit")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_HIGH_LIMIT")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(R)M3RLLM") {
+    field(DESC, "Driver Low Soft Limit")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_LOW_LIMIT")
+    field(SCAN, "I/O Intr")
+}
+
+
+# Help help records,to make M3HLM agree with the value send to the
+# Model 3 driver (there may be a bug here ?)
+# 
+record(ao,"$(PREFIX)$(R)M3RHLMo_") {
+    field(DESC, "Driver High Soft Limit")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_HIGH_LIMIT")
+    info(asyn:READBACK,"1")
+}
+record(ao,"$(PREFIX)$(R)M3RLLMo_") {
+    field(DESC, "Driver Low Soft Limit")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_LOW_LIMIT")
     info(asyn:READBACK,"1")
 }
