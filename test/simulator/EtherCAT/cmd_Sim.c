@@ -88,7 +88,20 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("OK");
     return;
   }
-
+  /* bEnableLowSoftLimit= */
+  nvals = sscanf(myarg_1, "bEnableLowSoftLimit=%d", &iValue);
+  if (nvals == 1) {
+    setEnableLowSoftLimit(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* bEnableHighSoftLimit= */
+  nvals = sscanf(myarg_1, "bEnableHighSoftLimit=%d", &iValue);
+  if (nvals == 1) {
+    setEnableHighSoftLimit(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return;
+  }
   /* fMotorParkingPosition=100 */
   nvals = sscanf(myarg_1, "fMotorParkingPosition=%lf", &fValue);
   if (nvals == 1) {
@@ -103,10 +116,24 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("OK");
     return;
   }
+  /* fLowSoftLimitPos=17 */
+  nvals = sscanf(myarg_1, "fLowSoftLimitPos=%lf", &fValue);
+  if (nvals == 1) {
+    setLowSoftLimitPos(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
   /* fHighHardLimitPos=165 */
   nvals = sscanf(myarg_1, "fHighHardLimitPos=%lf", &fValue);
   if (nvals == 1) {
     setHighHardLimitPos(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* fHighSoftLimitPos=151 */
+  nvals = sscanf(myarg_1, "fHighSoftLimitPos=%lf", &fValue);
+  if (nvals == 1) {
+    setHighSoftLimitPos(motor_axis_no, fValue);
     cmd_buf_printf("OK");
     return;
   }

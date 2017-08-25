@@ -146,23 +146,23 @@ void hw_motor_init(int axis_no,
   static char init_done[MAX_AXES];
 
 
-  fprintf(stdlog,
-          "%s/%s:%d axis_no=%d ReverseERES=%f ParkingPos=%f MaxHomeVelocityAbs=%f"
-          "\n  lowHardLimitPos=%f highHardLimitPos=%f hWlowPos=%f hWhighPos=%f homeSwitchPos=%f\n",
-          __FILE__, __FUNCTION__, __LINE__, axis_no,
-          ReverseERES,
-          ParkingPos,
-          MaxHomeVelocityAbs,
-          lowHardLimitPos,
-          highHardLimitPos,
-          hWlowPos,
-          hWhighPos,
-          homeSwitchPos);
-
   if (axis_no >= MAX_AXES || axis_no < 0) {
     return;
   }
   if (!init_done[axis_no]) {
+    fprintf(stdlog,
+            "%s/%s:%d axis_no=%d ReverseERES=%f ParkingPos=%f MaxHomeVelocityAbs=%f"
+            "\n  lowHardLimitPos=%f highHardLimitPos=%f hWlowPos=%f hWhighPos=%f homeSwitchPos=%f\n",
+            __FILE__, __FUNCTION__, __LINE__, axis_no,
+            ReverseERES,
+            ParkingPos,
+            MaxHomeVelocityAbs,
+            lowHardLimitPos,
+            highHardLimitPos,
+            hWlowPos,
+            hWhighPos,
+            homeSwitchPos);
+
     memset(&motor_axis[axis_no], 0, sizeof(motor_axis[axis_no]));
     memset(&motor_axis_last[axis_no], 0, sizeof(motor_axis_last[axis_no]));
     memset(&motor_axis_reported[axis_no], 0, sizeof(motor_axis_reported[axis_no]));
@@ -195,8 +195,23 @@ void hw_motor_init(int axis_no,
 
 static void init_axis(int axis_no)
 {
-  (void)axis_no;
-  // hw_motor_init(axis_no);
+  const double MRES = 1;
+  const double UREV = 60.0; /* mm/revolution */
+  const double SREV = 2000.0; /* ticks/revolution */
+  const double ERES = UREV / SREV;
+  double ReverseMRES = (double)1.0/MRES;
+  double valueLow = -1.0 * ReverseMRES;
+  double valueHigh = 186.0 * ReverseMRES;
+
+  hw_motor_init(axis_no,
+                MRES/ERES,              /* ReverseERES */
+                (100 + axis_no/10.0),   /* ParkingPOS */
+                5 * ReverseMRES,        /* maxHomeVelocityAbs */
+                valueLow,               /* lowHardLimitPos */
+                valueHigh,              /* highHardLimitPos */
+                valueLow,               /* hWlowPos */
+                valueHigh,              /* hWhighPos */
+                0);                     /* homeSwitchPos */
 }
 
 
@@ -357,11 +372,11 @@ void setLowHardLimitPos(int axis_no, double value)
 double getHighSoftLimitPos(int axis_no)
 {
   double value = 0;
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  value = motor_axis[axis_no].highSoftLimitPos;
   fprintf(stdlog,
           "%s/%s:%d axis_no=%d value=%g\n",
           __FILE__, __FUNCTION__, __LINE__, axis_no, value);
-  AXIS_CHECK_RETURN_ZERO(axis_no);
-  value = motor_axis[axis_no].highSoftLimitPos;
   return value;
 }
 

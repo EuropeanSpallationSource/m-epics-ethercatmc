@@ -22,8 +22,8 @@ epicsEnvSet("MRES",          "$(SM_MRES=1.0)")
 epicsEnvSet("SDBD",          "$(SM_RDBD=0.03)")
 epicsEnvSet("RDBD",          "$(SM_RDBD=0.1)")
 epicsEnvSet("NTMF",          "$(SM_NTMF=3)")
-epicsEnvSet("DLLM",          "$(SM_DLLM=15)")
-epicsEnvSet("DHLM",          "$(SM_DHLM=170)")
+epicsEnvSet("DLLM",          "$(SM_DLLM=0)")
+epicsEnvSet("DHLM",          "$(SM_DHLM=0)")
 
 # Simulate the readback of the actual position as an "external encoder"
 # Note that the encoder readback is in mm, not steps.
@@ -47,7 +47,7 @@ epicsEnvSet("HOMEACC",       "$(SM_HOMEACC=24)")
 epicsEnvSet("HOMEDEC",       "$(SM_HOMEDEC=26)")
 
 < EthercatMCController.cmd
+< EthercatMCAxisConfigSim.cmd
 < EthercatMCAxis.cmd
 < EthercatMCAxisdebug.cmd
-< EthercatMCAxisConfigSim.cmd
 ###< EthercatMCconfigSimulator.cmd
