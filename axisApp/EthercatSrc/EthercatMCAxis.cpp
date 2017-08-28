@@ -853,26 +853,19 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
 {
   asynStatus status;
   /* We don't use minVelocity */
-  double maxVelocityEGU = maxVelocity * drvlocal.mres;
-  if (!drvlocal.mres) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s sendVelocityAndAccelExecute(%d) mres==0.0\n",
-              modulName, axisNo_);
-    return asynError; /* No mres, no move */
-  }
   if (acceleration_time > 0.0001) {
     double acc_in_seconds = maxVelocity / acceleration_time;
-    double acc_in_EGU_sec2 = maxVelocityEGU / acc_in_seconds;
+    double acc_in_EGU_sec2 = maxVelocity / acc_in_seconds;
     if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
     status = setValuesOnAxis("fAcceleration", acc_in_EGU_sec2,
                              "fDeceleration", acc_in_EGU_sec2);
     if (status) return status;
   } else {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s sendVelocityAndAccelExecute(%d) maxVelocityEGU=%g acceleration_time=%g\n",
-               modulName, axisNo_, maxVelocityEGU, acceleration_time);
+              "%s sendVelocityAndAccelExecute(%d) maxVelocity=%g acceleration_time=%g\n",
+               modulName, axisNo_, maxVelocity, acceleration_time);
   }
-  status = setValueOnAxis("fVelocity", maxVelocityEGU);
+  status = setValueOnAxis("fVelocity", maxVelocity);
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
   drvlocal.waitNumPollsBeforeReady += 2;
   return status;
@@ -894,7 +887,7 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
   if (status == asynSuccess) drvlocal.nCommand = nCommand;
-  if (status == asynSuccess) status = setValueOnAxis("fPosition", position * drvlocal.mres);
+  if (status == asynSuccess) status = setValueOnAxis("fPosition", position);
   if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
 
   return status;
@@ -989,8 +982,8 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
 asynStatus EthercatMCAxis::setPosition(double value)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s setPosition(%d position=%g egu=%g\n",
-             modulName, axisNo_, value, value * drvlocal.mres);
+            "%s setPosition(%d position=%g\n",
+             modulName, axisNo_, value);
   return asynSuccess;
 }
 
@@ -1365,9 +1358,6 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   asynStatus comStatus = asynSuccess;
   st_axis_status_type st_axis_status;
 
-  /* Driver not yet initialized, do nothing */
-  if (!drvlocal.mres) return comStatus;
-
   memset(&st_axis_status, 0, sizeof(st_axis_status));
   /* Try to read to see if the connection is up */
   if (drvlocal.dirty.nMotionAxisID < 0) {
@@ -1439,8 +1429,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   }
 
   if (drvlocal.nCommand != NCOMMANDHOME) {
-    double newPositionInSteps = st_axis_status.fActPosition / drvlocal.mres;
-    setDoubleParam(pC_->motorPosition_, newPositionInSteps);
+    setDoubleParam(pC_->motorPosition_, st_axis_status.fActPosition);
     drvlocal.old_st_axis_status.fActPosition = st_axis_status.fActPosition;
     setDoubleParam(pC_->EthercatMCVel_RB_, st_axis_status.fVelocity);
   }
@@ -1695,7 +1684,6 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d motorRecResolution_=%g\n",
               modulName, axisNo_, value);
-    drvlocal.mres = value;
 #endif
   }
 
