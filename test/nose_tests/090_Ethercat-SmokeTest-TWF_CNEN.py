@@ -213,6 +213,9 @@ class Test(unittest.TestCase):
         resetAxis(motor, tc_no)
         print '%s .En=1' % tc_no
         epics.caput(motor + '-En', 1)
+        # Switch off soft limits
+        epics.caput(motor + '-CLLM-En', 0, wait=True)
+        epics.caput(motor + '-CHLM-En', 0, wait=True)
 
         oldRBV = epics.caget(motor + '.RBV', use_monitor=False)
         old_high_limit = epics.caget(motor + '.HLM')
