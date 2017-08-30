@@ -735,7 +735,7 @@ static void motorHandleOneArg(const char *myarg_1)
                 motor_axis_no,
                 cmd_Motor_cmd[motor_axis_no].fVelocity,
                 cmd_Motor_cmd[motor_axis_no].maximumVelocity);
-        set_nErrorId(motor_axis_no, 0x512);
+        set_nErrorId(motor_axis_no, 0x4221);
         cmd_buf_printf("OK");
         return;
       }

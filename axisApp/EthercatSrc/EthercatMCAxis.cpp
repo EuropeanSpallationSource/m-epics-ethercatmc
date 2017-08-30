@@ -844,6 +844,41 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
   return asynSuccess;
 }
 
+
+extern "C" const char *errStringFromErrId(int nErrorId)
+{
+  switch(nErrorId) {
+  case 0x4221:
+    return "Velocity not allowed";
+  case 0x4223:
+    return "Axis positioning enable";
+  case 0x4450:
+  case 0x4451:
+    return "Following error";
+  case 0x4260:
+    return "Amplifier off";
+  case 0x4263:
+    return "Is still being processed";
+  case 0x4460:
+    return "Low soft limit";
+  case 0x4461:
+    return "High soft limit";
+  case 0x4550:
+    return "Following err mon pos";
+  case 0x4551:
+    return "Following err mon vel";
+  case 0x4655:
+    return "Invalid IO data";
+  case 0x4B0A:
+    return "Homing not successful or not started";
+  default:
+    return "Controller error";
+  }
+}
+
+
+
+
 /** Set velocity and acceleration for the axis
  * \param[in] maxVelocity, mm/sec
  * \param[in] acceleration ???
@@ -1161,7 +1196,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
   asynStatus comStatus;
 
   int motor_axis_no = 0;
-  int nvals;
+  int nvals = 0;
   struct {
     double velocitySetpoint;
     int cycleCounter;
@@ -1503,71 +1538,20 @@ asynStatus EthercatMCAxis::poll(bool *moving)
         drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
         drvlocal.dirty.sErrorMessage) {
       char sErrorMessage[256];
+      int nErrorId = st_axis_status.nErrorId;
       memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%s poll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
                  modulName, axisNo_, st_axis_status.bError,
-                st_axis_status.nErrorId);
+                nErrorId);
       drvlocal.old_bError = st_axis_status.bError;
-      drvlocal.old_MCU_nErrorId = st_axis_status.nErrorId;
+      drvlocal.old_MCU_nErrorId = nErrorId;
       drvlocal.dirty.sErrorMessage = 0;
-      switch(st_axis_status.nErrorId) {
-        case 0x4223:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: Axis positioning enable%x ",
-                   st_axis_status.nErrorId);
-          break;
-        case 0x4450:
-        case 0x4451:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,"E: Following error %x",
-                   st_axis_status.nErrorId);
-          break;
-        case 0x4260:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,"E: Amplifier off %x",
-                   st_axis_status.nErrorId);
-          break;
-        case 0x4263:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: Is still being processed %x",
-                   st_axis_status.nErrorId);
-          break;
-        case 0x4460:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: Low soft limit %x", st_axis_status.nErrorId);
-          break;
-        case 0x4461:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: High soft limit %x", st_axis_status.nErrorId);
-          break;
-        case 0x4550:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: Following err mon pos %x",
-                   st_axis_status.nErrorId);
-          break;
-        case 0x4551:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: Following err mon vel %x",
-                   st_axis_status.nErrorId);
-          break;
-        case 0x4655:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: Invalid IO data %x",
-                   st_axis_status.nErrorId);
-          break;
-        case 0x4B0A:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: Homing not successful or not started %x",
-                   st_axis_status.nErrorId);
-          break;
-        default:
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: Controller error %x",
-                   st_axis_status.nErrorId);
-          break;
-      }
+      snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %x",
+               errStringFromErrId(nErrorId), nErrorId);
       if (sErrorMessage[0]) {
         updateMsgTxtFromDriver(sErrorMessage);
-      } else if (!sErrorMessage[0] && st_axis_status.nErrorId) {
+      } else if (!sErrorMessage[0] && nErrorId) {
         asynStatus status;
         status = getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0], sizeof(sErrorMessage));
 
