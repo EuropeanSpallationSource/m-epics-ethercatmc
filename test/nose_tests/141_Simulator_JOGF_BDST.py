@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 #
-# https://nose.readthedocs.org/en/latest/
-# https://nose.readthedocs.org/en/latest/testing.html
 
 import epics
 import unittest
@@ -37,7 +35,7 @@ def setValueOnSimulator(self, motor, tc_no, var, value):
     print '%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
           (tc_no, motor, var, value, outStr)
     assert(len(outStr) < 40)
-    epics.caput(motor + '-DbgStrToMCU', outStr)
+    epics.caput(motor + '-DbgStrToMCU', outStr, wait=True)
     err = int(epics.caget(motor + '-Err', use_monitor=False))
     print '%s: DbgStrToMCU motor=%s var=%s value=%s err=%d' % \
           (tc_no, motor, var, value, err)
