@@ -49,12 +49,7 @@ class Test(unittest.TestCase):
             self.lib.movePosition(motor, tc_no, self.per30_UserPosition, self.moving_velocity, self.acceleration)
             #switch off the soft limits. Depending on the postion
             # low or high must be set to 0 first
-            if epics.caget(motor + '.RBV') > 0:
-                epics.caput(motor + '.LLM', 0.0)
-                epics.caput(motor + '.HLM', 0.0)
-            else:
-                epics.caput(motor + '.HLM', 0.0)
-                epics.caput(motor + '.LLM', 0.0)
+            self.lib.setSoftLimitsOff(motor)
 
             epics.caput(motor + '.JOGR', 1, wait=True)
             # Get values, check them later

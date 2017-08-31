@@ -107,17 +107,11 @@ def waitForStop(self, motor, tc_no, wait_for_stop, direction, oldRBV, TweakValue
 
 def tweakToLimit(self, motor, tc_no, direction):
     assert(direction)
-    oldRBV = epics.caget(motor + '.RBV', timeout=5)
     old_high_limit = epics.caget(motor + '.HLM', timeout=5)
     old_low_limit = epics.caget(motor + '.LLM', timeout=5)
     old_Enable = epics.caget(motor + '-En')
     # switch off the soft limits, save the values
-    if oldRBV > 0:
-        epics.caput(motor + '.LLM', 0.0)
-        epics.caput(motor + '.HLM', 0.0)
-    else:
-        epics.caput(motor + '.HLM', 0.0)
-        epics.caput(motor + '.LLM', 0.0)
+    self.lib.setSoftLimitsOff(motor)
 
     # If we reached the limit switch, we are fine and
     # can reset the error
@@ -220,12 +214,7 @@ class Test(unittest.TestCase):
         oldRBV = epics.caget(motor + '.RBV', use_monitor=False)
         old_high_limit = epics.caget(motor + '.HLM')
         old_low_limit = epics.caget(motor + '.LLM')
-        if oldRBV > 0:
-            epics.caput(motor + '.LLM', 0.0)
-            epics.caput(motor + '.HLM', 0.0)
-        else:
-            epics.caput(motor + '.HLM', 0.0)
-            epics.caput(motor + '.LLM', 0.0)
+        self.lib.setSoftLimitsOff(motor)
 
         msta = int(epics.caget(motor + '.MSTA'))
         direction = 0

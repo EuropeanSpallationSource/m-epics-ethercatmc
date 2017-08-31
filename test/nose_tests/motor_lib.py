@@ -352,3 +352,20 @@ class motor_lib(object):
                 print str(e)
             assert(unlinkOK)
 
+    def setSoftLimitsOff(self, motor):
+        """
+        Switch off the soft limits
+        """
+        # switch off the controller soft limits
+        try:
+            epics.caput(motor + '-CHLM-En', 0, wait=True)
+            epics.caput(motor + '-CLLM-En', 0, wait=True)
+        finally:
+            oldRBV = epics.caget(motor + '.RBV')
+
+        if oldRBV > 0:
+            epics.caput(motor + '.LLM', 0.0)
+            epics.caput(motor + '.HLM', 0.0)
+        else:
+            epics.caput(motor + '.HLM', 0.0)
+            epics.caput(motor + '.LLM', 0.0)

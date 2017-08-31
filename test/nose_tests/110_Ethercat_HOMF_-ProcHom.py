@@ -22,12 +22,7 @@ def homeTheMotor(tself, motor, tc_no, procHome, jogToLSBefore):
     old_low_limit = epics.caget(motor + '.LLM')
     old_ProcHom   = tself.pv_ProcHom.get(use_monitor=False)
     if jogToLSBefore != 0:
-        if epics.caget(motor + '.RBV') > 0:
-            epics.caput(motor + '.LLM', 0.0)
-            epics.caput(motor + '.HLM', 0.0)
-        else:
-            epics.caput(motor + '.HLM', 0.0)
-            epics.caput(motor + '.LLM', 0.0)
+        tself.lib.setSoftLimitsOff(motor)
         # soft limit range assumed to be = hard range /1.5
         jvel = epics.caget(motor + '.JVEL')
         accl = epics.caget(motor + '.ACCL')
