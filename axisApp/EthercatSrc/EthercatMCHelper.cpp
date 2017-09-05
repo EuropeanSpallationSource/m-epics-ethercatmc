@@ -448,3 +448,130 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
 }
 
 
+asynStatus EthercatMCAxis::readConfigFile(void)
+{
+  const char *setRaw_str = "setRaw ";
+  const char *setADRinteger_str = "setADRinteger ";
+  const char *setADRdouble_str  = "setADRdouble ";
+  FILE *fp;
+  char *ret = &pC_->outString_[0];
+  int line_no = 0;
+  asynStatus status = asynSuccess;
+  const char *errorTxt = NULL;
+  /* no config file, or successfully uploaded : return */
+  if (!drvlocal.cfgfileStr) {
+    drvlocal.dirty.readConfigFile = 0;
+    return asynSuccess;
+  }
+  if (!drvlocal.dirty.readConfigFile) return asynSuccess;
+
+  fp = fopen(drvlocal.cfgfileStr, "r");
+  if (!fp) {
+    int saved_errno = errno;
+    char cwdbuf[4096];
+    char errbuf[4196];
+
+    char *mypwd = getcwd(cwdbuf, sizeof(cwdbuf));
+    snprintf(errbuf, sizeof(errbuf)-1,
+             "E: readConfigFile: %s\n%s/%s",
+             strerror(saved_errno),
+             mypwd ? mypwd : "",
+             drvlocal.cfgfileStr);
+    updateMsgTxtFromDriver(errbuf);
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s (%d)%s\n", modulName, axisNo_, errbuf);
+    return asynError;
+  }
+  while (ret && !status && !errorTxt) {
+    char rdbuf[256];
+    size_t i;
+    size_t len;
+    int nvals = 0;
+
+    line_no++;
+    ret = fgets(rdbuf, sizeof(rdbuf), fp);
+    if (!ret) break;    /* end of file or error */
+    len = strlen(ret);
+    if (!len) continue; /* empty line, no LF */
+    for (i=0; i < len; i++) {
+      /* No LF, no CR , no ctrl characters, */
+      if (rdbuf[i] < 32) rdbuf[i] = 0;
+    }
+    len = strlen(ret);
+    if (!len) continue; /* empty line with LF */
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s readConfigFile %s:%u %s\n",
+              modulName,
+              drvlocal.cfgfileStr, line_no, rdbuf);
+
+    if (rdbuf[0] == '#') {
+      continue; /*  Comment line */
+    } else if (!strncmp(setRaw_str, rdbuf, strlen(setRaw_str))) {
+      const char *cfg_txt_p = &rdbuf[strlen(setRaw_str)];
+      while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+      snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", cfg_txt_p);
+      status = writeReadACK();
+    } else if (!strncmp(setADRinteger_str, rdbuf, strlen(setADRinteger_str))) {
+      unsigned indexGroup;
+      unsigned indexOffset;
+      int value;
+      const char *cfg_txt_p = &rdbuf[strlen(setADRinteger_str)];
+      while (*cfg_txt_p == ' ') cfg_txt_p++;
+      nvals = sscanf(cfg_txt_p, "%x %x %d",
+                     &indexGroup, &indexOffset, &value);
+      if (nvals == 3) {
+        status = setADRValueOnAxisVerify(indexGroup, indexOffset, value, 1);
+      } else {
+        errorTxt = "Need 4 values";
+      }
+    } else if (!strncmp(setADRdouble_str, rdbuf, strlen(setADRdouble_str))) {
+      unsigned indexGroup;
+      unsigned indexOffset;
+      double value;
+      const char *cfg_txt_p = &rdbuf[strlen(setADRdouble_str)];
+      while (*cfg_txt_p == ' ') cfg_txt_p++;
+      nvals = sscanf(cfg_txt_p, "%x %x %lf",
+                     &indexGroup, &indexOffset, &value);
+      if (nvals == 3) {
+        status = setADRValueOnAxisVerify(indexGroup, indexOffset,
+                                         value, 1);
+      } else {
+        errorTxt = "Need 4 values";
+      }
+    } else {
+      errorTxt = "Illegal command";
+    }
+    if (status || errorTxt) {
+      char errbuf[256];
+      errbuf[sizeof(errbuf)-1] = 0;
+      if (status) {
+        snprintf(errbuf, sizeof(errbuf)-1,
+                 "E: %s:%d out=%s\nin=%s",
+                 drvlocal.cfgfileStr, line_no, pC_->outString_, pC_->inString_);
+      } else {
+        snprintf(errbuf, sizeof(errbuf)-1,
+                 "E: %s:%d \"%s\"\n%s",
+                 drvlocal.cfgfileStr, line_no, rdbuf, errorTxt);
+      }
+
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "%s readConfigFile %s\n", modulName, errbuf);
+      updateMsgTxtFromDriver(errbuf);
+    }
+  } /* while */
+
+  if (ferror(fp) || status || errorTxt) {
+    if (ferror(fp)) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "%s readConfigFile ferror (%s)\n",
+                 modulName,
+                drvlocal.cfgfileStr);
+    }
+    fclose(fp);
+    return asynError;
+  }
+
+  drvlocal.dirty.readConfigFile = 0;
+  return asynSuccess;
+}
