@@ -30,7 +30,7 @@ epicsEnvSet("DHLM",          "$(SM_DHLM=0)")
 # To fiddle mm like 1.234 into the record.RBV without rounding it
 # to 1 as an integer. (This is a new feature in the axis record)
 # TC 141 will need this
-epicsEnvSet("AXISCONFIG",    "encoder=Main.M$(AXIS_NO).fActPosition")
+epicsEnvSet("AXISCONFIG",    "encoder=Main.M$(AXIS_NO).fActPosition;cfgFile=./SolAxis-48-1.cfg")
 epicsEnvSet("ERES",          "$(SM_ERES=1)")
 
 # And this simulates the input of an incremental encoder terminal

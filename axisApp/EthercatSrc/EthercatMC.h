@@ -134,6 +134,7 @@ private:
     int mustStop;
     int nCommand;
     int homed;
+    unsigned adsport;
     eeAxisErrorType old_eeAxisError;
     eeAxisErrorType eeAxisError;
     /* Which values have changed in the EPICS IOC, but are not updated in the
@@ -178,43 +179,36 @@ private:
   asynStatus setValueOnAxis(const char* var, double value);
   asynStatus setValuesOnAxis(const char* var1, double value1, const char* var2, double value2);
   int getMotionAxisID(void);
-  asynStatus setADRValueOnAxis(unsigned adsport,
-                               unsigned indexGroup,
+  asynStatus setADRValueOnAxis(unsigned indexGroup,
                                unsigned indexOffset,
                                int value);
 
-  asynStatus setADRValueOnAxisVerify(unsigned adsport,
-                                     unsigned indexGroup,
+  asynStatus setADRValueOnAxisVerify(unsigned indexGroup,
                                      unsigned indexOffset,
                                      int value,
                                      unsigned int retryCount);
 
-  asynStatus setADRValueOnAxis(unsigned adsport,
-                               unsigned indexGroup,
+  asynStatus setADRValueOnAxis(unsigned indexGroup,
                                unsigned indexOffset,
                                double value);
 
-  asynStatus setADRValueOnAxisVerify(unsigned adsport,
-                                     unsigned indexGroup,
+  asynStatus setADRValueOnAxisVerify(unsigned indexGroup,
                                      unsigned indexOffset,
                                      double value,
                                      unsigned int retryCount);
 
-  asynStatus getADRValueFromAxis(unsigned adsport,
-                                 unsigned indexGroup,
+  asynStatus getADRValueFromAxis(unsigned indexGroup,
                                  unsigned indexOffset,
                                  int *value);
 
-  asynStatus getADRValuesFromAxisPrint(unsigned adsport,
-                                       unsigned iIndexGroup,
+  asynStatus getADRValuesFromAxisPrint(unsigned iIndexGroup,
                                        unsigned iIndexOffset,
                                        int *iValue,
                                        unsigned fIndexGroup,
                                        unsigned fIndexOffset,
                                        double *fValue);
 
-  asynStatus getADRValueFromAxis(unsigned adsport,
-                                 unsigned indexGroup,
+  asynStatus getADRValueFromAxis(unsigned indexGroup,
                                  unsigned indexOffset,
                                  double *value);
 
