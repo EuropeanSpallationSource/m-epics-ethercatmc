@@ -451,6 +451,7 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
 asynStatus EthercatMCAxis::readConfigFile(void)
 {
   const char *setRaw_str = "setRaw ";
+  const char *setSim_str = "setSim ";
   const char *setADRinteger_str = "setADRinteger ";
   const char *setADRdouble_str  = "setADRdouble ";
   FILE *fp;
@@ -511,6 +512,13 @@ asynStatus EthercatMCAxis::readConfigFile(void)
       while (*cfg_txt_p == ' ') cfg_txt_p++;
 
       snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", cfg_txt_p);
+      status = writeReadACK();
+    } else if (!strncmp(setSim_str, rdbuf, strlen(setSim_str))) {
+      const char *cfg_txt_p = &rdbuf[strlen(setRaw_str)];
+      while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+      snprintf(pC_->outString_, sizeof(pC_->outString_),
+               "Sim.M%d.%s", axisNo_, cfg_txt_p);
       status = writeReadACK();
     } else if (!strncmp(setADRinteger_str, rdbuf, strlen(setADRinteger_str))) {
       unsigned indexGroup;
