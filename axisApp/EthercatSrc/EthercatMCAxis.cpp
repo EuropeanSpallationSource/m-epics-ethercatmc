@@ -50,7 +50,6 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
   drvlocal.old_eeAxisError = eeAxisErrorIOCcomError;
   drvlocal.axisFlags = axisFlags;
-  drvlocal.adsport = 501;
 
   if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
     setIntegerParam(pC->motorStatusGainSupport_, 1);
@@ -133,7 +132,7 @@ void EthercatMCAxis::readBackHighSoftLimit(void)
   double fValue = 0.0;
   /* Soft limits High Enable */
   iValue = 0; fValue = 0.0;
-  status = getADRValuesFromAxisPrint(0x5000, 0xC, &iValue,
+  status = getSAFValuesFromAxisPrint(0x5000, 0xC, &iValue,
                                      0x5000, 0xE, &fValue);
   if (status != asynSuccess) return;
   setIntegerParam(pC_->motorFlagsHighLimitRO_, iValue);
@@ -151,7 +150,7 @@ void EthercatMCAxis::readBackLowSoftLimit(void)
   int iValue = 0;
   double fValue = 0.0;
   /* Soft limits Low Enable */
-  status = getADRValuesFromAxisPrint(0x5000, 0xB, &iValue,
+  status = getSAFValuesFromAxisPrint(0x5000, 0xB, &iValue,
                                      0x5000, 0xD, &fValue);
   if (status != asynSuccess) return;
   setDoubleParam(pC_->motorLowLimitRO_, fValue);
@@ -174,7 +173,7 @@ void EthercatMCAxis::readBackConfig(void)
   int iValue;
   double fValue;
   /* (Micro) steps per revolution */
-  status = getADRValueFromAxis(0x5000, 0x24, &fValue);
+  status = getSAFValueFromAxis(0x5000, 0x24, &fValue);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s out=%s in=%s status=%s (%d) fValue=%g\n",
             modulName,
@@ -183,7 +182,7 @@ void EthercatMCAxis::readBackConfig(void)
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalSREV_RB_, fValue);
 
   /* EGU per revolution */
-  status = getADRValueFromAxis(0x5000, 0x23, &fValue);
+  status = getSAFValueFromAxis(0x5000, 0x23, &fValue);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s out=%s in=%s status=%s (%d) fValue=%g\n",
             modulName,
@@ -192,7 +191,7 @@ void EthercatMCAxis::readBackConfig(void)
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalUREV_RB_, fValue);
 
   /* Reference Velocity */
-  status = getADRValueFromAxis(0x7000, 0x101, &fValue);
+  status = getSAFValueFromAxis(0x7000, 0x101, &fValue);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s out=%s in=%s status=%s (%d) fValue=%g\n",
             modulName,
@@ -200,7 +199,7 @@ void EthercatMCAxis::readBackConfig(void)
             pasynManager->strStatus(status), (int)status, fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalNUM_RB_, fValue);
   /* Motor DIRection */
-  status = getADRValueFromAxis(0x7000, 0x6, &iValue);
+  status = getSAFValueFromAxis(0x7000, 0x6, &iValue);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s out=%s in=%s status=%s (%d) iValue=%d\n",
             modulName,
@@ -208,7 +207,7 @@ void EthercatMCAxis::readBackConfig(void)
             pasynManager->strStatus(status), (int)status, iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalMDIR_RB_, iValue);
   /* Encoder DIRection */
-  status = getADRValueFromAxis(0x5000, 0x8, &iValue);
+  status = getSAFValueFromAxis(0x5000, 0x8, &iValue);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s out=%s in=%s status=%s (%d) iValue=%d\n",
             modulName,
@@ -217,7 +216,7 @@ void EthercatMCAxis::readBackConfig(void)
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalEDIR_RB_, iValue);
 
   /* In target position monitor window */
-  status = getADRValueFromAxis(0x4000, 0x16, &fValue);
+  status = getSAFValueFromAxis(0x4000, 0x16, &fValue);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s out=%s in=%s status=%s (%d) fValue=%g\n",
             modulName,
@@ -226,7 +225,7 @@ void EthercatMCAxis::readBackConfig(void)
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_RB_,
                                             fValue);
   /* In target position monitor time */
-  status = getADRValueFromAxis(0x4000, 0x17, &fValue);
+  status = getSAFValueFromAxis(0x4000, 0x17, &fValue);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s out=%s in=%s status=%s (%d) fValue=%g\n",
             modulName,
@@ -236,7 +235,7 @@ void EthercatMCAxis::readBackConfig(void)
                                             fValue);
 
   /* In target position monitor enabled */
-  status = getADRValueFromAxis(0x4000, 0x15, &iValue);
+  status = getSAFValueFromAxis(0x4000, 0x15, &iValue);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s out=%s in=%s status=%s (%d) iValue=%d\n",
             modulName,
@@ -432,9 +431,9 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", procHom);
 
-  if (status == asynSuccess) status = setADRValueOnAxis(0x4000, 0x6,
+  if (status == asynSuccess) status = setSAFValueOnAxis(0x4000, 0x6,
                                                         velToHom);
-  if (status == asynSuccess) status = setADRValueOnAxis(0x4000, 0x7,
+  if (status == asynSuccess) status = setSAFValueOnAxis(0x4000, 0x7,
                                                         velFrmHom);
   if (status == asynSuccess)  status = setValuesOnAxis("fAcceleration", accHom,
                                                        "fDeceleration", decHom);
@@ -1049,7 +1048,7 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d EthercatMCDHLM_En)=%d\n",
               modulName, axisNo_, value);
-    status = setADRValueOnAxis(indexGroup5000, 0xC, value);
+    status = setSAFValueOnAxis(indexGroup5000, 0xC, value);
     readBackHighSoftLimit();
     return status;
 #endif
@@ -1058,7 +1057,7 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d EthercatMCDLLM_En)=%d\n",
               modulName, axisNo_, value);
-    status = setADRValueOnAxis(indexGroup5000, 0xB, value);
+    status = setSAFValueOnAxis(indexGroup5000, 0xB, value);
     readBackLowSoftLimit();
     return status;
 #endif
@@ -1190,7 +1189,7 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
   } else if (function == pC_->EthercatMCDHLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d EthercatMCDHLM_)=%f\n", modulName, axisNo_, value);
-    status = setADRValueOnAxis(indexGroup5000, 0xE, value);
+    status = setSAFValueOnAxis(indexGroup5000, 0xE, value);
     readBackHighSoftLimit();
     return status;
 #endif
@@ -1198,7 +1197,7 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
   } else if (function == pC_->EthercatMCDLLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d EthercatMCDLLM_)=%f\n", modulName, axisNo_, value);
-    status = setADRValueOnAxis(indexGroup5000, 0xD, value);
+    status = setSAFValueOnAxis(indexGroup5000, 0xD, value);
     readBackLowSoftLimit();
     return status;
 #endif
@@ -1251,7 +1250,7 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
     nvals = sscanf(value, "setADRinteger %u %x %x %d",
                    &indexGroup, &indexOffset, &ivalue);
     if (nvals == 3) {
-      return setADRValueOnAxisVerify(indexGroup, indexOffset,
+      return setSAFValueOnAxisVerify(indexGroup, indexOffset,
                                      ivalue, retryCount);
     }
     /* ADR commands floating point
@@ -1261,7 +1260,7 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
                    &indexGroup, &indexOffset, &fvalue);
 
     if (nvals == 3) {
-      return setADRValueOnAxisVerify(indexGroup, indexOffset,
+      return setSAFValueOnAxisVerify(indexGroup, indexOffset,
                                      fvalue, retryCount);
     }
 #endif
