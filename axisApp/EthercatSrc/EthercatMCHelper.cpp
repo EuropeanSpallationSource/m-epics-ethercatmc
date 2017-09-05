@@ -192,6 +192,7 @@ int EthercatMCAxis::getMotionAxisID(void)
 
 void EthercatMCAxis::getFeatures(void)
 {
+  if (!drvlocal.dirty.features) return;
   /* The features we know about */
   const char * const sim_str = "sim";
   const char * const stECMC_str = "ecmc";
@@ -235,7 +236,8 @@ void EthercatMCAxis::getFeatures(void)
     if (drvlocal.supported.bSIM ||
         drvlocal.supported.bECMC ||
         drvlocal.supported.stAxisStatus_V1) {
-      /* Found something usefull on this adsport */
+      /* Found something useful on this adsport */
+      drvlocal.dirty.features = 0;
       return;
     }
   }

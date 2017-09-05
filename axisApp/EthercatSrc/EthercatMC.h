@@ -145,6 +145,7 @@ private:
       unsigned int initialUpdate    :1;
       unsigned int sErrorMessage    :1; /* From MCU */
       unsigned int readConfigFile   :1;
+      unsigned int features         :1;
     }  dirty;
 
     struct {
