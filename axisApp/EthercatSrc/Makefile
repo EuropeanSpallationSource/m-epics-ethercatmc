@@ -17,6 +17,7 @@ EthercatMCSupport_DBD += devEthercatMC.dbd
 # Add source files
 EthercatMCSupport_SRCS += EthercatMCController.cpp
 EthercatMCSupport_SRCS += EthercatMCAxis.cpp
+EthercatMCSupport_SRCS += EthercatMCHelper.cpp
 
 # EthercatMCSupport_registerRecordDeviceDriver.cpp derives from EthercatMCSupport.dbd
 EthercatMCSupport_SRCS += EthercatMCSupport_registerRecordDeviceDriver.cpp
