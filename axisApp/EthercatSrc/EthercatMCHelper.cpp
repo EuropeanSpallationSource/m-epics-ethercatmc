@@ -189,6 +189,59 @@ int EthercatMCAxis::getMotionAxisID(void)
   return ret;
 }
 
+
+void EthercatMCAxis::getFeatures(void)
+{
+  /* The features we know about */
+  const char * const sim_str = "sim";
+  const char * const stECMC_str = "ecmc";
+  const char * const stV1_str = "stv1";
+  asynStatus status = asynSuccess;
+  unsigned int adsport;
+  const static unsigned int MINADSPORT = 851; /* something useful */
+  const static unsigned int MAXADSPORT = 861; /* something useful */
+  for (adsport = MINADSPORT; adsport <= MAXADSPORT; adsport++) {
+    sprintf(pC_->outString_, "ADSPORT=%u/.THIS.sFeatures?", adsport);
+    pC_->inString_[0] = 0;
+    status = pC_->writeReadController();
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s out=%s in=%s status=%s (%d)\n",
+              modulName, pC_->outString_, pC_->inString_,
+              pasynManager->strStatus(status), (int)status);
+
+    if (status) return;
+
+    /* loop through the features */
+    char *pFeatures = strdup(pC_->inString_);
+    char *pThisFeature = pFeatures;
+    char *pNextFeature = pFeatures;
+
+    while (pNextFeature && pNextFeature[0]) {
+      pNextFeature = strchr(pNextFeature, ';');
+      if (pNextFeature) {
+        *pNextFeature = '\0'; /* Terminate */
+        pNextFeature++;       /* Jump to (possible) next */
+      }
+      if (!strcmp(pThisFeature, sim_str)) {
+        drvlocal.supported.bSIM = 1;
+      } else if (!strcmp(pThisFeature, stECMC_str)) {
+        drvlocal.supported.bECMC = 1;
+      } else if (!strcmp(pThisFeature, stV1_str)) {
+        drvlocal.supported.stAxisStatus_V1 = 1;
+      }
+      pThisFeature = pNextFeature;
+    }
+    free(pFeatures);
+    if (drvlocal.supported.bSIM ||
+        drvlocal.supported.bECMC ||
+        drvlocal.supported.stAxisStatus_V1) {
+      /* Found something usefull on this adsport */
+      return;
+    }
+  }
+}
+
+
 asynStatus EthercatMCAxis::setADRValueOnAxis(unsigned indexGroup,
                                              unsigned indexOffset,
                                              int value)
@@ -514,12 +567,14 @@ asynStatus EthercatMCAxis::readConfigFile(void)
       snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", cfg_txt_p);
       status = writeReadACK();
     } else if (!strncmp(setSim_str, rdbuf, strlen(setSim_str))) {
-      const char *cfg_txt_p = &rdbuf[strlen(setRaw_str)];
-      while (*cfg_txt_p == ' ') cfg_txt_p++;
+      if (drvlocal.supported.bSIM) {
+        const char *cfg_txt_p = &rdbuf[strlen(setRaw_str)];
+        while (*cfg_txt_p == ' ') cfg_txt_p++;
 
-      snprintf(pC_->outString_, sizeof(pC_->outString_),
-               "Sim.M%d.%s", axisNo_, cfg_txt_p);
-      status = writeReadACK();
+        snprintf(pC_->outString_, sizeof(pC_->outString_),
+                 "Sim.M%d.%s", axisNo_, cfg_txt_p);
+        status = writeReadACK();
+      }
     } else if (!strncmp(setADRinteger_str, rdbuf, strlen(setADRinteger_str))) {
       unsigned indexGroup;
       unsigned indexOffset;

@@ -179,6 +179,7 @@ private:
   asynStatus setValueOnAxis(const char* var, double value);
   asynStatus setValuesOnAxis(const char* var1, double value1, const char* var2, double value2);
   int getMotionAxisID(void);
+  void getFeatures(void);
   asynStatus setADRValueOnAxis(unsigned indexGroup,
                                unsigned indexOffset,
                                int value);

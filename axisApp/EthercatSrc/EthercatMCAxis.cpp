@@ -265,6 +265,7 @@ asynStatus EthercatMCAxis::initialUpdate(void)
     updateMsgTxtFromDriver("ConfigError AxisID");
     return asynError;
   }
+  getFeatures();
   status = readConfigFile();
   if (status) return status;
 
@@ -743,46 +744,11 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
       goto pollAllWrongnvals;
     }
     drvlocal.supported.stAxisStatus_V1 = 1;
-    /* V1 comes in 2 flavours, old and new busy handling */
-    if (drvlocal.dirty.stAxisStatus_Vxx) {
-      /* The features we know about */
-      const char * const sim_str = "sim";
-      const char * const stECMC_str = "ecmc";
 
-      sprintf(pC_->outString_, "%s", "ADSPORT=852/.THIS.sFeatures?");
-      pC_->inString_[0] = 0;
-      comStatus = pC_->writeReadController();
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s out=%s in=%s status=%s (%d)\n",
-                modulName, pC_->outString_, pC_->inString_,
-                pasynManager->strStatus(comStatus), (int)comStatus);
-
-      if (comStatus) return comStatus;
-
-      /* loop through the features */
-      char *pFeatures = strdup(pC_->inString_);
-      char *pThisFeature = pFeatures;
-      char *pNextFeature = pFeatures;
-
-      while (pNextFeature && pNextFeature[0]) {
-        pNextFeature = strchr(pNextFeature, ';');
-        if (pNextFeature) {
-          *pNextFeature = '\0'; /* Terminate */
-          pNextFeature++;       /* Jump to (possible) next */
-        }
-        /* Both simulator and ecmc have the new busy style */
-        if (!strncmp(pThisFeature, sim_str, strlen(sim_str))) {
-          drvlocal.supported.bSIM = 1;
-          drvlocal.supported.bBusyNewStyle = 1;
-        } else if (!strncmp(pThisFeature, stECMC_str, strlen(stECMC_str))) {
-          drvlocal.supported.bECMC = 1;
-          drvlocal.supported.bBusyNewStyle = 1;
-        }
-        pThisFeature = pNextFeature;
-      }
-      free(pFeatures);
-    } /* dirty */
     /* V1 new style: mvnNRdyNex follows bBusy */
+    if (drvlocal.supported.bSIM || drvlocal.supported.bECMC)
+      drvlocal.supported.bBusyNewStyle = 1;
+
     pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
     if (!drvlocal.supported.bBusyNewStyle) {
       /* "V1 old style":done when bEcecute is 0 */
