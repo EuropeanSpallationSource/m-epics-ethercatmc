@@ -198,7 +198,7 @@ private:
                                      double value,
                                      unsigned int retryCount);
 
-  asynStatus getSAFValueFromAxis(unsigned indexGroup,
+  asynStatus getSAFValueFromAxisPrint(unsigned indexGroup,
                                  unsigned indexOffset,
                                  int *value);
 
@@ -209,7 +209,7 @@ private:
                                        unsigned fIndexOffset,
                                        double *fValue);
 
-  asynStatus getSAFValueFromAxis(unsigned indexGroup,
+  asynStatus getSAFValueFromAxisPrint(unsigned indexGroup,
                                  unsigned indexOffset,
                                  double *value);
 

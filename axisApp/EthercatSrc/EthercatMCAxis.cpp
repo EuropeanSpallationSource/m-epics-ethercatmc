@@ -173,74 +173,34 @@ void EthercatMCAxis::readBackConfig(void)
   int iValue;
   double fValue;
   /* (Micro) steps per revolution */
-  status = getSAFValueFromAxis(0x5000, 0x24, &fValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, fValue);
+  status = getSAFValueFromAxisPrint(0x5000, 0x24, &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalSREV_RB_, fValue);
 
   /* EGU per revolution */
-  status = getSAFValueFromAxis(0x5000, 0x23, &fValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, fValue);
+  status = getSAFValueFromAxisPrint(0x5000, 0x23, &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalUREV_RB_, fValue);
 
   /* Reference Velocity */
-  status = getSAFValueFromAxis(0x7000, 0x101, &fValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, fValue);
+  status = getSAFValueFromAxisPrint(0x7000, 0x101, &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalNUM_RB_, fValue);
   /* Motor DIRection */
-  status = getSAFValueFromAxis(0x7000, 0x6, &iValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, iValue);
+  status = getSAFValueFromAxisPrint(0x7000, 0x6, &iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalMDIR_RB_, iValue);
   /* Encoder DIRection */
-  status = getSAFValueFromAxis(0x5000, 0x8, &iValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, iValue);
+  status = getSAFValueFromAxisPrint(0x5000, 0x8, &iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalEDIR_RB_, iValue);
 
   /* In target position monitor window */
-  status = getSAFValueFromAxis(0x4000, 0x16, &fValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, fValue);
+  status = getSAFValueFromAxisPrint(0x4000, 0x16, &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_RB_,
                                             fValue);
   /* In target position monitor time */
-  status = getSAFValueFromAxis(0x4000, 0x17, &fValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, fValue);
+  status = getSAFValueFromAxisPrint(0x4000, 0x17, &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_Tim_RB_,
                                             fValue);
 
   /* In target position monitor enabled */
-  status = getSAFValueFromAxis(0x4000, 0x15, &iValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, iValue);
+  status = getSAFValueFromAxisPrint(0x4000, 0x15, &iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_,
                                              iValue);
   readBackHighSoftLimit();
