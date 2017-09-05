@@ -261,20 +261,9 @@ void EthercatMCAxis::readBackHighSoftLimit(void)
   double fValue = 0.0;
   /* Soft limits High Enable */
   iValue = 0; fValue = 0.0;
-  status = getADRValueFromAxis(501, 0x5000, 0xC, &iValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, iValue);
-  if (status != asynSuccess) return;
-  /* Soft limits High Value*/
-  status = getADRValueFromAxis(501, 0x5000, 0xE, &fValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
-            modulName, pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, fValue);
-
+  status = getADRValuesFromAxisPrint(501,
+                                     0x5000, 0xC, &iValue,
+                                     0x5000, 0xE, &fValue);
   if (status != asynSuccess) return;
   setIntegerParam(pC_->motorFlagsHighLimitRO_, iValue);
   setDoubleParam(pC_->motorHighLimitRO_, fValue);
@@ -291,19 +280,9 @@ void EthercatMCAxis::readBackLowSoftLimit(void)
   int iValue = 0;
   double fValue = 0.0;
   /* Soft limits Low Enable */
-  status = getADRValueFromAxis(501, 0x5000, 0xB, &iValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, iValue);
-  if (status != asynSuccess) return;
-  /* Soft limits Low Value*/
-  status = getADRValueFromAxis(501, 0x5000, 0xD, &fValue);
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
-            modulName, pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, fValue);
+  status = getADRValuesFromAxisPrint(501,
+                                     0x5000, 0xB, &iValue,
+                                     0x5000, 0xD, &fValue);
   if (status != asynSuccess) return;
   setDoubleParam(pC_->motorLowLimitRO_, fValue);
   setIntegerParam(pC_->motorFlagsLowLimitRO_, iValue);
@@ -782,6 +761,47 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
   return asynSuccess;
 }
 
+/** Gets an integer (or boolean) and a double value from an axis and print
+ * \param[in] name of the variable to be retrieved
+ * \param[in] pointer to the integer result
+ *
+ */
+asynStatus EthercatMCAxis::getADRValuesFromAxisPrint(unsigned adsport,
+                                                     unsigned iIndexGroup,
+                                                     unsigned iIndexOffset,
+                                                     int *iValue,
+                                                     unsigned fIndexGroup,
+                                                     unsigned fIndexOffset,
+                                                     double *fValue)
+{
+  int iRes;
+  int nvals;
+  double fRes;
+  asynStatus status;
+  int axisID = getMotionAxisID();
+  if (axisID < 0) return asynError;
+  sprintf(pC_->outString_, "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?;ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
+          adsport, iIndexGroup + axisID, iIndexOffset,
+          adsport, fIndexGroup + axisID, fIndexOffset);
+  status = pC_->writeReadOnErrorDisconnect();
+  if (status)
+    return status;
+  nvals = sscanf(pC_->inString_, "%d;%lf", &iRes, &fRes);
+  if (nvals != 2) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
+               modulName, nvals, pC_->outString_, pC_->inString_);
+    return asynError;
+  }
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s iValue=%d fValue=%g\n",
+            modulName, pC_->outString_, pC_->inString_, iRes, fRes);
+
+  *iValue = iRes;
+  *fValue = fRes;
+  return asynSuccess;
+
+}
 
 /** Gets a floating point value from an axis
  * \param[in] name of the variable to be retrieved

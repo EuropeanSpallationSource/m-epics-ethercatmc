@@ -205,6 +205,14 @@ private:
                                  unsigned indexOffset,
                                  int *value);
 
+  asynStatus getADRValuesFromAxisPrint(unsigned adsport,
+                                       unsigned iIndexGroup,
+                                       unsigned iIndexOffset,
+                                       int *iValue,
+                                       unsigned fIndexGroup,
+                                       unsigned fIndexOffset,
+                                       double *fValue);
+
   asynStatus getADRValueFromAxis(unsigned adsport,
                                  unsigned indexGroup,
                                  unsigned indexOffset,
