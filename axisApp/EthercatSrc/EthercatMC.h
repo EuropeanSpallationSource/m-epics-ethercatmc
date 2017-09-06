@@ -136,6 +136,7 @@ private:
     int homed;
     eeAxisErrorType old_eeAxisError;
     eeAxisErrorType eeAxisError;
+    unsigned int adsport;
     /* Which values have changed in the EPICS IOC, but are not updated in the
        motion controller */
     struct {

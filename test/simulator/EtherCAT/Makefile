@@ -81,7 +81,7 @@ TELOBJS=\
 
 
 #First target, done when we run "make" (and CC is known)
-all: checkwhitespace mdbin $(BIN)/simMotor$(EXE)
+install: checkwhitespace mdbin $(BIN)/simMotor$(EXE)
 
 checkwhitespace:
 	./checkws.sh

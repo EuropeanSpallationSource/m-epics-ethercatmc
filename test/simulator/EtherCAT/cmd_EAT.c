@@ -460,21 +460,43 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("%s", "sim");
     return;
   }
-
   /* ADSPORT= */
   if (!strncmp(myarg_1, ADSPORT_equals_str, strlen(ADSPORT_equals_str))) {
     int err_code;
+    int nvals;
+    unsigned int adsport;
+    const char *myarg_tmp;
+    char dot_tmp = 0;
+
     myarg_1 += strlen(ADSPORT_equals_str);
-    err_code = motorHandleADS_ADR(myarg_1);
-    if (err_code == -1) return;
-    if (err_code == 0) {
-      cmd_buf_printf("OK");
-      return;
+    nvals = sscanf(myarg_1, "%u/.ADR%c", &adsport, &dot_tmp);
+    if (nvals == 2 && dot_tmp == '.') {
+      /* .ADR commands are handled here */
+      err_code = motorHandleADS_ADR(myarg_1);
+      if (err_code == -1) return;
+      if (err_code == 0) {
+        cmd_buf_printf("OK");
+        return;
+      }
+      RETURN_OR_DIE("%s/%s:%d myarg_1=%s err_code=%d",
+                    __FILE__, __FUNCTION__, __LINE__,
+                    myarg_1,
+                    err_code);
     }
-    RETURN_OR_DIE("%s/%s:%d myarg_1=%s err_code=%d",
-                  __FILE__, __FUNCTION__, __LINE__,
-                  myarg_1,
-                  err_code);
+    nvals = sscanf(myarg_1, "%u/", &adsport);
+    if (nvals != 1) {
+      RETURN_OR_DIE("%s/%s:%d myarg_1=%s",
+                    __FILE__, __FUNCTION__, __LINE__,
+                    myarg_1);
+    }
+    myarg_tmp = strchr(myarg_1, '/');
+    if (!myarg_tmp) {
+      RETURN_OR_DIE("%s/%s:%d line=%s missing '/'",
+                    __FILE__, __FUNCTION__, __LINE__,
+                    myarg);
+    }
+    /* Jump over digits and '/' */
+    myarg_1 = myarg_tmp + 1;
   }
   /* getAxisDebugInfoData(1) */
   if (!strncmp(myarg_1, getAxisDebugInfoData_str, strlen(getAxisDebugInfoData_str))) {
@@ -501,9 +523,9 @@ static void motorHandleOneArg(const char *myarg_1)
   /* e.g. M1.nCommand=3 */
   nvals = sscanf(myarg_1, "M%d.", &motor_axis_no);
   if (nvals != 1) {
-    RETURN_OR_DIE("%s/%s:%d line=%s nvals=%d",
+    RETURN_OR_DIE("%s/%s:%d line=%s myarg_1=%s nvals=%d",
                   __FILE__, __FUNCTION__, __LINE__,
-                  myarg, nvals);
+                  myarg, myarg_1, nvals);
   }
   AXIS_CHECK_RETURN(motor_axis_no);
   myarg_1 = strchr(myarg_1, '.');
