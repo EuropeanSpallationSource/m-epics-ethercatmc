@@ -206,22 +206,26 @@ void EthercatMCAxis::readBackConfig(void)
   readBackHighSoftLimit();
   readBackLowSoftLimit();
 
-  /* The following may be read-writeso we must use pC_->setXXX here */
+  /* The Ethercat specific are  read-write, so we must use pC_->setXXX for them */
   /* (fast) Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x9, "VELO", &fValue);
   if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVELO_, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->motorDefVelocityRO_, fValue);
 
   /* Maximal Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x27, "VMAX", &fValue);
   if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVMAX_, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->motorMaxVelocityRO_, fValue);
 
   /* (slow) Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x8, "JVEL", &fValue);
   if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJVEL_, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->motorDefJogVeloRO_, fValue);
 
   /* (default) Acceleration */
   status = getSAFValueFromAxisPrint(0x4000, 0x101, "JAR", &fValue);
   if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJAR_, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->motorDefJogAccRO_, fValue);
 }
 
 
