@@ -29,6 +29,10 @@ FILENAME...   EthercatMC.h
 #define EthercatMCVel_RBString               "Vel-RB"
 #define EthercatMCAcc_RBString               "Acc-RB"
 #define EthercatMCDec_RBString               "Dec-RB"
+#define EthercatMCCFGVELO_String             "CFGVELO"
+#define EthercatMCCFGVMAX_String             "CFGVMAX"
+#define EthercatMCCFGJVEL_String             "CFGJVEL"
+#define EthercatMCCFGJAR_String              "CFGJAR"
 #define EthercatMCCHLMString                 "CHLM"
 #define EthercatMCCLLMString                 "CLLM"
 #define EthercatMCCHLM_EnString              "CHLM-En"
@@ -277,6 +281,10 @@ public:
   int EthercatMCVel_RB_;
   int EthercatMCAcc_RB_;
   int EthercatMCDec_RB_;
+  int EthercatMCCFGVELO_;
+  int EthercatMCCFGVMAX_;
+  int EthercatMCCFGJVEL_;
+  int EthercatMCCFGJAR_;
   int EthercatMCScalSREV_RB_;
   int EthercatMCScalUREV_RB_;
   int EthercatMCScalRefVelo_RB_;

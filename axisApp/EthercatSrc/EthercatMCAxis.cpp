@@ -205,6 +205,23 @@ void EthercatMCAxis::readBackConfig(void)
                                              iValue);
   readBackHighSoftLimit();
   readBackLowSoftLimit();
+
+  /* The following may be read-writeso we must use pC_->setXXX here */
+  /* (fast) Velocity */
+  status = getSAFValueFromAxisPrint(0x4000, 0x9, "VELO", &fValue);
+  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVELO_, fValue);
+
+  /* Maximal Velocity */
+  status = getSAFValueFromAxisPrint(0x4000, 0x27, "VMAX", &fValue);
+  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVMAX_, fValue);
+
+  /* (slow) Velocity */
+  status = getSAFValueFromAxisPrint(0x4000, 0x8, "JVEL", &fValue);
+  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJVEL_, fValue);
+
+  /* (default) Acceleration */
+  status = getSAFValueFromAxisPrint(0x4000, 0x101, "JAR", &fValue);
+  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJAR_, fValue);
 }
 
 
@@ -1162,6 +1179,26 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     readBackLowSoftLimit();
     return status;
 #endif
+  } else if (function == pC_->EthercatMCCFGVELO_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setDoubleParam(%d EthercatMCCFGVELO_)=%f\n", modulName, axisNo_, value);
+    status = setSAFValueOnAxis(0x4000, 0x9, value);
+    return status;
+  } else if (function == pC_->EthercatMCCFGVMAX_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setDoubleParam(%d EthercatMCCFGVMAX_)=%f\n", modulName, axisNo_, value);
+    status = setSAFValueOnAxis(0x4000, 0x27, value);
+    return status;
+  } else if (function == pC_->EthercatMCCFGJVEL_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setDoubleParam(%d EthercatMCCFGJVEL_)=%f\n", modulName, axisNo_, value);
+    status = setSAFValueOnAxis(0x4000, 0x8, value);
+    return status;
+  } else if (function == pC_->EthercatMCCFGJAR_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setDoubleParam(%d EthercatMCCFGJAR_)=%f\n", modulName, axisNo_, value);
+    status = setSAFValueOnAxis(0x4000, 0x101, value);
+    return status;
   }
   // Call the base class method
   status = asynAxisAxis::setDoubleParam(function, value);

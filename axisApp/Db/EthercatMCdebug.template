@@ -39,6 +39,40 @@ record(longout,"$(PREFIX)$(R)CLLM-En") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CLLM-En")
 }
 
+record(ao, "$(PREFIX)$(R)CFGVELO")
+{
+    field(DESC, "Controller Velocity(fast)")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CFGVELO")
+    info(asyn:READBACK,"1")
+}
+record(ao, "$(PREFIX)$(R)CFGVMAX")
+{
+    field(DESC, "Controller max Velocity")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CFGVMAX")
+    info(asyn:READBACK,"1")
+}
+record(ao, "$(PREFIX)$(R)CFGJVEL")
+{
+    field(DESC, "Controller Velocity (slow)")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CFGJVEL")
+    info(asyn:READBACK,"1")
+}
+record(ao, "$(PREFIX)$(R)CFGJAR")
+{
+    field(DESC, "Controller default acceleration")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CFGJAR")
+    info(asyn:READBACK,"1")
+}
+
+
 # Help records, to read what the record sends to the model 3 driver
 record(ai,"$(PREFIX)$(R)M3RHLM") {
     field(DESC, "Driver High Soft Limit")
