@@ -802,7 +802,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)ScalNUM-RB</pv_name>
+    <pv_name>$(P)$(R)RefVelo-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>

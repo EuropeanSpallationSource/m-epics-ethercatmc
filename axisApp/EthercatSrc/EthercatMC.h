@@ -29,14 +29,14 @@ FILENAME...   EthercatMC.h
 #define EthercatMCVel_RBString               "Vel-RB"
 #define EthercatMCAcc_RBString               "Acc-RB"
 #define EthercatMCDec_RBString               "Dec-RB"
-#define EthercatMCDHLMString                 "DHLM"
-#define EthercatMCDLLMString                 "DLLM"
-#define EthercatMCDHLM_EnString              "DHLM-En"
-#define EthercatMCDLLM_EnString              "DLLM-En"
+#define EthercatMCCHLMString                 "CHLM"
+#define EthercatMCCLLMString                 "CLLM"
+#define EthercatMCCHLM_EnString              "CHLM-En"
+#define EthercatMCCLLM_EnString              "CLLM-En"
 #define EthercatMCEnString                   "En"
 #define EthercatMCScalSREV_RBString          "SCALSREV-RB"
 #define EthercatMCScalUREV_RBString          "SCALUREV-RB"
-#define EthercatMCScalNUM_RBString           "SCALNUM-RB"
+#define EthercatMCScalRefVelo_RBString       "REFVELO-RB"
 #define EthercatMCScalMDIR_RBString          "SCALMDIR-RB"
 #define EthercatMCScalEDIR_RBString          "SCALEDIR-RB"
 #define EthercatMCScalRDBD_RBString          "SCALRDBD-RB"
@@ -200,19 +200,23 @@ private:
                                      unsigned int retryCount);
 
   asynStatus getSAFValueFromAxisPrint(unsigned indexGroup,
-                                 unsigned indexOffset,
-                                 int *value);
+                                      unsigned indexOffset,
+                                      const char *name,
+                                      int *value);
 
   asynStatus getSAFValuesFromAxisPrint(unsigned iIndexGroup,
                                        unsigned iIndexOffset,
+                                       const char *iname,
                                        int *iValue,
                                        unsigned fIndexGroup,
                                        unsigned fIndexOffset,
+                                       const char *fname,
                                        double *fValue);
 
   asynStatus getSAFValueFromAxisPrint(unsigned indexGroup,
-                                 unsigned indexOffset,
-                                 double *value);
+                                      unsigned indexOffset,
+                                      const char *name,
+                                      double *value);
 
   asynStatus getValueFromAxis(const char* var, int *value);
   asynStatus getValueFromAxis(const char* var, double *value);
@@ -275,16 +279,16 @@ public:
   int EthercatMCDec_RB_;
   int EthercatMCScalSREV_RB_;
   int EthercatMCScalUREV_RB_;
-  int EthercatMCScalNUM_RB_;
+  int EthercatMCScalRefVelo_RB_;
   int EthercatMCScalMDIR_RB_;
   int EthercatMCScalEDIR_RB_;
   int EthercatMCScalRDBD_RB_;
   int EthercatMCScalRDBD_Tim_RB_;
   int EthercatMCScalRDBD_En_RB_;
-  int EthercatMCDHLM_;
-  int EthercatMCDLLM_;
-  int EthercatMCDHLM_En_;
-  int EthercatMCDLLM_En_;
+  int EthercatMCCHLM_;
+  int EthercatMCCLLM_;
+  int EthercatMCCHLM_En_;
+  int EthercatMCCLLM_En_;
   int EthercatMCEn_;
   int EthercatMCErrId_;
   /* Last parameter */

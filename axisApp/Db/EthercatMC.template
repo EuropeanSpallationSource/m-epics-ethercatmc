@@ -139,10 +139,10 @@ record(ai,"$(PREFIX)$(R)ScalUREV-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(PREFIX)$(R)ScalNUM-RB") {
+record(ai,"$(PREFIX)$(R)RefVelo-RB") {
     field(DESC, "Reference Velocity")
     field(DTYP, "asynFloat64")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALNUM-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))RefVelo-RB")
     field(SCAN, "I/O Intr")
 }
 

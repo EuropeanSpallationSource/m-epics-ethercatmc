@@ -132,15 +132,15 @@ void EthercatMCAxis::readBackHighSoftLimit(void)
   double fValue = 0.0;
   /* Soft limits High Enable */
   iValue = 0; fValue = 0.0;
-  status = getSAFValuesFromAxisPrint(0x5000, 0xC, &iValue,
-                                     0x5000, 0xE, &fValue);
+  status = getSAFValuesFromAxisPrint(0x5000, 0xC, "CHLM_En", &iValue,
+                                     0x5000, 0xE, "CHLM", &fValue);
   if (status != asynSuccess) return;
   setIntegerParam(pC_->motorFlagsHighLimitRO_, iValue);
   setDoubleParam(pC_->motorHighLimitRO_, fValue);
-  /* EthercatMCDHLMXX are info(asyn:READBACK,"1"),
+  /* EthercatMCCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX here */
-  pC_->setIntegerParam(axisNo_, pC_->EthercatMCDHLM_En_, iValue);
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCDHLM_, fValue);
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCHLM_En_, iValue);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCHLM_, fValue);
 }
 
 
@@ -150,15 +150,15 @@ void EthercatMCAxis::readBackLowSoftLimit(void)
   int iValue = 0;
   double fValue = 0.0;
   /* Soft limits Low Enable */
-  status = getSAFValuesFromAxisPrint(0x5000, 0xB, &iValue,
-                                     0x5000, 0xD, &fValue);
+  status = getSAFValuesFromAxisPrint(0x5000, 0xB, "CHLM_En", &iValue,
+                                     0x5000, 0xD, "CHLM", &fValue);
   if (status != asynSuccess) return;
   setDoubleParam(pC_->motorLowLimitRO_, fValue);
   setIntegerParam(pC_->motorFlagsLowLimitRO_, iValue);
-  /* EthercatMCDHLMXX are info(asyn:READBACK,"1"),
+  /* EthercatMCCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX(axisNo_..)  here */
-  pC_->setIntegerParam(axisNo_, pC_->EthercatMCDLLM_En_, iValue);
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCDLLM_, fValue);
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCLLM_En_, iValue);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCLLM_, fValue);
 }
 
 /** Connection status is changed, the dirty bits must be set and
@@ -173,34 +173,34 @@ void EthercatMCAxis::readBackConfig(void)
   int iValue;
   double fValue;
   /* (Micro) steps per revolution */
-  status = getSAFValueFromAxisPrint(0x5000, 0x24, &fValue);
+  status = getSAFValueFromAxisPrint(0x5000, 0x24, "SREV", &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalSREV_RB_, fValue);
 
   /* EGU per revolution */
-  status = getSAFValueFromAxisPrint(0x5000, 0x23, &fValue);
+  status = getSAFValueFromAxisPrint(0x5000, 0x23, "UREV", &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalUREV_RB_, fValue);
 
   /* Reference Velocity */
-  status = getSAFValueFromAxisPrint(0x7000, 0x101, &fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalNUM_RB_, fValue);
+  status = getSAFValueFromAxisPrint(0x7000, 0x101, "RefVelo", &fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRefVelo_RB_, fValue);
   /* Motor DIRection */
-  status = getSAFValueFromAxisPrint(0x7000, 0x6, &iValue);
+  status = getSAFValueFromAxisPrint(0x7000, 0x6, "MDIR", &iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalMDIR_RB_, iValue);
   /* Encoder DIRection */
-  status = getSAFValueFromAxisPrint(0x5000, 0x8, &iValue);
+  status = getSAFValueFromAxisPrint(0x5000, 0x8, "EDIR", &iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalEDIR_RB_, iValue);
 
   /* In target position monitor window */
-  status = getSAFValueFromAxisPrint(0x4000, 0x16, &fValue);
+  status = getSAFValueFromAxisPrint(0x4000, 0x16, "RDBD_RB", &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_RB_,
                                             fValue);
   /* In target position monitor time */
-  status = getSAFValueFromAxisPrint(0x4000, 0x17, &fValue);
+  status = getSAFValueFromAxisPrint(0x4000, 0x17, "RDBD_Tim", &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_Tim_RB_,
                                             fValue);
 
   /* In target position monitor enabled */
-  status = getSAFValueFromAxisPrint(0x4000, 0x15, &iValue);
+  status = getSAFValueFromAxisPrint(0x4000, 0x15, "RDBD_En", &iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_,
                                              iValue);
   readBackHighSoftLimit();
@@ -1004,19 +1004,19 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
 #endif
-#ifdef EthercatMCDHLM_EnString
-  } else if (function == pC_->EthercatMCDHLM_En_) {
+#ifdef EthercatMCCHLM_EnString
+  } else if (function == pC_->EthercatMCCHLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setIntegerParam(%d EthercatMCDHLM_En)=%d\n",
+              "%s setIntegerParam(%d EthercatMCCHLM_En)=%d\n",
               modulName, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xC, value);
     readBackHighSoftLimit();
     return status;
 #endif
-#ifdef EthercatMCDLLM_EnString
-  } else if (function == pC_->EthercatMCDLLM_En_) {
+#ifdef EthercatMCCLLM_EnString
+  } else if (function == pC_->EthercatMCCLLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setIntegerParam(%d EthercatMCDLLM_En)=%d\n",
+              "%s setIntegerParam(%d EthercatMCCLLM_En)=%d\n",
               modulName, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xB, value);
     readBackLowSoftLimit();
@@ -1146,18 +1146,18 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d PosHom_)=%f\n", modulName, axisNo_, value);
 #endif
-#ifdef EthercatMCDHLMString
-  } else if (function == pC_->EthercatMCDHLM_) {
+#ifdef EthercatMCCHLMString
+  } else if (function == pC_->EthercatMCCHLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setDoubleParam(%d EthercatMCDHLM_)=%f\n", modulName, axisNo_, value);
+              "%s setDoubleParam(%d EthercatMCCHLM_)=%f\n", modulName, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xE, value);
     readBackHighSoftLimit();
     return status;
 #endif
-#ifdef EthercatMCDLLMString
-  } else if (function == pC_->EthercatMCDLLM_) {
+#ifdef EthercatMCCLLMString
+  } else if (function == pC_->EthercatMCCLLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setDoubleParam(%d EthercatMCDLLM_)=%f\n", modulName, axisNo_, value);
+              "%s setDoubleParam(%d EthercatMCCLLM_)=%f\n", modulName, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xD, value);
     readBackLowSoftLimit();
     return status;

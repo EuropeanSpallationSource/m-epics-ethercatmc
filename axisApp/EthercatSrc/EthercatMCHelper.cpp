@@ -283,7 +283,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
   unsigned int counter = 0;
   int rbvalue = 0 - value;
   while (counter < retryCount) {
-    status = getSAFValueFromAxisPrint(indexGroup, indexOffset, &rbvalue);
+    status = getSAFValueFromAxisPrint(indexGroup, indexOffset, "value=", &rbvalue);
     if (status) break;
     if (rbvalue == value) break;
     status = setSAFValueOnAxis(indexGroup, indexOffset, value);
@@ -314,7 +314,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
   unsigned int counter = 0;
   double rbvalue = 0 - value;
   while (counter < retryCount) {
-    status = getSAFValueFromAxisPrint(indexGroup, indexOffset, &rbvalue);
+    status = getSAFValueFromAxisPrint(indexGroup, indexOffset, "value", &rbvalue);
     if (status) break;
     if (rbvalue == value) break;
     status = setSAFValueOnAxis(indexGroup, indexOffset, value);
@@ -327,6 +327,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
 
 asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
                                                     unsigned indexOffset,
+                                                    const char *name,
                                                     int *value)
 {
   int res;
@@ -347,16 +348,15 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, res);
+            "%s out=%s in=%s %s=%d\n",
+            modulName, pC_->outString_, pC_->inString_,name, res);
   *value = res;
   return asynSuccess;
 }
 
 asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
                                                     unsigned indexOffset,
+                                                    const char *name,
                                                     double *value)
 {
   double res;
@@ -377,11 +377,8 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) fValue=%g\n",
-            modulName,
-            pC_->outString_, pC_->inString_,
-            pasynManager->strStatus(status), (int)status, res);
-
+            "%s out=%s in=%s %s=%g\n",
+            modulName, pC_->outString_, pC_->inString_,name, res);
   *value = res;
   return asynSuccess;
 }
@@ -437,9 +434,11 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
  */
 asynStatus EthercatMCAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
                                                      unsigned iIndexOffset,
+                                                     const char *iname,
                                                      int *iValue,
                                                      unsigned fIndexGroup,
                                                      unsigned fIndexOffset,
+                                                     const char *fname,
                                                      double *fValue)
 {
   int iRes;
@@ -462,8 +461,8 @@ asynStatus EthercatMCAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s iValue=%d fValue=%g\n",
-            modulName, pC_->outString_, pC_->inString_, iRes, fRes);
+            "%s out=%s in=%s %s=%d %s=%g\n",
+            modulName, pC_->outString_, pC_->inString_, iname, iRes, fname, fRes);
 
   *iValue = iRes;
   *fValue = fRes;

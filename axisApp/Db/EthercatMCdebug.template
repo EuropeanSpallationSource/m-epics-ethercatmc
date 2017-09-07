@@ -11,7 +11,7 @@ record(ao,"$(PREFIX)$(R)CHLM") {
     field(VAL,  0.0)
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DHLM")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CHLM")
     info(asyn:READBACK,"1")
 }
 
@@ -20,7 +20,7 @@ record(ao,"$(PREFIX)$(R)CLLM") {
     field(VAL,  0.0)
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DLLM")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CLLM")
     info(asyn:READBACK,"1")
 }
 
@@ -28,7 +28,7 @@ record(longout,"$(PREFIX)$(R)CHLM-En") {
     field(DESC, "Controller High Soft Limit enabled")
     field(VAL,  0)
     field(DTYP, "asynInt32")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DHLM-En")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CHLM-En")
     info(asyn:READBACK,"1")
 }
 
@@ -36,7 +36,7 @@ record(longout,"$(PREFIX)$(R)CLLM-En") {
     field(DESC, "Controller Low Soft Limit enabled")
     field(VAL,  0)
     field(DTYP, "asynInt32")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DLLM-En")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CLLM-En")
 }
 
 # Help records, to read what the record sends to the model 3 driver
