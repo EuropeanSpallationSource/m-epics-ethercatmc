@@ -178,7 +178,14 @@ void EthercatMCAxis::readBackConfig(void)
 
   /* EGU per revolution */
   status = getSAFValueFromAxisPrint(0x5000, 0x23, "UREV", &fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalUREV_RB_, fValue);
+  if (status == asynSuccess) {
+    /* mres is urev/srev */
+    double srev;
+    setDoubleParam(pC_->EthercatMCScalUREV_RB_, fValue);
+    pC_->getDoubleParam(axisNo_, pC_->EthercatMCScalSREV_RB_, &srev);
+    if (srev)
+      setDoubleParam(pC_->motorSDBDRO_, fValue / srev);
+  }
 
   /* Reference Velocity */
   status = getSAFValueFromAxisPrint(0x7000, 0x101, "RefVelo", &fValue);
@@ -190,19 +197,20 @@ void EthercatMCAxis::readBackConfig(void)
   status = getSAFValueFromAxisPrint(0x5000, 0x8, "EDIR", &iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalEDIR_RB_, iValue);
 
-  /* In target position monitor window */
-  status = getSAFValueFromAxisPrint(0x4000, 0x16, "RDBD_RB", &fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_RB_,
-                                            fValue);
+  /* In target position monitor window and enable*/
+  status = getSAFValuesFromAxisPrint(0x4000, 0x15,"RDBD_En", &iValue,
+                                     0x4000, 0x16,"RDBD_RB", &fValue);
+
+  if (status == asynSuccess) {
+    setDoubleParam(pC_->EthercatMCScalRDBD_RB_, fValue);
+    setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_, iValue);
+    setDoubleParam(pC_->motorRDBDRO_, iValue ? fValue : 0.0);
+  }
   /* In target position monitor time */
   status = getSAFValueFromAxisPrint(0x4000, 0x17, "RDBD_Tim", &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRDBD_Tim_RB_,
                                             fValue);
 
-  /* In target position monitor enabled */
-  status = getSAFValueFromAxisPrint(0x4000, 0x15, "RDBD_En", &iValue);
-  if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_,
-                                             iValue);
   readBackHighSoftLimit();
   readBackLowSoftLimit();
 

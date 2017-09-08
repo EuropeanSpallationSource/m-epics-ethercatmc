@@ -72,6 +72,21 @@ record(ao, "$(PREFIX)$(R)CFGJAR")
     info(asyn:READBACK,"1")
 }
 
+record(ai,"$(PREFIX)$(R)CSDBD") {
+    field(DESC, "Controller SDBD")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_SDBD_RO")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(R)CRDBD") {
+    field(DESC, "Controller RDBD")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_RDBD_RO")
+    field(SCAN, "I/O Intr")
+}
 
 # Help records, to read what the record sends to the model 3 driver
 record(ai,"$(PREFIX)$(R)M3RHLM") {
