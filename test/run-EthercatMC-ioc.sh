@@ -75,7 +75,7 @@ export MOTORIP MOTORPORT
     stcmddst=./st.cmd.EEE.$EPICS_HOST_ARCH &&
     # We need to patch the cmd files to adjust "<"
     # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-    for src in  ../../test/startup/*cmd; do
+    for src in  ../../test/startup/*cmd ../../test/startup/*cfg; do
       dst=${src##*/}
       echo cp PWD=$PWD src=$src dst=$dst
       cp "$src" "$dst"
