@@ -22,6 +22,7 @@ typedef struct
   double homeVeloTowardsHomeSensor;
   double homeVeloFromHomeSensor;
   double manualVelocitySlow;
+  double defaultAcceleration;
   double manualVelocityFast;
   double inTargetPositionMonitorWindow;
   double inTargetPositionMonitorTime;
@@ -236,6 +237,9 @@ static int motorHandleADS_ADR_getFloat(unsigned adsport,
     case 0x27:
       *fValue = cmd_Motor_cmd[motor_axis_no].maximumVelocity;
       return 0;
+    case 0x101:
+      *fValue = cmd_Motor_cmd[motor_axis_no].defaultAcceleration;
+      return 0;
     case 0x104:
       *fValue = cmd_Motor_cmd[motor_axis_no].deadTimeCompensation;
       return 0;
@@ -304,6 +308,9 @@ static int motorHandleADS_ADR_putFloat(unsigned adsport,
       return 0;
     case 0x27:
       cmd_Motor_cmd[motor_axis_no].maximumVelocity = fValue;
+      return 0;
+    case 0x101:
+      cmd_Motor_cmd[motor_axis_no].defaultAcceleration = fValue;
       return 0;
     case 0x104:
       cmd_Motor_cmd[motor_axis_no].deadTimeCompensation = fValue;
