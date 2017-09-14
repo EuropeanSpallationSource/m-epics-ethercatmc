@@ -18,7 +18,7 @@ epicsEnvSet("VELO",          "$(SM_VELO=0.0)")
 epicsEnvSet("JVEL",          "$(SM_JVEL=0)")
 epicsEnvSet("JAR",           "$(SM_JAR=0)")
 epicsEnvSet("ACCL",          "$(SM_ACCL=0)")
-epicsEnvSet("MRES",          "$(SM_MRES=0.1)")
+epicsEnvSet("MRES",          "$(SM_MRES=1)")
 epicsEnvSet("SDBD",          "$(SM_SDBD=0)")
 epicsEnvSet("RDBD",          "$(SM_RDBD=0)")
 epicsEnvSet("DLLM",          "$(SM_DLLM=0)")
@@ -29,7 +29,7 @@ epicsEnvSet("DHLM",          "$(SM_DHLM=0)")
 # To fiddle mm like 1.234 into the record.RBV without rounding it
 # to 1 as an integer. (This is a new feature in the axis record)
 # TC 141 will need this
-epicsEnvSet("AXISCONFIG",    "encoder=Main.M$(AXIS_NO).fActPosition;cfgFile=./SimAxis-48-1.cfg")
+epicsEnvSet("AXISCONFIG",    "stepSize=1.0;encoder=Main.M$(AXIS_NO).fActPosition;cfgFile=./SimAxis-48-1.cfg")
 epicsEnvSet("ERES",          "$(SM_ERES=1)")
 
 # And this simulates the input of an incremental encoder terminal
