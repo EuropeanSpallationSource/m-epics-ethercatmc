@@ -132,15 +132,18 @@ void EthercatMCAxis::readBackHighSoftLimit(void)
   double fValue = 0.0;
   /* Soft limits High Enable */
   iValue = 0; fValue = 0.0;
+  double mres = drvlocal.mres;
+  if (!mres) return;
+
   status = getSAFValuesFromAxisPrint(0x5000, 0xC, "CHLM_En", &iValue,
                                      0x5000, 0xE, "CHLM", &fValue);
   if (status != asynSuccess) return;
   setIntegerParam(pC_->motorFlagsHighLimitRO_, iValue);
-  setDoubleParam(pC_->motorHighLimitRO_, fValue);
+  setDoubleParam(pC_->motorHighLimitRO_, fValue / mres);
   /* EthercatMCCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX here */
   pC_->setIntegerParam(axisNo_, pC_->EthercatMCCHLM_En_, iValue);
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCHLM_, fValue);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCHLM_, fValue / mres);
 }
 
 
@@ -149,16 +152,19 @@ void EthercatMCAxis::readBackLowSoftLimit(void)
   asynStatus status;
   int iValue = 0;
   double fValue = 0.0;
+  double mres = drvlocal.mres;
+  if (!mres) return;
+
   /* Soft limits Low Enable */
   status = getSAFValuesFromAxisPrint(0x5000, 0xB, "CHLM_En", &iValue,
                                      0x5000, 0xD, "CHLM", &fValue);
   if (status != asynSuccess) return;
-  setDoubleParam(pC_->motorLowLimitRO_, fValue);
+  setDoubleParam(pC_->motorLowLimitRO_, fValue / mres);
   setIntegerParam(pC_->motorFlagsLowLimitRO_, iValue);
   /* EthercatMCCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX(axisNo_..)  here */
   pC_->setIntegerParam(axisNo_, pC_->EthercatMCCLLM_En_, iValue);
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCLLM_, fValue);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCLLM_, fValue / mres);
 }
 
 /** Connection status is changed, the dirty bits must be set and
@@ -172,27 +178,29 @@ void EthercatMCAxis::readBackConfig(void)
   asynStatus status;
   int iValue;
   double fValue;
+  double mres = drvlocal.mres;
+  if (!mres) return;
   /* (Micro) steps per revolution */
   status = getSAFValueFromAxisPrint(0x5000, 0x24, "SREV", &fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalSREV_RB_, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalSREV_RB_, fValue / mres);
 
   /* EGU per revolution */
   status = getSAFValueFromAxisPrint(0x5000, 0x23, "UREV", &fValue);
   if (status == asynSuccess) {
     /* mres is urev/srev */
     double srev;
-    setDoubleParam(pC_->EthercatMCScalUREV_RB_, fValue);
+    setDoubleParam(pC_->EthercatMCScalUREV_RB_, fValue / mres);
     pC_->getDoubleParam(axisNo_, pC_->EthercatMCScalSREV_RB_, &srev);
     if (srev)
-      setDoubleParam(pC_->motorSDBDRO_, fValue / srev);
+      setDoubleParam(pC_->motorSDBDRO_, (fValue / srev)  / mres);
   }
 
   /* Reference Velocity */
   status = getSAFValueFromAxisPrint(0x7000, 0x101, "RefVelo", &fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRefVelo_RB_, fValue);
+  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalRefVelo_RB_, fValue / mres);
   /* Motor DIRection */
   status = getSAFValueFromAxisPrint(0x7000, 0x6, "MDIR", &iValue);
-  if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalMDIR_RB_, iValue);
+  if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalMDIR_RB_, iValue / mres);
   /* Encoder DIRection */
   status = getSAFValueFromAxisPrint(0x5000, 0x8, "EDIR", &iValue);
   if (status == asynSuccess) setIntegerParam(pC_->EthercatMCScalEDIR_RB_, iValue);
@@ -202,9 +210,9 @@ void EthercatMCAxis::readBackConfig(void)
                                      0x4000, 0x16,"RDBD_RB", &fValue);
 
   if (status == asynSuccess) {
-    setDoubleParam(pC_->EthercatMCScalRDBD_RB_, fValue);
+    setDoubleParam(pC_->EthercatMCScalRDBD_RB_, fValue / mres);
     setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_, iValue);
-    setDoubleParam(pC_->motorRDBDRO_, iValue ? fValue : 0.0);
+    setDoubleParam(pC_->motorRDBDRO_, iValue ? fValue  / mres: 0.0);
   }
   /* In target position monitor time */
   status = getSAFValueFromAxisPrint(0x4000, 0x17, "RDBD_Tim", &fValue);
@@ -217,23 +225,23 @@ void EthercatMCAxis::readBackConfig(void)
   /* The Ethercat specific are  read-write, so we must use pC_->setXXX for them */
   /* (fast) Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x9, "VELO", &fValue);
-  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVELO_, fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->motorDefVelocityRO_, fValue);
+  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVELO_, fValue / mres);
+  if (status == asynSuccess) setDoubleParam(pC_->motorDefVelocityRO_, fValue / mres);
 
   /* Maximal Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x27, "VMAX", &fValue);
-  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVMAX_, fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->motorMaxVelocityRO_, fValue);
+  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVMAX_, fValue / mres);
+  if (status == asynSuccess) setDoubleParam(pC_->motorMaxVelocityRO_, fValue / mres);
 
   /* (slow) Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x8, "JVEL", &fValue);
-  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJVEL_, fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->motorDefJogVeloRO_, fValue);
+  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJVEL_, fValue / mres);
+  if (status == asynSuccess) setDoubleParam(pC_->motorDefJogVeloRO_, fValue / mres);
 
   /* (default) Acceleration */
   status = getSAFValueFromAxisPrint(0x4000, 0x101, "JAR", &fValue);
-  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJAR_, fValue);
-  if (status == asynSuccess) setDoubleParam(pC_->motorDefJogAccRO_, fValue);
+  if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJAR_, fValue / mres);
+  if (status == asynSuccess) setDoubleParam(pC_->motorDefJogAccRO_, fValue / mres);
 }
 
 
@@ -1085,7 +1093,7 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d motorRecResolution_=%g\n",
               modulName, axisNo_, value);
-    drvlocal.mres = value;
+    drvlocal.mres = fabs(value);
 #endif
   }
 
