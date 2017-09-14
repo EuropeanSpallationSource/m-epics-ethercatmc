@@ -741,10 +741,10 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 
     /* V1 new style: mvnNRdyNex follows bBusy */
     if (drvlocal.supported.bSIM || drvlocal.supported.bECMC)
-      drvlocal.supported.bBusyNewStyle = 1;
+      drvlocal.supported.bV1BusyNewStyle = 1;
 
     pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
-    if (!drvlocal.supported.bBusyNewStyle) {
+    if (!drvlocal.supported.bV1BusyNewStyle) {
       /* "V1 old style":done when bEcecute is 0 */
       pst_axis_status->mvnNRdyNex &= pst_axis_status->bExecute;
     }
@@ -753,18 +753,18 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
   if (drvlocal.dirty.stAxisStatus_Vxx) {
     if (drvlocal.supported.stAxisStatus_V2)
       drvlocal.supported.statusVer = 2;
-    else if (drvlocal.supported.stAxisStatus_V1 && !drvlocal.supported.bBusyNewStyle)
+    else if (drvlocal.supported.stAxisStatus_V1 && !drvlocal.supported.bV1BusyNewStyle)
       drvlocal.supported.statusVer = 0;
-    else if (drvlocal.supported.stAxisStatus_V1 && drvlocal.supported.bBusyNewStyle)
+    else if (drvlocal.supported.stAxisStatus_V1 && drvlocal.supported.bV1BusyNewStyle)
       drvlocal.supported.statusVer = 1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s pollAll(%d) nvals=%d V1=%d V2=%d sim=%d ecmc=%d bBusyNewStyle=%d Ver=%d fActPosition=%f\n",
+              "%s pollAll(%d) nvals=%d V1=%d V2=%d sim=%d ecmc=%d bV1BusyNewStyle=%d Ver=%d fActPosition=%f\n",
               modulName, axisNo_, nvals,
               drvlocal.supported.stAxisStatus_V1,
               drvlocal.supported.stAxisStatus_V2,
               drvlocal.supported.bSIM,
               drvlocal.supported.bECMC,
-              drvlocal.supported.bBusyNewStyle,
+              drvlocal.supported.bV1BusyNewStyle,
               drvlocal.supported.statusVer,
               pst_axis_status->fActPosition);
     setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
@@ -806,16 +806,11 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 {
   asynStatus comStatus = asynSuccess;
   st_axis_status_type st_axis_status;
+  int ret;
 
   memset(&st_axis_status, 0, sizeof(st_axis_status));
-  /* Try to read to see if the connection is up */
-  if (drvlocal.dirty.nMotionAxisID < 0) {
-    int ret;
-    comStatus = getValueFromAxis("nMotionAxisID", &ret);
-    if (comStatus) goto skip;
-    if (ret >= 0) drvlocal.dirty.nMotionAxisID = ret;
-  }
-
+  ret = getMotionAxisID();
+  if (ret < 0) goto skip;
   /* Stop if the previous stop had been lost */
   if (drvlocal.mustStop) {
     comStatus = stopAxisInternal(__FUNCTION__, 0);

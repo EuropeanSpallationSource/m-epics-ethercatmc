@@ -156,9 +156,10 @@ private:
     struct {
       unsigned int stAxisStatus_V1  :1;
       unsigned int stAxisStatus_V2  :1;
-      unsigned int bBusyNewStyle    :1;
+      unsigned int bV1BusyNewStyle  :1;
       unsigned int bSIM             :1;
       unsigned int bECMC            :1;
+      unsigned int bADS             :1;
       int          statusVer;           /* 0==V1, busy old style 1==V1, new style*/
                                         /* 2==V2 */
     }  supported;

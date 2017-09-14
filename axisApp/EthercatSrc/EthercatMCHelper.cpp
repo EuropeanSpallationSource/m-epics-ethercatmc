@@ -218,6 +218,8 @@ void EthercatMCAxis::getFeatures(void)
   const char * const sim_str = "sim";
   const char * const stECMC_str = "ecmc";
   const char * const stV1_str = "stv1";
+  const char * const stV2_str = "stv2";
+  const char * const ads_str = "ads";
   asynStatus status = asynSuccess;
   unsigned int adsport;
   for (adsport = MINADSPORT; adsport <= MAXADSPORT; adsport++) {
@@ -248,12 +250,17 @@ void EthercatMCAxis::getFeatures(void)
         drvlocal.supported.bECMC = 1;
       } else if (!strcmp(pThisFeature, stV1_str)) {
         drvlocal.supported.stAxisStatus_V1 = 1;
+      } else if (!strcmp(pThisFeature, stV2_str)) {
+        drvlocal.supported.stAxisStatus_V2 = 1;
+      } else if (!strcmp(pThisFeature, ads_str)) {
+        drvlocal.supported.bADS = 1;
       }
       pThisFeature = pNextFeature;
     }
     free(pFeatures);
     if (drvlocal.supported.bSIM ||
         drvlocal.supported.bECMC ||
+        drvlocal.supported.bADS ||
         drvlocal.supported.stAxisStatus_V1) {
       /* Found something useful on this adsport */
       drvlocal.dirty.features = 0;
