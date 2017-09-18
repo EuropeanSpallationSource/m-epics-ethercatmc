@@ -142,7 +142,6 @@ private:
     int homed;
     eeAxisErrorType old_eeAxisError;
     eeAxisErrorType eeAxisError;
-    unsigned int adsport;
     /* Which values have changed in the EPICS IOC, but are not updated in the
        motion controller */
     struct {
@@ -168,6 +167,9 @@ private:
     /* Error texts when we talk to the controller, there is not an "OK"
        Or, failure in setValueOnAxisVerify() */
     char cmdErrorMessage[80];
+    char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
+    char adsport_zero[1]; /* 15 + 1 for '\' keep us aligned in memory */
+
   } drvlocal;
 
   asynStatus handleDisconnect(void);

@@ -90,7 +90,8 @@ asynStatus EthercatMCAxis::writeReadACK(void)
  */
 asynStatus EthercatMCAxis::setValueOnAxis(const char* var, int value)
 {
-  sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s=%d", drvlocal.adsport, axisNo_, var, value);
+  snprintf(pC_->outString_, sizeof(pC_->outString_),
+           "%sMain.M%d.%s=%d", drvlocal.adsport_str, axisNo_, var, value);
   return writeReadACK();
 }
 
@@ -108,8 +109,10 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
   unsigned int counter = 0;
   int rbvalue = 0 - value;
   while (counter <= retryCount) {
-    sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s=%d;Main.M%d.%s?",
-            drvlocal.adsport, axisNo_, var, value, axisNo_, rbvar);
+    snprintf(pC_->outString_, sizeof(pC_->outString_),
+             "%sMain.M%d.%s=%d;%sMain.M%d.%s?",
+             drvlocal.adsport_str, axisNo_, var, value,
+             drvlocal.adsport_str, axisNo_, rbvar);
     status = pC_->writeReadOnErrorDisconnect();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
@@ -156,7 +159,8 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
  */
 asynStatus EthercatMCAxis::setValueOnAxis(const char* var, double value)
 {
-  sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s=%g", drvlocal.adsport, axisNo_, var, value);
+  snprintf(pC_->outString_, sizeof(pC_->outString_),
+           "%sMain.M%d.%s=%g", drvlocal.adsport_str, axisNo_, var, value);
   return writeReadACK();
 }
 
@@ -169,8 +173,10 @@ asynStatus EthercatMCAxis::setValueOnAxis(const char* var, double value)
 asynStatus EthercatMCAxis::setValuesOnAxis(const char* var1, double value1,
                                            const char* var2, double value2)
 {
-  sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s=%g;Main.M%d.%s=%g",
-          drvlocal.adsport, axisNo_, var1, value1, axisNo_, var2, value2);
+  snprintf(pC_->outString_, sizeof(pC_->outString_),
+           "%sMain.M%d.%s=%g;%sMain.M%d.%s=%g",
+           drvlocal.adsport_str, axisNo_, var1, value1,
+           drvlocal.adsport_str, axisNo_, var2, value2);
   return writeReadACK();
 }
 
@@ -180,10 +186,16 @@ int EthercatMCAxis::getMotionAxisID(void)
   int ret = drvlocal.dirty.nMotionAxisID;
   if (ret < 0) {
     asynStatus status;
-    unsigned int adsport;
-    for (adsport = MINADSPORT; adsport <= MAXADSPORT; adsport++) {
-      sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.nMotionAxisID?",
-              adsport, axisNo_);
+    unsigned adsport;
+    for (adsport = MINADSPORT-1; adsport <= MAXADSPORT; adsport++) {
+      if (adsport > MINADSPORT-1) {
+        /* first try without "ADSPORT=xxx/". This is what the old installations
+           understand */
+        snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
+                 "ADSPORT=%u/", adsport);
+      }
+      snprintf(pC_->outString_, sizeof(pC_->outString_),
+               "%sMain.M%d.nMotionAxisID?", drvlocal.adsport_str, axisNo_);
       status = pC_->writeReadOnErrorDisconnect();
       if (status) {
         return -1;
@@ -202,7 +214,6 @@ int EthercatMCAxis::getMotionAxisID(void)
                 pC_->outString_, pC_->inString_,
                 pasynManager->strStatus(status), (int)status, res);
       ret = res;
-      drvlocal.adsport = adsport;
       break;
     }
   }
@@ -223,7 +234,7 @@ void EthercatMCAxis::getFeatures(void)
   asynStatus status = asynSuccess;
   unsigned int adsport;
   for (adsport = MINADSPORT; adsport <= MAXADSPORT; adsport++) {
-    sprintf(pC_->outString_, "ADSPORT=%u/.THIS.sFeatures?", adsport);
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.THIS.sFeatures?", adsport);
     pC_->inString_[0] = 0;
     status = pC_->writeReadController();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -276,7 +287,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxis(unsigned indexGroup,
 {
   int axisID = getMotionAxisID();
   if (axisID < 0) return asynError;
-  sprintf(pC_->outString_, "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d",
+  snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d",
           501, indexGroup + axisID, indexOffset, value);
   return writeReadACK();
 }
@@ -307,7 +318,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxis(unsigned indexGroup,
 {
   int axisID = getMotionAxisID();
   if (axisID < 0) return asynError;
-  sprintf(pC_->outString_, "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g",
+  snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g",
           501, indexGroup + axisID, indexOffset, value);
   return writeReadACK();
 }
@@ -342,7 +353,7 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   asynStatus status;
   int axisID = getMotionAxisID();
   if (axisID < 0) return asynError;
-  sprintf(pC_->outString_, "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?",
+  snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?",
           501, indexGroup + axisID, indexOffset);
   status = pC_->writeReadOnErrorDisconnect();
   if (status)
@@ -371,7 +382,7 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   asynStatus status;
   int axisID = getMotionAxisID();
   if (axisID < 0) return asynError;
-  sprintf(pC_->outString_, "ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
+  snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
           501, indexGroup + axisID, indexOffset);
   status = pC_->writeReadOnErrorDisconnect();
   if (status)
@@ -400,7 +411,8 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
 {
   asynStatus status;
   int res;
-  sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s?", drvlocal.adsport, axisNo_, var);
+  snprintf(pC_->outString_, sizeof(pC_->outString_),
+          "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
   status = pC_->writeReadOnErrorDisconnect();
   if (status)
     return status;
@@ -454,7 +466,7 @@ asynStatus EthercatMCAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
   asynStatus status;
   int axisID = getMotionAxisID();
   if (axisID < 0) return asynError;
-  sprintf(pC_->outString_, "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?;ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
+  snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?;ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
           501, iIndexGroup + axisID, iIndexOffset,
           501, fIndexGroup + axisID, fIndexOffset);
   status = pC_->writeReadOnErrorDisconnect();
@@ -487,7 +499,8 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
   asynStatus status;
   int nvals;
   double res;
-  sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s?", drvlocal.adsport, axisNo_, var);
+  snprintf(pC_->outString_, sizeof(pC_->outString_),
+           "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
   status = pC_->writeReadOnErrorDisconnect();
   if (status)
     return status;
@@ -510,7 +523,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
 asynStatus EthercatMCAxis::getStringFromAxis(const char *var, char *value, size_t maxlen)
 {
   asynStatus status;
-  sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s?", drvlocal.adsport, axisNo_, var);
+  snprintf(pC_->outString_, sizeof(pC_->outString_), "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
   status = pC_->writeReadOnErrorDisconnect();
   if (status) return status;
 
@@ -523,7 +536,7 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
   asynStatus status;
   int nvals;
   double res;
-  sprintf(pC_->outString_, "%s?", var);
+  snprintf(pC_->outString_, sizeof(pC_->outString_), "%s?", var);
   status = pC_->writeReadOnErrorDisconnect();
   if (status)
     return status;

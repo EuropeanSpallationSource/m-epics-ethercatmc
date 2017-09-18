@@ -539,8 +539,10 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
   if (status || !on) return status; /* this went wrong OR it should be turned off */
   while (counter) {
     epicsThreadSleep(.1);
-    sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s?;Main.M%d.%s?",
-            drvlocal.adsport, axisNo_, "bBusy", axisNo_, "bEnabled");
+    snprintf(pC_->outString_, sizeof(pC_->outString_),
+             "%sMain.M%d.%s?;%sMain.M%d.%s?",
+             drvlocal.adsport_str, axisNo_, "bBusy",
+             drvlocal.adsport_str, axisNo_, "bEnabled");
     status = pC_->writeReadOnErrorDisconnect();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s out=%s in=%s status=%s (%d)\n",
@@ -677,7 +679,8 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
   } notUsed;
   if (drvlocal.supported.stAxisStatus_V2 || drvlocal.dirty.stAxisStatus_Vxx) {
     /* V2 is supported, use it. Or. unkown: try it as well */
-    sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.stAxisStatusV2?", drvlocal.adsport, axisNo_);
+    snprintf(pC_->outString_, sizeof(pC_->outString_),
+            "%sMain.M%d.stAxisStatusV2?", drvlocal.adsport_str, axisNo_);
     comStatus = pC_->writeReadOnErrorDisconnect();
     if (!strncasecmp(pC_->inString_,  Main_dot_str, Main_dot_len)) {
       nvals = sscanf(&pC_->inString_[Main_dot_len],
@@ -721,7 +724,8 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
   }
   if (!drvlocal.supported.stAxisStatus_V2) {
     /* Read the complete Axis status */
-    sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.stAxisStatus?", drvlocal.adsport, axisNo_);
+    snprintf(pC_->outString_, sizeof(pC_->outString_),
+            "%sMain.M%d.stAxisStatus?", drvlocal.adsport_str, axisNo_);
     comStatus = pC_->writeReadOnErrorDisconnect();
     if (comStatus) return comStatus;
     if (!strncasecmp(pC_->inString_,  Main_dot_str, Main_dot_len)) {
@@ -864,7 +868,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 
   if (drvlocal.cfgDebug_str) {
     asynStatus comStatus;
-    sprintf(pC_->outString_, "%s", drvlocal.cfgDebug_str);
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", drvlocal.cfgDebug_str);
     comStatus = pC_->writeReadOnErrorDisconnect();
     if (!comStatus) {
       updateMsgTxtFromDriver(pC_->inString_);
@@ -1266,20 +1270,20 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
        as Main.M1 or Sim.M1
        ADR commands are handled below */
     if (!strncmp(value, Main_this_str, strlen(Main_this_str))) {
-      sprintf(pC_->outString_, "ADSPORT=%u/Main.M%d.%s",
-              drvlocal.adsport, axisNo_, value + strlen(Main_this_str));
+      snprintf(pC_->outString_, sizeof(pC_->outString_), "%sMain.M%d.%s",
+              drvlocal.adsport_str, axisNo_, value + strlen(Main_this_str));
       return writeReadACK();
     }
     /* caput IOC:m1-DbgStrToMCU Sim.this.log=M1.log */
     if (!strncmp(value, Sim_this_str, strlen(Sim_this_str))) {
-      sprintf(pC_->outString_, "Sim.M%d.%s",
+      snprintf(pC_->outString_, sizeof(pC_->outString_), "Sim.M%d.%s",
               axisNo_, value + strlen(Sim_this_str));
       return writeReadACK();
     }
 #if 0
     nvals = sscanf(value, "Sim.M%u.", &ivalue);
     if (nvals == 1) {
-      sprintf(pC_->outString_, "%s", value);
+      snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", value);
       return writeReadACK();
     }
     /* ADR commands integer
