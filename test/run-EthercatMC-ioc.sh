@@ -1,6 +1,6 @@
 #!/bin/sh
 APPXX=EthercatMC
-TOP=$PWD/..
+TOP=$(echo $PWD/.. | sed -e "s%/test/\.\.$%%")
 export APPXX
 EPICS_EEE=n
 
