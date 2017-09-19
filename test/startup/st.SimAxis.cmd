@@ -12,8 +12,8 @@ epicsEnvSet("M",             "$(SM_M=m1)")
 epicsEnvSet("R",             "$(SM_R=m1-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=motor1)")
-epicsEnvSet("EGU",           "$(SM_EGU=cm)")
-epicsEnvSet("PREC",          "$(SM_PREC=4)")
+epicsEnvSet("EGU",           "$(SM_EGU=mm)")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("VELO",          "$(SM_VELO=0.0)")
 epicsEnvSet("JVEL",          "$(SM_JVEL=0)")
 epicsEnvSet("JAR",           "$(SM_JAR=0)")
@@ -31,12 +31,6 @@ epicsEnvSet("DHLM",          "$(SM_DHLM=0)")
 # TC 141 will need this
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;encoder=Main.M$(AXIS_NO).fActPosition;cfgFile=./SimAxis-48-1.cfg")
 epicsEnvSet("ERES",          "$(SM_ERES=1)")
-
-# And this simulates the input of an incremental encoder terminal
-# on the EtherCAT bus. Works with the simulator.
-# For real terminals the adresses must be adapted
-#epicsEnvSet("AXISCONFIG",    "encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
-#epicsEnvSet("ERES",          "$(SM_ERES=0.03)")
 
 epicsEnvSet("HOMEPROC",      "$(SM_HOMEPROC=1)")
 epicsEnvSet("HOMEPOS",       "$(SM_HOMEPOS=0.0)")
