@@ -26,7 +26,10 @@
 #define ERROR_CONFIG_ERROR 0x30000
 #endif
 
-#define NCOMMANDHOME 10
+#define NCOMMANDMOVEVEL  1
+#define NCOMMANDMOVEREL  2
+#define NCOMMANDMOVEABS  3
+#define NCOMMANDHOME    10
 
 const static char *const modulName = "EthercatMCAxis::";
 
@@ -381,11 +384,10 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
 asynStatus EthercatMCAxis::move(double position, int relative, double minVelocity, double maxVelocity, double acceleration)
 {
   asynStatus status = asynSuccess;
-  int nCommand = relative ? 2 : 3;
+  int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
-  if (status == asynSuccess) drvlocal.nCommand = nCommand;
   if (status == asynSuccess) status = setValueOnAxis("fPosition", position * drvlocal.stepSize);
   if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
 
@@ -449,7 +451,6 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
                                                        "fDeceleration", decHom);
 
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
-  if (status == asynSuccess) drvlocal.nCommand = nCommand;
   drvlocal.waitNumPollsBeforeReady += 2;
   return status;
 }
@@ -466,7 +467,7 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
   asynStatus status = asynSuccess;
 
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-  if (status == asynSuccess) setValueOnAxis("nCommand", 1);
+  if (status == asynSuccess) setValueOnAxis("nCommand", NCOMMANDMOVEVEL);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
   if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
 
@@ -577,7 +578,6 @@ enableAmplifierPollAndReturn:
 asynStatus EthercatMCAxis::stopAxisInternal(const char *function_name, double acceleration)
 {
   asynStatus status;
-  drvlocal.nCommand = 0;
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s stopAxisInternal(%d) (%s)\n",   modulName, axisNo_, function_name);
   status = setValueOnAxisVerify("bExecute", "bExecute", 0, 1);
@@ -617,7 +617,8 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     drvlocal.eeAxisError = eeAxisErrorCmdError;
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
-      drvlocal.old_EPICS_nErrorId != EPICS_nErrorId) {
+      drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
+      drvlocal.old_nCommandActive != drvlocal.nCommandActive) {
 
     if (!drvlocal.cfgDebug_str) {
       if (!EPICS_nErrorId)
@@ -625,7 +626,27 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
 
       switch (drvlocal.eeAxisError) {
         case eeAxisErrorNoError:
-          updateMsgTxtFromDriver(NULL);
+          {
+            switch(drvlocal.nCommandActive) {
+            case NCOMMANDMOVEVEL:
+              updateMsgTxtFromDriver("I: Moving VEL");
+              break;
+            case NCOMMANDMOVEREL:
+              updateMsgTxtFromDriver("I: Moving REL");
+              break;
+            case NCOMMANDMOVEABS:
+              updateMsgTxtFromDriver("I: Moving ABS");
+              break;
+            case NCOMMANDHOME:
+              updateMsgTxtFromDriver("I: Homing");
+              break;
+            case 0:
+              updateMsgTxtFromDriver(NULL);
+              break;
+            default:
+              updateMsgTxtFromDriver("I: Moving");
+            }
+          }
           break;
         case eeAxisErrorIOCcomError:
           updateMsgTxtFromDriver("CommunicationError");
@@ -646,12 +667,14 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
                     drvlocal.eeAxisError == eeAxisErrorMCUError);
     setIntegerParam(pC_->EthercatMCErrId_, EPICS_nErrorId);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s poll(%d) callParamCallbacksUpdateError eeAxisError=%d old=%d ErrID=0x%x old=0x%x\n",
+              "%s poll(%d) callParamCallbacksUpdateError eeAxisError=%d old=%d ErrID=0x%x old=0x%x nCmd=%d old=%d\n",
                modulName, axisNo_, drvlocal.eeAxisError, drvlocal.old_eeAxisError,
-              EPICS_nErrorId, drvlocal.old_EPICS_nErrorId);
+              EPICS_nErrorId, drvlocal.old_EPICS_nErrorId,
+              drvlocal.nCommandActive, drvlocal.old_nCommandActive);
 
     drvlocal.old_eeAxisError = drvlocal.eeAxisError;
     drvlocal.old_EPICS_nErrorId = EPICS_nErrorId;
+    drvlocal.old_nCommandActive = drvlocal.nCommandActive;
   }
 
   callParamCallbacks();
@@ -897,10 +920,14 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     *moving = true;
   } else {
     *moving = st_axis_status.mvnNRdyNex ? true : false;
-    if (!st_axis_status.mvnNRdyNex) drvlocal.nCommand = 0;
   }
 
-  if (drvlocal.nCommand != NCOMMANDHOME) {
+  if (st_axis_status.mvnNRdyNex)
+    drvlocal.nCommandActive = st_axis_status.nCommand;
+  else
+    drvlocal.nCommandActive = 0;
+
+  if (drvlocal.nCommandActive != NCOMMANDHOME) {
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.stepSize;
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
     drvlocal.old_st_axis_status.fActPosition = st_axis_status.fActPosition;

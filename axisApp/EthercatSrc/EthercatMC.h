@@ -138,7 +138,8 @@ private:
     int old_bError;   /* copy of bError */
     unsigned int waitNumPollsBeforeReady;
     int mustStop;
-    int nCommand;
+    int nCommandActive;
+    int old_nCommandActive;
     int homed;
     eeAxisErrorType old_eeAxisError;
     eeAxisErrorType eeAxisError;
