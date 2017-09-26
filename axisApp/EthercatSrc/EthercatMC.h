@@ -104,6 +104,9 @@ public:
   asynStatus move(double position, int relative, double min_velocity, double max_velocity, double acceleration);
   asynStatus moveVelocity(double min_velocity, double max_velocity, double acceleration);
   asynStatus setPosition(double);
+  asynStatus setHighLimit(double highLimit);
+  asynStatus setLowLimit(double lowLimit);
+
   asynStatus home(double min_velocity, double max_velocity, double acceleration, int forwards);
   asynStatus stop(double acceleration);
   void       callParamCallbacksUpdateError();
@@ -118,8 +121,8 @@ private:
     eeAxisErrorMCUError,
     eeAxisErrorIOCcomError,
     eeAxisErrorIOCcfgError,
-    eeAxisErrorCmdError
-
+    eeAxisErrorCmdError,
+    eeAxisErrorNotHomed
   } eeAxisErrorType;
   EthercatMCController *pC_;          /**< Pointer to the asynAxisController to which this axis belongs.
                                    *   Abbreviated because it is used very frequently */
@@ -170,7 +173,8 @@ private:
     char cmdErrorMessage[80];
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     char adsport_zero[1]; /* 15 + 1 for '\' keep us aligned in memory */
-
+    double motorRecordHighLimit;
+    double motorRecordLowLimit;
   } drvlocal;
 
   asynStatus handleDisconnect(void);

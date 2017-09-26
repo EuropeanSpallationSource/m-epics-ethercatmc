@@ -487,6 +487,24 @@ asynStatus EthercatMCAxis::setPosition(double value)
   return asynSuccess;
 }
 
+/** Set the high limit position of the motor.
+  * \param[in] highLimit The new high limit position that should be set in the hardware. Units=steps.*/
+asynStatus EthercatMCAxis::setHighLimit(double highLimit)
+{
+  drvlocal.motorRecordHighLimit = highLimit;
+  return asynSuccess;
+}
+
+
+/** Set the low limit position of the motor.
+  * \param[in] lowLimit The new low limit position that should be set in the hardware. Units=steps.*/
+asynStatus EthercatMCAxis::setLowLimit(double lowLimit)
+{
+  drvlocal.motorRecordLowLimit = lowLimit;
+  return asynSuccess;
+}
+
+
 asynStatus EthercatMCAxis::resetAxis(void)
 {
   asynStatus status = asynSuccess;
@@ -615,6 +633,10 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     updateMsgTxtFromDriver("ConfigError: AxisID");
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
+  } else if (!drvlocal.homed &&
+             (drvlocal.nCommandActive != NCOMMANDHOME) &&
+             (drvlocal.motorRecordHighLimit > drvlocal.motorRecordLowLimit)) {
+    drvlocal.eeAxisError = eeAxisErrorNotHomed;
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
@@ -653,6 +675,9 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
           break;
         case eeAxisErrorCmdError:
           updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
+          break;
+        case eeAxisErrorNotHomed:
+          updateMsgTxtFromDriver("E: Axis not homed");
           break;
         default:
           ;
