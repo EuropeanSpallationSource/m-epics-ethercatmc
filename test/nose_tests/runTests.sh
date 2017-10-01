@@ -15,6 +15,12 @@ if test -z "$PYEPICS_LIBCA"; then
     if test -r "$MYLIB"; then
       PYEPICS_LIBCA=$MYLIB
       export PYEPICS_LIBCA
+    else
+      MYLIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH/libca.dylib
+      if test -r "$MYLIB"; then
+        PYEPICS_LIBCA=$MYLIB
+        export PYEPICS_LIBCA
+      fi
     fi
 fi &&
 if ! python -c 'import epics' >/dev/null 2>&1; then
