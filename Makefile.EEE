@@ -1,11 +1,13 @@
 EXCLUDE_VERSIONS=3.14.12.5
+# Temporally removed to speed up
+EXCLUDE_ARCHS += eldk
 
 include ${EPICS_ENV_PATH}/module.Makefile
 
 PROJECT=EthercatMC
 
-USR_DEPENDENCIES = asyn,4.31.0
-USR_DEPENDENCIES += axis,vagrant
+AUTO_DEPENDENCIES = NO
+USR_DEPENDENCIES += axisCore,10.2.0
 
 
 SOURCES = \
