@@ -4,22 +4,14 @@ O.*
 *.swp
 *BAK.adl
 bin/
-builddir/
+builddir/ 
+configure/*local*
 #Note on a case insensitve file system like Mac or Windows
 # db/ is the same as Db/. So: ignore db, but not axisApp/Db/
 /db/
 dbd/
 html/
-iocBoot/iocEthercatMC/
-iocBoot/iocIcePAP/
 include/
+iocBoot/
 lib/
-templates/
-cdCommands
-envPaths
-dllPath.bat
-auto_settings.sav*
-auto_positions.sav*
 
-
-.project
