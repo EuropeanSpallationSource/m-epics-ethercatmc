@@ -4,7 +4,7 @@ O.*
 *.swp
 *BAK.adl
 bin/
-builddir/ 
+builddir/
 configure/*local*
 #Note on a case insensitve file system like Mac or Windows
 # db/ is the same as Db/. So: ignore db, but not axisApp/Db/
