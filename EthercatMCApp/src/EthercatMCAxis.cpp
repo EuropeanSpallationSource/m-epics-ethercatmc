@@ -168,7 +168,7 @@ void EthercatMCAxis::readBackSoftLimits(void)
        Set everything to 0 */
     fValueHigh = fValueLow  = 0.0;
     /* avoid dividing by 0 */
-    if (!stepSize) stepSize = 1.0; 
+    if (!stepSize) stepSize = 1.0;
   }
   setDoubleParam(pC_->motorHighLimitRO_, fValueHigh / stepSize);
   setDoubleParam(pC_->motorLowLimitRO_, fValueLow / stepSize);
