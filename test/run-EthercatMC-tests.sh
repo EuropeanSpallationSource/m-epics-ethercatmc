@@ -6,7 +6,7 @@ fi
 ./checkws.sh &&
 (
   OLDPWD=$PWD
-  cd ../axisApp/EthercatSrc/ &&
+  cd .. &&
   $OLDPWD/checkws.sh
 ) || {
   echo >&2   $OLDPWD/checkws.sh failed
