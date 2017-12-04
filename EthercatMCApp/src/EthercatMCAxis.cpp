@@ -928,13 +928,6 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setIntegerParam(pC_->motorStatusLowLimit_, !st_axis_status.bLimitBwd);
   setIntegerParam(pC_->motorStatusHighLimit_, !st_axis_status.bLimitFwd);
   setIntegerParam(pC_->motorStatusPowerOn_, st_axis_status.bEnabled);
-  /*
-   * Special : "-En" reflects the hardware status. So if the value changes
-   * in the controller, the PV will reflect it.
-   * See info(asyn:READBACK,"1") in EthercatMC.template
-  */
-  pC_->setIntegerParam(axisNo_, pC_->EthercatMCEn_, st_axis_status.bEnabled);
-
   setDoubleParam(pC_->EthercatMCVelAct_, st_axis_status.fActVelocity);
   setDoubleParam(pC_->EthercatMCAcc_RB_, st_axis_status.fAcceleration);
   setDoubleParam(pC_->EthercatMCDec_RB_, st_axis_status.fDecceleration);
@@ -1074,16 +1067,7 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 {
   asynStatus status;
   unsigned indexGroup5000 = 0x5000;
-  if (function == pC_->EthercatMCEn_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setIntegerParam(%d EthercatMCEn_)=%d\n",
-              modulName, axisNo_, value);
-    /* Set it in the parameter lib; the poller may update it later */
-    pC_->setIntegerParam(axisNo_, pC_->EthercatMCEn_, value);
-    status = enableAmplifier(value);
-    return status;
-
-  } else if (function == pC_->motorUpdateStatus_) {
+  if (function == pC_->motorUpdateStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d motorUpdateStatus_)=%d\n", modulName, axisNo_, value);
     initialUpdate();

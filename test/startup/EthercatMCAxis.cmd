@@ -61,7 +61,7 @@
 # @type  FLOAT
 # high soft limit in dial coordinates
 
-EthercatMCCreateAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "2", "$(AXISCONFIG)")
+EthercatMCCreateAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
 
 dbLoadRecords("EthercatMC.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC), MRES=$(MRES), VELO=$(VELO), JVEL=$(JVEL), JAR=$(JAR), ACCL=$(ACCL), ERES=$(ERES), SDBD=$(SDBD), RDBD=$(RDBD), DLLM=$(DLLM), DHLM=$(DHLM)")
 

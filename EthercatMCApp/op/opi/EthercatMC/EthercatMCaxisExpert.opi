@@ -471,14 +471,14 @@ $(pv_value)</tooltip>
     <off_color>
       <color red="127" green="127" blue="127" />
     </off_color>
-    <off_label>enable</off_label>
+    <off_label>cnen</off_label>
     <on_color>
       <color red="0" green="255" blue="0" />
     </on_color>
-    <on_label>Enable</on_label>
+    <on_label>CNEN</on_label>
     <password></password>
     <push_action_index>0</push_action_index>
-    <pv_name>$(P)$(M)-En</pv_name>
+    <pv_name>$(P)$(M).CNEN</pv_name>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>

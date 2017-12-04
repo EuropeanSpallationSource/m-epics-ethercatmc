@@ -72,7 +72,6 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
   createParam(EthercatMCCLLMString,          asynParamFloat64,     &EthercatMCCLLM_);
   createParam(EthercatMCCHLM_EnString,       asynParamInt32,       &EthercatMCCHLM_En_);
   createParam(EthercatMCCLLM_EnString,       asynParamInt32,       &EthercatMCCLLM_En_);
-  createParam(EthercatMCEnString,            asynParamInt32,       &EthercatMCEn_);
 
   createParam(EthercatMCScalSREV_RBString,   asynParamFloat64,     &EthercatMCScalSREV_RB_);
   createParam(EthercatMCScalUREV_RBString,   asynParamFloat64,     &EthercatMCScalUREV_RB_);

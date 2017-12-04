@@ -37,7 +37,6 @@ FILENAME...   EthercatMC.h
 #define EthercatMCCLLMString                 "ECLLM"
 #define EthercatMCCHLM_EnString              "ECHLM-En"
 #define EthercatMCCLLM_EnString              "ECLLM-En"
-#define EthercatMCEnString                   "En"
 #define EthercatMCScalSREV_RBString          "SCALSREV-RB"
 #define EthercatMCScalUREV_RBString          "SCALUREV-RB"
 #define EthercatMCScalRefVelo_RBString       "REFVELO-RB"
@@ -306,7 +305,6 @@ public:
   int EthercatMCCLLM_;
   int EthercatMCCHLM_En_;
   int EthercatMCCLLM_En_;
-  int EthercatMCEn_;
   int EthercatMCErrId_;
   /* Last parameter */
 
