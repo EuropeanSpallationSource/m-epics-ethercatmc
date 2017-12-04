@@ -398,7 +398,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>1</format_type>
     <height>25</height>
@@ -599,7 +599,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>1</format_type>
     <height>25</height>
@@ -728,7 +728,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>1</format_type>
     <height>25</height>
@@ -832,7 +832,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>1</format_type>
     <height>25</height>
@@ -936,7 +936,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -1294,7 +1294,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -1682,7 +1682,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -1745,7 +1745,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -1970,7 +1970,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -2074,7 +2074,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>1</format_type>
     <height>25</height>
@@ -2137,7 +2137,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -2215,7 +2215,7 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <visible>true</visible>
     <widget_type>Label</widget_type>
-    <width>89</width>
+    <width>90</width>
     <wrap_words>true</wrap_words>
     <wuid>-68918818:158524ceeb4:-670b</wuid>
     <x>384</x>
@@ -2311,7 +2311,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -2388,7 +2388,7 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <visible>true</visible>
     <widget_type>Label</widget_type>
-    <width>134</width>
+    <width>136</width>
     <wrap_words>true</wrap_words>
     <wuid>-68918818:158524ceeb4:-66d4</wuid>
     <x>372</x>
@@ -2415,7 +2415,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>1</format_type>
     <height>25</height>
@@ -2492,7 +2492,7 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <visible>true</visible>
     <widget_type>Label</widget_type>
-    <width>72</width>
+    <width>74</width>
     <wrap_words>true</wrap_words>
     <wuid>-68918818:158524ceeb4:-66a6</wuid>
     <x>393</x>
@@ -2579,7 +2579,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>1</format_type>
     <height>25</height>
@@ -2656,7 +2656,7 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <visible>true</visible>
     <widget_type>Label</widget_type>
-    <width>74</width>
+    <width>76</width>
     <wrap_words>true</wrap_words>
     <wuid>-68918818:158524ceeb4:-664b</wuid>
     <x>398</x>
@@ -3138,7 +3138,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -3201,7 +3201,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -3398,7 +3398,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -3461,7 +3461,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -3524,7 +3524,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
@@ -3951,7 +3951,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>0</format_type>
     <height>26</height>
