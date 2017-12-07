@@ -9,16 +9,15 @@ uname_m=$(uname -m 2>/dev/null || echo unknown)
 
 INSTALLED_EPICS=../../../../.epics.$(hostname).$uname_s.$uname_m
 
-if test -r $INSTALLED_EPICS; then
+if test "$EPICS_ENV_PATH" &&
+    test "$EPICS_MODULES_PATH" &&
+    test "$EPICS_BASES_PATH"; then
+  EPICS_EEE=y
+elif test -r $INSTALLED_EPICS; then
   echo INSTALLED_EPICS=$INSTALLED_EPICS
-. $INSTALLED_EPICS
+ . $INSTALLED_EPICS
 else
   echo not found: INSTALLED_EPICS=$INSTALLED_EPICS
-  if test "$EPICS_ENV_PATH" &&
-     test "$EPICS_MODULES_PATH" &&
-     test "$EPICS_BASES_PATH"; then
-     EPICS_EEE=y
-  fi
 fi
 export EPICS_EEE
 echo EPICS_EEE=$EPICS_EEE
@@ -83,7 +82,7 @@ export MOTORIP MOTORPORT
     rm -f $stcmddst &&
     sed  <st${MOTORCFG}.cmd  \
       -e "s/require axisCore,USER/require axisCore,$USER/" \
-      -e "s/require EthercatMC.*/require EthercatMC,$USER/" \
+      -e "s/require EthercatMC,USER/require EthercatMC,$USER/" \
       -e "s/^cd /#cd /" \
       -e "s/127.0.0.1/$MOTORIP/" \
       -e "s/5000/$MOTORPORT/" |
