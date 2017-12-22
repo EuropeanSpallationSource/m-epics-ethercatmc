@@ -151,7 +151,6 @@ private:
       int          nMotionAxisID;     /* Needed for ADR commands */
       unsigned int stAxisStatus_Vxx :1;
       unsigned int oldStatusDisconnected : 1;
-      unsigned int initialUpdate    :1;
       unsigned int sErrorMessage    :1; /* From MCU */
       unsigned int readConfigFile   :1;
       unsigned int features         :1;
@@ -181,7 +180,7 @@ private:
   asynStatus readConfigFile(void);
   void readBackSoftLimits(void);
   void readBackConfig(void);
-  asynStatus initialUpdate(void);
+  asynStatus initialPoll(void);
 
   asynStatus handleStatusChange(asynStatus status);
 

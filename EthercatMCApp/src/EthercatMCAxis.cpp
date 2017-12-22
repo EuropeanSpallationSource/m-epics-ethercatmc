@@ -258,7 +258,7 @@ void EthercatMCAxis::readBackConfig(void)
  *
  * Sets the dirty bits
  */
-asynStatus EthercatMCAxis::initialUpdate(void)
+asynStatus EthercatMCAxis::initialPoll(void)
 {
   asynStatus status = asynSuccess;
 
@@ -281,8 +281,6 @@ asynStatus EthercatMCAxis::initialUpdate(void)
     status = enableAmplifier(1);
   }
   if (status == asynSuccess) readBackConfig();
-
-  if (!status) drvlocal.dirty.initialUpdate = 0;
   return status;
 }
 
@@ -623,9 +621,6 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     EPICS_nErrorId = ERROR_CONFIG_ERROR;
     drvlocal.eeAxisError = eeAxisErrorIOCcfgError;
           updateMsgTxtFromDriver("ConfigError Config File");
-  } else if (drvlocal.dirty.initialUpdate) {
-    EPICS_nErrorId = ERROR_CONFIG_ERROR;
-    updateMsgTxtFromDriver("ConfigError");
   } else if (drvlocal.dirty.nMotionAxisID != axisNo_) {
     EPICS_nErrorId = ERROR_CONFIG_ERROR;
     updateMsgTxtFromDriver("ConfigError: AxisID");
@@ -890,17 +885,15 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     comStatus = stopAxisInternal(__FUNCTION__, 0);
     if (comStatus) goto skip;
   }
-  if (drvlocal.dirty.initialUpdate) {
-    comStatus = initialUpdate();
+  if (drvlocal.dirty.oldStatusDisconnected) {
+    comStatus = initialPoll();
     if (comStatus) {
       callParamCallbacksUpdateError();
       return asynError;
     }
-    if (drvlocal.dirty.oldStatusDisconnected) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s connected(%d)\n",  modulName, axisNo_);
-      drvlocal.dirty.oldStatusDisconnected = 0;
-    }
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s connected(%d)\n",  modulName, axisNo_);
+    drvlocal.dirty.oldStatusDisconnected = 0;
   }
 
   comStatus = pollAll(moving, &st_axis_status);
@@ -1070,7 +1063,6 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
   if (function == pC_->motorUpdateStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d motorUpdateStatus_)=%d\n", modulName, axisNo_, value);
-    initialUpdate();
 #ifdef motorRecDirectionString
   } else if (function == pC_->motorRecDirection_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
