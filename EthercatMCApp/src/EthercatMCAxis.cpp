@@ -280,7 +280,14 @@ asynStatus EthercatMCAxis::initialPoll(void)
        See AMPLIFIER_ON_FLAG */
     status = enableAmplifier(1);
   }
-  if (status == asynSuccess) readBackConfig();
+  if (status == asynSuccess) {
+    readBackConfig();
+    if (drvlocal.dirty.oldStatusDisconnected) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+		"%s connected(%d)\n",  modulName, axisNo_);
+      drvlocal.dirty.oldStatusDisconnected = 0;
+    }
+  }
   return status;
 }
 
@@ -885,17 +892,6 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     comStatus = stopAxisInternal(__FUNCTION__, 0);
     if (comStatus) goto skip;
   }
-  if (drvlocal.dirty.oldStatusDisconnected) {
-    comStatus = initialPoll();
-    if (comStatus) {
-      callParamCallbacksUpdateError();
-      return asynError;
-    }
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s connected(%d)\n",  modulName, axisNo_);
-    drvlocal.dirty.oldStatusDisconnected = 0;
-  }
-
   comStatus = pollAll(moving, &st_axis_status);
   if (comStatus) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
