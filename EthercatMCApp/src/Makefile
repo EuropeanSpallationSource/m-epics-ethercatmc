@@ -22,6 +22,7 @@ EthercatMCSupport_SRCS += EthercatMCHelper.cpp
 # EthercatMCSupport_registerRecordDeviceDriver.cpp derives from EthercatMCSupport.dbd
 EthercatMCSupport_SRCS += EthercatMCSupport_registerRecordDeviceDriver.cpp
 
+EthercatMC_LIBS += asyn axis
 #=============================
 # Build the IOC application
 
