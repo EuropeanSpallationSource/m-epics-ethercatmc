@@ -138,7 +138,6 @@ private:
     int old_EPICS_nErrorId; /* old nErrorID from MCU */
 
     int old_bError;   /* copy of bError */
-    unsigned int waitNumPollsBeforeReady;
     int mustStop;
     int nCommandActive;
     int old_nCommandActive;

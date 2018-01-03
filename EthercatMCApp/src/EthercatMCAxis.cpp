@@ -53,6 +53,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   : asynAxisAxis(pC, axisNo),
     pC_(pC)
 {
+  defWaitNumPollsBeforeReady_ = WAITNUMPOLLSBEFOREREADY;
   memset(&drvlocal, 0, sizeof(drvlocal));
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
   drvlocal.old_eeAxisError = eeAxisErrorIOCcomError;
@@ -376,7 +377,6 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
   }
   status = setValueOnAxis("fVelocity", maxVelocityEGU);
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
-  drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
   return status;
 }
 
@@ -458,7 +458,6 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
                                                        "fDeceleration", decHom);
 
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
-  drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
   return status;
 }
 
@@ -924,13 +923,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setDoubleParam(pC_->EthercatMCVelAct_, st_axis_status.fActVelocity);
   setDoubleParam(pC_->EthercatMCAcc_RB_, st_axis_status.fAcceleration);
   setDoubleParam(pC_->EthercatMCDec_RB_, st_axis_status.fDecceleration);
-
-  if (drvlocal.waitNumPollsBeforeReady) {
-    *moving = true;
-  } else {
-    *moving = st_axis_status.mvnNRdyNex ? true : false;
-  }
-
+  *moving = st_axis_status.mvnNRdyNex ? true : false;
   if (st_axis_status.mvnNRdyNex)
     drvlocal.nCommandActive = st_axis_status.nCommand;
   else
@@ -970,70 +963,53 @@ asynStatus EthercatMCAxis::poll(bool *moving)
               modulName, axisNo_,!st_axis_status.bLimitFwd);
     drvlocal.old_st_axis_status.bLimitFwd = st_axis_status.bLimitFwd;
   }
-
-  if (drvlocal.old_st_axis_status.mvnNRdyNex != st_axis_status.mvnNRdyNex) {
-    drvlocal.waitNumPollsBeforeReady = 0;
-  }
-  if (drvlocal.waitNumPollsBeforeReady) {
-    /* Don't update moving, done, motorStatusProblem_ */
+  if (drvlocal.old_st_axis_status.mvnNRdyNex != st_axis_status.mvnNRdyNex ||
+      drvlocal.old_st_axis_status.bBusy      != st_axis_status.bBusy ||
+      drvlocal.old_st_axis_status.bEnabled   != st_axis_status.bEnabled ||
+      drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
+      drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d waitNumPollsBeforeReady=%d\n",
-               modulName,
-              axisNo_, st_axis_status.mvnNRdyNex,
+              "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d ENC=%g fActPosition=%g\n",
+               modulName, axisNo_, st_axis_status.mvnNRdyNex,
               drvlocal.supported.statusVer,
               st_axis_status.bBusy, st_axis_status.bExecute,
               st_axis_status.bEnabled, st_axis_status.atTarget,
-              drvlocal.waitNumPollsBeforeReady);
-    drvlocal.waitNumPollsBeforeReady--;
-    callParamCallbacks();
-  } else {
-    if (drvlocal.old_st_axis_status.mvnNRdyNex != st_axis_status.mvnNRdyNex ||
-        drvlocal.old_st_axis_status.bBusy      != st_axis_status.bBusy ||
-        drvlocal.old_st_axis_status.bEnabled   != st_axis_status.bEnabled ||
-        drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
-        drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d ENC=%g fActPosition=%g\n",
-                 modulName, axisNo_, st_axis_status.mvnNRdyNex,
-                drvlocal.supported.statusVer,
-                st_axis_status.bBusy, st_axis_status.bExecute,
-                st_axis_status.bEnabled, st_axis_status.atTarget,
-                st_axis_status.positionRaw, st_axis_status.fActPosition);
-    }
-    setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);
-    setIntegerParam(pC_->motorStatusMoving_, st_axis_status.mvnNRdyNex);
-    setIntegerParam(pC_->motorStatusDone_, !st_axis_status.mvnNRdyNex);
-
-    drvlocal.MCU_nErrorId = st_axis_status.nErrorId;
-
-    if (drvlocal.cfgDebug_str) {
-      ; /* Do not do the following */
-    } else if (drvlocal.old_bError != st_axis_status.bError ||
-        drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
-        drvlocal.dirty.sErrorMessage) {
-      char sErrorMessage[256];
-      int nErrorId = st_axis_status.nErrorId;
-      memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s poll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
-                 modulName, axisNo_, st_axis_status.bError,
-                nErrorId);
-      drvlocal.old_bError = st_axis_status.bError;
-      drvlocal.old_MCU_nErrorId = nErrorId;
-      drvlocal.dirty.sErrorMessage = 0;
-      snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %x",
-               errStringFromErrId(nErrorId), nErrorId);
-      if (sErrorMessage[0]) {
-        updateMsgTxtFromDriver(sErrorMessage);
-      } else if (!sErrorMessage[0] && nErrorId) {
-        asynStatus status;
-        status = getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0], sizeof(sErrorMessage));
-
-        if (status == asynSuccess) updateMsgTxtFromDriver(sErrorMessage);
-      }
-    }
-    callParamCallbacksUpdateError();
+              st_axis_status.positionRaw, st_axis_status.fActPosition);
   }
+  setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);
+  setIntegerParam(pC_->motorStatusMoving_, st_axis_status.mvnNRdyNex);
+  setIntegerParam(pC_->motorStatusDone_, !st_axis_status.mvnNRdyNex);
+
+  drvlocal.MCU_nErrorId = st_axis_status.nErrorId;
+
+  if (drvlocal.cfgDebug_str) {
+    ; /* Do not do the following */
+  } else if (drvlocal.old_bError != st_axis_status.bError ||
+      drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
+      drvlocal.dirty.sErrorMessage) {
+    char sErrorMessage[256];
+    int nErrorId = st_axis_status.nErrorId;
+    memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s poll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
+               modulName, axisNo_, st_axis_status.bError,
+              nErrorId);
+    drvlocal.old_bError = st_axis_status.bError;
+    drvlocal.old_MCU_nErrorId = nErrorId;
+    drvlocal.dirty.sErrorMessage = 0;
+    snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %x",
+             errStringFromErrId(nErrorId), nErrorId);
+    if (sErrorMessage[0]) {
+      updateMsgTxtFromDriver(sErrorMessage);
+    } else if (!sErrorMessage[0] && nErrorId) {
+      asynStatus status;
+      status = getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0], sizeof(sErrorMessage));
+
+      if (status == asynSuccess) updateMsgTxtFromDriver(sErrorMessage);
+    }
+  }
+  callParamCallbacksUpdateError();
+
   memcpy(&drvlocal.old_st_axis_status, &st_axis_status,
          sizeof(drvlocal.old_st_axis_status));
   return asynSuccess;
