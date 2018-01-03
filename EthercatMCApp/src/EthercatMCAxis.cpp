@@ -31,6 +31,10 @@
 #define NCOMMANDMOVEABS  3
 #define NCOMMANDHOME    10
 
+/* The maximum number of polls we wait for the motor
+   to "start" (report moving after a new move command */
+#define WAITNUMPOLLSBEFOREREADY 3
+
 const static char *const modulName = "EthercatMCAxis::";
 
 //
@@ -372,7 +376,7 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
   }
   status = setValueOnAxis("fVelocity", maxVelocityEGU);
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
-  drvlocal.waitNumPollsBeforeReady += 2;
+  drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
   return status;
 }
 
@@ -454,7 +458,7 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
                                                        "fDeceleration", decHom);
 
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
-  drvlocal.waitNumPollsBeforeReady += 2;
+  drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
   return status;
 }
 
