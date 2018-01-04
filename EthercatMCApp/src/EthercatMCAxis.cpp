@@ -680,8 +680,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
           updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
           break;
         case eeAxisErrorNotHomed:
-          updateMsgTxtFromDriver("E: Axis not homed");
-          break;
+	  /* handled by asynAxisAxis, fall through */
         default:
           ;
       }
@@ -1047,8 +1046,12 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #endif
 #ifdef EthercatMCProcHomString
   } else if (function == pC_->EthercatMCProcHom_) {
-    /* If value != 0 the axis can be homed. Show warning if it isn't homed */
-    setIntegerParam(pC_->motorFlagsShowNotHomed_, value);
+    int motorNotHomedProblem = 0;
+    /* If value != 0 the axis can be homed. Show Error if it isn't homed */
+    if (value) motorNotHomedProblem = MOTORNOTHOMEDPROBLEM_ERROR;
+
+    setIntegerParam(pC_->motorNotHomedProblem_, motorNotHomedProblem);
+
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d ProcHom_)=%d\n",  modulName, axisNo_, value);
 #endif
