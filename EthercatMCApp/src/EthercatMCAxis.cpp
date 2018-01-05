@@ -267,6 +267,10 @@ asynStatus EthercatMCAxis::initialPoll(void)
 
   /*  Check for Axis ID */
   int axisID = getMotionAxisID();
+  if (axisID < 0) {
+    setIntegerParam(pC_->motorStatusCommsError_, 1);
+    return asynError;
+  }
   if (axisID != axisNo_) {
     updateMsgTxtFromDriver("ConfigError AxisID");
     return asynError;
@@ -671,12 +675,10 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
             }
           }
           break;
-        case eeAxisErrorIOCcomError:
-          updateMsgTxtFromDriver("CommunicationError");
-          break;
         case eeAxisErrorCmdError:
           updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
           break;
+        case eeAxisErrorIOCcomError:
         case eeAxisErrorNotHomed:
 	  /* handled by asynAxisAxis, fall through */
         default:
@@ -879,14 +881,11 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 {
   asynStatus comStatus = asynSuccess;
   st_axis_status_type st_axis_status;
-  int ret;
 
   /* Driver not yet initialized, do nothing */
   if (!drvlocal.stepSize) return comStatus;
 
   memset(&st_axis_status, 0, sizeof(st_axis_status));
-  ret = getMotionAxisID();
-  if (ret < 0) goto skip;
   /* Stop if the previous stop had been lost */
   if (drvlocal.mustStop) {
     comStatus = stopAxisInternal(__FUNCTION__, 0);

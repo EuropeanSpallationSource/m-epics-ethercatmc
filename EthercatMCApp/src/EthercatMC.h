@@ -116,9 +116,9 @@ public:
 private:
   typedef enum
   {
+    eeAxisErrorIOCcomError = -1,
     eeAxisErrorNoError,
     eeAxisErrorMCUError,
-    eeAxisErrorIOCcomError,
     eeAxisErrorCmdError,
     eeAxisErrorNotHomed
   } eeAxisErrorType;
