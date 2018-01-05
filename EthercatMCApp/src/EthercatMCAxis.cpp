@@ -22,10 +22,6 @@
 #define ERROR_MAIN_ENC_SET_SCALE_FAIL_DRV_ENABLED 0x2001C
 #endif
 
-#ifndef ERROR_CONFIG_ERROR
-#define ERROR_CONFIG_ERROR 0x30000
-#endif
-
 #define NCOMMANDMOVEVEL  1
 #define NCOMMANDMOVEREL  2
 #define NCOMMANDMOVEABS  3
@@ -141,7 +137,7 @@ asynStatus EthercatMCAxis::handleDisconnect()
 }
 
 
-void EthercatMCAxis::readBackSoftLimits(void)
+asynStatus EthercatMCAxis::readBackSoftLimits(void)
 {
   asynStatus status;
   int iValueHigh = 0, iValueLow = 0;
@@ -177,6 +173,7 @@ void EthercatMCAxis::readBackSoftLimits(void)
   }
   setDoubleParam(pC_->motorHighLimitRO_, fValueHigh / stepSize);
   setDoubleParam(pC_->motorLowLimitRO_, fValueLow / stepSize);
+  return status;
 }
 
 /** Connection status is changed, the dirty bits must be set and
@@ -185,14 +182,14 @@ void EthercatMCAxis::readBackSoftLimits(void)
  *
  * Sets the dirty bits
  */
-void EthercatMCAxis::readBackConfig(void)
+asynStatus EthercatMCAxis::readBackConfig(void)
 {
   asynStatus status;
   int iValue;
   double fValue;
   double stepSize = drvlocal.stepSize;
 
-  if (!stepSize) return;
+  if (!stepSize) return asynError;
   /* (Micro) steps per revolution */
   status = getSAFValueFromAxisPrint(0x5000, 0x24, "SREV", &fValue);
   if (status == asynSuccess) setDoubleParam(pC_->EthercatMCScalSREV_RB_, fValue);
@@ -254,6 +251,7 @@ void EthercatMCAxis::readBackConfig(void)
   status = getSAFValueFromAxisPrint(0x4000, 0x101, "JAR", &fValue);
   if (status == asynSuccess) pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJAR_, fValue / stepSize);
   if (status == asynSuccess) setDoubleParam(pC_->motorDefJogAccRO_, fValue / stepSize);
+  return status;
 }
 
 
@@ -273,12 +271,17 @@ asynStatus EthercatMCAxis::initialPoll(void)
     updateMsgTxtFromDriver("ConfigError AxisID");
     return asynError;
   }
-  getFeatures();
+  status = getFeatures();
+  if (status) {
+    updateMsgTxtFromDriver("getFeatures() failed");
+    return status;
+  }
   status = readConfigFile();
-  if (status) return status;
-
-  if ((status == asynSuccess) &&
-      (drvlocal.axisFlags & AMPLIFIER_ON_FLAG_CREATE_AXIS)) {
+  if (status) {
+    updateMsgTxtFromDriver("ConfigError Config File");
+    return status;
+  }
+  if (drvlocal.axisFlags & AMPLIFIER_ON_FLAG_CREATE_AXIS) {
     /* Enable the amplifier when the axis is created,
        but wait until we have a connection to the controller.
        After we lost the connection, Re-enable the amplifier
@@ -286,7 +289,7 @@ asynStatus EthercatMCAxis::initialPoll(void)
     status = enableAmplifier(1);
   }
   if (status == asynSuccess) {
-    readBackConfig();
+    status = readBackConfig();
     if (drvlocal.dirty.oldStatusDisconnected) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
 		"%s connected(%d)\n",  modulName, axisNo_);
@@ -627,19 +630,14 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
   } else if (drvlocal.dirty.sErrorMessage) {
     /* print error below */
     drvlocal.eeAxisError = eeAxisErrorIOCcomError;
-  } else if (drvlocal.dirty.readConfigFile) {
-    EPICS_nErrorId = ERROR_CONFIG_ERROR;
-    drvlocal.eeAxisError = eeAxisErrorIOCcfgError;
-          updateMsgTxtFromDriver("ConfigError Config File");
-  } else if (drvlocal.dirty.nMotionAxisID != axisNo_) {
-    EPICS_nErrorId = ERROR_CONFIG_ERROR;
-    updateMsgTxtFromDriver("ConfigError: AxisID");
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
   } else if (!drvlocal.homed &&
              (drvlocal.nCommandActive != NCOMMANDHOME) &&
              (drvlocal.motorRecordHighLimit > drvlocal.motorRecordLowLimit)) {
-    drvlocal.eeAxisError = eeAxisErrorNotHomed;
+    int procHom;
+    pC_->getIntegerParam(axisNo_, pC_->EthercatMCProcHom_, &procHom);
+    if (procHom) drvlocal.eeAxisError = eeAxisErrorNotHomed;
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
@@ -1049,11 +1047,10 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     int motorNotHomedProblem = 0;
     /* If value != 0 the axis can be homed. Show Error if it isn't homed */
     if (value) motorNotHomedProblem = MOTORNOTHOMEDPROBLEM_ERROR;
-
     setIntegerParam(pC_->motorNotHomedProblem_, motorNotHomedProblem);
-
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setIntegerParam(%d ProcHom_)=%d\n",  modulName, axisNo_, value);
+              "%s setIntegerParam(%d ProcHom_)=%d motorNotHomedProblem=%d\n",
+	      modulName, axisNo_, value, motorNotHomedProblem);
 #endif
 #ifdef EthercatMCErrRstString
   } else if (function == pC_->EthercatMCErrRst_) {

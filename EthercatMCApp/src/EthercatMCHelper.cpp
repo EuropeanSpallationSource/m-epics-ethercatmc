@@ -222,9 +222,8 @@ int EthercatMCAxis::getMotionAxisID(void)
 }
 
 
-void EthercatMCAxis::getFeatures(void)
+asynStatus EthercatMCAxis::getFeatures(void)
 {
-  if (!drvlocal.dirty.features) return;
   /* The features we know about */
   const char * const sim_str = "sim";
   const char * const stECMC_str = "ecmc";
@@ -242,7 +241,7 @@ void EthercatMCAxis::getFeatures(void)
               modulName, pC_->outString_, pC_->inString_,
               pasynManager->strStatus(status), (int)status);
 
-    if (status) return;
+    if (status) return status;
 
     /* loop through the features */
     char *pFeatures = strdup(pC_->inString_);
@@ -274,10 +273,10 @@ void EthercatMCAxis::getFeatures(void)
         drvlocal.supported.bADS ||
         drvlocal.supported.stAxisStatus_V1) {
       /* Found something useful on this adsport */
-      drvlocal.dirty.features = 0;
-      return;
+      return asynSuccess;
     }
   }
+  return asynError;
 }
 
 
@@ -565,11 +564,8 @@ asynStatus EthercatMCAxis::readConfigFile(void)
   const char *errorTxt = NULL;
   /* no config file, or successfully uploaded : return */
   if (!drvlocal.cfgfileStr) {
-    drvlocal.dirty.readConfigFile = 0;
     return asynSuccess;
   }
-  if (!drvlocal.dirty.readConfigFile) return asynSuccess;
-
   fp = fopen(drvlocal.cfgfileStr, "r");
   if (!fp) {
     int saved_errno = errno;
@@ -679,13 +675,11 @@ asynStatus EthercatMCAxis::readConfigFile(void)
     if (ferror(fp)) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "%s readConfigFile ferror (%s)\n",
-                 modulName,
+		modulName,
                 drvlocal.cfgfileStr);
     }
     fclose(fp);
     return asynError;
   }
-
-  drvlocal.dirty.readConfigFile = 0;
   return asynSuccess;
 }

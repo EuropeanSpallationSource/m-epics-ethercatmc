@@ -119,7 +119,6 @@ private:
     eeAxisErrorNoError,
     eeAxisErrorMCUError,
     eeAxisErrorIOCcomError,
-    eeAxisErrorIOCcfgError,
     eeAxisErrorCmdError,
     eeAxisErrorNotHomed
   } eeAxisErrorType;
@@ -151,8 +150,6 @@ private:
       unsigned int stAxisStatus_Vxx :1;
       unsigned int oldStatusDisconnected : 1;
       unsigned int sErrorMessage    :1; /* From MCU */
-      unsigned int readConfigFile   :1;
-      unsigned int features         :1;
     }  dirty;
 
     struct {
@@ -177,8 +174,8 @@ private:
   asynStatus handleDisconnect(void);
   asynStatus handleConnect(void);
   asynStatus readConfigFile(void);
-  void readBackSoftLimits(void);
-  void readBackConfig(void);
+  asynStatus readBackSoftLimits(void);
+  asynStatus readBackConfig(void);
   asynStatus initialPoll(void);
 
   asynStatus handleStatusChange(asynStatus status);
@@ -190,7 +187,7 @@ private:
   asynStatus setValueOnAxis(const char* var, double value);
   asynStatus setValuesOnAxis(const char* var1, double value1, const char* var2, double value2);
   int getMotionAxisID(void);
-  void getFeatures(void);
+  asynStatus getFeatures(void);
   asynStatus setSAFValueOnAxis(unsigned indexGroup,
                                unsigned indexOffset,
                                int value);
