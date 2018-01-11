@@ -26,11 +26,11 @@ const static unsigned int MAXADSPORT = 861; /* something useful */
  * Indata is in pC_->inString_
  * The communiction is logged ASYN_TRACE_INFO
  *
- * When the communictaion fails ot times out, writeReadOnErrorDisconnect() is called
+ * When the communictaion fails ot times out, writeReadController() is called
  */
 asynStatus EthercatMCAxis::writeReadACK(void)
 {
-  asynStatus status = pC_->writeReadOnErrorDisconnect();
+  asynStatus status = pC_->writeReadController();
   switch (status) {
     case asynError:
       return status;
@@ -113,7 +113,7 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
              "%sMain.M%d.%s=%d;%sMain.M%d.%s?",
              drvlocal.adsport_str, axisNo_, var, value,
              drvlocal.adsport_str, axisNo_, rbvar);
-    status = pC_->writeReadOnErrorDisconnect();
+    status = pC_->writeReadController();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
                modulName,
@@ -196,7 +196,7 @@ int EthercatMCAxis::getMotionAxisID(void)
       }
       snprintf(pC_->outString_, sizeof(pC_->outString_),
                "%sMain.M%d.nMotionAxisID?", drvlocal.adsport_str, axisNo_);
-      status = pC_->writeReadOnErrorDisconnect();
+      status = pC_->writeReadController();
       if (status) {
         return -1;
       }
@@ -354,7 +354,7 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   if (axisID < 0) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?",
           501, indexGroup + axisID, indexOffset);
-  status = pC_->writeReadOnErrorDisconnect();
+  status = pC_->writeReadController();
   if (status)
     return status;
   nvals = sscanf(pC_->inString_, "%d", &res);
@@ -383,7 +383,7 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   if (axisID < 0) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
           501, indexGroup + axisID, indexOffset);
-  status = pC_->writeReadOnErrorDisconnect();
+  status = pC_->writeReadController();
   if (status)
     return status;
   nvals = sscanf(pC_->inString_, "%lf", &res);
@@ -412,7 +412,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
   int res;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
           "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
-  status = pC_->writeReadOnErrorDisconnect();
+  status = pC_->writeReadController();
   if (status)
     return status;
   if (var[0] == 'b') {
@@ -468,7 +468,7 @@ asynStatus EthercatMCAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
   snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?;ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
           501, iIndexGroup + axisID, iIndexOffset,
           501, fIndexGroup + axisID, fIndexOffset);
-  status = pC_->writeReadOnErrorDisconnect();
+  status = pC_->writeReadController();
   if (status)
     return status;
   nvals = sscanf(pC_->inString_, "%d;%lf", &iRes, &fRes);
@@ -500,7 +500,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
   double res;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
            "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
-  status = pC_->writeReadOnErrorDisconnect();
+  status = pC_->writeReadController();
   if (status)
     return status;
   nvals = sscanf(pC_->inString_, "%lf", &res);
@@ -523,7 +523,7 @@ asynStatus EthercatMCAxis::getStringFromAxis(const char *var, char *value, size_
 {
   asynStatus status;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
-  status = pC_->writeReadOnErrorDisconnect();
+  status = pC_->writeReadController();
   if (status) return status;
 
   memcpy(value, pC_->inString_, maxlen);
@@ -536,7 +536,7 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
   int nvals;
   double res;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "%s?", var);
-  status = pC_->writeReadOnErrorDisconnect();
+  status = pC_->writeReadController();
   if (status)
     return status;
   nvals = sscanf(pC_->inString_, "%lf", &res);

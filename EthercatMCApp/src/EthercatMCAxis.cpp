@@ -122,18 +122,14 @@ extern "C" int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
  *
  * Sets the dirty bits
  */
-asynStatus EthercatMCAxis::handleDisconnect()
+void EthercatMCAxis::handleDisconnect(asynStatus status)
 {
-  asynStatus status = asynSuccess;
-  if (!drvlocal.dirty.oldStatusDisconnected) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s Communication error(%d)\n", modulName, axisNo_);
+  if (status != asynSuccess) {
+    memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
+    drvlocal.MCU_nErrorId = 0;
+    setIntegerParam(pC_->motorStatusCommsError_, 1);
+    callParamCallbacksUpdateError();
   }
-  memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
-  drvlocal.MCU_nErrorId = 0;
-  setIntegerParam(pC_->motorStatusCommsError_, 1);
-  callParamCallbacksUpdateError();
-  return status;
 }
 
 
@@ -575,7 +571,7 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
              "%sMain.M%d.%s?;%sMain.M%d.%s?",
              drvlocal.adsport_str, axisNo_, "bBusy",
              drvlocal.adsport_str, axisNo_, "bEnabled");
-    status = pC_->writeReadOnErrorDisconnect();
+    status = pC_->writeReadController();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s out=%s in=%s status=%s (%d)\n",
                modulName, pC_->outString_, pC_->inString_,
@@ -731,7 +727,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     /* V2 is supported, use it. Or. unkown: try it as well */
     snprintf(pC_->outString_, sizeof(pC_->outString_),
             "%sMain.M%d.stAxisStatusV2?", drvlocal.adsport_str, axisNo_);
-    comStatus = pC_->writeReadOnErrorDisconnect();
+    comStatus = pC_->writeReadController();
     if (!strncasecmp(pC_->inString_,  Main_dot_str, Main_dot_len)) {
       nvals = sscanf(&pC_->inString_[Main_dot_len],
                      "M%d.stAxisStatusV2="
@@ -776,7 +772,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     /* Read the complete Axis status */
     snprintf(pC_->outString_, sizeof(pC_->outString_),
             "%sMain.M%d.stAxisStatus?", drvlocal.adsport_str, axisNo_);
-    comStatus = pC_->writeReadOnErrorDisconnect();
+    comStatus = pC_->writeReadController();
     if (comStatus) return comStatus;
     if (!strncasecmp(pC_->inString_,  Main_dot_str, Main_dot_len)) {
       nvals = sscanf(&pC_->inString_[Main_dot_len],
@@ -903,7 +899,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.cfgDebug_str) {
     asynStatus comStatus;
     snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", drvlocal.cfgDebug_str);
-    comStatus = pC_->writeReadOnErrorDisconnect();
+    comStatus = pC_->writeReadController();
     if (!comStatus) {
       updateMsgTxtFromDriver(pC_->inString_);
     }
@@ -1011,7 +1007,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   return asynSuccess;
 
   skip:
-  handleDisconnect();
+  handleDisconnect(asynError);
   return asynError;
 }
 

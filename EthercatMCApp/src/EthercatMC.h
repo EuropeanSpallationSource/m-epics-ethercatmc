@@ -171,14 +171,12 @@ private:
     double motorRecordLowLimit;
   } drvlocal;
 
-  asynStatus handleDisconnect(void);
+  void       handleDisconnect(asynStatus status);
   asynStatus handleConnect(void);
   asynStatus readConfigFile(void);
   asynStatus readBackSoftLimits(void);
   asynStatus readBackConfig(void);
   asynStatus initialPoll(void);
-
-  asynStatus handleStatusChange(asynStatus status);
 
   asynStatus writeReadACK(void);
   asynStatus setValueOnAxis(const char* var, int value);
@@ -250,7 +248,6 @@ public:
   void report(FILE *fp, int level);
   asynStatus setMCUErrMsg(const char *value);
   asynStatus configController(int needOk, const char *value);
-  asynStatus writeReadOnErrorDisconnect(void);
   EthercatMCAxis* getAxis(asynUser *pasynUser);
   EthercatMCAxis* getAxis(int axisNo);
   protected:
