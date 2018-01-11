@@ -68,6 +68,27 @@ export MOTORIP MOTORPORT
   envPathsdst=./envPaths.$EPICS_HOST_ARCH &&
   stcmddst=./st.cmd.$EPICS_HOST_ARCH &&
   mkdir -p  $IOCDIR/ &&
+  if test "x$EPICS_EEE" = "xn"; then
+    (cd ../../../axisCore && make install) && (cd .. && make install) || {
+      echo >&2 make install failed
+      exit 1
+    }
+  else
+    if sed -e "s/#.*//" <startup/st${MOTORCFG}.cmd |
+        grep "require *axisCore,.*[A-Za-z]"; then
+      (cd ../../../axisCore && make install) || {
+        echo >&2 make install failed
+        exit 1
+      }
+    fi &&
+    if sed -e "s/#.*//" <startup/st${MOTORCFG}.cmd |
+        grep "require *EthercatMC,.*[A-Za-z]"; then
+      (cd .. && make install) || {
+        echo >&2 make install failed
+        exit 1
+      }
+    fi
+  fi &&
   cd $IOCDIR/ &&
   if test "x$EPICS_EEE" = "xy"; then
     #EEE
