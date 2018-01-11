@@ -129,6 +129,7 @@ void EthercatMCAxis::handleDisconnect(asynStatus status)
     drvlocal.MCU_nErrorId = 0;
     setIntegerParam(pC_->motorStatusCommsError_, 1);
     callParamCallbacksUpdateError();
+    initialPollDone_ = 0;
   }
 }
 
