@@ -1,6 +1,6 @@
 require asyn,4.31.0
 require axisCore,10.2.0
-require EthercatMC,1.0.0
+require EthercatMC,1.0.1
 epicsEnvSet("SM_PREFIX",    "$(SM_PREFIX=LabS-ESSIIP:MC-MCU-01:)")
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 
