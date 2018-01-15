@@ -87,6 +87,13 @@ export MOTORIP MOTORPORT
         echo >&2 make install failed
         exit 1
       }
+    fi &&
+    if sed -e "s/#.*//" <../Makefile.EEE |
+        grep "USR_DEPENDENCIES.*axisCore,.*[A-Za-z]"; then
+      (cd .. && make install) || {
+        echo >&2 make install failed
+        exit 1
+      }
     fi
   fi &&
   cd $IOCDIR/ &&
