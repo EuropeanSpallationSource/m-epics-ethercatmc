@@ -81,6 +81,13 @@ record(ai, "$(PREFIX)$(R)Dec-RB")
     field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(PREFIX)$(R)EncAct")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct")
+    field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(PREFIX)$(R)ErrId")
 {
     field(DTYP, "asynInt32")

@@ -19,6 +19,7 @@ FILENAME...   EthercatMC.h
 #define EthercatMCErrString                  "MCUErr"
 #define EthercatMCErrIdString                "ErrId"
 #define EthercatMCProcHomString              "ProcHom"
+#define EthercatMCEnc_ActString              "EncAct"
 #define EthercatMCPosHomString               "PosHom"
 #define EthercatMCVelToHomString             "VelToHom"
 #define EthercatMCVelFrmHomString            "VelFrmHom"
@@ -261,6 +262,7 @@ public:
   /* First parameter */
   int EthercatMCErr_;
   int EthercatMCProcHom_;
+  int EthercatMCEncAct_;
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
   int motorRecResolution_;

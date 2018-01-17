@@ -925,6 +925,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.nCommandActive != NCOMMANDHOME) {
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.stepSize;
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
+    setDoubleParam(pC_->motorEncoderPosition_, newPositionInSteps);
     drvlocal.old_st_axis_status.fActPosition = st_axis_status.fActPosition;
     setDoubleParam(pC_->EthercatMCVel_RB_, st_axis_status.fVelocity);
   }
@@ -932,10 +933,10 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.externalEncoderStr) {
     comStatus = getValueFromController(drvlocal.externalEncoderStr,
                                        &st_axis_status.positionRaw);
-    if (!comStatus) setDoubleParam(pC_->motorEncoderPosition_,
+    if (!comStatus) setDoubleParam(pC_->EthercatMCEncAct_,
                                    st_axis_status.positionRaw);
   } else if (drvlocal.supported.stAxisStatus_V2) {
-    setDoubleParam(pC_->motorEncoderPosition_, st_axis_status.positionRaw);
+    setDoubleParam(pC_->EthercatMCEncAct_, st_axis_status.positionRaw);
   }
 
   if (drvlocal.old_st_axis_status.bHomed != st_axis_status.bHomed) {
