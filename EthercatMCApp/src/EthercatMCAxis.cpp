@@ -26,6 +26,7 @@
 #define NCOMMANDMOVEREL  2
 #define NCOMMANDMOVEABS  3
 #define NCOMMANDHOME    10
+#define PROCHOM_MANUAL_SETPOS    15
 
 /* The maximum number of polls we wait for the motor
    to "start" (report moving after a new move command */
@@ -418,16 +419,18 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   asynStatus status = asynSuccess;
   int nCommand = NCOMMANDHOME;
 
-  int procHom;
+  int procHom = -1;
   double posHom;
   double velToHom;
   double velFrmHom;
   double accHom;
   double decHom;
 
-  if (status == asynSuccess) status = pC_->getIntegerParam(axisNo_,
-                                                           pC_->EthercatMCProcHom_,
-                                                           &procHom);
+  status = pC_->getIntegerParam(axisNo_,
+                                pC_->EthercatMCProcHom_,
+                                &procHom);
+  if (procHom == PROCHOM_MANUAL_SETPOS)
+    return asynError;
   if (status == asynSuccess) status = pC_->getDoubleParam(axisNo_,
                                                           pC_->EthercatMCPosHom_,
                                                           &posHom);
@@ -491,10 +494,27 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
  */
 asynStatus EthercatMCAxis::setPosition(double value)
 {
+  asynStatus status = asynSuccess;
+  int nCommand = NCOMMANDHOME;
+  int procHom = 0;
+  double posHom = value;
+
+  status = pC_->getIntegerParam(axisNo_,
+                                pC_->EthercatMCProcHom_,
+                                &procHom);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s setPosition(%d position=%g egu=%g\n",
-             modulName, axisNo_, value, value * drvlocal.stepSize);
-  return asynSuccess;
+            "%s setPosition(%d  procHom=%d position=%g egu=%g\n",
+            modulName, axisNo_,  procHom, value, value * drvlocal.stepSize );
+
+  if (procHom != PROCHOM_MANUAL_SETPOS)
+    return asynError;
+  if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
+  if (status == asynSuccess) status = setValueOnAxis("fHomePosition", posHom);
+  if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
+  if (status == asynSuccess) status = setValueOnAxis("nCmdData", procHom);
+  if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
+
+  return status;
 }
 
 /** Set the high limit position of the motor.
