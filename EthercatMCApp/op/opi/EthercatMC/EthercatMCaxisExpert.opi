@@ -98,7 +98,7 @@ $(pv_value)</tooltip>
     <widget_type>Boolean Button</widget_type>
     <width>46</width>
     <wuid>4d211c1e:14b9b97b4ed:-7eb4</wuid>
-    <x>165</x>
+    <x>170</x>
     <y>122</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
@@ -236,7 +236,7 @@ $(pv_value)</tooltip>
     <widget_type>Boolean Button</widget_type>
     <width>46</width>
     <wuid>4d211c1e:14b9b97b4ed:-7eb2</wuid>
-    <x>97</x>
+    <x>90</x>
     <y>123</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
@@ -3747,9 +3747,9 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
-    <width>21</width>
+    <width>26</width>
     <wuid>22f4919f:159f8ebba43:-7baf</wuid>
-    <x>145</x>
+    <x>140</x>
     <y>133</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
