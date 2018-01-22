@@ -55,7 +55,7 @@
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -124,7 +124,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -193,7 +193,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -262,7 +262,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -331,7 +331,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -383,7 +383,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -463,7 +463,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -532,7 +532,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -584,7 +584,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -654,7 +654,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <border_color>
@@ -668,7 +668,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>4</format_type>
     <height>26</height>
@@ -713,7 +713,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -774,7 +774,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -817,7 +817,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <border_color>
@@ -878,7 +878,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -921,7 +921,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -983,7 +983,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1004,7 +1004,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_18</name>
@@ -1048,7 +1048,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1069,7 +1069,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_19</name>
@@ -1279,7 +1279,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -1341,7 +1341,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1362,7 +1362,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_12</name>
@@ -1406,7 +1406,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1427,7 +1427,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_13</name>
@@ -1471,7 +1471,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1492,7 +1492,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_15</name>
@@ -1536,7 +1536,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1557,7 +1557,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_16</name>
@@ -1601,7 +1601,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1622,7 +1622,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_14</name>
@@ -1667,7 +1667,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -1730,7 +1730,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -1792,7 +1792,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -1812,7 +1812,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_17</name>
@@ -1912,7 +1912,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -1955,7 +1955,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -2016,7 +2016,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -2059,7 +2059,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -2122,7 +2122,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -2183,7 +2183,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -2244,7 +2244,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -2296,7 +2296,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -2357,7 +2357,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -2400,7 +2400,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -2461,7 +2461,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -2564,7 +2564,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -2625,7 +2625,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -2667,7 +2667,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>14</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -2688,7 +2688,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_26</name>
@@ -2732,7 +2732,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>13</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -2753,7 +2753,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_27</name>
@@ -2797,7 +2797,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>9</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -2818,7 +2818,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_29</name>
@@ -2862,7 +2862,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>8</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -2883,7 +2883,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_30</name>
@@ -2927,7 +2927,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>6</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -2948,7 +2948,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_31</name>
@@ -2992,7 +2992,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>3</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -3013,7 +3013,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_33</name>
@@ -3057,7 +3057,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>2</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -3078,7 +3078,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_34</name>
@@ -3123,7 +3123,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -3186,7 +3186,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -3266,7 +3266,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>50</height>
     <labels_from_pv>false</labels_from_pv>
@@ -3317,7 +3317,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -3338,7 +3338,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_35</name>
@@ -3383,7 +3383,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -3446,7 +3446,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -3509,7 +3509,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -3570,7 +3570,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -3611,7 +3611,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -3652,7 +3652,7 @@ $(pv_value)</tooltip>
     <actions hook="false" hook_all="false" />
     <auto_size>true</auto_size>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
@@ -3695,7 +3695,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -3710,7 +3710,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO OutputPV Fg" red="255" green="255" blue="255" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <format_type>1</format_type>
     <height>29</height>
@@ -3870,7 +3870,7 @@ $(pv_value)</tooltip>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <bit>16</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -3891,7 +3891,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
     <height>40</height>
     <name>LED Template_36</name>
@@ -3936,7 +3936,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO OutputPV Bg" red="255" green="255" blue="255" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
