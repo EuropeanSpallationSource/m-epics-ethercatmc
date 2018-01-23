@@ -65,20 +65,21 @@ fi
 export MOTORIP MOTORPORT
 (
   IOCDIR=../iocBoot/ioc${APPXX}
-	DBMOTOR=db
+  DBMOTOR=db
   envPathsdst=./envPaths.$EPICS_HOST_ARCH &&
   stcmddst=./st.cmd.$EPICS_HOST_ARCH &&
   mkdir -p  $IOCDIR/ &&
   if test "x$EPICS_EEE" = "xn"; then
     if test -d ../../../axisCore; then
-			#axis
+      #axis
       (cd ../../../axisCore && make install) && (cd .. && make install) || {
         echo >&2 make install failed
         exit 1
       }
     fi
     if test -d ../../../../motor; then
-			#motor
+      DBMOTOR=dbmotor
+      #motor
       (cd ../../../../motor && make install) && (cd .. && make install) || {
         echo >&2 make install failed
         exit 1
@@ -89,7 +90,8 @@ export MOTORIP MOTORPORT
             dst=dbmotor/${src##*/}
             echo sed PWD=$PWD src=$src dst=$dst
             sed <"$src" >"$dst" \
-                -e "s%record(axis%record(motor%"
+                -e "s%record(axis%record(motor%" \
+                -e "s%asynAxis%asynMotor%"
           done
       )
     fi
@@ -148,9 +150,6 @@ export MOTORIP MOTORPORT
     # classic EPICS, non EEE
     # We need to patch the cmd files to adjust dbLoadRecords
     # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-		if test -d ../../../../motor; then
-			DBMOTOR=dbmotor
-		fi
     for src in  ../../test/startup/*cmd; do
       dst=${src##*/}
       echo sed PWD=$PWD src=$src dst=$dst

@@ -45,10 +45,6 @@
 # @type  FLOAT
 # Retry deadband
 
-# @field SDBD
-# @type  FLOAT
-# Setpoint deadband
-
 # @field DLLM
 # @type  FLOAT
 # low soft limit in dial coordinates
@@ -59,7 +55,7 @@
 
 EthercatMCCreateAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
 
-dbLoadRecords("EthercatMC.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC), MRES=$(MRES), VELO=$(VELO), JVEL=$(JVEL), JAR=$(JAR), ACCL=$(ACCL), SDBD=$(SDBD), RDBD=$(RDBD), DLLM=$(DLLM), DHLM=$(DHLM)")
+dbLoadRecords("EthercatMC.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC), MRES=$(MRES), VELO=$(VELO), JVEL=$(JVEL), JAR=$(JAR), ACCL=$(ACCL), RDBD=$(RDBD), DLLM=$(DLLM), DHLM=$(DHLM)")
 
 
 dbLoadRecords("EthercatMChome.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO),  HOMEPROC=$(HOMEPROC), HOMEPOS=$(HOMEPOS), HVELTO=$(HVELTO), HVELFRM=$(HVELFRM), HOMEACC=$(HOMEACC), HOMEDEC=$(HOMEDEC)")
