@@ -35,7 +35,7 @@ const static char *const modulName = "EthercatMCAxis::";
   */
 EthercatMCController::EthercatMCController(const char *portName, const char *MotorPortName, int numAxes,
                                                double movingPollPeriod,double idlePollPeriod)
-  :  asynAxisController(portName, numAxes, NUM_VIRTUAL_MOTOR_PARAMS,
+  :  asynMotorController(portName, numAxes, NUM_VIRTUAL_MOTOR_PARAMS,
                          0, // No additional interfaces beyond those in base class
                          0, // No additional callback interfaces beyond those in base class
                          ASYN_CANBLOCK | ASYN_MULTIDEVICE,
@@ -85,7 +85,7 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
 
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
-  /* Latest asynAxisController does this, but not the version in 6.81 (or 6.9x) */
+  /* Latest asynMotorController does this, but not the version in 6.81 (or 6.9x) */
   createParam(motorRecResolutionString,        asynParamFloat64,      &motorRecResolution_);
   createParam(motorRecDirectionString,           asynParamInt32,      &motorRecDirection_);
   createParam(motorRecOffsetString,            asynParamFloat64,      &motorRecOffset_);
@@ -262,7 +262,7 @@ asynStatus EthercatMCController::setMCUErrMsg(const char *value)
   * \param[in] level The level of report detail desired
   *
   * If details > 0 then information is printed about each axis.
-  * After printing controller-specific information it calls asynAxisController::report()
+  * After printing controller-specific information it calls asynMotorController::report()
   */
 void EthercatMCController::report(FILE *fp, int level)
 {
@@ -270,7 +270,7 @@ void EthercatMCController::report(FILE *fp, int level)
     this->portName, numAxes_, movingPollPeriod_, idlePollPeriod_);
 
   // Call the base class method
-  asynAxisController::report(fp, level);
+  asynMotorController::report(fp, level);
 }
 
 /** Returns a pointer to an EthercatMCAxis object.
@@ -278,7 +278,7 @@ void EthercatMCController::report(FILE *fp, int level)
   * \param[in] pasynUser asynUser structure that encodes the axis index number. */
 EthercatMCAxis* EthercatMCController::getAxis(asynUser *pasynUser)
 {
-  return static_cast<EthercatMCAxis*>(asynAxisController::getAxis(pasynUser));
+  return static_cast<EthercatMCAxis*>(asynMotorController::getAxis(pasynUser));
 }
 
 /** Returns a pointer to an EthercatMCAxis object.
@@ -286,7 +286,7 @@ EthercatMCAxis* EthercatMCController::getAxis(asynUser *pasynUser)
   * \param[in] axisNo Axis index number. */
 EthercatMCAxis* EthercatMCController::getAxis(int axisNo)
 {
-  return static_cast<EthercatMCAxis*>(asynAxisController::getAxis(axisNo));
+  return static_cast<EthercatMCAxis*>(asynMotorController::getAxis(axisNo));
 }
 
 

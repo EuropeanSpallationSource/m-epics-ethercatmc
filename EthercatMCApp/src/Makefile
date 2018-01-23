@@ -22,14 +22,34 @@ EthercatMCSupport_SRCS += EthercatMCHelper.cpp
 # EthercatMCSupport_registerRecordDeviceDriver.cpp derives from EthercatMCSupport.dbd
 EthercatMCSupport_SRCS += EthercatMCSupport_registerRecordDeviceDriver.cpp
 
-EthercatMC_LIBS += asyn axis
+
+EthercatMC_LIBS += asyn
+
+ifneq (,$(findstring /,$(AXIS)))
+EthercatMC_LIBS += axis
+endif
+ifneq (,$(findstring /,$(MOTOR)))
+EthercatMC_LIBS += motor
+endif
+
 #=============================
 # Build the IOC application
 
 PROD_IOC = EthercatMC
 
 EthercatMC_DBD += base.dbd
-EthercatMC_DBD += axisSupport.dbd
+ifneq (,$(findstring /,$(AXIS)))
+  EthercatMC_DBD += axisSupport.dbd
+  EthercatMC_LIBS += axis
+  USR_CPPFLAGS += -DAXISNOTMOTOR=1
+endif
+ifneq (,$(findstring /,$(MOTOR)))
+  EthercatMC_DBD += motorSupport.dbd
+  USR_CPPFLAGS += -DMOTORNOTAXIS=1
+  EthercatMC_LIBS += motor
+endif
+
+
 EthercatMC_DBD += asyn.dbd
 EthercatMC_DBD += drvAsynIPPort.dbd
 EthercatMC_DBD += devEthercatMC.dbd
@@ -39,7 +59,6 @@ EthercatMC_SRCS += EthercatMCMain.cpp
 EthercatMC_SRCS += EthercatMC_registerRecordDeviceDriver.cpp
 
 EthercatMC_LIBS += asyn
-EthercatMC_LIBS += axis
 EthercatMC_LIBS += EthercatMCSupport
 EthercatMC_LIBS += $(EPICS_BASE_IOC_LIBS)
 
