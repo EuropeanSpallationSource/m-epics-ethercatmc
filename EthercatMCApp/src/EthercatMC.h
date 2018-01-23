@@ -163,6 +163,7 @@ private:
       unsigned int stAxisStatus_Vxx :1;
       unsigned int oldStatusDisconnected : 1;
       unsigned int sErrorMessage    :1; /* From MCU */
+      unsigned int initialPollNeeded :1;
     }  dirty;
 
     struct {

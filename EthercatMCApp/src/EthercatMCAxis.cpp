@@ -132,9 +132,7 @@ void EthercatMCAxis::handleDisconnect(asynStatus status)
     drvlocal.MCU_nErrorId = 0;
     setIntegerParam(pC_->motorStatusCommsError_, 1);
     callParamCallbacksUpdateError();
-#ifdef AXISNOTMOTOR
-    initialPollDone_ = 0;
-#endif
+    drvlocal.dirty.initialPollNeeded = 1;
   }
 }
 
@@ -768,6 +766,12 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     int moving;
     int stall;
   } notUsed;
+  if (drvlocal.dirty.initialPollNeeded) {
+    comStatus = initialPoll();
+    if (comStatus) return comStatus;
+    drvlocal.dirty.initialPollNeeded = 0;
+  }
+
   if (drvlocal.supported.stAxisStatus_V2 || drvlocal.dirty.stAxisStatus_Vxx) {
     /* V2 is supported, use it. Or. unkown: try it as well */
     snprintf(pC_->outString_, sizeof(pC_->outString_),
