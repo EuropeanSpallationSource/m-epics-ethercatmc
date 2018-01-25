@@ -58,6 +58,8 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   drvlocal.old_eeAxisError = eeAxisErrorIOCcomError;
   drvlocal.axisFlags = axisFlags;
 
+  /* We pretend to have an encoder (fActPosition) */
+  setIntegerParam(pC_->motorStatusHasEncoder_, 1);
   if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
     setIntegerParam(pC->motorStatusGainSupport_, 1);
   }
@@ -80,7 +82,6 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
       if (!strncmp(pThisOption, encoder_is_str, strlen(encoder_is_str))) {
         pThisOption += strlen(encoder_is_str);
         drvlocal.externalEncoderStr = strdup(pThisOption);
-        setIntegerParam(pC->motorStatusHasEncoder_, 1);
       }  else if (!strncmp(pThisOption, cfgfile_str, strlen(cfgfile_str))) {
         pThisOption += strlen(cfgfile_str);
         drvlocal.cfgfileStr = strdup(pThisOption);
@@ -812,7 +813,6 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     if (nvals == 27) {
       if (drvlocal.dirty.stAxisStatus_Vxx) {
         drvlocal.supported.stAxisStatus_V2 = 1;
-        setIntegerParam(pC_->motorStatusHasEncoder_, 1);
       }
       pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy || !pst_axis_status->atTarget;
     }
