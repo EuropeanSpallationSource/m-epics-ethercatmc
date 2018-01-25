@@ -310,6 +310,9 @@ static int motorHandleADS_ADR_putFloat(unsigned adsport,
     case 0x9:
       cmd_Motor_cmd[motor_axis_no].manualVelocityFast = fValue;
       return 0;
+    case 0x16:
+      cmd_Motor_cmd[motor_axis_no].inTargetPositionMonitorWindow = fValue;
+      return 0;
     case 0x27:
       cmd_Motor_cmd[motor_axis_no].maximumVelocity = fValue;
       return 0;
