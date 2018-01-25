@@ -32,7 +32,7 @@ MOTORCFG=".$1"
 export MOTORCFG
 echo MOTORCFG=$MOTORCFG
 (
-  cd startup &&
+  cd ../startup &&
   if ! test -f st$MOTORCFG.cmd; then
     CMDS=$(echo st.*.cmd | sed -e "s/st\.//g" -e "s/\.cmd//g")
     #echo CMDS=$CMDS
@@ -97,14 +97,14 @@ export MOTORIP MOTORPORT
     fi
   else
     #EEE
-    if sed -e "s/#.*//" <startup/st${MOTORCFG}.cmd |
+    if sed -e "s/#.*//" <../startup/st${MOTORCFG}.cmd |
         grep "require *axisCore,.*[A-Za-z]"; then
       (cd ../../../axisCore && make install) || {
         echo >&2 make install failed
         exit 1
       }
     fi &&
-    if sed -e "s/#.*//" <startup/st${MOTORCFG}.cmd |
+    if sed -e "s/#.*//" <../startup/st${MOTORCFG}.cmd |
         grep "require *EthercatMC,.*[A-Za-z]"; then
       (cd .. && make install) || {
         echo >&2 make install failed
@@ -150,7 +150,7 @@ export MOTORIP MOTORPORT
     # classic EPICS, non EEE
     # We need to patch the cmd files to adjust dbLoadRecords
     # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-    for src in  ../../test/startup/*cmd; do
+    for src in  ../../startup/*cmd; do
       dst=${src##*/}
       echo sed PWD=$PWD src=$src dst=$dst
       sed <"$src" >"$dst" \
@@ -170,8 +170,8 @@ dbLoadDatabase "dbd/${APPXX}.dbd"
 ${APPXX}_registerRecordDeviceDriver pdbbase
 EOF
    # Side note: st${MOTORCFG}.cmd needs extra patching
-   echo sed PWD=$PWD "<../../test/startup/st${MOTORCFG}.cmd >>$stcmddst"
-   sed <../../test/startup/st${MOTORCFG}.cmd  \
+   echo sed PWD=$PWD "<../../startup/st${MOTORCFG}.cmd >>$stcmddst"
+   sed <../../startup/st${MOTORCFG}.cmd  \
       -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
       -e "s/127.0.0.1/$MOTORIP/" \
       -e "s/5000/$MOTORPORT/" \
