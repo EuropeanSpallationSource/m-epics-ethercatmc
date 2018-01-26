@@ -21,6 +21,7 @@ record(axis,"$(PREFIX)$(MOTOR_NAME)")
 	field(DHLM,"$(DHLM=0)")
 	field(DLLM,"$(DLLM=0)")
 	field(RTRY,"$(RTRY=1)")
+	field(NTM,"0")
 	field(TWV,"1")
 }
 
