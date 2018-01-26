@@ -26,7 +26,7 @@ typedef struct
 {
   struct timeval lastPollTime;
 
-  double amplifierPercent;
+  int amplifierPercent;
   /* What the (simulated) hardware has physically.
      When homing against the high limit switch is done,
      all logical values will be re-calculated.
@@ -978,6 +978,12 @@ int setAmplifierPercent(int axis_no, int percent)
 int getAmplifierOn(int axis_no)
 {
   if (motor_axis[axis_no].amplifierPercent == 100) return 1;
+  if (motor_axis[axis_no].amplifierPercent > 0) {
+    motor_axis[axis_no].amplifierPercent++;
+    fprintf(stdlog, "%s/%s:%d axis_no=%d amplifierPercent=%d\n",
+            __FILE__, __FUNCTION__, __LINE__,
+            axis_no, motor_axis[axis_no].amplifierPercent);
+  }
   return 0;
 }
 

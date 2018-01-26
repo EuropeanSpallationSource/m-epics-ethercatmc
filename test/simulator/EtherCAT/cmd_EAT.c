@@ -13,6 +13,7 @@ typedef struct
 {
   int    command_no;
   unsigned nCmdData;
+  int    bEnable;
   int    bExecute;
   int    bReset;
   double fPosition;
@@ -558,9 +559,13 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("%d", get_bError(motor_axis_no));
     return;
   }
-
-  /* bEnable? bEnabled? Both are the same in the simulator */
-  if (!strcmp(myarg_1, "bEnable?") || !strcmp(myarg_1, "bEnabled?")) {
+  /* bEnable? */
+  if (!strcmp(myarg_1, "bEnable?")) {
+    cmd_buf_printf("%d",cmd_Motor_cmd[motor_axis_no].bEnable);
+    return;
+  }
+  /* bEnabled?  */
+  if (!strcmp(myarg_1, "bEnabled?")) {
     cmd_buf_printf("%d",getAmplifierOn(motor_axis_no));
     return;
   }
@@ -635,7 +640,7 @@ static void motorHandleOneArg(const char *myarg_1)
     double fOverride = 0;
     /* getMotorPos must be first, it calls simulateMotion() */
     cmd_Motor_status[motor_axis_no].fActPostion = getMotorPos(motor_axis_no);
-    cmd_Motor_status[motor_axis_no].bEnable = getAmplifierOn(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].bEnable = cmd_Motor_cmd[motor_axis_no].bEnable;
     cmd_Motor_status[motor_axis_no].bEnabled = getAmplifierOn(motor_axis_no);
     cmd_Motor_status[motor_axis_no].bLimitFwd = getPosLimitSwitch(motor_axis_no) ? 0 : 1;
     cmd_Motor_status[motor_axis_no].bLimitBwd = getNegLimitSwitch(motor_axis_no) ? 0 : 1;
@@ -742,6 +747,7 @@ static void motorHandleOneArg(const char *myarg_1)
   nvals = sscanf(myarg_1, "bEnable=%d", &iValue);
   if (nvals == 1) {
     int amplifierLockedToBeOff = getAmplifierLockedToBeOff(motor_axis_no);
+    cmd_Motor_cmd[motor_axis_no].bEnable = iValue;
     if (amplifierLockedToBeOff) {
       setAmplifierPercent(motor_axis_no, 0);
       if (amplifierLockedToBeOff == AMPLIFIER_LOCKED_TO_BE_OFF_LOUD) {
@@ -750,7 +756,7 @@ static void motorHandleOneArg(const char *myarg_1)
       }
       iValue = 0;
     }
-    setAmplifierPercent(motor_axis_no, iValue ? 100 : 0);
+    setAmplifierPercent(motor_axis_no, iValue ? 95 : 0);
     cmd_buf_printf("OK");
     return;
   }
