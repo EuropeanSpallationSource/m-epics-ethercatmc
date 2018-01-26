@@ -18,7 +18,7 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 # And this reads the input of an incremental encoder terminal
 # on the EtherCAT bus. Works with the simulator.
 # For real terminals the adresses must be adapted
-epicsEnvSet("AXISCONFIG",    "encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
+epicsEnvSet("AXISCONFIG",    "cfgFile=./SimAxis-48-1.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
 
 epicsEnvSet("HOMEPROC",      "$(SM_HOMEPROC=1)")
 epicsEnvSet("HOMEPOS",       "$(SM_HOMEPOS=0.0)")
