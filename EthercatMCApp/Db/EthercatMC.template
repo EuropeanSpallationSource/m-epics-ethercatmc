@@ -34,6 +34,23 @@ record(waveform, "$(PREFIX)$(R)MsgTxt") {
     field(SCAN, "I/O Intr")
 }
 
+#Power handling
+record(longout, "$(PREFIX)$(R)Pwr-CNEN")
+{
+    field(DESC, "power on off via CNEN")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STATUS_GAIN_SUPPORT")
+    info(asyn:READBACK,"1")
+}
+
+record(longout, "$(PREFIX)$(R)Pwr-auto")
+{
+    field(DESC, "power automatic on")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_AUTO_ONOFF")
+    info(asyn:READBACK,"1")
+}
+
 # These records make the motor resolution, offset and direction available to the driver
 # which is needed for profile moves and other applications
 

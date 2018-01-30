@@ -1,3 +1,20 @@
+#Power handling
+record(ao, "$(PREFIX)$(R)PwrOnDly")
+{
+    field(DESC, "power on delay")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_ON_DELAY")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(R)PwrOffDly")
+{
+    field(DESC, "power off delay")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_OFF_DELAY")
+    info(asyn:READBACK,"1")
+}
+
 record(stringout, "$(PREFIX)$(R)DbgStrToMCU") {
     field(DESC, "Send Debug String to $(PREFIX)$(M)")
     field(VAL, "")

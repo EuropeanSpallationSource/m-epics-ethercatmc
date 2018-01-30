@@ -60,6 +60,11 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 
   /* We pretend to have an encoder (fActPosition) */
   setIntegerParam(pC_->motorStatusHasEncoder_, 1);
+  setIntegerParam(pC_->motorFlagsWaitPwrOn_, 1);
+  if (axisFlags & AMPLIFIER_ON_FLAG_WHEN_HOMING) {
+    setIntegerParam(pC_->motorPowerAutoOnOff_, 1);
+    setDoubleParam(pC_->motorPowerOffDelay_, -1.0);
+  }
   if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
     setIntegerParam(pC->motorStatusGainSupport_, 1);
   }
@@ -474,8 +479,6 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-  if ((drvlocal.axisFlags & AMPLIFIER_ON_FLAG_WHEN_HOMING) &&
-      (status == asynSuccess)) status = enableAmplifier(1);
   if (status == asynSuccess) status = setValueOnAxis("fHomePosition", posHom);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", procHom);
@@ -597,6 +600,11 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
   unsigned counter = 10;
   bool moving;
   int ret;
+#ifdef motorFlagsWaitPwrOnString
+  const char *enableEnabledReadback = "bEnable";
+#else
+  const char *enableEnabledReadback = "bEnabled";
+#endif
   on = on ? 1 : 0; /* either 0 or 1 */
   status = getValueFromAxis("bEnabled", &ret);
   /* Either it went wrong OR the amplifier IS as it should be */
@@ -614,7 +622,7 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
     snprintf(pC_->outString_, sizeof(pC_->outString_),
              "%sMain.M%d.%s?;%sMain.M%d.%s?",
              drvlocal.adsport_str, axisNo_, "bBusy",
-             drvlocal.adsport_str, axisNo_, "bEnabled");
+             drvlocal.adsport_str, axisNo_, enableEnabledReadback);
     status = pC_->writeReadController();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s out=%s in=%s status=%s (%d)\n",
@@ -622,7 +630,7 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
               pasynManager->strStatus(status), (int)status);
     if (status) return status;
     if (!strcmp("0;1", pC_->inString_)) {
-      /* bBusy == 0; bEnabled == 1 */
+      /* bBusy == 0; bEnable(d) == 1 */
       goto enableAmplifierPollAndReturn;
     } else if (!strcmp("1;1", pC_->inString_)) {
       /* bBusy=1 is OK */
