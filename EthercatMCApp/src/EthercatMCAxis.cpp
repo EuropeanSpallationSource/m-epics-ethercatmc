@@ -60,9 +60,10 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 
   /* We pretend to have an encoder (fActPosition) */
   setIntegerParam(pC_->motorStatusHasEncoder_, 1);
-  setIntegerParam(pC_->motorFlagsWaitPwrOn_, 1);
+  setIntegerParam(pC_->motorFlagsNoStopProblem_, 1);
+  setIntegerParam(pC_->motorFlagsLSrampDown_, 1);
   if (axisFlags & AMPLIFIER_ON_FLAG_WHEN_HOMING) {
-    setIntegerParam(pC_->motorPowerAutoOnOff_, 1);
+    setIntegerParam(pC_->motorPowerAutoOnOff_, 2);
     setDoubleParam(pC_->motorPowerOffDelay_, -1.0);
   }
   if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {

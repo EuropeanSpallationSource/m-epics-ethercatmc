@@ -2,15 +2,15 @@
 FILENAME...   EthercatMC.h
 */
 
-#ifdef MOTORNOTAXIS
-#include "asynMotorController.h"
-#include "asynMotorAxis.h"
-#endif
 
 #ifdef AXISNOTMOTOR
 #include "asynAxisController.h"
 #include "asynAxisAxis.h"
+#else
+#include "asynMotorController.h"
+#include "asynMotorAxis.h"
 #endif
+
 
 
 #ifndef motorMessageTextString

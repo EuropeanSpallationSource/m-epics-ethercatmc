@@ -7,8 +7,9 @@ include ${EPICS_ENV_PATH}/module.Makefile
 PROJECT=EthercatMC
 
 AUTO_DEPENDENCIES = NO
-USR_DEPENDENCIES += axisCore,10.2.1
+USR_DEPENDENCIES += motor,torstenbogershausen
 
+MOTOR=/
 
 SOURCES = \
   EthercatMCApp/src/EthercatMCAxis.cpp \

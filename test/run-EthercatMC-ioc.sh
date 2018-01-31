@@ -125,7 +125,7 @@ export MOTORIP MOTORPORT
     stcmddst=./st.cmd.EEE.$EPICS_HOST_ARCH &&
     # We need to patch the cmd files to adjust "<"
     # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-    for src in  ../../test/startup/*cmd ../../test/startup/*cfg; do
+    for src in  ../../startup/*cmd ../../startup/*cfg; do
       dst=${src##*/}
       echo cp PWD=$PWD src=$src dst=$dst
       cp "$src" "$dst"
@@ -133,6 +133,7 @@ export MOTORIP MOTORPORT
     rm -f $stcmddst &&
     sed  <st${MOTORCFG}.cmd  \
       -e "s/require axisCore,USER/require axisCore,$USER/" \
+      -e "s/require motor,USER/require motor,$USER/" \
       -e "s/require EthercatMC,USER/require EthercatMC,$USER/" \
       -e "s/^cd /#cd /" \
       -e "s/127.0.0.1/$MOTORIP/" \

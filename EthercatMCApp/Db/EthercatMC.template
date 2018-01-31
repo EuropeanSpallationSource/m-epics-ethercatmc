@@ -1,4 +1,4 @@
-record(axis,"$(PREFIX)$(MOTOR_NAME)")
+record(motor,"$(PREFIX)$(MOTOR_NAME)")
 {
 	field(DESC,"$(DESC)")
 	field(DTYP,"asynAxis")
