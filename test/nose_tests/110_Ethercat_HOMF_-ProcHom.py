@@ -66,6 +66,66 @@ def homeTheMotor(tself, motor, tc_no, procHome, jogToLSBefore):
     tself.assertNotEqual(0, homed,   tc_no + "MSTA.homed (Axis has been homed)")
     tself.pv_ProcHom.put(old_ProcHom, wait=True)
 
+
+def homeLimBwdfromLLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 1, -1)
+
+def homeLimBwdfromMiddle(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 1, 0)
+
+def homeLimBwdfromHLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 1, 1)
+
+
+def homeLimFwdfromLLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 2, -1)
+
+def homeLimFwdfromMiddle(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 2, 0)
+
+def homeLimFwdfromHLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 2, 1)
+
+
+def homeSwitchfromLimBwdFromLLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 3, -1)
+
+def homeSwitchfromLimBwdFromHLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 3, 1)
+
+def homeSwitchfromLimBwdFromMiddle(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 3, 0)
+
+
+def homeSwitchfromLimFwdFromLLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 4, -1)
+
+def homeSwitchfromLimFwdFromHLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 4, 1)
+
+def homeSwitchfromLimFwdFromMiddle(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 4, 0)
+
+def homeSwitchMidfromLimBwdFromLLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 5, -1)
+
+def homeSwitchMidfromLimBwdFromHLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 5, 1)
+
+def homeSwitchMidfromLimBwdFromMiddle(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 5, 0)
+
+
+def homeSwitchMidfromLimFwdFromLLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 6, -1)
+
+def homeSwitchMidfromLimFwdFromHLS(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 6, 1)
+
+def homeSwitchMidfromLimFwdFromMiddle(tself, tc_no):
+    homeTheMotor(tself, tself.m1, tc_no, 6, 0)
+    
+    
 class Test(unittest.TestCase):
     lib = motor_lib()
     m1 = os.getenv("TESTEDMOTORAXIS")
@@ -76,81 +136,95 @@ class Test(unittest.TestCase):
     moving_velocity  = epics.caget(m1 + '.VELO')
     acceleration     = epics.caget(m1 + '.ACCL')
 
-    def setUp(self):
-        print 'set up'
-
-    def tearDown(self):
-        print 'clean up'
-
-    # Home against low limit switch
-    # Jog against LLS, then home
     def test_TC_11110(self):
         tc_no = "TC-11110"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 1, -1)
+        homeLimBwdfromLLS(self, tc_no)
 
-    # Move awy from LLS, then home
     def test_TC_11111(self):
         tc_no = "TC-11111"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 1, 0)
+        homeLimBwdfromMiddle(self, tc_no)
 
-    # Home against high limit switch
-    # Jog against LLS, then home
     def test_TC_11112(self):
         tc_no = "TC-11112"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 1, 1)
+        homeLimFwdfromLLS(self, tc_no)
 
-    # Home against high limit switch
     def test_TC_11120(self):
         tc_no = "TC-11120"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 2, 1)
+        homeLimFwdfromMiddle(self, tc_no)
 
-    # Move awy from HLS, then home
     def test_TC_11121(self):
         tc_no = "TC-11121"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 2, 0)
+        homeLimFwdfromHLS(self, tc_no)
 
     def test_TC_11122(self):
         tc_no = "TC-11122"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 2, -1)
+        homeLimBwdfromHLS(self, tc_no)
 
-    # Home against home switch via LLS
     def test_TC_11130(self):
         tc_no = "TC-11130"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 3, 1)
+        homeSwitchfromLimFwdFromLLS(self, tc_no)
 
     def test_TC_11131(self):
         tc_no = "TC-11131"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 3, 0)
+        homeSwitchfromLimFwdFromMiddle(self, tc_no)
 
     def test_TC_11132(self):
         tc_no = "TC-11132"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 3, -1)
+        homeSwitchfromLimBwdFromLLS(self, tc_no)
 
-    # Home against home switch, via HLS
     def test_TC_11140(self):
         tc_no = "TC-11140"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 4, 1)
+        homeSwitchfromLimBwdFromMiddle(self, tc_no)
 
     def test_TC_11141(self):
         tc_no = "TC-11141"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 4, 0)
+        homeSwitchfromLimBwdFromHLS(self, tc_no)
 
     def test_TC_11142(self):
         tc_no = "TC-11142"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, 4, -1)
+        homeSwitchfromLimFwdFromHLS(self, tc_no)
 
+#    def test_TC_11150(self):
+#        tc_no = "TC-11150"
+#        print '%s Home ' % tc_no
+#        homeSwitchMidfromLimBwdFromMiddle(self, tc_no)
+#
+#    def test_TC_11151(self):
+#        tc_no = "TC-11151"
+#        print '%s Home ' % tc_no
+#        homeSwitchMidfromLimBwdFromHLS(self, tc_no)
+#
+#    def test_TC_11152(self):
+#        tc_no = "TC-11152"
+#        print '%s Home ' % tc_no
+#        homeSwitchMidfromLimFwdFromHLS(self, tc_no)
+#
+#    def test_TC_11160(self):
+#        tc_no = "TC-11160"
+#        print '%s Home ' % tc_no
+#        homeSwitchMidfromLimFwdFromLLS(self, tc_no)
+#
+#    def test_TC_11161(self):
+#        tc_no = "TC-11161"
+#        print '%s Home ' % tc_no
+#        homeSwitchMidfromLimFwdFromMiddle(self, tc_no)
+#
+#    def test_TC_11162(self):
+#        tc_no = "TC-11162"
+#        print '%s Home ' % tc_no
+#        homeSwitchMidfromLimBwdFromLLS(self, tc_no)
 
     # Need to home with the original homing procedure
     def test_TC_11191(self):
@@ -158,4 +232,5 @@ class Test(unittest.TestCase):
         tc_no = "TC-11191"
         print '%s Home ' % tc_no
         homeTheMotor(self, self.m1, tc_no, old_ProcHom, 0)
+
 
