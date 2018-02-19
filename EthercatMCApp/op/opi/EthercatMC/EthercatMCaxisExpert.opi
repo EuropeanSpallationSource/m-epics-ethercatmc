@@ -495,7 +495,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0==1">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-Pwr-CNEN</pv>
+        <pv trig="true">$(P)$(M)-PwrCNEN</pv>
       </rule>
     </rules>
     <scale_options>

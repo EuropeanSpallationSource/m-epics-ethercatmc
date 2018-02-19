@@ -11,6 +11,7 @@
 
 #include <epicsThread.h>
 
+#include "motor.h"
 #include "EthercatMC.h"
 
 #ifndef ASYN_TRACE_INFO
@@ -50,9 +51,9 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   : asynMotorAxis(pC, axisNo),
     pC_(pC)
 {
-#ifdef AXISNOTMOTOR
+  //#ifdef AXISNOTMOTOR
   defWaitNumPollsBeforeReady_ = WAITNUMPOLLSBEFOREREADY;
-#endif
+  //#endif
   memset(&drvlocal, 0, sizeof(drvlocal));
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
   drvlocal.old_eeAxisError = eeAxisErrorIOCcomError;
@@ -62,9 +63,19 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   setIntegerParam(pC_->motorStatusHasEncoder_, 1);
   setIntegerParam(pC_->motorFlagsNoStopProblem_, 1);
   setIntegerParam(pC_->motorFlagsLSrampDown_, 1);
+#ifdef motorFlagsPwrWaitForOnString
+  setIntegerParam(pC_->motorFlagsPwrWaitForOn_, 1);
+#endif
   if (axisFlags & AMPLIFIER_ON_FLAG_WHEN_HOMING) {
-    setIntegerParam(pC_->motorPowerAutoOnOff_, 2);
+#ifdef POWERAUTOONOFFMODE2
+    setIntegerParam(pC_->motorPowerAutoOnOff_, POWERAUTOONOFFMODE2);
+    setDoubleParam(pC_->motorPowerOnDelay_,   6.0);
     setDoubleParam(pC_->motorPowerOffDelay_, -1.0);
+#else
+    setIntegerParam(pC_->motorPowerAutoOnOff_, 1);
+    setDoubleParam(pC_->motorPowerOnDelay_,   6.0);
+    setDoubleParam(pC_->motorPowerOffDelay_,  4.0);
+#endif
   }
   if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
     setIntegerParam(pC->motorStatusGainSupport_, 1);
@@ -592,6 +603,16 @@ asynStatus EthercatMCAxis::resetAxis(void)
   return status;
 }
 
+bool EthercatMCAxis::pollPowerIsOn(void)
+{
+  int ret = 0;
+  asynStatus status = getValueFromAxis("bEnabled", &ret);
+  if (!status && ret)
+    return true;
+  else
+    return false;
+}
+
 /** Enable the amplifier on an axis
  *
  */
@@ -601,10 +622,17 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
   unsigned counter = 10;
   bool moving;
   int ret;
-#ifdef motorFlagsWaitPwrOnString
-  const char *enableEnabledReadback = "bEnable";
-#else
   const char *enableEnabledReadback = "bEnabled";
+
+#ifdef POWERAUTOONOFFMODE2
+  {
+    int autoPower;
+    pC_->getIntegerParam(axisNo_, pC_->motorPowerAutoOnOff_, &autoPower);
+    if (autoPower) {
+      /* The record/driver will check for enabled - don't do that here */
+      enableEnabledReadback = "bEnable";
+    }
+  }
 #endif
   on = on ? 1 : 0; /* either 0 or 1 */
   status = getValueFromAxis("bEnabled", &ret);
@@ -1100,6 +1128,11 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
               "%s setIntegerParam(%d motorRecDirection_)=%d\n",
               modulName, axisNo_, value);
 #endif
+#ifdef motorPowerAutoOnOffString
+  } else if (function == pC_->motorPowerAutoOnOff_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s setIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modulName, axisNo_, value);
+#endif
 #ifdef motorNotHomedProblemString
   } else if (function == pC_->EthercatMCProcHom_) {
     int motorNotHomedProblem = 0;
@@ -1225,11 +1258,6 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
               "%s setDoublmotor(%d motorDGain_oveRel_)=%g\n", modulName, axisNo_, value);
     /* Limits handled above */
 
-#ifdef motorPowerAutoOnOffString
-  } else if (function == pC_->motorPowerAutoOnOff_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setDoubleParam(%d motorPowerAutoOnOff_%g\n", modulName, axisNo_, value);
-#endif
 #ifdef motorPowerOnDelayString
   } else if (function == pC_->motorPowerOnDelay_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,

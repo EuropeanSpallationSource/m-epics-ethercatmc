@@ -243,6 +243,7 @@ private:
   asynStatus getValueFromController(const char* var, double *value);
 
   asynStatus resetAxis(void);
+  bool       pollPowerIsOn(void);
   asynStatus enableAmplifier(int);
   asynStatus sendVelocityAndAccelExecute(double maxVelocity, double acceleration_time);
   asynStatus setClosedLoop(bool closedLoop);
