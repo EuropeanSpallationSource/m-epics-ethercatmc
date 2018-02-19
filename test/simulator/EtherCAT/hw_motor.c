@@ -25,6 +25,7 @@
 typedef struct
 {
   struct timeval lastPollTime;
+  struct timeval powerOnTime;
 
   int amplifierPercent;
   /* What the (simulated) hardware has physically.
@@ -612,7 +613,7 @@ static void simulateMotion(int axis_no)
   }
   velocity = getMotorVelocity(axis_no);
 
-  if (motor_axis[axis_no].amplifierPercent < 100) {
+  if (!getAmplifierOn(axis_no)) {
     if (velocity) {
       /* Amplifier off, while moving */
       set_nErrorId(axis_no, 16992);
@@ -971,20 +972,43 @@ int setAmplifierPercent(int axis_no, int percent)
           axis_no, percent);
   AXIS_CHECK_RETURN_ERROR(axis_no);
   if (percent < 0 || percent > 100) return -1;
+  if (getAmplifierLockedToBeOff(axis_no)) {
+    percent = 0;
+    fprintf(stdlog, "%s/%s:%d axis_no=%d AmplifierLockedToBeOff=1 percent=%d\n",
+            __FILE__, __FUNCTION__, __LINE__,
+            axis_no, percent);
+  }
   motor_axis[axis_no].amplifierPercent = percent;
+  if (percent > 0) {
+    gettimeofday(&motor_axis[axis_no].powerOnTime, NULL);
+  }
+
   return 0;
 }
 
 int getAmplifierOn(int axis_no)
 {
   if (motor_axis[axis_no].amplifierPercent == 100) return 1;
+  if (getAmplifierLockedToBeOff(axis_no)) return 0;
   if (motor_axis[axis_no].amplifierPercent > 0) {
-    motor_axis[axis_no].amplifierPercent++;
+    struct timeval timeNow;
+    gettimeofday(&timeNow, NULL);
+    while ((motor_axis[axis_no].amplifierPercent < 100) &&
+           (timeNow.tv_sec > motor_axis[axis_no].powerOnTime.tv_sec)) {
+        timeNow.tv_sec--;
+        motor_axis[axis_no].amplifierPercent++;
+        fprintf(stdlog, "%s/%s:%d axis_no=%d amplifierPercent=%d\n",
+                __FILE__, __FUNCTION__, __LINE__,
+                axis_no, motor_axis[axis_no].amplifierPercent);
+    }
     fprintf(stdlog, "%s/%s:%d axis_no=%d amplifierPercent=%d\n",
             __FILE__, __FUNCTION__, __LINE__,
             axis_no, motor_axis[axis_no].amplifierPercent);
   }
-  return 0;
+  if (motor_axis[axis_no].amplifierPercent == 100)
+    return 1;
+  else
+    return 0;
 }
 
 

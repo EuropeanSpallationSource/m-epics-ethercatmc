@@ -756,7 +756,7 @@ static void motorHandleOneArg(const char *myarg_1)
       }
       iValue = 0;
     }
-    setAmplifierPercent(motor_axis_no, iValue ? 95 : 0);
+    setAmplifierPercent(motor_axis_no, iValue ? 97 : 0);
     cmd_buf_printf("OK");
     return;
   }
