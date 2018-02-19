@@ -22,21 +22,23 @@ polltime = 0.2
 
 class Test(unittest.TestCase):
     lib = motor_lib()
-    m1 = os.getenv("TESTEDMOTORAXIS")
-    #motm1   = epics.Motor(os.getenv("TESTEDMOTORAXIS"))
-    pvm1 = epics.PV(os.getenv("TESTEDMOTORAXIS"))
+    motor = os.getenv("TESTEDMOTORAXIS")
+    #motmotor   = epics.Motor(os.getenv("TESTEDMOTORAXIS"))
+    pvmotor = epics.PV(os.getenv("TESTEDMOTORAXIS"))
     pv_Err   = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-Err")
     pv_nErrorId = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-ErrId")
     pv_nErrRst = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-ErrRst")
     pv_MSTA = epics.PV(os.getenv("TESTEDMOTORAXIS") + ".MSTA")
 
 
-    saved_HLM = epics.caget(m1 + '.HLM')
-    saved_LLM = epics.caget(m1 + '.LLM')
+    saved_HLM = epics.caget(motor + '.HLM')
+    saved_LLM = epics.caget(motor + '.LLM')
+    saved_CNEN = epics.caget(motor + '.CNEN')
+    saved_PwrAuto = epics.caget(motor + '-PwrAuto')
 
     # 10% UserPosition
     def test_TC_201(self):
-        motor = self.m1
+        motor = self.motor
         tc_no = "TC-201-10-percent-dialPosition"
         print '%s' % tc_no
         epics.caput(motor + '.CNEN', 1)
@@ -46,9 +48,9 @@ class Test(unittest.TestCase):
 
     # Jog, wait for start, power off, check error, reset error
     def test_TC_202(self):
-        motor = self.m1
+        motor = self.motor
         tc_no = "TC-202-JOG-_Enable"
-        saved_Enable = epics.caget(motor + '.CNEN')
+        epics.caput(motor + '-PwrAuto', 0)
         epics.caput(motor + '.CNEN', 0)
         epics.caput(motor + '.JOGF', 1)
         ret = self.lib.waitForStart(motor, tc_no, 2.0)
@@ -88,7 +90,8 @@ class Test(unittest.TestCase):
             if counter == 0:
                 break
 
-        epics.caput(motor + '.CNEN', 1)
+        epics.caput(motor + '.CNEN', self.saved_CNEN)
+        epics.caput(motor + '-PwrAuto', self.saved_PwrAuto)
         self.assertEqual(0, msta & self.lib.MSTA_BIT_MOVING,  'Clean MSTA.Moving)')
         self.assertEqual(0, bError,   'bError')
         self.assertEqual(0, nErrorId, 'nErrorId')
