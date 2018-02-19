@@ -84,6 +84,7 @@ typedef struct
 static motor_axis_type motor_axis[MAX_AXES];
 static motor_axis_type motor_axis_last[MAX_AXES];
 static motor_axis_type motor_axis_reported[MAX_AXES];
+static double getMotorPosStepped(int axis_no);
 
 static void recalculate_pos(int axis_no, int nCmdData)
 {
@@ -675,7 +676,7 @@ static void simulateMotion(int axis_no)
       motor_axis_last[axis_no].MotorPosWanted  != motor_axis[axis_no].MotorPosWanted ||
       clipped) {
     fprintf(stdlog,
-            "%s/%s:%d axis_no=%d vel=%g MotorPosWanted=%g JogVel=%g PosVel=%g HomeVel=%g RampDown=%d home=%d motorPosNow=%g\n",
+            "%s/%s:%d axis_no=%d vel=%g MotorPosWanted=%g JogVel=%g PosVel=%g HomeVel=%g RampDown=%d home=%d motorPosNow=%g (%g)\n",
             __FILE__, __FUNCTION__, __LINE__,
             axis_no,
             velocity,
@@ -685,7 +686,8 @@ static void simulateMotion(int axis_no)
             motor_axis[axis_no].moving.velo.HomeVelocity,
             motor_axis[axis_no].moving.rampDownOnLimit,
             getAxisHome(axis_no),
-            motor_axis[axis_no].MotorPosNow);
+            motor_axis[axis_no].MotorPosNow,
+            getMotorPosStepped(axis_no));
     memcpy(&motor_axis_last[axis_no], &motor_axis[axis_no], sizeof(motor_axis[axis_no]));
   }
   /*
@@ -701,21 +703,29 @@ static void simulateMotion(int axis_no)
 
 }
 
+double getMotorPosStepped(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  if (motor_axis[axis_no].MRES_23 && motor_axis[axis_no].MRES_24) {
+    /* If we have a scaling, round the position to a step */
+    double MotorPosNow = motor_axis[axis_no].MotorPosNow;
+    double srev = motor_axis[axis_no].MRES_24;
+    double urev = motor_axis[axis_no].MRES_23;
+    if (urev > 0.0) {
+      long step = NINT(MotorPosNow * srev / urev);
+      return (double)step * urev / srev;
+    }
+  }
+  return motor_axis[axis_no].MotorPosNow;
+}
+
 double getMotorPos(int axis_no)
 {
   AXIS_CHECK_RETURN_ZERO(axis_no);
   simulateMotion(axis_no);
   /* simulate EncoderPos */
   motor_axis[axis_no].EncoderPos = getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
-  if (motor_axis[axis_no].MRES_23 && motor_axis[axis_no].MRES_24) {
-    /* If we have a scaling, round the position to a step */
-    double MotorPosNow = motor_axis[axis_no].MotorPosNow;
-    double srev = motor_axis[axis_no].MRES_24;
-    double urev = motor_axis[axis_no].MRES_23;
-    long step = NINT(MotorPosNow * srev / urev);
-    return (double)step * urev / srev;
-  }
-  return motor_axis[axis_no].MotorPosNow;
+  return getMotorPosStepped(axis_no);
 }
 
 void setMotorPos(int axis_no, double value)
