@@ -463,7 +463,17 @@ int setMRES_23(int axis_no, double value)
           __FILE__, __FUNCTION__, __LINE__, axis_no,
           value);
   AXIS_CHECK_RETURN_ERROR(axis_no);
-  if (getAmplifierOn(axis_no))
+  if (!value) {
+    /*
+     * Normally the scaling can not be changed when the power is on.
+     * But: The scaling can be switched off, even when power is on
+     * Setting it to 0.0 will not work in a real controller,
+     * but is needed in the simulator & TC 142
+     */
+    motor_axis[axis_no].MRES_23 = value;
+    return 0;
+  }
+ if (getAmplifierOn(axis_no))
     return 1;
   motor_axis[axis_no].MRES_23 = value;
   return 0;
