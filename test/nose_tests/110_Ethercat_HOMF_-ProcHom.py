@@ -124,8 +124,8 @@ def homeSwitchMidfromLimFwdFromHLS(tself, tc_no):
 
 def homeSwitchMidfromLimFwdFromMiddle(tself, tc_no):
     homeTheMotor(tself, tself.m1, tc_no, 6, 0)
-    
-    
+
+
 class Test(unittest.TestCase):
     lib = motor_lib()
     m1 = os.getenv("TESTEDMOTORAXIS")

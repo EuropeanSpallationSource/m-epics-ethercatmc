@@ -319,7 +319,7 @@ class motor_lib(object):
 
 
 
-    def cmpUnlinkExpectedActualFile(self, expFileName, actFileName):
+    def cmpUnlinkExpectedActualFile(self, dbgFileName, expFileName, actFileName):
         # compare actual and expFile
         sameContent= filecmp.cmp(expFileName, actFileName, shallow=False)
         if not sameContent:
@@ -336,7 +336,7 @@ class motor_lib(object):
                 print ("%s: %s" % (actFileName, str(line)));
             file.close();
             assert(sameContent)
-        else:
+        elif dbgFileName == None:
             unlinkOK = True
             try:
                 os.unlink(expFileName)

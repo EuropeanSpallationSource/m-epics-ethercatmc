@@ -122,7 +122,7 @@ def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJO
     expFile.write('%s\n%s\n%s\n' % (line1, line2, line3))
     expFile.close()
 
-    lib.cmpUnlinkExpectedActualFile(expFileName, actFileName)
+    lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
 
 def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos):
     lib = motor_lib()
@@ -181,7 +181,7 @@ def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos)
     expFile.close()
     setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
 
-    lib.cmpUnlinkExpectedActualFile(expFileName, actFileName)
+    lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
 
 
 

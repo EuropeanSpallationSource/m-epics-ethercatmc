@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
     def test_TC_212(self):
         motor = self.motor
         tc_no = "TC-212-EnabledFailed"
-        
+
         epics.caput(motor + '.CNEN', 0, wait=True)
         setValueOnSimulator(self, motor, tc_no, "bAmplifierLockedToBeOff",
                             AMPLIFIER_LOCKED_TO_BE_OFF_SILENT)
