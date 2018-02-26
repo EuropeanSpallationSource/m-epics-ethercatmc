@@ -150,6 +150,9 @@ private:
     int old_EPICS_nErrorId; /* old nErrorID from MCU */
 
     int old_bError;   /* copy of bError */
+#ifndef motorWaitPollsBeforeReadyString
+    unsigned int waitNumPollsBeforeReady;
+#endif
     int mustStop;
     int nCommandActive;
     int old_nCommandActive;
