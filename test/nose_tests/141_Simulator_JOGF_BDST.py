@@ -25,7 +25,7 @@ myBVEL = 2.0    # backlash velocity
 myBACC = 1.5    # backlash acceleration, seconds
 myBAR  = myBVEL / myBACC  # backlash acceleration, mm/sec^2
 myBDST = 15.0  # backlash destination, mm
-
+myRMOD = 0      # Default
 
 
 def setValueOnSimulator(self, motor, tc_no, var, value):
@@ -64,6 +64,7 @@ def motorInit(tself, motor, tc_no, encRel):
     epics.caput(motor + '.BACC', myBACC)
     epics.caput(motor + '.BDST', myBDST)
     epics.caput(motor + '.UEIP', encRel)
+    epics.caput(motor + '.RMOD', myRMOD)
 
 
 def setMotorStartPos(tself, motor, tc_no, startpos):
