@@ -91,6 +91,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     const char * const cfgfile_str = "cfgFile=";
     const char * const cfgDebug_str = "getDebugText=";
     const char * const stepSize_str = "stepSize=";
+    const char * const procHom_str = "ProcHom=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -117,6 +118,12 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
         if (cfgStepSize > 0.0) {
           drvlocal.cfgStepSize = cfgStepSize;
           drvlocal.stepSize = drvlocal.cfgStepSize;
+        }
+      } else if (!strncmp(pThisOption, procHom_str, strlen(procHom_str))) {
+        pThisOption += strlen(procHom_str);
+        int procHom = atoi(pThisOption);
+        if (procHom) {
+          setIntegerParam(pC_->EthercatMCProcHom_, procHom);
         }
       }
       pThisOption = pNextOption;
@@ -469,47 +476,19 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   int nCommand = NCOMMANDHOME;
 
   int procHom = -1;
-  double posHom;
-  double velToHom;
-  double velFrmHom;
-  double accHom;
-  double decHom;
+  double posHom = 0.0;
 
   status = pC_->getIntegerParam(axisNo_,
                                 pC_->EthercatMCProcHom_,
                                 &procHom);
   if (procHom == PROCHOM_MANUAL_SETPOS)
     return asynError;
-  if (status == asynSuccess) status = pC_->getDoubleParam(axisNo_,
-                                                          pC_->EthercatMCPosHom_,
-                                                          &posHom);
-  if (status == asynSuccess) status = pC_->getDoubleParam(axisNo_,
-                                                          pC_->EthercatMCVelToHom_,
-                                                          &velToHom);
-  if (status == asynSuccess) setDoubleParam(pC_->EthercatMCVel_RB_, velToHom);
-  if (status == asynSuccess) status = pC_->getDoubleParam(axisNo_,
-                                                          pC_->EthercatMCVelFrmHom_,
-                                                          &velFrmHom);
-  if (status == asynSuccess) status = pC_->getDoubleParam(axisNo_,
-                                                          pC_->EthercatMCAccHom_,
-                                                          &accHom);
-  if (status == asynSuccess) status = pC_->getDoubleParam(axisNo_,
-                                                          pC_->EthercatMCDecHom_,
-                                                          &decHom);
-
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("fHomePosition", posHom);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", procHom);
-
-  if (status == asynSuccess) status = setSAFValueOnAxis(0x4000, 0x6,
-                                                        velToHom);
-  if (status == asynSuccess) status = setSAFValueOnAxis(0x4000, 0x7,
-                                                        velFrmHom);
-  if (status == asynSuccess)  status = setValuesOnAxis("fAcceleration", accHom,
-                                                       "fDeceleration", decHom);
 
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
 #ifndef motorWaitPollsBeforeReadyString
@@ -1177,12 +1156,14 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modulName, axisNo_, value);
 #endif
-#ifdef motorNotHomedProblemString
+#ifdef EthercatMCProcHomString
   } else if (function == pC_->EthercatMCProcHom_) {
+#ifdef  motorNotHomedProblemString
     int motorNotHomedProblem = 0;
     /* If value != 0 the axis can be homed. Show Error if it isn't homed */
     if (value) motorNotHomedProblem = MOTORNOTHOMEDPROBLEM_ERROR;
     setIntegerParam(pC_->motorNotHomedProblem_, motorNotHomedProblem);
+#endif
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d ProcHom_)=%d motorNotHomedProblem=%d\n",
 	      modulName, axisNo_, value, motorNotHomedProblem);

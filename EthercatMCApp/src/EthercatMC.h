@@ -32,11 +32,6 @@ FILENAME...   EthercatMC.h
 #define EthercatMCErrIdString                "ErrId"
 #define EthercatMCProcHomString              "ProcHom"
 #define EthercatMCEnc_ActString              "EncAct"
-#define EthercatMCPosHomString               "PosHom"
-#define EthercatMCVelToHomString             "VelToHom"
-#define EthercatMCVelFrmHomString            "VelFrmHom"
-#define EthercatMCAccHomString               "AccHom"
-#define EthercatMCDecHomString               "DecHom"
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCVelActString               "VelAct"
 #define EthercatMCVel_RBString               "Vel-RB"
@@ -291,11 +286,6 @@ public:
   int EthercatMCErrRst_;
   int EthercatMCMCUErrMsg_;
   int EthercatMCDbgStrToMcu_;
-  int EthercatMCPosHom_;
-  int EthercatMCVelToHom_;
-  int EthercatMCVelFrmHom_;
-  int EthercatMCAccHom_;
-  int EthercatMCDecHom_;
   int EthercatMCVelAct_;
   int EthercatMCVel_RB_;
   int EthercatMCAcc_RB_;
