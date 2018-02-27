@@ -489,13 +489,13 @@ $(pv_value)</tooltip>
         <pv trig="true">$(pv_name)</pv>
       </rule>
       <rule name="CNEN-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==0">
+        <exp bool_exp="(pv0 &amp; 0x800) ==0">
           <value>false</value>
         </exp>
         <exp bool_exp="pv0==1">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-PwrCNEN</pv>
+        <pv trig="true">$(P)$(M).MSTA</pv>
       </rule>
     </rules>
     <scale_options>

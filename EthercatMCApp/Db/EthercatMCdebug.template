@@ -7,6 +7,22 @@ record(longout,"$(PREFIX)$(R)ProcHom") {
 }
 
 #Power handling
+record(longout, "$(PREFIX)$(R)PwrCNEN")
+{
+    field(DESC, "power on off via CNEN")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STATUS_GAIN_SUPPORT")
+    info(asyn:READBACK,"1")
+}
+
+record(longout, "$(PREFIX)$(R)PwrAuto")
+{
+    field(DESC, "power automatic on")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_AUTO_ONOFF")
+    info(asyn:READBACK,"1")
+}
+
 record(ao, "$(PREFIX)$(R)PwrOnDly")
 {
     field(DESC, "power on delay")
