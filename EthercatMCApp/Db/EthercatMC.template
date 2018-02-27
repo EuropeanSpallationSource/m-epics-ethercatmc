@@ -252,6 +252,47 @@ record(longin,"$(PREFIX)$(R)ECLLM-En-RB") {
 }
 
 
+record(mbbi,"$(PREFIX)$(R)ProcHom-RB") {
+    field(DESC,"Homing procedure")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ProcHom")
+    field(SCAN, "I/O Intr")
+    field(PINI, "YES")
+    field(ZRVL,  "0")
+    field(ONVL,  "1")
+    field(TWVL,  "2")
+    field(THVL,  "3")
+    field(FRVL,  "4")
+    field(FVVL,  "5")
+    field(SXVL,  "6")
+    field(SVVL,  "7")
+    field(EIVL,  "8")
+    field(NIVL,  "9")
+    field(TEVL, "10")
+    field(ELVL, "11")
+    field(TVVL, "12")
+    field(TTVL, "13")
+    field(FTVL, "14")
+    field(FFVL, "15")
+
+    field(ZRST, "NotHomable")
+    field(ONST, "LimFwd")
+    field(TWST, "LimBwd")
+    field(THST, "HSfwdfromLimBwd")
+    field(FRST, "HSbwdfromLimFwd")
+    field(FVST, "HSmidfromLimBwd")
+    field(SXST, "HSmidfromLimFwd")
+    field(SVST, "HSbwd")
+    field(EIST, "HSfwd")
+    field(NIST, "HSmidFwd")
+    field(TEST, "HSmididFwd")
+    field(ELST, "IndexNfromLimBwd")
+    field(TVST, "IndexNfromLimFwd")
+    field(TTST, "HomeSwiLeftRight")
+    field(FTST, "Reserved")
+    field(FFST, "ManSetPos")
+}
+
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {
 }
