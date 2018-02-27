@@ -24,6 +24,7 @@ myBVEL = 2.0    # backlash velocity
 myBACC = 1.5    # backlash acceleration, seconds
 myBAR  = myBVEL / myBACC  # backlash acceleration, mm/sec^2
 myRTRY   = 3
+myDLY    =  0.0
 myBDST   = 24.0 # backlash destination, mm
 myPOSlow = 48   #
 myPOSmid = 72   # low + BDST
@@ -56,7 +57,7 @@ def setValueOnSimulator(self, motor, tc_no, var, value):
     assert (not err)
 
 
-def motorInit(tself, motor, tc_no, rmod, encRel):
+def motorInitAll(tself, motor, tc_no):
     setValueOnSimulator(tself, motor, tc_no, "nAmplifierPercent", 100)
     setValueOnSimulator(tself, motor, tc_no, "bAxisHomed",          1)
     setValueOnSimulator(tself, motor, tc_no, "fLowHardLimitPos",   15)
@@ -74,9 +75,13 @@ def motorInit(tself, motor, tc_no, rmod, encRel):
     epics.caput(motor + '.BVEL', myBVEL)
     epics.caput(motor + '.BACC', myBACC)
     epics.caput(motor + '.BDST', myBDST)
-    epics.caput(motor + '.UEIP', encRel)
     epics.caput(motor + '.RTRY', myRTRY)
+    epics.caput(motor + '.DLY',  myDLY)
+
+
+def motorInitTC(tself, motor, tc_no, rmod, encRel):
     epics.caput(motor + '.RMOD', rmod)
+    epics.caput(motor + '.UEIP', encRel)
 
 
 def setMotorStartPos(tself, motor, tc_no, startpos):
@@ -190,7 +195,7 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
     actFileName = fileName + ".act"
     dbgFileName = fileName + ".dbg"
 
-    motorInit(tself, motor, tc_no, rmod, encRel)
+    motorInitTC(tself, motor, tc_no, rmod, encRel)
     setMotorStartPos(tself, motor, tc_no, motorStartPos)
     setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 1)
     time.sleep(2)
