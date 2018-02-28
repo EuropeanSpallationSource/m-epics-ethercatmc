@@ -18,6 +18,32 @@ import epics
 
 from motor_globals import motor_globals
 
+myVELO = 10.0   # positioning velocity
+myACCL =  1.0   # Time to VELO, seconds
+myAR   = myVELO / myACCL # acceleration, mm/sec^2
+
+myJVEL = 5.0    # Jogging velocity
+myJAR  = 6.0    # Jogging acceleration, mm/sec^2
+
+myBVEL = 2.0    # backlash velocity
+myBACC = 1.5    # backlash acceleration, seconds
+myBAR  = myBVEL / myBACC  # backlash acceleration, mm/sec^2
+myRTRY   = 3
+myDLY    =  0.0
+myBDST   = 24.0 # backlash destination, mm
+myFRAC   = 1.0  #
+myPOSlow = 48   #
+myPOSmid = 72   # low + BDST
+myPOShig = 96   # low + 2*BDST
+
+
+
+motorRMOD_D = 0 # "Default"
+motorRMOD_A = 1 # "Arithmetic"
+motorRMOD_G = 2 # "Geometric"
+motorRMOD_I = 3 # "In-Position"
+
+
 polltime = 0.2
 
 class motor_lib(object):
@@ -315,6 +341,100 @@ class motor_lib(object):
             return self.__g.FAIL
 
         return self.__g.SUCCESS
+
+
+    def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
+        myBDST   = 24.0 # backlash destination, mm
+        cnt = 0
+        if motorEndPos - motorStartPos > 0:
+            directionOfMove = 1
+        else:
+            directionOfMove = -1
+        if myBDST > 0:
+            directionOfBL = 1
+        else:
+            directionOfBL = -1
+
+        print '%s: writeExpFileRMOD_X motor=%s encRel=%d motorStartPos=%f motorEndPos=%f directionOfMove=%d directionOfBL=%d' % \
+              (tc_no, motor, encRel, motorStartPos, motorEndPos, directionOfMove, directionOfBL)
+
+        if dbgFile != None:
+            dbgFile.write('#%s: writeExpFileRMOD_X motor=%s rmod=%d encRel=%d motorStartPos=%f motorEndPos=%f directionOfMove=%d directionOfBL=%d\n' % \
+              (tc_no, motor, rmod, encRel, motorStartPos, motorEndPos, directionOfMove, directionOfBL))
+
+        if rmod == motorRMOD_I:
+            maxcnt = 1 # motorRMOD_I means effecttivly "no retry"
+            encRel = 0
+
+        if abs(motorEndPos - motorStartPos) <= abs(myBDST) and directionOfMove == directionOfBL:
+            while cnt < maxcnt:
+                # calculate the delta to move
+                # The calculated delta is the scaled, and used for both absolute and relative
+                # movements
+                delta = motorEndPos - motorStartPos
+                if cnt > 1:
+                    if rmod == motorRMOD_A:
+                        # From motorRecord.cc:
+                        #factor = (pmr->rtry - pmr->rcnt + 1.0) / pmr->rtry;
+                        factor = 1.0 * (myRTRY -  cnt + 1.0) / myRTRY
+                        delta = delta * factor
+                    elif rmod == motorRMOD_G:
+                        #factor = 1 / pow(2.0, (pmr->rcnt - 1));
+                        rcnt_1 = cnt - 1
+                        factor = 1.0
+                        while rcnt_1 > 0:
+                            factor = factor / 2.0
+                            rcnt_1 -= 1
+                        delta = delta * factor
+
+                if encRel:
+                    line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                            (delta, myBVEL, myBAR, motorStartPos)
+                else:
+                    line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                            (motorStartPos + delta, myBVEL, myBAR, motorStartPos)
+                expFile.write('%s\n' % (line1))
+                cnt += 1
+        else:
+            # As we don't move the motor (it is simulated, we both times start at motorStartPos
+            while cnt < maxcnt:
+                # calculate the delta to move
+                # The calculated delta is the scaled, and used for both absolute and relative
+                # movements
+                delta = motorEndPos - motorStartPos - myBDST
+                if cnt > 1:
+                    if rmod == motorRMOD_A:
+                        # From motorRecord.cc:
+                        #factor = (pmr->rtry - pmr->rcnt + 1.0) / pmr->rtry;
+                        factor = 1.0 * (myRTRY -  cnt + 1.0) / myRTRY
+                        delta = delta * factor
+                    elif rmod == motorRMOD_G:
+                        #factor = 1 / pow(2.0, (pmr->rcnt - 1));
+                        rcnt_1 = cnt - 1
+                        factor = 1.0
+                        while rcnt_1 > 0:
+                            factor = factor / 2.0
+                            rcnt_1 -= 1
+                        delta = delta * factor
+
+                if encRel:
+                    line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                            (delta, myVELO, myAR, motorStartPos)
+                    # Move forward with backlash parameters
+                    # Note: This should be myBDST, but since we don't move the motor AND
+                    # the record uses the readback value, use "motorEndPos - motorStartPos"
+                    delta = motorEndPos - motorStartPos
+                    line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                            (delta, myBVEL, myBAR, motorStartPos)
+                else:
+                    line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                            (motorStartPos + delta, myVELO, myAR, motorStartPos)
+                    # Move forward with backlash parameters
+                    line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                            (motorEndPos, myBVEL, myBAR, motorStartPos)
+
+                expFile.write('%s\n%s\n' % (line1, line2))
+                cnt += 1
 
 
 
