@@ -343,6 +343,19 @@ class motor_lib(object):
         return self.__g.SUCCESS
 
 
+    def setValueOnSimulator(tself, motor, tc_no, var, value):
+        var = str(var)
+        value = str(value)
+        outStr = 'Sim.this.' + var + '=' + value
+        print '%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
+              (tc_no, motor, var, value, outStr)
+        assert(len(outStr) < 40)
+        epics.caput(motor + '-DbgStrToMCU', outStr, wait=True)
+        err = int(epics.caget(motor + '-Err', use_monitor=False))
+        print '%s: DbgStrToMCU motor=%s var=%s value=%s err=%d' % \
+              (tc_no, motor, var, value, err)
+        assert (not err)
+
     def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
         myBDST   = 24.0 # backlash destination, mm
         cnt = 0

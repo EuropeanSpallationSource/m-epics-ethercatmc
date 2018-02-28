@@ -6,6 +6,7 @@ import os
 import sys
 import time
 from motor_lib import motor_lib
+lib = motor_lib()
 ###
 
 
@@ -44,27 +45,14 @@ use_rel = 1
 # Note: motorRMOD_I is always absolute !
 
 
-def setValueOnSimulator(self, motor, tc_no, var, value):
-    var = str(var)
-    value = str(value)
-    outStr = 'Sim.this.' + var + '=' + value
-    print '%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
-          (tc_no, motor, var, value, outStr)
-    assert(len(outStr) < 40)
-    epics.caput(motor + '-DbgStrToMCU', outStr, wait=True)
-    err = int(epics.caget(motor + '-Err', use_monitor=False))
-    print '%s: DbgStrToMCU motor=%s var=%s value=%s err=%d' % \
-          (tc_no, motor, var, value, err)
-    assert (not err)
-
 
 def motorInitAll(tself, motor, tc_no):
-    setValueOnSimulator(tself, motor, tc_no, "nAmplifierPercent", 100)
-    setValueOnSimulator(tself, motor, tc_no, "bAxisHomed",          1)
-    setValueOnSimulator(tself, motor, tc_no, "fLowHardLimitPos",   15)
-    setValueOnSimulator(tself, motor, tc_no, "fHighHardLimitPos", 165)
-    setValueOnSimulator(tself, motor, tc_no, "setMRES_23", 0)
-    setValueOnSimulator(tself, motor, tc_no, "setMRES_24", 0)
+    lib.setValueOnSimulator(motor, tc_no, "nAmplifierPercent", 100)
+    lib.setValueOnSimulator(motor, tc_no, "bAxisHomed",          1)
+    lib.setValueOnSimulator(motor, tc_no, "fLowHardLimitPos",   15)
+    lib.setValueOnSimulator(motor, tc_no, "fHighHardLimitPos", 165)
+    lib.setValueOnSimulator(motor, tc_no, "setMRES_23", 0)
+    lib.setValueOnSimulator(motor, tc_no, "setMRES_24", 0)
 
     # Prepare parameters for jogging and backlash
     epics.caput(motor + '.VELO', myVELO)
@@ -87,7 +75,7 @@ def motorInitTC(tself, motor, tc_no, rmod, encRel):
 
 
 def setMotorStartPos(tself, motor, tc_no, startpos):
-    setValueOnSimulator(tself, motor, tc_no, "fActPosition", startpos)
+    lib.setValueOnSimulator(motor, tc_no, "fActPosition", startpos)
     # Run a status update and a sync
     epics.caput(motor + '.STUP', 1)
     epics.caput(motor + '.SYNC', 1)
@@ -96,7 +84,6 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
 
 
 def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorEndPos):
-    lib = motor_lib()
     ###########
     # expected and actual
     fileName = "/tmp/" + motor.replace(':', '-') + "-" + str(tc_no)
@@ -106,15 +93,15 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
 
     motorInitTC(tself, motor, tc_no, rmod, encRel)
     setMotorStartPos(tself, motor, tc_no, motorStartPos)
-    setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 1)
+    lib.setValueOnSimulator(motor, tc_no, "bManualSimulatorMode", 1)
     time.sleep(2)
-    setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
+    lib.setValueOnSimulator(motor, tc_no, "log", actFileName)
     time.sleep(2)
     #
     epics.caput(motor + '.VAL', motorEndPos, wait=True)
-    setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
+    lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
     time.sleep(2)
-    setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 0)
+    lib.setValueOnSimulator(motor, tc_no, "bManualSimulatorMode", 0)
 
     # Create a "expected" file
     expFile=open(expFileName, 'w')
@@ -135,14 +122,13 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
     expFile.close()
     if dbgFileName != None:
         dbgFile.close()
-    setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
+    lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
 
     lib.cmpUnlinkExpectedActualFile(dbgFileName, expFileName, actFileName)
 
 
 
 class Test(unittest.TestCase):
-    lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
 
     def test_TC_14200(self):
