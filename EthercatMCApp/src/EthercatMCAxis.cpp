@@ -53,8 +53,6 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 {
 #ifdef motorWaitPollsBeforeReadyString
   setIntegerParam(pC_->motorWaitPollsBeforeReady_ , WAITNUMPOLLSBEFOREREADY);
-#else
-  defWaitNumPollsBeforeReady_ = WAITNUMPOLLSBEFOREREADY;
 #endif
   memset(&drvlocal, 0, sizeof(drvlocal));
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
@@ -1158,8 +1156,8 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #endif
 #ifdef EthercatMCProcHomString
   } else if (function == pC_->EthercatMCProcHom_) {
-#ifdef  motorNotHomedProblemString
     int motorNotHomedProblem = 0;
+#ifdef  motorNotHomedProblemString
     /* If value != 0 the axis can be homed. Show Error if it isn't homed */
     if (value) motorNotHomedProblem = MOTORNOTHOMEDPROBLEM_ERROR;
     setIntegerParam(pC_->motorNotHomedProblem_, motorNotHomedProblem);
