@@ -24,9 +24,23 @@ myJAR  = 6.0    # Jogging acceleration, mm/sec^2
 myBVEL = 2.0    # backlash velocity
 myBACC = 1.5    # backlash acceleration, seconds
 myBAR  = myBVEL / myBACC  # backlash acceleration, mm/sec^2
-myBDST = 15.0  # backlash destination, mm
-myRMOD = 0      # Default
+myRTRY   = 3
+myDLY    =  0.0
+myBDST   = 24.0 # backlash destination, mm
+myRMOD   = 0    # Default
+myFRAC   = 1.0  #
+myPOSlow = 48   #
+myPOSmid = 72   # low + BDST
+myPOShig = 96   # low + 2*BDST
 
+motorRMOD_D = 0 # "Default"
+motorRMOD_A = 1 # "Arithmetic"
+motorRMOD_G = 2 # "Geometric"
+motorRMOD_I = 3 # "In-Position"
+
+#How we move: Absolute (without encoder) or relative (with encode via UEIP)
+use_abs = 0
+use_rel = 1
 
 def setValueOnSimulator(self, motor, tc_no, var, value):
     var = str(var)
@@ -77,8 +91,7 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
 def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX):
     lib = motor_lib()
     # expected and actual
-    fileName = "/tmp/" + motor + "-" + str(tc_no)
-    fileName.replace(':', '-')
+    fileName = "/tmp/" + motor.replace(':', '-') + "-" + str(tc_no)
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
 
@@ -125,66 +138,6 @@ def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJO
 
     lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
 
-def positionAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos):
-    lib = motor_lib()
-    ###########
-    # expected and actual
-    fileName = "/tmp/" + motor + "-" + str(tc_no)
-    fileName.replace(':', '-')
-    expFileName = fileName + ".exp"
-    actFileName = fileName + ".act"
-
-    motorInit(tself, motor, tc_no, encRel)
-    setMotorStartPos(tself, motor, tc_no, motorStartPos)
-    setValueOnSimulator(tself, motor, tc_no, "log", actFileName)
-    #
-    epics.caput(motor + '.VAL', motorEndPos, wait=True)
-    # Create a "expected" file
-    expFile=open(expFileName, 'w')
-
-    # Positioning
-    # 2 different ways to move:
-    # - Within the backlash distance and into the backlash direction:
-    #   single move with back lash parameters
-    # - against the backlash direction -or- bigger than the backlash distance:
-    #   two moves, first with moving, second with backlash parameters
-    if motorEndPos - motorStartPos > 0:
-        directionOfMove = 1
-    else:
-        directionOfMove = -1
-    if myBDST > 0:
-        directionOfBL = 1
-    else:
-        directionOfBL = -1
-
-    if abs(motorEndPos - motorStartPos) < abs(myBDST) and directionOfMove == directionOfBL:
-        if encRel:
-            line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (motorEndPos - motorStartPos, myBVEL, myBAR, motorStartPos)
-        else:
-            line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (motorEndPos, myBVEL, myBAR, motorStartPos)
-        expFile.write('%s\n' % (line1))
-    else:
-        if encRel:
-            line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (motorEndPos - motorStartPos - myBDST, myVELO, myAR, motorStartPos)
-            # Move forward with backlash parameters
-            line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
-        else:
-            line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (motorEndPos - myBDST, myVELO, myAR, motorStartPos)
-            # Move forward with backlash parameters
-            line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
-        expFile.write('%s\n%s\n' % (line1, line2))
-    expFile.close()
-    setValueOnSimulator(tself, motor, tc_no, "dbgCloseLogFile", "1")
-
-    lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
-
-
 
 class Test(unittest.TestCase):
     lib = motor_lib()
@@ -192,42 +145,17 @@ class Test(unittest.TestCase):
 
     # JOG forward & backlash compensation, absolute
     def test_TC_14111(self):
-        jogAndBacklash(self, self.motor, 14111, 0, 40, 60, 'JOGF')
+        jogAndBacklash(self, self.motor, 14111, use_abs, myPOSlow, myPOSmid, 'JOGF')
 
     # JOG forward & backlash compensation, relative
     def test_TC_14112(self):
-        jogAndBacklash(self, self.motor, 14112, 1, 40, 60, 'JOGF')
+        jogAndBacklash(self, self.motor, 14112, use_rel, myPOSmid, myPOSlow, 'JOGF')
 
     # JOG backward & backlash compensation, absolute
     def test_TC_14121(self):
-        jogAndBacklash(self, self.motor, 14121, 0, 60, 40, 'JOGR')
+        jogAndBacklash(self, self.motor, 14121, use_abs, myPOSlow, myPOSmid, 'JOGR')
 
     # JOG backward & backlash compensation, relative
     def test_TC_14122(self):
-        jogAndBacklash(self, self.motor, 14122, 1, 60, 40, 'JOGR')
-
-    # position forward & backlash compensation, absolute
-    def test_TC_14131(self):
-        positionAndBacklash(self, self.motor, 14131, 0, 60, 80)
-
-    # position forward & backlash compensation, relative
-    def test_TC_14132(self):
-        positionAndBacklash(self, self.motor, 14132, 1, 60, 80)
-
-    # position backward & backlash compensation, absolute
-    def test_TC_14141(self):
-        positionAndBacklash(self, self.motor, 14141, 0, 80, 60)
-
-    # position backward & backlash compensation, relative
-    def test_TC_14142(self):
-        positionAndBacklash(self, self.motor, 14142, 1, 80, 60)
-
-    # position forward inside backlash range, absolute
-    def test_TC_14151(self):
-        positionAndBacklash(self, self.motor, 14151, 0, 60, 70)
-
-    # position forward inside backlash range, relative
-    def test_TC_14152(self):
-        positionAndBacklash(self, self.motor, 14152, 1, 60, 70)
-
+        jogAndBacklash(self, self.motor, 14122, use_rel, myPOSmid, myPOSlow, 'JOGR')
 
