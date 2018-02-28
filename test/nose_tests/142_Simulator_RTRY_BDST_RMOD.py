@@ -26,6 +26,7 @@ myBAR  = myBVEL / myBACC  # backlash acceleration, mm/sec^2
 myRTRY   = 3
 myDLY    =  0.0
 myBDST   = 24.0 # backlash destination, mm
+myFRAC   = 1.0  #
 myPOSlow = 48   #
 myPOSmid = 72   # low + BDST
 myPOShig = 96   # low + 2*BDST
@@ -75,6 +76,7 @@ def motorInitAll(tself, motor, tc_no):
     epics.caput(motor + '.BVEL', myBVEL)
     epics.caput(motor + '.BACC', myBACC)
     epics.caput(motor + '.BDST', myBDST)
+    epics.caput(motor + '.FRAC', myFRAC)
     epics.caput(motor + '.RTRY', myRTRY)
     epics.caput(motor + '.DLY',  myDLY)
 
@@ -236,6 +238,9 @@ class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
 
+    def test_TC_14200(self):
+        motorInitAll(self, self.motor, 14200)
+
     # motorRMOD_D = 0 # "Default"
     # position forward & backlash compensation, absolute
     def test_TC_14201(self):
@@ -247,11 +252,11 @@ class Test(unittest.TestCase):
 
     # position backward & backlash compensation, absolute
     def test_TC_14203(self):
-        positionAndBacklash(self, self.motor, 14203, motorRMOD_D, use_abs, myPOSlow, myPOShig)
+        positionAndBacklash(self, self.motor, 14203, motorRMOD_D, use_abs, myPOShig, myPOSlow)
 
     # position backward & backlash compensation, relative
     def test_TC_14204(self):
-        positionAndBacklash(self, self.motor, 14204, motorRMOD_D, use_rel, myPOSlow, myPOShig)
+        positionAndBacklash(self, self.motor, 14204, motorRMOD_D, use_rel, myPOShig, myPOSlow)
 
     # position forward inside backlash range, absolute
     def test_TC_14205(self):
