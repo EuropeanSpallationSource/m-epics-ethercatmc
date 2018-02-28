@@ -43,6 +43,8 @@ use_abs = 0
 use_rel = 1
 # Note: motorRMOD_I is always absolute !
 
+noFRAC   = 1.0
+withFRAC = 1.5
 
 def setValueOnSimulator(self, motor, tc_no, var, value):
     var = str(var)
@@ -76,13 +78,13 @@ def motorInitAll(tself, motor, tc_no):
     epics.caput(motor + '.BVEL', myBVEL)
     epics.caput(motor + '.BACC', myBACC)
     epics.caput(motor + '.BDST', myBDST)
-    epics.caput(motor + '.FRAC', myFRAC)
     epics.caput(motor + '.RTRY', myRTRY)
     epics.caput(motor + '.DLY',  myDLY)
 
 
-def motorInitTC(tself, motor, tc_no, rmod, encRel):
+def motorInitTC(tself, motor, tc_no, frac, rmod, encRel):
     epics.caput(motor + '.RMOD', rmod)
+    epics.caput(motor + '.FRAC', frac)
     epics.caput(motor + '.UEIP', encRel)
 
 
@@ -93,7 +95,7 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
     epics.caput(motor + '.SYNC', 1)
 
 
-def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
+def writeExpFileRMOD_X(tself, motor, tc_no, frac, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
     cnt = 0
     if motorEndPos - motorStartPos > 0:
         directionOfMove = 1
@@ -111,8 +113,8 @@ def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encR
     if myBDST == 0.0:
         singleMove = 1
 
-    print '%s: writeExpFileRMOD_X motor=%s encRel=%d motorStartPos=%f motorEndPos=%f directionOfMove=%d directionOfBL=%d' % \
-          (tc_no, motor, encRel, motorStartPos, motorEndPos, directionOfMove, directionOfBL)
+    print '%s: writeExpFileRMOD_X motor=%s encRel=%d frac=%f motorStartPos=%f motorEndPos=%f directionOfMove=%d directionOfBL=%d' % \
+          (tc_no, motor, encRel, frac, motorStartPos, motorEndPos, directionOfMove, directionOfBL)
 
     if dbgFile != None:
         dbgFile.write('#%s: writeExpFileRMOD_X motor=%s rmod=%d encRel=%d motorStartPos=%f motorEndPos=%f directionOfMove=%d directionOfBL=%d\n' % \
@@ -137,6 +139,8 @@ def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encR
             # The calculated delta is the scaled, and used for both absolute and relative
             # movements
             delta = motorEndPos - motorStartPos
+            if cnt == 0:
+                delta = delta * frac
             if cnt > 1:
                 if rmod == motorRMOD_A:
                     # From motorRecord.cc:
@@ -152,6 +156,7 @@ def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encR
                         rcnt_1 -= 1
                     delta = delta * factor
 
+
             if encRel:
                 line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
                         (delta, bvel, bar, motorStartPos)
@@ -166,7 +171,7 @@ def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encR
             # calculate the delta to move
             # The calculated delta is the scaled, and used for both absolute and relative
             # movements
-            delta = motorEndPos - motorStartPos - myBDST
+            delta = (motorEndPos - motorStartPos - myBDST) * frac
             if cnt > 1:
                 if rmod == motorRMOD_A:
                     # From motorRecord.cc:
@@ -204,7 +209,7 @@ def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encR
 
 
 
-def positionAndRetry(tself, motor, tc_no, rmod, encRel, motorStartPos, motorEndPos):
+def positionAndRetry(tself, motor, tc_no, frac, rmod, encRel, motorStartPos, motorEndPos):
     lib = motor_lib()
     ###########
     # expected and actual
@@ -213,7 +218,7 @@ def positionAndRetry(tself, motor, tc_no, rmod, encRel, motorStartPos, motorEndP
     actFileName = fileName + ".act"
     dbgFileName = fileName + ".dbg"
 
-    motorInitTC(tself, motor, tc_no, rmod, encRel)
+    motorInitTC(tself, motor, tc_no, frac, rmod, encRel)
     setMotorStartPos(tself, motor, tc_no, motorStartPos)
     setValueOnSimulator(tself, motor, tc_no, "bManualSimulatorMode", 1)
     time.sleep(2)
@@ -239,7 +244,7 @@ def positionAndRetry(tself, motor, tc_no, rmod, encRel, motorStartPos, motorEndP
     #   two moves, first with moving, second with backlash parameters
 
     cnt = 1 + int(epics.caget(motor + '.RTRY'))
-    writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, cnt, encRel, motorStartPos, motorEndPos)
+    writeExpFileRMOD_X(tself, motor, tc_no, frac, rmod, dbgFile, expFile, cnt, encRel, motorStartPos, motorEndPos)
 
     expFile.close()
     if dbgFileName != None:
@@ -260,42 +265,74 @@ class Test(unittest.TestCase):
     # motorRMOD_D = 0 # "Default"
     # position forward, absolute
     def test_TC_14401(self):
-        positionAndRetry(self, self.motor, 14401, motorRMOD_D, use_abs, myPOSlow, myPOShig)
+        positionAndRetry(self, self.motor, 14401, noFRAC, motorRMOD_D, use_abs, myPOSlow, myPOShig)
 
     # position forward, relative
     def test_TC_14402(self):
-        positionAndRetry(self, self.motor, 14402, motorRMOD_D, use_rel, myPOSlow, myPOShig)
+        positionAndRetry(self, self.motor, 14402, noFRAC, motorRMOD_D, use_rel, myPOSlow, myPOShig)
+
+    # position forward, absolute
+    def test_TC_14403(self):
+        positionAndRetry(self, self.motor, 14403, withFRAC, motorRMOD_D, use_abs, myPOSlow, myPOShig)
+
+    # position forward, relative
+    def test_TC_14404(self):
+        positionAndRetry(self, self.motor, 14404, withFRAC, motorRMOD_D, use_rel, myPOSlow, myPOShig)
 
     ###############################################################################
     # motorRMOD_A
     # position forward, absolute
     def test_TC_14411(self):
-        positionAndRetry(self, self.motor, 14411, motorRMOD_A, use_abs, myPOSlow, myPOShig)
+        positionAndRetry(self, self.motor, 14411, noFRAC, motorRMOD_A, use_abs, myPOSlow, myPOShig)
 
     # position forward, relative
     def test_TC_14412(self):
-        positionAndRetry(self, self.motor, 14412, motorRMOD_A, use_rel, myPOSlow, myPOShig)
+        positionAndRetry(self, self.motor, 14412, noFRAC, motorRMOD_A, use_rel, myPOSlow, myPOShig)
+
+    # position forward, absolute
+    def test_TC_14413(self):
+        positionAndRetry(self, self.motor, 14413, withFRAC, motorRMOD_A, use_abs, myPOSlow, myPOShig)
+
+    # position forward, relative
+    def test_TC_14414(self):
+        positionAndRetry(self, self.motor, 14414, withFRAC, motorRMOD_A, use_rel, myPOSlow, myPOShig)
 
 
     ###############################################################################
     # motorRMOD_G
     # position forward, absolute
     def test_TC_14421(self):
-        positionAndRetry(self, self.motor, 14421, motorRMOD_G, use_abs, myPOSlow, myPOShig)
+        positionAndRetry(self, self.motor, 14421, noFRAC, motorRMOD_G, use_abs, myPOSlow, myPOShig)
 
     # position forward, relative
     def test_TC_14422(self):
-        positionAndRetry(self, self.motor, 14422, motorRMOD_G, use_rel, myPOSlow, myPOShig)
+        positionAndRetry(self, self.motor, 14422, noFRAC, motorRMOD_G, use_rel, myPOSlow, myPOShig)
+
+    # position forward, absolute
+    def test_TC_14423(self):
+        positionAndRetry(self, self.motor, 14423, withFRAC, motorRMOD_G, use_abs, myPOSlow, myPOShig)
+
+    # position forward, relative
+    def test_TC_14424(self):
+        positionAndRetry(self, self.motor, 14424, withFRAC, motorRMOD_G, use_rel, myPOSlow, myPOShig)
 
 
     ###############################################################################
     # motorRMOD_I
     # position forward, absolute
     def test_TC_14431(self):
-        positionAndRetry(self, self.motor, 14431, motorRMOD_I, use_abs, myPOSlow, myPOShig)
+        positionAndRetry(self, self.motor, 14431, noFRAC, motorRMOD_I, use_abs, myPOSlow, myPOShig)
 
     # position forward, relative
     def test_TC_14432(self):
-        positionAndRetry(self, self.motor, 14432, motorRMOD_I, use_rel, myPOSlow, myPOShig)
+        positionAndRetry(self, self.motor, 14432, noFRAC, motorRMOD_I, use_rel, myPOSlow, myPOShig)
+
+    # position forward, absolute
+    def test_TC_14433(self):
+        positionAndRetry(self, self.motor, 14433, withFRAC, motorRMOD_I, use_abs, myPOSlow, myPOShig)
+
+    # position forward, relative
+    def test_TC_14434(self):
+        positionAndRetry(self, self.motor, 14434, withFRAC, motorRMOD_I, use_rel, myPOSlow, myPOShig)
 
 
