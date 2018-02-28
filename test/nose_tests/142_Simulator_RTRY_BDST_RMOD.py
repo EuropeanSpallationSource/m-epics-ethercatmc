@@ -46,28 +46,6 @@ use_rel = 1
 
 
 
-def motorInitAll(tself, motor, tc_no):
-    lib.setValueOnSimulator(motor, tc_no, "nAmplifierPercent", 100)
-    lib.setValueOnSimulator(motor, tc_no, "bAxisHomed",          1)
-    lib.setValueOnSimulator(motor, tc_no, "fLowHardLimitPos",   15)
-    lib.setValueOnSimulator(motor, tc_no, "fHighHardLimitPos", 165)
-    lib.setValueOnSimulator(motor, tc_no, "setMRES_23", 0)
-    lib.setValueOnSimulator(motor, tc_no, "setMRES_24", 0)
-
-    # Prepare parameters for jogging and backlash
-    epics.caput(motor + '.VELO', myVELO)
-    epics.caput(motor + '.ACCL', myACCL)
-
-    epics.caput(motor + '.JVEL', myJVEL)
-    epics.caput(motor + '.JAR',  myJAR)
-
-    epics.caput(motor + '.BVEL', myBVEL)
-    epics.caput(motor + '.BACC', myBACC)
-    epics.caput(motor + '.BDST', myBDST)
-    epics.caput(motor + '.FRAC', myFRAC)
-    epics.caput(motor + '.RTRY', myRTRY)
-    epics.caput(motor + '.DLY',  myDLY)
-
 
 def motorInitTC(tself, motor, tc_no, rmod, encRel):
     epics.caput(motor + '.RMOD', rmod)
@@ -132,7 +110,7 @@ class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
 
     def test_TC_14200(self):
-        motorInitAll(self, self.motor, 14200)
+        lib.motorInitAllForBDST(self.motor, 14200)
 
     # motorRMOD_D = 0 # "Default"
     # position forward & backlash compensation, absolute

@@ -356,6 +356,28 @@ class motor_lib(object):
               (tc_no, motor, var, value, err)
         assert (not err)
 
+    def motorInitAllForBDST(tself, motor, tc_no):
+        tself.setValueOnSimulator(motor, tc_no, "nAmplifierPercent", 100)
+        tself.setValueOnSimulator(motor, tc_no, "bAxisHomed",          1)
+        tself.setValueOnSimulator(motor, tc_no, "fLowHardLimitPos",   15)
+        tself.setValueOnSimulator(motor, tc_no, "fHighHardLimitPos", 165)
+        tself.setValueOnSimulator(motor, tc_no, "setMRES_23", 0)
+        tself.setValueOnSimulator(motor, tc_no, "setMRES_24", 0)
+
+        # Prepare parameters for jogging and backlash
+        epics.caput(motor + '.VELO', myVELO)
+        epics.caput(motor + '.ACCL', myACCL)
+
+        epics.caput(motor + '.JVEL', myJVEL)
+        epics.caput(motor + '.JAR',  myJAR)
+
+        epics.caput(motor + '.BVEL', myBVEL)
+        epics.caput(motor + '.BACC', myBACC)
+        epics.caput(motor + '.BDST', myBDST)
+        epics.caput(motor + '.FRAC', myFRAC)
+        epics.caput(motor + '.RTRY', myRTRY)
+        epics.caput(motor + '.DLY',  myDLY)
+
     def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
         myBDST   = 24.0 # backlash destination, mm
         cnt = 0
