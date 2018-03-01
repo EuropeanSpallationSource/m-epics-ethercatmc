@@ -379,6 +379,7 @@ class motor_lib(object):
         epics.caput(motor + '.BDST', self.myBDST)
         epics.caput(motor + '.FRAC', self.myFRAC)
         epics.caput(motor + '.RTRY', self.myRTRY)
+        epics.caput(motor + '.RMOD', motorRMOD_D)
         epics.caput(motor + '.DLY',  self.myDLY)
 
     def writeExpFileRMOD_X(self, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
