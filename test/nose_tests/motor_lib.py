@@ -18,25 +18,6 @@ import epics
 
 from motor_globals import motor_globals
 
-myVELO = 10.0   # positioning velocity
-myACCL =  1.0   # Time to VELO, seconds
-myAR   = myVELO / myACCL # acceleration, mm/sec^2
-
-myJVEL = 5.0    # Jogging velocity
-myJAR  = 6.0    # Jogging acceleration, mm/sec^2
-
-myBVEL = 2.0    # backlash velocity
-myBACC = 1.5    # backlash acceleration, seconds
-myBAR  = myBVEL / myBACC  # backlash acceleration, mm/sec^2
-myRTRY   = 3
-myDLY    =  0.0
-myBDST   = 24.0 # backlash destination, mm
-myFRAC   = 1.0  #
-myPOSlow = 48   #
-myPOSmid = 72   # low + BDST
-myPOShig = 96   # low + 2*BDST
-
-
 
 motorRMOD_D = 0 # "Default"
 motorRMOD_A = 1 # "Arithmetic"
@@ -67,6 +48,28 @@ class motor_lib(object):
     MSTA_BIT_PLUS_LS      =  1 << (3 -1)     #0004
     MSTA_BIT_DONE         =  1 << (2 -1)     #0002
     MSTA_BIT_DIRECTION    =  1 << (1 -1)     #0001
+
+    # Values to be used for backlash test
+    # Note: Make sure to use different values to hae a good
+    # test coverage
+
+    myVELO = 10.0   # positioning velocity
+    myACCL =  1.0   # Time to VELO, seconds
+    myAR   = myVELO / myACCL # acceleration, mm/sec^2
+
+    myJVEL = 5.0    # Jogging velocity
+    myJAR  = 6.0    # Jogging acceleration, mm/sec^2
+
+    myBVEL = 2.0    # backlash velocity
+    myBACC = 1.5    # backlash acceleration, seconds
+    myBAR  = myBVEL / myBACC  # backlash acceleration, mm/sec^2
+    myRTRY   = 3
+    myDLY    =  0.0
+    myBDST   = 24.0 # backlash destination, mm
+    myFRAC   = 1.0  #
+    myPOSlow = 48   #
+    myPOSmid = 72   # low + BDST
+    myPOShig = 96   # low + 2*BDST
 
     def getMSTAtext(self, msta):
         ret = ''
@@ -343,7 +346,7 @@ class motor_lib(object):
         return self.__g.SUCCESS
 
 
-    def setValueOnSimulator(tself, motor, tc_no, var, value):
+    def setValueOnSimulator(self, motor, tc_no, var, value):
         var = str(var)
         value = str(value)
         outStr = 'Sim.this.' + var + '=' + value
@@ -356,36 +359,35 @@ class motor_lib(object):
               (tc_no, motor, var, value, err)
         assert (not err)
 
-    def motorInitAllForBDST(tself, motor, tc_no):
-        tself.setValueOnSimulator(motor, tc_no, "nAmplifierPercent", 100)
-        tself.setValueOnSimulator(motor, tc_no, "bAxisHomed",          1)
-        tself.setValueOnSimulator(motor, tc_no, "fLowHardLimitPos",   15)
-        tself.setValueOnSimulator(motor, tc_no, "fHighHardLimitPos", 165)
-        tself.setValueOnSimulator(motor, tc_no, "setMRES_23", 0)
-        tself.setValueOnSimulator(motor, tc_no, "setMRES_24", 0)
+    def motorInitAllForBDST(self, motor, tc_no):
+        self.setValueOnSimulator(motor, tc_no, "nAmplifierPercent", 100)
+        self.setValueOnSimulator(motor, tc_no, "bAxisHomed",          1)
+        self.setValueOnSimulator(motor, tc_no, "fLowHardLimitPos",   15)
+        self.setValueOnSimulator(motor, tc_no, "fHighHardLimitPos", 165)
+        self.setValueOnSimulator(motor, tc_no, "setMRES_23", 0)
+        self.setValueOnSimulator(motor, tc_no, "setMRES_24", 0)
 
         # Prepare parameters for jogging and backlash
-        epics.caput(motor + '.VELO', myVELO)
-        epics.caput(motor + '.ACCL', myACCL)
+        epics.caput(motor + '.VELO', self.myVELO)
+        epics.caput(motor + '.ACCL', self.myACCL)
 
-        epics.caput(motor + '.JVEL', myJVEL)
-        epics.caput(motor + '.JAR',  myJAR)
+        epics.caput(motor + '.JVEL', self.myJVEL)
+        epics.caput(motor + '.JAR',  self.myJAR)
 
-        epics.caput(motor + '.BVEL', myBVEL)
-        epics.caput(motor + '.BACC', myBACC)
-        epics.caput(motor + '.BDST', myBDST)
-        epics.caput(motor + '.FRAC', myFRAC)
-        epics.caput(motor + '.RTRY', myRTRY)
-        epics.caput(motor + '.DLY',  myDLY)
+        epics.caput(motor + '.BVEL', self.myBVEL)
+        epics.caput(motor + '.BACC', self.myBACC)
+        epics.caput(motor + '.BDST', self.myBDST)
+        epics.caput(motor + '.FRAC', self.myFRAC)
+        epics.caput(motor + '.RTRY', self.myRTRY)
+        epics.caput(motor + '.DLY',  self.myDLY)
 
-    def writeExpFileRMOD_X(tself, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
-        myBDST   = 24.0 # backlash destination, mm
+    def writeExpFileRMOD_X(self, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
         cnt = 0
         if motorEndPos - motorStartPos > 0:
             directionOfMove = 1
         else:
             directionOfMove = -1
-        if myBDST > 0:
+        if self.myBDST > 0:
             directionOfBL = 1
         else:
             directionOfBL = -1
@@ -401,7 +403,7 @@ class motor_lib(object):
             maxcnt = 1 # motorRMOD_I means effecttivly "no retry"
             encRel = 0
 
-        if abs(motorEndPos - motorStartPos) <= abs(myBDST) and directionOfMove == directionOfBL:
+        if abs(motorEndPos - motorStartPos) <= abs(self.myBDST) and directionOfMove == directionOfBL:
             while cnt < maxcnt:
                 # calculate the delta to move
                 # The calculated delta is the scaled, and used for both absolute and relative
@@ -411,7 +413,7 @@ class motor_lib(object):
                     if rmod == motorRMOD_A:
                         # From motorRecord.cc:
                         #factor = (pmr->rtry - pmr->rcnt + 1.0) / pmr->rtry;
-                        factor = 1.0 * (myRTRY -  cnt + 1.0) / myRTRY
+                        factor = 1.0 * (self.myRTRY -  cnt + 1.0) / self.myRTRY
                         delta = delta * factor
                     elif rmod == motorRMOD_G:
                         #factor = 1 / pow(2.0, (pmr->rcnt - 1));
@@ -424,10 +426,10 @@ class motor_lib(object):
 
                 if encRel:
                     line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (delta, myBVEL, myBAR, motorStartPos)
+                            (delta, self.myBVEL, self.myBAR, motorStartPos)
                 else:
                     line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (motorStartPos + delta, myBVEL, myBAR, motorStartPos)
+                            (motorStartPos + delta, self.myBVEL, self.myBAR, motorStartPos)
                 expFile.write('%s\n' % (line1))
                 cnt += 1
         else:
@@ -436,12 +438,12 @@ class motor_lib(object):
                 # calculate the delta to move
                 # The calculated delta is the scaled, and used for both absolute and relative
                 # movements
-                delta = motorEndPos - motorStartPos - myBDST
+                delta = motorEndPos - motorStartPos - self.myBDST
                 if cnt > 1:
                     if rmod == motorRMOD_A:
                         # From motorRecord.cc:
                         #factor = (pmr->rtry - pmr->rcnt + 1.0) / pmr->rtry;
-                        factor = 1.0 * (myRTRY -  cnt + 1.0) / myRTRY
+                        factor = 1.0 * (self.myRTRY -  cnt + 1.0) / self.myRTRY
                         delta = delta * factor
                     elif rmod == motorRMOD_G:
                         #factor = 1 / pow(2.0, (pmr->rcnt - 1));
@@ -454,19 +456,19 @@ class motor_lib(object):
 
                 if encRel:
                     line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (delta, myVELO, myAR, motorStartPos)
+                            (delta, self.myVELO, self.myAR, motorStartPos)
                     # Move forward with backlash parameters
-                    # Note: This should be myBDST, but since we don't move the motor AND
+                    # Note: This should be self.myBDST, but since we don't move the motor AND
                     # the record uses the readback value, use "motorEndPos - motorStartPos"
                     delta = motorEndPos - motorStartPos
                     line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (delta, myBVEL, myBAR, motorStartPos)
+                            (delta, self.myBVEL, self.myBAR, motorStartPos)
                 else:
                     line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (motorStartPos + delta, myVELO, myAR, motorStartPos)
+                            (motorStartPos + delta, self.myVELO, self.myAR, motorStartPos)
                     # Move forward with backlash parameters
                     line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (motorEndPos, myBVEL, myBAR, motorStartPos)
+                            (motorEndPos, self.myBVEL, self.myBAR, motorStartPos)
 
                 expFile.write('%s\n%s\n' % (line1, line2))
                 cnt += 1
