@@ -11,34 +11,6 @@ lib = motor_lib()
 ###
 
 
-
-# Values to be used for backlash test
-# Note: Make sure to use different values to hae a good
-# test coverage
-myVELO = 10.0   # positioning velocity
-myACCL =  1.0   # Time to VELO, seconds
-myAR   = myVELO / myACCL # acceleration, mm/sec^2
-
-myJVEL = 5.0    # Jogging velocity
-myJAR  = 6.0    # Jogging acceleration, mm/sec^2
-
-myBVEL = 2.0    # backlash velocity
-myBACC = 1.5    # backlash acceleration, seconds
-myBAR  = myBVEL / myBACC  # backlash acceleration, mm/sec^2
-myRTRY   = 3
-myDLY    =  0.0
-myBDST   = 24.0 # backlash destination, mm
-myRMOD   = 0    # Default
-myFRAC   = 1.0  #
-myPOSlow = 48   #
-myPOSmid = 72   # low + BDST
-myPOShig = 96   # low + 2*BDST
-
-motorRMOD_D = 0 # "Default"
-motorRMOD_A = 1 # "Arithmetic"
-motorRMOD_G = 2 # "Geometric"
-motorRMOD_I = 3 # "In-Position"
-
 #How we move: Absolute (without encoder) or relative (with encode via UEIP)
 use_abs = 0
 use_rel = 1
@@ -82,32 +54,10 @@ def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos
     time.sleep(12)
     lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
 
-    # Create a "expected" file
-    expFile=open(expFileName, 'w')
-
-    # The jogging command
-    line1 = "move velocity axis_no=1 direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
-            (myDirection, myJVEL, myJAR, motorStartPos)
-    if encRel:
-        # Move back in relative mode
-        line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (0 - myBDST, myVELO, myAR, motorEndPos)
-        # Move relative forward with backlash parameters
-        line3 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-            (myBDST, myBVEL, myBAR, motorEndPos - myBDST)
-    else:
-        # Move back in positioning mode
-        line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (motorEndPos - myBDST, myVELO, myAR, motorEndPos)
-        # Move forward with backlash parameters
-        line3 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-            (motorEndPos, myBVEL, myBAR, motorEndPos - myBDST)
-
-    expFile.write('%s\n%s\n%s\n' % (line1, line2, line3))
-    expFile.close()
+    dbgFileName = None
+    lib.writeExpFileJOG_BDST(motor, tc_no, dbgFileName, expFileName, myDirection, encRel, motorStartPos, motorEndPos)
 
     lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
-
 
 class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
@@ -150,4 +100,3 @@ class Test(unittest.TestCase):
     # JOG backward & backlash compensation, relative
     def test_TC_14142(self):
         jogAndBacklash(self, self.motor, 14142, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGR')
-

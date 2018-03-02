@@ -474,6 +474,30 @@ class motor_lib(object):
                 expFile.write('%s\n%s\n' % (line1, line2))
                 cnt += 1
 
+    def writeExpFileJOG_BDST(self, motor, tc_no, dbgFileName, expFileName, myDirection, encRel, motorStartPos, motorEndPos):
+        # Create a "expected" file
+        expFile=open(expFileName, 'w')
+
+        # The jogging command
+        line1 = "move velocity axis_no=1 direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (myDirection, self.myJVEL, self.myJAR, motorStartPos)
+        if encRel:
+            # Move back in relative mode
+            line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (0 - self.myBDST, self.myVELO, self.myAR, motorEndPos)
+            # Move relative forward with backlash parameters
+            line3 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (self.myBDST, self.myBVEL, self.myBAR, motorEndPos - self.myBDST)
+        else:
+            # Move back in positioning mode
+            line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                    (motorEndPos - self.myBDST, self.myVELO, self.myAR, motorEndPos)
+            # Move forward with backlash parameters
+            line3 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
+                (motorEndPos, self.myBVEL, self.myBAR, motorEndPos - self.myBDST)
+
+        expFile.write('%s\n%s\n%s\n' % (line1, line2, line3))
+        expFile.close()
 
 
 
