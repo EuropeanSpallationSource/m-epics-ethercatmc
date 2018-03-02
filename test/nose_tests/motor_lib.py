@@ -362,12 +362,14 @@ class motor_lib(object):
     def motorInitAllForBDST(self, motor, tc_no):
         self.setValueOnSimulator(motor, tc_no, "nAmplifierPercent", 100)
         self.setValueOnSimulator(motor, tc_no, "bAxisHomed",          1)
-        self.setValueOnSimulator(motor, tc_no, "fLowHardLimitPos",   15)
-        self.setValueOnSimulator(motor, tc_no, "fHighHardLimitPos", 165)
+        self.setValueOnSimulator(motor, tc_no, "fLowHardLimitPos",    -100)
+        self.setValueOnSimulator(motor, tc_no, "fHighHardLimitPos",   100)
         self.setValueOnSimulator(motor, tc_no, "setMRES_23", 0)
         self.setValueOnSimulator(motor, tc_no, "setMRES_24", 0)
 
+        epics.caput(motor + '-ErrRst', 1)
         # Prepare parameters for jogging and backlash
+        self.setSoftLimitsOff(motor)
         epics.caput(motor + '.VELO', self.myVELO)
         epics.caput(motor + '.ACCL', self.myACCL)
 
@@ -474,20 +476,25 @@ class motor_lib(object):
                 expFile.write('%s\n%s\n' % (line1, line2))
                 cnt += 1
 
-    def writeExpFileJOG_BDST(self, motor, tc_no, dbgFileName, expFileName, myDirection, encRel, motorStartPos, motorEndPos):
+    def writeExpFileJOG_BDST(self, motor, tc_no, dbgFileName, expFileName, myDirection, frac, encRel, motorStartPos, motorEndPos):
         # Create a "expected" file
         expFile=open(expFileName, 'w')
 
         # The jogging command
         line1 = "move velocity axis_no=1 direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
                 (myDirection, self.myJVEL, self.myJAR, motorStartPos)
+        deltaForth = self.myBDST * frac
+        # The record tells us to go "delta * frac". Once we have travelled, we are too far
+        # The record will read that we are too far, and ask to go back "too far", overcompensated
+        # again with frac
+        deltaBack = deltaForth * frac
         if encRel:
             # Move back in relative mode
             line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                    (0 - self.myBDST, self.myVELO, self.myAR, motorEndPos)
+                    (0 - deltaForth, self.myVELO, self.myAR, motorEndPos)
             # Move relative forward with backlash parameters
             line3 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                (self.myBDST, self.myBVEL, self.myBAR, motorEndPos - self.myBDST)
+                (deltaBack, self.myBVEL, self.myBAR, motorEndPos - deltaForth)
         else:
             # Move back in positioning mode
             line2 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \

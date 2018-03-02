@@ -55,7 +55,7 @@ def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos
     lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
 
     dbgFileName = None
-    lib.writeExpFileJOG_BDST(motor, tc_no, dbgFileName, expFileName, myDirection, encRel, motorStartPos, motorEndPos)
+    lib.writeExpFileJOG_BDST(motor, tc_no, dbgFileName, expFileName, myDirection, frac, encRel, motorStartPos, motorEndPos)
 
     lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
 
