@@ -43,7 +43,12 @@ motorRMOD_I = 3 # "In-Position"
 use_abs = 0
 use_rel = 1
 
-def motorInitTC(tself, motor, tc_no, encRel):
+noFRAC   = 1.0
+withFRAC = 1.5
+
+
+def motorInitTC(tself, motor, tc_no, frac, encRel):
+    epics.caput(motor + '.FRAC', frac)
     epics.caput(motor + '.UEIP', encRel)
 
 
@@ -54,13 +59,13 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
     epics.caput(motor + '.SYNC', 1)
 
 
-def jogAndBacklash(tself, motor, tc_no, encRel, motorStartPos, motorEndPos, myJOGX):
+def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos, myJOGX):
     # expected and actual
     fileName = "/tmp/" + motor.replace(':', '-') + "-" + str(tc_no)
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
 
-    motorInitTC(tself, motor, tc_no, encRel)
+    motorInitTC(tself, motor, tc_no, frac, encRel)
     setMotorStartPos(tself, motor, tc_no, motorStartPos)
     lib.setValueOnSimulator(motor, tc_no, "log", actFileName)
     if myJOGX == 'JOGF':
@@ -116,17 +121,33 @@ class Test(unittest.TestCase):
 
     # JOG forward & backlash compensation, absolute
     def test_TC_14111(self):
-        jogAndBacklash(self, self.motor, 14111, use_abs, self.myPOSlow, self.myPOSmid, 'JOGF')
+        jogAndBacklash(self, self.motor, 14111, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, 'JOGF')
 
     # JOG forward & backlash compensation, relative
     def test_TC_14112(self):
-        jogAndBacklash(self, self.motor, 14112, use_rel, self.myPOSmid, self.myPOSlow, 'JOGF')
+        jogAndBacklash(self, self.motor, 14112, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGF')
 
     # JOG backward & backlash compensation, absolute
     def test_TC_14121(self):
-        jogAndBacklash(self, self.motor, 14121, use_abs, self.myPOSlow, self.myPOSmid, 'JOGR')
+        jogAndBacklash(self, self.motor, 14121, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, 'JOGR')
 
     # JOG backward & backlash compensation, relative
     def test_TC_14122(self):
-        jogAndBacklash(self, self.motor, 14122, use_rel, self.myPOSmid, self.myPOSlow, 'JOGR')
+        jogAndBacklash(self, self.motor, 14122, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGR')
+
+    # JOG forward & backlash compensation, absolute
+    def test_TC_14131(self):
+        jogAndBacklash(self, self.motor, 14131, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, 'JOGF')
+
+    # JOG forward & backlash compensation, relative
+    def test_TC_14132(self):
+        jogAndBacklash(self, self.motor, 14132, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGF')
+
+    # JOG backward & backlash compensation, absolute
+    def test_TC_14141(self):
+        jogAndBacklash(self, self.motor, 14141, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, 'JOGR')
+
+    # JOG backward & backlash compensation, relative
+    def test_TC_14142(self):
+        jogAndBacklash(self, self.motor, 14142, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGR')
 
