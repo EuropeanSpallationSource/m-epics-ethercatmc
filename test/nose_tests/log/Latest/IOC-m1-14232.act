@@ -1,0 +1,2 @@
+move absolute position=72 max_velocity=10 acceleration=10 motorPosNow=48
+move absolute position=96 max_velocity=2 acceleration=1.33333 motorPosNow=48
