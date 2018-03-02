@@ -7,6 +7,8 @@ import os
 import sys
 import time
 from motor_lib import motor_lib
+lib = motor_lib()
+
 ###
 
 
@@ -51,7 +53,7 @@ maxdelta           = 0.01
 
 def motorInitVeloAcc(tself, motor, tc_no, encRel):
     msta             = int(epics.caget(motor + '.MSTA'))
-    assert (msta & tself.lib.MSTA_BIT_HOMED) #, 'MSTA.homed (Axis has been homed)')
+    assert (msta & lib.MSTA_BIT_HOMED) #, 'MSTA.homed (Axis has been homed)')
 
     # Prepare parameters for jogging and backlash
     epics.caput(motor + '.VELO', myVELO)
@@ -113,19 +115,21 @@ def setLimit(tself, motor, tc_no, field, value, expDHLM, expDLLM, expHLM, expLLM
         (tc_no, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm)
     print '%s actDHLM=%g actDLLM=%g actHLM=%g actLLM=%g actM3rhlm=%g actM3rllm=%g' % \
         (tc_no, actDHLM, actDLLM, actHLM, actLLM, actM3rhlm, actM3rllm)
-    okDHLM   = tself.lib.calcAlmostEqual(motor, tc_no, expDHLM,  actDHLM, maxdelta)
-    okDLLM   = tself.lib.calcAlmostEqual(motor, tc_no, expDLLM,  actDLLM, maxdelta)
-    okHLM    = tself.lib.calcAlmostEqual(motor, tc_no, expHLM,    actHLM, maxdelta)
-    okLLM    = tself.lib.calcAlmostEqual(motor, tc_no, expLLM,    actLLM, maxdelta)
-    okM3rhlm = tself.lib.calcAlmostEqual(motor, tc_no, expM3rhlm, actM3rhlm, maxdelta)
-    okM3rllm = tself.lib.calcAlmostEqual(motor, tc_no, expM3rllm, actM3rllm, maxdelta)
+    okDHLM   = lib.calcAlmostEqual(motor, tc_no, expDHLM,  actDHLM, maxdelta)
+    okDLLM   = lib.calcAlmostEqual(motor, tc_no, expDLLM,  actDLLM, maxdelta)
+    okHLM    = lib.calcAlmostEqual(motor, tc_no, expHLM,    actHLM, maxdelta)
+    okLLM    = lib.calcAlmostEqual(motor, tc_no, expLLM,    actLLM, maxdelta)
+    okM3rhlm = lib.calcAlmostEqual(motor, tc_no, expM3rhlm, actM3rhlm, maxdelta)
+    okM3rllm = lib.calcAlmostEqual(motor, tc_no, expM3rllm, actM3rllm, maxdelta)
 
     assert (okDHLM and okDLLM and okHLM and okLLM and okM3rhlm and okM3rllm)
 
 
 class Test(unittest.TestCase):
-    lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
+
+    def test_TC_90000(self):
+        lib.motorInitAllForBDST(self.motor, 90000)
 
     def test_TC_90010(self):
         tc_no = 90010
