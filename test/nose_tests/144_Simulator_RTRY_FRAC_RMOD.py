@@ -73,7 +73,7 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
     #   two moves, first with moving, second with backlash parameters
 
     cnt = 1 + int(epics.caget(motor + '.RTRY'))
-    lib.writeExpFileRMOD_X(motor, tc_no, rmod, dbgFile, expFile, cnt, encRel, motorStartPos, motorEndPos)
+    lib.writeExpFileRMOD_X(motor, tc_no, rmod, dbgFile, expFile, cnt, myFRAC, encRel, motorStartPos, motorEndPos)
 
     expFile.close()
     if dbgFileName != None:

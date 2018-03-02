@@ -384,7 +384,7 @@ class motor_lib(object):
         epics.caput(motor + '.RMOD', motorRMOD_D)
         epics.caput(motor + '.DLY',  self.myDLY)
 
-    def writeExpFileRMOD_X(self, motor, tc_no, rmod, dbgFile, expFile, maxcnt, encRel, motorStartPos, motorEndPos):
+    def writeExpFileRMOD_X(self, motor, tc_no, rmod, dbgFile, expFile, maxcnt, frac, encRel, motorStartPos, motorEndPos):
         cnt = 0
         if motorEndPos - motorStartPos > 0:
             directionOfMove = 1
@@ -429,7 +429,7 @@ class motor_lib(object):
 
                 if encRel:
                     line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (delta, self.myBVEL, self.myBAR, motorStartPos)
+                            (delta * frac, self.myBVEL, self.myBAR, motorStartPos)
                 else:
                     line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
                             (motorStartPos + delta, self.myBVEL, self.myBAR, motorStartPos)
@@ -459,13 +459,13 @@ class motor_lib(object):
 
                 if encRel:
                     line1 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (delta, self.myVELO, self.myAR, motorStartPos)
+                            (delta * frac, self.myVELO, self.myAR, motorStartPos)
                     # Move forward with backlash parameters
                     # Note: This should be self.myBDST, but since we don't move the motor AND
                     # the record uses the readback value, use "motorEndPos - motorStartPos"
                     delta = motorEndPos - motorStartPos
                     line2 = "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
-                            (delta, self.myBVEL, self.myBAR, motorStartPos)
+                            (delta * frac, self.myBVEL, self.myBAR, motorStartPos)
                 else:
                     line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
                             (motorStartPos + delta, self.myVELO, self.myAR, motorStartPos)

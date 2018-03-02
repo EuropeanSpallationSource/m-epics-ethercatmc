@@ -9,6 +9,7 @@ from motor_lib import motor_lib
 lib = motor_lib()
 ###
 
+myFRAC   = 1.0
 
 
 motorRMOD_D = 0 # "Default"
@@ -73,7 +74,7 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
     #   two moves, first with moving, second with backlash parameters
 
     cnt = 1 + int(epics.caget(motor + '.RTRY'))
-    lib.writeExpFileRMOD_X(motor, tc_no, rmod, dbgFile, expFile, cnt, encRel, motorStartPos, motorEndPos)
+    lib.writeExpFileRMOD_X(motor, tc_no, rmod, dbgFile, expFile, cnt, myFRAC, encRel, motorStartPos, motorEndPos)
 
     expFile.close()
     if dbgFileName != None:
