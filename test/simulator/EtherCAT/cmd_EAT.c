@@ -11,7 +11,7 @@
 
 typedef struct
 {
-  int    command_no;
+  unsigned nCommand;
   unsigned nCmdData;
   int    bEnable;
   int    bExecute;
@@ -43,8 +43,6 @@ typedef struct
   int bEnable;
   int bReset;
   int bExecute;
-  unsigned nCommand;
-  unsigned nCmdData;
   double fVelocity;
   double fPosition;
   //double fAcceleration;
@@ -622,7 +620,7 @@ static void motorHandleOneArg(const char *myarg_1)
   }
   /* nCommand? */
   if (0 == strcmp(myarg_1, "nCommand?")) {
-    cmd_buf_printf("%d", cmd_Motor_cmd[motor_axis_no].command_no);
+    cmd_buf_printf("%d", cmd_Motor_cmd[motor_axis_no].nCommand);
     return;
   }
   /* nMotionAxisID? */
@@ -658,7 +656,7 @@ static void motorHandleOneArg(const char *myarg_1)
                    cmd_Motor_status[motor_axis_no].bEnable,        /*  1 */
                    cmd_Motor_status[motor_axis_no].bReset,         /*  2 */
                    cmd_Motor_cmd[motor_axis_no].bExecute,          /*  3 */
-                   cmd_Motor_status[motor_axis_no].nCommand,       /*  4 */
+                   cmd_Motor_cmd[motor_axis_no].nCommand,          /*  4 */
                    cmd_Motor_cmd[motor_axis_no].nCmdData,          /*  5 */
                    cmd_Motor_status[motor_axis_no].fVelocity,      /*  6 */
                    cmd_Motor_status[motor_axis_no].fPosition,      /*  7 */
@@ -695,7 +693,7 @@ static void motorHandleOneArg(const char *myarg_1)
   /* nCommand=3 */
   nvals = sscanf(myarg_1, "nCommand=%d", &iValue);
   if (nvals == 1) {
-    cmd_Motor_cmd[motor_axis_no].command_no = iValue;
+    cmd_Motor_cmd[motor_axis_no].nCommand = iValue;
     cmd_buf_printf("OK");
     return;
   }
@@ -787,7 +785,7 @@ static void motorHandleOneArg(const char *myarg_1)
         set_nErrorId(motor_axis_no, nErrorId);
         return;
       }
-      switch (cmd_Motor_cmd[motor_axis_no].command_no) {
+      switch (cmd_Motor_cmd[motor_axis_no].nCommand) {
         case 1:
         {
           int direction = 1;
@@ -839,7 +837,7 @@ static void motorHandleOneArg(const char *myarg_1)
         default:
           RETURN_OR_DIE("%s/%s:%d line=%s command_no=%u",
                         __FILE__, __FUNCTION__, __LINE__,
-                        myarg, cmd_Motor_cmd[motor_axis_no].command_no);
+                        myarg, cmd_Motor_cmd[motor_axis_no].nCommand);
       }
       return;
     }
