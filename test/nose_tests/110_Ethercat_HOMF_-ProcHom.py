@@ -17,10 +17,10 @@ import time
 from motor_lib import motor_lib
 ###
 
-def homeTheMotor(tself, motor, tc_no, procHome, jogToLSBefore):
+def homeTheMotor(tself, motor, tc_no, homProce, jogToLSBefore):
     old_high_limit = epics.caget(motor + '.HLM')
     old_low_limit = epics.caget(motor + '.LLM')
-    old_ProcHom   = tself.pv_ProcHom.get(use_monitor=False)
+    old_HomProc   = tself.pv_HomProc.get(use_monitor=False)
     if jogToLSBefore != 0:
         tself.lib.setSoftLimitsOff(motor)
         # soft limit range assumed to be = hard range /1.5
@@ -35,7 +35,7 @@ def homeTheMotor(tself, motor, tc_no, procHome, jogToLSBefore):
         tself.lib.movePosition(motor, tc_no, (
             old_high_limit + old_low_limit) / 2.0, tself.moving_velocity, tself.acceleration)
 
-    tself.pv_ProcHom.put(procHome)
+    tself.pv_HomProc.put(homProce)
     msta = int(epics.caget(motor + '.MSTA'))
     # We can home while sitting on a limit switch
     if (msta & tself.lib.MSTA_BIT_MINUS_LS):
@@ -64,7 +64,7 @@ def homeTheMotor(tself, motor, tc_no, procHome, jogToLSBefore):
     tself.assertEqual(True, stopped,                          tc_no +  "stopped = True")
     tself.assertEqual(0, msta2 & tself.lib.MSTA_BIT_SLIP_STALL, tc_no + "MSTA.no MSTA_BIT_SLIP_STALL")
     tself.assertNotEqual(0, homed,   tc_no + "MSTA.homed (Axis has been homed)")
-    tself.pv_ProcHom.put(old_ProcHom, wait=True)
+    tself.pv_HomProc.put(old_HomProc, wait=True)
 
 
 def homeLimBwdfromLLS(tself, tc_no):
@@ -129,7 +129,7 @@ def homeSwitchMidfromLimFwdFromMiddle(tself, tc_no):
 class Test(unittest.TestCase):
     lib = motor_lib()
     m1 = os.getenv("TESTEDMOTORAXIS")
-    pv_ProcHom = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-ProcHom")
+    pv_HomProc = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-HomProc")
 
     homing_velocity  = epics.caget(m1 + '.HVEL')
     acceleration     = epics.caget(m1 + '.ACCL')
@@ -228,9 +228,9 @@ class Test(unittest.TestCase):
 
     # Need to home with the original homing procedure
     def test_TC_11191(self):
-        old_ProcHom   = self.pv_ProcHom.get(use_monitor=False)
+        old_HomProc   = self.pv_HomProc.get(use_monitor=False)
         tc_no = "TC-11191"
         print '%s Home ' % tc_no
-        homeTheMotor(self, self.m1, tc_no, old_ProcHom, 0)
+        homeTheMotor(self, self.m1, tc_no, old_HomProc, 0)
 
 

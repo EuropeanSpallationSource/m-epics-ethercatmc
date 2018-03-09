@@ -27,7 +27,7 @@
 #define NCOMMANDMOVEREL  2
 #define NCOMMANDMOVEABS  3
 #define NCOMMANDHOME    10
-#define PROCHOM_MANUAL_SETPOS    15
+#define HOMPROC_MANUAL_SETPOS    15
 
 /* The maximum number of polls we wait for the motor
    to "start" (report moving after a new move command */
@@ -89,7 +89,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     const char * const cfgfile_str = "cfgFile=";
     const char * const cfgDebug_str = "getDebugText=";
     const char * const stepSize_str = "stepSize=";
-    const char * const procHom_str = "ProcHom=";
+    const char * const homProc_str = "HomProc=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -117,11 +117,11 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
           drvlocal.cfgStepSize = cfgStepSize;
           drvlocal.stepSize = drvlocal.cfgStepSize;
         }
-      } else if (!strncmp(pThisOption, procHom_str, strlen(procHom_str))) {
-        pThisOption += strlen(procHom_str);
-        int procHom = atoi(pThisOption);
-        if (procHom) {
-          setIntegerParam(pC_->EthercatMCProcHom_, procHom);
+      } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
+        pThisOption += strlen(homProc_str);
+        int homProc = atoi(pThisOption);
+        if (homProc) {
+          setIntegerParam(pC_->EthercatMCHomProc_, homProc);
         }
       }
       pThisOption = pNextOption;
@@ -473,20 +473,20 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   asynStatus status = asynSuccess;
   int nCommand = NCOMMANDHOME;
 
-  int procHom = -1;
+  int homProc = -1;
   double posHom = 0.0;
 
   status = pC_->getIntegerParam(axisNo_,
-                                pC_->EthercatMCProcHom_,
-                                &procHom);
-  if (procHom == PROCHOM_MANUAL_SETPOS)
+                                pC_->EthercatMCHomProc_,
+                                &homProc);
+  if (homProc == HOMPROC_MANUAL_SETPOS)
     return asynError;
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("fHomePosition", posHom);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
-  if (status == asynSuccess) status = setValueOnAxis("nCmdData", procHom);
+  if (status == asynSuccess) status = setValueOnAxis("nCmdData", homProc);
 
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
 #ifndef motorWaitPollsBeforeReadyString
@@ -523,22 +523,22 @@ asynStatus EthercatMCAxis::setPosition(double value)
 {
   asynStatus status = asynSuccess;
   int nCommand = NCOMMANDHOME;
-  int procHom = 0;
+  int homProc = 0;
   double posHom = value;
 
   status = pC_->getIntegerParam(axisNo_,
-                                pC_->EthercatMCProcHom_,
-                                &procHom);
+                                pC_->EthercatMCHomProc_,
+                                &homProc);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s setPosition(%d  procHom=%d position=%g egu=%g\n",
-            modulName, axisNo_,  procHom, value, value * drvlocal.stepSize );
+            "%s setPosition(%d  homProc=%d position=%g egu=%g\n",
+            modulName, axisNo_,  homProc, value, value * drvlocal.stepSize );
 
-  if (procHom != PROCHOM_MANUAL_SETPOS)
+  if (homProc != HOMPROC_MANUAL_SETPOS)
     return asynError;
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("fHomePosition", posHom);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
-  if (status == asynSuccess) status = setValueOnAxis("nCmdData", procHom);
+  if (status == asynSuccess) status = setValueOnAxis("nCmdData", homProc);
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
 
   return status;
@@ -705,9 +705,9 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
   } else if (!drvlocal.homed &&
              (drvlocal.nCommandActive != NCOMMANDHOME) &&
              (drvlocal.motorRecordHighLimit > drvlocal.motorRecordLowLimit)) {
-    int procHom;
-    pC_->getIntegerParam(axisNo_, pC_->EthercatMCProcHom_, &procHom);
-    if (procHom) drvlocal.eeAxisError = eeAxisErrorNotHomed;
+    int homProc;
+    pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_, &homProc);
+    if (homProc) drvlocal.eeAxisError = eeAxisErrorNotHomed;
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
@@ -1155,8 +1155,8 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modulName, axisNo_, value);
 #endif
-#ifdef EthercatMCProcHomString
-  } else if (function == pC_->EthercatMCProcHom_) {
+#ifdef EthercatMCHomProcString
+  } else if (function == pC_->EthercatMCHomProc_) {
     int motorNotHomedProblem = 0;
 #ifdef  motorNotHomedProblemString
     /* If value != 0 the axis can be homed. Show Error if it isn't homed */
@@ -1164,7 +1164,7 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     setIntegerParam(pC_->motorNotHomedProblem_, motorNotHomedProblem);
 #endif
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setIntegerParam(%d ProcHom_)=%d motorNotHomedProblem=%d\n",
+              "%s setIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",
 	      modulName, axisNo_, value, motorNotHomedProblem);
 #endif
 #ifdef EthercatMCErrRstString

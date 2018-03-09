@@ -3731,7 +3731,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(R)ProcHom-RB</pv_name>
+    <pv_name>$(P)$(R)HomProc-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -3751,7 +3751,7 @@ $(pv_value)</tooltip>
     <show_native_border>true</show_native_border>
     <show_units>false</show_units>
     <style>1</style>
-    <text>ProcHom</text>
+    <text>HomProc</text>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>

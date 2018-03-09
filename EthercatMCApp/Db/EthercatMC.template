@@ -219,10 +219,10 @@ record(longin,"$(PREFIX)$(R)ECLLM-En-RB") {
 }
 
 
-record(mbbi,"$(PREFIX)$(R)ProcHom-RB") {
+record(mbbi,"$(PREFIX)$(R)HomProc-RB") {
     field(DESC,"Homing procedure")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ProcHom")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc")
     field(SCAN, "I/O Intr")
     field(PINI, "YES")
     field(ZRVL,  "0")

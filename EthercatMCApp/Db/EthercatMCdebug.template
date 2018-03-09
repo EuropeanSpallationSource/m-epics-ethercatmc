@@ -1,9 +1,9 @@
-record(longout,"$(PREFIX)$(R)ProcHom") {
+record(longout,"$(PREFIX)$(R)HomProc") {
     field(DESC, "Homing Procedure")
     field(VAL, "$(HOMEPROC=0)")
     field(DTYP, "asynInt32")
     field(PINI, "YES")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ProcHom")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc")
 }
 
 #Power handling
