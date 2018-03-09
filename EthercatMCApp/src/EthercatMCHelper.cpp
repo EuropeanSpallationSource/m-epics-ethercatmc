@@ -411,7 +411,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
   asynStatus status;
   int res;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
-          "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
+          "%sMain.M%d%s?", drvlocal.adsport_str, axisNo_, var);
   status = pC_->writeReadController();
   if (status)
     return status;
@@ -499,7 +499,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
   int nvals;
   double res;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
-           "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
+           "%sMain.M%d%s?", drvlocal.adsport_str, axisNo_, var);
   status = pC_->writeReadController();
   if (status)
     return status;

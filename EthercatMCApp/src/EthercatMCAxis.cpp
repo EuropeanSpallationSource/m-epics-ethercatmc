@@ -595,7 +595,7 @@ asynStatus EthercatMCAxis::resetAxis(void)
 bool EthercatMCAxis::pollPowerIsOn(void)
 {
   int ret = 0;
-  asynStatus status = getValueFromAxis("bEnabled", &ret);
+  asynStatus status = getValueFromAxis(".bEnabled", &ret);
   if (!status && ret)
     return true;
   else
@@ -624,7 +624,7 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
   }
 #endif
   on = on ? 1 : 0; /* either 0 or 1 */
-  status = getValueFromAxis("bEnabled", &ret);
+  status = getValueFromAxis(".bEnabled", &ret);
   /* Either it went wrong OR the amplifier IS as it should be */
   if (status || (ret == on)) return status;
   if (!on) {
@@ -1072,12 +1072,13 @@ asynStatus EthercatMCAxis::poll(bool *moving)
         drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
         drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d ENC=%g fActPosition=%g\n",
+                "%s poll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d ENC=%g fPosition=%g fActPosition=%g\n",
                 modulName, axisNo_, st_axis_status.mvnNRdyNex,
                 drvlocal.supported.statusVer,
                 st_axis_status.bBusy, st_axis_status.bExecute,
                 st_axis_status.bEnabled, st_axis_status.atTarget,
-                st_axis_status.positionRaw, st_axis_status.fActPosition);
+                st_axis_status.positionRaw, st_axis_status.fPosition,
+                st_axis_status.fActPosition);
     }
   }
   setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);
