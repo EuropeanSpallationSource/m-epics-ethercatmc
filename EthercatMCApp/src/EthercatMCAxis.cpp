@@ -474,7 +474,7 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   int nCommand = NCOMMANDHOME;
 
   int homProc = -1;
-  double posHom = 0.0;
+  double homPos = 0.0;
 
   status = pC_->getIntegerParam(axisNo_,
                                 pC_->EthercatMCHomProc_,
@@ -484,7 +484,7 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-  if (status == asynSuccess) status = setValueOnAxis("fHomePosition", posHom);
+  if (status == asynSuccess) status = setValueOnAxis("fHomePosition", homPos);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", homProc);
 
@@ -524,7 +524,7 @@ asynStatus EthercatMCAxis::setPosition(double value)
   asynStatus status = asynSuccess;
   int nCommand = NCOMMANDHOME;
   int homProc = 0;
-  double posHom = value;
+  double homPos = value;
 
   status = pC_->getIntegerParam(axisNo_,
                                 pC_->EthercatMCHomProc_,
@@ -536,7 +536,7 @@ asynStatus EthercatMCAxis::setPosition(double value)
   if (homProc != HOMPROC_MANUAL_SETPOS)
     return asynError;
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-  if (status == asynSuccess) status = setValueOnAxis("fHomePosition", posHom);
+  if (status == asynSuccess) status = setValueOnAxis("fHomePosition", homPos);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", homProc);
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
