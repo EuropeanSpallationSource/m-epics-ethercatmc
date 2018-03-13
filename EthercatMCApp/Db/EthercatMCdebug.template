@@ -2,9 +2,19 @@ record(longout,"$(PREFIX)$(R)HomProc") {
     field(DESC, "Homing Procedure")
     field(VAL, "$(HOMEPROC=0)")
     field(DTYP, "asynInt32")
-    field(PINI, "YES")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc")
+    info(asyn:READBACK,"1")
 }
+
+record(ao,"$(PREFIX)$(R)HomPos") {
+    field(DESC, "Home Position")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos")
+    field(SCAN, "I/O Intr")
+    info(asyn:READBACK,"1")
+}
+
 
 #Power handling
 record(longout, "$(PREFIX)$(R)PwrCNEN")
