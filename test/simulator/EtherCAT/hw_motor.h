@@ -104,6 +104,7 @@ int movePosition(int axis_no,
 int moveHomeProc(int axis_no,
                  int direction,
                  int nCmdData,
+                 double position,
                  double max_velocity,
                  double acceleration);
 

@@ -17,6 +17,7 @@ typedef struct
   int    bExecute;
   int    bReset;
   double fPosition;
+  double fHomePosition;
   double fVelocity;
   double fAcceleration;
   double fDeceleration;
@@ -714,7 +715,7 @@ static void motorHandleOneArg(const char *myarg_1)
   /* fHomePosition */
   nvals = sscanf(myarg_1, "fHomePosition=%lf", &fValue);
   if (nvals == 1) {
-    /* Do noting */
+    cmd_Motor_cmd[motor_axis_no].fHomePosition = fValue;
     cmd_buf_printf("OK");
     return;
   }
@@ -823,6 +824,7 @@ static void motorHandleOneArg(const char *myarg_1)
             (void)moveHomeProc(motor_axis_no,
                                0, /* direction, */
                                cmd_Motor_cmd[motor_axis_no].nCmdData,
+                               cmd_Motor_cmd[motor_axis_no].fHomePosition,
                                cmd_Motor_cmd[motor_axis_no].homeVeloTowardsHomeSensor,
                                cmd_Motor_cmd[motor_axis_no].fAcceleration);
             cmd_buf_printf("OK");

@@ -121,8 +121,8 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
       } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
         pThisOption += strlen(homProc_str);
         int homProc = atoi(pThisOption);
+        if (homProc < 0) homProc = 0;
         if (homProc) {
-          if (homProc < 0) homProc = 0;
           setIntegerParam(pC_->EthercatMCHomProc_, homProc);
         }
       } else if (!strncmp(pThisOption, homPos_str, strlen(homPos_str))) {
@@ -221,10 +221,10 @@ asynStatus EthercatMCAxis::readBackHoming(void)
 
   status = getValueFromAxis("_EPICS_HOMPROC", &homProc);
   if (!status) pC_->setIntegerParam(axisNo_, pC_->EthercatMCHomProc_, homProc);
-  status = getSAFValueFromAxisPrint(0x5000, 0x103, "homPos", &homPos);
-  if (status || (homPos != 0.0)) {
+  status = getValueFromAxis("_EPICS_HOMPOS", &homPos);
+  if (status) {
     /* fall back */
-    status = getValueFromAxis("_EPICS_HOMPOS", &homPos);
+    status = getSAFValueFromAxisPrint(0x5000, 0x103, "homPos", &homPos);
   }
   if (!status) pC_->setDoubleParam(axisNo_, pC_->EthercatMCHomPos_, homPos);
   return asynSuccess;
