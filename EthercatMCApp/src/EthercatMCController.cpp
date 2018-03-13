@@ -55,6 +55,7 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
 
   createParam(EthercatMCEnc_ActString,       asynParamFloat64,     &EthercatMCEncAct_);
   createParam(EthercatMCHomProcString,       asynParamInt32,       &EthercatMCHomProc_);
+  createParam(EthercatMCHomPosString,        asynParamFloat64,     &EthercatMCHomPos_);
   createParam(EthercatMCErrRstString,        asynParamInt32,       &EthercatMCErrRst_);
   createParam(EthercatMCVelActString,        asynParamFloat64,     &EthercatMCVelAct_);
   createParam(EthercatMCVel_RBString,        asynParamFloat64,     &EthercatMCVel_RB_);

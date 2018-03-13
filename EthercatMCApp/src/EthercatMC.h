@@ -31,6 +31,7 @@ FILENAME...   EthercatMC.h
 #define EthercatMCErrString                  "MCUErr"
 #define EthercatMCErrIdString                "ErrId"
 #define EthercatMCHomProcString              "HomProc"
+#define EthercatMCHomPosString               "HomPos"
 #define EthercatMCEnc_ActString              "EncAct"
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCVelActString               "VelAct"
@@ -187,6 +188,7 @@ private:
   asynStatus handleConnect(void);
   asynStatus readConfigFile(void);
   asynStatus readBackSoftLimits(void);
+  asynStatus readBackHoming(void);
   asynStatus readBackConfig(void);
   asynStatus initialPoll(void);
 
@@ -274,6 +276,7 @@ public:
   /* First parameter */
   int EthercatMCErr_;
   int EthercatMCHomProc_;
+  int EthercatMCHomPos_;
   int EthercatMCEncAct_;
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION

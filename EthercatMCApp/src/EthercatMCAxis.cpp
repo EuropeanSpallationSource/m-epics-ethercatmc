@@ -90,6 +90,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     const char * const cfgDebug_str = "getDebugText=";
     const char * const stepSize_str = "stepSize=";
     const char * const homProc_str = "HomProc=";
+    const char * const homPos_str  = "HomPos=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -121,8 +122,13 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
         pThisOption += strlen(homProc_str);
         int homProc = atoi(pThisOption);
         if (homProc) {
+          if (homProc < 0) homProc = 0;
           setIntegerParam(pC_->EthercatMCHomProc_, homProc);
         }
+      } else if (!strncmp(pThisOption, homPos_str, strlen(homPos_str))) {
+        pThisOption += strlen(homPos_str);
+        double homPos = atof(pThisOption);
+        setDoubleParam(pC_->EthercatMCHomPos_, homPos);
       }
       pThisOption = pNextOption;
     }
@@ -207,6 +213,24 @@ asynStatus EthercatMCAxis::readBackSoftLimits(void)
   return status;
 }
 
+asynStatus EthercatMCAxis::readBackHoming(void)
+{
+  asynStatus status;
+  int    homProc = 0;
+  double homPos  = 0.0;
+
+  status = getValueFromAxis("_EPICS_HOMPROC", &homProc);
+  if (!status) pC_->setIntegerParam(axisNo_, pC_->EthercatMCHomProc_, homProc);
+  status = getSAFValueFromAxisPrint(0x5000, 0x103, "homPos", &homPos);
+  if (status || (homPos != 0.0)) {
+    /* fall back */
+    status = getValueFromAxis("_EPICS_HOMPOS", &homPos);
+  }
+  if (!status) pC_->setDoubleParam(axisNo_, pC_->EthercatMCHomPos_, homPos);
+  return asynSuccess;
+}
+
+
 /** Connection status is changed, the dirty bits must be set and
  *  the values in the controller must be updated
  * \param[in] AsynStatus status
@@ -265,7 +289,7 @@ asynStatus EthercatMCAxis::readBackConfig(void)
                                             fValue);
 
   readBackSoftLimits();
-
+  readBackHoming();
   /* The Ethercat specific are  read-write, so we must use pC_->setXXX for them */
   /* (fast) Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x9, "VELO", &fValue);
@@ -476,9 +500,9 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   int homProc = -1;
   double homPos = 0.0;
 
-  status = pC_->getIntegerParam(axisNo_,
-                                pC_->EthercatMCHomProc_,
-                                &homProc);
+  /* The homPos may be undefined, then use 0.0 */
+  (void)pC_->getDoubleParam(axisNo_, pC_->EthercatMCHomPos_, &homPos);
+  status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_,&homProc);
   if (homProc == HOMPROC_MANUAL_SETPOS)
     return asynError;
   /* The controller will do the home search, and change its internal
@@ -965,6 +989,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.mustStop) {
     comStatus = stopAxisInternal(__FUNCTION__, 0);
     if (comStatus) goto skip;
+    // TODO drvlocal.mustStop = 0;
   }
   comStatus = pollAll(moving, &st_axis_status);
   if (comStatus) {
@@ -1315,10 +1340,10 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d HVELfrm_)=%g\n", modulName, axisNo_, value);
 #endif
-#ifdef EthercatMCPosHomString
-  } else if (function == pC_->EthercatMCPosHom_) {
+#ifdef EthercatMCHomPosString
+  } else if (function == pC_->EthercatMCHomPos_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setDoubleParam(%d PosHom_)=%f\n", modulName, axisNo_, value);
+              "%s setDoubleParam(%d HomPos_)=%f\n", modulName, axisNo_, value);
 #endif
 #ifdef EthercatMCCHLMString
   } else if (function == pC_->EthercatMCCHLM_) {
