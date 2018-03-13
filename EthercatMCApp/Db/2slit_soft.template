@@ -12,14 +12,14 @@
 
 
 record(transform, "$(P)$(SLIT)setMonitor") {
-	field(INPA, "$(P)$(SLIT)xp.SET CP")
-	field(INPB, "$(P)$(SLIT)xn.SET CP")
-	field(INPC, "$(P)$(SLIT)size.SET CP")
-	field(INPD, "$(P)$(SLIT)center.SET CP")
-	field(CLCE, "a||b||c||d")
-	field(OUTE, "$(P)$(mXn).SET CA")
-	field(CLCF, "e")
-	field(OUTF, "$(P)$(mXp).SET CA")
+  field(INPA, "$(P)$(SLIT)xp.SET CP")
+  field(INPB, "$(P)$(SLIT)xn.SET CP")
+  field(INPC, "$(P)$(SLIT)size.SET CP")
+  field(INPD, "$(P)$(SLIT)center.SET CP")
+  field(CLCE, "a||b||c||d")
+  field(OUTE, "$(P)$(mXn).SET CA")
+  field(CLCF, "e")
+  field(OUTF, "$(P)$(mXp).SET CA")
 
 }
 record(bo, "$(P)$(SLIT)set1") {
@@ -46,60 +46,60 @@ record(bo, "$(P)$(SLIT)set") {
 # respond to monitors from our own writes.
 # Thus, when we write, weSaidStop disables that response.
 record(bo, "$(P)$(SLIT)weSaidStop") {
-	#field(TPRO, "1")
-	field(ZNAM, "No")
-	field(ONAM, "Yes")
+  #field(TPRO, "1")
+  field(ZNAM, "No")
+  field(ONAM, "Yes")
 }
 record(transform, "$(P)$(SLIT)monitorStop") {
-	#field(TPRO, "1")
-	field(SDIS, "$(P)$(SLIT)weSaidStop")
-	field(DISV, "1")
-	# listen to our soft motors' .STOP fields
-	field(INPA, "$(P)$(SLIT)xp.STOP CP MS")
-	field(INPB, "$(P)$(SLIT)xn.STOP CP MS")
-	field(INPC, "$(P)$(SLIT)size.STOP CP MS")
-	field(INPD, "$(P)$(SLIT)center.STOP CP MS")
-	# also listen to the soft motors of the other 2slit_soft database
-	# that we're paired with (if it exists)
-	field(INPE, "$(P)$(PAIRED_WITH=)xp.STOP CP MS")
-	field(INPF, "$(P)$(PAIRED_WITH=)xn.STOP CP MS")
-	field(INPG, "$(P)$(PAIRED_WITH=)size.STOP CP MS")
-	field(INPH, "$(P)$(PAIRED_WITH=)center.STOP CP MS")
-	# I==any soft motor was told to stop
-	field(CLCI, "a||b||c||d||e||f||g||h")
-	field(OUTI, "$(P)$(SLIT)weSaidStop PP MS")
-	# don't write to the .STOP field that triggered us to process
-	field(CMTJ, "bitmask for doStop")
-	field(CLCJ, "!a+!b*2+!c*4+!d*8+16+32+64")
-	field(OUTK, "$(P)$(SLIT)doStop.PROC PP")
+  #field(TPRO, "1")
+  field(SDIS, "$(P)$(SLIT)weSaidStop")
+  field(DISV, "1")
+  # listen to our soft motors' .STOP fields
+  field(INPA, "$(P)$(SLIT)xp.STOP CP MS")
+  field(INPB, "$(P)$(SLIT)xn.STOP CP MS")
+  field(INPC, "$(P)$(SLIT)size.STOP CP MS")
+  field(INPD, "$(P)$(SLIT)center.STOP CP MS")
+  # also listen to the soft motors of the other 2slit_soft database
+  # that we're paired with (if it exists)
+  field(INPE, "$(P)$(PAIRED_WITH=)xp.STOP CP MS")
+  field(INPF, "$(P)$(PAIRED_WITH=)xn.STOP CP MS")
+  field(INPG, "$(P)$(PAIRED_WITH=)size.STOP CP MS")
+  field(INPH, "$(P)$(PAIRED_WITH=)center.STOP CP MS")
+  # I==any soft motor was told to stop
+  field(CLCI, "a||b||c||d||e||f||g||h")
+  field(OUTI, "$(P)$(SLIT)weSaidStop PP MS")
+  # don't write to the .STOP field that triggered us to process
+  field(CMTJ, "bitmask for doStop")
+  field(CLCJ, "!a+!b*2+!c*4+!d*8+16+32+64")
+  field(OUTK, "$(P)$(SLIT)doStop.PROC PP")
 }
 record(seq, "$(P)$(SLIT)doStop") {
-	#field(TPRO, "1")
-	field(SDIS, "$(P)$(SLIT)weSaidStop")
-	field(DISV, "0")
-	field(SELL, "$(P)$(SLIT)monitorStop.J")
-	field(SELM, "Mask")
-	field(DOL1, "1")
-	field(LNK1, "$(P)$(SLIT)xp.STOP PP")
-	field(DOL2, "1")
-	field(LNK2, "$(P)$(SLIT)xn.STOP PP")
-	field(DOL3, "1")
-	field(LNK3, "$(P)$(SLIT)size.STOP PP")
-	field(DOL4, "1")
-	field(LNK4, "$(P)$(SLIT)center.STOP PP")
-	field(DOL5, "1")
-	field(LNK5, "$(P)$(mXp).STOP PP")
-	field(DOL6, "1")
-	field(LNK6, "$(P)$(mXn).STOP PP")
-	# We need to wait for all the postings resulting from puts to stop_*
-	# fields to be received by monitorStop's CP links before enabling
-	# that record to respond to new postings of those fields.  Writing
-	# with a CA link should ensure that, but delaying by 0.1 s provides
-	# additional protection.
-	# On second thought, try leaving weSaidStop==1 until the motors stop.
-	#field(DOL7, "0")
-	#field(DLY7, ".1")
-	#field(LNK7, "$(P)$(SLIT)weSaidStop CA")
+  #field(TPRO, "1")
+  field(SDIS, "$(P)$(SLIT)weSaidStop")
+  field(DISV, "0")
+  field(SELL, "$(P)$(SLIT)monitorStop.J")
+  field(SELM, "Mask")
+  field(DOL1, "1")
+  field(LNK1, "$(P)$(SLIT)xp.STOP PP")
+  field(DOL2, "1")
+  field(LNK2, "$(P)$(SLIT)xn.STOP PP")
+  field(DOL3, "1")
+  field(LNK3, "$(P)$(SLIT)size.STOP PP")
+  field(DOL4, "1")
+  field(LNK4, "$(P)$(SLIT)center.STOP PP")
+  field(DOL5, "1")
+  field(LNK5, "$(P)$(mXp).STOP PP")
+  field(DOL6, "1")
+  field(LNK6, "$(P)$(mXn).STOP PP")
+  # We need to wait for all the postings resulting from puts to stop_*
+  # fields to be received by monitorStop's CP links before enabling
+  # that record to respond to new postings of those fields.  Writing
+  # with a CA link should ensure that, but delaying by 0.1 s provides
+  # additional protection.
+  # On second thought, try leaving weSaidStop==1 until the motors stop.
+  #field(DOL7, "0")
+  #field(DLY7, ".1")
+  #field(LNK7, "$(P)$(SLIT)weSaidStop CA")
 }
 
 record(motor, "$(P)$(SLIT)xp") {
@@ -175,13 +175,13 @@ record(motor, "$(P)$(SLIT)center") {
 record(transform, "$(P)$(SLIT)spectator") {
 }
 record(transform, "$(P)$(SLIT)latchSpectator") {
-	# latch values of spectator, so we'll know who started this move
-	field(SDIS, "$(P)$(SLIT)newMove")
-	field(DISV, "1")
-	field(INPA, "$(P)$(SLIT)spectator.A")
-	field(INPB, "$(P)$(SLIT)spectator.B")
-	field(INPC, "$(P)$(SLIT)spectator.C")
-	field(INPD, "$(P)$(SLIT)spectator.D")
+  # latch values of spectator, so we'll know who started this move
+  field(SDIS, "$(P)$(SLIT)newMove")
+  field(DISV, "1")
+  field(INPA, "$(P)$(SLIT)spectator.A")
+  field(INPB, "$(P)$(SLIT)spectator.B")
+  field(INPC, "$(P)$(SLIT)spectator.C")
+  field(INPD, "$(P)$(SLIT)spectator.D")
 }
 
 record(ao, "$(P)$(SLIT)xpBPut") {
@@ -192,8 +192,8 @@ record(ao, "$(P)$(SLIT)xpBPut") {
 }
 # If xpWasPassive processes, xp didn't cause the move
 record(bo, "$(P)$(SLIT)xpWasPassive") {
-	field(DOL, "1")
-	field(OUT, "$(P)$(SLIT)spectator.A PP")
+  field(DOL, "1")
+  field(OUT, "$(P)$(SLIT)spectator.A PP")
 }
 
 record(ao, "$(P)$(SLIT)xnBPut") {
@@ -203,8 +203,8 @@ record(ao, "$(P)$(SLIT)xnBPut") {
   field(FLNK, "$(P)$(SLIT)xnWasPassive")
 }
 record(bo, "$(P)$(SLIT)xnWasPassive") {
-	field(DOL, "1")
-	field(OUT, "$(P)$(SLIT)spectator.B PP")
+  field(DOL, "1")
+  field(OUT, "$(P)$(SLIT)spectator.B PP")
 }
 
 record(ao, "$(P)$(SLIT)sizeBPut") {
@@ -214,8 +214,8 @@ record(ao, "$(P)$(SLIT)sizeBPut") {
   field(FLNK, "$(P)$(SLIT)sizeWasPassive")
 }
 record(bo, "$(P)$(SLIT)sizeWasPassive") {
-	field(DOL, "1")
-	field(OUT, "$(P)$(SLIT)spectator.C PP")
+  field(DOL, "1")
+  field(OUT, "$(P)$(SLIT)spectator.C PP")
 }
 
 record(ao, "$(P)$(SLIT)centerBPut") {
@@ -225,8 +225,8 @@ record(ao, "$(P)$(SLIT)centerBPut") {
   field(FLNK, "$(P)$(SLIT)centerWasPassive")
 }
 record(bo, "$(P)$(SLIT)centerWasPassive") {
-	field(DOL, "1")
-	field(OUT, "$(P)$(SLIT)spectator.D PP")
+  field(DOL, "1")
+  field(OUT, "$(P)$(SLIT)spectator.D PP")
 }
 
 record(ao, "$(P)$(SLIT)mXnPut") {
@@ -301,9 +301,9 @@ record(bo, "$(P)$(SLIT)newMove") {
 }
 
 record(bo, "$(P)$(SLIT)setSoftMove") {
-	field(SDIS, "$(P)$(SLIT)gate")
-	field(DISV, "0")
-	field(OUT, "$(P)$(SLIT)isSoftMove PP")
+  field(SDIS, "$(P)$(SLIT)gate")
+  field(DISV, "0")
+  field(OUT, "$(P)$(SLIT)isSoftMove PP")
 }
 
 record(bo, "$(P)$(SLIT)clearSoftMove") {
@@ -326,82 +326,82 @@ record(calcout, "$(P)$(SLIT)calcDone") {
 }
 
 record(seq, "$(P)$(SLIT)doDoneStuff") {
-	# leave instructions to do a sync when everything is done
-	field(DOL1, "$(P)$(SLIT)weSaidStop")
-	field(LNK1, "$(P)$(SLIT)maybeSync.A NPP")
-	# clean up after move
-	field(DOL2, "0")
-	field(LNK2, "$(P)$(SLIT)weSaidStop PP")
-	field(LNK3, "$(P)$(SLIT)clearSoftMove.PROC PP")
-	# maybe sync to hard motor commanded positions, but only after soft motors
-	# have responded to calcDone.  CA link should be enough to get this
-	# ordering right.
-	field(DLY4, "0")
-	field(LNK4, "$(P)$(SLIT)maybeSync.PROC CA")
-	field(DOL5, "0")
-	field(LNK5, "$(P)$(SLIT)newMove PP")
-	field(DOL6, "0")
-	field(LNK6, "$(P)$(SLIT)spectator.A PP")
+  # leave instructions to do a sync when everything is done
+  field(DOL1, "$(P)$(SLIT)weSaidStop")
+  field(LNK1, "$(P)$(SLIT)maybeSync.A NPP")
+  # clean up after move
+  field(DOL2, "0")
+  field(LNK2, "$(P)$(SLIT)weSaidStop PP")
+  field(LNK3, "$(P)$(SLIT)clearSoftMove.PROC PP")
+  # maybe sync to hard motor commanded positions, but only after soft motors
+  # have responded to calcDone.  CA link should be enough to get this
+  # ordering right.
+  field(DLY4, "0")
+  field(LNK4, "$(P)$(SLIT)maybeSync.PROC CA")
+  field(DOL5, "0")
+  field(LNK5, "$(P)$(SLIT)newMove PP")
+  field(DOL6, "0")
+  field(LNK6, "$(P)$(SLIT)spectator.A PP")
 
-	field(DOL7, "0")
-	field(LNK7, "$(P)$(SLIT)spectator.B PP")
+  field(DOL7, "0")
+  field(LNK7, "$(P)$(SLIT)spectator.B PP")
 
-	field(DOL8, "0")
-	field(LNK8, "$(P)$(SLIT)spectator.C PP")
+  field(DOL8, "0")
+  field(LNK8, "$(P)$(SLIT)spectator.C PP")
 
-	field(DOL9, "0")
-	field(LNK9, "$(P)$(SLIT)spectator.D PP")
+  field(DOL9, "0")
+  field(LNK9, "$(P)$(SLIT)spectator.D PP")
 }
 
 ### initialization
 record(calcout, "$(P)$(SLIT)mXpPosted") {
-	#field(TPRO, "1")
-	field(INPA, "$(P)$(mXp) CP")
-	field(CALC, "1")
-	field(OUT, "$(P)$(SLIT)initAfterMotorRbv.A PP")
+  #field(TPRO, "1")
+  field(INPA, "$(P)$(mXp) CP")
+  field(CALC, "1")
+  field(OUT, "$(P)$(SLIT)initAfterMotorRbv.A PP")
 }
 record(calcout, "$(P)$(SLIT)mXnPosted") {
-	#field(TPRO, "1")
-	field(INPA, "$(P)$(mXn) CP")
-	field(CALC, "1")
-	field(OUT, "$(P)$(SLIT)initAfterMotorRbv.B PP")
+  #field(TPRO, "1")
+  field(INPA, "$(P)$(mXn) CP")
+  field(CALC, "1")
+  field(OUT, "$(P)$(SLIT)initAfterMotorRbv.B PP")
 }
 record(calcout, "$(P)$(SLIT)initAfterMotorRbv") {
-	field(SDIS, "$(P)$(SLIT)initialized")
-	field(DISV, "1")
-	field(CALC, "a&&b")
-	field(OOPT, "When Non-zero")
-	field(OUT, "$(P)$(SLIT)doInit PP")
+  field(SDIS, "$(P)$(SLIT)initialized")
+  field(DISV, "1")
+  field(CALC, "a&&b")
+  field(OOPT, "When Non-zero")
+  field(OUT, "$(P)$(SLIT)doInit PP")
 }
 record(seq, "$(P)$(SLIT)doInit") {
-	field(LNK1, "$(P)$(SLIT)tSync.PROC PP")
-	field(DOL2, "1")
-	field(LNK2, "$(P)$(SLIT)initialized PP")
+  field(LNK1, "$(P)$(SLIT)tSync.PROC PP")
+  field(DOL2, "1")
+  field(LNK2, "$(P)$(SLIT)initialized PP")
 }
 record(bo, "$(P)$(SLIT)initialized") {
 }
 
 ### sync
 record(calcout, "$(P)$(SLIT)syncOrInit") {
-	field(INPA, "$(P)$(SLIT)doSync")
-	field(INPB, "$(P)$(SLIT)doInit")
-	field(CALC, "a||b")
+  field(INPA, "$(P)$(SLIT)doSync")
+  field(INPB, "$(P)$(SLIT)doInit")
+  field(CALC, "a||b")
 }
 # manual sync to hard motor commanded positions
 # Maybe this can be automated for cases the soft motors don't handle well.
 record(calcout, "$(P)$(SLIT)maybeSync") {
-	field(CALC, "A")
-	field(OOPT, "When Non-zero")
-	field(OUT, "$(P)$(SLIT)doSync PP")
+  field(CALC, "A")
+  field(OOPT, "When Non-zero")
+  field(OUT, "$(P)$(SLIT)doSync PP")
 }
 record(bo, "$(P)$(SLIT)doSync") {
-	field(OUT, "$(P)$(SLIT)doSyncPut PP")
+  field(OUT, "$(P)$(SLIT)doSyncPut PP")
 }
 # only process sync command, not reset from that command
 record(bo, "$(P)$(SLIT)doSyncPut") {
-	field(SDIS, "$(P)$(SLIT)doSync")
-	field(DISV, "0")
-	field(OUT, "$(P)$(SLIT)tSyncCalc.PROC PP")
+  field(SDIS, "$(P)$(SLIT)doSync")
+  field(DISV, "0")
+  field(OUT, "$(P)$(SLIT)tSyncCalc.PROC PP")
 }
 # if center was moved and stopped, calc new positions for (xn,xp) so that
 # size will be preserved, move hard motors to those positions, and sync.
@@ -409,90 +409,90 @@ record(bo, "$(P)$(SLIT)doSyncPut") {
 # center will be preserved, move hard motors to those positions, and sync.
 # if xn or xp was moved, just sync.
 record(transform, "$(P)$(SLIT)tSyncCalc") {
-	field(SDIS, "$(P)$(SLIT)doSync")
-	field(DISV, "0")
-	field(EGU, "mm")
-	field(PREC, "5")
+  field(SDIS, "$(P)$(SLIT)doSync")
+  field(DISV, "0")
+  field(EGU, "mm")
+  field(PREC, "5")
 
-	# who caused move?
-	field(CMTA, "size didn't cause move")
-	field(INPA, "$(P)$(SLIT)latchSpectator.C")
-	field(CMTB, "center didn't cause move")
-	field(INPB, "$(P)$(SLIT)latchSpectator.D")
-	# commanded size, center
-	field(CMTC, "commanded size")
-	field(INPC, "$(P)$(SLIT)tFwd.C")
-	field(CMTD, "commanded center")
-	field(INPD, "$(P)$(SLIT)tFwd.D")
-	# current mXp, mXn
-	field(INPE, "$(P)$(mXp)")
-	field(INPF, "$(P)$(mXn)")
-	# calc mXp for corrective move
-	# if size caused move, center + current_size/2, else
-	# if center caused move, current_center + size/2,
-	# else current mXp
-	field(CMTG, "mXp for corrective move")
-	field(CLCG, "(a==0)?(d+(e-f)/2):((b==0)?((e+f+c)/2):e)") 
-	# calc mXn for corrective move
-	# if size caused move, center - current_size/2, else
-	# if center caused move, current_center - size/2,
-	# else current mXn
-	field(CMTH, "mXn for corrective move")
-	field(CLCH, "(a==0)?(d-(e-f)/2):((b==0)?((e+f-c)/2):f)")
-	field(FLNK, "$(P)$(SLIT)adjustMotors")
+  # who caused move?
+  field(CMTA, "size didn't cause move")
+  field(INPA, "$(P)$(SLIT)latchSpectator.C")
+  field(CMTB, "center didn't cause move")
+  field(INPB, "$(P)$(SLIT)latchSpectator.D")
+  # commanded size, center
+  field(CMTC, "commanded size")
+  field(INPC, "$(P)$(SLIT)tFwd.C")
+  field(CMTD, "commanded center")
+  field(INPD, "$(P)$(SLIT)tFwd.D")
+  # current mXp, mXn
+  field(INPE, "$(P)$(mXp)")
+  field(INPF, "$(P)$(mXn)")
+  # calc mXp for corrective move
+  # if size caused move, center + current_size/2, else
+  # if center caused move, current_center + size/2,
+  # else current mXp
+  field(CMTG, "mXp for corrective move")
+  field(CLCG, "(a==0)?(d+(e-f)/2):((b==0)?((e+f+c)/2):e)") 
+  # calc mXn for corrective move
+  # if size caused move, center - current_size/2, else
+  # if center caused move, current_center - size/2,
+  # else current mXn
+  field(CMTH, "mXn for corrective move")
+  field(CLCH, "(a==0)?(d-(e-f)/2):((b==0)?((e+f-c)/2):f)")
+  field(FLNK, "$(P)$(SLIT)adjustMotors")
 }
 record(sseq, "$(P)$(SLIT)adjustMotors") {
-	field(SDIS, "$(P)$(SLIT)doSync")
-	field(DISV, "0")
+  field(SDIS, "$(P)$(SLIT)doSync")
+  field(DISV, "0")
 
-	field(DOL1, "$(P)$(SLIT)tSyncCalc.G")
-	field(LNK1, "$(P)$(mXp) CA")
-	field(WAIT1, "After2")
+  field(DOL1, "$(P)$(SLIT)tSyncCalc.G")
+  field(LNK1, "$(P)$(mXp) CA")
+  field(WAIT1, "After2")
 
-	field(DOL2, "$(P)$(SLIT)tSyncCalc.H")
-	field(LNK2, "$(P)$(mXn) CA")
-	field(WAIT2, "After2")
+  field(DOL2, "$(P)$(SLIT)tSyncCalc.H")
+  field(LNK2, "$(P)$(mXn) CA")
+  field(WAIT2, "After2")
 
-	field(LNK3, "$(P)$(SLIT)tSync.PROC PP")
+  field(LNK3, "$(P)$(SLIT)tSync.PROC PP")
 }
 record(transform, "$(P)$(SLIT)tSync") {
-	field(DESC, "xp(a), xn(b)->siz(c),cntr(d)")
-	field(SDIS, "$(P)$(SLIT)syncOrInit PP")
-	field(DISV, "0")
-	field(EGU, "mm")
-	field(PREC, "5")
+  field(DESC, "xp(a), xn(b)->siz(c),cntr(d)")
+  field(SDIS, "$(P)$(SLIT)syncOrInit PP")
+  field(DISV, "0")
+  field(EGU, "mm")
+  field(PREC, "5")
 
-	field(CMTA, "X+ slit")
-	field(INPA, "$(P)$(mXp)")
-	field(OUTA, "$(P)$(SLIT)tFwd.A NPP")
+  field(CMTA, "X+ slit")
+  field(INPA, "$(P)$(mXp)")
+  field(OUTA, "$(P)$(SLIT)tFwd.A NPP")
 
-	field(CMTB, "X- slit")
-	field(INPB, "$(P)$(mXn)")
-	field(OUTB, "$(P)$(SLIT)tFwd.B NPP")
+  field(CMTB, "X- slit")
+  field(INPB, "$(P)$(mXn)")
+  field(OUTB, "$(P)$(SLIT)tFwd.B NPP")
 
-	field(CMTC, "Size")
-	field(CLCC, "a-b")
-	field(OUTC, "$(P)$(SLIT)tFwd.C NPP")
+  field(CMTC, "Size")
+  field(CLCC, "a-b")
+  field(OUTC, "$(P)$(SLIT)tFwd.C NPP")
 
-	field(CMTD, "Center")
-	field(CLCD, "(a+b)/2")
-	field(OUTD, "$(P)$(SLIT)tFwd.D NPP")
+  field(CMTD, "Center")
+  field(CLCD, "(a+b)/2")
+  field(OUTD, "$(P)$(SLIT)tFwd.D NPP")
 
-	field(CMTE, "process tFwd")
-	field(CLCE, "0")
-	field(OUTE, "$(P)$(SLIT)tFwd.PROC PP")
+  field(CMTE, "process tFwd")
+  field(CLCE, "0")
+  field(OUTE, "$(P)$(SLIT)tFwd.PROC PP")
 
-	field(CMTF, "close gate")
-	field(CLCF, "0")
-	field(OUTF, "$(P)$(SLIT)gate PP")
+  field(CMTF, "close gate")
+  field(CLCF, "0")
+  field(OUTF, "$(P)$(SLIT)gate PP")
 
-	field(CMTM, "clear doSync")
-	field(M, "0")
-	field(OUTM, "$(P)$(SLIT)doSync NPP")
+  field(CMTM, "clear doSync")
+  field(M, "0")
+  field(OUTM, "$(P)$(SLIT)doSync NPP")
 
-	field(CMTL, "clear doInit")
-	field(L, "0")
-	field(OUTL, "$(P)$(SLIT)doInit NPP")
+  field(CMTL, "clear doInit")
+  field(L, "0")
+  field(OUTL, "$(P)$(SLIT)doInit NPP")
 }
 
 record(transform, "$(P)$(SLIT)tRev") {
@@ -531,8 +531,8 @@ record(transform, "$(P)$(SLIT)tLimits") {
 }
 
 record(sseq, "$(P)$(SLIT)writeMotors") {
-	field(SDIS, "$(P)$(SLIT)syncOrInit PP")
-	field(DISV, "1")
+  field(SDIS, "$(P)$(SLIT)syncOrInit PP")
+  field(DISV, "1")
   field(DLY1, ".02")
   field(DOL1, "$(P)$(SLIT)tFwd.F")
   field(LNK1, "$(P)$(SLIT)mXpPut PP")
