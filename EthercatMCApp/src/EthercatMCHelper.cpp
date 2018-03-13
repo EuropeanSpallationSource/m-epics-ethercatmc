@@ -553,7 +553,8 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
 
 asynStatus EthercatMCAxis::readConfigFile(void)
 {
-  const char *setRaw_str = "setRaw ";
+  const char *setRaw_str = "setRaw "; /* Raw is Raw */
+  const char *setValue_str = "setValue "; /* prefixed with ADSPORT */
   const char *setSim_str = "setSim ";
   const char *setADRinteger_str = "setADRinteger ";
   const char *setADRdouble_str  = "setADRdouble ";
@@ -612,6 +613,13 @@ asynStatus EthercatMCAxis::readConfigFile(void)
       while (*cfg_txt_p == ' ') cfg_txt_p++;
 
       snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", cfg_txt_p);
+      status = writeReadACK();
+    } else if (!strncmp(setValue_str, rdbuf, strlen(setValue_str))) {
+      const char *cfg_txt_p = &rdbuf[strlen(setValue_str)];
+      while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+      snprintf(pC_->outString_, sizeof(pC_->outString_), "%s%s",
+               drvlocal.adsport_str, cfg_txt_p);
       status = writeReadACK();
     } else if (!strncmp(setSim_str, rdbuf, strlen(setSim_str))) {
       if (drvlocal.supported.bSIM) {
