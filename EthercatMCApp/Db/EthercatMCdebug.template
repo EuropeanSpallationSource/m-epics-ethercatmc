@@ -11,7 +11,6 @@ record(ao,"$(PREFIX)$(R)HomPos") {
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos")
-    field(SCAN, "I/O Intr")
     info(asyn:READBACK,"1")
 }
 
