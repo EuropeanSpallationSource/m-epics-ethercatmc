@@ -9,18 +9,16 @@ PROJECT=EthercatMC
 AUTO_DEPENDENCIES = NO
 USR_DEPENDENCIES += motor,torstenbogershausen
 
-MOTOR=/
-
 SOURCES = \
-  EthercatMCApp/src/EthercatMCAxis.cpp \
-  EthercatMCApp/src/EthercatMCController.cpp \
-  EthercatMCApp/src/EthercatMCHelper.cpp \
-  EthercatMCApp/src/EthercatMCMain.cpp
+  EthercatMcSup/src/EthercatMCAxis.cpp \
+  EthercatMcSup/src/EthercatMCController.cpp \
+  EthercatMcSup/src/EthercatMCHelper.cpp
+
 
 
 TEMPLATES = \
-  EthercatMCApp/Db/EthercatMC.template \
-  EthercatMCApp/Db/EthercatMCdebug.template \
-  EthercatMCApp/Db/2slit_soft.template
+  EthercatMcSup/Db/EthercatMC.template \
+  EthercatMcSup/Db/EthercatMCdebug.template \
+  EthercatMcSup/Db/2slit_soft.template
 
 #MISCS = \
