@@ -153,8 +153,8 @@ $(pv_value)</tooltip>
         <path>EthercatMCaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m3</M>
-          <R>m3-</R>
+          <M>SltH-xp</M>
+          <R>SltH-xp-</R>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -193,7 +193,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m3</text>
+    <text>IOC:SltH-xp</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -210,8 +210,8 @@ $(pv_value)</tooltip>
         <path>EthercatMCaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m4</M>
-          <R>m4-</R>
+          <M>SltH-xn</M>
+          <R>SltH-xn-</R>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -250,7 +250,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m4</text>
+    <text>IOC:SltH-xn</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -267,8 +267,8 @@ $(pv_value)</tooltip>
         <path>EthercatMCaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m5</M>
-          <R>m5-</R>
+          <M>SltH-Center</M>
+          <R>SltH-Center-</R>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -307,7 +307,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m5</text>
+    <text>IOC:SltH-Center</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -324,8 +324,8 @@ $(pv_value)</tooltip>
         <path>EthercatMCaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m6</M>
-          <R>m6-</R>
+          <M>SltH-Gap</M>
+          <R>SltH-Gap-</R>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -364,7 +364,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m6</text>
+    <text>IOC:SltH-Gap</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -495,354 +495,6 @@ $(pv_value)</tooltip>
         <path>EthercatMCaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>xp</M>
-          <R>xp-</R>
-          <P>IOC2:</P>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_9</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text>IOC2:xp</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>-1c7710df:158ce36c33c:-6aaf</wuid>
-    <x>156</x>
-    <y>36</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>xg</M>
-          <R>xg-</R>
-          <P>IOC2:</P>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_10</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text>IOC2:xg</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>-1c7710df:158ce36c33c:-6948</wuid>
-    <x>156</x>
-    <y>72</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>xl</M>
-          <R>xl-</R>
-          <P>IOC2:</P>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_11</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text>IOC2:xl</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>-5bd7c02:159da108f66:-7ebb</wuid>
-    <x>156</x>
-    <y>108</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>xr</M>
-          <R>xr-</R>
-          <P>IOC2:</P>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_12</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text>IOC2:xr</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>-5bd7c02:159da108f66:-7eb6</wuid>
-    <x>156</x>
-    <y>144</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>Axis1</M>
-          <R>Axis1-</R>
-          <P>IOC2:</P>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_13</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text>IOC2:Axis1</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>61faf7d7:15c52a5e3ff:-7ec9</wuid>
-    <x>156</x>
-    <y>180</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>Axis2</M>
-          <R>Axis2-</R>
-          <P>IOC2:</P>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_14</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text>IOC2:Axis2</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>61faf7d7:15c52a5e3ff:-7ec2</wuid>
-    <x>156</x>
-    <y>216</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
           <M>m1</M>
           <R>m1-</R>
           <P>LabS-ESSIIP:MC-MCU-01:</P>
@@ -906,10 +558,10 @@ $(pv_value)</tooltip>
           <P>IOC:</P>
           <M1>m1</M1>
           <M2>m2</M2>
-          <M3>SltV-xp</M3>
-          <M4>SltV-xn</M4>
-          <M5>SltV-Center</M5>
-          <M6>SltV-Gap</M6>
+          <M3>SltH-xp</M3>
+          <M4>SltH-xn</M4>
+          <M5>SltH-Center</M5>
+          <M6>SltH-Gap</M6>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -948,7 +600,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:SltV</text>
+    <text>IOC:SltH</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>

@@ -1,12 +1,12 @@
 # Solved: when the slit is stopped, the hard motors are rarely in exactly
 # the positions they should be, because one was started slightly before the
-# other.  Thus, if you move 'center' and stop during the move, 'size' will sync
+# other.  Thus, if you move 'Center' and stop during the move, 'Gap' will sync
 # to a slightly new value. 
 # New sync strategy:
-# If 'center' was moved and stopped, calc new positions for (xn,xp) so that
-# 'size' will be preserved, move hard motors to those positions, and sync.
-# if 'size' was moved and stopped, calc new positions for (xn,xp) so that
-# 'center' will be preserved, move hard motors to those positions, and sync.
+# If 'Center' was moved and stopped, calc new positions for (xn,xp) so that
+# 'Gap' will be preserved, move hard motors to those positions, and sync.
+# if 'Gap' was moved and stopped, calc new positions for (xn,xp) so that
+# 'Center' will be preserved, move hard motors to those positions, and sync.
 # if xn or xp was moved, just sync.
 #
 
@@ -14,8 +14,8 @@
 record(transform, "$(P)$(SLIT)setMonitor") {
   field(INPA, "$(P)$(SLIT)xp.SET CP")
   field(INPB, "$(P)$(SLIT)xn.SET CP")
-  field(INPC, "$(P)$(SLIT)size.SET CP")
-  field(INPD, "$(P)$(SLIT)center.SET CP")
+  field(INPC, "$(P)$(SLIT)Gap.SET CP")
+  field(INPD, "$(P)$(SLIT)Center.SET CP")
   field(CLCE, "a||b||c||d")
   field(OUTE, "$(P)$(mXn).SET CA")
   field(CLCF, "e")
@@ -57,14 +57,14 @@ record(transform, "$(P)$(SLIT)monitorStop") {
   # listen to our soft motors' .STOP fields
   field(INPA, "$(P)$(SLIT)xp.STOP CP MS")
   field(INPB, "$(P)$(SLIT)xn.STOP CP MS")
-  field(INPC, "$(P)$(SLIT)size.STOP CP MS")
-  field(INPD, "$(P)$(SLIT)center.STOP CP MS")
+  field(INPC, "$(P)$(SLIT)Gap.STOP CP MS")
+  field(INPD, "$(P)$(SLIT)Center.STOP CP MS")
   # also listen to the soft motors of the other 2slit_soft database
   # that we're paired with (if it exists)
   field(INPE, "$(P)$(PAIRED_WITH=)xp.STOP CP MS")
   field(INPF, "$(P)$(PAIRED_WITH=)xn.STOP CP MS")
-  field(INPG, "$(P)$(PAIRED_WITH=)size.STOP CP MS")
-  field(INPH, "$(P)$(PAIRED_WITH=)center.STOP CP MS")
+  field(INPG, "$(P)$(PAIRED_WITH=)Gap.STOP CP MS")
+  field(INPH, "$(P)$(PAIRED_WITH=)Center.STOP CP MS")
   # I==any soft motor was told to stop
   field(CLCI, "a||b||c||d||e||f||g||h")
   field(OUTI, "$(P)$(SLIT)weSaidStop PP MS")
@@ -84,9 +84,9 @@ record(seq, "$(P)$(SLIT)doStop") {
   field(DOL2, "1")
   field(LNK2, "$(P)$(SLIT)xn.STOP PP")
   field(DOL3, "1")
-  field(LNK3, "$(P)$(SLIT)size.STOP PP")
+  field(LNK3, "$(P)$(SLIT)Gap.STOP PP")
   field(DOL4, "1")
-  field(LNK4, "$(P)$(SLIT)center.STOP PP")
+  field(LNK4, "$(P)$(SLIT)Center.STOP PP")
   field(DOL5, "1")
   field(LNK5, "$(P)$(mXp).STOP PP")
   field(DOL6, "1")
@@ -112,7 +112,7 @@ record(motor, "$(P)$(SLIT)xp") {
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.A  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.A  NPP MS")
-  field(MRES, ".00001")
+  field(MRES, "1")
   field(RRES, "1")
   field(URIP, "Yes")
   field(PREC, "5")
@@ -129,7 +129,7 @@ record(motor, "$(P)$(SLIT)xn") {
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.B  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.B  NPP MS")
-  field(MRES, ".00001")
+  field(MRES, "1")
   field(RRES, "1")
   field(URIP, "Yes")
   field(PREC, "5")
@@ -139,14 +139,14 @@ record(motor, "$(P)$(SLIT)xn") {
   field(RTRY, "0")
 }
 
-record(motor, "$(P)$(SLIT)size") {
-  field(DESC, "$(SLIT) Size")
+record(motor, "$(P)$(SLIT)Gap") {
+  field(DESC, "$(SLIT) Gap")
   field(IGSET, "1")
   alias("$(P)$(SLIT)m3")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.C  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.C  NPP MS")
-  field(MRES, ".00001")
+  field(MRES, "1")
   field(RRES, "1")
   field(URIP, "Yes")
   field(PREC, "5")
@@ -156,14 +156,14 @@ record(motor, "$(P)$(SLIT)size") {
   field(RTRY, "0")
 }
 
-record(motor, "$(P)$(SLIT)center") {
+record(motor, "$(P)$(SLIT)Center") {
   field(DESC, "$(SLIT) Center")
   field(IGSET, "1")
   alias("$(P)$(SLIT)m4")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.D  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.D  NPP MS")
-  field(MRES, ".00001")
+  field(MRES, "1")
   field(RRES, "1")
   field(URIP, "Yes")
   field(PREC, "5")
@@ -207,24 +207,24 @@ record(bo, "$(P)$(SLIT)xnWasPassive") {
   field(OUT, "$(P)$(SLIT)spectator.B PP")
 }
 
-record(ao, "$(P)$(SLIT)sizeBPut") {
+record(ao, "$(P)$(SLIT)GapBPut") {
   field(DTYP, "Soft Channel")
-  field(SDIS, "$(P)$(SLIT)size.PACT  NPP MS")
-  field(OUT, "$(P)$(SLIT)size.VAL  PP MS")
-  field(FLNK, "$(P)$(SLIT)sizeWasPassive")
+  field(SDIS, "$(P)$(SLIT)Gap.PACT  NPP MS")
+  field(OUT, "$(P)$(SLIT)Gap.VAL  PP MS")
+  field(FLNK, "$(P)$(SLIT)GapWasPassive")
 }
-record(bo, "$(P)$(SLIT)sizeWasPassive") {
+record(bo, "$(P)$(SLIT)GapWasPassive") {
   field(DOL, "1")
   field(OUT, "$(P)$(SLIT)spectator.C PP")
 }
 
-record(ao, "$(P)$(SLIT)centerBPut") {
+record(ao, "$(P)$(SLIT)CenterBPut") {
   field(DTYP, "Soft Channel")
-  field(SDIS, "$(P)$(SLIT)center.PACT  NPP MS")
-  field(OUT, "$(P)$(SLIT)center.VAL  PP MS")
-  field(FLNK, "$(P)$(SLIT)centerWasPassive")
+  field(SDIS, "$(P)$(SLIT)Center.PACT  NPP MS")
+  field(OUT, "$(P)$(SLIT)Center.VAL  PP MS")
+  field(FLNK, "$(P)$(SLIT)CenterWasPassive")
 }
-record(bo, "$(P)$(SLIT)centerWasPassive") {
+record(bo, "$(P)$(SLIT)CenterWasPassive") {
   field(DOL, "1")
   field(OUT, "$(P)$(SLIT)spectator.D PP")
 }
@@ -270,7 +270,7 @@ record(scalcout, "$(P)$(SLIT)mXp_nameCalc") {
 }
 
 record(transform, "$(P)$(SLIT)tFwd") {
-  field(DESC, "xp(a),xn(b)->size(c),center")
+  field(DESC, "xp(a),xn(b)->Gap(c),Center")
   field(CLCA, "d+c/2")
   field(CLCB, "d-c/2")
   field(CLCC, "a-b")
@@ -280,15 +280,15 @@ record(transform, "$(P)$(SLIT)tFwd") {
   field(INPE, "1")
   field(OUTA, "$(P)$(SLIT)xpBPut.VAL  PP MS")
   field(OUTB, "$(P)$(SLIT)xnBPut.VAL  PP MS")
-  field(OUTC, "$(P)$(SLIT)sizeBPut.VAL  PP MS")
-  field(OUTD, "$(P)$(SLIT)centerBPut.VAL  PP MS")
+  field(OUTC, "$(P)$(SLIT)GapBPut.VAL  PP MS")
+  field(OUTD, "$(P)$(SLIT)CenterBPut.VAL  PP MS")
   field(OUTE, "$(P)$(SLIT)gatePut.VAL  PP MS")
   field(OUTF, "$(P)$(SLIT)writeMotors.PROC PP MS")
   field(PREC, "3")
   field(CMTA, "X+ slit")
   field(CMTB, "X- slit")
-  field(CMTC, "size")
-  field(CMTD, "center")
+  field(CMTC, "Gap")
+  field(CMTD, "Center")
   field(CMTE, "gate")
   field(CMTF, "send X+ to motor")
   field(CMTG, "send X- to motor")
@@ -312,8 +312,8 @@ record(bo, "$(P)$(SLIT)clearSoftMove") {
 record(dfanout, "$(P)$(SLIT)isSoftMove") {
   field(OUTA, "$(P)$(SLIT)xp.LOCK")
   field(OUTB, "$(P)$(SLIT)xn.LOCK")
-  field(OUTC, "$(P)$(SLIT)size.LOCK")
-  field(OUTD, "$(P)$(SLIT)center.LOCK")
+  field(OUTC, "$(P)$(SLIT)Gap.LOCK")
+  field(OUTD, "$(P)$(SLIT)Center.LOCK")
 }
 
 record(calcout, "$(P)$(SLIT)calcDone") {
@@ -403,10 +403,10 @@ record(bo, "$(P)$(SLIT)doSyncPut") {
   field(DISV, "0")
   field(OUT, "$(P)$(SLIT)tSyncCalc.PROC PP")
 }
-# if center was moved and stopped, calc new positions for (xn,xp) so that
-# size will be preserved, move hard motors to those positions, and sync.
-# if size was moved and stopped, calc new positions for (xn,xp) so that
-# center will be preserved, move hard motors to those positions, and sync.
+# if Center was moved and stopped, calc new positions for (xn,xp) so that
+# Gap will be preserved, move hard motors to those positions, and sync.
+# if Gap was moved and stopped, calc new positions for (xn,xp) so that
+# Center will be preserved, move hard motors to those positions, and sync.
 # if xn or xp was moved, just sync.
 record(transform, "$(P)$(SLIT)tSyncCalc") {
   field(SDIS, "$(P)$(SLIT)doSync")
@@ -415,27 +415,27 @@ record(transform, "$(P)$(SLIT)tSyncCalc") {
   field(PREC, "5")
 
   # who caused move?
-  field(CMTA, "size didn't cause move")
+  field(CMTA, "Gap didn't cause move")
   field(INPA, "$(P)$(SLIT)latchSpectator.C")
-  field(CMTB, "center didn't cause move")
+  field(CMTB, "Center didn't cause move")
   field(INPB, "$(P)$(SLIT)latchSpectator.D")
-  # commanded size, center
-  field(CMTC, "commanded size")
+  # commanded Gap, Center
+  field(CMTC, "commanded Gap")
   field(INPC, "$(P)$(SLIT)tFwd.C")
-  field(CMTD, "commanded center")
+  field(CMTD, "commanded Center")
   field(INPD, "$(P)$(SLIT)tFwd.D")
   # current mXp, mXn
   field(INPE, "$(P)$(mXp)")
   field(INPF, "$(P)$(mXn)")
   # calc mXp for corrective move
-  # if size caused move, center + current_size/2, else
-  # if center caused move, current_center + size/2,
+  # if Gap caused move, Center + current_Gap/2, else
+  # if Center caused move, current_Center + Gap/2,
   # else current mXp
   field(CMTG, "mXp for corrective move")
   field(CLCG, "(a==0)?(d+(e-f)/2):((b==0)?((e+f+c)/2):e)") 
   # calc mXn for corrective move
-  # if size caused move, center - current_size/2, else
-  # if center caused move, current_center - size/2,
+  # if Gap caused move, Center - current_Gap/2, else
+  # if Center caused move, current_Center - Gap/2,
   # else current mXn
   field(CMTH, "mXn for corrective move")
   field(CLCH, "(a==0)?(d-(e-f)/2):((b==0)?((e+f-c)/2):f)")
@@ -470,7 +470,7 @@ record(transform, "$(P)$(SLIT)tSync") {
   field(INPB, "$(P)$(mXn)")
   field(OUTB, "$(P)$(SLIT)tFwd.B NPP")
 
-  field(CMTC, "Size")
+  field(CMTC, "Gap")
   field(CLCC, "a-b")
   field(OUTC, "$(P)$(SLIT)tFwd.C NPP")
 
@@ -505,7 +505,7 @@ record(transform, "$(P)$(SLIT)tRev") {
   field(PREC, "5")
   field(CMTA, "X+ slit")
   field(CMTB, "X- slit")
-  field(CMTC, "Size")
+  field(CMTC, "Gap")
   field(CMTD, "Center")
 }
 
@@ -523,10 +523,10 @@ record(transform, "$(P)$(SLIT)tLimits") {
   field(OUTB, "$(P)$(SLIT)xp.HLM  NPP MS")
   field(OUTC, "$(P)$(SLIT)xn.LLM  NPP MS")
   field(OUTD, "$(P)$(SLIT)xn.HLM  NPP MS")
-  field(OUTE, "$(P)$(SLIT)size.LLM  NPP MS")
-  field(OUTF, "$(P)$(SLIT)size.HLM  NPP MS")
-  field(OUTG, "$(P)$(SLIT)center.LLM  NPP MS")
-  field(OUTH, "$(P)$(SLIT)center.HLM  NPP MS")
+  field(OUTE, "$(P)$(SLIT)Gap.LLM  NPP MS")
+  field(OUTF, "$(P)$(SLIT)Gap.HLM  NPP MS")
+  field(OUTG, "$(P)$(SLIT)Center.LLM  NPP MS")
+  field(OUTH, "$(P)$(SLIT)Center.HLM  NPP MS")
   field(PREC, "3")
 }
 

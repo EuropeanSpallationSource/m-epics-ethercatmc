@@ -26,8 +26,8 @@ ifneq (,$(findstring /,$(CALC)))
   EthercatMC_LIBS += calc
 endif
 ifneq (,$(findstring /,$(MOTOR)))
-  #EthercatMC_DBD += devSoftMotor.dbd
   EthercatMC_DBD += motorSupport.dbd
+  EthercatMC_DBD += devSoftMotor.dbd
   USR_CPPFLAGS += -DMOTORNOTAXIS=1
   EthercatMC_LIBS += motor
   EthercatMC_LIBS += softMotor
