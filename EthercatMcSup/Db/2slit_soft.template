@@ -108,7 +108,7 @@ record(motor, "$(P)$(SLIT)xp") {
   # than in individual motor records
   field(IGSET, "1")
   # spec might be able to use this alias
-  alias("$(P)$(SLIT)m2")
+  #alias("$(P)$(SLIT)m2")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.A  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.A  NPP MS")
@@ -125,7 +125,7 @@ record(motor, "$(P)$(SLIT)xp") {
 record(motor, "$(P)$(SLIT)xn") {
   field(DESC, "$(SLIT) X-")
   field(IGSET, "1")
-  alias("$(P)$(SLIT)m1")
+  #alias("$(P)$(SLIT)m1")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.B  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.B  NPP MS")
@@ -142,7 +142,7 @@ record(motor, "$(P)$(SLIT)xn") {
 record(motor, "$(P)$(SLIT)Gap") {
   field(DESC, "$(SLIT) Gap")
   field(IGSET, "1")
-  alias("$(P)$(SLIT)m3")
+  #alias("$(P)$(SLIT)m3")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.C  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.C  NPP MS")
@@ -159,7 +159,7 @@ record(motor, "$(P)$(SLIT)Gap") {
 record(motor, "$(P)$(SLIT)Center") {
   field(DESC, "$(SLIT) Center")
   field(IGSET, "1")
-  alias("$(P)$(SLIT)m4")
+  #alias("$(P)$(SLIT)m4")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.D  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.D  NPP MS")
