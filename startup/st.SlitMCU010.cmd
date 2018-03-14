@@ -22,7 +22,7 @@ epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SlitAxisMCU010-1.cfg;encode
 
 < EthercatMCController.cmd
 < EthercatMCAxis.cmd
-< EthercatMCAxisdebug.cmd
+#< EthercatMCAxisdebug.cmd
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SlitAxisMCU010-2.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2;HomProc=2;HomPos=172")
 
@@ -32,4 +32,12 @@ epicsEnvSet("R",             "$(SM_R=m2-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=Upper=Left)")
 < EthercatMCAxis.cmd
-< EthercatMCAxisdebug.cmd
+#< EthercatMCAxisdebug.cmd
+
+
+epicsEnvSet("P",             "$(PREFIX)")
+epicsEnvSet("SLIT",          "$(SM_SLIT=SlitV-)")
+epicsEnvSet("mXp",            "$(SM_mXp=m2)")
+epicsEnvSet("mXn",            "$(SM_mXp=m1)")
+
+< EthercatMC2slit.cmd
