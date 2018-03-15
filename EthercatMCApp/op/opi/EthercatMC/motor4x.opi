@@ -3137,9 +3137,9 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Sans" height="9" style="0" />
+      <fontdata fontName="Sans" height="11" style="0" />
     </font>
-    <width>94</width>
+    <width>59</width>
     <border_style>0</border_style>
     <rules />
     <pv_value />
@@ -3188,9 +3188,9 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Sans" height="9" style="0" />
+      <fontdata fontName="Sans" height="11" style="0" />
     </font>
-    <width>94</width>
+    <width>59</width>
     <border_style>0</border_style>
     <rules />
     <pv_value />
@@ -3892,9 +3892,9 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Sans" height="9" style="0" />
+      <fontdata fontName="Sans" height="11" style="0" />
     </font>
-    <width>94</width>
+    <width>59</width>
     <border_style>0</border_style>
     <rules />
     <pv_value />
@@ -3943,9 +3943,9 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Sans" height="9" style="0" />
+      <fontdata fontName="Sans" height="11" style="0" />
     </font>
-    <width>94</width>
+    <width>59</width>
     <border_style>0</border_style>
     <rules />
     <pv_value />
@@ -4737,9 +4737,9 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Sans" height="9" style="0" />
+      <fontdata fontName="Sans" height="11" style="0" />
     </font>
-    <width>94</width>
+    <width>59</width>
     <border_style>0</border_style>
     <rules />
     <pv_value />
@@ -4788,9 +4788,9 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Sans" height="9" style="0" />
+      <fontdata fontName="Sans" height="11" style="0" />
     </font>
-    <width>94</width>
+    <width>59</width>
     <border_style>0</border_style>
     <rules />
     <pv_value />
@@ -5582,9 +5582,9 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Sans" height="9" style="0" />
+      <fontdata fontName="Sans" height="11" style="0" />
     </font>
-    <width>94</width>
+    <width>59</width>
     <border_style>0</border_style>
     <rules />
     <pv_value />
@@ -5633,9 +5633,9 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Sans" height="9" style="0" />
+      <fontdata fontName="Sans" height="11" style="0" />
     </font>
-    <width>94</width>
+    <width>59</width>
     <border_style>0</border_style>
     <rules />
     <pv_value />
