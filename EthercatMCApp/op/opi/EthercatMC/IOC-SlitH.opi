@@ -268,7 +268,7 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>SltH-Center</M>
-          <R>SltH-Center-</R>
+          <R>m1-</R>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -325,7 +325,7 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>SltH-Gap</M>
-          <R>SltH-Gap-</R>
+          <R>m2-</R>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -492,12 +492,22 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motor4x.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m1</M>
-          <R>m1-</R>
-          <P>LabS-ESSIIP:MC-MCU-01:</P>
+          <P>IOC:</P>
+          <M1>SltH-Center</M1>
+          <M2>SltH-Gap</M2>
+          <M3>SltH-xp</M3>
+          <M4>SltH-xn</M4>
+          <M5>m1</M5>
+          <M6>m2</M6>
+          <R1>SltH-Center-</R1>
+          <R2>SltH-Gap-</R2>
+          <R3>SltH-xp-</R3>
+          <R4>SltH-xn-</R4>
+          <R5>m1-</R5>
+          <R6>m2-</R6>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -536,7 +546,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text> LabS-ESSIIP:MC-MCU-01:m1</text>
+    <text>Ioc:motor4x</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
