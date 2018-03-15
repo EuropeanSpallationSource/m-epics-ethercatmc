@@ -4657,7 +4657,7 @@ $(pv_value)</tooltip>
         <path>motorx_help.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
+          <M>$(M3)</M>
         </macros>
         <replace>0</replace>
         <description>Help</description>
@@ -4666,7 +4666,7 @@ $(pv_value)</tooltip>
         <path>motorx_more.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
+          <M>$(M3)</M>
         </macros>
         <replace>0</replace>
         <description>More</description>
@@ -4675,7 +4675,7 @@ $(pv_value)</tooltip>
         <path>motorx_setup.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
+          <M>$(M3)</M>
         </macros>
         <replace>0</replace>
         <description>Setup</description>
@@ -4684,7 +4684,7 @@ $(pv_value)</tooltip>
         <path>motorx_all.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
+          <M>$(M3)</M>
         </macros>
         <replace>0</replace>
         <description>All</description>
@@ -4693,7 +4693,7 @@ $(pv_value)</tooltip>
         <path>scanParms.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <Q>$(M1)</Q>
+          <Q>$(M3)</Q>
           <PV>$(M3)</PV>
         </macros>
         <replace>0</replace>
@@ -4702,7 +4702,7 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>5</x>
+    <x>245</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -5502,7 +5502,7 @@ $(pv_value)</tooltip>
         <path>motorx_help.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
+          <M>$(M4)</M>
         </macros>
         <replace>0</replace>
         <description>Help</description>
@@ -5511,7 +5511,7 @@ $(pv_value)</tooltip>
         <path>motorx_more.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
+          <M>$(M4)</M>
         </macros>
         <replace>0</replace>
         <description>More</description>
@@ -5520,7 +5520,7 @@ $(pv_value)</tooltip>
         <path>motorx_setup.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
+          <M>$(M4)</M>
         </macros>
         <replace>0</replace>
         <description>Setup</description>
@@ -5529,7 +5529,7 @@ $(pv_value)</tooltip>
         <path>motorx_all.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
+          <M>$(M4)</M>
         </macros>
         <replace>0</replace>
         <description>All</description>
@@ -5538,8 +5538,8 @@ $(pv_value)</tooltip>
         <path>scanParms.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <Q>$(M2)</Q>
-          <PV>$(M2)</PV>
+          <Q>$(M4)</Q>
+          <PV>$(M4)</PV>
         </macros>
         <replace>0</replace>
         <description>Setup scan parameters</description>
@@ -5547,7 +5547,7 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>125</x>
+    <x>365</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
