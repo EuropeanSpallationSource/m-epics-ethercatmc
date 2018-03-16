@@ -492,7 +492,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor4x.opi</path>
+        <path>2slit_soft.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <P>IOC:</P>
@@ -546,7 +546,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>Ioc:motor4x</text>
+    <text>IOC:SltH 2slit_soft.opi</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
