@@ -392,8 +392,8 @@ $(pv_value)</tooltip>
           <R2>SltH-Gap-</R2>
           <R3>SltH-xp-</R3>
           <R4>SltH-xn-</R4>
-          <R5>m1-</R5>
-          <R6>m2-</R6>
+          <RXP>m1-</RXP>
+          <RXN>m2-</RXN>
         </macros>
         <mode>1</mode>
         <description></description>
