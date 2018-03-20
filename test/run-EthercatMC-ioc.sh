@@ -27,13 +27,12 @@ if test -z "$EPICS_BASE";then
   exit 1
 fi
 
-#Need a add a dot, needs to be improved later
-MOTORCFG=".$1"
+MOTORCFG="$1"
 export MOTORCFG
 echo MOTORCFG=$MOTORCFG
 (
   cd ../startup &&
-  if ! test -f st$MOTORCFG.cmd; then
+  if ! test -f st.$MOTORCFG.cmd; then
     CMDS=$(echo st.*.cmd | sed -e "s/st\.//g" -e "s/\.cmd//g")
     #echo CMDS=$CMDS
     test -n "$1" && echo >&2 "not found st.${1}.cmd"
@@ -97,14 +96,14 @@ export MOTORIP MOTORPORT
     fi
   else
     #EEE
-    if sed -e "s/#.*//" <../startup/st${MOTORCFG}.cmd |
+    if sed -e "s/#.*//" <../startup/st.${MOTORCFG}.cmd |
         grep "require *axisCore,.*[A-Za-z]"; then
       (cd ../../../axisCore && make install) || {
         echo >&2 make install failed
         exit 1
       }
     fi &&
-    if sed -e "s/#.*//" <../startup/st${MOTORCFG}.cmd |
+    if sed -e "s/#.*//" <../startup/st.${MOTORCFG}.cmd |
         grep "require *EthercatMC,.*[A-Za-z]"; then
       (cd .. && make install) || {
         echo >&2 make install failed
@@ -131,7 +130,7 @@ export MOTORIP MOTORPORT
       cp "$src" "$dst"
     done &&
     rm -f $stcmddst &&
-    sed  <st${MOTORCFG}.cmd  \
+    sed  <st.${MOTORCFG}.cmd  \
       -e "s/require axisCore,USER/require axisCore,$USER/" \
       -e "s/require motor,USER/require motor,$USER/" \
       -e "s/require EthercatMC,USER/require EthercatMC,$USER/" \
@@ -155,7 +154,8 @@ export MOTORIP MOTORPORT
       dst=${src##*/}
       echo sed PWD=$PWD src=$src dst=$dst
       sed <"$src" >"$dst" \
-        -e "s%dbLoadRecords(\"%dbLoadRecords(\"./$DBMOTOR/%"
+        -e "s%dbLoadRecords(\"%dbLoadRecords(\"./$DBMOTOR/%" \
+        -e "s%adsAsynPortDriverConfigure%#adsAsynPortDriverConfigure%"
     done &&
     rm -f $stcmddst &&
     cat >$stcmddst <<-EOF &&
@@ -170,9 +170,9 @@ cd ${TOP}
 dbLoadDatabase "dbd/${APPXX}.dbd"
 ${APPXX}_registerRecordDeviceDriver pdbbase
 EOF
-   # Side note: st${MOTORCFG}.cmd needs extra patching
-   echo sed PWD=$PWD "<../../startup/st${MOTORCFG}.cmd >>$stcmddst"
-   sed <../../startup/st${MOTORCFG}.cmd  \
+   # Side note: st.${MOTORCFG}.cmd needs extra patching
+   echo sed PWD=$PWD "<../../startup/st.${MOTORCFG}.cmd >>$stcmddst"
+   sed <../../startup/st.${MOTORCFG}.cmd  \
       -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
       -e "s/127.0.0.1/$MOTORIP/" \
       -e "s/5000/$MOTORPORT/" \
