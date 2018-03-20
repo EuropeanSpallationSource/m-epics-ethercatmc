@@ -5574,8 +5574,8 @@ $(pv_value)</tooltip>
         <path>EthercatMCaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>$(M6)</M>
-          <R>$(R6)</R>
+          <M>$(MXN)</M>
+          <R>$(RXN)</R>
         </macros>
         <replace>0</replace>
         <description>Expert</description>

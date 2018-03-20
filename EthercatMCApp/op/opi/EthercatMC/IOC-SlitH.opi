@@ -381,19 +381,19 @@ $(pv_value)</tooltip>
         <path>2slit_soft.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <P>IOC:</P>
-          <M1>SltH-Center</M1>
-          <M2>SltH-Gap</M2>
-          <M3>SltH-xp</M3>
-          <M4>SltH-xn</M4>
-          <M5>m1</M5>
-          <M6>m2</M6>
-          <R1>SltH-Center-</R1>
-          <R2>SltH-Gap-</R2>
-          <R3>SltH-xp-</R3>
-          <R4>SltH-xn-</R4>
-          <RXP>m1-</RXP>
-          <RXN>m2-</RXN>
+          <P>HZB-V20:MC-</P>
+          <M1>SLT-01:SltH-Center</M1>
+          <M2>SLT-01:SltH-Gap</M2>
+          <M3>SLT-01:SltH-xp</M3>
+          <M4>SLT-01:SltH-xn</M4>
+          <R1>SLT-01:SltH-Center-</R1>
+          <R2>SLT-01:SltH-Gap-</R2>
+          <R3>SLT-01:SltH-xp-</R3>
+          <R4>SLT-01:SltH-xn-</R4>
+          <MXP>MCU-01:m1</MXP>
+          <MXN>MCU-01:m2</MXN>
+          <RXP>MCU-01:m1-</RXP>
+          <RXN>MCU-01:m2-</RXN>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -432,7 +432,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:SltH 2slit_soft.opi</text>
+    <text>HZB-V20:MC-SLT-01:SltH</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
