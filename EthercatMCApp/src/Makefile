@@ -54,6 +54,11 @@ EthercatMC_LIBS += motor
 EthercatMC_LIBS += softMotor
 endif
 
+ifneq (,$(findstring /,$(TWINCATADS)))
+EthercatMC_LIBS += ads
+EthercatMC_DBD  += ads.dbd
+endif
+
 
 EthercatMC_LIBS += EthercatMcSupport
 EthercatMC_LIBS += $(EPICS_BASE_IOC_LIBS)
