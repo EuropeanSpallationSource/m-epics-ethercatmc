@@ -36,6 +36,8 @@ typedef struct
   double deadTimeCompensation;
   int    positionLagMonitorEnable;
   unsigned nErrorId;
+  int    nHomProc;
+  double fHomPos;
 } cmd_Motor_cmd_type;
 
 typedef struct
@@ -113,6 +115,7 @@ static void init_axis(int axis_no)
 
 static const char * const ADSPORT_equals_str = "ADSPORT=";
 static const char * const Main_dot_str = "Main.";
+static const char * const MAIN_dot_str = "MAIN.";
 static const char * const getAxisDebugInfoData_str = "getAxisDebugInfoData";
 
 static const char *seperator_seperator = ";";
@@ -531,6 +534,32 @@ static void motorHandleOneArg(const char *myarg_1)
   /* Main.*/
   if (!strncmp(myarg_1, Main_dot_str, strlen(Main_dot_str))) {
     myarg_1 += strlen(Main_dot_str);
+  }
+  /* MAIN.*/
+  if (!strncmp(myarg_1, MAIN_dot_str, strlen(MAIN_dot_str))) {
+    myarg_1 += strlen(MAIN_dot_str);
+  }
+  /* M1_ commands */
+  nvals = sscanf(myarg_1, "M%d_", &motor_axis_no);
+  if (nvals == 1) {
+    char *tmp = strchr(myarg_1, '_');
+    if (tmp) {
+      AXIS_CHECK_RETURN(motor_axis_no);
+      myarg_1 = tmp+1; /* Jump over '_' */
+      /* EPICS_HOMPROC=1 */
+      nvals = sscanf(myarg_1, "EPICS_HOMPROC=%d", &iValue);
+      if (nvals == 1) {
+        cmd_Motor_cmd[motor_axis_no].nHomProc = iValue;
+        cmd_buf_printf("OK");
+        return;
+      }
+      nvals = sscanf(myarg_1, "EPICS_HOMPOS=%lf", &fValue);
+      if (nvals == 1) {
+        cmd_Motor_cmd[motor_axis_no].fHomPos = fValue;
+        cmd_buf_printf("OK");
+        return;
+      }
+    }
   }
 
   /* From here on, only M1. commands */
