@@ -163,7 +163,7 @@ export MOTORIP AMSID
 					-e "s%dbLoadRecords(\"%dbLoadRecords(\"./$DBMOTOR/%" \
 					-e "s%drvAsynIPPortConfigure%#%" \
 					-e "s%asynOctetSet.*putEos%#%" \
-					-e "s%# *adsAsynPortDriverConfigure%adsAsynPortDriverConfigure%"
+					-e "s%^# *adsAsynPortDriverConfigure%adsAsynPortDriverConfigure%"
     done &&
     rm -f $stcmddst &&
     cat >$stcmddst <<-EOF &&

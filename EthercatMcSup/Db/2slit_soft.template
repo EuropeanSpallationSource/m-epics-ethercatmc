@@ -509,6 +509,23 @@ record(transform, "$(P)$(SLIT)tRev") {
   field(CMTD, "Center")
 }
 
+# Convert the soft limits from the hard motor into the 4 soft motors
+# We have the 2 hard motors: $(P)$(mXp) and $(P)$(mXn)
+#
+# Rule 1: The positive blade is not allowed to go higher than HLM
+#  mXp.VAL <= mXp.HLM
+#  or
+#  mXp.VAL = (P)$(SLIT)Center + $(P)$(SLIT)Gap/2
+#  gives
+# (P)$(SLIT)Center + $(P)$(SLIT)Gap/2  <= mXp.HLM
+#
+# This gives a rule for the Center and the Gap:
+# (P)$(SLIT)Center.HLM = mXp.HLM - $(P)$(SLIT)Gap/2
+# $(P)$(SLIT)Gap.HLM = 2 * (mXp.HLM - (P)$(SLIT)Center)
+#
+#
+#
+
 record(transform, "$(P)$(SLIT)tLimits") {
   field(PHAS, "0")
   field(CLCE, "a-d")
