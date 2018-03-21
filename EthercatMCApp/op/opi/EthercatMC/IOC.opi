@@ -898,7 +898,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>4slit_soft.opi</path>
+        <path>HZB-V20_MC-MCU-01.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <P>HZB-V20:MC-</P>
@@ -926,6 +926,14 @@ $(pv_value)</tooltip>
           <MXN2>MCU-01:m3</MXN2>
           <RXP2>MCU-01:m4-</RXP2>
           <RXN2>MCU-01:m4-</RXN2>
+          <M9>MCU-01:m5</M9>
+          <M10>MCU-01:m6</M10>
+          <M11>MCU-01:m7</M11>
+          <M12>MCU-01:m8</M12>
+          <R9>MCU-01:m5-</R9>
+          <R10>MCU-01:m6-</R10>
+          <R11>MCU-01:m7-</R11>
+          <R12>MCU-01:m8-</R12>
         </macros>
         <mode>1</mode>
         <description></description>
