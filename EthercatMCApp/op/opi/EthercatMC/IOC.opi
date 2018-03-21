@@ -898,18 +898,42 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor6x.opi</path>
+        <path>HZB-V20_MC-MCU-01.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m1</M>
-          <R>m1-</R>
-          <P>IOC:</P>
-          <M1>m1</M1>
-          <M2>m2</M2>
-          <M3>SltV-xp</M3>
-          <M4>SltV-xn</M4>
-          <M5>SltV-Center</M5>
-          <M6>SltV-Gap</M6>
+          <P>HZB-V20:MC-</P>
+          <M1>SLT-01:SltH-Center</M1>
+          <M2>SLT-01:SltH-Gap</M2>
+          <M3>SLT-01:SltH-xp</M3>
+          <M4>SLT-01:SltH-xn</M4>
+          <R1>SLT-01:SltH-Center-</R1>
+          <R2>SLT-01:SltH-Gap-</R2>
+          <R3>SLT-01:SltH-xp-</R3>
+          <R4>SLT-01:SltH-xn-</R4>
+          <MXP1>MCU-01:m1</MXP1>
+          <MXN1>MCU-01:m2</MXN1>
+          <RXP1>MCU-01:m1-</RXP1>
+          <RXN1>MCU-01:m2-</RXN1>
+          <M5>SLT-01:SltV-Center</M5>
+          <M6>SLT-01:SltV-Gap</M6>
+          <M7>SLT-01:SltV-xp</M7>
+          <M8>SLT-01:SltV-xn</M8>
+          <R5>SLT-01:SltV-Center-</R5>
+          <R6>SLT-01:SltV-Gap-</R6>
+          <R7>SLT-01:SltV-xp-</R7>
+          <R8>SLT-01:SltV-xn-</R8>
+          <MXP2>MCU-01:m3</MXP2>
+          <MXN2>MCU-01:m3</MXN2>
+          <RXP2>MCU-01:m4-</RXP2>
+          <RXN2>MCU-01:m4-</RXN2>
+          <M9>MCU-01:m5</M9>
+          <M10>MCU-01:m6</M10>
+          <M11>MCU-01:m7</M11>
+          <M12>MCU-01:m8</M12>
+          <R9>MCU-01:m5-</R9>
+          <R10>MCU-01:m6-</R10>
+          <R11>MCU-01:m7-</R11>
+          <R12>MCU-01:m8-</R12>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -936,7 +960,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <height>31</height>
     <image></image>
-    <name>Action Button_16</name>
+    <name>Action Button_15</name>
     <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
@@ -948,14 +972,14 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:SltV</text>
+    <text>HZB-V20:MC-MCU-01</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
     <width>229</width>
-    <wuid>2e35ad33:1621a4c0c7f:-7867</wuid>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>30</x>
     <y>360</y>
   </widget>
