@@ -1,4 +1,6 @@
 require asyn,4.31
+require calc,3.6.1
+require seq,2.1.10
 require EthercatMC,USER
 
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
@@ -33,11 +35,11 @@ epicsEnvSet("DESC",          "$(SM_DESC=Lower=Right)")
 # And this reads the input of an incremental encoder terminal
 # on the EtherCAT bus. Works with the simulator.
 # For real terminals the adresses must be adapted
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SlitAxisMCU010-1.cfg;HomProc=1;HomPos=44;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2;HomProc=1;HomPos=0.0")
+epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SlitAxisMCU010-1.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2;HomProc=1;HomPos=-54")
 < EthercatMCAxis.cmd
 
 ## Physical axis
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SlitAxisMCU010-2.cfg;HomProc=2;HomPos=-63;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2;HomProc=2;HomPos=172")
+epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SlitAxisMCU010-2.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2;HomProc=2;HomPos=63")
 
 epicsEnvSet("MOTOR_NAME",    "$(M1)")
 epicsEnvSet("M",             "$(M1)")

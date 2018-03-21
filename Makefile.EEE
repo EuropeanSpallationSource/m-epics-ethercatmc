@@ -8,6 +8,9 @@ PROJECT=EthercatMC
 
 AUTO_DEPENDENCIES = NO
 USR_DEPENDENCIES += motor,torstenbogershausen
+USR_DEPENDENCIES += calc,3.6.1
+#USR_DEPENDENCIES += seq,2.1.10
+
 
 SOURCES = \
   EthercatMcSup/src/EthercatMCAxis.cpp \

@@ -1,7 +1,7 @@
 record(motor,"$(PREFIX)$(MOTOR_NAME)")
 {
 	field(DESC,"$(DESC)")
-	field(DTYP,"asynAxis")
+	field(DTYP,"asynMotor")
 	field(DIR,"$(DIR=0)")
 	field(VELO,"$(VELO=0)")
 	field(JVEL,"$(JVEL=0)")
