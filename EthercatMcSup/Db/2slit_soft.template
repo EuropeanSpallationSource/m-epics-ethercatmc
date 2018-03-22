@@ -515,37 +515,69 @@ record(transform, "$(P)$(SLIT)tRev") {
 # Rule 1: The positive blade is not allowed to go higher than HLM
 #  mXp.VAL <= mXp.HLM
 #  or
-#  mXp.VAL = (P)$(SLIT)Center + $(P)$(SLIT)Gap/2
+#  mXp.VAL = Center + Gap/2
 #  gives
-# (P)$(SLIT)Center + $(P)$(SLIT)Gap/2  <= mXp.HLM
+#  Center + Gap/2  <= mXp.HLM
 #
+#  note:  Gap.RBV = mXp.RBV - mXn.RBV
+#  note:  Center.RBV = (mXp.RBV + mXn.RBV) / 2
+#
+# Rule 2: The negative  blade is not allowed to go lower than LLM
+#  mXn.VAL >= mXn.HLM
+#  or
+#  mXn.VAL = Center - Gap/2
+#  gives
+#  Center - Gap/2  >= mXp.LLM
+
+
 # This gives a rule for the Center and the Gap:
-# (P)$(SLIT)Center.HLM = mXp.HLM - $(P)$(SLIT)Gap/2
-# $(P)$(SLIT)Gap.HLM = 2 * (mXp.HLM - (P)$(SLIT)Center)
+# Center.HLM = mXp.HLM - Gap.RBV/2
+# Gap.HLM    = mXp.HLM - (Center.RBV/2)
+# Gap.HLM    = 
+# Center.LLM = mXn.LLM + Gap.RBV/2
+# Gap.LLM    = (avoid collision, set to 0.5)
 #
 #
+# 6 inputs:
+# (High and low) limit of the 2 hard motors
+# Read back position of the hard motors
 #
+# 4 "straight outputs" "A-D": The hard
+# motors (mXp, mXn) go straight into the soft motors (xp xn)
+#
+# 2 more "straight outputs" "E-F": Avoid a collision and
+# feed the readback for one motor into the limit of the other
+#
+# 4 calculated outputs "G-J"
+# High and low for Center and Gap
 
 record(transform, "$(P)$(SLIT)tLimits") {
   field(PHAS, "0")
-  field(CLCE, "a-d")
-  field(CLCF, "b-c")
-  field(CLCG, "(a+c)/2")
-  field(CLCH, "(b+d)/2")
+  ## GAU field(CLCH, "MIN(  ((b - ((e+f)/2))*2), ((c + ((e+f)  
+  #Rule 1 field(CLCH, "(b - ((e+f)/2))*2")
+  #Rule 2 field(CLCH, "(-c + ((e+f)/2))*2")
+  #field(CLCH, "MIN(( (b - ((e+f)/2))*2) , ((-c + ((e+f)/2))*2) )")
+  field(CLCH,"b-c")
+  field(CLCI, "c + ((e-f)/2)")
+  field(CLCJ, "b - ((e-f)/2)")
   field(INPA, "$(P)$(mXp).LLM  CP NMS")
   field(INPB, "$(P)$(mXp).HLM  CP NMS")
   field(INPC, "$(P)$(mXn).LLM  CP NMS")
   field(INPD, "$(P)$(mXn).HLM  CP NMS")
-  field(OUTA, "$(P)$(SLIT)xp.LLM  NPP MS")
+  field(INPE, "$(P)$(mXp).RBV  CP NMS")
+  field(INPF, "$(P)$(mXn).RBV  CP NMS")
   field(OUTB, "$(P)$(SLIT)xp.HLM  NPP MS")
   field(OUTC, "$(P)$(SLIT)xn.LLM  NPP MS")
-  field(OUTD, "$(P)$(SLIT)xn.HLM  NPP MS")
-  field(OUTE, "$(P)$(SLIT)Gap.LLM  NPP MS")
-  field(OUTF, "$(P)$(SLIT)Gap.HLM  NPP MS")
-  field(OUTG, "$(P)$(SLIT)Center.LLM  NPP MS")
-  field(OUTH, "$(P)$(SLIT)Center.HLM  NPP MS")
+  field(OUTE, "$(P)$(SLIT)xn.HLM  NPP MS")
+  field(OUTF, "$(P)$(SLIT)xp.LLM  NPP MS")
+  field(OUTG, "$(P)$(SLIT)Gap.LLM  NPP MS")
+  field(OUTH, "$(P)$(SLIT)Gap.HLM  NPP MS")
+  field(OUTI, "$(P)$(SLIT)Center.LLM  NPP MS")
+  field(OUTJ, "$(P)$(SLIT)Center.HLM  NPP MS")
   field(PREC, "3")
 }
+
+
 
 record(sseq, "$(P)$(SLIT)writeMotors") {
   field(SDIS, "$(P)$(SLIT)syncOrInit PP")
