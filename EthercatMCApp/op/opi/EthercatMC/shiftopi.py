@@ -17,10 +17,10 @@ def parse_command_line():
                       metavar="Y", action="store", dest="shiftY",
                       type="int", default=0)
 
-    #parser.add_option("", "--shiftx",
-    #                  help="shift the X values",
-    #                  metavar="X", action="store", dest="shiftX",
-    #                  type="int", default=0)
+    parser.add_option("", "--shiftx",
+                      help="shift the X values",
+                      metavar="X", action="store", dest="shiftX",
+                      type="int", default=0)
 
     (options, args) = parser.parse_args()
     if args:
@@ -28,8 +28,17 @@ def parse_command_line():
         print()
         print("Error: Must supply not supply arguments")
         sys.exit(1)
-    return options
 
+    if options.shiftY != 0 and options.shiftX == 0:
+        return options
+    if options.shiftY == 0 and options.shiftX != 0:
+        return options
+
+
+    parser.print_help()
+    print()
+    print("Error: Must supply an option")
+    sys.exit(1)
 
 
 
@@ -48,8 +57,21 @@ def shiftXorY(options, line):
         if pfx[-1] == '\n':
             pfx = pfx[0:-1]
         return pfx + str(yPos) + sfx
-    else:
-        return line
+
+    matchX  = re.compile('^( *<x>)([0-9]+)(</x> *)$')
+
+    isMatchX = matchX.match(line)
+    if isMatchX != None:
+        pfx  = matchX.sub(r'\1', line)
+        xPos = int(matchX.sub(r'\2', line))
+        sfx  = matchX.sub(r'\3', line)
+        xPos += options.shiftX
+        #return str(xPos) + sfx
+        if pfx[-1] == '\n':
+            pfx = pfx[0:-1]
+        return pfx + str(xPos) + sfx
+
+    return line
 
 #
 
