@@ -289,7 +289,7 @@ asynStatus EthercatMCAxis::readBackConfig(void)
                                             fValue);
 
   readBackSoftLimits();
-  //readBackHoming();
+  readBackHoming();
   /* The Ethercat specific are  read-write, so we must use pC_->setXXX for them */
   /* (fast) Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x9, "VELO", &fValue);
