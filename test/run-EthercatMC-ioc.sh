@@ -69,10 +69,10 @@ export MOTORIP MOTORPORT
   stcmddst=./st.cmd.$EPICS_HOST_ARCH &&
   mkdir -p  $IOCDIR/ &&
   if test "x$EPICS_EEE" = "xn"; then
-    if test -d ../../../../motor; then
+    if test -d ../motor; then
       DBMOTOR=dbmotor
       #motor
-      (cd ../../../../motor && make install) && (cd .. && make install) || {
+      (cd ../motor && make install) && (cd .. && make install) || {
         echo >&2 make install failed
         exit 1
         }
