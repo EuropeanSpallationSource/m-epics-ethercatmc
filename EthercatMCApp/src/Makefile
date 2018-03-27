@@ -5,65 +5,35 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-#=============================
-# build an ioc application
+#==================================================
+# Build an IOC support library
 
-PROD_IOC = EthercatMC
+LIBRARY_IOC += EthercatMcSupport
 
-# <name>.dbd will be created from <name>Include.dbd
-DBD += EthercatMC.dbd
-EthercatMC_DBD += base.dbd
-EthercatMC_DBD += asyn.dbd
-EthercatMC_DBD += drvAsynIPPort.dbd
+DBD += EthercatMcSupport.dbd
 
-ifneq (,$(findstring /,$(AXIS)))
-  EthercatMC_DBD += axisSupport.dbd
-  EthercatMC_LIBS += axis
-  USR_CPPFLAGS += -DAXISNOTMOTOR=1
-endif
-ifneq (,$(findstring /,$(CALC)))
-  EthercatMC_DBD += calcSupport.dbd
-  EthercatMC_LIBS += calc
-endif
-ifneq (,$(findstring /,$(MOTOR)))
-  EthercatMC_DBD += motorSupport.dbd
-  EthercatMC_DBD += devSoftMotor.dbd
-  USR_CPPFLAGS += -DMOTORNOTAXIS=1
-  EthercatMC_LIBS += motor
-  EthercatMC_LIBS += softMotor
-endif
+# The following are compiled and added to the Support library
 
-EthercatMC_DBD += EthercatMcSupport.dbd
+EthercatMcSupport_SRCS += EthercatMCController.cpp
+EthercatMcSupport_SRCS += EthercatMCAxis.cpp
+EthercatMcSupport_SRCS += EthercatMCHelper.cpp
 
-# <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
-EthercatMC_SRCS += EthercatMC_registerRecordDeviceDriver.cpp
-EthercatMC_SRCS_DEFAULT += EthercatMCMain.cpp
 
-#add a definition for each support application used by this application
-EthercatMC_LIBS += asyn
+EthercatMcSupport_LIBS += asyn
 
 ifneq (,$(findstring /,$(AXIS)))
-EthercatMC_LIBS += axis
+EthercatMcSupport_LIBS += axis
 endif
 ifneq (,$(findstring /,$(CALC)))
-EthercatMC_LIBS += calc
-
+EthercatMcSupport_LIBS += calc
 endif
 ifneq (,$(findstring /,$(MOTOR)))
-EthercatMC_LIBS += motor
-EthercatMC_LIBS += softMotor
-endif
-
-ifneq (,$(findstring /,$(TWINCATADS)))
-EthercatMC_LIBS += ads
-EthercatMC_DBD  += ads.dbd
+EthercatMcSupport_LIBS += motor
+EthercatMcSupport_LIBS += softMotor
 endif
 
 
-EthercatMC_LIBS += EthercatMcSupport
-EthercatMC_LIBS += $(EPICS_BASE_IOC_LIBS)
-
-#===========================
+EthercatMcSupport_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 include $(TOP)/configure/RULES
 #----------------------------------------

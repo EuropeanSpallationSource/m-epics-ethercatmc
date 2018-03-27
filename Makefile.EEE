@@ -13,15 +13,15 @@ USR_DEPENDENCIES += calc,3.6.1
 
 
 SOURCES = \
-  EthercatMcSup/src/EthercatMCAxis.cpp \
-  EthercatMcSup/src/EthercatMCController.cpp \
-  EthercatMcSup/src/EthercatMCHelper.cpp
+  EthercatMCApp/src/EthercatMCAxis.cpp \
+  EthercatMCApp/src/EthercatMCController.cpp \
+  EthercatMCApp/src/EthercatMCHelper.cpp
 
 
 
 TEMPLATES = \
-  EthercatMcSup/Db/EthercatMC.template \
-  EthercatMcSup/Db/EthercatMCdebug.template \
-  EthercatMcSup/Db/2slit_soft.template
+  EthercatMCApp/Db/EthercatMC.template \
+  EthercatMCApp/Db/EthercatMCdebug.template \
+  EthercatMCApp/Db/2slit_soft.template
 
 #MISCS = \

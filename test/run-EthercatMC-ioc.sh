@@ -89,14 +89,15 @@ export MOTORIP MOTORPORT
     fi
   else
     #EEE
-    if sed -e "s/#.*//" <../startup/st.${MOTORCFG}.cmd |
-        grep "require *EthercatMC,.*[A-Za-z]"; then
-      (cd .. && make install) || {
-        echo >&2 make install failed
-        exit 1
-      }
-    fi
+		:
   fi &&
+  if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
+      grep "require *EthercatMC,.*[A-Za-z]"; then
+    (cd .. && make install) || {
+      echo >&2 make install failed
+      exit 1
+    }
+  fi
   cd $IOCDIR/ &&
   if test "x$EPICS_EEE" = "xy"; then
     #EEE
