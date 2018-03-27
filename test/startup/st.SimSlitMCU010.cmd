@@ -33,3 +33,13 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=Upper=Left)")
 < EthercatMCAxis.cmd
 < EthercatMCAxisdebug.cmd
+
+## Logical axes and slit
+epicsEnvSet("P",             "$(PREFIX)")
+epicsEnvSet("SLIT",          "$(SM_SLIT=SltH-)")
+epicsEnvSet("mXp",           "$(SM_mXp=m1)")
+epicsEnvSet("mXn",           "$(SM_mXp=m2)")
+
+## Slit
+< EthercatMC2slit.cmd
+#########################
