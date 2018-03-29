@@ -551,13 +551,87 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
 }
 
 
-asynStatus EthercatMCAxis::readConfigFile(void)
+asynStatus EthercatMCAxis::readConfigLine(const char *line, const char **errorTxt_p)
 {
   const char *setRaw_str = "setRaw "; /* Raw is Raw */
   const char *setValue_str = "setValue "; /* prefixed with ADSPORT */
-  const char *setSim_str = "setSim ";
   const char *setADRinteger_str = "setADRinteger ";
   const char *setADRdouble_str  = "setADRdouble ";
+  const char *setSim_str = "setSim ";
+
+  asynStatus status = asynError;
+  const char *errorTxt = NULL;
+
+  while (*line == ' ') line++;
+  if (line[0] == '#') {
+    /*  Comment line */
+    return asynSuccess;
+  }
+
+  if (!strncmp(setRaw_str, line, strlen(setRaw_str))) {
+    const char *cfg_txt_p = &line[strlen(setRaw_str)];
+    while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", cfg_txt_p);
+    status = writeReadACK();
+  } else if (!strncmp(setValue_str, line, strlen(setValue_str))) {
+    const char *cfg_txt_p = &line[strlen(setValue_str)];
+    while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "%s%s",
+             drvlocal.adsport_str, cfg_txt_p);
+    status = writeReadACK();
+  } else if (!strncmp(setSim_str, line, strlen(setSim_str))) {
+    if (drvlocal.supported.bSIM) {
+      const char *cfg_txt_p = &line[strlen(setRaw_str)];
+      while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+      snprintf(pC_->outString_, sizeof(pC_->outString_),
+               "Sim.M%d.%s", axisNo_, cfg_txt_p);
+      status = writeReadACK();
+    }
+  } else if (!strncmp(setADRinteger_str, line, strlen(setADRinteger_str))) {
+    unsigned indexGroup;
+    unsigned indexOffset;
+    int value;
+    int nvals = 0;
+    const char *cfg_txt_p = &line[strlen(setADRinteger_str)];
+    while (*cfg_txt_p == ' ') cfg_txt_p++;
+    nvals = sscanf(cfg_txt_p, "%x %x %d",
+                   &indexGroup, &indexOffset, &value);
+    if (nvals == 3) {
+      status = setSAFValueOnAxisVerify(indexGroup, indexOffset, value, 1);
+    } else {
+      errorTxt = "Need 4 values";
+    }
+    } else if (!strncmp(setADRdouble_str, line, strlen(setADRdouble_str))) {
+    unsigned indexGroup;
+    unsigned indexOffset;
+    double value;
+    int nvals = 0;
+    const char *cfg_txt_p = &line[strlen(setADRdouble_str)];
+    while (*cfg_txt_p == ' ') cfg_txt_p++;
+    nvals = sscanf(cfg_txt_p, "%x %x %lf",
+                   &indexGroup, &indexOffset, &value);
+    if (nvals == 3) {
+      status = setSAFValueOnAxisVerify(indexGroup, indexOffset,
+                                       value, 1);
+    } else {
+      errorTxt = "Need 4 values";
+    }
+  } else {
+    errorTxt = "Illegal command";
+  }
+  if (errorTxt_p && errorTxt) {
+    *errorTxt_p = errorTxt;
+  }
+  return status;
+}
+
+
+asynStatus EthercatMCAxis::readConfigFile(void)
+{
+  const char *simOnly_str = "simOnly ";
   FILE *fp;
   char *ret = &pC_->outString_[0];
   int line_no = 0;
@@ -588,7 +662,6 @@ asynStatus EthercatMCAxis::readConfigFile(void)
     char rdbuf[256];
     size_t i;
     size_t len;
-    int nvals = 0;
 
     line_no++;
     ret = fgets(rdbuf, sizeof(rdbuf), fp);
@@ -606,60 +679,15 @@ asynStatus EthercatMCAxis::readConfigFile(void)
               modulName,
               drvlocal.cfgfileStr, line_no, rdbuf);
 
-    if (rdbuf[0] == '#') {
-      continue; /*  Comment line */
-    } else if (!strncmp(setRaw_str, rdbuf, strlen(setRaw_str))) {
-      const char *cfg_txt_p = &rdbuf[strlen(setRaw_str)];
-      while (*cfg_txt_p == ' ') cfg_txt_p++;
-
-      snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", cfg_txt_p);
-      status = writeReadACK();
-    } else if (!strncmp(setValue_str, rdbuf, strlen(setValue_str))) {
-      const char *cfg_txt_p = &rdbuf[strlen(setValue_str)];
-      while (*cfg_txt_p == ' ') cfg_txt_p++;
-
-      snprintf(pC_->outString_, sizeof(pC_->outString_), "%s%s",
-               drvlocal.adsport_str, cfg_txt_p);
-      status = writeReadACK();
-    } else if (!strncmp(setSim_str, rdbuf, strlen(setSim_str))) {
+    if (!strncmp(simOnly_str, rdbuf, strlen(simOnly_str))) {
+      /* "simOnly " Only for the simulator */
       if (drvlocal.supported.bSIM) {
-        const char *cfg_txt_p = &rdbuf[strlen(setRaw_str)];
-        while (*cfg_txt_p == ' ') cfg_txt_p++;
-
-        snprintf(pC_->outString_, sizeof(pC_->outString_),
-                 "Sim.M%d.%s", axisNo_, cfg_txt_p);
-        status = writeReadACK();
-      }
-    } else if (!strncmp(setADRinteger_str, rdbuf, strlen(setADRinteger_str))) {
-      unsigned indexGroup;
-      unsigned indexOffset;
-      int value;
-      const char *cfg_txt_p = &rdbuf[strlen(setADRinteger_str)];
-      while (*cfg_txt_p == ' ') cfg_txt_p++;
-      nvals = sscanf(cfg_txt_p, "%x %x %d",
-                     &indexGroup, &indexOffset, &value);
-      if (nvals == 3) {
-        status = setSAFValueOnAxisVerify(indexGroup, indexOffset, value, 1);
-      } else {
-        errorTxt = "Need 4 values";
-      }
-    } else if (!strncmp(setADRdouble_str, rdbuf, strlen(setADRdouble_str))) {
-      unsigned indexGroup;
-      unsigned indexOffset;
-      double value;
-      const char *cfg_txt_p = &rdbuf[strlen(setADRdouble_str)];
-      while (*cfg_txt_p == ' ') cfg_txt_p++;
-      nvals = sscanf(cfg_txt_p, "%x %x %lf",
-                     &indexGroup, &indexOffset, &value);
-      if (nvals == 3) {
-        status = setSAFValueOnAxisVerify(indexGroup, indexOffset,
-                                         value, 1);
-      } else {
-        errorTxt = "Need 4 values";
+        status = readConfigLine(&rdbuf[strlen(simOnly_str)], &errorTxt);
       }
     } else {
-      errorTxt = "Illegal command";
+      status = readConfigLine(rdbuf, &errorTxt);
     }
+
     if (status || errorTxt) {
       char errbuf[256];
       errbuf[sizeof(errbuf)-1] = 0;

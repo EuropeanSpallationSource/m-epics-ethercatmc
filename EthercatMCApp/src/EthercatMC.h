@@ -186,6 +186,7 @@ private:
 
   void       handleDisconnect(asynStatus status);
   asynStatus handleConnect(void);
+  asynStatus readConfigLine(const char *line, const char **errorTxt_p);
   asynStatus readConfigFile(void);
   asynStatus readBackSoftLimits(void);
   asynStatus readBackHoming(void);
