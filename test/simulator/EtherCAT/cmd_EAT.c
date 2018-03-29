@@ -559,6 +559,14 @@ static void motorHandleOneArg(const char *myarg_1)
         cmd_buf_printf("OK");
         return;
       }
+      if (0 == strcmp(myarg_1, "EPICS_HOMPROC?")) {
+        cmd_buf_printf("%d", cmd_Motor_cmd[motor_axis_no].nHomProc);
+        return;
+      }
+      if (0 == strcmp(myarg_1, "EPICS_HOMPOS?")) {
+        cmd_buf_printf("%f", cmd_Motor_cmd[motor_axis_no].fHomPos);
+        return;
+      }
     }
   }
 
