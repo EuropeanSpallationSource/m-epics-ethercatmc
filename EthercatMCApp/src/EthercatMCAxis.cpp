@@ -220,7 +220,7 @@ asynStatus EthercatMCAxis::readBackHoming(void)
   double homPos  = 0.0;
 
   status = getValueFromAxis("_EPICS_HOMPROC", &homProc);
-  if (!status) pC_->setIntegerParam(axisNo_, pC_->EthercatMCHomProc_, homProc);
+  if (!status) setIntegerParam(pC_->EthercatMCHomProc_, homProc);
   status = getValueFromAxis("_EPICS_HOMPOS", &homPos);
   if (status) {
     /* fall back */
