@@ -369,7 +369,7 @@ asynStatus EthercatMCAxis::initialPoll(void)
     status = readBackConfig();
     if (drvlocal.dirty.oldStatusDisconnected) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-		"%s connected(%d)\n",  modulName, axisNo_);
+                "%s connected(%d)\n",  modulName, axisNo_);
       drvlocal.dirty.oldStatusDisconnected = 0;
     }
   }
@@ -770,7 +770,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
           break;
         case eeAxisErrorIOCcomError:
         case eeAxisErrorNotHomed:
-	  /* handled by asynMotorAxis, fall through */
+          /* handled by asynMotorAxis, fall through */
         default:
           ;
       }
@@ -1190,7 +1190,7 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #endif
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",
-	      modulName, axisNo_, value, motorNotHomedProblem);
+              modulName, axisNo_, value, motorNotHomedProblem);
 #endif
 #ifdef EthercatMCErrRstString
   } else if (function == pC_->EthercatMCErrRst_) {
