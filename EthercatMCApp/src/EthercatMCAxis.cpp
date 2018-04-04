@@ -353,7 +353,7 @@ asynStatus EthercatMCAxis::initialPoll(void)
   status = readConfigFile();
   if (status) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s (%d) getFeatures() failed\n",
+              "%s (%d) readConfigFile() failed\n",
                modulName, axisNo_);
     updateMsgTxtFromDriver("ConfigError Config File");
     return status;

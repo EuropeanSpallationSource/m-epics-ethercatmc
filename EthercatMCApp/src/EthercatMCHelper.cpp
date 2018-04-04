@@ -589,6 +589,8 @@ asynStatus EthercatMCAxis::readConfigLine(const char *line, const char **errorTx
       snprintf(pC_->outString_, sizeof(pC_->outString_),
                "Sim.M%d.%s", axisNo_, cfg_txt_p);
       status = writeReadACK();
+    } else {
+      status = asynSuccess;
     }
   } else if (!strncmp(setADRinteger_str, line, strlen(setADRinteger_str))) {
     unsigned indexGroup;
@@ -604,7 +606,7 @@ asynStatus EthercatMCAxis::readConfigLine(const char *line, const char **errorTx
     } else {
       errorTxt = "Need 4 values";
     }
-    } else if (!strncmp(setADRdouble_str, line, strlen(setADRdouble_str))) {
+  } else if (!strncmp(setADRdouble_str, line, strlen(setADRdouble_str))) {
     unsigned indexGroup;
     unsigned indexOffset;
     double value;
@@ -708,12 +710,13 @@ asynStatus EthercatMCAxis::readConfigFile(void)
   } /* while */
 
   if (ferror(fp) || status || errorTxt) {
-    if (ferror(fp)) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s readConfigFile ferror (%s)\n",
-		modulName,
-                drvlocal.cfgfileStr);
-    }
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s readConfigFile %sstatus=%d errorTxt=%s (%s)\n",
+              modulName,
+              ferror(fp) ? "ferror " : "",
+              (int)status,
+              errorTxt ? errorTxt : "",
+              drvlocal.cfgfileStr);
     fclose(fp);
     return asynError;
   }
