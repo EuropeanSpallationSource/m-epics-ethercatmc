@@ -219,6 +219,10 @@ asynStatus EthercatMCAxis::readBackHoming(void)
   int    homProc = 0;
   double homPos  = 0.0;
 
+  /* Don't read it, when the driver has been configured with HomProc= */
+  status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_,&homProc);
+  if (status == asynSuccess) return status;
+
   status = getValueFromAxis("_EPICS_HOMPROC", &homProc);
   if (!status) setIntegerParam(pC_->EthercatMCHomProc_, homProc);
   status = getValueFromAxis("_EPICS_HOMPOS", &homPos);
