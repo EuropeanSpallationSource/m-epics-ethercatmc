@@ -230,10 +230,23 @@ asynStatus EthercatMCAxis::getFeatures(void)
   const char * const stV1_str = "stv1";
   const char * const stV2_str = "stv2";
   const char * const ads_str = "ads";
-  asynStatus status = asynSuccess;
   unsigned int adsport;
-  for (adsport = MINADSPORT; adsport <= MAXADSPORT; adsport++) {
-    snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.THIS.sFeatures?", adsport);
+  asynStatus status = asynSuccess;
+  char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
+  adsport_str[0] = 0; /*
+                       * Don't use adsport_str.adsport_str, because the features
+                       * are on a different ADS port the the axis
+                       */
+
+  for (adsport = MINADSPORT-1; adsport <= MAXADSPORT; adsport++) {
+    if (adsport > MINADSPORT-1) {
+      /* first try without "ADSPORT=xxx/". This is what the old installations
+         understand */
+      snprintf(adsport_str, sizeof(adsport_str),
+                 "ADSPORT=%u/", adsport);
+    }
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "%s.THIS.sFeatures?",
+             adsport_str);
     pC_->inString_[0] = 0;
     status = pC_->writeReadController();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
