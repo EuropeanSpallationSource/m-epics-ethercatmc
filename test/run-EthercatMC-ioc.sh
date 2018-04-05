@@ -32,7 +32,7 @@ export MOTORCFG
 echo MOTORCFG=$MOTORCFG
 (
   cd startup &&
-	if ! test -f st.${MOTORCFG}.cmd; then
+  if ! test -f st.${MOTORCFG}.cmd; then
     CMDS=$(echo st.*.cmd | sed -e "s/st\.//g" -e "s/\.cmd//g")
     #echo CMDS=$CMDS
     test -n "$1" && echo >&2 "not found st.${1}.cmd"
@@ -89,7 +89,7 @@ export MOTORIP MOTORPORT
     fi
   else
     #EEE
-		:
+    :
   fi &&
   if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
       grep "require *EthercatMC,.*[A-Za-z]"; then

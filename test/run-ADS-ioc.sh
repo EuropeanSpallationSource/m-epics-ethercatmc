@@ -160,10 +160,10 @@ export MOTORIP AMSID
       dst=${src##*/}
       echo sed PWD=$PWD src=$src dst=$dst
       sed <"$src" >"$dst" \
-					-e "s%dbLoadRecords(\"%dbLoadRecords(\"./$DBMOTOR/%" \
-					-e "s%drvAsynIPPortConfigure%#%" \
-					-e "s%asynOctetSet.*putEos%#%" \
-					-e "s%^# *adsAsynPortDriverConfigure%adsAsynPortDriverConfigure%"
+          -e "s%dbLoadRecords(\"%dbLoadRecords(\"./$DBMOTOR/%" \
+          -e "s%drvAsynIPPortConfigure%#%" \
+          -e "s%asynOctetSet.*putEos%#%" \
+          -e "s%^# *adsAsynPortDriverConfigure%adsAsynPortDriverConfigure%"
     done &&
     rm -f $stcmddst &&
     cat >$stcmddst <<-EOF &&
