@@ -186,15 +186,16 @@ int EthercatMCAxis::getMotionAxisID(void)
   int ret = drvlocal.dirty.nMotionAxisID;
   if (ret == -1) {
     asynStatus status;
-    unsigned adsport;
+    static const unsigned adsports[] = {852, 851, 853};
+    unsigned adsport_idx;
     ret = -2;
-    for (adsport = MINADSPORT-1; adsport <= MAXADSPORT; adsport++) {
-      if (adsport > MINADSPORT-1) {
-        /* first try without "ADSPORT=xxx/". This is what the old installations
-           understand */
-        snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
-                 "ADSPORT=%u/", adsport);
-      }
+    for (adsport_idx = 0;
+         adsport_idx < sizeof(adsports)/sizeof(adsports[0]);
+         adsport_idx++) {
+      unsigned adsport = adsports[adsport_idx];
+      /* Save adsport_str for the poller */
+      snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
+               "ADSPORT=%u/", adsport);
       snprintf(pC_->outString_, sizeof(pC_->outString_),
                "%sMain.M%d.nMotionAxisID?", drvlocal.adsport_str, axisNo_);
       status = pC_->writeReadController();
