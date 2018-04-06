@@ -184,9 +184,10 @@ asynStatus EthercatMCAxis::setValuesOnAxis(const char* var1, double value1,
 int EthercatMCAxis::getMotionAxisID(void)
 {
   int ret = drvlocal.dirty.nMotionAxisID;
-  if (ret < 0) {
+  if (ret == -1) {
     asynStatus status;
     unsigned adsport;
+    ret = -2;
     for (adsport = MINADSPORT-1; adsport <= MAXADSPORT; adsport++) {
       if (adsport > MINADSPORT-1) {
         /* first try without "ADSPORT=xxx/". This is what the old installations
@@ -216,8 +217,11 @@ int EthercatMCAxis::getMotionAxisID(void)
       ret = res;
       break;
     }
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s nMotionAxisID(%d)=%d\n",
+              modulName, axisNo_, ret);
+    if (ret != -1) drvlocal.dirty.nMotionAxisID = ret;
   }
-  if (ret >= 0) drvlocal.dirty.nMotionAxisID = ret;
   return ret;
 }
 

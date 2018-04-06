@@ -338,9 +338,12 @@ asynStatus EthercatMCAxis::initialPoll(void)
 
   /*  Check for Axis ID */
   int axisID = getMotionAxisID();
-  if (axisID < 0) {
+  if (axisID  == -1) {
     setIntegerParam(pC_->motorStatusCommsError_, 1);
     return asynError;
+  } else if (axisID  == -2) {
+    updateMsgTxtFromDriver("No AxisID");
+    return asynSuccess;
   }
   if (axisID != axisNo_) {
     updateMsgTxtFromDriver("ConfigError AxisID");
@@ -722,7 +725,9 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
 {
   int EPICS_nErrorId = drvlocal.MCU_nErrorId;
   drvlocal.eeAxisError = eeAxisErrorNoError;
-  if (EPICS_nErrorId) {
+  if (drvlocal.supported.statusVer == -1) {
+    drvlocal.eeAxisError = eeAxisErrorNotFound;
+  } else if (EPICS_nErrorId) {
     /* Error from MCU */
     drvlocal.eeAxisError = eeAxisErrorMCUError;
   } else if (drvlocal.dirty.sErrorMessage) {
@@ -769,7 +774,10 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
             }
           }
           break;
-        case eeAxisErrorCmdError:
+      case eeAxisErrorNotFound:
+          updateMsgTxtFromDriver("Not found");
+          break;
+      case eeAxisErrorCmdError:
           updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
           break;
         case eeAxisErrorIOCcomError:
@@ -967,10 +975,11 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 
 
 pollAllWrongnvals:
+  drvlocal.supported.statusVer = -1;
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s pollAll(%d) nvals=%d in=%s\n",
             modulName, axisNo_, nvals, pC_->inString_);
-  return asynError;
+  return asynSuccess;
 }
 
 
@@ -985,9 +994,14 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   asynStatus comStatus = asynSuccess;
   st_axis_status_type st_axis_status;
 
+  if (drvlocal.supported.statusVer == -1) {
+    callParamCallbacksUpdateError();
+    return asynSuccess;
+  }
   /* Driver not yet initialized, do nothing */
   if (!drvlocal.stepSize) return comStatus;
 
+  
   memset(&st_axis_status, 0, sizeof(st_axis_status));
   /* Stop if the previous stop had been lost */
   if (drvlocal.mustStop) {

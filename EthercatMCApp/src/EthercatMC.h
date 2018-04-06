@@ -129,6 +129,7 @@ private:
     eeAxisErrorNoError,
     eeAxisErrorMCUError,
     eeAxisErrorCmdError,
+    eeAxisErrorNotFound,
     eeAxisErrorNotHomed
   } eeAxisErrorType;
   EthercatMCController *pC_;          /**< Pointer to the asynMotorController to which this axis belongs.
