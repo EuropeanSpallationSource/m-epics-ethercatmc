@@ -19,7 +19,7 @@
 
 const static char *const modulName = "EthercatMCAxis::";
 const static unsigned int MINADSPORT = 851; /* something useful */
-const static unsigned int MAXADSPORT = 861; /* something useful */
+const static unsigned int MAXADSPORT = 853; /* something useful */
 
 /** Writes a command to the axis, and expects a logical ack from the controller
  * Outdata is in pC_->outString_
