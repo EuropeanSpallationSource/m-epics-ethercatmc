@@ -22,6 +22,7 @@ SOURCES = \
 TEMPLATES = \
   EthercatMCApp/Db/EthercatMC.template \
   EthercatMCApp/Db/EthercatMCdebug.template \
+  EthercatMCApp/Db/EthercatMChome.template \
   EthercatMCApp/Db/2slit_soft.template
 
 #MISCS = \
