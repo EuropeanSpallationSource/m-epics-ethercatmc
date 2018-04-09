@@ -372,13 +372,14 @@ asynStatus EthercatMCAxis::initialPoll(void)
        See AMPLIFIER_ON_FLAG */
     status = enableAmplifier(1);
   }
-  if (status == asynSuccess) {
+  if (status == asynSuccess && !drvlocal.supported.bECMC) {
+    /* for ECMC everything is configured from EPICS, do NOT do the readback */
     status = readBackConfig();
-    if (drvlocal.dirty.oldStatusDisconnected) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s connected(%d)\n",  modulName, axisNo_);
-      drvlocal.dirty.oldStatusDisconnected = 0;
-    }
+  }
+  if (status == asynSuccess && drvlocal.dirty.oldStatusDisconnected) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+	      "%s connected(%d)\n",  modulName, axisNo_);
+    drvlocal.dirty.oldStatusDisconnected = 0;
   }
   return status;
 }
