@@ -32,6 +32,10 @@ FILENAME...   EthercatMC.h
 #define EthercatMCErrIdString                "ErrId"
 #define EthercatMCHomProcString              "HomProc"
 #define EthercatMCHomPosString               "HomPos"
+#define EthercatMCVelToHomString             "VelToHom"
+#define EthercatMCVelFrmHomString            "VelFrmHom"
+#define EthercatMCAccHomString               "AccHom"
+#define EthercatMCDecHomString               "DecHom"
 #define EthercatMCEnc_ActString              "EncAct"
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCVelActString               "VelAct"
@@ -279,6 +283,10 @@ public:
   int EthercatMCErr_;
   int EthercatMCHomProc_;
   int EthercatMCHomPos_;
+  int EthercatMCVelToHom_;
+  int EthercatMCVelFrmHom_;
+  int EthercatMCAccHom_;
+  int EthercatMCDecHom_;
   int EthercatMCEncAct_;
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
