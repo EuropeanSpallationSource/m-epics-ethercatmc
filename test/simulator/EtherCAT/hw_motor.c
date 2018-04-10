@@ -848,6 +848,13 @@ int moveHomeProc(int axis_no,
   motor_axis[axis_no].MotorPosWanted = position;
   motor_axis[axis_no].HomeProc = nCmdData;
 
+  if (nCmdData == 15) {
+    motor_axis[axis_no].MotorPosNow = position;
+    motor_axis[axis_no].moving.velo.HomeVelocity = 0;
+    motor_axis[axis_no].homed = 1;
+    return 0;
+  }
+
   if (motor_axis[axis_no].MaxHomeVelocityAbs &&
       (fabs(velocity) > motor_axis[axis_no].MaxHomeVelocityAbs)) {
     velocity = motor_axis[axis_no].MaxHomeVelocityAbs;
