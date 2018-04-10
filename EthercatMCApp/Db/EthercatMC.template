@@ -22,7 +22,7 @@ record(motor,"$(PREFIX)$(MOTOR_NAME)")
 	field(DLLM,"$(DLLM=0)")
 	field(RTRY,"$(RTRY=1)")
 	field(RMOD,"$(RMOD=3)")
-	field(FOFF,"$(FOFF=1)")
+	field(FOFF,"$(FOFF=0)")
 	field(NTM,"0")
 	field(TWV,"1")
 }
