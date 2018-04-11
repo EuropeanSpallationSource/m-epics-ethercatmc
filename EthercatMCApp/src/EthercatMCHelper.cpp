@@ -695,8 +695,8 @@ asynStatus EthercatMCAxis::readConfigFile(void)
     len = strlen(ret);
     if (!len) continue; /* empty line with LF */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s readConfigFile %s:%u %s\n",
-              modulName,
+              "%s readConfigFile(%d) %s:%u %s\n",
+              modulName, axisNo_,
               drvlocal.cfgfileStr, line_no, rdbuf);
 
     if (!strncmp(simOnly_str, rdbuf, strlen(simOnly_str))) {
