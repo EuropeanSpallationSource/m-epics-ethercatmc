@@ -736,7 +736,6 @@ asynStatus EthercatMCAxis::stopAxisInternal(const char *function_name, double ac
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s stopAxisInternal(%d) (%s)\n",   modulName, axisNo_, function_name);
   status = setValueOnAxisVerify("bExecute", "bExecute", 0, 1);
-  if (status) drvlocal.mustStop = 1;
   return status;
 }
 
@@ -1028,14 +1027,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   /* Driver not yet initialized, do nothing */
   if (!drvlocal.stepSize) return comStatus;
 
-  
   memset(&st_axis_status, 0, sizeof(st_axis_status));
-  /* Stop if the previous stop had been lost */
-  if (drvlocal.mustStop) {
-    comStatus = stopAxisInternal(__FUNCTION__, 0);
-    if (comStatus) goto skip;
-    // TODO drvlocal.mustStop = 0;
-  }
   comStatus = pollAll(moving, &st_axis_status);
   if (comStatus) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,

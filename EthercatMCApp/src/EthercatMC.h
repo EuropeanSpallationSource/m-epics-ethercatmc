@@ -154,7 +154,6 @@ private:
 #ifndef motorWaitPollsBeforeReadyString
     unsigned int waitNumPollsBeforeReady;
 #endif
-    int mustStop;
     int nCommandActive;
     int old_nCommandActive;
     int homed;
