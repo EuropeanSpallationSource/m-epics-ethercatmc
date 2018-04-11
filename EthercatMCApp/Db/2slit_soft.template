@@ -584,3 +584,115 @@ record(sseq, "$(P)$(SLIT)writeMotors") {
   field(LNK2, "$(P)$(SLIT)mXnPut PP")
 }
 
+
+######################################################
+# Records to generate MsgTxt
+#Record to calculate what the Status PV should be
+record(calcout, "$(P)$(SLIT)xp-StatusCalc_")
+{
+   field(DESC, "Calc mXp Motor Status")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(INPA, "$(P)$(SLIT)xp.DMOV CP MS")
+   field(INPB, "$(P)$(SLIT)xp.STAT CP MS")
+   field(INPC, "$(P)$(SLIT)xp.LVIO CP MS")
+   field(INPD, "$(P)$(SLIT)xp.MISS CP MS")
+   field(CALC, "(B||C||D)?2:!A")
+   field(OOPT, "Every Time")
+   field(DOPT, "Use CALC")
+   field(OUT,  "$(P)$(SLIT)xp-MsgTxt.VAL PP")
+}
+#New record to work with a tri-state LED, where:
+# 0 = Idle (DMOV=1 and no alarm)
+# 1 = Moving (DMOV=0 and no alarm)
+# 2 = Error (Combined Error PV is 1)
+
+record(mbbi, "$(P)$(SLIT)xp-MsgTxt")
+{
+   field(DESC, "Motor Status")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(ZRST, "")
+   field(ONST, "Busy")
+   field(TWST, "Problem")
+}
+################################
+record(calcout, "$(P)$(SLIT)xn-StatusCalc_")
+{
+   field(DESC, "Calc mXn Motor Status")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(INPA, "$(P)$(SLIT)xn.DMOV CP MS")
+   field(INPB, "$(P)$(SLIT)xn.STAT CP MS")
+   field(INPC, "$(P)$(SLIT)xn.LVIO CP MS")
+   field(INPD, "$(P)$(SLIT)xn.MISS CP MS")
+   field(CALC, "(B||C||D)?2:!A")
+   field(OOPT, "Every Time")
+   field(DOPT, "Use CALC")
+   field(OUT,  "$(P)$(SLIT)xn-MsgTxt.VAL PP")
+}
+
+record(mbbi, "$(P)$(SLIT)xn-MsgTxt")
+{
+   field(DESC, "Motor Status")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(ZRST, "")
+   field(ONST, "Busy")
+   field(TWST, "Problem")
+}
+################################
+################################
+record(calcout, "$(P)$(SLIT)Center-StatusCalc_")
+{
+   field(DESC, "Calc mCenter Motor Status")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(INPA, "$(P)$(SLIT)Center.DMOV CP MS")
+   field(INPB, "$(P)$(SLIT)Center.STAT CP MS")
+   field(INPC, "$(P)$(SLIT)Center.LVIO CP MS")
+   field(INPD, "$(P)$(SLIT)Center.MISS CP MS")
+   field(CALC, "(B||C||D)?2:!A")
+   field(OOPT, "Every Time")
+   field(DOPT, "Use CALC")
+   field(OUT,  "$(P)$(SLIT)Center-MsgTxt.VAL PP")
+}
+
+record(mbbi, "$(P)$(SLIT)Center-MsgTxt")
+{
+   field(DESC, "Motor Status")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(ZRST, "")
+   field(ONST, "Busy")
+   field(TWST, "Problem")
+}
+################################
+record(calcout, "$(P)$(SLIT)Gap-StatusCalc_")
+{
+   field(DESC, "Calc mGap Motor Status")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(INPA, "$(P)$(SLIT)Gap.DMOV CP MS")
+   field(INPB, "$(P)$(SLIT)Gap.STAT CP MS")
+   field(INPC, "$(P)$(SLIT)Gap.LVIO CP MS")
+   field(INPD, "$(P)$(SLIT)Gap.MISS CP MS")
+   field(CALC, "(B||C||D)?2:!A")
+   field(OOPT, "Every Time")
+   field(DOPT, "Use CALC")
+   field(OUT,  "$(P)$(SLIT)Gap-MsgTxt.VAL PP")
+}
+
+record(mbbi, "$(P)$(SLIT)Gap-MsgTxt")
+{
+   field(DESC, "Motor Status")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(ZRST, "")
+   field(ONST, "Busy")
+   field(TWST, "Problem")
+}
