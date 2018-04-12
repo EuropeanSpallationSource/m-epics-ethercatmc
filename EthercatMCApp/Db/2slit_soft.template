@@ -553,13 +553,7 @@ record(transform, "$(P)$(SLIT)tRev") {
 
 record(transform, "$(P)$(SLIT)tLimits") {
   field(PHAS, "0")
-  ## GAU field(CLCH, "MIN(  ((b - ((e+f)/2))*2), ((c + ((e+f)  
-  #Rule 1 
-  field(CLCK, "(b - ((e+f)/2))*2")
-  #Rule 2 
-  field(CLCL, "(-c + ((e+f)/2))*2")
   field(CLCH, "MIN(( (b - ((e+f)/2))*2) , ((-c + ((e+f)/2))*2) )")
-  #field(CLCH,"b-c")
   field(CLCI, "c + ((e-f)/2)")
   field(CLCJ, "b - ((e-f)/2)")
   field(INPA, "$(P)$(mXp).LLM  CP NMS")
