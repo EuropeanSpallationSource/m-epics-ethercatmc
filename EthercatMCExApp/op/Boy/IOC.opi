@@ -359,11 +359,11 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motorx.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m6</M>
-          <R>m6-</R>
+          <M1>m1</M1>
+          <R1>m1-</R1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -402,7 +402,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m6</text>
+    <text>IOC:m1</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
