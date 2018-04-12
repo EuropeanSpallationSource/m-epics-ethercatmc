@@ -483,11 +483,11 @@ $(pv_value)</tooltip>
       <color red="255" green="255" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="MEDM_COLOR_60" red="115" green="255" blue="107" />
+      <color name="warning" red="255" green="128" blue="0" />
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Busy</text>
+    <text>Miss</text>
     <font>
       <fontdata fontName="Sans" height="9" style="0" />
     </font>
@@ -495,13 +495,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==0">
+        <exp bool_exp="!(pv0==0)">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0==0)">
+        <exp bool_exp="pv0==0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M).DMOV</pv>
+        <pv trig="true">$(P)$(M).MISS</pv>
       </rule>
     </rules>
     <border_width>1</border_width>
