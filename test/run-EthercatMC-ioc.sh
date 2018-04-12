@@ -92,6 +92,13 @@ export MOTORIP MOTORPORT
     :
   fi &&
   if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
+      grep "require *motor,.*[A-Za-z]"; then
+    (cd ../../motor && make install) || {
+      echo >&2 make install failed
+      exit 1
+    }
+  fi &&
+  if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
       grep "require *EthercatMC,.*[A-Za-z]"; then
     (cd .. && make install) || {
       echo >&2 make install failed
