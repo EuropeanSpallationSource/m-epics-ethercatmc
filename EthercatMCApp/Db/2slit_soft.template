@@ -548,14 +548,14 @@ record(transform, "$(P)$(SLIT)tRev") {
 # 2 more "straight outputs" "E-F": Avoid a collision and
 # feed the readback for one motor into the limit of the other
 #
-# 4 calculated outputs "G-J"
+# 4 calculated outputs "I-L"
 # High and low for Center and Gap
 
 record(transform, "$(P)$(SLIT)tLimits") {
   field(PHAS, "0")
-  field(CLCH, "MIN(( (b - ((e+f)/2))*2) , ((-c + ((e+f)/2))*2) )")
-  field(CLCI, "c + ((e-f)/2)")
-  field(CLCJ, "b - ((e-f)/2)")
+  field(CLCJ, "MIN(( (b - ((e+f)/2))*2) , ((-c + ((e+f)/2))*2) )")
+  field(CLCK, "c + ((e-f)/2)")
+  field(CLCL, "b - ((e-f)/2)")
   field(INPA, "$(P)$(mXp).LLM  CP NMS")
   field(INPB, "$(P)$(mXp).HLM  CP NMS")
   field(INPC, "$(P)$(mXn).LLM  CP NMS")
@@ -564,12 +564,12 @@ record(transform, "$(P)$(SLIT)tLimits") {
   field(INPF, "$(P)$(mXn).RBV  CP NMS")
   field(OUTB, "$(P)$(SLIT)xp.HLM  NPP MS")
   field(OUTC, "$(P)$(SLIT)xn.LLM  NPP MS")
-  field(OUTE, "$(P)$(SLIT)xn.HLM  NPP MS")
-  field(OUTF, "$(P)$(SLIT)xp.LLM  NPP MS")
-  field(OUTG, "$(P)$(SLIT)Gap.LLM  NPP MS")
-  field(OUTH, "$(P)$(SLIT)Gap.HLM  NPP MS")
-  field(OUTI, "$(P)$(SLIT)Center.LLM  NPP MS")
-  field(OUTJ, "$(P)$(SLIT)Center.HLM  NPP MS")
+  field(OUTG, "$(P)$(SLIT)xn.HLM  NPP MS")
+  field(OUTH, "$(P)$(SLIT)xp.LLM  NPP MS")
+  field(OUTI, "$(P)$(SLIT)Gap.LLM  NPP MS")
+  field(OUTJ, "$(P)$(SLIT)Gap.HLM  NPP MS")
+  field(OUTK, "$(P)$(SLIT)Center.LLM  NPP MS")
+  field(OUTL, "$(P)$(SLIT)Center.HLM  NPP MS")
   field(PREC, "3")
 }
 
