@@ -38,8 +38,8 @@ epicsEnvSet("DESC",          "$(SM_DESC=Upper=Left)")
 ## Logical axes and slit
 epicsEnvSet("P",             "$(PREFIX)")
 epicsEnvSet("SLIT",          "$(SM_SLIT=SltH-)")
-epicsEnvSet("mXp",           "$(SM_mXp=m1)")
-epicsEnvSet("mXn",           "$(SM_mXp=m2)")
+epicsEnvSet("mXp",           "$(SM_mXp=m2)")
+epicsEnvSet("mXn",           "$(SM_mXp=m1)")
 
 ## Slit
 < EthercatMC2slit.cmd
