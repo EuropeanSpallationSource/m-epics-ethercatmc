@@ -21,7 +21,7 @@ GNERATEDOPIS: \
 
 
 ../motor4x3.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
-	./genXY.sh 4 3
+	./genXY.sh 4 x 3
 
 
 
