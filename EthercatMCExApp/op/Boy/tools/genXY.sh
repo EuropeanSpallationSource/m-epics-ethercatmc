@@ -3,6 +3,55 @@
 # Number of motors in Y direction
 Y=1
 OPIS=..
+HIGHT=204
+WIDTH=120
+export OPIS WIDTH HIGHT
+
+
+########################
+genXY() {
+	iy=0
+	im=0
+	while test $iy -lt $Y; do
+		ix=0
+		y=$(($iy * $HIGHT))
+		while test $ix -lt $X; do
+			x=$(($ix * $WIDTH))
+			cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+			echo cmd=$cmd
+			eval $cmd <motorx.mid >>$OPIS/$$
+			im=$(($im + 1))
+			ix=$(($ix + 1))
+		done &&
+			iy=$(($iy + 1))
+	done
+}
+########################
+
+genXX() {
+	iy=0
+	im=0
+	FILE=motor
+	while test -n "$X"; do
+		FILE=$FILE-$X
+		ix=0
+		y=$(($iy * $HIGHT))
+		while test $ix -lt $X; do
+			x=$(($ix * $WIDTH))
+			cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+			echo cmd=$cmd
+			eval $cmd <motorx.mid >>$OPIS/$$
+			im=$(($im + 1))
+			ix=$(($ix + 1))
+		done
+		iy=$(($iy + 1))
+		X=$1
+		shift
+	done
+	FILE=$FILE.opi
+}
+
+########################
 
 if test -z "$1"; then
   echo >&2 "$0 <numberOfMotorsX>"
@@ -31,21 +80,11 @@ if test "$1" = x; then
 fi
 
 cp motorx.start $OPIS/$$ &&
-iy=0
-im=0
-while test $iy -lt $Y; do
-  ix=0
-  y=$(($iy * 173))
-  while test $ix -lt $X; do
-    x=$(($ix * 120))
-    cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-    echo cmd=$cmd
-    eval $cmd <motorx.mid >>$OPIS/$$
-    im=$(($im + 1))
-    ix=$(($ix + 1))
-  done &&
-  iy=$(($iy + 1))
-done &&
+	if test $Y = 1; then
+		genXX "$@"
+	else
+		genXY "$@"
+	fi &&
 	cat motorx.end  >>$OPIS/$$ &&
 	mv -f $OPIS/$$ $OPIS/$FILE
 
