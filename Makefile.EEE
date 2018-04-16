@@ -7,19 +7,22 @@ include ${EPICS_ENV_PATH}/module.Makefile
 PROJECT=EthercatMC
 
 AUTO_DEPENDENCIES = NO
-USR_DEPENDENCIES += motor,torstenbogershausen
+USR_DEPENDENCIES += motor,6.9.2-ESS
+USR_DEPENDENCIES += calc,3.6.1
+#USR_DEPENDENCIES += seq,2.1.10
 
-MOTOR=/
 
 SOURCES = \
   EthercatMCApp/src/EthercatMCAxis.cpp \
   EthercatMCApp/src/EthercatMCController.cpp \
-  EthercatMCApp/src/EthercatMCHelper.cpp \
-  EthercatMCApp/src/EthercatMCMain.cpp
+  EthercatMCApp/src/EthercatMCHelper.cpp
+
 
 
 TEMPLATES = \
   EthercatMCApp/Db/EthercatMC.template \
-  EthercatMCApp/Db/EthercatMCdebug.template
+  EthercatMCApp/Db/EthercatMCdebug.template \
+  EthercatMCApp/Db/EthercatMChome.template \
+  EthercatMCApp/Db/2slit_soft.template
 
 #MISCS = \

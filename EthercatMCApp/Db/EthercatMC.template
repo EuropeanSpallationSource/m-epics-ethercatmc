@@ -1,7 +1,7 @@
 record(motor,"$(PREFIX)$(MOTOR_NAME)")
 {
 	field(DESC,"$(DESC)")
-	field(DTYP,"asynAxis")
+	field(DTYP,"asynMotor")
 	field(DIR,"$(DIR=0)")
 	field(VELO,"$(VELO=0)")
 	field(JVEL,"$(JVEL=0)")
@@ -23,6 +23,7 @@ record(motor,"$(PREFIX)$(MOTOR_NAME)")
 	field(RTRY,"$(RTRY=5)")
 	field(RMOD,"$(RMOD=3)")
 	field(DLY,"$(DLY=0.2)")
+	field(FOFF,"$(FOFF=0)")
 	field(NTM,"0")
 	field(TWV,"1")
 }
@@ -244,21 +245,29 @@ record(mbbi,"$(PREFIX)$(R)HomProc-RB") {
     field(FFVL, "15")
 
     field(ZRST, "NotHomable")
-    field(ONST, "LimFwd")
-    field(TWST, "LimBwd")
+    field(ONST, "LimBwd")
+    field(TWST, "LimFwd")
     field(THST, "HSfwdfromLimBwd")
     field(FRST, "HSbwdfromLimFwd")
     field(FVST, "HSmidfromLimBwd")
     field(SXST, "HSmidfromLimFwd")
     field(SVST, "HSbwd")
     field(EIST, "HSfwd")
-    field(NIST, "HSmidFwd")
-    field(TEST, "HSmididFwd")
+    field(NIST, "HSmidBwd")
+    field(TEST, "HSmidFwd")
     field(ELST, "IndexNfromLimBwd")
     field(TVST, "IndexNfromLimFwd")
     field(TTST, "HomeSwiLeftRight")
     field(FTST, "Reserved")
     field(FFST, "ManSetPos")
+}
+
+record(ai,"$(PREFIX)$(R)HomPos-RB") {
+    field(DESC, "Home Position")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos")
+    field(SCAN, "I/O Intr")
 }
 
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")

@@ -17,7 +17,8 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 DB += EthercatMC.template
 DB += EthercatMCdebug.template
-
+DB += EthercatMChome.template
+DB += 2slit_soft.template
 
 
 

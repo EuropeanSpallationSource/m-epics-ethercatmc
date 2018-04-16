@@ -90,6 +90,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     const char * const cfgDebug_str = "getDebugText=";
     const char * const stepSize_str = "stepSize=";
     const char * const homProc_str = "HomProc=";
+    const char * const homPos_str  = "HomPos=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -120,9 +121,14 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
       } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
         pThisOption += strlen(homProc_str);
         int homProc = atoi(pThisOption);
+        if (homProc < 0) homProc = 0;
         if (homProc) {
           setIntegerParam(pC_->EthercatMCHomProc_, homProc);
         }
+      } else if (!strncmp(pThisOption, homPos_str, strlen(homPos_str))) {
+        pThisOption += strlen(homPos_str);
+        double homPos = atof(pThisOption);
+        setDoubleParam(pC_->EthercatMCHomPos_, homPos);
       }
       pThisOption = pNextOption;
     }
@@ -207,6 +213,28 @@ asynStatus EthercatMCAxis::readBackSoftLimits(void)
   return status;
 }
 
+asynStatus EthercatMCAxis::readBackHoming(void)
+{
+  asynStatus status;
+  int    homProc = 0;
+  double homPos  = 0.0;
+
+  /* Don't read it, when the driver has been configured with HomProc= */
+  status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_,&homProc);
+  if (status == asynSuccess) return status;
+
+  status = getValueFromAxis("_EPICS_HOMPROC", &homProc);
+  if (!status) setIntegerParam(pC_->EthercatMCHomProc_, homProc);
+  status = getValueFromAxis("_EPICS_HOMPOS", &homPos);
+  if (status) {
+    /* fall back */
+    status = getSAFValueFromAxisPrint(0x5000, 0x103, "homPos", &homPos);
+  }
+  if (!status) pC_->setDoubleParam(axisNo_, pC_->EthercatMCHomPos_, homPos);
+  return asynSuccess;
+}
+
+
 /** Connection status is changed, the dirty bits must be set and
  *  the values in the controller must be updated
  * \param[in] AsynStatus status
@@ -265,7 +293,7 @@ asynStatus EthercatMCAxis::readBackConfig(void)
                                             fValue);
 
   readBackSoftLimits();
-
+  readBackHoming();
   /* The Ethercat specific are  read-write, so we must use pC_->setXXX for them */
   /* (fast) Velocity */
   status = getSAFValueFromAxisPrint(0x4000, 0x9, "VELO", &fValue);
@@ -310,9 +338,12 @@ asynStatus EthercatMCAxis::initialPoll(void)
 
   /*  Check for Axis ID */
   int axisID = getMotionAxisID();
-  if (axisID < 0) {
+  if (axisID  == -1) {
     setIntegerParam(pC_->motorStatusCommsError_, 1);
     return asynError;
+  } else if (axisID  == -2) {
+    updateMsgTxtFromDriver("No AxisID");
+    return asynSuccess;
   }
   if (axisID != axisNo_) {
     updateMsgTxtFromDriver("ConfigError AxisID");
@@ -329,7 +360,7 @@ asynStatus EthercatMCAxis::initialPoll(void)
   status = readConfigFile();
   if (status) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s (%d) getFeatures() failed\n",
+              "%s (%d) readConfigFile() failed\n",
                modulName, axisNo_);
     updateMsgTxtFromDriver("ConfigError Config File");
     return status;
@@ -341,13 +372,14 @@ asynStatus EthercatMCAxis::initialPoll(void)
        See AMPLIFIER_ON_FLAG */
     status = enableAmplifier(1);
   }
-  if (status == asynSuccess) {
+  if (status == asynSuccess && !drvlocal.supported.bECMC) {
+    /* for ECMC everything is configured from EPICS, do NOT do the readback */
     status = readBackConfig();
-    if (drvlocal.dirty.oldStatusDisconnected) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-		"%s connected(%d)\n",  modulName, axisNo_);
-      drvlocal.dirty.oldStatusDisconnected = 0;
-    }
+  }
+  if (status == asynSuccess && drvlocal.dirty.oldStatusDisconnected) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+	      "%s connected(%d)\n",  modulName, axisNo_);
+    drvlocal.dirty.oldStatusDisconnected = 0;
   }
   return status;
 }
@@ -476,19 +508,45 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   int homProc = -1;
   double homPos = 0.0;
 
-  status = pC_->getIntegerParam(axisNo_,
-                                pC_->EthercatMCHomProc_,
-                                &homProc);
+  /* The homPos may be undefined, then use 0.0 */
+  (void)pC_->getDoubleParam(axisNo_, pC_->EthercatMCHomPos_, &homPos);
+  status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_,&homProc);
   if (homProc == HOMPROC_MANUAL_SETPOS)
     return asynError;
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("fHomePosition", homPos);
-  if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
-  if (status == asynSuccess) status = setValueOnAxis("nCmdData", homProc);
 
-  if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
+
+  if (drvlocal.supported.bECMC) {
+    double velToHom;
+    double velFrmHom;
+    double accHom;
+    double decHom;
+    if (!status) status = pC_->getDoubleParam(axisNo_,
+					      pC_->EthercatMCVelToHom_,
+					      &velToHom);
+    if (!status) status = pC_->getDoubleParam(axisNo_,
+					      pC_->EthercatMCVelFrmHom_,
+					      &velFrmHom);
+    if (!status) status = pC_->getDoubleParam(axisNo_,
+					      pC_->EthercatMCAccHom_,
+					      &accHom);
+    if (!status) status = pC_->getDoubleParam(axisNo_,
+					      pC_->EthercatMCDecHom_,
+					      &decHom);
+    if (!status) status = setSAFValueOnAxis(0x4000, 0x6,
+					    velToHom);
+    if (!status) status = setSAFValueOnAxis(0x4000, 0x7,
+					    velFrmHom);
+    if (!status)  status = setValuesOnAxis("fAcceleration", accHom,
+					   "fDeceleration", decHom);
+  }
+  if (!status) status = setValueOnAxis("nCommand", nCommand );
+  if (!status) status = setValueOnAxis("nCmdData", homProc);
+
+  if (!status) status = setValueOnAxis("bExecute", 1);
 #ifndef motorWaitPollsBeforeReadyString
   drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
 #endif
@@ -678,7 +736,6 @@ asynStatus EthercatMCAxis::stopAxisInternal(const char *function_name, double ac
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s stopAxisInternal(%d) (%s)\n",   modulName, axisNo_, function_name);
   status = setValueOnAxisVerify("bExecute", "bExecute", 0, 1);
-  if (status) drvlocal.mustStop = 1;
   return status;
 }
 
@@ -694,7 +751,9 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
 {
   int EPICS_nErrorId = drvlocal.MCU_nErrorId;
   drvlocal.eeAxisError = eeAxisErrorNoError;
-  if (EPICS_nErrorId) {
+  if (drvlocal.supported.statusVer == -1) {
+    drvlocal.eeAxisError = eeAxisErrorNotFound;
+  } else if (EPICS_nErrorId) {
     /* Error from MCU */
     drvlocal.eeAxisError = eeAxisErrorMCUError;
   } else if (drvlocal.dirty.sErrorMessage) {
@@ -741,12 +800,15 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
             }
           }
           break;
-        case eeAxisErrorCmdError:
+      case eeAxisErrorNotFound:
+          updateMsgTxtFromDriver("Not found");
+          break;
+      case eeAxisErrorCmdError:
           updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
           break;
         case eeAxisErrorIOCcomError:
         case eeAxisErrorNotHomed:
-	  /* handled by asynMotorAxis, fall through */
+          /* handled by asynMotorAxis, fall through */
         default:
           ;
       }
@@ -939,10 +1001,11 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 
 
 pollAllWrongnvals:
+  drvlocal.supported.statusVer = -1;
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s pollAll(%d) nvals=%d in=%s\n",
             modulName, axisNo_, nvals, pC_->inString_);
-  return asynError;
+  return asynSuccess;
 }
 
 
@@ -957,15 +1020,14 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   asynStatus comStatus = asynSuccess;
   st_axis_status_type st_axis_status;
 
+  if (drvlocal.supported.statusVer == -1) {
+    callParamCallbacksUpdateError();
+    return asynSuccess;
+  }
   /* Driver not yet initialized, do nothing */
   if (!drvlocal.stepSize) return comStatus;
 
   memset(&st_axis_status, 0, sizeof(st_axis_status));
-  /* Stop if the previous stop had been lost */
-  if (drvlocal.mustStop) {
-    comStatus = stopAxisInternal(__FUNCTION__, 0);
-    if (comStatus) goto skip;
-  }
   comStatus = pollAll(moving, &st_axis_status);
   if (comStatus) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
@@ -1165,7 +1227,7 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #endif
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",
-	      modulName, axisNo_, value, motorNotHomedProblem);
+              modulName, axisNo_, value, motorNotHomedProblem);
 #endif
 #ifdef EthercatMCErrRstString
   } else if (function == pC_->EthercatMCErrRst_) {
@@ -1315,10 +1377,10 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d HVELfrm_)=%g\n", modulName, axisNo_, value);
 #endif
-#ifdef EthercatMCPosHomString
-  } else if (function == pC_->EthercatMCPosHom_) {
+#ifdef EthercatMCHomPosString
+  } else if (function == pC_->EthercatMCHomPos_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setDoubleParam(%d PosHom_)=%f\n", modulName, axisNo_, value);
+              "%s setDoubleParam(%d HomPos_)=%f\n", modulName, axisNo_, value);
 #endif
 #ifdef EthercatMCCHLMString
   } else if (function == pC_->EthercatMCCHLM_) {

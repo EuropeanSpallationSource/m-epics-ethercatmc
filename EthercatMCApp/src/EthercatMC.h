@@ -31,6 +31,11 @@ FILENAME...   EthercatMC.h
 #define EthercatMCErrString                  "MCUErr"
 #define EthercatMCErrIdString                "ErrId"
 #define EthercatMCHomProcString              "HomProc"
+#define EthercatMCHomPosString               "HomPos"
+#define EthercatMCVelToHomString             "VelToHom"
+#define EthercatMCVelFrmHomString            "VelFrmHom"
+#define EthercatMCAccHomString               "AccHom"
+#define EthercatMCDecHomString               "DecHom"
 #define EthercatMCEnc_ActString              "EncAct"
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCVelActString               "VelAct"
@@ -128,6 +133,7 @@ private:
     eeAxisErrorNoError,
     eeAxisErrorMCUError,
     eeAxisErrorCmdError,
+    eeAxisErrorNotFound,
     eeAxisErrorNotHomed
   } eeAxisErrorType;
   EthercatMCController *pC_;          /**< Pointer to the asynMotorController to which this axis belongs.
@@ -148,7 +154,6 @@ private:
 #ifndef motorWaitPollsBeforeReadyString
     unsigned int waitNumPollsBeforeReady;
 #endif
-    int mustStop;
     int nCommandActive;
     int old_nCommandActive;
     int homed;
@@ -185,8 +190,10 @@ private:
 
   void       handleDisconnect(asynStatus status);
   asynStatus handleConnect(void);
+  asynStatus readConfigLine(const char *line, const char **errorTxt_p);
   asynStatus readConfigFile(void);
   asynStatus readBackSoftLimits(void);
+  asynStatus readBackHoming(void);
   asynStatus readBackConfig(void);
   asynStatus initialPoll(void);
 
@@ -274,6 +281,11 @@ public:
   /* First parameter */
   int EthercatMCErr_;
   int EthercatMCHomProc_;
+  int EthercatMCHomPos_;
+  int EthercatMCVelToHom_;
+  int EthercatMCVelFrmHom_;
+  int EthercatMCAccHom_;
+  int EthercatMCDecHom_;
   int EthercatMCEncAct_;
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION

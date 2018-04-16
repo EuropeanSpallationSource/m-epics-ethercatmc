@@ -39,7 +39,8 @@ typedef struct
      What the (simulated) hardware has logically.
   */
   double HomeSwitchPos;     /* home switch */
-  double HomeProcPos;       /* Position of used home switch */
+  double HomePos;       /* Position after homing */
+  int    HomeProc;
   double highHardLimitPos;
   double lowHardLimitPos;
 
@@ -86,44 +87,6 @@ static motor_axis_type motor_axis_last[MAX_AXES];
 static motor_axis_type motor_axis_reported[MAX_AXES];
 static double getMotorPosStepped(int axis_no);
 
-static void recalculate_pos(int axis_no, int nCmdData)
-{
-  double HWlowPos = motor_axis[axis_no].HWlowPos;
-  double HWhomeSwitchpos = motor_axis[axis_no].HWhomeSwitchpos;
-  double HWhighPos = motor_axis[axis_no].HWhighPos;
-  double oldLowHardLimitPos = motor_axis[axis_no].lowHardLimitPos;
-  switch (nCmdData) {
-    case HomProc_LOW_LS:
-      motor_axis[axis_no].lowHardLimitPos = 0;
-      motor_axis[axis_no].HomeSwitchPos = HWhomeSwitchpos - HWlowPos;
-      motor_axis[axis_no].highHardLimitPos = HWhighPos - HWlowPos;
-      break;
-    case HomProc_HIGH_LS:
-      motor_axis[axis_no].lowHardLimitPos = HWlowPos - HWhighPos;
-      motor_axis[axis_no].HomeSwitchPos = HWhomeSwitchpos - HWhighPos;
-      motor_axis[axis_no].highHardLimitPos = 0;
-      break;
-    case HomProc_LOW_HS:
-    case HomProc_HIGH_HS:
-      motor_axis[axis_no].lowHardLimitPos = HWlowPos;
-      motor_axis[axis_no].HomeSwitchPos = 0;
-      motor_axis[axis_no].highHardLimitPos = HWhighPos;
-      break;
-  }
-  motor_axis[axis_no].HomeProcPos = 0; /* in any case */
-  motor_axis[axis_no].MotorPosWanted = 0;
-  /* adjust position to "force a simulated movement" */
-  motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].lowHardLimitPos - oldLowHardLimitPos;
-
-  fprintf(stdlog,
-          "%s/%s:%d axis_no=%d motorPosNow=%g lowHardLimitPos=%g HomeSwitchPos=%g higHardLimitPos=%g\n",
-          __FILE__, __FUNCTION__, __LINE__,
-          axis_no,
-          motor_axis[axis_no].MotorPosNow,
-          motor_axis[axis_no].lowHardLimitPos,
-          motor_axis[axis_no].HomeSwitchPos,
-          motor_axis[axis_no].highHardLimitPos);
-}
 
 static double getEncoderPosFromMotorPos(int axis_no, double MotorPosNow)
 {
@@ -334,7 +297,7 @@ int getAxisHome(int axis_no)
 {
   AXIS_CHECK_RETURN_ZERO(axis_no);
   int ret;
-  ret = (motor_axis[axis_no].MotorPosNow == motor_axis[axis_no].HomeProcPos);
+  ret = (motor_axis[axis_no].MotorPosNow == motor_axis[axis_no].HomePos);
   return ret;
 }
 
@@ -665,14 +628,14 @@ static void simulateMotion(int axis_no)
       (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
 
     if (((motor_axis[axis_no].moving.velo.HomeVelocity > 0) &&
-         (motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].HomeProcPos)) ||
+         (motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].HomePos)) ||
         ((motor_axis[axis_no].moving.velo.HomeVelocity < 0) &&
-         (motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].HomeProcPos))) {
+         (motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].HomePos))) {
       /* overshoot or undershoot. We are at home */
-      motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].HomeProcPos;
+      motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].HomePos;
     }
   }
-  if (motor_axis[axis_no].MotorPosNow == motor_axis[axis_no].HomeProcPos) {
+  if (motor_axis[axis_no].MotorPosNow == motor_axis[axis_no].HomePos) {
     motor_axis[axis_no].moving.velo.HomeVelocity = 0;
     motor_axis[axis_no].homed = 1;
   }
@@ -852,55 +815,45 @@ int movePosition(int axis_no,
 int moveHomeProc(int axis_no,
                  int direction,
                  int nCmdData,
+                 double position,
                  double max_velocity,
                  double acceleration)
 {
-  double position;
   double velocity = max_velocity ? max_velocity : motor_axis[axis_no].MaxHomeVelocityAbs;
   velocity = fabs(velocity);
   if (motor_axis[axis_no].logFile) {
     fprintf(motor_axis[axis_no].logFile,
-            "moveHomeProc axis_no=%d nCmdData=%d max_velocity=%g "
+            "moveHomeProc axis_no=%d nCmdData=%d position=%g max_velocity=%g "
             "velocity=%g acceleration=%g motorPosNow=%g\n",
             axis_no,
             nCmdData,
+            position,
             max_velocity,
             velocity,
             acceleration,
             motor_axis[axis_no].MotorPosNow);
     fflush(motor_axis[axis_no].logFile);
   }
-  fprintf(stdlog, "%s%s/%s:%d axis_no=%d nCmdData=%d max_velocity=%g velocity=%g acceleration=%g\n",
+  fprintf(stdlog, "%s%s/%s:%d axis_no=%d nCmdData=%d position=%g max_velocity=%g velocity=%g acceleration=%g\n",
           motor_axis[axis_no].logFile ? "LLLL " : "",
           __FILE__, __FUNCTION__, __LINE__,
           axis_no,
           nCmdData,
+          position,
           max_velocity,
           velocity,
           acceleration);
 
-  recalculate_pos(axis_no, nCmdData);
-  position = motor_axis[axis_no].HomeProcPos;
-  switch (nCmdData) {
-    case HomProc_LOW_LS:
-      if (!motor_axis[axis_no].definedLowHardLimitPos)
-        return -1;
-      motor_axis[axis_no].HomeProcPos = motor_axis[axis_no].lowHardLimitPos;
-      break;
-    case HomProc_HIGH_LS:
-      if (!motor_axis[axis_no].definedHighHardLimitPos)
-        return -1;
-      motor_axis[axis_no].HomeProcPos =
-        motor_axis[axis_no].highHardLimitPos;
-      break;
-    case HomProc_LOW_HS:
-    case HomProc_HIGH_HS:
-      motor_axis[axis_no].HomeProcPos = motor_axis[axis_no].HomeSwitchPos;
-      break;
-    default:
-      return -1;
+  motor_axis[axis_no].HomePos = position;
+  motor_axis[axis_no].MotorPosWanted = position;
+  motor_axis[axis_no].HomeProc = nCmdData;
+
+  if (nCmdData == 15) {
+    motor_axis[axis_no].MotorPosNow = position;
+    motor_axis[axis_no].moving.velo.HomeVelocity = 0;
+    motor_axis[axis_no].homed = 1;
+    return 0;
   }
-  position = motor_axis[axis_no].HomeProcPos;
 
   if (motor_axis[axis_no].MaxHomeVelocityAbs &&
       (fabs(velocity) > motor_axis[axis_no].MaxHomeVelocityAbs)) {
@@ -940,6 +893,7 @@ int moveHome(int axis_no,
 {
   return moveHomeProc(axis_no, direction,
                       HomProc_LOW_HS, /* int nCmdData, */
+                      motor_axis[axis_no].HomePos,
                       max_velocity,acceleration);
 }
 

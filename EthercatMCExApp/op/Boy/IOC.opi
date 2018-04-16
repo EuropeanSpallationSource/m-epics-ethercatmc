@@ -36,11 +36,13 @@
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motor2x.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m1</M>
-          <R>m1-</R>
+          <M1>m1</M1>
+          <R1>m1-</R1>
+          <M2>m2</M2>
+          <R2>m2-</R2>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -59,7 +61,7 @@
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -79,7 +81,7 @@
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m1</text>
+    <text>IOC:m1-m2</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -93,11 +95,22 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motor6x.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m2</M>
-          <R>m2-</R>
+          <P>IOC:</P>
+          <M1>SltH-Center</M1>
+          <M2>SltH-Gap</M2>
+          <M3>SltH-xn</M3>
+          <M4>SltH-xp</M4>
+          <R1>SltH-Center-</R1>
+          <R2>SltH-Gap-</R2>
+          <R3>SltH-xn-</R3>
+          <R4>SltH-xp-</R4>
+          <M5>m1</M5>
+          <M6>m2</M6>
+          <R5>m1-</R5>
+          <R6>m2-</R6>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -116,7 +129,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -136,7 +149,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m2</text>
+    <text>SoftSlitMCU010</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -150,11 +163,14 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motor2x.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m3</M>
-          <R>m3-</R>
+          <P>IOC2:</P>
+          <M1>Axis1</M1>
+          <R1>Axis1-</R1>
+          <M2>Axis2</M2>
+          <R2>Axis2-</R2>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -173,7 +189,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -193,7 +209,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m3</text>
+    <text>IOC2:Axis1+2</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -207,11 +223,22 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motor5x.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m4</M>
-          <R>m4-</R>
+          <P>PSI-ESTIARND:MC-MCU-01:</P>
+          <M1>m1</M1>
+          <M2>m2</M2>
+          <M3>m3</M3>
+          <M4>m4</M4>
+          <M5>m5</M5>
+          <M6>m6</M6>
+          <R1>m1-</R1>
+          <R2>m2-</R2>
+          <R3>m3-</R3>
+          <R4>m4-</R4>
+          <R5>m5-</R5>
+          <R6>m6-</R6>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -230,7 +257,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -250,7 +277,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m4</text>
+    <text>PSI-ESTIARND:MC-MCU-01</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -264,11 +291,22 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motor6x.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m5</M>
-          <R>m5-</R>
+          <P>IOC:</P>
+          <M1>m1</M1>
+          <M2>m2</M2>
+          <M3>m3</M3>
+          <M4>m4</M4>
+          <M5>m5</M5>
+          <M6>m6</M6>
+          <R1>m1-</R1>
+          <R2>m2-</R2>
+          <R3>m3-</R3>
+          <R4>m4-</R4>
+          <R5>m5-</R5>
+          <R6>m6-</R6>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -287,7 +325,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -307,7 +345,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m5</text>
+    <text>IOC:m1..m6</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -321,11 +359,11 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motorx.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>m6</M>
-          <R>m6-</R>
+          <M1>m1</M1>
+          <R1>m1-</R1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -344,7 +382,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -364,7 +402,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m6</text>
+    <text>IOC:m1</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -401,7 +439,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -458,7 +496,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -516,7 +554,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -574,7 +612,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -632,7 +670,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -690,7 +728,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -748,7 +786,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -806,7 +844,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -864,7 +902,7 @@ $(pv_value)</tooltip>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
@@ -894,5 +932,93 @@ $(pv_value)</tooltip>
     <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>30</x>
     <y>324</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>HZB-V20_MC-MCU-01.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>HZB-V20:MC-</P>
+          <M1>SLT-01:SltH-Center</M1>
+          <M2>SLT-01:SltH-Gap</M2>
+          <M3>SLT-01:SltH-xp</M3>
+          <M4>SLT-01:SltH-xn</M4>
+          <R1>SLT-01:SltH-Center-</R1>
+          <R2>SLT-01:SltH-Gap-</R2>
+          <R3>SLT-01:SltH-xp-</R3>
+          <R4>SLT-01:SltH-xn-</R4>
+          <MXP1>MCU-01:m1</MXP1>
+          <MXN1>MCU-01:m2</MXN1>
+          <RXP1>MCU-01:m1-</RXP1>
+          <RXN1>MCU-01:m2-</RXN1>
+          <M5>SLT-01:SltV-Center</M5>
+          <M6>SLT-01:SltV-Gap</M6>
+          <M7>SLT-01:SltV-xp</M7>
+          <M8>SLT-01:SltV-xn</M8>
+          <R5>SLT-01:SltV-Center-</R5>
+          <R6>SLT-01:SltV-Gap-</R6>
+          <R7>SLT-01:SltV-xp-</R7>
+          <R8>SLT-01:SltV-xn-</R8>
+          <MXP2>MCU-01:m3</MXP2>
+          <MXN2>MCU-01:m3</MXN2>
+          <RXP2>MCU-01:m4-</RXP2>
+          <RXN2>MCU-01:m4-</RXN2>
+          <M9>MCU-01:m5</M9>
+          <M10>MCU-01:m6</M10>
+          <M11>MCU-01:m7</M11>
+          <M12>MCU-01:m8</M12>
+          <R9>MCU-01:m5-</R9>
+          <R10>MCU-01:m6-</R10>
+          <R11>MCU-01:m7-</R11>
+          <R12>MCU-01:m8-</R12>
+        </macros>
+        <mode>1</mode>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>31</height>
+    <image></image>
+    <name>Action Button_15</name>
+    <push_action_index>0</push_action_index>
+    <pv_name></pv_name>
+    <pv_value />
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <style>0</style>
+    <text>HZB-V20:MC-MCU-01</text>
+    <toggle_button>false</toggle_button>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Action Button</widget_type>
+    <width>229</width>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
+    <x>30</x>
+    <y>360</y>
   </widget>
 </display>

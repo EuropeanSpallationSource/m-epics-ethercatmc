@@ -19,7 +19,7 @@
 
 const static char *const modulName = "EthercatMCAxis::";
 const static unsigned int MINADSPORT = 851; /* something useful */
-const static unsigned int MAXADSPORT = 861; /* something useful */
+const static unsigned int MAXADSPORT = 853; /* something useful */
 
 /** Writes a command to the axis, and expects a logical ack from the controller
  * Outdata is in pC_->outString_
@@ -184,16 +184,18 @@ asynStatus EthercatMCAxis::setValuesOnAxis(const char* var1, double value1,
 int EthercatMCAxis::getMotionAxisID(void)
 {
   int ret = drvlocal.dirty.nMotionAxisID;
-  if (ret < 0) {
+  if (ret == -1) {
     asynStatus status;
-    unsigned adsport;
-    for (adsport = MINADSPORT-1; adsport <= MAXADSPORT; adsport++) {
-      if (adsport > MINADSPORT-1) {
-        /* first try without "ADSPORT=xxx/". This is what the old installations
-           understand */
-        snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
-                 "ADSPORT=%u/", adsport);
-      }
+    static const unsigned adsports[] = {852, 851, 853};
+    unsigned adsport_idx;
+    ret = -2;
+    for (adsport_idx = 0;
+         adsport_idx < sizeof(adsports)/sizeof(adsports[0]);
+         adsport_idx++) {
+      unsigned adsport = adsports[adsport_idx];
+      /* Save adsport_str for the poller */
+      snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
+               "ADSPORT=%u/", adsport);
       snprintf(pC_->outString_, sizeof(pC_->outString_),
                "%sMain.M%d.nMotionAxisID?", drvlocal.adsport_str, axisNo_);
       status = pC_->writeReadController();
@@ -216,8 +218,11 @@ int EthercatMCAxis::getMotionAxisID(void)
       ret = res;
       break;
     }
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s nMotionAxisID(%d)=%d\n",
+              modulName, axisNo_, ret);
+    if (ret != -1) drvlocal.dirty.nMotionAxisID = ret;
   }
-  if (ret >= 0) drvlocal.dirty.nMotionAxisID = ret;
   return ret;
 }
 
@@ -230,10 +235,23 @@ asynStatus EthercatMCAxis::getFeatures(void)
   const char * const stV1_str = "stv1";
   const char * const stV2_str = "stv2";
   const char * const ads_str = "ads";
-  asynStatus status = asynSuccess;
   unsigned int adsport;
-  for (adsport = MINADSPORT; adsport <= MAXADSPORT; adsport++) {
-    snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.THIS.sFeatures?", adsport);
+  asynStatus status = asynSuccess;
+  char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
+  adsport_str[0] = 0; /*
+                       * Don't use adsport_str.adsport_str, because the features
+                       * are on a different ADS port the the axis
+                       */
+
+  for (adsport = MINADSPORT-1; adsport <= MAXADSPORT; adsport++) {
+    if (adsport > MINADSPORT-1) {
+      /* first try without "ADSPORT=xxx/". This is what the old installations
+         understand */
+      snprintf(adsport_str, sizeof(adsport_str),
+                 "ADSPORT=%u/", adsport);
+    }
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "%s.THIS.sFeatures?",
+             adsport_str);
     pC_->inString_[0] = 0;
     status = pC_->writeReadController();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -551,12 +569,89 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
 }
 
 
-asynStatus EthercatMCAxis::readConfigFile(void)
+asynStatus EthercatMCAxis::readConfigLine(const char *line, const char **errorTxt_p)
 {
-  const char *setRaw_str = "setRaw ";
-  const char *setSim_str = "setSim ";
+  const char *setRaw_str = "setRaw "; /* Raw is Raw */
+  const char *setValue_str = "setValue "; /* prefixed with ADSPORT */
   const char *setADRinteger_str = "setADRinteger ";
   const char *setADRdouble_str  = "setADRdouble ";
+  const char *setSim_str = "setSim ";
+
+  asynStatus status = asynError;
+  const char *errorTxt = NULL;
+
+  while (*line == ' ') line++;
+  if (line[0] == '#') {
+    /*  Comment line */
+    return asynSuccess;
+  }
+
+  if (!strncmp(setRaw_str, line, strlen(setRaw_str))) {
+    const char *cfg_txt_p = &line[strlen(setRaw_str)];
+    while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", cfg_txt_p);
+    status = writeReadACK();
+  } else if (!strncmp(setValue_str, line, strlen(setValue_str))) {
+    const char *cfg_txt_p = &line[strlen(setValue_str)];
+    while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "%s%s",
+             drvlocal.adsport_str, cfg_txt_p);
+    status = writeReadACK();
+  } else if (!strncmp(setSim_str, line, strlen(setSim_str))) {
+    if (drvlocal.supported.bSIM) {
+      const char *cfg_txt_p = &line[strlen(setRaw_str)];
+      while (*cfg_txt_p == ' ') cfg_txt_p++;
+
+      snprintf(pC_->outString_, sizeof(pC_->outString_),
+               "Sim.M%d.%s", axisNo_, cfg_txt_p);
+      status = writeReadACK();
+    } else {
+      status = asynSuccess;
+    }
+  } else if (!strncmp(setADRinteger_str, line, strlen(setADRinteger_str))) {
+    unsigned indexGroup;
+    unsigned indexOffset;
+    int value;
+    int nvals = 0;
+    const char *cfg_txt_p = &line[strlen(setADRinteger_str)];
+    while (*cfg_txt_p == ' ') cfg_txt_p++;
+    nvals = sscanf(cfg_txt_p, "%x %x %d",
+                   &indexGroup, &indexOffset, &value);
+    if (nvals == 3) {
+      status = setSAFValueOnAxisVerify(indexGroup, indexOffset, value, 1);
+    } else {
+      errorTxt = "Need 4 values";
+    }
+  } else if (!strncmp(setADRdouble_str, line, strlen(setADRdouble_str))) {
+    unsigned indexGroup;
+    unsigned indexOffset;
+    double value;
+    int nvals = 0;
+    const char *cfg_txt_p = &line[strlen(setADRdouble_str)];
+    while (*cfg_txt_p == ' ') cfg_txt_p++;
+    nvals = sscanf(cfg_txt_p, "%x %x %lf",
+                   &indexGroup, &indexOffset, &value);
+    if (nvals == 3) {
+      status = setSAFValueOnAxisVerify(indexGroup, indexOffset,
+                                       value, 1);
+    } else {
+      errorTxt = "Need 4 values";
+    }
+  } else {
+    errorTxt = "Illegal command";
+  }
+  if (errorTxt_p && errorTxt) {
+    *errorTxt_p = errorTxt;
+  }
+  return status;
+}
+
+
+asynStatus EthercatMCAxis::readConfigFile(void)
+{
+  const char *simOnly_str = "simOnly ";
   FILE *fp;
   char *ret = &pC_->outString_[0];
   int line_no = 0;
@@ -587,7 +682,6 @@ asynStatus EthercatMCAxis::readConfigFile(void)
     char rdbuf[256];
     size_t i;
     size_t len;
-    int nvals = 0;
 
     line_no++;
     ret = fgets(rdbuf, sizeof(rdbuf), fp);
@@ -601,57 +695,19 @@ asynStatus EthercatMCAxis::readConfigFile(void)
     len = strlen(ret);
     if (!len) continue; /* empty line with LF */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s readConfigFile %s:%u %s\n",
-              modulName,
+              "%s readConfigFile(%d) %s:%u %s\n",
+              modulName, axisNo_,
               drvlocal.cfgfileStr, line_no, rdbuf);
 
-    if (rdbuf[0] == '#') {
-      continue; /*  Comment line */
-    } else if (!strncmp(setRaw_str, rdbuf, strlen(setRaw_str))) {
-      const char *cfg_txt_p = &rdbuf[strlen(setRaw_str)];
-      while (*cfg_txt_p == ' ') cfg_txt_p++;
-
-      snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", cfg_txt_p);
-      status = writeReadACK();
-    } else if (!strncmp(setSim_str, rdbuf, strlen(setSim_str))) {
+    if (!strncmp(simOnly_str, rdbuf, strlen(simOnly_str))) {
+      /* "simOnly " Only for the simulator */
       if (drvlocal.supported.bSIM) {
-        const char *cfg_txt_p = &rdbuf[strlen(setRaw_str)];
-        while (*cfg_txt_p == ' ') cfg_txt_p++;
-
-        snprintf(pC_->outString_, sizeof(pC_->outString_),
-                 "Sim.M%d.%s", axisNo_, cfg_txt_p);
-        status = writeReadACK();
-      }
-    } else if (!strncmp(setADRinteger_str, rdbuf, strlen(setADRinteger_str))) {
-      unsigned indexGroup;
-      unsigned indexOffset;
-      int value;
-      const char *cfg_txt_p = &rdbuf[strlen(setADRinteger_str)];
-      while (*cfg_txt_p == ' ') cfg_txt_p++;
-      nvals = sscanf(cfg_txt_p, "%x %x %d",
-                     &indexGroup, &indexOffset, &value);
-      if (nvals == 3) {
-        status = setSAFValueOnAxisVerify(indexGroup, indexOffset, value, 1);
-      } else {
-        errorTxt = "Need 4 values";
-      }
-    } else if (!strncmp(setADRdouble_str, rdbuf, strlen(setADRdouble_str))) {
-      unsigned indexGroup;
-      unsigned indexOffset;
-      double value;
-      const char *cfg_txt_p = &rdbuf[strlen(setADRdouble_str)];
-      while (*cfg_txt_p == ' ') cfg_txt_p++;
-      nvals = sscanf(cfg_txt_p, "%x %x %lf",
-                     &indexGroup, &indexOffset, &value);
-      if (nvals == 3) {
-        status = setSAFValueOnAxisVerify(indexGroup, indexOffset,
-                                         value, 1);
-      } else {
-        errorTxt = "Need 4 values";
+        status = readConfigLine(&rdbuf[strlen(simOnly_str)], &errorTxt);
       }
     } else {
-      errorTxt = "Illegal command";
+      status = readConfigLine(rdbuf, &errorTxt);
     }
+
     if (status || errorTxt) {
       char errbuf[256];
       errbuf[sizeof(errbuf)-1] = 0;
@@ -672,12 +728,13 @@ asynStatus EthercatMCAxis::readConfigFile(void)
   } /* while */
 
   if (ferror(fp) || status || errorTxt) {
-    if (ferror(fp)) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s readConfigFile ferror (%s)\n",
-		modulName,
-                drvlocal.cfgfileStr);
-    }
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s readConfigFile %sstatus=%d errorTxt=%s (%s)\n",
+              modulName,
+              ferror(fp) ? "ferror " : "",
+              (int)status,
+              errorTxt ? errorTxt : "",
+              drvlocal.cfgfileStr);
     fclose(fp);
     return asynError;
   }
