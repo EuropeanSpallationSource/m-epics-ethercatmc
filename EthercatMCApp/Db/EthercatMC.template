@@ -266,7 +266,7 @@ record(ai,"$(PREFIX)$(R)HomPos-RB") {
     field(DESC, "Home Position")
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos-RB")
     field(SCAN, "I/O Intr")
 }
 

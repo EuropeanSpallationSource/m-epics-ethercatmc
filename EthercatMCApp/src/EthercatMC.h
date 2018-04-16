@@ -30,6 +30,8 @@ FILENAME...   EthercatMC.h
 
 #define EthercatMCErrString                  "MCUErr"
 #define EthercatMCErrIdString                "ErrId"
+#define EthercatMCHomProc_RBString           "HomProc-RB"
+#define EthercatMCHomPos_RBString            "HomPos-RB"
 #define EthercatMCHomProcString              "HomProc"
 #define EthercatMCHomPosString               "HomPos"
 #define EthercatMCVelToHomString             "VelToHom"
@@ -280,6 +282,8 @@ public:
 
   /* First parameter */
   int EthercatMCErr_;
+  int EthercatMCHomProc_RB_;
+  int EthercatMCHomPos_RB_;
   int EthercatMCHomProc_;
   int EthercatMCHomPos_;
   int EthercatMCVelToHom_;

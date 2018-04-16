@@ -230,7 +230,7 @@ asynStatus EthercatMCAxis::readBackHoming(void)
     /* fall back */
     status = getSAFValueFromAxisPrint(0x5000, 0x103, "homPos", &homPos);
   }
-  if (!status) pC_->setDoubleParam(axisNo_, pC_->EthercatMCHomPos_, homPos);
+  if (!status) setDoubleParam(pC_->EthercatMCHomPos_, homPos);
   return asynSuccess;
 }
 
@@ -1220,6 +1220,7 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
 #ifdef EthercatMCHomProcString
   } else if (function == pC_->EthercatMCHomProc_) {
     int motorNotHomedProblem = 0;
+    setIntegerParam(pC_->EthercatMCHomProc_RB_, value);
 #ifdef  motorNotHomedProblemString
     /* If value != 0 the axis can be homed. Show Error if it isn't homed */
     if (value) motorNotHomedProblem = MOTORNOTHOMEDPROBLEM_ERROR;
@@ -1379,6 +1380,7 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 #endif
 #ifdef EthercatMCHomPosString
   } else if (function == pC_->EthercatMCHomPos_) {
+    pC_->setDoubleParam(axisNo_, pC_->EthercatMCHomPos_RB_, value);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%s setDoubleParam(%d HomPos_)=%f\n", modulName, axisNo_, value);
 #endif
