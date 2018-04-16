@@ -30,7 +30,7 @@ if test "$1" = x; then
   fi
 fi
 
-cp motorx.start $OPIS/$FILE &&
+cp motorx.start $OPIS/$$ &&
 iy=0
 im=0
 while test $iy -lt $Y; do
@@ -40,13 +40,15 @@ while test $iy -lt $Y; do
     x=$(($ix * 120))
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo cmd=$cmd
-    eval $cmd <motorx.mid >>$OPIS/$FILE
+    eval $cmd <motorx.mid >>$OPIS/$$
     im=$(($im + 1))
     ix=$(($ix + 1))
   done &&
   iy=$(($iy + 1))
 done &&
-cat motorx.end  >>$OPIS/$FILE
+	cat motorx.end  >>$OPIS/$$ &&
+	mv -f $OPIS/$$ $OPIS/$FILE
+
 
 
   
