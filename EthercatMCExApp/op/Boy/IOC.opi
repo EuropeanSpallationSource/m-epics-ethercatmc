@@ -359,11 +359,18 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motorx.opi</path>
+        <path>motor4x.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <P>IOC:</P>
           <M1>m1</M1>
+          <M2>m2</M2>
+          <M3>m3</M3>
+          <M4>m4</M4>
           <R1>m1-</R1>
+          <R2>m2-</R2>
+          <R3>m3-</R3>
+          <R4>m4-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -402,7 +409,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m1</text>
+    <text>IOC:m1..m4</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
