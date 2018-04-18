@@ -338,16 +338,20 @@ asynStatus EthercatMCAxis::initialPoll(void)
 
   /*  Check for Axis ID */
   int axisID = getMotionAxisID();
-  if (axisID  == -1) {
-    setIntegerParam(pC_->motorStatusCommsError_, 1);
-    return asynError;
-  } else if (axisID  == -2) {
-    updateMsgTxtFromDriver("No AxisID");
-    return asynSuccess;
-  }
-  if (axisID != axisNo_) {
-    updateMsgTxtFromDriver("ConfigError AxisID");
-    return asynError;
+  switch (axisID) {
+    case -2:
+      updateMsgTxtFromDriver("No AxisID");
+      return asynSuccess;
+    case -1:
+      setIntegerParam(pC_->motorStatusCommsError_, 1);
+      return asynError;
+    case 0:
+      return asynSuccess;
+    default:
+      if (axisID != axisNo_) {
+        updateMsgTxtFromDriver("ConfigError AxisID");
+        return asynError;
+      }
   }
   status = getFeatures();
   if (status) {

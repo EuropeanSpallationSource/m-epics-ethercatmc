@@ -185,6 +185,7 @@ int EthercatMCAxis::getMotionAxisID(void)
 {
   int ret = drvlocal.dirty.nMotionAxisID;
   if (ret == -1) {
+    int res = -3;
     asynStatus status;
     static const unsigned adsports[] = {852, 851, 853};
     unsigned adsport_idx;
@@ -202,26 +203,25 @@ int EthercatMCAxis::getMotionAxisID(void)
       if (status) {
         return -1;
       }
-      int res;
       int nvals = sscanf(pC_->inString_, "%d", &res);
       if (nvals != 1) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%s nvals=%d command=\"%s\" response=\"%s\"\n",
-                  modulName, nvals, pC_->outString_, pC_->inString_);
+                  "%s oldret=%d nvals=%d command=\"%s\" response=\"%s\" res=%d\n",
+                  modulName, ret, nvals, pC_->outString_, pC_->inString_, res);
         continue;
       }
+      ret = res;
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s out=%s in=%s status=%s (%d) iValue=%d\n",
+                "%s out=%s in=%s status=%s (%d) res=%d ret=%d\n",
                 modulName,
                 pC_->outString_, pC_->inString_,
-                pasynManager->strStatus(status), (int)status, res);
-      ret = res;
+                pasynManager->strStatus(status), (int)status, res, ret);
       break;
     }
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s nMotionAxisID(%d)=%d\n",
-              modulName, axisNo_, ret);
     if (ret != -1) drvlocal.dirty.nMotionAxisID = ret;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s nMotionAxisID(%d)=%d res=%d ret=%d\n",
+              modulName, axisNo_, drvlocal.dirty.nMotionAxisID, res, ret);
   }
   return ret;
 }
@@ -303,7 +303,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxis(unsigned indexGroup,
                                              int value)
 {
   int axisID = getMotionAxisID();
-  if (axisID < 0) return asynError;
+  if (axisID <= 0) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,2,2=%d",
           501, indexGroup + axisID, indexOffset, value);
   return writeReadACK();
@@ -334,7 +334,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxis(unsigned indexGroup,
                                              double value)
 {
   int axisID = getMotionAxisID();
-  if (axisID < 0) return asynError;
+  if (axisID <= 0) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,8,5=%g",
           501, indexGroup + axisID, indexOffset, value);
   return writeReadACK();
@@ -369,7 +369,7 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   int nvals;
   asynStatus status;
   int axisID = getMotionAxisID();
-  if (axisID < 0) return asynError;
+  if (axisID <= 0) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?",
           501, indexGroup + axisID, indexOffset);
   status = pC_->writeReadController();
@@ -398,7 +398,7 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   int nvals;
   asynStatus status;
   int axisID = getMotionAxisID();
-  if (axisID < 0) return asynError;
+  if (axisID <= 0) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
           501, indexGroup + axisID, indexOffset);
   status = pC_->writeReadController();
@@ -482,7 +482,7 @@ asynStatus EthercatMCAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
   double fRes;
   asynStatus status;
   int axisID = getMotionAxisID();
-  if (axisID < 0) return asynError;
+  if (axisID <= 0) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "ADSPORT=%u/.ADR.16#%X,16#%X,2,2?;ADSPORT=%u/.ADR.16#%X,16#%X,8,5?",
           501, iIndexGroup + axisID, iIndexOffset,
           501, fIndexGroup + axisID, fIndexOffset);
