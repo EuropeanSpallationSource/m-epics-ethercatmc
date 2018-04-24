@@ -954,10 +954,10 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <P>HZB-V20:MC-</P>
-          <M1>MCU-01:SltH-Center</M1>
-          <M2>MCU-01:SltH-Gap</M2>
-          <M3>MCU-01:SltH-xn</M3>
-          <M4>MCU-01:SltH-xp</M4>
+          <M1>SLT-01:SltH-Center</M1>
+          <M2>SLT-01:SltH-Gap</M2>
+          <M3>SLT-01:SltH-xn</M3>
+          <M4>SLT-01:SltH-xp</M4>
           <M5>MCU-01:m1</M5>
           <M6>MCU-01:m2</M6>
           <M7>MCU-01:SltV-Center</M7>
@@ -970,10 +970,10 @@ $(pv_value)</tooltip>
           <M14>MCU-01:m6</M14>
           <M15>MCU-01:m7</M15>
           <M16>MCU-01:m8</M16>
-          <R1>MCU-01:SltH-Center-</R1>
-          <R2>MCU-01:SltH-Gap-</R2>
-          <R3>MCU-01:SltH-xn-</R3>
-          <R4>MCU-01:SltH-xp-</R4>
+          <R1>SLT-01:SltH-Center-</R1>
+          <R2>SLT-01:SltH-Gap-</R2>
+          <R3>SLT-01:SltH-xn-</R3>
+          <R4>SLT-01:SltH-xp-</R4>
           <R5>MCU-01:m1-</R5>
           <R6>MCU-01:m2-</R6>
           <R7>MCU-01:SltV-Center-</R7>
