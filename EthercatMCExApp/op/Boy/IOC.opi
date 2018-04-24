@@ -960,10 +960,10 @@ $(pv_value)</tooltip>
           <M4>SLT-01:SltH-xp</M4>
           <M5>MCU-01:m1</M5>
           <M6>MCU-01:m2</M6>
-          <M7>MCU-01:SltV-Center</M7>
-          <M8>MCU-01:SltV-Gap</M8>
-          <M9>MCU-01:SltV-xn</M9>
-          <M10>MCU-01:SltV-xp</M10>
+          <M7>SLT-01:SltV-Center</M7>
+          <M8>SLT-01:SltV-Gap</M8>
+          <M9>SLT-01:SltV-xn</M9>
+          <M10>SLT-01:SltV-xp</M10>
           <M11>MCU-01:m3</M11>
           <M12>MCU-01:m4</M12>
           <M13>MCU-01:m5</M13>
@@ -976,10 +976,10 @@ $(pv_value)</tooltip>
           <R4>SLT-01:SltH-xp-</R4>
           <R5>MCU-01:m1-</R5>
           <R6>MCU-01:m2-</R6>
-          <R7>MCU-01:SltV-Center-</R7>
-          <R8>MCU-01:SltV-Gap-</R8>
-          <R9>MCU-01:SltV-xn-</R9>
-          <R10>MCU-01:SltV-xp-</R10>
+          <R7>SLT-01:SltV-Center-</R7>
+          <R8>SLT-01:SltV-Gap-</R8>
+          <R9>SLT-01:SltV-xn-</R9>
+          <R10>SLT-01:SltV-xp-</R10>
           <R11>MCU-01:m3-</R11>
           <R12>MCU-01:m4-</R12>
           <R13>MCU-01:m5-</R13>
