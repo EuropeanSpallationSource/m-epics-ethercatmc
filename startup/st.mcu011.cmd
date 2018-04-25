@@ -24,28 +24,28 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
 epicsEnvSet("M",             "$(SM_M=m1)")
 epicsEnvSet("R",             "$(SM_R=m1-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
-epicsEnvSet("DESC",          "$(SM_DESC=Right/Lower)")
+epicsEnvSet("DESC",          "$(SM_DESC=Y_NEG)")
 < EthercatMCAxis.cmd
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("M",             "$(SM_M=m2)")
 epicsEnvSet("R",             "$(SM_R=m2-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
-epicsEnvSet("DESC",          "$(SM_DESC=Left/Upper)")
+epicsEnvSet("DESC",          "$(SM_DESC=Y_POS)")
 < EthercatMCAxis.cmd
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
 epicsEnvSet("M",             "$(SM_M=m3)")
 epicsEnvSet("R",             "$(SM_R=m3-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
-epicsEnvSet("DESC",          "$(SM_DESC=Gap)")
+epicsEnvSet("DESC",          "$(SM_DESC=Y_CENTER)")
 < EthercatMCAxis.cmd
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
 epicsEnvSet("M",             "$(SM_M=m4)")
 epicsEnvSet("R",             "$(SM_R=m4-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
-epicsEnvSet("DESC",          "$(SM_DESC=Center)")
+epicsEnvSet("DESC",          "$(SM_DESC=Y_GAP)")
 < EthercatMCAxis.cmd
 
 
