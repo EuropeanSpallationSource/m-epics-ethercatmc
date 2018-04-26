@@ -48,14 +48,14 @@ epicsEnvSet("DESC",          "H low Blade")
 #########################
 ## Logical axes and slit
 epicsEnvSet("P",             "$(PREFIX)")
-epicsEnvSet("SLIT",          "$(SM_SLIT=SltH-)")
-epicsEnvSet("mXc",           "$(SM_mXp=m1)")
-epicsEnvSet("mXg",           "$(SM_mXp=m2)")
-epicsEnvSet("mXp",           "$(SM_mXp=m3)")
-epicsEnvSet("mXn",           "$(SM_mXp=m4)")
+epicsEnvSet("SLIT",          "MC-SLT-01:SltH-")
+epicsEnvSet("mXc",           "m1")
+epicsEnvSet("mXg",           "m2")
+epicsEnvSet("mXp",           "m3")
+epicsEnvSet("mXn",           "m4")
 
 ## Slit
-< EthercatMC2slithard.cmd
+< EthercatMC2slit_hard.cmd
 #########################
 
 # Slit Vertical

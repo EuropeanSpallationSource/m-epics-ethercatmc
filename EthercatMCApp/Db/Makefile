@@ -19,6 +19,7 @@ DB += EthercatMC.template
 DB += EthercatMCdebug.template
 DB += EthercatMChome.template
 DB += 2slit_soft.template
+DB += 2slit_hard.template
 
 
 
