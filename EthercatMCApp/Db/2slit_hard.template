@@ -107,8 +107,6 @@ record(motor, "$(P)$(SLIT)xp") {
   # ignore the SET field, we're going to implement it in the database, rather
   # than in individual motor records
   field(IGSET, "1")
-  # spec might be able to use this alias
-  #alias("$(P)$(SLIT)m2")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.A  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.A  NPP MS")
@@ -116,8 +114,8 @@ record(motor, "$(P)$(SLIT)xp") {
   field(RRES, "1")
   field(URIP, "Yes")
   field(PREC, "$(PREC=3)")
-  field(EGU, "mm")
-  field(TWV, "1")
+  field(EGU,  "$(EGU=mm)")
+  field(TWV,  "1")
   field(DINP, "$(P)$(SLIT)calcDone.VAL  NPP MS")
   field(RTRY, "0")
 }
@@ -125,7 +123,6 @@ record(motor, "$(P)$(SLIT)xp") {
 record(motor, "$(P)$(SLIT)xn") {
   field(DESC, "$(SLIT) X-")
   field(IGSET, "1")
-  #alias("$(P)$(SLIT)m1")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.B  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.B  NPP MS")
@@ -133,8 +130,8 @@ record(motor, "$(P)$(SLIT)xn") {
   field(RRES, "1")
   field(URIP, "Yes")
   field(PREC, "$(PREC=3)")
-  field(EGU, "mm")
-  field(TWV, "1")
+  field(EGU,  "$(EGU=mm)")
+  field(TWV,  "1")
   field(DINP, "$(P)$(SLIT)calcDone.VAL  NPP MS")
   field(RTRY, "0")
 }
@@ -142,7 +139,6 @@ record(motor, "$(P)$(SLIT)xn") {
 record(motor, "$(P)$(SLIT)Gap") {
   field(DESC, "$(SLIT) Gap")
   field(IGSET, "1")
-  #alias("$(P)$(SLIT)m3")
   field(DTYP, "Soft Channel")
   field(OUT, "$(P)$(SLIT)tFwd.C  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.C  NPP MS")
@@ -150,8 +146,8 @@ record(motor, "$(P)$(SLIT)Gap") {
   field(RRES, "1")
   field(URIP, "Yes")
   field(PREC, "$(PREC=3)")
-  field(EGU, "mm")
-  field(TWV, "1")
+  field(EGU,  "$(EGU=mm)")
+  field(TWV,  "1")
   field(DINP, "$(P)$(SLIT)calcDone.VAL  NPP MS")
   field(RTRY, "0")
 }
@@ -159,15 +155,14 @@ record(motor, "$(P)$(SLIT)Gap") {
 record(motor, "$(P)$(SLIT)Center") {
   field(DESC, "$(SLIT) Center")
   field(IGSET, "1")
-  #alias("$(P)$(SLIT)m4")
   field(DTYP, "Soft Channel")
-  field(OUT, "$(P)$(SLIT)tFwd.D  PP MS")
+  field(OUT,  "$(P)$(SLIT)tFwd.D  PP MS")
   field(RDBL, "$(P)$(SLIT)tRev.D  NPP MS")
   field(MRES, "1")
   field(RRES, "1")
   field(URIP, "Yes")
   field(PREC, "$(PREC=3)")
-  field(EGU, "mm")
+  field(EGU,  "$(EGU=mm)")
   field(TWV, "1")
   field(DINP, "$(P)$(SLIT)calcDone.VAL  NPP MS")
   field(RTRY, "0")
@@ -413,7 +408,7 @@ record(bo, "$(P)$(SLIT)doSyncPut") {
 record(transform, "$(P)$(SLIT)tSyncCalc") {
   field(SDIS, "$(P)$(SLIT)doSync")
   field(DISV, "0")
-  field(EGU, "mm")
+  field(EGU,  "$(EGU=mm)")
   field(PREC, "$(PREC=3)")
 
   # who caused move?
@@ -461,7 +456,7 @@ record(transform, "$(P)$(SLIT)tSync") {
   field(DESC, "xp(a), xn(b)->siz(c),cntr(d)")
   field(SDIS, "$(P)$(SLIT)syncOrInit PP")
   field(DISV, "0")
-  field(EGU, "mm")
+  field(EGU,  "$(EGU=mm)")
   field(PREC, "$(PREC=3)")
 
   field(CMTA, "X+ slit")
@@ -503,7 +498,7 @@ record(transform, "$(P)$(SLIT)tRev") {
   field(CLCD, "(a+b)/2")
   field(INPA, "$(P)$(mXp).RBV  CP MS")
   field(INPB, "$(P)$(mXn).RBV  CP MS")
-  field(EGU, "mm")
+  field(EGU,  "$(EGU=mm)")
   field(PREC, "$(PREC=3)")
   field(CMTA, "X+ slit")
   field(CMTB, "X- slit")
