@@ -436,7 +436,9 @@ int setMRES_23(int axis_no, double value)
     motor_axis[axis_no].MRES_23 = value;
     return 0;
   }
- if (getAmplifierOn(axis_no))
+  if (motor_axis[axis_no].MRES_23 == value)
+    return 0;
+  if (getAmplifierOn(axis_no))
     return 1;
   motor_axis[axis_no].MRES_23 = value;
   return 0;
@@ -460,6 +462,8 @@ int setMRES_24(int axis_no, double value)
           __FILE__, __FUNCTION__, __LINE__, axis_no,
           value);
   AXIS_CHECK_RETURN_ERROR(axis_no);
+  if (motor_axis[axis_no].MRES_24 == value)
+    return 0;
   if (getAmplifierOn(axis_no))
     return 1;
   motor_axis[axis_no].MRES_24 = value;
