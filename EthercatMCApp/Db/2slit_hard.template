@@ -1,0 +1,701 @@
+# Solved: when the slit is stopped, the hard motors are rarely in exactly
+# the positions they should be, because one was started slightly before the
+# other.  Thus, if you move 'Center' and stop during the move, 'Gap' will sync
+# to a slightly new value. 
+# New sync strategy:
+# If 'Center' was moved and stopped, calc new positions for (xn,xp) so that
+# 'Gap' will be preserved, move hard motors to those positions, and sync.
+# if 'Gap' was moved and stopped, calc new positions for (xn,xp) so that
+# 'Center' will be preserved, move hard motors to those positions, and sync.
+# if xn or xp was moved, just sync.
+#
+
+
+record(transform, "$(P)$(SLIT)setMonitor") {
+  field(INPA, "$(P)$(SLIT)xp.SET CP")
+  field(INPB, "$(P)$(SLIT)xn.SET CP")
+  field(INPC, "$(P)$(SLIT)Gap.SET CP")
+  field(INPD, "$(P)$(SLIT)Center.SET CP")
+  field(CLCE, "a||b||c||d")
+  field(OUTE, "$(P)$(mXn).SET CA")
+  field(CLCF, "e")
+  field(OUTF, "$(P)$(mXp).SET CA")
+
+}
+record(bo, "$(P)$(SLIT)set1") {
+  field(DTYP, "Soft Channel")
+  field(OMSL, "closed_loop")
+  field(DOL, "$(P)$(SLIT)set.VAL  NPP NMS")
+  field(OUT, "$(P)$(mXp).SET  PP MS")
+  field(ZNAM, "Use")
+  field(ONAM, "Set")
+}
+
+record(bo, "$(P)$(SLIT)set") {
+  field(DTYP, "Soft Channel")
+  field(FLNK, "$(P)$(SLIT)set1  PP MS")
+  field(OUT, "$(P)$(mXn).SET  PP MS")
+  field(ZNAM, "Use")
+  field(ONAM, "Set")
+}
+
+# Listen to all soft motors' .STOP fields.  If any go to 1, stop all
+# soft and hard motors.  (We have to stop soft motors so they'll know that
+# they're supposed to sync to hard motor values when the move ends.)
+# But if we write to the .STOP fields we're monitoring, we don't want to
+# respond to monitors from our own writes.
+# Thus, when we write, weSaidStop disables that response.
+record(bo, "$(P)$(SLIT)weSaidStop") {
+  #field(TPRO, "1")
+  field(ZNAM, "No")
+  field(ONAM, "Yes")
+}
+record(transform, "$(P)$(SLIT)monitorStop") {
+  #field(TPRO, "1")
+  field(SDIS, "$(P)$(SLIT)weSaidStop")
+  field(DISV, "1")
+  # listen to our soft motors' .STOP fields
+  field(INPA, "$(P)$(SLIT)xp.STOP CP MS")
+  field(INPB, "$(P)$(SLIT)xn.STOP CP MS")
+  field(INPC, "$(P)$(SLIT)Gap.STOP CP MS")
+  field(INPD, "$(P)$(SLIT)Center.STOP CP MS")
+  # also listen to the soft motors of the other 2slit_soft database
+  # that we're paired with (if it exists)
+  field(INPE, "$(P)$(PAIRED_WITH=)xp.STOP CP MS")
+  field(INPF, "$(P)$(PAIRED_WITH=)xn.STOP CP MS")
+  field(INPG, "$(P)$(PAIRED_WITH=)Gap.STOP CP MS")
+  field(INPH, "$(P)$(PAIRED_WITH=)Center.STOP CP MS")
+  # I==any soft motor was told to stop
+  field(CLCI, "a||b||c||d||e||f||g||h")
+  field(OUTI, "$(P)$(SLIT)weSaidStop PP MS")
+  # don't write to the .STOP field that triggered us to process
+  field(CMTJ, "bitmask for doStop")
+  field(CLCJ, "!a+!b*2+!c*4+!d*8+16+32+64")
+  field(OUTK, "$(P)$(SLIT)doStop.PROC PP")
+}
+record(seq, "$(P)$(SLIT)doStop") {
+  #field(TPRO, "1")
+  field(SDIS, "$(P)$(SLIT)weSaidStop")
+  field(DISV, "0")
+  field(SELL, "$(P)$(SLIT)monitorStop.J")
+  field(SELM, "Mask")
+  field(DOL1, "1")
+  field(LNK1, "$(P)$(SLIT)xp.STOP PP")
+  field(DOL2, "1")
+  field(LNK2, "$(P)$(SLIT)xn.STOP PP")
+  field(DOL3, "1")
+  field(LNK3, "$(P)$(SLIT)Gap.STOP PP")
+  field(DOL4, "1")
+  field(LNK4, "$(P)$(SLIT)Center.STOP PP")
+  field(DOL5, "1")
+  field(LNK5, "$(P)$(mXp).STOP PP")
+  field(DOL6, "1")
+  field(LNK6, "$(P)$(mXn).STOP PP")
+  # We need to wait for all the postings resulting from puts to stop_*
+  # fields to be received by monitorStop's CP links before enabling
+  # that record to respond to new postings of those fields.  Writing
+  # with a CA link should ensure that, but delaying by 0.1 s provides
+  # additional protection.
+  # On second thought, try leaving weSaidStop==1 until the motors stop.
+  #field(DOL7, "0")
+  #field(DLY7, ".1")
+  #field(LNK7, "$(P)$(SLIT)weSaidStop CA")
+}
+
+record(motor, "$(P)$(SLIT)xp") {
+  field(DESC, "$(SLIT) X+")
+  # ignore the SET field, we're going to implement it in the database, rather
+  # than in individual motor records
+  field(IGSET, "1")
+  # spec might be able to use this alias
+  #alias("$(P)$(SLIT)m2")
+  field(DTYP, "Soft Channel")
+  field(OUT, "$(P)$(SLIT)tFwd.A  PP MS")
+  field(RDBL, "$(P)$(SLIT)tRev.A  NPP MS")
+  field(MRES, "1")
+  field(RRES, "1")
+  field(URIP, "Yes")
+  field(PREC, "$(PREC=3)")
+  field(EGU, "mm")
+  field(TWV, "1")
+  field(DINP, "$(P)$(SLIT)calcDone.VAL  NPP MS")
+  field(RTRY, "0")
+}
+
+record(motor, "$(P)$(SLIT)xn") {
+  field(DESC, "$(SLIT) X-")
+  field(IGSET, "1")
+  #alias("$(P)$(SLIT)m1")
+  field(DTYP, "Soft Channel")
+  field(OUT, "$(P)$(SLIT)tFwd.B  PP MS")
+  field(RDBL, "$(P)$(SLIT)tRev.B  NPP MS")
+  field(MRES, "1")
+  field(RRES, "1")
+  field(URIP, "Yes")
+  field(PREC, "$(PREC=3)")
+  field(EGU, "mm")
+  field(TWV, "1")
+  field(DINP, "$(P)$(SLIT)calcDone.VAL  NPP MS")
+  field(RTRY, "0")
+}
+
+record(motor, "$(P)$(SLIT)Gap") {
+  field(DESC, "$(SLIT) Gap")
+  field(IGSET, "1")
+  #alias("$(P)$(SLIT)m3")
+  field(DTYP, "Soft Channel")
+  field(OUT, "$(P)$(SLIT)tFwd.C  PP MS")
+  field(RDBL, "$(P)$(SLIT)tRev.C  NPP MS")
+  field(MRES, "1")
+  field(RRES, "1")
+  field(URIP, "Yes")
+  field(PREC, "$(PREC=3)")
+  field(EGU, "mm")
+  field(TWV, "1")
+  field(DINP, "$(P)$(SLIT)calcDone.VAL  NPP MS")
+  field(RTRY, "0")
+}
+
+record(motor, "$(P)$(SLIT)Center") {
+  field(DESC, "$(SLIT) Center")
+  field(IGSET, "1")
+  #alias("$(P)$(SLIT)m4")
+  field(DTYP, "Soft Channel")
+  field(OUT, "$(P)$(SLIT)tFwd.D  PP MS")
+  field(RDBL, "$(P)$(SLIT)tRev.D  NPP MS")
+  field(MRES, "1")
+  field(RRES, "1")
+  field(URIP, "Yes")
+  field(PREC, "$(PREC=3)")
+  field(EGU, "mm")
+  field(TWV, "1")
+  field(DINP, "$(P)$(SLIT)calcDone.VAL  NPP MS")
+  field(RTRY, "0")
+}
+record(transform, "$(P)$(SLIT)spectator") {
+}
+record(transform, "$(P)$(SLIT)latchSpectator") {
+  # latch values of spectator, so we'll know who started this move
+  field(SDIS, "$(P)$(SLIT)newMove")
+  field(DISV, "1")
+  field(INPA, "$(P)$(SLIT)spectator.A")
+  field(INPB, "$(P)$(SLIT)spectator.B")
+  field(INPC, "$(P)$(SLIT)spectator.C")
+  field(INPD, "$(P)$(SLIT)spectator.D")
+}
+
+record(ao, "$(P)$(SLIT)xpBPut") {
+  field(DTYP, "Soft Channel")
+  field(SDIS, "$(P)$(SLIT)xp.PACT  NPP MS")
+  field(OUT, "$(P)$(SLIT)xp.VAL  PP MS")
+  field(FLNK, "$(P)$(SLIT)xpWasPassive")
+}
+# If xpWasPassive processes, xp didn't cause the move
+record(bo, "$(P)$(SLIT)xpWasPassive") {
+  field(DOL, "1")
+  field(OUT, "$(P)$(SLIT)spectator.A PP")
+}
+
+record(ao, "$(P)$(SLIT)xnBPut") {
+  field(DTYP, "Soft Channel")
+  field(SDIS, "$(P)$(SLIT)xn.PACT  NPP MS")
+  field(OUT, "$(P)$(SLIT)xn.VAL  PP MS")
+  field(FLNK, "$(P)$(SLIT)xnWasPassive")
+}
+record(bo, "$(P)$(SLIT)xnWasPassive") {
+  field(DOL, "1")
+  field(OUT, "$(P)$(SLIT)spectator.B PP")
+}
+
+record(ao, "$(P)$(SLIT)GapBPut") {
+  field(DTYP, "Soft Channel")
+  field(SDIS, "$(P)$(SLIT)Gap.PACT  NPP MS")
+  field(OUT, "$(P)$(SLIT)Gap.VAL  PP MS")
+  field(FLNK, "$(P)$(SLIT)GapWasPassive")
+}
+record(bo, "$(P)$(SLIT)GapWasPassive") {
+  field(DOL, "1")
+  field(OUT, "$(P)$(SLIT)spectator.C PP")
+}
+
+record(ao, "$(P)$(SLIT)CenterBPut") {
+  field(DTYP, "Soft Channel")
+  field(SDIS, "$(P)$(SLIT)Center.PACT  NPP MS")
+  field(OUT, "$(P)$(SLIT)Center.VAL  PP MS")
+  field(FLNK, "$(P)$(SLIT)CenterWasPassive")
+}
+record(bo, "$(P)$(SLIT)CenterWasPassive") {
+  field(DOL, "1")
+  field(OUT, "$(P)$(SLIT)spectator.D PP")
+}
+
+record(ao, "$(P)$(SLIT)mXnPut") {
+  field(DTYP, "Soft Channel")
+  field(OUT, "$(P)$(mXn).VAL  PP MS")
+}
+
+record(ao, "$(P)$(SLIT)mXpPut") {
+  field(DTYP, "Soft Channel")
+  field(OUT, "$(P)$(mXp).VAL  PP MS")
+}
+
+record(calcout, "$(P)$(SLIT)closeGate") {
+  field(SDIS, "$(P)$(SLIT)gate.VAL  NPP MS")
+  field(DISV, "0")
+  field(INPA, "$(P)$(mXn).DMOV  CP ")
+  field(CALC, "!a")
+  field(OUT, "$(P)$(SLIT)gate.VAL  PP MS")
+}
+
+record(bo, "$(P)$(SLIT)gate") {
+  field(DTYP, "Soft Channel")
+  field(OUT, "$(P)$(SLIT)setSoftMove PP")
+  field(ZNAM, "Closed")
+  field(ONAM, "Open")
+}
+
+record(bo, "$(P)$(SLIT)gatePut") {
+  field(DTYP, "Soft Channel")
+  field(OUT, "$(P)$(SLIT)gate.VAL  PP MS")
+}
+
+record(scalcout, "$(P)$(SLIT)mXn_nameCalc") {
+  field(CALC, "aa[0,'.']")
+  field(INAA, "$(P)$(SLIT)mXnPut.OUT CPP")
+}
+
+record(scalcout, "$(P)$(SLIT)mXp_nameCalc") {
+  field(CALC, "aa[0,'.']")
+  field(INAA, "$(P)$(SLIT)mXpPut.OUT CPP")
+}
+
+record(transform, "$(P)$(SLIT)tFwd") {
+  field(DESC, "xp(a),xn(b)->Gap(c),Center")
+  field(CLCA, "d+c/2")
+  field(CLCB, "d-c/2")
+  field(CLCC, "a-b")
+  field(CLCD, "(a+b)/2")
+  field(CLCF, "a")
+  field(CLCG, "b")
+  field(INPE, "1")
+  field(OUTA, "$(P)$(SLIT)xpBPut.VAL  PP MS")
+  field(OUTB, "$(P)$(SLIT)xnBPut.VAL  PP MS")
+  field(OUTC, "$(P)$(SLIT)GapBPut.VAL  PP MS")
+  field(OUTD, "$(P)$(SLIT)CenterBPut.VAL  PP MS")
+  field(OUTE, "$(P)$(SLIT)gatePut.VAL  PP MS")
+  field(OUTF, "$(P)$(SLIT)writeMotors.PROC PP MS")
+  field(PREC, "3")
+  field(CMTA, "X+ slit")
+  field(CMTB, "X- slit")
+  field(CMTC, "Gap")
+  field(CMTD, "Center")
+  field(CMTE, "gate")
+  field(CMTF, "send X+ to motor")
+  field(CMTG, "send X- to motor")
+  field(OUTH, "$(P)$(SLIT)latchSpectator.PROC PP")
+  field(I, "1")
+  field(OUTI, "$(P)$(SLIT)newMove PP")
+}
+record(bo, "$(P)$(SLIT)newMove") {
+  field(DTYP, "Soft Channel")
+}
+
+record(bo, "$(P)$(SLIT)setSoftMove") {
+  field(SDIS, "$(P)$(SLIT)gate")
+  field(DISV, "0")
+  field(OUT, "$(P)$(SLIT)isSoftMove PP")
+}
+
+record(bo, "$(P)$(SLIT)clearSoftMove") {
+  field(OUT, "$(P)$(SLIT)isSoftMove PP")
+}
+record(dfanout, "$(P)$(SLIT)isSoftMove") {
+  field(OUTA, "$(P)$(SLIT)xp.LOCK")
+  field(OUTB, "$(P)$(SLIT)xn.LOCK")
+  field(OUTC, "$(P)$(SLIT)Gap.LOCK")
+  field(OUTD, "$(P)$(SLIT)Center.LOCK")
+}
+
+record(calcout, "$(P)$(SLIT)calcDone") {
+  field(CALC, "b&&c&&!a")
+  field(INPA, "$(P)$(SLIT)gate.VAL CP")
+  field(INPB, "$(P)$(mXp).DMOV CP")
+  field(INPC, "$(P)$(mXn).DMOV CP")
+  field(OUT, "$(P)$(SLIT)doDoneStuff.PROC PP")
+  field(OOPT, "Transition To Non-zero")
+}
+
+record(seq, "$(P)$(SLIT)doDoneStuff") {
+  # leave instructions to do a sync when everything is done
+  field(DOL1, "$(P)$(SLIT)weSaidStop")
+  field(LNK1, "$(P)$(SLIT)maybeSync.A NPP")
+  # clean up after move
+  field(DOL2, "0")
+  field(LNK2, "$(P)$(SLIT)weSaidStop PP")
+  field(LNK3, "$(P)$(SLIT)clearSoftMove.PROC PP")
+  # maybe sync to hard motor commanded positions, but only after soft motors
+  # have responded to calcDone.  CA link should be enough to get this
+  # ordering right.
+  field(DLY4, "0")
+  field(LNK4, "$(P)$(SLIT)maybeSync.PROC CA")
+  field(DOL5, "0")
+  field(LNK5, "$(P)$(SLIT)newMove PP")
+  field(DOL6, "0")
+  field(LNK6, "$(P)$(SLIT)spectator.A PP")
+
+  field(DOL7, "0")
+  field(LNK7, "$(P)$(SLIT)spectator.B PP")
+
+  field(DOL8, "0")
+  field(LNK8, "$(P)$(SLIT)spectator.C PP")
+
+  field(DOL9, "0")
+  field(LNK9, "$(P)$(SLIT)spectator.D PP")
+}
+
+### initialization
+record(calcout, "$(P)$(SLIT)mXpPosted") {
+  #field(TPRO, "1")
+  field(INPA, "$(P)$(mXp) CP")
+  field(CALC, "1")
+  field(OUT, "$(P)$(SLIT)initAfterMotorRbv.A PP")
+}
+record(calcout, "$(P)$(SLIT)mXnPosted") {
+  #field(TPRO, "1")
+  field(INPA, "$(P)$(mXn) CP")
+  field(CALC, "1")
+  field(OUT, "$(P)$(SLIT)initAfterMotorRbv.B PP")
+}
+record(calcout, "$(P)$(SLIT)initAfterMotorRbv") {
+  field(SDIS, "$(P)$(SLIT)initialized")
+  field(DISV, "1")
+  field(CALC, "a&&b")
+  field(OOPT, "When Non-zero")
+  field(OUT, "$(P)$(SLIT)doInit PP")
+}
+record(seq, "$(P)$(SLIT)doInit") {
+  field(LNK1, "$(P)$(SLIT)tSync.PROC PP")
+  field(DOL2, "1")
+  field(LNK2, "$(P)$(SLIT)initialized PP")
+}
+record(bo, "$(P)$(SLIT)initialized") {
+}
+
+### sync
+record(calcout, "$(P)$(SLIT)syncOrInit") {
+  field(INPA, "$(P)$(SLIT)doSync")
+  field(INPB, "$(P)$(SLIT)doInit")
+  field(CALC, "a||b")
+}
+# manual sync to hard motor commanded positions
+# Maybe this can be automated for cases the soft motors don't handle well.
+record(calcout, "$(P)$(SLIT)maybeSync") {
+  field(CALC, "A")
+  field(OOPT, "When Non-zero")
+  field(OUT, "$(P)$(SLIT)doSync PP")
+}
+record(bo, "$(P)$(SLIT)doSync") {
+  field(OUT, "$(P)$(SLIT)doSyncPut PP")
+}
+# only process sync command, not reset from that command
+record(bo, "$(P)$(SLIT)doSyncPut") {
+  field(SDIS, "$(P)$(SLIT)doSync")
+  field(DISV, "0")
+  field(OUT, "$(P)$(SLIT)tSyncCalc.PROC PP")
+}
+# if Center was moved and stopped, calc new positions for (xn,xp) so that
+# Gap will be preserved, move hard motors to those positions, and sync.
+# if Gap was moved and stopped, calc new positions for (xn,xp) so that
+# Center will be preserved, move hard motors to those positions, and sync.
+# if xn or xp was moved, just sync.
+record(transform, "$(P)$(SLIT)tSyncCalc") {
+  field(SDIS, "$(P)$(SLIT)doSync")
+  field(DISV, "0")
+  field(EGU, "mm")
+  field(PREC, "$(PREC=3)")
+
+  # who caused move?
+  field(CMTA, "Gap didn't cause move")
+  field(INPA, "$(P)$(SLIT)latchSpectator.C")
+  field(CMTB, "Center didn't cause move")
+  field(INPB, "$(P)$(SLIT)latchSpectator.D")
+  # commanded Gap, Center
+  field(CMTC, "commanded Gap")
+  field(INPC, "$(P)$(SLIT)tFwd.C")
+  field(CMTD, "commanded Center")
+  field(INPD, "$(P)$(SLIT)tFwd.D")
+  # current mXp, mXn
+  field(INPE, "$(P)$(mXp)")
+  field(INPF, "$(P)$(mXn)")
+  # calc mXp for corrective move
+  # if Gap caused move, Center + current_Gap/2, else
+  # if Center caused move, current_Center + Gap/2,
+  # else current mXp
+  field(CMTG, "mXp for corrective move")
+  field(CLCG, "(a==0)?(d+(e-f)/2):((b==0)?((e+f+c)/2):e)") 
+  # calc mXn for corrective move
+  # if Gap caused move, Center - current_Gap/2, else
+  # if Center caused move, current_Center - Gap/2,
+  # else current mXn
+  field(CMTH, "mXn for corrective move")
+  field(CLCH, "(a==0)?(d-(e-f)/2):((b==0)?((e+f-c)/2):f)")
+  field(FLNK, "$(P)$(SLIT)adjustMotors")
+}
+record(sseq, "$(P)$(SLIT)adjustMotors") {
+  field(SDIS, "$(P)$(SLIT)doSync")
+  field(DISV, "0")
+
+  field(DOL1, "$(P)$(SLIT)tSyncCalc.G")
+  field(LNK1, "$(P)$(mXp) CA")
+  field(WAIT1, "After2")
+
+  field(DOL2, "$(P)$(SLIT)tSyncCalc.H")
+  field(LNK2, "$(P)$(mXn) CA")
+  field(WAIT2, "After2")
+
+  field(LNK3, "$(P)$(SLIT)tSync.PROC PP")
+}
+record(transform, "$(P)$(SLIT)tSync") {
+  field(DESC, "xp(a), xn(b)->siz(c),cntr(d)")
+  field(SDIS, "$(P)$(SLIT)syncOrInit PP")
+  field(DISV, "0")
+  field(EGU, "mm")
+  field(PREC, "$(PREC=3)")
+
+  field(CMTA, "X+ slit")
+  field(INPA, "$(P)$(mXp)")
+  field(OUTA, "$(P)$(SLIT)tFwd.A NPP")
+
+  field(CMTB, "X- slit")
+  field(INPB, "$(P)$(mXn)")
+  field(OUTB, "$(P)$(SLIT)tFwd.B NPP")
+
+  field(CMTC, "Gap")
+  field(CLCC, "a-b")
+  field(OUTC, "$(P)$(SLIT)tFwd.C NPP")
+
+  field(CMTD, "Center")
+  field(CLCD, "(a+b)/2")
+  field(OUTD, "$(P)$(SLIT)tFwd.D NPP")
+
+  field(CMTE, "process tFwd")
+  field(CLCE, "0")
+  field(OUTE, "$(P)$(SLIT)tFwd.PROC PP")
+
+  field(CMTF, "close gate")
+  field(CLCF, "0")
+  field(OUTF, "$(P)$(SLIT)gate PP")
+
+  field(CMTM, "clear doSync")
+  field(M, "0")
+  field(OUTM, "$(P)$(SLIT)doSync NPP")
+
+  field(CMTL, "clear doInit")
+  field(L, "0")
+  field(OUTL, "$(P)$(SLIT)doInit NPP")
+}
+
+record(transform, "$(P)$(SLIT)tRev") {
+  field(DESC, "xp(a), xn(b)->siz(c),cntr(d)")
+  field(CLCC, "a-b")
+  field(CLCD, "(a+b)/2")
+  field(INPA, "$(P)$(mXp).RBV  CP MS")
+  field(INPB, "$(P)$(mXn).RBV  CP MS")
+  field(EGU, "mm")
+  field(PREC, "$(PREC=3)")
+  field(CMTA, "X+ slit")
+  field(CMTB, "X- slit")
+  field(CMTC, "Gap")
+  field(CMTD, "Center")
+}
+
+# Convert the soft limits from the hard motor into the 4 soft motors
+# We have the 2 hard motors: $(P)$(mXp) and $(P)$(mXn)
+#
+# Rule 1: The positive blade is not allowed to go higher than HLM
+#  mXp.VAL <= mXp.HLM
+#  or
+#  mXp.VAL = Center + Gap/2
+#  gives
+#  Center + Gap/2  <= mXp.HLM
+#
+#  note:  Gap.RBV = mXp.RBV - mXn.RBV
+#  note:  Center.RBV = (mXp.RBV + mXn.RBV) / 2
+#
+# Rule 2: The negative  blade is not allowed to go lower than LLM
+#  mXn.VAL >= mXn.HLM
+#  or
+#  mXn.VAL = Center - Gap/2
+#  gives
+#  Center - Gap/2  >= mXp.LLM
+
+
+# This gives a rule for the Center and the Gap:
+# Center.HLM = mXp.HLM - Gap.RBV/2
+# Gap.HLM    = mXp.HLM - (Center.RBV/2)
+# Gap.HLM    = 
+# Center.LLM = mXn.LLM + Gap.RBV/2
+# Gap.LLM    = (avoid collision, set to 0.5)
+#
+#
+# 6 inputs:
+# (High and low) limit of the 2 hard motors
+# Read back position of the hard motors
+#
+# 4 "straight outputs" "A-D": The hard
+# motors (mXp, mXn) go straight into the soft motors (xp xn)
+#
+# 2 more "straight outputs" "E-F": Avoid a collision and
+# feed the readback for one motor into the limit of the other
+#
+# 4 calculated outputs "I-L"
+# High and low for Center and Gap
+
+record(transform, "$(P)$(SLIT)tLimits") {
+  field(PHAS, "0")
+  field(CLCJ, "MIN(( (b - ((e+f)/2))*2) , ((-c + ((e+f)/2))*2) ) -g -h")
+  field(CLCK, "c + ((e-f)/2)+g +h")
+  field(CLCL, "b - ((e-f)/2)-g -h")
+  field(INPA, "$(P)$(mXp).LLM  CP NMS")
+  field(INPB, "$(P)$(mXp).HLM  CP NMS")
+  field(INPC, "$(P)$(mXn).LLM  CP NMS")
+  field(INPD, "$(P)$(mXn).HLM  CP NMS")
+  field(INPE, "$(P)$(mXp).RBV  CP NMS")
+  field(INPF, "$(P)$(mXn).RBV  CP NMS")
+  field(INPG, "$(P)$(mXp).RDBD CP NMS")
+  field(INPH, "$(P)$(mXn).RDBD CP NMS")
+  field(OUTB, "$(P)$(SLIT)xp.HLM  NPP MS")
+  field(OUTC, "$(P)$(SLIT)xn.LLM  NPP MS")
+  field(OUTE, "$(P)$(SLIT)xn.HLM  NPP MS")
+  field(OUTF, "$(P)$(SLIT)xp.LLM  NPP MS")
+  field(OUTI, "$(P)$(SLIT)Gap.LLM  NPP MS")
+  field(OUTJ, "$(P)$(SLIT)Gap.HLM  NPP MS")
+  field(OUTK, "$(P)$(SLIT)Center.LLM  NPP MS")
+  field(OUTL, "$(P)$(SLIT)Center.HLM  NPP MS")
+  field(PREC, "3")
+}
+
+
+
+record(sseq, "$(P)$(SLIT)writeMotors") {
+  field(SDIS, "$(P)$(SLIT)syncOrInit PP")
+  field(DISV, "1")
+  field(DLY1, ".02")
+  field(DOL1, "$(P)$(SLIT)tFwd.F")
+  field(LNK1, "$(P)$(SLIT)mXpPut PP")
+  field(DOL2, "$(P)$(SLIT)tFwd.G")
+  field(LNK2, "$(P)$(SLIT)mXnPut PP")
+}
+
+
+######################################################
+# Records to generate MsgTxt
+#Record to calculate what the Status PV should be
+record(calcout, "$(P)$(SLIT)xp-StatusCalc_")
+{
+   field(DESC, "Calc mXp Motor Status")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(INPA, "$(P)$(SLIT)xp.DMOV CP MS")
+   field(INPB, "$(P)$(SLIT)xp.STAT CP MS")
+   field(INPC, "$(P)$(SLIT)xp.LVIO CP MS")
+   field(INPD, "$(P)$(SLIT)xp.MISS CP MS")
+   field(CALC, "(B||C||D)?2:!A")
+   field(OOPT, "Every Time")
+   field(DOPT, "Use CALC")
+   field(OUT,  "$(P)$(SLIT)xp-MsgTxt.VAL PP")
+}
+#New record to work with a tri-state LED, where:
+# 0 = Idle (DMOV=1 and no alarm)
+# 1 = Moving (DMOV=0 and no alarm)
+# 2 = Error (Combined Error PV is 1)
+
+record(mbbi, "$(P)$(SLIT)xp-MsgTxt")
+{
+   field(DESC, "Motor Status")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(ZRST, "")
+   field(ONST, "Busy")
+   field(TWST, "Problem")
+}
+################################
+record(calcout, "$(P)$(SLIT)xn-StatusCalc_")
+{
+   field(DESC, "Calc mXn Motor Status")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(INPA, "$(P)$(SLIT)xn.DMOV CP MS")
+   field(INPB, "$(P)$(SLIT)xn.STAT CP MS")
+   field(INPC, "$(P)$(SLIT)xn.LVIO CP MS")
+   field(INPD, "$(P)$(SLIT)xn.MISS CP MS")
+   field(CALC, "(B||C||D)?2:!A")
+   field(OOPT, "Every Time")
+   field(DOPT, "Use CALC")
+   field(OUT,  "$(P)$(SLIT)xn-MsgTxt.VAL PP")
+}
+
+record(mbbi, "$(P)$(SLIT)xn-MsgTxt")
+{
+   field(DESC, "Motor Status")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(ZRST, "")
+   field(ONST, "Busy")
+   field(TWST, "Problem")
+}
+################################
+################################
+record(calcout, "$(P)$(SLIT)Center-StatusCalc_")
+{
+   field(DESC, "Calc mCenter Motor Status")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(INPA, "$(P)$(SLIT)Center.DMOV CP MS")
+   field(INPB, "$(P)$(SLIT)Center.STAT CP MS")
+   field(INPC, "$(P)$(SLIT)Center.LVIO CP MS")
+   field(INPD, "$(P)$(SLIT)Center.MISS CP MS")
+   field(CALC, "(B||C||D)?2:!A")
+   field(OOPT, "Every Time")
+   field(DOPT, "Use CALC")
+   field(OUT,  "$(P)$(SLIT)Center-MsgTxt.VAL PP")
+}
+
+record(mbbi, "$(P)$(SLIT)Center-MsgTxt")
+{
+   field(DESC, "Motor Status")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(ZRST, "")
+   field(ONST, "Busy")
+   field(TWST, "Problem")
+}
+################################
+record(calcout, "$(P)$(SLIT)Gap-StatusCalc_")
+{
+   field(DESC, "Calc mGap Motor Status")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(INPA, "$(P)$(SLIT)Gap.DMOV CP MS")
+   field(INPB, "$(P)$(SLIT)Gap.STAT CP MS")
+   field(INPC, "$(P)$(SLIT)Gap.LVIO CP MS")
+   field(INPD, "$(P)$(SLIT)Gap.MISS CP MS")
+   field(CALC, "(B||C||D)?2:!A")
+   field(OOPT, "Every Time")
+   field(DOPT, "Use CALC")
+   field(OUT,  "$(P)$(SLIT)Gap-MsgTxt.VAL PP")
+}
+
+record(mbbi, "$(P)$(SLIT)Gap-MsgTxt")
+{
+   field(DESC, "Motor Status")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(ZRST, "")
+   field(ONST, "Busy")
+   field(TWST, "Problem")
+}

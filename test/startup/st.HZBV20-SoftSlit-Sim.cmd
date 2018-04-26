@@ -17,56 +17,74 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 
 # Real motors and slit systems
 #########################
-epicsEnvSet("AXISCONFIG",    "cfgFile=./SlitAxisMCU010-1.cfg")
+epicsEnvSet("AXISCONFIG",    "cfgFile=./HZBV20-SoftSlit-Sim-1.cfg")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m1")
 epicsEnvSet("R",             "MC-MCU-01:m1-")
 epicsEnvSet("AXIS_NO",       "1")
-epicsEnvSet("DESC",          "H low blade")
+epicsEnvSet("DESC",          "H Center")
 < EthercatMCAxis.cmd
 
-epicsEnvSet("AXISCONFIG",    "cfgFile=./SlitAxisMCU010-2.cfg")
+epicsEnvSet("AXISCONFIG",    "cfgFile=./HZBV20-SoftSlit-Sim-2.cfg")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m2")
 epicsEnvSet("R",             "MC-MCU-01:m2-")
 epicsEnvSet("AXIS_NO",       "2")
+epicsEnvSet("DESC",          "H Gap")
+< EthercatMCAxis.cmd
+
+epicsEnvSet("AXISCONFIG",    "cfgFile=./HZBV20-SoftSlit-Sim-3.cfg")
+epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m3")
+epicsEnvSet("R",             "MC-MCU-01:m3-")
+epicsEnvSet("AXIS_NO",       "3")
 epicsEnvSet("DESC",          "H high Blade")
 < EthercatMCAxis.cmd
 
+epicsEnvSet("AXISCONFIG",    "cfgFile=./HZBV20-SoftSlit-Sim-4.cfg")
+epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m4")
+epicsEnvSet("R",             "MC-MCU-01:m4-")
+epicsEnvSet("AXIS_NO",       "4")
+epicsEnvSet("DESC",          "H low Blade")
+< EthercatMCAxis.cmd
+
+#########################
 ## Logical axes and slit
-epicsEnvSet("SLIT",          "MC-SLT-01:SltH-")
-epicsEnvSet("mXp",           "MC-MCU-01:m2")
-epicsEnvSet("mXn",           "MC-MCU-01:m1")
+epicsEnvSet("P",             "$(PREFIX)")
+epicsEnvSet("SLIT",          "$(SM_SLIT=SltH-)")
+epicsEnvSet("mXc",           "$(SM_mXp=m1)")
+epicsEnvSet("mXg",           "$(SM_mXp=m2)")
+epicsEnvSet("mXp",           "$(SM_mXp=m3)")
+epicsEnvSet("mXn",           "$(SM_mXp=m4)")
 
 ## Slit
-< EthercatMC2slit.cmd
+< EthercatMC2slithard.cmd
 #########################
 
 # Slit Vertical
 #########################
-epicsEnvSet("AXISCONFIG",    "cfgFile=./SlitAxisMCU010-1.cfg")
-epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m3")
-epicsEnvSet("R",             "MC-MCU-01:m3-")
-epicsEnvSet("AXIS_NO",       "3")
-epicsEnvSet("DESC",          "V low blade")
-< EthercatMCAxis.cmd
-
-epicsEnvSet("AXISCONFIG",    "cfgFile=./SlitAxisMCU010-2.cfg")
-epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m4")
-epicsEnvSet("R",             "MC-MCU-01:m4-")
-epicsEnvSet("AXIS_NO",       "4")
-epicsEnvSet("DESC",          "V high Blade")
-< EthercatMCAxis.cmd
-
-## Logical axes and slit
-epicsEnvSet("SLIT",          "MC-SLT-01:SltV-")
-epicsEnvSet("mXp",           "MC-MCU-01:m4")
-epicsEnvSet("mXn",           "MC-MCU-01:m3")
-
-## Slit
-< EthercatMC2slit.cmd
+#epicsEnvSet("AXISCONFIG",    "cfgFile=./HZBV20-SoftSlit-Sim-3.cfg")
+#epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m3")
+#epicsEnvSet("R",             "MC-MCU-01:m3-")
+#epicsEnvSet("AXIS_NO",       "3")
+#epicsEnvSet("DESC",          "V low blade")
+#< EthercatMCAxis.cmd
+#
+#epicsEnvSet("AXISCONFIG",    "cfgFile=./HZBV20-SoftSlit-Sim-4.cfg")
+#epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m4")
+#epicsEnvSet("R",             "MC-MCU-01:m4-")
+#epicsEnvSet("AXIS_NO",       "4")
+#epicsEnvSet("DESC",          "V high Blade")
+#< EthercatMCAxis.cmd
+#
+### Logical axes and slit
+#epicsEnvSet("SLIT",          "MC-SLT-01:SltV-")
+#epicsEnvSet("mXp",           "MC-MCU-01:m4")
+#epicsEnvSet("mXn",           "MC-MCU-01:m3")
+#
+### Slit
+#< EthercatMC2slit.cmd
 #########################
 
 
-epicsEnvSet("AXISCONFIG",    "cfgFile=./SlitAxisMCU010-1.cfg")
+epicsEnvSet("AXISCONFIG",    "cfgFile=./HZBV20-SoftSlit-Sim-1.cfg")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m5")
 epicsEnvSet("R",             "MC-MCU-01:m5-")
 epicsEnvSet("AXIS_NO",       "5")
