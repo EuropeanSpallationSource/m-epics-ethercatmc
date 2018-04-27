@@ -121,10 +121,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
       } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
         pThisOption += strlen(homProc_str);
         int homProc = atoi(pThisOption);
-        if (homProc < 0) homProc = 0;
-        if (homProc) {
-          setIntegerParam(pC_->EthercatMCHomProc_, homProc);
-        }
+        setIntegerParam(pC_->EthercatMCHomProc_, homProc);
       } else if (!strncmp(pThisOption, homPos_str, strlen(homPos_str))) {
         pThisOption += strlen(homPos_str);
         double homPos = atof(pThisOption);
