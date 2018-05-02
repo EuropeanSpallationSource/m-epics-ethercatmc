@@ -172,10 +172,13 @@ void EthercatMCAxis::handleDisconnect(asynStatus status)
 asynStatus EthercatMCAxis::readBackSoftLimits(void)
 {
   asynStatus status;
+  int nvals;
+  int axisID = getMotionAxisID();
   int iValueHigh = 0, iValueLow = 0;
   double fValueHigh = 0.0, fValueLow  = 0.0;
   double stepSize = drvlocal.stepSize;
 
+#if 0  
   /* High limits Low Enable */
   status = getSAFValuesFromAxisPrint(0x5000, 0xC, "CHLM_En", &iValueHigh,
                                      0x5000, 0xE, "CHLM", &fValueHigh);
@@ -186,9 +189,33 @@ asynStatus EthercatMCAxis::readBackSoftLimits(void)
   }
   if (status != asynSuccess) {
     /* Communication problem, set everything to 0 */
+#endif
+  
+  snprintf(pC_->outString_, sizeof(pC_->outString_),
+           "ADSPORT=501/.ADR.16#%X,16#%X,2,2?;ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
+           "ADSPORT=501/.ADR.16#%X,16#%X,2,2?;ADSPORT=501/.ADR.16#%X,16#%X,8,5?",
+           0x5000 + axisID, 0xC,
+           0x5000 + axisID, 0xE,
+           0x5000 + axisID, 0xB,
+           0x5000 + axisID, 0xD);
+
+  status = pC_->writeReadController();
+  if (status)
+    return status;
+  nvals = sscanf(pC_->inString_, "%d;%lf;%d;%lf",
+                 &iValueHigh, &fValueHigh, &iValueLow, &fValueLow);
+  if (nvals != 4) {
+     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+     "%s nvals=%d command=\"%s\" response=\"%s\"\n",
+             modulName, nvals, pC_->outString_, pC_->inString_);
     iValueHigh = iValueLow = 0;
     fValueHigh = fValueLow = 0.0;
+    return asynError;
   }
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s CHLM_En=%d CHLM=%f CLLM_En=%d CLLM=%f\n",
+            modulName, pC_->outString_, pC_->inString_,
+            iValueHigh, fValueHigh, iValueLow, fValueLow);
   /* EthercatMCCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX(axisNo_..)  here */
   pC_->setIntegerParam(axisNo_, pC_->EthercatMCCHLM_En_, iValueHigh);
@@ -379,7 +406,7 @@ asynStatus EthercatMCAxis::initialPoll(void)
   }
   if (status == asynSuccess && drvlocal.dirty.oldStatusDisconnected) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-	      "%s connected(%d)\n",  modulName, axisNo_);
+              "%s connected(%d)\n",  modulName, axisNo_);
     drvlocal.dirty.oldStatusDisconnected = 0;
   }
   return status;
@@ -526,23 +553,23 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
     double accHom;
     double decHom;
     if (!status) status = pC_->getDoubleParam(axisNo_,
-					      pC_->EthercatMCVelToHom_,
-					      &velToHom);
+                                              pC_->EthercatMCVelToHom_,
+                                              &velToHom);
     if (!status) status = pC_->getDoubleParam(axisNo_,
-					      pC_->EthercatMCVelFrmHom_,
-					      &velFrmHom);
+                                              pC_->EthercatMCVelFrmHom_,
+                                              &velFrmHom);
     if (!status) status = pC_->getDoubleParam(axisNo_,
-					      pC_->EthercatMCAccHom_,
-					      &accHom);
+                                              pC_->EthercatMCAccHom_,
+                                              &accHom);
     if (!status) status = pC_->getDoubleParam(axisNo_,
-					      pC_->EthercatMCDecHom_,
-					      &decHom);
+                                              pC_->EthercatMCDecHom_,
+                                              &decHom);
     if (!status) status = setSAFValueOnAxis(0x4000, 0x6,
-					    velToHom);
+                                            velToHom);
     if (!status) status = setSAFValueOnAxis(0x4000, 0x7,
-					    velFrmHom);
+                                            velFrmHom);
     if (!status)  status = setValuesOnAxis("fAcceleration", accHom,
-					   "fDeceleration", decHom);
+                                           "fDeceleration", decHom);
   }
   if (!status) status = setValueOnAxis("nCommand", nCommand );
   if (!status) status = setValueOnAxis("nCmdData", homProc);
