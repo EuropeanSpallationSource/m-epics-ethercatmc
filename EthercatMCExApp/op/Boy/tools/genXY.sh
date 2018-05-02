@@ -10,45 +10,45 @@ export OPIS WIDTH HIGHT
 
 ########################
 genXY() {
-	iy=0
-	im=0
-	while test $iy -lt $Y; do
-		ix=0
-		y=$(($iy * $HIGHT))
-		while test $ix -lt $X; do
-			x=$(($ix * $WIDTH))
-			cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-			echo cmd=$cmd
-			eval $cmd <motorx.mid >>$OPIS/$$
-			im=$(($im + 1))
-			ix=$(($ix + 1))
-		done &&
-			iy=$(($iy + 1))
-	done
+  iy=0
+  im=0
+  while test $iy -lt $Y; do
+    ix=0
+    y=$(($iy * $HIGHT))
+    while test $ix -lt $X; do
+      x=$(($ix * $WIDTH))
+      cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+      echo cmd=$cmd
+      eval $cmd <motorx.mid >>$OPIS/$$
+      im=$(($im + 1))
+      ix=$(($ix + 1))
+    done &&
+      iy=$(($iy + 1))
+  done
 }
 ########################
 
 genXX() {
-	iy=0
-	im=0
-	FILE=motor
-	while test -n "$X"; do
-		FILE=$FILE-$X
-		ix=0
-		y=$(($iy * $HIGHT))
-		while test $ix -lt $X; do
-			x=$(($ix * $WIDTH))
-			cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-			echo cmd=$cmd
-			eval $cmd <motorx.mid >>$OPIS/$$
-			im=$(($im + 1))
-			ix=$(($ix + 1))
-		done
-		iy=$(($iy + 1))
-		X=$1
-		shift
-	done
-	FILE=$FILE.opi
+  iy=0
+  im=0
+  FILE=motor
+  while test -n "$X"; do
+    FILE=$FILE-$X
+    ix=0
+    y=$(($iy * $HIGHT))
+    while test $ix -lt $X; do
+      x=$(($ix * $WIDTH))
+      cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+      echo cmd=$cmd
+      eval $cmd <motorx.mid >>$OPIS/$$
+      im=$(($im + 1))
+      ix=$(($ix + 1))
+    done
+    iy=$(($iy + 1))
+    X=$1
+    shift
+  done
+  FILE=$FILE.opi
 }
 
 ########################
@@ -74,21 +74,18 @@ if test "$1" = x; then
       exit 1
     fi
     Y=$1
-		shift
+    shift
     FILE=motor${X}x${Y}.opi
   fi
 fi
 
 cp motorx.start $OPIS/$$ &&
-	if test $Y = 1; then
-		genXX "$@"
-	else
-		genXY "$@"
-	fi &&
-	cat motorx.end  >>$OPIS/$$ &&
-	mv -f $OPIS/$$ $OPIS/$FILE
+  if test $Y = 1; then
+    genXX "$@"
+  else
+    genXY "$@"
+  fi &&
+  cat motorx.end  >>$OPIS/$$ &&
+  mv -f $OPIS/$$ $OPIS/$FILE
 
-
-
-  
 
