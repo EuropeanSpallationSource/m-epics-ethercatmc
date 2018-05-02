@@ -2,49 +2,54 @@ require asyn,4.31
 require motor,USER
 require EthercatMC,USER
 
-epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+epicsEnvSet("MOTOR_PORT",    "MCU1")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
-#epicsEnvSet("IPADDR",        "$(SM_IPADDR=192.168.88.61")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
-epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("PREFIX",        "$(SM_PREFIX=IOC:)")
-epicsEnvSet("EGU",           "$(SM_EGU=mm)")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("IPADDR",        "127.0.0.1")
+#epicsEnvSet("IPADDR",       "192.168.88.61")
+epicsEnvSet("IPPORT",        "5000")
+epicsEnvSet("ASYN_PORT",     "MC_CPU1")
+epicsEnvSet("PREFIX",        "IOC:")
+epicsEnvSet("EGU",           "mm")
+epicsEnvSet("PREC",          "3")
 < EthercatMCController.cmd
 
+epicsEnvSet("SLIT",          "MC-SltH-01:")
 
 epicsEnvSet("AXISCONFIG",    "HomProc=0;cfgFile=./mcu011-sim-1.cfg")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
-epicsEnvSet("M",             "$(SM_M=m1)")
-epicsEnvSet("R",             "$(SM_R=m1-)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
-epicsEnvSet("DESC",          "$(SM_DESC=Y_NEG)")
+epicsEnvSet("MOTOR_NAME",    "$(SLIT)xn")
+#epicsEnvSet("M",             "$(SLIT)m1")
+#epicsEnvSet("R",             "$(SLIT)m1-")
+epicsEnvSet("AXIS_NO",       "1")
+epicsEnvSet("DESC",          "H_NEG")
 < EthercatMCAxis.cmd
 
 epicsEnvSet("AXISCONFIG",    "HomProc=0;cfgFile=./mcu011-sim-2.cfg")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
-epicsEnvSet("M",             "$(SM_M=m2)")
-epicsEnvSet("R",             "$(SM_R=m2-)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
-epicsEnvSet("DESC",          "$(SM_DESC=Y_POS)")
+epicsEnvSet("MOTOR_NAME",    "$(SLIT)xp")
+#epicsEnvSet("M",             "$(SLIT)m2")
+#epicsEnvSet("R",             "$(SLIT)m2-")
+epicsEnvSet("AXIS_NO",       "2")
+epicsEnvSet("DESC",          "H_POS")
 < EthercatMCAxis.cmd
 
 epicsEnvSet("AXISCONFIG",    "HomProc=0")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
-epicsEnvSet("M",             "$(SM_M=m3)")
-epicsEnvSet("R",             "$(SM_R=m3-)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
-epicsEnvSet("DESC",          "$(SM_DESC=Y_CENTER)")
+epicsEnvSet("MOTOR_NAME",    "$(SLIT)Center")
+#epicsEnvSet("M",             "$(SLIT)m3")
+#epicsEnvSet("R",             "$(SLIT)m3-")
+epicsEnvSet("AXIS_NO",       "3")
+epicsEnvSet("DESC",          "H_CENTER")
 < EthercatMCAxis.cmd
 
 epicsEnvSet("AXISCONFIG",    "HomProc=0")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
-epicsEnvSet("M",             "$(SM_M=m4)")
-epicsEnvSet("R",             "$(SM_R=m4-)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
-epicsEnvSet("DESC",          "$(SM_DESC=Y_GAP)")
+epicsEnvSet("MOTOR_NAME",    "$(SLIT)Gap")
+#epicsEnvSet("M",             "$(SLIT)m4")
+#epicsEnvSet("R",             "$(SLIT)m4-")
+epicsEnvSet("AXIS_NO",       "4")
+epicsEnvSet("DESC",          "H_GAP")
 < EthercatMCAxis.cmd
 
-
-
+## Logical axes and slit
+epicsEnvSet("mXp",           "$(SLIT)xp")
+epicsEnvSet("mXn",           "$(SLIT)xn")
+## Soft limits for the Slit
+< EthercatMCslitAvoidCollSoftlimits.cmd
+#########################
