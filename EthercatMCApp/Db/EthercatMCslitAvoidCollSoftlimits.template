@@ -1,0 +1,66 @@
+# Convert the soft limits from the hard motor into the 4 soft motors
+# We have the 2 hard motors: $(PREFIX)$(mXp) and $(PREFIX)$(mXn)
+#
+# Rule 1: The positive blade is not allowed to go higher than HLM
+#  mXp.VAL <= mXp.HLM
+#  or
+#  mXp.VAL = Center + Gap/2
+#  gives
+#  Center + Gap/2  <= mXp.HLM
+#
+#  note:  Gap.RBV = mXp.RBV - mXn.RBV
+#  note:  Center.RBV = (mXp.RBV + mXn.RBV) / 2
+#
+# Rule 2: The negative  blade is not allowed to go lower than LLM
+#  mXn.VAL >= mXn.HLM
+#  or
+#  mXn.VAL = Center - Gap/2
+#  gives
+#  Center - Gap/2  >= mXp.LLM
+
+
+# This gives a rule for the Center and the Gap:
+# Center.HLM = mXp.HLM - Gap.RBV/2
+# Gap.HLM    = mXp.HLM - (Center.RBV/2)
+# Gap.HLM    = 
+# Center.LLM = mXn.LLM + Gap.RBV/2
+# Gap.LLM    = (avoid collision, set to 0.5)
+#
+#
+# 6 inputs:
+# (High and low) limit of the 2 hard motors
+# Read back position of the hard motors
+#
+# 4 "straight outputs" "A-D": The hard
+# motors (mXp, mXn) go straight into the soft motors (xp xn)
+#
+# 2 more "straight outputs" "E-F": Avoid a collision and
+# feed the readback for one motor into the limit of the other
+#
+# 4 calculated outputs "I-L"
+# High and low for Center and Gap
+
+record(transform, "$(PREFIX)$(SLIT)tLimits_") {
+  field(PHAS, "0")
+  field(CLCJ, "MIN(( (b - ((e+f)/2))*2) , ((-c + ((e+f)/2))*2) ) -g -h")
+  field(CLCK, "c + ((e-f)/2)+g +h")
+  field(CLCL, "b - ((e-f)/2)-g -h")
+  field(INPA, "$(PREFIX)$(mXp)-ECLLM-RB    CP NMS")
+  field(INPB, "$(PREFIX)$(mXp)-ECHLM-RB    CP NMS")
+  field(INPC, "$(PREFIX)$(mXn)-ECLLM-RB    CP NMS")
+  field(INPD, "$(PREFIX)$(mXn)-ECHLM-RB    CP NMS")
+  field(INPE, "$(PREFIX)$(mXp).RBV         CP NMS")
+  field(INPF, "$(PREFIX)$(mXn).RBV         CP NMS")
+  field(INPG, "$(PREFIX)$(mXp).RDBD        CP NMS")
+  field(INPH, "$(PREFIX)$(mXn).RDBD        CP NMS")
+  field(OUTB, "$(PREFIX)$(SLIT)xp.HLM      NPP MS")
+  field(OUTC, "$(PREFIX)$(SLIT)xn.LLM      NPP MS")
+  field(OUTE, "$(PREFIX)$(SLIT)xn.HLM      NPP MS")
+  field(OUTF, "$(PREFIX)$(SLIT)xp.LLM      NPP MS")
+  field(OUTI, "$(PREFIX)$(SLIT)Gap.LLM     NPP MS")
+  field(OUTJ, "$(PREFIX)$(SLIT)Gap.HLM     NPP MS")
+  field(OUTK, "$(PREFIX)$(SLIT)Center.LLM  NPP MS")
+  field(OUTL, "$(PREFIX)$(SLIT)Center.HLM  NPP MS")
+  field(PREC, "$(PREC=3)")
+}
+
