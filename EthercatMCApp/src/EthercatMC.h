@@ -198,9 +198,10 @@ private:
   asynStatus readBackSoftLimits(void);
   asynStatus readBackHoming(void);
   asynStatus readScaling(int axisID);
-  asynStatus readBackConfig(int axisID);
+  asynStatus readMonitoring(int axisID);
+  asynStatus readBackVelocities(int axisID);
   asynStatus initialPoll(void);
-
+  asynStatus initialPollInternal(void);
   asynStatus writeReadACK(void);
   asynStatus setValueOnAxis(const char* var, int value);
   asynStatus setValueOnAxisVerify(const char *var, const char *rbvar,
