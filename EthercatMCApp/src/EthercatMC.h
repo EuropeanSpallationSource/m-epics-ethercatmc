@@ -60,6 +60,9 @@ FILENAME...   EthercatMC.h
 #define EthercatMCScalRDBD_RBString          "SCALRDBD-RB"
 #define EthercatMCScalRDBD_Tim_RBString      "SCALRDBD-Tim-RB"
 #define EthercatMCScalRDBD_En_RBString       "SCALRDBD-En-RB"
+#define EthercatMCScalPOSLAG_RBString        "SCALPOSLAG-RB"
+#define EthercatMCScalPOSLAG_Tim_RBString    "SCALPOSLAG-Tim-RB"
+#define EthercatMCScalPOSLAG_En_RBString     "SCALPOSLAG-En-RB"
 
 
 #define EthercatMCMCUErrMsgString            "MCUErrMsg"
@@ -321,6 +324,9 @@ public:
   int EthercatMCScalRDBD_RB_;
   int EthercatMCScalRDBD_Tim_RB_;
   int EthercatMCScalRDBD_En_RB_;
+  int EthercatMCScalPOSLAG_RB_;
+  int EthercatMCScalPOSLAG_Tim_RB_;
+  int EthercatMCScalPOSLAG_En_RB_;
   int EthercatMCCHLM_;
   int EthercatMCCLLM_;
   int EthercatMCCHLM_En_;

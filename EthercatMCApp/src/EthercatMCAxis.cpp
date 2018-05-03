@@ -290,35 +290,46 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
 {
   int nvals;
   asynStatus status;
-  double rdbd, rdbd_tim;
-  int rdbd_en;
+  double rdbd, rdbd_tim, poslag, poslag_tim;
+  int rdbd_en, poslag_en;
   double stepSize = drvlocal.stepSize;
 
   if (!stepSize) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
+           "ADSPORT=501/.ADR.16#%X,16#%X,2,2?;"
+           "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
+           "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,2,2?",
            0x4000 + axisID, 0x16,  // RDBD_RB
            0x4000 + axisID, 0x17,  // RDBD_Tim
-           0x4000 + axisID, 0x15); // RDND_En
+           0x4000 + axisID, 0x15, // RDND_En
+           0x6000 + axisID, 0x12,  // PosLog
+           0x6000 + axisID, 0x13,  // PosLog_Tim
+           0x6000 + axisID, 0x10); // Poslag_En
   status = writeReadControllerPrint();
   if (status) return status;
-  nvals = sscanf(pC_->inString_, "%lf;%lf;%d", &rdbd, &rdbd_tim, &rdbd_en);
-  if (nvals != 3) {
+  nvals = sscanf(pC_->inString_, "%lf;%lf;%d;%lf;%lf;%d",
+                 &rdbd, &rdbd_tim, &rdbd_en, &poslag, &poslag_tim, &poslag_en
+                 );
+  if (nvals != 6) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s nvals=%d\n", modulName, nvals);
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s rdbd=%f, rdbd_tim=%f rdbd_en=%d\n",
-            modulName, rdbd, rdbd_tim, rdbd_en);
+            "%s rdbd=%f, rdbd_tim=%f rdbd_en=%d poslag=%f poslag_tim=%f poslag_en=%d\n",
+            modulName, rdbd, rdbd_tim, rdbd_en, poslag, poslag_tim, poslag_en);
   setDoubleParam(pC_->EthercatMCScalRDBD_RB_, rdbd);
   setDoubleParam(pC_->EthercatMCScalRDBD_Tim_RB_, rdbd_tim);
   setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_, rdbd_en);
 #ifdef motorRDBDROString
   setDoubleParam(pC_->motorRDBDRO_, rdbd_en ? rdbd : 0.0);
 #endif
+  setDoubleParam(pC_->EthercatMCScalPOSLAG_RB_, poslag);
+  setDoubleParam(pC_->EthercatMCScalPOSLAG_Tim_RB_, poslag_tim);
+  setIntegerParam(pC_->EthercatMCScalPOSLAG_En_RB_, poslag_en);
   return asynSuccess;
 }
 

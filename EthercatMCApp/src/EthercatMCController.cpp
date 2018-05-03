@@ -84,6 +84,9 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
   createParam(EthercatMCScalRDBD_RBString,   asynParamFloat64,     &EthercatMCScalRDBD_RB_);
   createParam(EthercatMCScalRDBD_Tim_RBString,asynParamFloat64,    &EthercatMCScalRDBD_Tim_RB_);
   createParam(EthercatMCScalRDBD_En_RBString, asynParamInt32,      &EthercatMCScalRDBD_En_RB_);
+  createParam(EthercatMCScalPOSLAG_RBString,   asynParamFloat64,   &EthercatMCScalPOSLAG_RB_);
+  createParam(EthercatMCScalPOSLAG_Tim_RBString,asynParamFloat64,  &EthercatMCScalPOSLAG_Tim_RB_);
+  createParam(EthercatMCScalPOSLAG_En_RBString, asynParamInt32,    &EthercatMCScalPOSLAG_En_RB_);
 
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION

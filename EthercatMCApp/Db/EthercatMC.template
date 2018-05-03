@@ -191,6 +191,29 @@ record(longin,"$(PREFIX)$(R)ScalRDBD-En-RB") {
     field(SCAN, "I/O Intr")
 }
 
+record(ai,"$(PREFIX)$(R)ScalPOSLAG-RB") {
+    field(DESC, "In target position window")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALPOSLAG-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(R)ScalPOSLAG-Tim-RB") {
+    field(DESC, "In target position time")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALPOSLAG-Tim-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin,"$(PREFIX)$(R)ScalPOSLAG-En-RB") {
+    field(DESC, "In target position enabled")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ScalPOSLAG-En-RB")
+    field(SCAN, "I/O Intr")
+}
+
 record(ai,"$(PREFIX)$(R)ECHLM-RB") {
     field(DESC, "EC High Soft Limit RB")
     field(DTYP, "asynFloat64")
