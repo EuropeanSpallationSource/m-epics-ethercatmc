@@ -192,11 +192,13 @@ private:
 
   void       handleDisconnect(asynStatus status);
   asynStatus handleConnect(void);
+  asynStatus writeReadControllerPrint(void);
   asynStatus readConfigLine(const char *line, const char **errorTxt_p);
   asynStatus readConfigFile(void);
   asynStatus readBackSoftLimits(void);
   asynStatus readBackHoming(void);
-  asynStatus readBackConfig(void);
+  asynStatus readScaling(int axisID);
+  asynStatus readBackConfig(int axisID);
   asynStatus initialPoll(void);
 
   asynStatus writeReadACK(void);

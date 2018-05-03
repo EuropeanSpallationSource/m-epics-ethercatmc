@@ -21,6 +21,18 @@ const static char *const modulName = "EthercatMCAxis::";
 const static unsigned int MINADSPORT = 851; /* something useful */
 const static unsigned int MAXADSPORT = 853; /* something useful */
 
+
+asynStatus EthercatMCAxis::writeReadControllerPrint(void)
+{
+  asynStatus status = pC_->writeReadController();
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s out=%s in=%s status=%s (%d)\n",
+             modulName,
+            pC_->outString_, pC_->inString_,
+            pasynManager->strStatus(status), (int)status);
+  return status;
+}
+
 /** Writes a command to the axis, and expects a logical ack from the controller
  * Outdata is in pC_->outString_
  * Indata is in pC_->inString_
