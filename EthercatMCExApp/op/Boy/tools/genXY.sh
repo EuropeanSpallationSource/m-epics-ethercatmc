@@ -63,7 +63,7 @@ if test "$1" -eq 0; then
 fi
 X=$1
 shift
-FILE=motor${X}x.opi
+FILE=motor-${X}.opi
 
 #Do we have e.g. 4 x 3
 if test "$1" = x; then
@@ -75,12 +75,13 @@ if test "$1" = x; then
     fi
     Y=$1
     shift
-    FILE=motor${X}x${Y}.opi
+    FILE=motor-${X}x${Y}.opi
   fi
 fi
 
 cp motorx.start $OPIS/$$ &&
-  if test $Y = 1; then
+  echo "Creating $OPIS/$FILE" &&
+  if test "$Y" = 1; then
     genXX "$@"
   else
     genXY "$@"

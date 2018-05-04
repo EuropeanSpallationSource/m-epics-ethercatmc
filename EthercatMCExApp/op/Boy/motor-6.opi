@@ -625,6 +625,16 @@ $(pv_value)</tooltip>
         <replace>0</replace>
         <description>$(M1) (Expert)</description>
       </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M1)</M>
+          <R>$(R1)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M1) (setup)</description>
+      </action>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1785,6 +1795,16 @@ $(pv_value)</tooltip>
         </macros>
         <replace>0</replace>
         <description>$(M2) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M2)</M>
+          <R>$(R2)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M2) (setup)</description>
       </action>
     </actions>
     <tooltip>$(pv_name)
@@ -2947,6 +2967,16 @@ $(pv_value)</tooltip>
         <replace>0</replace>
         <description>$(M3) (Expert)</description>
       </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M3)</M>
+          <R>$(R3)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M3) (setup)</description>
+      </action>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -4107,6 +4137,16 @@ $(pv_value)</tooltip>
         </macros>
         <replace>0</replace>
         <description>$(M4) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M4)</M>
+          <R>$(R4)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M4) (setup)</description>
       </action>
     </actions>
     <tooltip>$(pv_name)
@@ -5269,6 +5309,16 @@ $(pv_value)</tooltip>
         <replace>0</replace>
         <description>$(M5) (Expert)</description>
       </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M5)</M>
+          <R>$(R5)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M5) (setup)</description>
+      </action>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -6429,6 +6479,16 @@ $(pv_value)</tooltip>
         </macros>
         <replace>0</replace>
         <description>$(M6) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M6)</M>
+          <R>$(R6)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M6) (setup)</description>
       </action>
     </actions>
     <tooltip>$(pv_name)
