@@ -491,10 +491,18 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "Amplifier off";
   case 0x4263:
     return "Is still being processed";
+  case 0x42A0:
+    return "Consequential Err";
   case 0x4460:
     return "Low soft limit";
   case 0x4461:
     return "High soft limit";
+  case 0x4462:
+    return "Min position";
+  case 0x4463:
+    return "Max position";
+  case 0x4464:
+    return "HW fault";
   case 0x4550:
     return "Following err mon pos";
   case 0x4551:
