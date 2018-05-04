@@ -957,7 +957,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-6-6-4.opi</path>
+        <path>motor-4x3.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <P>HZB-V20:MC-</P>
@@ -965,34 +965,26 @@ $(pv_value)</tooltip>
           <M2>SLT-01:SltH-Gap</M2>
           <M3>SLT-01:SltH-xn</M3>
           <M4>SLT-01:SltH-xp</M4>
-          <M5>MCU-01:m1</M5>
-          <M6>MCU-01:m2</M6>
-          <M7>SLT-01:SltV-Center</M7>
-          <M8>SLT-01:SltV-Gap</M8>
-          <M9>SLT-01:SltV-xn</M9>
-          <M10>SLT-01:SltV-xp</M10>
-          <M11>MCU-01:m3</M11>
-          <M12>MCU-01:m4</M12>
-          <M13>MCU-01:m5</M13>
-          <M14>MCU-01:m6</M14>
-          <M15>MCU-01:m7</M15>
-          <M16>MCU-01:m8</M16>
+          <M5>SLT-01:SltV-Center</M5>
+          <M6>SLT-01:SltV-Gap</M6>
+          <M7>SLT-01:SltV-xn</M7>
+          <M8>SLT-01:SltV-xp</M8>
+          <M9>MCU-01:m9</M9>
+          <M10>MCU-01:m10</M10>
+          <M11>MCU-01:m11</M11>
+          <M12>MCU-01:m12</M12>
           <R1>SLT-01:SltH-Center-</R1>
           <R2>SLT-01:SltH-Gap-</R2>
           <R3>SLT-01:SltH-xn-</R3>
           <R4>SLT-01:SltH-xp-</R4>
-          <R5>MCU-01:m1-</R5>
-          <R6>MCU-01:m2-</R6>
-          <R7>SLT-01:SltV-Center-</R7>
-          <R8>SLT-01:SltV-Gap-</R8>
-          <R9>SLT-01:SltV-xn-</R9>
-          <R10>SLT-01:SltV-xp-</R10>
-          <R11>MCU-01:m3-</R11>
-          <R12>MCU-01:m4-</R12>
-          <R13>MCU-01:m5-</R13>
-          <R14>MCU-01:m6-</R14>
-          <R15>MCU-01:m7-</R15>
-          <R16>MCU-01:m8-</R16>
+          <R5>SLT-01:SltV-Center-</R5>
+          <R6>SLT-01:SltV-Gap-</R6>
+          <R7>SLT-01:SltV-xn-</R7>
+          <R8>SLT-01:SltV-xp-</R8>
+          <R9>MCU-01:m9-</R9>
+          <R10>MCU-01:m10-</R10>
+          <R11>MCU-01:m11-</R11>
+          <R12>MCU-01:m12-</R12>
         </macros>
         <mode>1</mode>
         <description></description>
