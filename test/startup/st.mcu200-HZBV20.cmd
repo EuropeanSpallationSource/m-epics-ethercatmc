@@ -92,7 +92,7 @@ epicsEnvSet("mXn",           "MC-SLT-01:SltV-xn")
 #########################
 
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=15")
+epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m9")
 epicsEnvSet("AXIS_NO",       "9")
 epicsEnvSet("DESC",          "Height 1")
