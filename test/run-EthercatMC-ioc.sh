@@ -86,29 +86,39 @@ export MOTORIP MOTORPORT
                 -e "s%asynAxis%asynMotor%"
           done
       )
-    fi
+    fi &&
+    (cd ../../motor &&
+     make install) || {
+       echo >&2 make install failed
+       exit 1
+    }
+    (cd .. &&
+     make install) || {
+       echo >&2 make install failed
+       exit 1
+    }
+
   else
     #EEE
-    :
+    if sed -e "s/#.*//" -e "s/-ESS\$//"  <startup/st.${MOTORCFG}.cmd |
+        grep "require *motor,.*[A-Za-z]"; then
+      (cd ../../motor &&
+         rm -rfv ./dbd ./include ./doc ./db &&
+         make install) || {
+         echo >&2 make install failed
+         exit 1
+      }
+    fi &&
+    if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
+        grep "require *EthercatMC,.*[A-Za-z]"; then
+      (cd .. &&
+         rm -rfv ./dbd ./include ./doc ./db &&
+         make install) || {
+         echo >&2 make install failed
+         exit 1
+      }
+    fi
   fi &&
-  if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
-      grep "require *motor,.*[A-Za-z]"; then
-    (cd ../../motor &&
-       rm -rfv ./dbd ./include ./doc ./db &&
-       make install) || {
-       echo >&2 make install failed
-       exit 1
-    }
-  fi &&
-  if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
-      grep "require *EthercatMC,.*[A-Za-z]"; then
-    (cd .. &&
-       rm -rfv ./dbd ./include ./doc ./db &&
-       make install) || {
-       echo >&2 make install failed
-       exit 1
-    }
-  fi
   cd $IOCDIR/ &&
   if test "x$EPICS_EEE" = "xy"; then
     #EEE
