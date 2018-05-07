@@ -34,12 +34,14 @@ epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltH-xp")
 epicsEnvSet("AXIS_NO",       "2")
 epicsEnvSet("DESC",          "H Pos Blade")
 < EthercatMCAxis.cmd
+#< EthercatMCAxisdebug.cmd
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltH-xn")
 epicsEnvSet("AXIS_NO",       "1")
 epicsEnvSet("DESC",          "H Neg Blade")
 < EthercatMCAxis.cmd
+#< EthercatMCAxisdebug.cmd
 
 #########################
 ## Logical axes and slit

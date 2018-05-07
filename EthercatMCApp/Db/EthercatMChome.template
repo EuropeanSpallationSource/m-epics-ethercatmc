@@ -6,7 +6,7 @@ record(longout,"$(PREFIX)$(R)HomProc") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc")
 }
 
-record(ao,"$(PREFIX)$(R)HomPos") {
+record(ao,"$(PREFIX)$(MOTOR_NAME)-HomPos") {
     field(DESC, "Homing Position")
     field(VAL, "$(HOMEPOS=0)")
     field(DTYP, "asynFloat64")
@@ -14,7 +14,7 @@ record(ao,"$(PREFIX)$(R)HomPos") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos")
 }
 
-record(ao,"$(PREFIX)$(R)VelToHom") {
+record(ao,"$(PREFIX)$(MOTOR_NAME)-VelToHom") {
     field(DESC, "Homing Velocity To CAM")
     field(VAL, "$(HVELTO=0.501)")
     field(DTYP, "asynFloat64")
@@ -22,7 +22,7 @@ record(ao,"$(PREFIX)$(R)VelToHom") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))VelToHom")
 }
 
-record(ao,"$(PREFIX)$(R)VelFrmHom") {
+record(ao,"$(PREFIX)$(MOTOR_NAME)-VelFrmHom") {
     field(DESC, "Homing Velocity from CAM")
     field(VAL, "$(HVELFRM=0.502)")
     field(DTYP, "asynFloat64")
@@ -30,7 +30,7 @@ record(ao,"$(PREFIX)$(R)VelFrmHom") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))VelFrmHom")
 }
 
-record(ao,"$(PREFIX)$(R)AccHom") {
+record(ao,"$(PREFIX)$(MOTOR_NAME)-AccHom") {
     field(DESC, "Homing Acceleration EGU/s^2")
     field(VAL, "$(HOMEACC=0)")
     field(DTYP, "asynFloat64")
@@ -38,7 +38,7 @@ record(ao,"$(PREFIX)$(R)AccHom") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))AccHom")
 }
 
-record(ao,"$(PREFIX)$(R)DecHom") {
+record(ao,"$(PREFIX)$(MOTOR_NAME)-DecHom") {
     field(DESC, "Homing Deceleration EGU/s^2")
     field(VAL, "$(HOMEDEC=0)")
     field(DTYP, "asynFloat64")

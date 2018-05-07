@@ -37,7 +37,7 @@ asynSetTraceIOMask("$(ASYN_PORT)", -1, 2)
 
 # Bit 2: file/line
 # Bit 3: thread
-#asynSetTraceInfoMask("$(ASYN_PORT)", -1, 15)
+asynSetTraceInfoMask("$(ASYN_PORT)", -1, 15)
 # Bit 0: Time
 # Bit 1: Port
-asynSetTraceInfoMask("$(ASYN_PORT)", -1, 3)
+#asynSetTraceInfoMask("$(ASYN_PORT)", -1, 3)
