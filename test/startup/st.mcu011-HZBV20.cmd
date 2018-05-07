@@ -1,5 +1,5 @@
 require asyn,4.31
-require motor,USER
+require motor,6.9.3-ESS
 require EthercatMC,USER
 
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
