@@ -179,7 +179,7 @@ record(bi,"$(PREFIX)$(MOTOR_NAME)-ScalEDIR-RB") {
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalRDBD-RB") {
     field(DESC, "In target position window")
     field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALRDBD-RB")
     field(SCAN, "I/O Intr")
 }
@@ -187,7 +187,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalRDBD-RB") {
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalRDBD-Tim-RB") {
     field(DESC, "In target position time")
     field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALRDBD-Tim-RB")
     field(SCAN, "I/O Intr")
 }
@@ -197,13 +197,12 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-ScalRDBD-En-RB") {
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ScalRDBD-En-RB")
     field(SCAN, "I/O Intr")
-    field(PREC, "$(PREC)")
 }
 
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalPOSLAG-RB") {
     field(DESC, "In target position window")
     field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALPOSLAG-RB")
     field(SCAN, "I/O Intr")
 }
@@ -211,7 +210,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalPOSLAG-RB") {
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalPOSLAG-Tim-RB") {
     field(DESC, "In target position time")
     field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALPOSLAG-Tim-RB")
     field(SCAN, "I/O Intr")
 }
@@ -226,7 +225,7 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-ScalPOSLAG-En-RB") {
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ECHLM-RB") {
     field(DESC, "EC High Soft Limit RB")
     field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECHLM")
     field(SCAN, "I/O Intr")
 }
@@ -298,7 +297,7 @@ record(mbbi,"$(PREFIX)$(MOTOR_NAME)-HomProc-RB") {
 record(ai,"$(PREFIX)$(MOTOR_NAME)-HomPos-RB") {
     field(DESC, "Home Position")
     field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos-RB")
     field(SCAN, "I/O Intr")
 }
