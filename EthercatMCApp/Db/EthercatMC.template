@@ -257,7 +257,6 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-ECLLM-En-RB") {
 record(mbbi,"$(PREFIX)$(MOTOR_NAME)-HomProc-RB") {
     field(DESC,"Homing procedure")
     field(DTYP, "asynInt32")
-    field(PREC, "2")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc")
     field(SCAN, "I/O Intr")
     field(PINI, "YES")
