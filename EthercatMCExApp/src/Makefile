@@ -16,6 +16,10 @@ EthercatMC_DBD += base.dbd
 EthercatMC_DBD += asyn.dbd
 EthercatMC_DBD += drvAsynIPPort.dbd
 
+ifneq (,$(findstring /,$(ADS)))
+  EthercatMC_DBD  +=  ads.dbd
+  EthercatMC_LIBS += ads
+endif
 ifneq (,$(findstring /,$(AXIS)))
   EthercatMC_DBD += axisSupport.dbd
   EthercatMC_LIBS += axis

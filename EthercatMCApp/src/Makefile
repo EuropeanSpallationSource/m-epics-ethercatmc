@@ -21,6 +21,9 @@ EthercatMcSupport_SRCS += EthercatMCHelper.cpp
 
 EthercatMcSupport_LIBS += asyn
 
+ifneq (,$(findstring /,$(ADS)))
+EthercatMcSupport_LIBS += ads
+endif
 ifneq (,$(findstring /,$(AXIS)))
 EthercatMcSupport_LIBS += axis
 endif
