@@ -61,6 +61,7 @@ record(longin, "$(PREFIX)$(MOTOR_NAME)-Err")
 record(ai, "$(PREFIX)$(MOTOR_NAME)-VelAct")
 {
     field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))VelAct")
     field(SCAN, "I/O Intr")
 }
@@ -68,6 +69,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-VelAct")
 record(ai, "$(PREFIX)$(MOTOR_NAME)-Vel-RB")
 {
     field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Vel-RB")
     field(SCAN, "I/O Intr")
 }
@@ -75,6 +77,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-Vel-RB")
 record(ai, "$(PREFIX)$(MOTOR_NAME)-Acc-RB")
 {
     field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Acc-RB")
     field(SCAN, "I/O Intr")
 }
@@ -82,6 +85,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-Acc-RB")
 record(ai, "$(PREFIX)$(MOTOR_NAME)-Dec-RB")
 {
     field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Dec-RB")
     field(SCAN, "I/O Intr")
 }
@@ -89,6 +93,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-Dec-RB")
 record(ai, "$(PREFIX)$(MOTOR_NAME)-EncAct")
 {
     field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct")
     field(SCAN, "I/O Intr")
 }
@@ -114,8 +119,8 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-OFF_") {
     field(DOL,  "$(PREFIX)$(MOTOR_NAME).OFF CP MS")
     field(OMSL, "closed_loop")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_OFFSET")
     field(PREC, "$(PREC)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_OFFSET")
 }
 
 
@@ -125,13 +130,14 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-MRES_") {
     field(DOL,  "$(PREFIX)$(MOTOR_NAME).MRES CP MS")
     field(OMSL, "closed_loop")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_RESOLUTION")
     field(PREC, "$(PREC)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_RESOLUTION")
 }
 
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalSREV-RB") {
     field(DESC, "Micro Steps / Revolution")
     field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALSREV-RB")
     field(SCAN, "I/O Intr")
 }
@@ -139,6 +145,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalSREV-RB") {
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalUREV-RB") {
     field(DESC, "EGU / Revolution")
     field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALUREV-RB")
     field(SCAN, "I/O Intr")
 }
@@ -146,6 +153,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalUREV-RB") {
 record(ai,"$(PREFIX)$(MOTOR_NAME)-RefVelo-RB") {
     field(DESC, "Reference Velocity")
     field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))RefVelo-RB")
     field(SCAN, "I/O Intr")
 }
@@ -189,6 +197,7 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-ScalRDBD-En-RB") {
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ScalRDBD-En-RB")
     field(SCAN, "I/O Intr")
+    field(PREC, "$(PREC)")
 }
 
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalPOSLAG-RB") {
@@ -225,7 +234,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-ECHLM-RB") {
 record(ai,"$(PREFIX)$(MOTOR_NAME)-ECLLM-RB") {
     field(DESC, "EC Low Soft Limit RB")
     field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
+    field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECLLM")
     field(SCAN, "I/O Intr")
 }
@@ -248,6 +257,7 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-ECLLM-En-RB") {
 record(mbbi,"$(PREFIX)$(MOTOR_NAME)-HomProc-RB") {
     field(DESC,"Homing procedure")
     field(DTYP, "asynInt32")
+    field(PREC, "2")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc")
     field(SCAN, "I/O Intr")
     field(PINI, "YES")
