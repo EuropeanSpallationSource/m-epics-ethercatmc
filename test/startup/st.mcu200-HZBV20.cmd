@@ -110,7 +110,7 @@ epicsEnvSet("AXIS_NO",       "11")
 epicsEnvSet("DESC",          "Kappa")
 < EthercatMCAxis.cmd
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1")
+epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1;HomPos=-1.4")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m12")
 epicsEnvSet("AXIS_NO",       "12")
 epicsEnvSet("DESC",          "Lin3")
