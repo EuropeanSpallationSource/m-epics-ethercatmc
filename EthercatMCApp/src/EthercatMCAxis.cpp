@@ -131,6 +131,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     }
     free(pOptions);
   }
+  initialPoll();
 }
 
 
