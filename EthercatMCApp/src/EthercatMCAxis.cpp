@@ -945,6 +945,10 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     if (comStatus) return comStatus;
   }
 
+  if (drvlocal.supported.stAxisStatus_V1) {
+    drvlocal.dirty.stAxisStatus_Vxx = 0;
+  }
+
   if (drvlocal.supported.stAxisStatus_V2 || drvlocal.dirty.stAxisStatus_Vxx) {
     /* V2 is supported, use it. Or. unkown: try it as well */
     snprintf(pC_->outString_, sizeof(pC_->outString_),
