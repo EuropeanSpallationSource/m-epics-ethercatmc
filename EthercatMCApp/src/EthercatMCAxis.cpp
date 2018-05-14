@@ -305,7 +305,7 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
            "ADSPORT=501/.ADR.16#%X,16#%X,2,2?",
            0x4000 + axisID, 0x16,  // RDBD_RB
            0x4000 + axisID, 0x17,  // RDBD_Tim
-           0x4000 + axisID, 0x15, // RDND_En
+           0x4000 + axisID, 0x15,  // RDND_En
            0x6000 + axisID, 0x12,  // PosLog
            0x6000 + axisID, 0x13,  // PosLog_Tim
            0x6000 + axisID, 0x10); // Poslag_En
@@ -443,16 +443,15 @@ asynStatus EthercatMCAxis::initialPollInternal(void)
        See AMPLIFIER_ON_FLAG */
     status = enableAmplifier(1);
   }
-    /* for ECMC everything is configured from EPICS, do NOT do the readback */
+  /* for ECMC homing is configured from EPICS, do NOT do the readback */
   if (status == asynSuccess && !drvlocal.supported.bECMC) {
-    if (!drvlocal.stepSize) status =asynError;
-
-    if (status == asynSuccess) status = readBackSoftLimits();
+    if (!drvlocal.stepSize) status = asynError;
     if (status == asynSuccess) status = readBackHoming();
-    if (status == asynSuccess) readScaling(axisID);
-    if (status == asynSuccess) readMonitoring(axisID);
-    if (status == asynSuccess) readBackVelocities(axisID);
+    if (status == asynSuccess) status = readMonitoring(axisID);
+    if (status == asynSuccess) status = readScaling(axisID);
   }
+  if (status == asynSuccess) status = readBackSoftLimits();
+  if (status == asynSuccess) status = readBackVelocities(axisID);
   if (status == asynSuccess && drvlocal.dirty.oldStatusDisconnected) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s connected(%d)\n",  modulName, axisNo_);
