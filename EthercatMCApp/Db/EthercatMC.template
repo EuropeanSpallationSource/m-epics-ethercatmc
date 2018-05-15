@@ -113,6 +113,14 @@ record(longout,"$(PREFIX)$(MOTOR_NAME)-ErrRst") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ErrRst")
 }
 
+record(longout,"$(PREFIX)$(MOTOR_NAME)-Stup") {
+    field(DESC, "Error Reset")
+    field(VAL,  0)
+    field(DTYP, "asynInt32")
+    field(PINI, "YES")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))Stup")
+}
+
 # Motor offset for this axis
 record(ao,"$(PREFIX)$(MOTOR_NAME)-OFF_") {
     field(DESC, "$(MOTOR_NAME) offset")

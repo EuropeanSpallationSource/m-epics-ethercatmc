@@ -1665,10 +1665,10 @@ $(pv_value)</tooltip>
     <on_color>
       <color name="Major" red="255" green="0" blue="0" />
     </on_color>
-    <on_label>STUP</on_label>
+    <on_label>UPDATE</on_label>
     <password></password>
     <push_action_index>1</push_action_index>
-    <pv_name>$(P)$(M).STUP</pv_name>
+    <pv_name>$(P)$(R)STUP</pv_name>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>

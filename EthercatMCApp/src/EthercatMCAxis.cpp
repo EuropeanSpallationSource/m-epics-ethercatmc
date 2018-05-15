@@ -1349,6 +1349,19 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
 #endif
+#ifdef EthercatMCStupString
+  } else if (function == pC_->EthercatMCStup_) {
+    if (value) {
+      int axisID = getMotionAxisID();
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%s setIntegerParam(%d Stup_)=%d\n",
+                modulName, axisNo_, value);
+      /*  We do not want to call the base class */
+      return readBackAllConfig(axisID);
+    }
+    /* If someone writes 0 to the field, just ignore it */
+    return asynSuccess;
+#endif
 #ifdef EthercatMCCHLM_EnString
   } else if (function == pC_->EthercatMCCHLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
