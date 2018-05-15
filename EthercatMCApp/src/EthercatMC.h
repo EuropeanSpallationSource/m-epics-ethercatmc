@@ -30,6 +30,7 @@ FILENAME...   EthercatMC.h
 
 #define EthercatMCErrString                  "MCUErr"
 #define EthercatMCErrIdString                "ErrId"
+#define EthercatMCStupString                 "Stup"
 #define EthercatMCHomProc_RBString           "HomProc-RB"
 #define EthercatMCHomPos_RBString            "HomPos-RB"
 #define EthercatMCHomProcString              "HomProc"
@@ -198,6 +199,7 @@ private:
   asynStatus writeReadControllerPrint(void);
   asynStatus readConfigLine(const char *line, const char **errorTxt_p);
   asynStatus readConfigFile(void);
+  asynStatus readBackAllConfig(int axisID);
   asynStatus readBackSoftLimits(void);
   asynStatus readBackHoming(void);
   asynStatus readScaling(int axisID);
@@ -332,6 +334,7 @@ public:
   int EthercatMCCHLM_En_;
   int EthercatMCCLLM_En_;
   int EthercatMCErrId_;
+  int EthercatMCStup_;
   /* Last parameter */
 
   #define FIRST_VIRTUAL_PARAM EthercatMCErr_
