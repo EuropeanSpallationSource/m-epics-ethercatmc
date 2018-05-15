@@ -250,40 +250,45 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
 {
   int nvals;
   asynStatus status;
-  double srev, urev, refVelo;
-  int mdir, edir;
+  double srev = 0, urev = 0, refVelo = 0;
+  int mdir = -1, edir = -1;
   double stepSize = drvlocal.stepSize;
 
   if (!stepSize) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
-           "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,2,2?;"
+           "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,2,2?",
            0x5000 + axisID, 0x24,  // SREV
            0x5000 + axisID, 0x23,  // UREV
+           0x5000 + axisID, 0x8,   // EDIR
            0x7000 + axisID, 0x101, // RefVelo
-           0x7000 + axisID, 0x6,   // MDIR
-           0x5000 + axisID, 0x8    // EDIR"
+           0x7000 + axisID, 0x6    // MDIR
            );
   status = writeReadControllerPrint();
   if (status) return status;
-  nvals = sscanf(pC_->inString_, "%lf;%lf;%lf;%d;%d",
-                 &srev, &urev, &refVelo, &mdir, &edir);
-  if (nvals != 5) {
+  nvals = sscanf(pC_->inString_, "%lf;%lf;%d;%lf;%d",
+                 &srev, &urev, &edir, &refVelo, &mdir);
+
+  if ((nvals != 2) && (nvals != 3) && (nvals != 5)) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s nvals=%d\n", modulName, nvals);
     return asynError;
   }
+  setDoubleParam(pC_->EthercatMCScalSREV_RB_, srev);
+  setDoubleParam(pC_->EthercatMCScalUREV_RB_, urev);
+  if (nvals >= 3) {
+    setIntegerParam(pC_->EthercatMCScalMDIR_RB_, edir);
+  }
+  if (nvals == 5) {
+    setDoubleParam(pC_->EthercatMCScalRefVelo_RB_, refVelo);
+    setIntegerParam(pC_->EthercatMCScalEDIR_RB_, mdir);
+  }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%s srev=%f urev=%f refVelo=%f mdir=%d edir=%d\n",
             modulName, srev, urev, refVelo, mdir, edir);
-  setDoubleParam(pC_->EthercatMCScalSREV_RB_, srev);
-  setDoubleParam(pC_->EthercatMCScalUREV_RB_, urev);
-  setDoubleParam(pC_->EthercatMCScalRefVelo_RB_, refVelo);
-  setIntegerParam(pC_->EthercatMCScalEDIR_RB_, mdir);
-  setIntegerParam(pC_->EthercatMCScalMDIR_RB_, edir);
   return asynSuccess;
 }
 
@@ -291,8 +296,8 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
 {
   int nvals;
   asynStatus status;
-  double rdbd, rdbd_tim, poslag, poslag_tim;
-  int rdbd_en, poslag_en;
+  double rdbd, rdbd_tim, poslag = -1, poslag_tim = -1;
+  int rdbd_en, poslag_en = 0;
   double stepSize = drvlocal.stepSize;
 
   if (!stepSize) return asynError;
@@ -306,15 +311,15 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
            0x4000 + axisID, 0x16,  // RDBD_RB
            0x4000 + axisID, 0x17,  // RDBD_Tim
            0x4000 + axisID, 0x15,  // RDND_En
-           0x6000 + axisID, 0x12,  // PosLog
-           0x6000 + axisID, 0x13,  // PosLog_Tim
+           0x6000 + axisID, 0x12,  // PosLag
+           0x6000 + axisID, 0x13,  // PosLag_Tim
            0x6000 + axisID, 0x10); // Poslag_En
   status = writeReadControllerPrint();
   if (status) return status;
   nvals = sscanf(pC_->inString_, "%lf;%lf;%d;%lf;%lf;%d",
                  &rdbd, &rdbd_tim, &rdbd_en, &poslag, &poslag_tim, &poslag_en
                  );
-  if (nvals != 6) {
+  if ((nvals != 6) && (nvals != 3)) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s nvals=%d\n", modulName, nvals);
     return asynError;
@@ -328,9 +333,12 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
 #ifdef motorRDBDROString
   setDoubleParam(pC_->motorRDBDRO_, rdbd_en ? rdbd : 0.0);
 #endif
-  setDoubleParam(pC_->EthercatMCScalPOSLAG_RB_, poslag);
-  setDoubleParam(pC_->EthercatMCScalPOSLAG_Tim_RB_, poslag_tim);
-  setIntegerParam(pC_->EthercatMCScalPOSLAG_En_RB_, poslag_en);
+
+  if (nvals == 6) {
+    setDoubleParam(pC_->EthercatMCScalPOSLAG_RB_, poslag);
+    setDoubleParam(pC_->EthercatMCScalPOSLAG_Tim_RB_, poslag_tim);
+    setIntegerParam(pC_->EthercatMCScalPOSLAG_En_RB_, poslag_en);
+  }
   return asynSuccess;
 }
 
@@ -361,6 +369,9 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
               modulName, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s velo=%f vmax=%f jvel=%f jar=%f\n",
+            modulName, velo, vmax, jvel, jar);
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVELO_, velo / stepSize);
 #ifdef motorDefVelocityROString
   setDoubleParam(pC_->motorDefVelocityRO_, velo / stepSize);
@@ -447,9 +458,9 @@ asynStatus EthercatMCAxis::initialPollInternal(void)
   if (status == asynSuccess && !drvlocal.supported.bECMC) {
     if (!drvlocal.stepSize) status = asynError;
     if (status == asynSuccess) status = readBackHoming();
-    if (status == asynSuccess) status = readMonitoring(axisID);
-    if (status == asynSuccess) status = readScaling(axisID);
   }
+  if (status == asynSuccess) status = readScaling(axisID);
+  if (status == asynSuccess) status = readMonitoring(axisID);
   if (status == asynSuccess) status = readBackSoftLimits();
   if (status == asynSuccess) status = readBackVelocities(axisID);
   if (status == asynSuccess && drvlocal.dirty.oldStatusDisconnected) {
