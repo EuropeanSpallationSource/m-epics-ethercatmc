@@ -198,6 +198,7 @@ private:
   asynStatus writeReadControllerPrint(void);
   asynStatus readConfigLine(const char *line, const char **errorTxt_p);
   asynStatus readConfigFile(void);
+  asynStatus readBackAllConfig(int axisID);
   asynStatus readBackSoftLimits(void);
   asynStatus readBackHoming(void);
   asynStatus readScaling(int axisID);

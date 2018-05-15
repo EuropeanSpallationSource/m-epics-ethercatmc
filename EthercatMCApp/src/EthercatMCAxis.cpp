@@ -404,7 +404,24 @@ asynStatus EthercatMCAxis::initialPoll(void)
   return status;
 }
 
-  /** Connection status is changed, the dirty bits must be set and
+
+asynStatus EthercatMCAxis::readBackAllConfig(int axisID)
+{
+  asynStatus status = asynSuccess;
+  /* for ECMC homing is configured from EPICS, do NOT do the readback */
+  if (!drvlocal.supported.bECMC) {
+    if (!drvlocal.stepSize) status = asynError;
+    if (status == asynSuccess) status = readBackHoming();
+  }
+  if (status == asynSuccess) status = readScaling(axisID);
+  if (status == asynSuccess) status = readMonitoring(axisID);
+  if (status == asynSuccess) status = readBackSoftLimits();
+  if (status == asynSuccess) status = readBackVelocities(axisID);
+  return status;
+}
+
+
+/** Connection status is changed, the dirty bits must be set and
  *  the values in the controller must be updated
  * \param[in] AsynStatus status
  *
@@ -454,15 +471,7 @@ asynStatus EthercatMCAxis::initialPollInternal(void)
        See AMPLIFIER_ON_FLAG */
     status = enableAmplifier(1);
   }
-  /* for ECMC homing is configured from EPICS, do NOT do the readback */
-  if (status == asynSuccess && !drvlocal.supported.bECMC) {
-    if (!drvlocal.stepSize) status = asynError;
-    if (status == asynSuccess) status = readBackHoming();
-  }
-  if (status == asynSuccess) status = readScaling(axisID);
-  if (status == asynSuccess) status = readMonitoring(axisID);
-  if (status == asynSuccess) status = readBackSoftLimits();
-  if (status == asynSuccess) status = readBackVelocities(axisID);
+  if (status == asynSuccess) status = readBackAllConfig(axisID);
   if (status == asynSuccess && drvlocal.dirty.oldStatusDisconnected) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s connected(%d)\n",  modulName, axisNo_);
