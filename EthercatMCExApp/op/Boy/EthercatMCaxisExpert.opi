@@ -80,6 +80,15 @@
         </exp>
         <pv trig="true">$(pv_name)</pv>
       </rule>
+      <rule name="HOMF-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="((pv0 &lt; 1) || (pv0 &gt; 14))">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="((pv0 &gt; 0) &amp;&amp; (pv0 &lt; 15))">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)HomProc-RB</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -217,6 +226,15 @@ $(pv_value)</tooltip>
           <value>9</value>
         </exp>
         <pv trig="true">$(pv_name)</pv>
+      </rule>
+      <rule name="HOMR-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="((pv0 &lt; 1) || (pv0 &gt; 14))">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="((pv0 &gt; 0) &amp;&amp; (pv0 &lt; 15))">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)HomProc-RB</pv>
       </rule>
     </rules>
     <scale_options>
