@@ -2608,7 +2608,17 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M).FOFF</pv_name>
     <pv_value />
     <released_action_index>0</released_action_index>
-    <rules />
+    <rules>
+      <rule name="FOFF-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0!=15">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0==15">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)HomProc-RB</pv>
+      </rule>
+    </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
