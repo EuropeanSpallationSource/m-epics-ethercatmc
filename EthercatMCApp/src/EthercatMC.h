@@ -69,6 +69,8 @@ FILENAME...   EthercatMC.h
 #define EthercatMCMCUErrMsgString            "MCUErrMsg"
 #define EthercatMCDbgStrToMcuString          "StrToMCU"
 
+extern const char *modNamEMC;
+
 extern "C" {
   int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
                       int axisFlags, const char *axisOptionsStr);

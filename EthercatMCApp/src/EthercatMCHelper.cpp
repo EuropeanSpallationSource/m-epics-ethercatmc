@@ -17,14 +17,12 @@
 #define ASYN_TRACE_INFO      0x0040
 #endif
 
-const static char *const modulName = "EthercatMCAxis::";
 asynStatus EthercatMCAxis::writeReadControllerPrint(void)
 {
   asynStatus status = pC_->writeReadController();
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d)\n",
-             modulName,
-            pC_->outString_, pC_->inString_,
+            "%sout=%s in=%s status=%s (%d)\n",
+            modNamEMC, pC_->outString_, pC_->inString_,
             pasynManager->strStatus(status), (int)status);
   return status;
 }
@@ -65,9 +63,8 @@ asynStatus EthercatMCAxis::writeReadACK(void)
       if (res) {
         status = asynError;
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%s out=%s in=%s return=%s (%d)\n",
-                   modulName,
-                  pC_->outString_, pC_->inString_,
+                  "%sout=%s in=%s return=%s (%d)\n",
+                  modNamEMC, pC_->outString_, pC_->inString_,
                   pasynManager->strStatus(status), (int)status);
         if (!drvlocal.cmdErrorMessage[0]) {
           snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
@@ -82,9 +79,8 @@ asynStatus EthercatMCAxis::writeReadACK(void)
       break;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d)\n",
-             modulName,
-            pC_->outString_, pC_->inString_,
+            "%sout=%s in=%s status=%s (%d)\n",
+            modNamEMC, pC_->outString_, pC_->inString_,
             pasynManager->strStatus(status), (int)status);
   return status;
 }
@@ -123,9 +119,8 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
              drvlocal.adsport_str, axisNo_, rbvar);
     status = pC_->writeReadController();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s setValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
-               modulName,
-              axisNo_,pC_->outString_, pC_->inString_,
+              "%ssetValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
+              modNamEMC, axisNo_,pC_->outString_, pC_->inString_,
               pasynManager->strStatus(status), (int)status);
     if (status) {
       return status;
@@ -133,9 +128,8 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
       int nvals = sscanf(pC_->inString_, "OK;%d", &rbvalue);
       if (nvals != 1) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%s nvals=%d command=\"%s\" response=\"%s\"\n",
-                   modulName,
-                  nvals, pC_->outString_, pC_->inString_);
+                  "%snvals=%d command=\"%s\" response=\"%s\"\n",
+                  modNamEMC, nvals, pC_->outString_, pC_->inString_);
         return asynError;
       }
       if (status) break;
@@ -148,8 +142,8 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
      Store the error (unless there was an error before) */
   if ((rbvalue != value) && !drvlocal.cmdErrorMessage[0]) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-               "%s setValueOnAxisV(%d) var=%s value=%d rbvalue=%d",
-                 modulName, axisNo_,var, value, rbvalue);
+                "%ssetValueOnAxisV(%d) var=%s value=%d rbvalue=%d",
+                modNamEMC, axisNo_,var, value, rbvalue);
       snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
                "E: setValueOnAxisV(%s) value=%d rbvalue=%d",
                var, value, rbvalue);
@@ -214,22 +208,22 @@ int EthercatMCAxis::getMotionAxisID(void)
       int nvals = sscanf(pC_->inString_, "%d", &res);
       if (nvals != 1) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%s oldret=%d nvals=%d command=\"%s\" response=\"%s\" res=%d\n",
-                  modulName, ret, nvals, pC_->outString_, pC_->inString_, res);
+                  "%soldret=%d nvals=%d command=\"%s\" response=\"%s\" res=%d\n",
+                  modNamEMC, ret, nvals, pC_->outString_, pC_->inString_, res);
         continue;
       }
       ret = res;
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%s out=%s in=%s status=%s (%d) res=%d ret=%d\n",
-                modulName,
+                "%sout=%s in=%s status=%s (%d) res=%d ret=%d\n",
+                modNamEMC,
                 pC_->outString_, pC_->inString_,
                 pasynManager->strStatus(status), (int)status, res, ret);
       break;
     }
     if (ret != -1) drvlocal.dirty.nMotionAxisID = ret;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s nMotionAxisID(%d)=%d res=%d ret=%d\n",
-              modulName, axisNo_, drvlocal.dirty.nMotionAxisID, res, ret);
+              "%snMotionAxisID(%d)=%d res=%d ret=%d\n",
+              modNamEMC, axisNo_, drvlocal.dirty.nMotionAxisID, res, ret);
   }
   return ret;
 }
@@ -256,8 +250,8 @@ asynStatus EthercatMCAxis::getFeatures(void)
     pC_->inString_[0] = 0;
     status = pC_->writeReadController();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s out=%s in=%s status=%s (%d)\n",
-              modulName, pC_->outString_, pC_->inString_,
+              "%sout=%s in=%s status=%s (%d)\n",
+              modNamEMC, pC_->outString_, pC_->inString_,
               pasynManager->strStatus(status), (int)status);
 
     if (status) return status;
@@ -379,13 +373,13 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   nvals = sscanf(pC_->inString_, "%d", &res);
   if (nvals != 1) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
-               modulName, nvals, pC_->outString_, pC_->inString_);
+              "%snvals=%d command=\"%s\" response=\"%s\"\n",
+              modNamEMC, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s %s=%d\n",
-            modulName, pC_->outString_, pC_->inString_,name, res);
+            "%sout=%s in=%s %s=%d\n",
+            modNamEMC, pC_->outString_, pC_->inString_,name, res);
   *value = res;
   return asynSuccess;
 }
@@ -408,13 +402,13 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   nvals = sscanf(pC_->inString_, "%lf", &res);
   if (nvals != 1) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
-               modulName, nvals, pC_->outString_, pC_->inString_);
+              "%snvals=%d command=\"%s\" response=\"%s\"\n",
+               modNamEMC, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s %s=%g\n",
-            modulName, pC_->outString_, pC_->inString_,name, res);
+            "%sout=%s in=%s %s=%g\n",
+            modNamEMC, pC_->outString_, pC_->inString_,name, res);
   *value = res;
   return asynSuccess;
 }
@@ -441,22 +435,22 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
       res = 1;
     } else {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s command=\"%s\" response=\"%s\"\n",
-                 modulName, pC_->outString_, pC_->inString_);
+                "%scommand=\"%s\" response=\"%s\"\n",
+                modNamEMC, pC_->outString_, pC_->inString_);
       return asynError;
     }
   } else {
     int nvals = sscanf(pC_->inString_, "%d", &res);
     if (nvals != 1) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s nvals=%d command=\"%s\" response=\"%s\"\n",
-                 modulName, nvals, pC_->outString_, pC_->inString_);
+                "%snvals=%d command=\"%s\" response=\"%s\"\n",
+                 modNamEMC, nvals, pC_->outString_, pC_->inString_);
       return asynError;
     }
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s status=%s (%d) iValue=%d\n",
-            modulName,
+            "%sout=%s in=%s status=%s (%d) iValue=%d\n",
+            modNamEMC,
             pC_->outString_, pC_->inString_,
             pasynManager->strStatus(status), (int)status, res);
 
@@ -493,13 +487,13 @@ asynStatus EthercatMCAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
   nvals = sscanf(pC_->inString_, "%d;%lf", &iRes, &fRes);
   if (nvals != 2) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
-               modulName, nvals, pC_->outString_, pC_->inString_);
+              "%snvals=%d command=\"%s\" response=\"%s\"\n",
+               modNamEMC, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s out=%s in=%s %s=%d %s=%g\n",
-            modulName, pC_->outString_, pC_->inString_, iname, iRes, fname, fRes);
+            "%sout=%s in=%s %s=%d %s=%g\n",
+            modNamEMC, pC_->outString_, pC_->inString_, iname, iRes, fname, fRes);
 
   *iValue = iRes;
   *fValue = fRes;
@@ -525,8 +519,8 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
   nvals = sscanf(pC_->inString_, "%lf", &res);
   if (nvals != 1) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
-               modulName, nvals, pC_->outString_, pC_->inString_);
+              "%snvals=%d command=\"%s\" response=\"%s\"\n",
+               modNamEMC, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   *value = res;
@@ -561,8 +555,8 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
   nvals = sscanf(pC_->inString_, "%lf", &res);
   if (nvals != 1) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s nvals=%d command=\"%s\" response=\"%s\"\n",
-               modulName, nvals, pC_->outString_, pC_->inString_);
+              "%snvals=%d command=\"%s\" response=\"%s\"\n",
+               modNamEMC, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   *value = res;
@@ -676,7 +670,7 @@ asynStatus EthercatMCAxis::readConfigFile(void)
              drvlocal.cfgfileStr);
     updateMsgTxtFromDriver(errbuf);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s (%d)%s\n", modulName, axisNo_, errbuf);
+              "%s(%d)%s\n", modNamEMC, axisNo_, errbuf);
     return asynError;
   }
   while (ret && !status && !errorTxt) {
@@ -696,8 +690,8 @@ asynStatus EthercatMCAxis::readConfigFile(void)
     len = strlen(ret);
     if (!len) continue; /* empty line with LF */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s readConfigFile(%d) %s:%u %s\n",
-              modulName, axisNo_,
+              "%sreadConfigFile(%d) %s:%u %s\n",
+              modNamEMC, axisNo_,
               drvlocal.cfgfileStr, line_no, rdbuf);
 
     if (!strncmp(simOnly_str, rdbuf, strlen(simOnly_str))) {
@@ -723,15 +717,15 @@ asynStatus EthercatMCAxis::readConfigFile(void)
       }
 
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s readConfigFile %s\n", modulName, errbuf);
+                "%sreadConfigFile %s\n", modNamEMC, errbuf);
       updateMsgTxtFromDriver(errbuf);
     }
   } /* while */
 
   if (ferror(fp) || status || errorTxt) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s readConfigFile %sstatus=%d errorTxt=%s (%s)\n",
-              modulName,
+              "%sreadConfigFile %sstatus=%d errorTxt=%s (%s)\n",
+              modNamEMC,
               ferror(fp) ? "ferror " : "",
               (int)status,
               errorTxt ? errorTxt : "",
