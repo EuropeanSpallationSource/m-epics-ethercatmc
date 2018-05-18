@@ -1065,7 +1065,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     }
   } /* End of V1 */
   /* From here on, either V1 or V2 is supported */
-  if (drvlocal.dirty.stAxisStatus_Vxx) {
+  if (drvlocal.dirty.statusVer) {
     if (drvlocal.supported.stAxisStatus_V2)
       drvlocal.supported.statusVer = 2;
     else if (drvlocal.supported.stAxisStatus_V1 && !drvlocal.supported.bV1BusyNewStyle)
@@ -1089,6 +1089,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     setIntegerParam(pC_->motorFlagsStopOnProblem_, 0);
 #endif
     drvlocal.dirty.stAxisStatus_Vxx = 0;
+    drvlocal.dirty.statusVer = 0;
   }
   if (axisNo_ != motor_axis_no) return asynError;
 

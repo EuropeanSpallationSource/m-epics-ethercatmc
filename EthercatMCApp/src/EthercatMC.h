@@ -170,6 +170,7 @@ private:
     struct {
       int          nMotionAxisID;     /* Needed for ADR commands */
       unsigned int stAxisStatus_Vxx :1;
+      unsigned int statusVer        :1;
       unsigned int oldStatusDisconnected : 1;
       unsigned int sErrorMessage    :1; /* From MCU */
       unsigned int initialPollNeeded :1;
