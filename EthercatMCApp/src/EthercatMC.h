@@ -281,6 +281,7 @@ public:
   void report(FILE *fp, int level);
   asynStatus setMCUErrMsg(const char *value);
   asynStatus configController(int needOk, const char *value);
+  asynStatus writeReadOnErrorDisconnect(void);
   EthercatMCAxis* getAxis(asynUser *pasynUser);
   EthercatMCAxis* getAxis(int axisNo);
   protected:

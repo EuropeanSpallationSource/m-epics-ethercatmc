@@ -233,6 +233,23 @@ asynStatus writeReadOnErrorDisconnect_C(asynUser *pasynUser,
   return status;
 }
 
+/** Writes a string to the controller and reads a response.
+  * Disconnects in case of error
+  */
+asynStatus EthercatMCController::writeReadOnErrorDisconnect(void)
+{
+  asynStatus status = asynError;
+  size_t outlen = strlen(outString_);
+  inString_[0] = '\0';
+  status = writeReadOnErrorDisconnect_C(pasynUserController_, outString_, outlen,
+                                        inString_, sizeof(inString_));
+  handleStatusChange(status);
+  if (status)
+  {
+    return asynError;
+  }
+  return status;
+}
 
 extern "C"
 asynStatus checkACK(const char *outdata, size_t outlen,
@@ -262,6 +279,25 @@ asynStatus EthercatMCController::setMCUErrMsg(const char *value)
   return status;
 }
 
+void EthercatMCController::handleStatusChange(asynStatus status)
+{
+
+  if (status && ctrlLocal.isConnected) {
+    /* Connected -> Disconnected */
+    int i;
+    ctrlLocal.isConnected = 0;
+    setMCUErrMsg("MCU Disconnected");
+    for (i=0; i<numAxes_; i++) {
+      EthercatMCAxis *pAxis=getAxis(i);
+      if (!pAxis) continue;
+      pAxis->handleDisconnect(status);
+    }
+  } else if (!status && !ctrlLocal.isConnected) {
+    /* Disconnected -> Connected */
+    ctrlLocal.isConnected = 1;
+    setMCUErrMsg("MCU Cconnected");
+  }
+}
 
 /** Reports on status of the driver
   * \param[in] fp The file pointer on which report information will be written
