@@ -79,7 +79,7 @@ if test "$1" = x; then
   fi
 fi
 
-cp motorx.start $OPIS/$$ &&
+sed -e "s!<name>motorx</name>!<name>$FILE</name>!"  <motorx.start >$OPIS/$$ &&
   echo "Creating $OPIS/$FILE" &&
   if test "$Y" = 1; then
     genXX "$@"
