@@ -210,10 +210,12 @@ void setMotorParkingPosition(int axis_no, double value)
   if (((axis_no) <= 0) || ((axis_no) >=MAX_AXES)) {
     return;
   }
-  motor_axis[axis_no].ParkingPos = value;
-  motor_axis[axis_no].MotorPosNow = value;
-  motor_axis[axis_no].EncoderPos =
-    getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
+  if (motor_axis[axis_no].ParkingPos != value) {
+    motor_axis[axis_no].ParkingPos = value;
+    motor_axis[axis_no].MotorPosNow = value;
+    motor_axis[axis_no].EncoderPos =
+      getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
+  }
 }
 
 void setMotorReverseERES(int axis_no, double value)
