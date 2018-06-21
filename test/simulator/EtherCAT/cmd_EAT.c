@@ -466,6 +466,7 @@ static int motorHandleADS_ADR(const char *arg)
 static void motorHandleOneArg(const char *myarg_1)
 {
   static const char * const ADSPORT_sFeaturesQ_str = "ADSPORT=852/.THIS.sFeatures?";
+  static const char * const THIS_stStettings_nADSPort_str = ".THIS.stSettings.nADSPort=";
   const char *myarg = myarg_1;
   int iValue = 0;
   double fValue = 0;
@@ -476,6 +477,17 @@ static void motorHandleOneArg(const char *myarg_1)
   if (0 == strcmp(myarg_1, ADSPORT_sFeaturesQ_str)) {
     cmd_buf_printf("%s", "sim");
     return;
+  }
+  /* .THIS.stSettings.nADSPort=%u */
+  if (0 == strcmp(myarg_1, THIS_stStettings_nADSPort_str)) {
+    int nvals;
+    unsigned int adsport;
+    myarg_1 += strlen(THIS_stStettings_nADSPort_str);
+    nvals = sscanf(myarg_1, "=%u", &adsport);
+    if (nvals == 1) {
+      cmd_buf_printf("OK");
+      return;
+    }
   }
   /* ADSPORT= */
   if (!strncmp(myarg_1, ADSPORT_equals_str, strlen(ADSPORT_equals_str))) {

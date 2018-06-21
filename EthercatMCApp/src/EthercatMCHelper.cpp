@@ -189,16 +189,30 @@ int EthercatMCAxis::getMotionAxisID(void)
   if (ret == -1) {
     int res = -3;
     asynStatus status;
-    static const unsigned adsports[] = {852, 851, 853};
+    static const unsigned adsports[] = {0, 852, 851, 853};
     unsigned adsport_idx;
     ret = -2;
     for (adsport_idx = 0;
          adsport_idx < sizeof(adsports)/sizeof(adsports[0]);
          adsport_idx++) {
       unsigned adsport = adsports[adsport_idx];
-      /* Save adsport_str for the poller */
-      snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
-               "ADSPORT=%u/", adsport);
+      if (adsport) {
+#if 1
+        /* Save adsport_str for the poller */
+        snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
+                 "ADSPORT=%u/", adsport);
+#else
+        /* This doesn't seem to work, more investigations needed */
+        snprintf(pC_->outString_, sizeof(pC_->outString_),
+                 ".THIS.stSettings.nADSPort=%u",adsport);
+        status = pC_->writeReadController();
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                  "%sout=%s in=%s status=%s (%d) res=%d ret=%d\n",
+                  modNamEMC,
+                  pC_->outString_, pC_->inString_,
+                  pasynManager->strStatus(status), (int)status, res, ret);
+#endif
+      }
       snprintf(pC_->outString_, sizeof(pC_->outString_),
                "%sMain.M%d.nMotionAxisID?", drvlocal.adsport_str, axisNo_);
       status = pC_->writeReadOnErrorDisconnect();
