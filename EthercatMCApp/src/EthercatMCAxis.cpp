@@ -531,6 +531,8 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "Following err mon pos";
   case 0x4551:
     return "Following err mon vel";
+  case 0x4650:
+    return "Drv HW not ready to operate";
   case 0x4655:
     return "Invalid IO data";
   case 0x4B0A:
