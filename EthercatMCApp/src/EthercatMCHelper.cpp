@@ -57,6 +57,10 @@ asynStatus EthercatMCAxis::writeReadACK(void)
         case 2: res = strcmp(pC_->inString_, "OK;OK");  break;
         case 3: res = strcmp(pC_->inString_, "OK:OK;OK");  break;
         case 4: res = strcmp(pC_->inString_, "OK;OK;OK;OK");  break;
+        case 5: res = strcmp(pC_->inString_, "OK;OK;OK;OK;OK");  break;
+        case 6: res = strcmp(pC_->inString_, "OK;OK;OK;OK;OK;OK");  break;
+        case 7: res = strcmp(pC_->inString_, "OK;OK;OK;OK;OK;OK;OK");  break;
+        case 8: res = strcmp(pC_->inString_, "OK;OK;OK;OK;OK;OK;OK;OK");  break;
         default:
           ;
       }
