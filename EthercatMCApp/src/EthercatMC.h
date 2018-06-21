@@ -121,6 +121,7 @@ public:
   EthercatMCAxis(class EthercatMCController *pC, int axisNo,
             int axisFlags, const char *axisOptionsStr);
   void report(FILE *fp, int level);
+  asynStatus mov2(double posEGU, int relative, double maxVeloEGU, double accEGU);
   asynStatus move(double position, int relative, double min_velocity, double max_velocity, double acceleration);
   asynStatus moveVelocity(double min_velocity, double max_velocity, double acceleration);
   asynStatus setPosition(double);

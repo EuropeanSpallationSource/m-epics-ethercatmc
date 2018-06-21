@@ -579,6 +579,54 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
   return status;
 }
 
+/** Move the motor to an absolute location or by a relative amount.
+  * \param[in] posEGU  The absolute position to move to (if relative=0) or the relative distance to move
+  * by (if relative=1). Units=steps.
+  * \param[in] relative  Flag indicating relative move (1) or absolute move (0).
+  * \param[in] maxVeloEGU The maximum velocity, often called the slew velocity. Units=EGU/sec.
+  * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
+asynStatus EthercatMCAxis::mov2(double posEGU, int relative, double maxVeloEGU, double accEGU)
+{
+  int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
+  if (accEGU) {
+    snprintf(pC_->outString_, sizeof(pC_->outString_),
+             "%sMain.M%d.bExecute=0;"
+             "%sMain.M%d.nCommand=%d;"
+             "%sMain.M%d.nCmdData=0;"
+             "%sMain.M%d.fPosition=%f;"
+             "%sMain.M%d.fAcceleration=%f;"
+             "%sMain.M%d.fDeceleration=%f;"
+             "%sMain.M%d.fVelocity=%f;"
+             "%sMain.M%d.bExecute=1",
+             drvlocal.adsport_str, axisNo_,
+             drvlocal.adsport_str, axisNo_, nCommand,
+             drvlocal.adsport_str, axisNo_,
+             drvlocal.adsport_str, axisNo_, posEGU,
+             drvlocal.adsport_str, axisNo_, accEGU,
+             drvlocal.adsport_str, axisNo_, accEGU,
+             drvlocal.adsport_str, axisNo_, maxVeloEGU,
+             drvlocal.adsport_str, axisNo_);
+  } else {
+    snprintf(pC_->outString_, sizeof(pC_->outString_),
+             "%sMain.M%d.bExecute=0;"
+             "%sMain.M%d.nCommand=%d;"
+             "%sMain.M%d.nCmdData=0;"
+             "%sMain.M%d.fPosition=%f;"
+             "%sMain.M%d.fVelocity=%f;"
+             "%sMain.M%d.bExecute=1",
+             drvlocal.adsport_str, axisNo_,
+             drvlocal.adsport_str, axisNo_, nCommand,
+             drvlocal.adsport_str, axisNo_,
+             drvlocal.adsport_str, axisNo_, posEGU,
+             drvlocal.adsport_str, axisNo_, maxVeloEGU,
+             drvlocal.adsport_str, axisNo_);
+  }
+#ifndef motorWaitPollsBeforeReadyString
+  drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
+#endif
+  return writeReadACK();
+}
+
 /** Move the axis to a position, either absolute or relative
  * \param[in] position in mm
  * \param[in] relative (0=absolute, otherwise relative)
@@ -590,13 +638,31 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
 asynStatus EthercatMCAxis::move(double position, int relative, double minVelocity, double maxVelocity, double acceleration)
 {
   asynStatus status = asynSuccess;
+#if MAX_CONTROLLER_STRING_SIZE > 350
+  if (!drvlocal.stepSize) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssendVelocityAndAccelExecute(%d) stepSize==0.0\n",
+              modNamEMC, axisNo_);
+    return asynError; /* No stepSize, no move */
+  }
+  {
+    double maxVeloEGU = maxVelocity * drvlocal.stepSize;
+    double acc_in_EGU_sec2 = 0.0;
+    if (acceleration > 0.0001) {
+      double acc_in_seconds = maxVelocity / acceleration;
+      acc_in_EGU_sec2 = maxVeloEGU / acc_in_seconds;
+    }
+    if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
+    return mov2(position * drvlocal.stepSize, relative, maxVeloEGU, acc_in_EGU_sec2);
+  }
+#else
   int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
   if (status == asynSuccess) status = setValueOnAxis("fPosition", position * drvlocal.stepSize);
   if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
-
+#endif
   return status;
 }
 
