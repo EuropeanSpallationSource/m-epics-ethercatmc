@@ -587,9 +587,8 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
   * \param[in] relative  Flag indicating relative move (1) or absolute move (0).
   * \param[in] maxVeloEGU The maximum velocity, often called the slew velocity. Units=EGU/sec.
   * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
-asynStatus EthercatMCAxis::mov2(double posEGU, int relative, double maxVeloEGU, double accEGU)
+asynStatus EthercatMCAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, double accEGU)
 {
-  int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
   if (accEGU) {
     snprintf(pC_->outString_, sizeof(pC_->outString_),
              "%sMain.M%d.bExecute=0;"
@@ -655,7 +654,9 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
       acc_in_EGU_sec2 = maxVeloEGU / acc_in_seconds;
     }
     if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
-    return mov2(position * drvlocal.stepSize, relative, maxVeloEGU, acc_in_EGU_sec2);
+    return mov2(position * drvlocal.stepSize,
+                relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS,
+                maxVeloEGU, acc_in_EGU_sec2);
   }
 #else
   int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
@@ -738,14 +739,26 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
  */
 asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, double acceleration)
 {
+#if MAX_CONTROLLER_STRING_SIZE > 350
+  {
+    double maxVeloEGU = maxVelocity * drvlocal.stepSize;
+    double acc_in_EGU_sec2 = 0.0;
+    if (acceleration > 0.0001) {
+      double acc_in_seconds = maxVelocity / acceleration;
+      acc_in_EGU_sec2 = maxVeloEGU / acc_in_seconds;
+    }
+    if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
+    return mov2(0, NCOMMANDMOVEVEL, maxVeloEGU, acc_in_EGU_sec2);
+  }
+#else
   asynStatus status = asynSuccess;
-
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) setValueOnAxis("nCommand", NCOMMANDMOVEVEL);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
   if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
 
   return status;
+#endif
 }
 
 
