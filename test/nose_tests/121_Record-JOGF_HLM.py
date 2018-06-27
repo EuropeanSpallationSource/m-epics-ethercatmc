@@ -8,10 +8,12 @@ import unittest
 import os
 import sys
 from motor_lib import motor_lib
+from motor_globals import motor_globals
 ###
 
 class Test(unittest.TestCase):
     lib = motor_lib()
+    __g = motor_globals()
     motor = os.getenv("TESTEDMOTORAXIS")
 
     hlm = epics.caget(motor + '.HLM')
@@ -20,9 +22,6 @@ class Test(unittest.TestCase):
     per90_UserPosition  = round((1 * llm + 9 * hlm) / 10)
 
     range_postion    = hlm - llm
-    jogging_velocity = epics.caget(motor + '.JVEL')
-    moving_velocity  = epics.caget(motor + '.VELO')
-    acceleration     = epics.caget(motor + '.ACCL')
     msta             = int(epics.caget(motor + '.MSTA'))
 
     print 'llm=%f hlm=%f per90_UserPosition=%f' % (llm, hlm, per90_UserPosition)
@@ -42,13 +41,11 @@ class Test(unittest.TestCase):
             tc_no = "TC-1212-90-percent-UserPosition"
             print '%s' % tc_no
             destination = self.per90_UserPosition
-            self.lib.movePosition(motor, tc_no, destination,
-                                   self.moving_velocity, self.acceleration)
-
+            res = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
             print '%s postion=%f per90_UserPosition=%f' % (
                 tc_no, UserPosition, self.per90_UserPosition)
-            assert self.lib.calcAlmostEqual(motor, tc_no, destination, UserPosition, 2)
+            self.assertNotEqual(res == self.__g.SUCCESS, 'move returned SUCCESS')
 
     # High soft limit JOGF
     def test_TC_1213(self):
@@ -74,13 +71,11 @@ class Test(unittest.TestCase):
             tc_no = "TC-1214-90-percent-UserPosition"
             print '%s' % tc_no
             destination = self.per90_UserPosition
-            self.lib.movePosition(motor, tc_no, destination,
-                                  self.moving_velocity, self.acceleration)
-
+            res = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
             print '%s postion=%f per90_UserPosition=%f' % (
                 tc_no, UserPosition, self.per90_UserPosition)
-            assert self.lib.calcAlmostEqual(motor, tc_no, destination, UserPosition, 2)
+            self.assertNotEqual(res == self.__g.SUCCESS, 'move returned SUCCESS')
 
     # High soft limit JOGR + DIR
     def test_TC_1215(self):
