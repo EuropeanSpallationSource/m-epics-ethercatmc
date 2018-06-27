@@ -56,12 +56,14 @@ class Test(unittest.TestCase):
             epics.caput(motor + '.JOGF', 1, wait=True)
             lvio = int(epics.caget(motor + '.LVIO'))
             msta = int(epics.caget(motor + '.MSTA'))
+            miss = int(epics.caget(motor + '.MISS'))
 
+            epics.caput(motor + '.JOGF', 0)
             self.assertEqual(0, msta & self.lib.MSTA_BIT_PROBLEM,  'No MSTA.Problem JOGF')
             self.assertEqual(0, msta & self.lib.MSTA_BIT_MINUS_LS, 'Minus hard limit not reached JOGF')
             self.assertEqual(0, msta & self.lib.MSTA_BIT_PLUS_LS,  'Plus hard limit not reached JOGF')
+            self.assertEqual(0, miss,                              'MISS not set JOGF')
             self.assertEqual(1, lvio, 'LVIO == 1 JOGF')
-            epics.caput(motor + '.JOGF', 0)
 
 
     # per90 UserPosition
@@ -92,13 +94,11 @@ class Test(unittest.TestCase):
             lvio = int(epics.caget(motor + '.LVIO'))
             msta = int(epics.caget(motor + '.MSTA'))
 
-            self.assertEqual(0, msta & self.lib.MSTA_BIT_PROBLEM,  'No Error MSTA.Problem JOGF DIR')
-            self.assertEqual(0, msta & self.lib.MSTA_BIT_MINUS_LS, 'Minus hard limit not reached JOGF DIR')
-            self.assertEqual(0, msta & self.lib.MSTA_BIT_PLUS_LS,  'Plus hard limit not reached JOGF DIR')
             ### commit  4efe15e76cefdc060e14dbc3 needed self.assertEqual(1, lvio, 'LVIO == 1 JOGF')
             epics.caput(motor + '.JOGF', 0)
             epics.caput(motor + '.DIR', saved_DIR)
             epics.caput(motor + '.FOFF', saved_FOFF)
 
-
-
+            self.assertEqual(0, msta & self.lib.MSTA_BIT_PROBLEM,  'No Error MSTA.Problem JOGF DIR')
+            self.assertEqual(0, msta & self.lib.MSTA_BIT_MINUS_LS, 'Minus hard limit not reached JOGF DIR')
+            self.assertEqual(0, msta & self.lib.MSTA_BIT_PLUS_LS,  'Plus hard limit not reached JOGF DIR')
