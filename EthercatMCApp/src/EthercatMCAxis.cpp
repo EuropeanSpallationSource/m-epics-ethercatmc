@@ -692,15 +692,13 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
     return asynError;
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
-  if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-  if (status == asynSuccess) status = setValueOnAxis("fHomePosition", homPos);
-
-
   if (drvlocal.supported.bECMC) {
     double velToHom;
     double velFrmHom;
     double accHom;
     double decHom;
+    if (!status) status = stopAxisInternal(__FUNCTION__, 0);
+    if (!status) status = setValueOnAxis("fHomePosition", homPos);
     if (!status) status = pC_->getDoubleParam(axisNo_,
                                               pC_->EthercatMCVelToHom_,
                                               &velToHom);
@@ -719,11 +717,24 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
                                             velFrmHom);
     if (!status)  status = setValuesOnAxis("fAcceleration", accHom,
                                            "fDeceleration", decHom);
+    if (!status) status = setValueOnAxis("nCommand", nCommand );
+    if (!status) status = setValueOnAxis("nCmdData", homProc);
+    if (!status) status = setValueOnAxis("bExecute", 1);
+  } else {
+    snprintf(pC_->outString_, sizeof(pC_->outString_),
+             "%sMain.M%d.bExecute=0;"
+             "%sMain.M%d.nCommand=%d;"
+             "%sMain.M%d.nCmdData=%d;"
+             "%sMain.M%d.fHomePosition=%f;"
+             "%sMain.M%d.bExecute=1",
+             drvlocal.adsport_str, axisNo_,
+             drvlocal.adsport_str, axisNo_, nCommand,
+             drvlocal.adsport_str, axisNo_, homProc,
+             drvlocal.adsport_str, axisNo_, homPos,
+             drvlocal.adsport_str, axisNo_);
+    return writeReadACK();
   }
-  if (!status) status = setValueOnAxis("nCommand", nCommand );
-  if (!status) status = setValueOnAxis("nCmdData", homProc);
-
-  if (!status) status = setValueOnAxis("bExecute", 1);
+    
 #ifndef motorWaitPollsBeforeReadyString
   drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
 #endif
