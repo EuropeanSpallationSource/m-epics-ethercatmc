@@ -1634,9 +1634,6 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 
 asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
 {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetStringParamDbgStrToMcu(%d)=%s\n",
-              modNamEMC, axisNo_, value);
     const char * const Main_this_str = "Main.this.";
     const char * const Sim_this_str = "Sim.this.";
 #if 0
@@ -1647,6 +1644,12 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
     int nvals = 0;
     int retryCount = 1;
 #endif
+
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetStringParamDbgStrToMcu(%d)=\"%s\"\n",
+              modNamEMC, axisNo_, value);
+    /* empty strings are not send to the controller */
+    if (!value[0]) return asynSuccess;
 
     /* Check the string. E.g. Main.this. and Sim.this. are passed
        as Main.M1 or Sim.M1
