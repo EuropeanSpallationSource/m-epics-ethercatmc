@@ -598,6 +598,15 @@ static void motorHandleOneArg(const char *myarg_1)
                   myarg);
   }
   myarg_1++; /* Jump over '.' */
+
+  if (sim_usleep[motor_axis_no]) {
+    fprintf(stdlog,
+            "%s/%s:%d axis_no=%d usleep=%lu\n",
+            __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
+            (unsigned long)sim_usleep[motor_axis_no]);
+    (void)usleep(sim_usleep[motor_axis_no]);
+  }
+
   if (0 == strcmp(myarg_1, "bBusy?")) {
     cmd_buf_printf("%d", isMotorMoving(motor_axis_no));
     return;

@@ -15,6 +15,8 @@ static const char * const dbgCloseLogFile_str = "dbgCloseLogFile";
 
 static const char *seperator_seperator = ";";
 
+useconds_t sim_usleep[MAX_AXES];
+
 static void init_axis(int axis_no)
 {
   (void)axis_no;
@@ -189,6 +191,14 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("OK");
     return;
   }
+  /* usleep=1500000 */
+  nvals = sscanf(myarg_1, "usleep=%lf", &fValue);
+  if (nvals == 1) {
+    sim_usleep[motor_axis_no] = (useconds_t)fValue;
+    cmd_buf_printf("OK");
+    return;
+  }
+
   /* if we come here, we do not understand the command */
   RETURN_OR_DIE("%s/%s:%d line=%s myarg_1=%s",
                 __FILE__, __FUNCTION__, __LINE__,
