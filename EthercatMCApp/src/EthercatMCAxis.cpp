@@ -75,10 +75,6 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     setIntegerParam(pC_->motorPowerAutoOnOff_, POWERAUTOONOFFMODE2);
     setDoubleParam(pC_->motorPowerOnDelay_,   6.0);
     setDoubleParam(pC_->motorPowerOffDelay_, -1.0);
-#else
-    setIntegerParam(pC_->motorPowerAutoOnOff_, 1);
-    setDoubleParam(pC_->motorPowerOnDelay_,   6.0);
-    setDoubleParam(pC_->motorPowerOffDelay_,  4.0);
 #endif
   }
   if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
@@ -961,12 +957,14 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     drvlocal.eeAxisError = eeAxisErrorIOCcomError;
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
+#ifdef motorFlagsNoStopProblemString
   } else if (!drvlocal.homed &&
              (drvlocal.nCommandActive != NCOMMANDHOME) &&
              (drvlocal.motorRecordHighLimit > drvlocal.motorRecordLowLimit)) {
     int homProc;
     pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_, &homProc);
     if (homProc) drvlocal.eeAxisError = eeAxisErrorNotHomed;
+#endif
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
@@ -1313,9 +1311,6 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   }
 
 #ifndef motorWaitPollsBeforeReadyString
-  if (drvlocal.old_st_axis_status.mvnNRdyNex != st_axis_status.mvnNRdyNex) {
-    drvlocal.waitNumPollsBeforeReady = 0;
-  }
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
