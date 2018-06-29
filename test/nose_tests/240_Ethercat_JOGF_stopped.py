@@ -13,26 +13,11 @@ from motor_lib import motor_lib
 from motor_globals import motor_globals
 ###
 
-# Amplifier is locked to be off, but responds "OK".
-# See test/simulator/EtherCAT/hw_motor.h
-AMPLIFIER_LOCKED_TO_BE_OFF_SILENT = 1
-
-def setValueOnAxis(self, motor, tc_no, var, value):
-    # Note: The driver will change Sim.this.XXX into
-    # Sim.M1.XXX
-    var = str(var)
-    value = str(value)
-    outStr = 'Main.this.' + var + '=' + value
-    print '%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
-          (tc_no, motor, var, value, outStr)
-    assert(len(outStr) < 40)
-    epics.caput(motor + '-DbgStrToMCU', outStr)
-
-
 class Test(unittest.TestCase):
     lib = motor_lib()
     __g = motor_globals()
     motor = os.getenv("TESTEDMOTORAXIS")
+    lib.initializeMotorRecordSimulatorAxis(motor, '240')
     hlm = epics.caget(motor + '.HLM')
     llm = epics.caget(motor + '.LLM')
     saved_DLY  = epics.caget(motor + '.DLY')
@@ -45,6 +30,8 @@ class Test(unittest.TestCase):
     def test_TC_241(self):
         motor = self.motor
         tc_no = "TC-241"
+        self.lib.initializeMotorRecordSimulatorAxis(motor, '240')
+
         if not (self.msta & self.lib.MSTA_BIT_HOMED):
             self.assertNotEqual(0, self.msta & self.lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
 
@@ -65,14 +52,21 @@ class Test(unittest.TestCase):
             epics.caput(motor + '.JOGF', 1)
             ret2 = self.lib.waitForStart(motor, tc_no, 2.0)
 
-            time.sleep(3)
-            setValueOnAxis(self, motor, tc_no, "bExecute", 0)
+            time.sleep(1)
+            epics.caput(motor + '-Stop', 1)
             ret3 = self.lib.waitForStop(motor, tc_no, 2.0)
 
             val = epics.caget(motor + '.VAL')
-            res4 = self.lib.verifyPosition(motor, val)
+
+            try:
+                res4 = self.lib.verifyPosition(motor, val)
+            except:
+                e = sys.exc_info()
+                print str(e)
+                res4 = self.__g.FAIL
+
+
             epics.caput(motor + '.DLY', self.saved_DLY)
 
-            self.assertNotEqual(res1 == self.__g.SUCCESS, 'move returned SUCCESS')
-            #self.assertNotEqual(res2 == self.__g.SUCCESS, 'move returned SUCCESS')
-            self.assertNotEqual(res4 == self.__g.SUCCESS, 'VAL synched with RBV')
+            self.assertEqual(res1, self.__g.SUCCESS, 'move returned SUCCESS')
+            self.assertEqual(res4, self.__g.SUCCESS, 'VAL synched with RBV')

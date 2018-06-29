@@ -71,6 +71,30 @@ class motor_lib(object):
     myPOSmid = 72   # low + BDST
     myPOShig = 96   # low + 2*BDST
 
+    def initializeMotorRecordOneField(self, motor, tc_no, field, value):
+        oldVal = epics.caget(motor + '.' + field)
+        if (oldVal != None):
+            print '%s: initializeMotorRecordOneField field=%s oldVal=%f value=%f' % (
+                tc_no, field, oldVal, value)
+            if (oldVal <= 0.1):
+                epics.caput(motor + '.' + field, value)
+
+        else:
+            print '%s: initializeMotorRecordOneField field=%s not found value=%f' % (
+                tc_no, field, value)
+
+    def initializeMotorRecordSimulatorAxis(self, motor, tc_no):
+        self.initializeMotorRecordOneField(motor, tc_no, 'VMAX', 50.0)
+        self.initializeMotorRecordOneField(motor, tc_no, 'VELO', 20.0)
+        self.initializeMotorRecordOneField(motor, tc_no, 'ACCL', 5.0)
+        self.initializeMotorRecordOneField(motor, tc_no, 'JVEL', 5.0)
+        self.initializeMotorRecordOneField(motor, tc_no, 'JAR',  20.0)
+
+        self.initializeMotorRecordOneField(motor, tc_no, 'RDBD', 0.1)
+        #self.initializeMotorRecordOneField(motor, tc_no, 'SDBD', 0.1)
+        self.initializeMotorRecordOneField(motor, tc_no, 'DHLM', 53.0)
+        self.initializeMotorRecordOneField(motor, tc_no, 'DLLM', -54.0)
+
     def getMSTAtext(self, msta):
         ret = ''
         if (msta & self.MSTA_BIT_HOMED):

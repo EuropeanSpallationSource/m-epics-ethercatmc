@@ -48,6 +48,14 @@ record(ao, "$(PREFIX)$(MOTOR_NAME)-PwrOffDly")
     info(asyn:READBACK,"1")
 }
 
+record(longout, "$(PREFIX)$(MOTOR_NAME)-Stop")
+{
+    field(DESC, "Stop")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STOP_AXIS")
+    info(asyn:READBACK,"1")
+}
+
 record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToMCU") {
     field(DESC, "Send Debug String to $(PREFIX)$(MOTOR_NAME)")
     field(VAL, "")
