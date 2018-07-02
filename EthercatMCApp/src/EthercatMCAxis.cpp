@@ -585,6 +585,20 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, doubl
   * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
 asynStatus EthercatMCAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, double accEGU)
 {
+  if (!drvlocal.cmdErrorMessage[0]) {
+    /* Do range check */
+    if (!drvlocal.stepSize) {
+      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+               "E: stepSize is 0.0\n");
+      return asynSuccess;
+    } else if (!maxVeloEGU) {
+      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+               "E: velo is 0.0\n");
+      return asynSuccess;
+    }
+    /* The poller co-ordinates the writing into the parameter library */
+  }
+
   if (accEGU) {
     snprintf(pC_->outString_, sizeof(pC_->outString_),
              "%sMain.M%d.bExecute=0;"
@@ -635,19 +649,27 @@ asynStatus EthercatMCAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, 
 asynStatus EthercatMCAxis::move(double position, int relative, double minVelocity, double maxVelocity, double acceleration)
 {
   asynStatus status = asynSuccess;
+
 #if MAX_CONTROLLER_STRING_SIZE > 350
-  if (!drvlocal.stepSize) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%smove(%d) stepSize==0.0\n",
-              modNamEMC, axisNo_);
-    return asynError; /* No stepSize, no move */
-  }
   return mov2(position * drvlocal.stepSize,
               relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS,
               maxVelocity * drvlocal.stepSize,
               acceleration * drvlocal.stepSize);
 #else
   int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
+  if (!drvlocal.cmdErrorMessage[0]) {
+    /* Do range check */
+    if (!drvlocal.stepSize) {
+      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+               "E: stepSize is 0.0\n");
+      return asynSuccess;
+    } else if (!maxVelocity) {
+      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+               "E: velo is 0.0\n");
+      return asynSuccess;
+    }
+    /* The poller co-ordinates the writing into the parameter library */
+  }
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
@@ -751,6 +773,20 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
   }
 #else
   asynStatus status = asynSuccess;
+  if (!drvlocal.cmdErrorMessage[0]) {
+    /* Do range check */
+    if (!drvlocal.stepSize) {
+      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+               "E: stepSize is 0.0\n");
+      return asynSuccess;
+    } else if (!maxVelocity) {
+      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
+               "E: velo is 0.0\n");
+      return asynSuccess;
+    }
+    /* The poller co-ordinates the writing into the parameter library */
+  }
+
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) setValueOnAxis("nCommand", NCOMMANDMOVEVEL);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
@@ -949,14 +985,12 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     drvlocal.eeAxisError = eeAxisErrorIOCcomError;
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
-#ifdef motorFlagsNoStopProblemString
   } else if (!drvlocal.homed &&
              (drvlocal.nCommandActive != NCOMMANDHOME) &&
              (drvlocal.motorRecordHighLimit > drvlocal.motorRecordLowLimit)) {
     int homProc;
     pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_, &homProc);
     if (homProc) drvlocal.eeAxisError = eeAxisErrorNotHomed;
-#endif
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
@@ -1003,10 +1037,11 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
           ;
       }
     }
+#ifdef motorFlagsNoStopProblemString
     /* Axis has a problem: Report to motor record */
     setIntegerParam(pC_->motorStatusProblem_,
                     drvlocal.eeAxisError != eeAxisErrorNoError);
-
+#endif
     /* MCU has a problem: set the red light in CSS */
     setIntegerParam(pC_->EthercatMCErr_,
                     drvlocal.eeAxisError == eeAxisErrorMCUError);
@@ -1694,7 +1729,7 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
     return asynError;
 }
 
-  asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
+asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
 {
   if (function == pC_->EthercatMCDbgStrToMcu_) {
     return setStringParamDbgStrToMcu(value);
@@ -1703,3 +1738,14 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
     return asynMotorAxis::setStringParam(function, value);
   }
 }
+
+#ifndef motorMessageTextString
+void EthercatMCAxis::updateMsgTxtFromDriver(const char *value)
+{
+  if (value && value[0]) {
+    setStringParam(pC_->EthercatMCMCUErrMsg_,value);
+  } else {
+    setStringParam(pC_->EthercatMCMCUErrMsg_, "");
+  }
+}
+#endif

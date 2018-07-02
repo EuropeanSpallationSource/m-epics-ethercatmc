@@ -13,9 +13,6 @@ FILENAME...   EthercatMC.h
 
 
 
-#ifndef motorMessageTextString
-#define updateMsgTxtFromDriver(a)
-#endif
 
 #define AMPLIFIER_ON_FLAG_CREATE_AXIS  (1)
 #define AMPLIFIER_ON_FLAG_WHEN_HOMING  (1<<1)
@@ -271,6 +268,9 @@ private:
   asynStatus setStringParamDbgStrToMcu(const char *value);
   asynStatus setStringParam(int function, const char *value);
   asynStatus stopAxisInternal(const char *function_name, double acceleration);
+#ifndef motorMessageTextString
+  void updateMsgTxtFromDriver(const char *value);
+#endif
 
   friend class EthercatMCController;
 };

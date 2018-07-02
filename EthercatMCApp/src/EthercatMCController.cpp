@@ -46,7 +46,12 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
 
   /* Controller */
   memset(&ctrlLocal, 0, sizeof(ctrlLocal));
+
+#ifndef motorMessageTextString
+  createParam("MOTOR_MESSAGE_TEXT",          asynParamOctet,       &EthercatMCMCUErrMsg_);
+#else
   createParam(EthercatMCMCUErrMsgString,     asynParamOctet,       &EthercatMCMCUErrMsg_);
+#endif
   createParam(EthercatMCDbgStrToMcuString,   asynParamOctet,       &EthercatMCDbgStrToMcu_);
 
   /* Per axis */
