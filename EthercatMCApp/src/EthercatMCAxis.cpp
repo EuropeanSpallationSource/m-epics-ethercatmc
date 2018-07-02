@@ -625,11 +625,11 @@ asynStatus EthercatMCAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, 
 }
 
 /** Move the axis to a position, either absolute or relative
- * \param[in] position in mm
+ * \param[in] position in steps
  * \param[in] relative (0=absolute, otherwise relative)
- * \param[in] minimum velocity, mm/sec
- * \param[in] maximum velocity, mm/sec
- * \param[in] acceleration, seconds to maximum velocity
+ * \param[in] minimum velocity, steps/sec
+ * \param[in] maximum velocity, steps/sec
+ * \param[in] acceleration,  steps/sec/sec
  *
  */
 asynStatus EthercatMCAxis::move(double position, int relative, double minVelocity, double maxVelocity, double acceleration)
@@ -638,22 +638,14 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
 #if MAX_CONTROLLER_STRING_SIZE > 350
   if (!drvlocal.stepSize) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssendVelocityAndAccelExecute(%d) stepSize==0.0\n",
+              "%smove(%d) stepSize==0.0\n",
               modNamEMC, axisNo_);
     return asynError; /* No stepSize, no move */
   }
-  {
-    double maxVeloEGU = maxVelocity * drvlocal.stepSize;
-    double acc_in_EGU_sec2 = 0.0;
-    if (acceleration > 0.0001) {
-      double acc_in_seconds = maxVelocity / acceleration;
-      acc_in_EGU_sec2 = maxVeloEGU / acc_in_seconds;
-    }
-    if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
-    return mov2(position * drvlocal.stepSize,
-                relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS,
-                maxVeloEGU, acc_in_EGU_sec2);
-  }
+  return mov2(position * drvlocal.stepSize,
+              relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS,
+              maxVelocity * drvlocal.stepSize,
+              acceleration * drvlocal.stepSize);
 #else
   int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
