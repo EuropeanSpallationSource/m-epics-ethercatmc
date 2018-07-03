@@ -33,6 +33,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-1211"
         if not (self.msta & self.lib.MSTA_BIT_HOMED):
             self.assertNotEqual(0, self.msta & self.lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+        self.lib.initializeMotorRecordSimulatorAxis(motor, '1211')
 
 
     # per90 UserPosition
@@ -84,7 +85,7 @@ class Test(unittest.TestCase):
     def test_TC_1215(self):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
-            tc_no = "TC-1215-low-soft-limit JOGF"
+            tc_no = "TC-1215-high-soft-limit JOGF"
             print '%s' % tc_no
             epics.caput(motor + '.DLY', 0.0)
             epics.caput(motor + '.JOGF', 1, wait=True)
@@ -94,10 +95,41 @@ class Test(unittest.TestCase):
 
             epics.caput(motor + '.DLY', self.saved_DLY)
             epics.caput(motor + '.JOGF', 0)
+            resW = self.lib.waitForMipZero(motor, tc_no, self.saved_DLY)
             self.assertEqual(0, msta & self.lib.MSTA_BIT_PROBLEM,  'ndly No MSTA.Problem JOGF')
             self.assertEqual(0, msta & self.lib.MSTA_BIT_MINUS_LS, 'ndly Minus hard limit not reached JOGF')
             self.assertEqual(0, msta & self.lib.MSTA_BIT_PLUS_LS,  'ndly Plus hard limit not reached JOGF')
             self.assertEqual(0, miss,                              'ndly MISS not set JOGF')
+            self.assertEqual(1, resW,                              'ndly resW')
+            self.assertEqual(1, lvio, 'LVIO == 1 JOGF')
+
+    def test_TC_12152(self):
+        motor = self.motor
+        if (self.msta & self.lib.MSTA_BIT_HOMED):
+            tc_no = "TC-12152-high-soft-limit JOGF"
+            print '%s' % tc_no
+            epics.caput(motor + '.DLY', 0.0)
+            mip1  = int(epics.caget(motor + '.MIP'))
+            epics.caput(motor + '.JOGF', 1, wait=True)
+            lvio = int(epics.caget(motor + '.LVIO'))
+            msta = int(epics.caget(motor + '.MSTA'))
+            miss = int(epics.caget(motor + '.MISS'))
+            resW = self.lib.waitForMipZero(motor, tc_no, self.saved_DLY)
+            mip2 = int(epics.caget(motor + '.MIP'))
+            jogf = int(epics.caget(motor + '.JOGF'))
+
+            epics.caput(motor + '.DLY', self.saved_DLY)
+            print '%s mip1=%x mip2=%x' % (
+                tc_no, mip1, mip2)
+
+            self.assertEqual(0, msta & self.lib.MSTA_BIT_PROBLEM,  'ndly2 No MSTA.Problem JOGF')
+            self.assertEqual(0, msta & self.lib.MSTA_BIT_MINUS_LS, 'ndly2 Minus hard limit not reached JOGF')
+            self.assertEqual(0, msta & self.lib.MSTA_BIT_PLUS_LS,  'ndly2 Plus hard limit not reached JOGF')
+            self.assertEqual(0, miss,                              'ndly2 MISS not set JOGF')
+            self.assertEqual(0, mip1,                              'ndly2 MIP1 not set JOGF')
+            self.assertEqual(0, mip2 & self.lib.MIP_BIT_JOGF,      'ndly2 MIP2.JOGF not set JOGF')
+            #self.assertEqual(1, resW,                             'ndly1 JOGF not set')
+            self.assertEqual(0, jogf,                              'ndly2 MIP1 not set JOGF')
             self.assertEqual(1, lvio, 'LVIO == 1 JOGF')
 
 
