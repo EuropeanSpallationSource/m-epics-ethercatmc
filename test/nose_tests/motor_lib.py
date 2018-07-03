@@ -49,6 +49,23 @@ class motor_lib(object):
     MSTA_BIT_DONE         =  1 << (2 -1)     #0002
     MSTA_BIT_DIRECTION    =  1 << (1 -1)     #0001
 
+    MIP_BIT_JOGF       = 0x0001
+    MIP_BIT_JOGR       = 0x0002
+    MIP_BIT_JOG_BL1    = 0x0004
+    MIP_BIT_HOMF       = 0x0008
+    MIP_BIT_HOMR       = 0x0010
+    MIP_BIT_MOVE       = 0x0020
+    MIP_BIT_RETRY      = 0x0040
+    MIP_BIT_LOAD_P     = 0x0080
+    MIP_BIT_MOVE_BL    = 0x0100
+    MIP_BIT_STOP       = 0x0200
+    MIP_BIT_DELAY_REQ  = 0x0400
+    MIP_BIT_DELAY_ACK  = 0x0800
+    MIP_BIT_JOG_REQ    = 0x1000
+    MIP_BIT_JOG_STOP   = 0x2000
+    MIP_BIT_JOG_BL2    = 0x4000
+    MIP_BIT_EXTERNAL   = 0x8000
+
     # Values to be used for backlash test
     # Note: Make sure to use different values to hae a good
     # test coverage
@@ -147,6 +164,38 @@ class motor_lib(object):
             ret = ret +'...'
         return ret
 
+    def getMIPtext(self, mip):
+        ret = ''
+        if (mip & self.MIP_BIT_JOGF):
+            ret = ret + 'JOGF '
+        if (mip & self.MIP_BIT_JOGR):
+            ret = ret + 'JOGR '
+        if (mip & self.MIP_BIT_JOG_BL1):
+            ret = ret + 'JOG_BL1 '
+        if (mip & self.MIP_BIT_HOMF):
+            ret = ret + 'HOMF '
+        if (mip & self.MIP_BIT_HOMR):
+            ret = ret + 'HOMR '
+        if (mip & self.MIP_BIT_MOVE):
+            ret = ret + 'MOVE '
+        if (mip & self.MIP_BIT_LOAD_P):
+            ret = ret + 'LOAD_P '
+        if (mip & self.MIP_BIT_MOVE_BL):
+            ret = ret + 'MOVE_BL '
+        if (mip & self.MIP_BIT_DELAY_REQ):
+            ret = ret + 'DELAY_REQ '
+        if (mip & self.MIP_BIT_DELAY_ACK):
+            ret = ret + 'DELAY_ACK '
+        if (mip & self.MIP_BIT_JOG_REQ):
+            ret = ret + 'JOG_REQ '
+        if (mip & self.MIP_BIT_JOG_STOP):
+            ret = ret + 'JOG_STOP '
+        if (mip & self.MIP_BIT_JOG_BL2):
+            ret = ret + 'JOG_BL2 '
+        if (mip & self.MIP_BIT_EXTERNAL):
+            ret = ret + 'EXTERNAL '
+        return ret
+
     def calcAlmostEqual(self, motor, tc_no, expected, actual, maxdelta):
         delta = math.fabs(expected - actual)
         inrange = delta < maxdelta
@@ -207,6 +256,17 @@ class motor_lib(object):
             wait_for_done -= polltime
         return False
 
+    def waitForMipZero(self, motor, tc_no, wait_for_MipZero):
+        while wait_for_MipZero > -10.0: # Extra long wait
+            wait_for_MipZero -= polltime
+            mip = int(epics.caget(motor + '.MIP', use_monitor=False))
+            print '%s: wait_for_MipZero=%f mip=%s (%x)' % (
+                tc_no, wait_for_MipZero, self.getMIPtext(mip),mip)
+            if not mip:
+                return True
+            time.sleep(polltime)
+            wait_for_MipZero -= polltime
+        return False
 
     def testComplete(self, fail):
         """
