@@ -261,7 +261,7 @@ private:
   asynStatus resetAxis(void);
   bool       pollPowerIsOn(void);
   asynStatus enableAmplifier(int);
-  asynStatus sendVelocityAndAccelExecute(double maxVelocity, double acceleration_time);
+  asynStatus sendVelocityAndAccelExecute(double maxVeloEGU, double accEGU);
   asynStatus setClosedLoop(bool closedLoop);
   asynStatus setIntegerParam(int function, int value);
   asynStatus setDoubleParam(int function, double value);

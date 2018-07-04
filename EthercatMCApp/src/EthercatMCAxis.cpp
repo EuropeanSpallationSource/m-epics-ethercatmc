@@ -546,30 +546,14 @@ extern "C" const char *errStringFromErrId(int nErrorId)
  * \param[in] acceleration ???
  *
  */
-asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVelocity, double acceleration_time)
+asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVeloEGU, double accEGU)
 {
   asynStatus status;
   /* We don't use minVelocity */
-  double maxVelocityEGU = maxVelocity * drvlocal.stepSize;
-  if (!drvlocal.stepSize) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssendVelocityAndAccelExecute(%d) stepSize==0.0\n",
-              modNamEMC, axisNo_);
-    return asynError; /* No stepSize, no move */
-  }
-  if (acceleration_time > 0.0001) {
-    double acc_in_seconds = maxVelocity / acceleration_time;
-    double acc_in_EGU_sec2 = maxVelocityEGU / acc_in_seconds;
-    if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
-    status = setValuesOnAxis("fAcceleration", acc_in_EGU_sec2,
-                             "fDeceleration", acc_in_EGU_sec2);
-    if (status) return status;
-  } else {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssendVelocityAndAccelExecute(%d) maxVelocityEGU=%g acceleration_time=%g\n",
-               modNamEMC, axisNo_, maxVelocityEGU, acceleration_time);
-  }
-  status = setValueOnAxis("fVelocity", maxVelocityEGU);
+  status = setValuesOnAxis("fAcceleration", accEGU,
+                           "fDeceleration", accEGU);
+  if (status) return status;
+  status = setValueOnAxis("fVelocity", maxVeloEGU);
   if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
 #ifndef motorWaitPollsBeforeReadyString
   drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
@@ -674,7 +658,8 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
   if (status == asynSuccess) status = setValueOnAxis("fPosition", position * drvlocal.stepSize);
-  if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
+  if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity * drvlocal.stepSize,
+                                                                  acceleration * drvlocal.stepSize);
 #endif
   return status;
 }
@@ -790,7 +775,8 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) setValueOnAxis("nCommand", NCOMMANDMOVEVEL);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
-  if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity, acceleration);
+  if (status == asynSuccess) status = sendVelocityAndAccelExecute(maxVelocity * drvlocal.stepSize,
+                                                                  acceleration * drvlocal.stepSize);
 
   return status;
 #endif
