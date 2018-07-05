@@ -2688,7 +2688,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M).RMP</pv_name>
+    <pv_name>$(P)$(M).REP</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -2747,7 +2747,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <show_scrollbar>false</show_scrollbar>
-    <text>RMP (INT32)</text>
+    <text>REP (INT32)</text>
     <tooltip></tooltip>
     <transparent>true</transparent>
     <vertical_alignment>1</vertical_alignment>

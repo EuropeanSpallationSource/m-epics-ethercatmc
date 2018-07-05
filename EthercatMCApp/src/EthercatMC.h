@@ -148,6 +148,7 @@ private:
     st_axis_status_type old_st_axis_status;
     double stepSize;
     double cfgStepSize;
+    double eres;
     const char *externalEncoderStr;
     const char *cfgfileStr;
     const char *cfgDebug_str;

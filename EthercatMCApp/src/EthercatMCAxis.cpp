@@ -279,6 +279,12 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
   }
   setDoubleParam(pC_->EthercatMCScalSREV_RB_, srev);
   setDoubleParam(pC_->EthercatMCScalUREV_RB_, urev);
+#ifdef motorERESROString
+  if (urev) {
+    drvlocal.eres = urev / srev;
+    setDoubleParam(pC_->motorERESRO_, drvlocal.eres);
+  }
+#endif
   if (nvals >= 3) {
     setIntegerParam(pC_->EthercatMCScalMDIR_RB_, edir);
   }
@@ -1290,7 +1296,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.nCommandActive != NCOMMANDHOME) {
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.stepSize;
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
-    setDoubleParam(pC_->motorEncoderPosition_, newPositionInSteps);
+    setDoubleParam(pC_->motorEncoderPosition_,
+                   drvlocal.eres ? newPositionInSteps / drvlocal.eres : newPositionInSteps);
     drvlocal.old_st_axis_status.fActPosition = st_axis_status.fActPosition;
     setDoubleParam(pC_->EthercatMCVel_RB_, st_axis_status.fVelocity);
   }
