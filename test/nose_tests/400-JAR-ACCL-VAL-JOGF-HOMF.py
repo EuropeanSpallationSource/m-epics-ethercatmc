@@ -7,182 +7,83 @@ import os
 import sys
 import math
 import time
+from motor_lib import motor_lib
+from motor_globals import motor_globals
+
 ###
 
 polltime = 0.2
 
-def calcAlmostEqual(motor, tc_no, expected, actual, maxdelta):
-    delta = math.fabs(expected - actual)
-    inrange = delta < maxdelta
-    print '%s: assertAlmostEqual expected=%f actual=%f delta=%f maxdelta=%f inrange=%d' % (tc_no, expected, actual, delta, maxdelta, inrange)
-    return inrange
-
-def waitForStart(motor, tc_no, wait_for_start):
-    while wait_for_start > 0:
-        wait_for_start -= polltime
-        dmov = int(motor.get('DMOV'))
-        movn = int(motor.get('MOVN'))
-        print '%s: wait_for_start=%f dmov=%d movn=%d dpos=%f' % (tc_no, wait_for_start, dmov, movn, motor.get_position(readback=True,dial=True))
-        if movn and not dmov:
-            return True
-        time.sleep(polltime)
-        wait_for_start -= polltime
-    return False
-
-def waitForStop(motor, tc_no, wait_for_stop):
-    while wait_for_stop > 0:
-        wait_for_stop -= polltime
-        dmov = int(motor.get('DMOV'))
-        movn = int(motor.get('MOVN'))
-        print '%s: wait_for_stop=%f dmov=%d movn=%d dpos=%f' % (tc_no, wait_for_stop, dmov, movn, motor.get_position(readback=True,dial=True))
-        if not movn and dmov:
-            return True
-        time.sleep(polltime)
-        wait_for_stop -= polltime
-    return False
-
-def getAcceleration(tc_no):
-    print '%s: getAcceleration' % (tc_no)
-    # TODO: MC_CPU1 needs to be a parameter
-    epics.caput(os.getenv("TESTEDMCUASYN") + ".PORT", "MC_CPU1")
-
-    epics.caput(os.getenv("TESTEDMCUASYN") + ".AOUT", "Main.M1.fAcceleration?")
-    res = epics.caget (os.getenv("TESTEDMCUASYN") + ".AINP", as_string=True)
-    print '%s: getAcceleration res=(%s)' % (tc_no, res)
-    if res == "":
-        time.sleep(polltime)
-        res = epics.caget (os.getenv("TESTEDMCUASYN") + ".AINP", as_string=True)
-        print '%s: getAcceleration res=(%s)' % (tc_no, res)
-    return float(res + "0")
-
 class Test(unittest.TestCase):
-    MSTA_BIT_MOVING   = 1 << (11 -1)
+    lib = motor_lib()
+    __g = motor_globals()
+    motor = os.getenv("TESTEDMOTORAXIS")
 
-    motm1   = epics.Motor(os.getenv("TESTEDMOTORAXIS"))
-    pv_MSTA = epics.PV(os.getenv("TESTEDMOTORAXIS") + ".MSTA")
-    pv_MCU_AOUT = epics.PV(os.getenv("TESTEDMCUASYN") + ".AOUT")
-    pv_MCU_AINP = epics.PV(os.getenv("TESTEDMCUASYN") + ".AINP")
+    hlm = epics.caget(motor + '.HLM')
+    llm = epics.caget(motor + '.LLM')
 
-    saved_DHLM = motm1.get('DHLM')
-    saved_DLLM = motm1.get('DLLM')
-    saved_CNEN = motm1.get('CNEN')
+    per10_UserPosition  = round((9 * llm + 1 * hlm) / 10)
+    per20_UserPosition  = round((8 * llm + 2 * hlm) / 10)
+    msta             = int(epics.caget(motor + '.MSTA'))
 
-    def setUp(self):
-        print 'set up'
-        self.motm1.put('CNEN', 1)
+    def getAcceleration(self, motor, tc_no):
+        print '%s: getAcceleration %s' % (tc_no, motor)
+        res = epics.caget(motor + '-Acc-RB', use_monitor=False)
+        return res
 
 
-    def tearDown(self):
-        print 'clean up'
-        self.motm1.put('CNEN', self.saved_CNEN)
-
+    # Assert that motor is homed
+    def test_TC_401(self):
+        motor = self.motor
+        tc_no = "TC-401"
+        if not (self.msta & self.lib.MSTA_BIT_HOMED):
+            self.assertNotEqual(0, self.msta & self.lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+        self.lib.initializeMotorRecordSimulatorAxis(motor, '1211')
 
     # 10% dialPosition
-    def test_TC_401(self):
-        tc_no = "TC-401-10-percent-dialPosition"
+    def test_TC_402(self):
+        tc_no = "TC-402-10-percent"
         print '%s' % tc_no
-        dval =  (self.saved_DHLM + 9 * self.saved_DLLM) / 10
-        ret = self.motm1.move(dval, dial=True, wait=True)
-        assert (ret == 0)
-        drbv = self.motm1.get_position(readback=True,dial=True)
-        print '%s dval=%f drbv=%f' % (tc_no, dval, drbv)
-        assert calcAlmostEqual(self.motm1, tc_no, dval, drbv, 2)
+        motor = self.motor
+        if (self.msta & self.lib.MSTA_BIT_HOMED):
+            ret = self.lib.move(self.motor, self.per10_UserPosition, 60)
+            assert (ret == 0)
 
     # 20% dialPosition
-    def test_TC_402(self):
-        tc_no = "TC-402-20-percent-dialPosition"
-        print '%s' % tc_no
-        motm1 = self.motm1
-        saved_ACCL = motm1.get('ACCL')
-        used_ACCL = saved_ACCL + 1.0 # Make sure we have an acceleration != 0
-        motm1.put('ACCL', used_ACCL)
-
-        dval =  (2 * self.saved_DHLM + 8 * self.saved_DLLM) / 10
-        ret = self.motm1.move(dval, dial=True, wait=True)
-        drbv = self.motm1.get_position(readback=True,dial=True)
-        print '%s dval=%f drbv=%f' % (tc_no, dval, drbv)
-        motm1.put('ACCL', saved_ACCL)
-        saved_ACCL = None
-
-        saved_VELO = motm1.get('VELO')
-        expacc = saved_VELO / used_ACCL
-        resacc = float(getAcceleration(tc_no))
-        print '%s ACCL=%f VELO=%f expacc=%f resacc=%f' % (tc_no,used_ACCL,saved_VELO,expacc,resacc)
-        assert calcAlmostEqual(self.motm1, tc_no, expacc, resacc, 2)
-        assert (ret == 0)
-        assert calcAlmostEqual(self.motm1, tc_no, dval, drbv, 2)
-
-
-    # 40% dialPosition
     def test_TC_403(self):
-        tc_no = "TC-403-30-percent-dialPosition"
+        tc_no = "TC-403-20-percent"
         print '%s' % tc_no
-        motm1 = self.motm1
-        saved_ACCL = motm1.get('ACCL')
-        used_ACCL = saved_ACCL + 2.0 # Make sure we have an acceleration != 0
-        motm1.put('ACCL', used_ACCL)
-
-        dval =  (3 * self.saved_DHLM + 7 * self.saved_DLLM) / 10
-        ret = self.motm1.move(dval, dial=True, wait=True)
-        drbv = self.motm1.get_position(readback=True,dial=True)
-        print '%s dval=%f drbv=%f' % (tc_no, dval, drbv)
-        motm1.put('ACCL', saved_ACCL)
-        saved_ACCL = None
-
-        saved_VELO = motm1.get('VELO')
-        expacc = saved_VELO / used_ACCL
-        resacc = float(getAcceleration(tc_no))
-        print '%s ACCL=%f VELO=%f expacc=%f resacc=%f' % (tc_no,used_ACCL,saved_VELO,expacc,resacc)
-        assert calcAlmostEqual(self.motm1, tc_no, expacc, resacc, 2)
-        assert (ret == 0)
-        assert calcAlmostEqual(self.motm1, tc_no, dval, drbv, 2)
+        motor = self.motor
+        if (self.msta & self.lib.MSTA_BIT_HOMED):
+            saved_ACCL = float(epics.caget(motor + '.ACCL'))
+            saved_VELO = float(epics.caget(motor + '.VELO'))
+            used_ACCL = saved_ACCL + 1.0 # Make sure we have an acceleration != 0
+            epics.caput(motor + '.ACCL', used_ACCL)
+            ret = self.lib.move(self.motor, self.per20_UserPosition, 60)
+            resacc = self.getAcceleration(motor, tc_no)
+            expacc = saved_VELO / used_ACCL
+            epics.caput(motor + '.ACCL', saved_ACCL)
+            print '%s ACCL=%f expacc=%f resacc=%f' % (tc_no,used_ACCL,expacc,resacc)
+            assert self.lib.calcAlmostEqual(self.motor, tc_no, expacc, resacc, 2)
+            assert (ret == 0)
 
 
-    # Jog, wait for start, stop. check fAcceleration
+    # JOGR
     def test_TC_404(self):
-        tc_no = "TC-404-JOG-fAcceleration"
+        tc_no = "TC-404-JOGR"
         print '%s' % tc_no
-        motm1 = self.motm1
-        saved_ACCL = motm1.get('ACCL')
-        used_ACCL = saved_ACCL + 0.75 # Make sure we have an acceleration != 0
-        motm1.put('ACCL', used_ACCL)
+        motor = self.motor
+        if (self.msta & self.lib.MSTA_BIT_HOMED):
+            accl = float(epics.caget(motor + '.ACCL'))
+            jvel = float(epics.caget(motor + '.JVEL'))
+            saved_JAR = float(epics.caget(motor + '.JAR'))
+            used_JAR = jvel / (accl + 2.0)
+            epics.caput(motor + '.JAR', used_JAR)
+            epics.caput(motor + '.JOGR', 1, wait=True)
+            resacc = self.getAcceleration(motor, tc_no)
+            expacc = used_JAR
+            epics.caput(motor + '.JAR', saved_JAR)
+            print '%s JAR=%f expacc=%f resacc=%f' % (tc_no,used_JAR,expacc,resacc)
 
-        motm1.put('JOGF', 1)
-        ret = waitForStart(self.motm1, tc_no, 2.0)
-        self.assertEqual(True, ret, 'waitForStart return True')
-
-        motm1.put('JOGF', 0)
-        ret = waitForStop(self.motm1, tc_no, 2.0)
-        self.assertEqual(True, ret, 'waitForStop return True')
-        motm1.put('ACCL', saved_ACCL)
-        saved_ACCL = None
-
-        expacc = motm1.get('JAR')
-        resacc = float(getAcceleration(tc_no))
-        print '%s expacc=%f resacc=%f' % (tc_no,expacc,resacc)
-        assert calcAlmostEqual(self.motm1, tc_no, expacc, resacc, 2)
-
-    # Jog, wait for start, stop. check fAcceleration
-    def test_TC_405(self):
-        tc_no = "TC-405-JOG-fAcceleration"
-        print '%s' % tc_no
-        motm1 = self.motm1
-        saved_JAR = motm1.get('JAR')
-        used_JAR = saved_JAR + 0.5 # Make sure we have an acceleration != 0
-        motm1.put('JAR', used_JAR)
-
-        motm1.put('JOGF', 1)
-        ret = waitForStart(self.motm1, tc_no, 2.0)
-        self.assertEqual(True, ret, 'waitForStart return True')
-
-        motm1.put('JOGF', 0)
-        ret = waitForStop(self.motm1, tc_no, 2.0)
-        self.assertEqual(True, ret, 'waitForStop return True')
-        motm1.put('JAR', saved_JAR)
-        saved_JAR = None
-
-        expacc = used_JAR
-        resacc = float(getAcceleration(tc_no))
-        print '%s expacc=%f resacc=%f' % (tc_no,expacc,resacc)
-        assert calcAlmostEqual(self.motm1, tc_no, expacc, resacc, 2)
+            assert self.lib.calcAlmostEqual(self.motor, tc_no, expacc, resacc, 2)
 
