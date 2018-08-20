@@ -64,6 +64,9 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 #ifdef motorFlagsNoStopProblemString
   setIntegerParam(pC_->motorFlagsNoStopProblem_, 1);
 #endif
+#ifdef motorFlagsNoStopOnLsString
+  setIntegerParam(pC_->motorFlagsNoStopOnLS_, 1);
+#endif
 #ifdef motorFlagsLSrampDownString
   setIntegerParam(pC_->motorFlagsLSrampDown_, 1);
 #endif
