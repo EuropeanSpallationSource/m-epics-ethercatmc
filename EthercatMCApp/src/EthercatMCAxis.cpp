@@ -1000,16 +1000,16 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
           {
             switch(drvlocal.nCommandActive) {
             case NCOMMANDMOVEVEL:
-              updateMsgTxtFromDriver("I: Moving VEL");
+              setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_VEL);
               break;
             case NCOMMANDMOVEREL:
-              updateMsgTxtFromDriver("I: Moving REL");
+              setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_REL);
               break;
             case NCOMMANDMOVEABS:
-              updateMsgTxtFromDriver("I: Moving ABS");
+              setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_ABS);
               break;
             case NCOMMANDHOME:
-              updateMsgTxtFromDriver("I: Homing");
+              setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_HOMING);
               break;
             case 0:
               updateMsgTxtFromDriver(NULL);
