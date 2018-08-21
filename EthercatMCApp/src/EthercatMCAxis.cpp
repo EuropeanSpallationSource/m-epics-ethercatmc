@@ -980,12 +980,8 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     drvlocal.eeAxisError = eeAxisErrorIOCcomError;
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
-  } else if (!drvlocal.homed &&
-             (drvlocal.nCommandActive != NCOMMANDHOME) &&
-             (drvlocal.motorRecordHighLimit > drvlocal.motorRecordLowLimit)) {
-    int homProc;
-    pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_, &homProc);
-    if (homProc) drvlocal.eeAxisError = eeAxisErrorNotHomed;
+  } else if (!drvlocal.homed) {
+    drvlocal.eeAxisError = eeAxisErrorNotHomed;
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
