@@ -140,7 +140,8 @@ private:
     eeAxisErrorMCUError,
     eeAxisErrorCmdError,
     eeAxisErrorNotFound,
-    eeAxisErrorNotHomed
+    eeAxisErrorNotHomed,
+    eeAxisIllegalInTargetWindow
   } eeAxisErrorType;
   EthercatMCController *pC_;          /**< Pointer to the asynMotorController to which this axis belongs.
                                    *   Abbreviated because it is used very frequently */
@@ -164,6 +165,7 @@ private:
     int nCommandActive;
     int old_nCommandActive;
     int homed;
+    unsigned int illegalInTargetWindow :1;
     eeAxisErrorType old_eeAxisError;
     eeAxisErrorType eeAxisError;
     /* Which values have changed in the EPICS IOC, but are not updated in the

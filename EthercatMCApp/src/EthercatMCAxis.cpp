@@ -342,6 +342,8 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
 #ifdef motorRDBDROString
   setDoubleParam(pC_->motorRDBDRO_, rdbd_en ? rdbd : 0.0);
 #endif
+  /* Either the monitoring is off or 0.0 by mistake, set an error */
+  drvlocal.illegalInTargetWindow = (!rdbd_en || !rdbd);
 
   if (nvals == 6) {
     setDoubleParam(pC_->EthercatMCScalPOSLAG_RB_, poslag);
@@ -982,6 +984,8 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     drvlocal.eeAxisError = eeAxisErrorCmdError;
   } else if (!drvlocal.homed) {
     drvlocal.eeAxisError = eeAxisErrorNotHomed;
+  } else if (drvlocal.illegalInTargetWindow) {
+    drvlocal.eeAxisError = eeAxisIllegalInTargetWindow;
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
@@ -1015,12 +1019,15 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
             }
           }
           break;
-      case eeAxisErrorNotFound:
-          updateMsgTxtFromDriver("Not found");
-          break;
-      case eeAxisErrorCmdError:
-          updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
-          break;
+        case eeAxisErrorNotFound:
+            updateMsgTxtFromDriver("Not found");
+            break;
+        case eeAxisErrorCmdError:
+            updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
+            break;
+        case eeAxisIllegalInTargetWindow:
+            updateMsgTxtFromDriver("E: InTargetPosWin");
+            break;
         case eeAxisErrorIOCcomError:
         case eeAxisErrorNotHomed:
           /* handled by asynMotorAxis, fall through */
