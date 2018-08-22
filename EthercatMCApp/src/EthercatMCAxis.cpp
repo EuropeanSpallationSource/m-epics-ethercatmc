@@ -79,6 +79,9 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     setDoubleParam(pC_->motorPowerOnDelay_,   6.0);
     setDoubleParam(pC_->motorPowerOffDelay_, -1.0);
 #endif
+#ifdef motorShowPowerOffString
+    setIntegerParam(pC_->motorShowPowerOff_, 1);
+#endif
   }
   if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
     setIntegerParam(pC->motorStatusGainSupport_, 1);
