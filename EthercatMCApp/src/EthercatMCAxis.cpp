@@ -1310,7 +1310,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     double newPositionInSteps = st_axis_status.fActPosition / drvlocal.stepSize;
     setDoubleParam(pC_->motorPosition_, newPositionInSteps);
     setDoubleParam(pC_->motorEncoderPosition_,
-                   drvlocal.eres ? newPositionInSteps / drvlocal.eres : newPositionInSteps);
+                   drvlocal.eres ? newPositionInSteps * drvlocal.stepSize / drvlocal.eres:
+		   newPositionInSteps);
     drvlocal.old_st_axis_status.fActPosition = st_axis_status.fActPosition;
     setDoubleParam(pC_->EthercatMCVel_RB_, st_axis_status.fVelocity);
   }
