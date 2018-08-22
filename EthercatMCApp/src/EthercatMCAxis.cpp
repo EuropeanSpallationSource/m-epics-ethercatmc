@@ -347,7 +347,7 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
   setDoubleParam(pC_->EthercatMCScalRDBD_Tim_RB_, rdbd_tim);
   setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_, rdbd_en);
 #ifdef motorRDBDROString
-  setDoubleParam(pC_->motorRDBDRO_, rdbd_en ? rdbd : 0.0);
+    setDoubleParam(pC_->motorRDBDRO_, rdbd_en ? rdbd / stepSize : 0.0);
 #endif
   /* Either the monitoring is off or 0.0 by mistake, set an error */
   drvlocal.illegalInTargetWindow = (!rdbd_en || !rdbd);
