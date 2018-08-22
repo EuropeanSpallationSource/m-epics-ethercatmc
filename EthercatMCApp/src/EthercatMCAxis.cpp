@@ -512,18 +512,18 @@ extern "C" const char *errStringFromErrId(int nErrorId)
 {
   switch(nErrorId) {
   case 0x4221:
-    return "Velocity not allowed";
+    return "Velo not allowed";
   case 0x4223:
     return "Axis positioning enable";
   case 0x4450:
   case 0x4451:
-    return "Following error";
+    return "Follow error";
   case 0x4260:
     return "Amplifier off";
   case 0x4263:
-    return "Is still being processed";
+    return "Is still proc";
   case 0x42A0:
-    return "Consequential Err";
+    return "Consequ Err";
   case 0x4460:
     return "Low soft limit";
   case 0x4461:
@@ -535,17 +535,17 @@ extern "C" const char *errStringFromErrId(int nErrorId)
   case 0x4464:
     return "HW fault";
   case 0x4550:
-    return "Following err mon pos";
+    return "Follow err pos";
   case 0x4551:
-    return "Following err mon vel";
+    return "Follow err vel";
   case 0x4650:
-    return "Drv HW not ready to operate";
+    return "Drv HW not rdy";
   case 0x4655:
-    return "Invalid IO data";
+    return "Inv IO data";
   case 0x4B0A:
-    return "Homing not successful or not started";
+    return "Homing failed";
   default:
-    return "Controller error";
+    return "Cntrl Error";
   }
 }
 
