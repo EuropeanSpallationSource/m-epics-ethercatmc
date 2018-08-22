@@ -82,6 +82,10 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 #ifdef motorShowPowerOffString
     setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
+#ifdef  motorNotHomedProblemString
+    setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
+#endif
+
   }
   if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
     setIntegerParam(pC->motorStatusGainSupport_, 1);
@@ -1449,11 +1453,6 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
   } else if (function == pC_->EthercatMCHomProc_) {
     int motorNotHomedProblem = 0;
     setIntegerParam(pC_->EthercatMCHomProc_RB_, value);
-#ifdef  motorNotHomedProblemString
-    /* If value != 0 the axis can be homed. Show Error if it isn't homed */
-    if (value) motorNotHomedProblem = MOTORNOTHOMEDPROBLEM_ERROR;
-    setIntegerParam(pC_->motorNotHomedProblem_, motorNotHomedProblem);
-#endif
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",
               modNamEMC, axisNo_, value, motorNotHomedProblem);
