@@ -97,6 +97,11 @@ export MOTORIP AMSID
        echo >&2 make install failed
        exit 1
     }
+    (cd ../../ads &&
+     make install) || {
+       echo >&2 make install failed
+       exit 1
+    }
     (cd .. &&
      make install) || {
        echo >&2 make install failed
@@ -108,6 +113,15 @@ export MOTORIP AMSID
     if sed -e "s/#.*//" -e "s/-ESS\$//"  <startup/st.${MOTORCFG}.cmd |
         grep "require *motor,.*[A-Za-z]"; then
       (cd ../../motor &&
+         rm -rfv ./dbd ./include ./doc ./db &&
+         make install) || {
+         echo >&2 make install failed
+         exit 1
+      }
+    fi &&
+    if sed -e "s/#.*//"  <startup/st.${ADSCFG}.cmd |
+        grep "require *ads,.*[A-Za-z]"; then
+      (cd ../../ads &&
          rm -rfv ./dbd ./include ./doc ./db &&
          make install) || {
          echo >&2 make install failed
