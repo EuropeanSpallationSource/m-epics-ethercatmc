@@ -16,8 +16,6 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 ###############################################
 epicsEnvSet("AXISCONFIG",    "HomProc=1")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
-epicsEnvSet("M",             "$(SM_M=m1)")
-epicsEnvSet("R",             "$(SM_R=m1-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=Planetary)")
 
@@ -27,8 +25,6 @@ epicsEnvSet("DESC",          "$(SM_DESC=Planetary)")
 ###############################################
 epicsEnvSet("AXISCONFIG",    "HomProc=15")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
-epicsEnvSet("M",             "$(SM_M=m2)")
-epicsEnvSet("R",             "$(SM_R=m2-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=Resolver)")
 < EthercatMCAxis.cmd
@@ -38,8 +34,6 @@ epicsEnvSet("DESC",          "$(SM_DESC=Resolver)")
 ###############################################
 epicsEnvSet("AXISCONFIG",    "HomProc=15")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
-epicsEnvSet("M",             "$(SM_M=m3)")
-epicsEnvSet("R",             "$(SM_R=m3-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 epicsEnvSet("DESC",          "$(SM_DESC=EKSMA)")
 < EthercatMCAxis.cmd
@@ -48,8 +42,6 @@ epicsEnvSet("DESC",          "$(SM_DESC=EKSMA)")
 ###############################################
 epicsEnvSet("AXISCONFIG",    "HomProc=15")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
-epicsEnvSet("M",             "$(SM_M=m4)")
-epicsEnvSet("R",             "$(SM_R=m4-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
 epicsEnvSet("DESC",          "$(SM_DESC=IGUS)")
 < EthercatMCAxis.cmd
@@ -59,8 +51,6 @@ epicsEnvSet("DESC",          "$(SM_DESC=IGUS)")
 ###############################################
 epicsEnvSet("AXISCONFIG",    "HomProc=15")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m5)")
-epicsEnvSet("M",             "$(SM_M=m5)")
-epicsEnvSet("R",             "$(SM_R=m5-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=5)")
 epicsEnvSet("DESC",          "$(SM_DESC=Phytron)")
 < EthercatMCAxis.cmd

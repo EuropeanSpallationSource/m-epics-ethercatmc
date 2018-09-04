@@ -26,8 +26,6 @@ epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1;HomPos=-66;cfgFile=./mcu010
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=2;HomPos=61;cfgFile=./mcu010-SoftSlit-2.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2")
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
-epicsEnvSet("M",             "$(SM_M=m2)")
-epicsEnvSet("R",             "$(SM_R=m2-)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=Upper=Left)")
 < EthercatMCAxis.cmd
