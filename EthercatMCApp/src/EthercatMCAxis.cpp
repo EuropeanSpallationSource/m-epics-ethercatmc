@@ -1006,6 +1006,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
         case eeAxisErrorNoError:
           {
             switch(drvlocal.nCommandActive) {
+#ifdef motorLatestCommandString
             case NCOMMANDMOVEVEL:
               setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_VEL);
               break;
@@ -1018,6 +1019,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
             case NCOMMANDHOME:
               setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_HOMING);
               break;
+#endif
             case 0:
               updateMsgTxtFromDriver(NULL);
               break;
@@ -1253,6 +1255,9 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 {
   asynStatus comStatus = asynSuccess;
   st_axis_status_type st_axis_status;
+#ifndef motorWaitPollsBeforeReadyString
+  int waitNumPollsBeforeReady_ = drvlocal.waitNumPollsBeforeReady;
+#endif
 
   if (drvlocal.supported.statusVer == -1) {
     callParamCallbacksUpdateError();
@@ -1345,7 +1350,6 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   }
 
 #ifndef motorWaitPollsBeforeReadyString
-  int waitNumPollsBeforeReady_ = drvlocal.waitNumPollsBeforeRead;
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
