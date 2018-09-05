@@ -65,6 +65,7 @@ int    setMRES_24(int axis_no, double value);
 
 double getMotorPos(int axis_no);
 void   setMotorPos(int axis_no, double value);
+void   setPositionJitter(int axis_no, double value);
 
 double getEncoderPos(int axis_no);
 

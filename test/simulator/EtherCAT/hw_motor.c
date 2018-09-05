@@ -55,6 +55,8 @@ typedef struct
   int enabledLowSoftLimitPos;
   int enabledHighSoftLimitPos;
   double MotorPosNow;
+  double positionJitter;
+  int    positionJitterPlus;
   double MotorPosWanted;
   double HomeVelocityAbsWanted;
   double MaxHomeVelocityAbs;
@@ -692,7 +694,13 @@ double getMotorPosStepped(int axis_no)
     double urev = motor_axis[axis_no].MRES_23;
     if (urev > 0.0) {
       long step = NINT(MotorPosNow * srev / urev);
-      return (double)step * urev / srev;
+      double ret = (double)step * urev / srev;
+      if (motor_axis[axis_no].positionJitterPlus) {
+        /* If we have jitter */
+        ret += (motor_axis[axis_no].positionJitterPlus * motor_axis[axis_no].positionJitter);
+        motor_axis[axis_no].positionJitterPlus = -motor_axis[axis_no].positionJitterPlus;
+      }
+      return ret;
     }
   }
   return motor_axis[axis_no].MotorPosNow;
@@ -717,6 +725,16 @@ void setMotorPos(int axis_no, double value)
   /* simulate EncoderPos */
   motor_axis[axis_no].MotorPosNow = value;
   motor_axis[axis_no].EncoderPos = getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
+}
+
+void setPositionJitter(int axis_no, double value)
+{
+  AXIS_CHECK_RETURN(axis_no);
+  fprintf(stdlog, "%s/%s:%d axis_no=%d value=%g\n",
+          __FILE__, __FUNCTION__, __LINE__,
+          axis_no, value);
+  motor_axis[axis_no].positionJitter = value;
+  motor_axis[axis_no].positionJitterPlus = 1;
 }
 
 double getEncoderPos(int axis_no)

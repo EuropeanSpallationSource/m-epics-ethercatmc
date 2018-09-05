@@ -156,6 +156,14 @@ static void motorHandleOneArg(const char *myarg_1)
     return;
   }
 
+  /* fPositionJitter=30 */
+  nvals = sscanf(myarg_1, "fPositionJitter=%lf", &fValue);
+  if (nvals == 1) {
+    setPositionJitter(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+
   /* bManualSimulatorMode=1 */
   nvals = sscanf(myarg_1, "bManualSimulatorMode=%d", &iValue);
   if (nvals == 1) {

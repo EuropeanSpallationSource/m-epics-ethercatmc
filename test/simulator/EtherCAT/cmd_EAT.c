@@ -600,10 +600,12 @@ static void motorHandleOneArg(const char *myarg_1)
   myarg_1++; /* Jump over '.' */
 
   if (sim_usleep[motor_axis_no]) {
+#if 0
     fprintf(stdlog,
             "%s/%s:%d axis_no=%d usleep=%lu\n",
             __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
             (unsigned long)sim_usleep[motor_axis_no]);
+#endif
     (void)usleep(sim_usleep[motor_axis_no]);
   }
 
