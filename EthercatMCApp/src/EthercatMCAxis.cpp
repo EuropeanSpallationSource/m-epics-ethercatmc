@@ -1345,6 +1345,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   }
 
 #ifndef motorWaitPollsBeforeReadyString
+  int waitNumPollsBeforeReady_ = drvlocal.waitNumPollsBeforeRead;
   if (drvlocal.waitNumPollsBeforeReady) {
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -1367,11 +1368,12 @@ asynStatus EthercatMCAxis::poll(bool *moving)
         drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
         drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%spoll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d ENC=%g fPosition=%g fActPosition=%g\n",
+                "%spoll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d wf=%d ENC=%g fPosition=%g fActPosition=%g\n",
                 modNamEMC, axisNo_, st_axis_status.mvnNRdyNex,
                 drvlocal.supported.statusVer,
                 st_axis_status.bBusy, st_axis_status.bExecute,
                 st_axis_status.bEnabled, st_axis_status.atTarget,
+                waitNumPollsBeforeReady_,
                 st_axis_status.positionRaw, st_axis_status.fPosition,
                 st_axis_status.fActPosition);
     }
