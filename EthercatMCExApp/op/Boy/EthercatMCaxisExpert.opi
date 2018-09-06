@@ -61,11 +61,11 @@
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template</name>
     <off_color>
-      <color name="IO Trace 2" red="192" green="80" blue="77" />
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
     </off_color>
     <off_label>HOMF</off_label>
     <on_color>
-      <color name="Major" red="255" green="0" blue="0" />
+      <color name="IO PV ON" red="0" green="0" blue="255" />
     </on_color>
     <on_label>HOMF</on_label>
     <password></password>
@@ -139,7 +139,7 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_1</name>
     <off_color>
-      <color name="IO Trace 2" red="192" green="80" blue="77" />
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
     </off_color>
     <off_label>STOP</off_label>
     <on_color>
@@ -208,11 +208,11 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_2</name>
     <off_color>
-      <color name="IO Trace 2" red="192" green="80" blue="77" />
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
     </off_color>
     <off_label>HOMR</off_label>
     <on_color>
-      <color name="Major" red="255" green="0" blue="0" />
+      <color name="IO PV ON" red="0" green="0" blue="255" />
     </on_color>
     <on_label>HOMR</on_label>
     <password></password>
@@ -286,11 +286,11 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_5</name>
     <off_color>
-      <color name="IO Trace 2" red="192" green="80" blue="77" />
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
     </off_color>
     <off_label>JOGR</off_label>
     <on_color>
-      <color name="Major" red="255" green="0" blue="0" />
+      <color name="IO PV ON" red="0" green="0" blue="255" />
     </on_color>
     <on_label>JOGR</on_label>
     <password></password>
@@ -355,11 +355,11 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_6</name>
     <off_color>
-      <color name="IO Trace 2" red="192" green="80" blue="77" />
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
     </off_color>
     <off_label>JOGF</off_label>
     <on_color>
-      <color name="Major" red="255" green="0" blue="0" />
+      <color name="IO PV ON" red="0" green="0" blue="255" />
     </on_color>
     <on_label>JOGF</on_label>
     <password></password>
@@ -565,11 +565,11 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_14</name>
     <off_color>
-      <color name="IO Trace 2" red="192" green="80" blue="77" />
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
     </off_color>
     <off_label>ErrRst</off_label>
     <on_color>
-      <color name="Major" red="255" green="0" blue="0" />
+      <color name="IO PV ON" red="0" green="0" blue="255" />
     </on_color>
     <on_label>ErrRst</on_label>
     <password></password>
@@ -2277,11 +2277,11 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_11</name>
     <off_color>
-      <color red="127" green="127" blue="127" />
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
     </off_color>
     <off_label>DIR</off_label>
     <on_color>
-      <color red="255" green="192" blue="203" />
+      <color name="IO PV ON" red="0" green="0" blue="255" />
     </on_color>
     <on_label>DIR</on_label>
     <password></password>
@@ -3369,11 +3369,11 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_10</name>
     <off_color>
-      <color red="127" green="127" blue="127" />
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
     </off_color>
     <off_label>UEIP</off_label>
     <on_color>
-      <color red="0" green="255" blue="0" />
+      <color name="IO PV ON" red="0" green="0" blue="255" />
     </on_color>
     <on_label>UEIP</on_label>
     <password></password>
