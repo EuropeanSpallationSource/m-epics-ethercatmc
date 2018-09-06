@@ -21,12 +21,12 @@ record(motor,"$(PREFIX)$(MOTOR_NAME)")
 	field(DHLM,"$(DHLM=0)")
 	field(DLLM,"$(DLLM=0)")
 	field(RDBD,"$(RDBD=0)")
-	field(RTRY,"$(RTRY=5)")
+	field(RTRY,"$(RTRY=1)")
 	field(RMOD,"$(RMOD=3)")
-	field(DLY,"$(DLY=0.2)")
+	field(DLY,"$(DLY=0)")
 	field(FOFF,"$(FOFF=0)")
 	field(NTM,"0")
-	field(TWV,"1")
+	field(TWV,"$(TWV=1)")
 }
 
 # The message text

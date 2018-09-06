@@ -12,6 +12,10 @@
 # @field IPPORT
 # @type  INTEGER
 
+# Additional fields can e initialized in Axis
+epicsEnvSet("ECAXISFIELDINIT",    "")
+
+
 ## One of the 2 needs to be done, either drvAsynIPPortConfigure+Eos
 ## Or
 ## adsAsynPortDriverConfigure (without Eos.
