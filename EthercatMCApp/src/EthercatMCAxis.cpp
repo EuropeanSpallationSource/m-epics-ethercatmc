@@ -1229,10 +1229,6 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     pst_axis_status->motorDiffPostion = 1;
     pst_axis_status->motorStatusDirection = 0;
   }
-  if (!pst_axis_status->bEnabled) {
-    /* if the motor is moved by with amplifier off, report this */
-    pst_axis_status->mvnNRdyNex |= pst_axis_status->motorDiffPostion;
-  }
   return asynSuccess;
 
 
