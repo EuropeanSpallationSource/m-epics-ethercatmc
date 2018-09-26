@@ -842,24 +842,6 @@ asynStatus EthercatMCAxis::setPosition(double value)
   return status;
 }
 
-/** Set the high limit position of the motor.
-  * \param[in] highLimit The new high limit position that should be set in the hardware. Units=steps.*/
-asynStatus EthercatMCAxis::setHighLimit(double highLimit)
-{
-  drvlocal.motorRecordHighLimit = highLimit;
-  return asynSuccess;
-}
-
-
-/** Set the low limit position of the motor.
-  * \param[in] lowLimit The new low limit position that should be set in the hardware. Units=steps.*/
-asynStatus EthercatMCAxis::setLowLimit(double lowLimit)
-{
-  drvlocal.motorRecordLowLimit = lowLimit;
-  return asynSuccess;
-}
-
-
 asynStatus EthercatMCAxis::resetAxis(void)
 {
   asynStatus status = asynSuccess;

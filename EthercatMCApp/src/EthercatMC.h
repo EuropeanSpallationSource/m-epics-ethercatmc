@@ -122,8 +122,6 @@ public:
   asynStatus move(double position, int relative, double min_velocity, double max_velocity, double acceleration);
   asynStatus moveVelocity(double min_velocity, double max_velocity, double acceleration);
   asynStatus setPosition(double);
-  asynStatus setHighLimit(double highLimit);
-  asynStatus setLowLimit(double lowLimit);
 
   asynStatus home(double min_velocity, double max_velocity, double acceleration, int forwards);
   asynStatus stop(double acceleration);
@@ -194,8 +192,6 @@ private:
     char cmdErrorMessage[80];
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     char adsport_zero[1]; /* 15 + 1 for '\' keep us aligned in memory */
-    double motorRecordHighLimit;
-    double motorRecordLowLimit;
     unsigned int adsPort;
   } drvlocal;
 
