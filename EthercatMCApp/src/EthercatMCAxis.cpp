@@ -414,7 +414,12 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
 
 asynStatus EthercatMCAxis::initialPoll(void)
 {
-  asynStatus status = initialPollInternal();
+  asynStatus status;
+
+  if (!drvlocal.dirty.initialPollNeeded)
+    return asynSuccess;
+
+  status = initialPollInternal();
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%sinitialPoll(%d) status=%d\n",
             modNamEMC, axisNo_, status);
