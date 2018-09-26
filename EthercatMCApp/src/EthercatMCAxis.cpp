@@ -97,6 +97,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     const char * const stepSize_str = "stepSize=";
     const char * const homProc_str = "HomProc=";
     const char * const homPos_str  = "HomPos=";
+    const char * const adsPort_str  = "adsPort=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -123,6 +124,12 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
         if (cfgStepSize > 0.0) {
           drvlocal.cfgStepSize = cfgStepSize;
           drvlocal.stepSize = drvlocal.cfgStepSize;
+        }
+      } else if (!strncmp(pThisOption, adsPort_str, strlen(adsPort_str))) {
+        pThisOption += strlen(adsPort_str);
+        int adsPort = atoi(pThisOption);
+        if (adsPort > 0) {
+          drvlocal.adsPort = (unsigned)adsPort;
         }
       } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
         pThisOption += strlen(homProc_str);

@@ -200,6 +200,9 @@ int EthercatMCAxis::getMotionAxisID(void)
          adsport_idx < sizeof(adsports)/sizeof(adsports[0]);
          adsport_idx++) {
       unsigned adsport = adsports[adsport_idx];
+      if (!adsport) {
+        adsport = drvlocal.adsPort;
+      }
       if (adsport) {
 #if 1
         /* Save adsport_str for the poller */

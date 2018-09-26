@@ -196,6 +196,7 @@ private:
     char adsport_zero[1]; /* 15 + 1 for '\' keep us aligned in memory */
     double motorRecordHighLimit;
     double motorRecordLowLimit;
+    unsigned int adsPort;
   } drvlocal;
 
   void       handleDisconnect(asynStatus status);
