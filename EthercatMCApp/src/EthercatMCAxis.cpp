@@ -1195,7 +1195,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     else if (drvlocal.supported.stAxisStatus_V1 && drvlocal.supported.bV1BusyNewStyle)
       drvlocal.supported.statusVer = 1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%spollAll(%d) nvals=%d V1=%d V2=%d sim=%d ecmc=%d bV1BusyNewStyle=%d Ver=%d fActPosition=%f\n",
+              "%spollAll(%d) nvals=%d V1=%d V2=%d sim=%d ecmc=%d bV1BusyNew=%d Ver=%d cmd/data=%d/%d fPos=%f fActPos=%f\n",
               modNamEMC, axisNo_, nvals,
               drvlocal.supported.stAxisStatus_V1,
               drvlocal.supported.stAxisStatus_V2,
@@ -1203,6 +1203,9 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
               drvlocal.supported.bECMC,
               drvlocal.supported.bV1BusyNewStyle,
               drvlocal.supported.statusVer,
+              pst_axis_status->nCommand,
+              pst_axis_status->nCmdData,
+              pst_axis_status->fPosition,
               pst_axis_status->fActPosition);
 #ifdef motorFlagsHomeOnLsString
     setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
