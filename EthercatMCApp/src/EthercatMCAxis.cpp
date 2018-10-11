@@ -599,20 +599,6 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVeloEGU, double
   * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
 asynStatus EthercatMCAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, double accEGU)
 {
-  if (!drvlocal.cmdErrorMessage[0]) {
-    /* Do range check */
-    if (!drvlocal.stepSize) {
-      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-               "E: stepSize is 0.0\n");
-      return asynSuccess;
-    } else if (!maxVeloEGU) {
-      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-               "E: velo is 0.0\n");
-      return asynSuccess;
-    }
-    /* The poller co-ordinates the writing into the parameter library */
-  }
-
   if (accEGU) {
     snprintf(pC_->outString_, sizeof(pC_->outString_),
              "%sMain.M%d.bExecute=0;"
@@ -664,13 +650,6 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
 {
   asynStatus status = asynSuccess;
 
-#if MAX_CONTROLLER_STRING_SIZE > 350
-  return mov2(position * drvlocal.stepSize,
-              relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS,
-              maxVelocity * drvlocal.stepSize,
-              acceleration * drvlocal.stepSize);
-#else
-  int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
   if (!drvlocal.cmdErrorMessage[0]) {
     /* Do range check */
     if (!drvlocal.stepSize) {
@@ -684,6 +663,14 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
     }
     /* The poller co-ordinates the writing into the parameter library */
   }
+
+#if MAX_CONTROLLER_STRING_SIZE > 350
+  return mov2(position * drvlocal.stepSize,
+              relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS,
+              maxVelocity * drvlocal.stepSize,
+              acceleration * drvlocal.stepSize);
+#else
+  int nCommand = relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS;
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand);
   if (status == asynSuccess) status = setValueOnAxis("nCmdData", 0);
@@ -775,19 +762,6 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
  */
 asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, double acceleration)
 {
-#if MAX_CONTROLLER_STRING_SIZE > 350
-  {
-    double maxVeloEGU = maxVelocity * drvlocal.stepSize;
-    double acc_in_EGU_sec2 = 0.0;
-    if (acceleration > 0.0001) {
-      double acc_in_seconds = maxVelocity / acceleration;
-      acc_in_EGU_sec2 = maxVeloEGU / acc_in_seconds;
-    }
-    if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
-    return mov2(0, NCOMMANDMOVEVEL, maxVeloEGU, acc_in_EGU_sec2);
-  }
-#else
-  asynStatus status = asynSuccess;
   if (!drvlocal.cmdErrorMessage[0]) {
     /* Do range check */
     if (!drvlocal.stepSize) {
@@ -801,6 +775,20 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
     }
     /* The poller co-ordinates the writing into the parameter library */
   }
+
+#if MAX_CONTROLLER_STRING_SIZE > 350
+  {
+    double maxVeloEGU = maxVelocity * drvlocal.stepSize;
+    double acc_in_EGU_sec2 = 0.0;
+    if (acceleration > 0.0001) {
+      double acc_in_seconds = maxVelocity / acceleration;
+      acc_in_EGU_sec2 = maxVeloEGU / acc_in_seconds;
+    }
+    if (acc_in_EGU_sec2  < 0) acc_in_EGU_sec2 = 0 - acc_in_EGU_sec2 ;
+    return mov2(0, NCOMMANDMOVEVEL, maxVeloEGU, acc_in_EGU_sec2);
+  }
+#else
+  asynStatus status = asynSuccess;
 
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) setValueOnAxis("nCommand", NCOMMANDMOVEVEL);
