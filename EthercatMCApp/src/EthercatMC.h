@@ -120,6 +120,7 @@ public:
   void report(FILE *fp, int level);
   asynStatus moveEGU(double posEGU, double mres, int relative,
                      double minVeloEGU, double maxVeloEGU, double accEGU);
+  asynStatus moveVeloEGU(double mres, double minVeloEGU, double maxVeloEGU, double accEGU);
   asynStatus mov2(double posEGU, int nCommand, double maxVeloEGU, double accEGU);
   asynStatus move(double position, int relative, double min_velocity, double max_velocity, double acceleration);
   asynStatus moveVelocity(double min_velocity, double max_velocity, double acceleration);

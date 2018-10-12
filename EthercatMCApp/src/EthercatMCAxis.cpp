@@ -610,6 +610,20 @@ asynStatus EthercatMCAxis::moveEGU(double posEGU, double mres, int relative,
 }
 
 
+/** Move the motor with constant velocity
+  * \param[in] maxVeloEGU The maximum velocity, often called the slew velocity. Units=EGU/sec.
+  * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
+asynStatus EthercatMCAxis::moveVeloEGU(double mres, double minVeloEGU, double maxVeloEGU, double accEGU)
+{
+  double posEGU = 0.0;
+  (void)minVeloEGU;
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%smoveVeloEGU(%d maxVeloEGU=%g accEGU=%g\n",
+            modNamEMC, axisNo_, maxVeloEGU, accEGU);
+  return mov2(posEGU, NCOMMANDMOVEVEL, maxVeloEGU, accEGU);
+}
+
+
 /** Move the motor to an absolute location or by a relative amount.
   * \param[in] posEGU  The absolute position to move to (if relative=0) or the relative distance to move
   * by (if relative=1). Units=steps.
