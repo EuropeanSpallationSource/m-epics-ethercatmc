@@ -1059,11 +1059,16 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
           ;
       }
     }
-#ifdef motorFlagsNoStopProblemString
     /* Axis has a problem: Report to motor record */
+    /*
+     * Site note: Some versions of the motor module needed and
+     *  #ifdef motorFlagsNoStopProblemString
+     * here. Today these versions are history, and the
+     * motorFlagsNoStopProblemString is no longer defined in the
+     * motor module. So we need to remove the #ifdef here.
+     */
     setIntegerParam(pC_->motorStatusProblem_,
                     drvlocal.eeAxisError != eeAxisErrorNoError);
-#endif
     /* MCU has a problem: set the red light in CSS */
     setIntegerParam(pC_->EthercatMCErr_,
                     drvlocal.eeAxisError == eeAxisErrorMCUError);

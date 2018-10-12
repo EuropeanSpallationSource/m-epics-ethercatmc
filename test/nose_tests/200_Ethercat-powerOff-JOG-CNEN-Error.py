@@ -60,7 +60,8 @@ class Test(unittest.TestCase):
         self.assertEqual(True, ret, 'waitForStop return True')
 
         msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
-        print '%s Error msta=%x' % (tc_no, msta)
+        mstaErr = int(epics.caget(motor + '.MSTA', use_monitor=False))
+        print '%s Error mstaErr=%s' % (tc_no, self.lib.getMSTAtext(mstaErr))
         self.assertNotEqual(0, msta & self.lib.MSTA_BIT_PROBLEM, 'Error MSTA.Problem should be set)')
         self.assertEqual(0, msta & self.lib.MSTA_BIT_SLIP_STALL, 'Error MSTA.Slip stall Error should not be set)')
         self.assertEqual(0, msta & self.lib.MSTA_BIT_MOVING,     'Error MSTA.Moving)')
