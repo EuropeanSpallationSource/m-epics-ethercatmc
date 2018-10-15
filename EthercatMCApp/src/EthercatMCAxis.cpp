@@ -602,8 +602,8 @@ asynStatus EthercatMCAxis::moveEGU(double posEGU, double mres, int relative,
 {
   (void)minVeloEGU;
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%smoveEGU(%d relative=%d maxVeloEGU=%g accEGU=%g\n",
-            modNamEMC, axisNo_, relative, maxVeloEGU, accEGU);
+            "%smoveEGU(%d posEGU=%g relative=%d maxVeloEGU=%g accEGU=%g\n",
+            modNamEMC, axisNo_, posEGU, relative, maxVeloEGU, accEGU);
 
   return mov2(posEGU, relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS,
               maxVeloEGU, accEGU);
