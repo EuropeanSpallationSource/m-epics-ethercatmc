@@ -1422,15 +1422,21 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     drvlocal.old_bError = st_axis_status.bError;
     drvlocal.old_MCU_nErrorId = nErrorId;
     drvlocal.dirty.sErrorMessage = 0;
-    snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %x",
-             errStringFromErrId(nErrorId), nErrorId);
+
+    if (drvlocal.supported.bECMC && nErrorId) {
+      /* emcmc has error messages */
+      asynStatus status;
+      int start = snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%s", "E: ");
+      if (start < 0) start = 0;
+      status = getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[start], sizeof(sErrorMessage)-start);
+      if (status) sErrorMessage[0] = '\0';
+    }
+    if (!sErrorMessage[0]) {
+      snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %x",
+	       errStringFromErrId(nErrorId), nErrorId);
+    }
     if (sErrorMessage[0]) {
       updateMsgTxtFromDriver(sErrorMessage);
-    } else if (!sErrorMessage[0] && nErrorId) {
-      asynStatus status;
-      status = getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0], sizeof(sErrorMessage));
-
-      if (status == asynSuccess) updateMsgTxtFromDriver(sErrorMessage);
     }
   }
   callParamCallbacksUpdateError();
