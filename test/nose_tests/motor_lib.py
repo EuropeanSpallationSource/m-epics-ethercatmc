@@ -312,16 +312,20 @@ class motor_lib(object):
         rdbd = motor + ".RDBD"
         rbv = motor + ".RBV"
 
-        final_pos = caget(rbv)
+        final_pos = caget(rbv, use_monitor=False)
         deadband = caget(rdbd)
 
         success = True
 
         if ((final_pos < position-deadband) or (final_pos > position+deadband)):
             print "ERROR: final_pos out of deadband."
-            print (motor + " " + str(position) + " " + str(timeout) + " "
-                   + str(final_pos) + " " + str(deadband))
             success = False
+        else:
+            print "Final_pos inside deadband."
+        print (motor + " pos=" + str(position) +
+               " timeout=" + str(timeout) +
+               " final_pos=" + str(final_pos) +
+               " deadband=" + str(deadband))
 
         if (success):
             return self.postMoveCheck(motor)
@@ -381,9 +385,10 @@ class motor_lib(object):
         current_pos = caget(_rbv)
 
         if ((current_pos < position-deadband) or (current_pos > position+deadband)):
-            print "ERROR: final_pos out of deadband."
-            msg = (motor + " " + str(position) + " "
-                   + str(current_pos) + " " + str(deadband))
+            print "ERROR: verifyPosition out of deadband."
+            msg = (motor + " pos=" + str(position) +
+                   " currentPos=" + str(current_pos) +
+                   " deadband=" + str(deadband))
             raise Exception(__name__ + msg)
 
         return self.__g.SUCCESS
