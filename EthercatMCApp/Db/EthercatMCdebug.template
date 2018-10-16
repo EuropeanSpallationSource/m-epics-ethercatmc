@@ -48,6 +48,49 @@ record(ao, "$(PREFIX)$(MOTOR_NAME)-PwrOffDly")
     info(asyn:READBACK,"1")
 }
 
+# Records that allow to talk to the model 3 driver
+# behind the back of the motorRecord
+record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveAbs")
+{
+    field(DESC, "Move absolute")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MOVE_ABS")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveRel")
+{
+    field(DESC, "Move relative")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MOVE_REL")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveVel")
+{
+    field(DESC, "Move velocity")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MOVE_VEL")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-ACSS")
+{
+    field(DESC, "Acc EGU/sec2")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_ACCEL")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-VELO")
+{
+    field(DESC, "Velocity")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_VELOCITY")
+    info(asyn:READBACK,"1")
+}
+
+
 record(longout, "$(PREFIX)$(MOTOR_NAME)-Stop")
 {
     field(DESC, "Stop")
