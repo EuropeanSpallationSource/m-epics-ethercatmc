@@ -1,9 +1,10 @@
-record(longout,"$(PREFIX)$(R)HomProc") {
+record(longout,"$(PREFIX)$(MOTOR_NAME)-HomProc") {
     field(DESC, "Homing Procedure")
     field(VAL, "$(HOMEPROC=0)")
     field(DTYP, "asynInt32")
     field(PINI, "YES")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc")
+    info(asyn:READBACK,"1")
 }
 
 record(ao,"$(PREFIX)$(MOTOR_NAME)-HomPos") {
@@ -12,6 +13,7 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-HomPos") {
     field(DTYP, "asynFloat64")
     field(PINI, "YES")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos")
+    info(asyn:READBACK,"1")
 }
 
 record(ao,"$(PREFIX)$(MOTOR_NAME)-VelToHom") {
