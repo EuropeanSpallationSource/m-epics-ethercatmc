@@ -564,7 +564,7 @@ extern "C" const char *errStringFromErrId(int nErrorId)
   case 0x4B0A:
     return "Homing failed";
   default:
-    return "Cntrl Error";
+    return "";
   }
 }
 
@@ -1413,8 +1413,11 @@ asynStatus EthercatMCAxis::poll(bool *moving)
       drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
       drvlocal.dirty.sErrorMessage) {
     char sErrorMessage[256];
+    char printSring[256];
     int nErrorId = st_axis_status.nErrorId;
-    memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
+    const char *errIdString = errStringFromErrId(nErrorId);
+    sErrorMessage[0] = '\0';
+    printSring[0] = '\0';
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
                modNamEMC, axisNo_, st_axis_status.bError,
@@ -1422,22 +1425,23 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     drvlocal.old_bError = st_axis_status.bError;
     drvlocal.old_MCU_nErrorId = nErrorId;
     drvlocal.dirty.sErrorMessage = 0;
-
-    if (drvlocal.supported.bECMC && nErrorId) {
+    /* Get the ErrorMessage to have it in the log file */
+    (void)getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0],
+                            sizeof(sErrorMessage));
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssErrorMessage(%d)=\"%s\"\n",  modNamEMC, axisNo_, sErrorMessage);
+    /* First choice: "well known" ErrorIds */
+    if (errIdString[0]) {
+      snprintf(printSring, sizeof(printSring)-1, "E: %s %x",
+               errIdString, nErrorId);
+    } else if (drvlocal.supported.bECMC && nErrorId) {
       /* emcmc has error messages */
-      asynStatus status;
-      int start = snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%s", "E: ");
-      if (start < 0) start = 0;
-      status = getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[start], sizeof(sErrorMessage)-start);
-      if (status) sErrorMessage[0] = '\0';
+      snprintf(printSring, sizeof(printSring)-1, "E: %s",
+               sErrorMessage);
+    } else {
+      snprintf(printSring, sizeof(printSring)-1, "E: Cntrl Error %x", nErrorId);
     }
-    if (!sErrorMessage[0]) {
-      snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %x",
-	       errStringFromErrId(nErrorId), nErrorId);
-    }
-    if (sErrorMessage[0]) {
-      updateMsgTxtFromDriver(sErrorMessage);
-    }
+    updateMsgTxtFromDriver(printSring);
   }
   callParamCallbacksUpdateError();
 

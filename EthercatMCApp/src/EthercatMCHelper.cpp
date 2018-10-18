@@ -557,6 +557,7 @@ asynStatus EthercatMCAxis::getStringFromAxis(const char *var, char *value, size_
 {
   asynStatus status;
   snprintf(pC_->outString_, sizeof(pC_->outString_), "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
+  value[0] = '\0'; /* Always have a valid string */
   status = pC_->writeReadOnErrorDisconnect();
   if (status) return status;
 
