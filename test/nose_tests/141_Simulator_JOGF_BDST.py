@@ -27,8 +27,7 @@ def motorInitTC(tself, motor, tc_no, frac, encRel):
 def setMotorStartPos(tself, motor, tc_no, startpos):
     lib.setValueOnSimulator(motor, tc_no, "fActPosition", startpos)
     # Run a status update and a sync
-    epics.caput(motor + '.STUP', 1)
-    epics.caput(motor + '.SYNC', 1)
+    lib.doSTUPandSYNC(motor, tc_no)
 
 
 def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos, myJOGX):
@@ -51,15 +50,17 @@ def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos
     time.sleep(3)
     lib.setValueOnSimulator(motor, tc_no, "fActPosition", motorEndPos)
     epics.caput(motor + '.' + myJOGX, 0)
-    time.sleep(12)
+    resW = tself.lib.waitForMipZero(motor, tc_no, 12)
     lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
 
     dbgFileName = None
     lib.writeExpFileJOG_BDST(motor, tc_no, dbgFileName, expFileName, myDirection, frac, encRel, motorStartPos, motorEndPos)
-
+    time_to_wait = 100
+    lib.waitForStop(motor, tc_no, time_to_wait)
     lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
 
 class Test(unittest.TestCase):
+    lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
 
     myPOSlow = lib.myPOSlow

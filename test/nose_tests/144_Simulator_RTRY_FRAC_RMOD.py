@@ -33,8 +33,8 @@ def motorInitTC(tself, motor, tc_no, rmod, encRel):
 def setMotorStartPos(tself, motor, tc_no, startpos):
     lib.setValueOnSimulator(motor, tc_no, "fActPosition", startpos)
     # Run a status update and a sync
-    epics.caput(motor + '.STUP', 1)
-    epics.caput(motor + '.SYNC', 1)
+    # Run a status update and a sync
+    lib.doSTUPandSYNC(motor, tc_no)
 
 
 
@@ -80,6 +80,8 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
         dbgFile.close()
     lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
 
+    time_to_wait = 100
+    lib.waitForStop(motor, tc_no, time_to_wait)
     lib.cmpUnlinkExpectedActualFile(dbgFileName, expFileName, actFileName)
 
 

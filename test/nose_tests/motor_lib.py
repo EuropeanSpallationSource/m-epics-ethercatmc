@@ -665,3 +665,21 @@ class motor_lib(object):
         else:
             epics.caput(motor + '.HLM', high_limit)
             epics.caput(motor + '.LLM', low_limit)
+
+
+    def doSTUPandSYNC(self, motor, tc_no):
+        stup = epics.caget(motor + '.STUP', use_monitor=False)
+        while stup != 0:
+            stup = epics.caget(motor + '.STUP', use_monitor=False)
+            print '%s .STUP=%s' % (tc_no, stup)
+            time.sleep(polltime)
+
+        epics.caput(motor + '.STUP', 1)
+        epics.caput(motor + '.SYNC', 1)
+        rbv = epics.caget(motor + '.RBV', use_monitor=False)
+        print '%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup)
+        while stup != 0:
+            stup = epics.caget(motor + '.STUP', use_monitor=False)
+            rbv = epics.caget(motor + '.RBV', use_monitor=False)
+            print '%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup)
+            time.sleep(polltime)
