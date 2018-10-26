@@ -18,7 +18,7 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-HomPos") {
 
 record(ao,"$(PREFIX)$(MOTOR_NAME)-VelToHom") {
     field(DESC, "Homing Velocity To CAM")
-    field(VAL, "$(HVELTO=0.501)")
+    field(VAL, "$(HVELTO=0)")
     field(DTYP, "asynFloat64")
     field(PINI, "YES")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))VelToHom")

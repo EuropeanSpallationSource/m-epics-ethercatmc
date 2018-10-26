@@ -21,4 +21,4 @@ epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SimAxis.cfg;encoder=ADSPORT
 < EthercatMCController.cmd
 < EthercatMCAxis.cmd
 < EthercatMCAxisdebug.cmd
-
+< EthercatMCAxishome.cmd
