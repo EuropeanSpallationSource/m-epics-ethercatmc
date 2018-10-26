@@ -18,11 +18,11 @@ class Test(unittest.TestCase):
     __g = motor_globals()
     motor = os.getenv("TESTEDMOTORAXIS")
     lib.initializeMotorRecordSimulatorAxis(motor, '240')
-    hlm = epics.caget(motor + '.HLM')
-    llm = epics.caget(motor + '.LLM')
     saved_DLY  = epics.caget(motor + '.DLY')
     msta             = int(epics.caget(motor + '.MSTA'))
 
+    hlm = epics.caget(motor + '.HLM')
+    llm = epics.caget(motor + '.LLM')
     per10_UserPosition  = round((9 * llm + 1 * hlm) / 10)
     per90_UserPosition  = round((1 * llm + 9 * hlm) / 10)
 
@@ -30,7 +30,6 @@ class Test(unittest.TestCase):
     def test_TC_241(self):
         motor = self.motor
         tc_no = "TC-241"
-        self.lib.initializeMotorRecordSimulatorAxis(motor, '240')
 
         if not (self.msta & self.lib.MSTA_BIT_HOMED):
             self.assertNotEqual(0, self.msta & self.lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')

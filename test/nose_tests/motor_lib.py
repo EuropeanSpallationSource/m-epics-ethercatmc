@@ -89,28 +89,44 @@ class motor_lib(object):
     myPOShig = 96   # low + 2*BDST
 
     def initializeMotorRecordOneField(self, motor, tc_no, field, value):
-        oldVal = epics.caget(motor + '.' + field)
+        channelname = motor + field
+        oldVal = epics.caget(channelname)
         if (oldVal != None):
             print '%s: initializeMotorRecordOneField field=%s oldVal=%f value=%f' % (
-                tc_no, field, oldVal, value)
-            if (oldVal <= 0.1):
-                epics.caput(motor + '.' + field, value)
+                tc_no, channelname, oldVal, value)
+            if (oldVal != value):
+                epics.caput(channelname, value)
 
         else:
             print '%s: initializeMotorRecordOneField field=%s not found value=%f' % (
-                tc_no, field, value)
+                tc_no, channelname, value)
 
     def initializeMotorRecordSimulatorAxis(self, motor, tc_no):
-        self.initializeMotorRecordOneField(motor, tc_no, 'VMAX', 50.0)
-        self.initializeMotorRecordOneField(motor, tc_no, 'VELO', 20.0)
-        self.initializeMotorRecordOneField(motor, tc_no, 'ACCL', 5.0)
-        self.initializeMotorRecordOneField(motor, tc_no, 'JVEL', 5.0)
-        self.initializeMotorRecordOneField(motor, tc_no, 'JAR',  20.0)
+        # If there are usful values in the controller, use them
+        dhlm = epics.caget(motor + '-ECHLM')
+        dllm = epics.caget(motor + '-ECLLM')
+        if (dhlm == None or dllm == None or dhlm <= dllm):
+            dhlm = 53.0
+            dllm = -54.0
 
-        self.initializeMotorRecordOneField(motor, tc_no, 'RDBD', 0.1)
-        #self.initializeMotorRecordOneField(motor, tc_no, 'SDBD', 0.1)
-        self.initializeMotorRecordOneField(motor, tc_no, 'DHLM', 53.0)
-        self.initializeMotorRecordOneField(motor, tc_no, 'DLLM', -54.0)
+
+        self.initializeMotorRecordOneField(motor, tc_no, '.VMAX', 50.0)
+        self.initializeMotorRecordOneField(motor, tc_no, '.VELO', 20.0)
+        self.initializeMotorRecordOneField(motor, tc_no, '.ACCL', 5.0)
+        self.initializeMotorRecordOneField(motor, tc_no, '.JVEL', 5.0)
+        self.initializeMotorRecordOneField(motor, tc_no, '.JAR',  20.0)
+
+        self.initializeMotorRecordOneField(motor, tc_no, '.RDBD', 0.1)
+        #self.initializeMotorRecordOneField(motor, tc_no, '.SDBD', 0.1)
+        self.initializeMotorRecordOneField(motor, tc_no, '.BDST', 0.0)
+
+        self.setSoftLimitsOff(motor)
+        self.initializeMotorRecordOneField(motor, tc_no, '-ECHLM', dhlm)
+        self.initializeMotorRecordOneField(motor, tc_no, '-ECLLM', dllm)
+        self.initializeMotorRecordOneField(motor, tc_no, '-ECHLM-En', 1)
+        self.initializeMotorRecordOneField(motor, tc_no, '-ECLLM-En', 1)
+        self.initializeMotorRecordOneField(motor, tc_no, '.DHLM', dhlm)
+        self.initializeMotorRecordOneField(motor, tc_no, '.DLLM', dllm)
 
     def getMSTAtext(self, msta):
         ret = ''
