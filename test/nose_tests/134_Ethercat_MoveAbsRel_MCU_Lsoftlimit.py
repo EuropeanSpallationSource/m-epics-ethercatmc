@@ -64,7 +64,7 @@ class Test(unittest.TestCase):
             epics.caput(motor + '-VELO', jvel/mres)
 
             jvel = epics.caget(motor + '.JVEL')
-            
+
             res = epics.caput(motor + '-MoveAbs', (self.llm - 1) / mres)
             if (res == None):
                 print '%s caput -Moveabs res=None' % (tc_no)

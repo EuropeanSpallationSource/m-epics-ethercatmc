@@ -78,7 +78,7 @@ if test -n "$1"; then
    echo TESTEDMCUASYN=$TESTEDMCUASYN
    shift 1
 else
-  echo >&2 "doit.sh <PV> [numruns] [testfile.py]"
+  echo >&2 "$0 <PV> [numruns] [testfile.py]"
   exit 1
 fi
 
@@ -97,6 +97,11 @@ else
     numruns=1
 fi
 
+../checkws.sh || {
+  echo >&2   ../checkws.sh failed
+  exit 1
+}
+
 run_nosetests ()
 {
   echo nosetests $TESTEDMOTORAXIS "$@"
@@ -112,7 +117,7 @@ if test -z "$EPICS_CA_ADDR_LIST" && test -z "$EPICS_CA_AUTO_ADDR_LIST"; then
 fi
 
 while test $numruns -gt 0; do
-  if ! caget $TESTEDMOTORAXIS.RBV >/dev/null; then
+  if ! caget $TESTEDMOTORAXIS.RBV >/dev/null 2>/dev/null; then
     continue
   fi
   export TESTEDMOTORADDR TESTEDMOTORAXIS TESTEDMCUASYN
