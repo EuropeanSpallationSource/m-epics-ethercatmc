@@ -54,13 +54,12 @@ class Test(unittest.TestCase):
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1233-high-soft-limit MoveVel"
             print '%s' % tc_no
-            mres = epics.caget(motor + '.MRES')
 
             jar = epics.caget(motor + '.JAR')
-            epics.caput(motor + '-ACSS', jar/mres)
+            epics.caput(motor + '-ACSS', jar)
 
             jvel = epics.caget(motor + '.JVEL')
-            res = epics.caput(motor + '-MoveVel', jvel/mres)
+            res = epics.caput(motor + '-MoveVel', jvel)
             if (res == None):
                 print '%s caput -MoveVel res=None' % (tc_no)
                 self.assertNotEqual(res, None, 'caput -MoveVel retuned not None. PV not found ?')

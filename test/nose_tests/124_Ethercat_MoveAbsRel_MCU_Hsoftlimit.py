@@ -54,7 +54,11 @@ class Test(unittest.TestCase):
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1243-high-soft-limit Moveabs"
             print '%s' % tc_no
-            mres = epics.caget(motor + '.MRES')
+            readbackEGU = epics.caget(motor + '-RB-EGU-RB')
+            if readbackEGU == 1:
+                mres = 1.0
+            else:
+                mres = epics.caget(motor + '.MRES')
             rbv = epics.caget(motor + '.RBV')
 
             jar = epics.caget(motor + '.JAR')

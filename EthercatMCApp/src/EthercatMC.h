@@ -148,8 +148,7 @@ private:
                                    *   Abbreviated because it is used very frequently */
   struct {
     st_axis_status_type old_st_axis_status;
-    double stepSize;
-    double cfgStepSize;
+    double scaleFactor;
     double eres;
     const char *externalEncoderStr;
     const char *cfgfileStr;
