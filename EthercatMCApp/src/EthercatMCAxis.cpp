@@ -303,6 +303,10 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
   }
   setDoubleParam(pC_->EthercatMCScalSREV_RB_, srev);
   setDoubleParam(pC_->EthercatMCScalUREV_RB_, urev);
+#if defined motorSREVROString and defined motorUREVROString
+  setDoubleParam(pC_->motorSREVRO_, srev);
+  setDoubleParam(pC_->motorUREVRO_, urev);
+#endif
 #ifdef motorERESROString
   if (urev) {
     drvlocal.eres = urev / srev;
