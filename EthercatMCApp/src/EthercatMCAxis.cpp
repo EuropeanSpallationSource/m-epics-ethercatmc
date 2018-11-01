@@ -1139,7 +1139,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
                      &motor_axis_no,
                      &pst_axis_status->fPosition,
                      &pst_axis_status->fActPosition,
-                     &pst_axis_status->positionRaw,          /* Send as uint64; parsed as double ! */
+                     &pst_axis_status->encoderRaw,          /* Send as uint64; parsed as double ! */
                      &notUsed.velocitySetpoint,
                      &pst_axis_status->fActVelocity,
                      &pst_axis_status->fAcceleration,
@@ -1352,11 +1352,11 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 
   if (drvlocal.externalEncoderStr) {
     comStatus = getValueFromController(drvlocal.externalEncoderStr,
-                                       &st_axis_status.positionRaw);
+                                       &st_axis_status.encoderRaw);
     if (!comStatus) setDoubleParam(pC_->EthercatMCEncAct_,
-                                   st_axis_status.positionRaw);
+                                   st_axis_status.encoderRaw);
   } else if (drvlocal.supported.stAxisStatus_V2) {
-    setDoubleParam(pC_->EthercatMCEncAct_, st_axis_status.positionRaw);
+    setDoubleParam(pC_->EthercatMCEncAct_, st_axis_status.encoderRaw);
   }
 
   if (drvlocal.old_st_axis_status.bHomed != st_axis_status.bHomed) {
@@ -1407,7 +1407,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
                 st_axis_status.bBusy, st_axis_status.bExecute,
                 st_axis_status.bEnabled, st_axis_status.atTarget,
                 waitNumPollsBeforeReady_,
-                st_axis_status.positionRaw, st_axis_status.fPosition,
+                st_axis_status.encoderRaw, st_axis_status.fPosition,
                 st_axis_status.fActPosition);
     }
   }

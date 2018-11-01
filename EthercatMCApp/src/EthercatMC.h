@@ -103,7 +103,7 @@ typedef struct {
   int bHomed;            /* 22 */
   int bBusy;             /* 23 */
   /* V2 members */
-  double positionRaw;
+  double encoderRaw;
   int atTarget;
   /* neither V1 nor V2, but calculated here */
   int mvnNRdyNex; /* Not in struct. Calculated in poll() */
