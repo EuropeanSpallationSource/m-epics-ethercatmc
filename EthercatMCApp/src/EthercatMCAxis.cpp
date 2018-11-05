@@ -51,8 +51,8 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   : asynMotorAxis(pC, axisNo),
     pC_(pC)
 {
-#ifdef motorFlagsReadbackEGUString
-    setIntegerParam(pC_->motorFlagsReadbackEGU_,1);
+#ifdef motorFlagsDriverUsesEGUString
+    setIntegerParam(pC_->motorFlagsDriverUsesEGU_,1);
 #endif
 #ifdef motorWaitPollsBeforeReadyString
   setIntegerParam(pC_->motorWaitPollsBeforeReady_ , WAITNUMPOLLSBEFOREREADY);
@@ -603,39 +603,6 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVeloEGU, double
 #endif
   return status;
 }
-
-/** Move the motor to an absolute location or by a relative amount.
-  * \param[in] posEGU  The absolute position to move to (if relative=0) or the relative distance to move
-  * by (if relative=1). Units=EGU.
-  * \param[in] relative  Flag indicating relative move (1) or absolute move (0).
-  * \param[in] maxVeloEGU The maximum velocity, often called the slew velocity. Units=EGU/sec.
-  * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
-asynStatus EthercatMCAxis::moveEGU(double posEGU, double mres, int relative,
-                                   double minVeloEGU, double maxVeloEGU, double accEGU)
-{
-  (void)minVeloEGU;
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%smoveEGU(%d posEGU=%g relative=%d maxVeloEGU=%g accEGU=%g\n",
-            modNamEMC, axisNo_, posEGU, relative, maxVeloEGU, accEGU);
-
-  return mov2(posEGU, relative ? NCOMMANDMOVEREL : NCOMMANDMOVEABS,
-              maxVeloEGU, accEGU);
-}
-
-
-/** Move the motor with constant velocity
-  * \param[in] maxVeloEGU The maximum velocity, often called the slew velocity. Units=EGU/sec.
-  * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
-asynStatus EthercatMCAxis::moveVeloEGU(double mres, double minVeloEGU, double maxVeloEGU, double accEGU)
-{
-  double posEGU = 0.0;
-  (void)minVeloEGU;
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%smoveVeloEGU(%d maxVeloEGU=%g accEGU=%g\n",
-            modNamEMC, axisNo_, maxVeloEGU, accEGU);
-  return mov2(posEGU, NCOMMANDMOVEVEL, maxVeloEGU, accEGU);
-}
-
 
 /** Move the motor to an absolute location or by a relative amount.
   * \param[in] posEGU  The absolute position to move to (if relative=0) or the relative distance to move
