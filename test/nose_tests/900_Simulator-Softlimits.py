@@ -126,7 +126,18 @@ def setLimit(tself, motor, tc_no, field, value, expDHLM, expDLLM, expHLM, expLLM
 
 
 class Test(unittest.TestCase):
+    hasROlimit = 0
+    drvUseEGU_RB = None
+    drvUseEGU = 0
     motor = os.getenv("TESTEDMOTORAXIS")
+    vers = float(epics.caget(motor + '.VERS'))
+    if vers >= 6.94 and vers < 6.99 :
+        hasROlimit = 1
+        drvUseEGU_RB = epics.caget(motor + '-DrvUseEGU-RB')
+        drvUseEGU = 0
+        if drvUseEGU_RB == 1:
+            epics.caput(motor + '-DrvUseEGU', drvUseEGU)
+            drvUseEGU = epics.caget(motor + '-DrvUseEGU-RB')
 
     def test_TC_90000(self):
         lib.motorInitAllForBDST(self.motor, 90000)
@@ -134,6 +145,11 @@ class Test(unittest.TestCase):
     def test_TC_90010(self):
         tc_no = 90010
         encRel = 0
+        #vers = float(epics.caget(self.motor + '.VERS'))
+        #print '%s vers=%g' %  (tc_no, vers)
+        #self.assertEqual(0, 1, '1 != 0')
+
+        self.assertEqual(0, self.drvUseEGU, 'drvUseEGU must be 0')
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
         motorInitVeloAcc(self, self.motor, tc_no, encRel)
         mres = 0.1
@@ -272,6 +288,10 @@ class Test(unittest.TestCase):
     def test_TC_90050(self):
         tc_no = 90050
         encRel = 0
+
+        print '%s vers=%g hasROlimit=%d' %  (tc_no, self.vers, self.hasROlimit)
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
+
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
         motorInitVeloAcc(self, self.motor, tc_no, encRel)
         mres = 0.1
@@ -281,27 +301,32 @@ class Test(unittest.TestCase):
         motorInitLimitsWithC(self, self.motor, tc_no)
 
     def test_TC_90051(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90051
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "DHLM", 10,  0.6,    -0.7,     1.1,    -0.2,   6.0,      -7.0)
 
     def test_TC_90052(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90052
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "HLM",  10,  0.6,    -0.7,     1.1,    -0.2,   6.0,      -7.0)
 
     def test_TC_90053(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90053
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "DLLM", -10.0, 0.6,  -0.7,     1.1,    -0.2,   6.0,      -7.0)
 
     def test_TC_90054(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90054
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "LLM", -10.0,  0.6,   -0.7,     1.1,    -0.2,   6.0,      -7.0)
 
     #Invert mres
     def test_TC_90060(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90060
         encRel = 0
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
@@ -313,27 +338,32 @@ class Test(unittest.TestCase):
         motorInitLimitsWithC(self, self.motor, tc_no)
 
     def test_TC_90061(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90061
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "DHLM", 10,  0.7,     -0.6,    1.2,    -0.1,    6.0,      -7.0)
 
     def test_TC_90062(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90062
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "HLM",  10,  0.7,     -0.6,    1.2,    -0.1,    6.0,      -7.0)
 
     def test_TC_90063(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90063
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "DLLM", -10.0, 0.7,    -0.6,    1.2,    -0.1,   6.0,      -7.0)
 
     def test_TC_90064(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90064
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "LLM", -10.0,  0.7,    -0.6,    1.2,    -0.1,   6.0,      -7.0)
 
     #Invert dir
     def test_TC_90070(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90070
         encRel = 0
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
@@ -345,27 +375,32 @@ class Test(unittest.TestCase):
         motorInitLimitsWithC(self, self.motor, tc_no)
 
     def test_TC_90071(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90071
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "DHLM", 10,  0.6,     -0.7,     1.2,    -0.1,    6.0,      -7.0)
 
     def test_TC_90072(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90072
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "HLM",  10,   0.6,     -0.7,     1.2,     -0.1,    6.0,      -7.0)
 
     def test_TC_90073(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90073
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "DLLM", -10.0, 0.6,     -0.7,     1.2,     -0.1,    6.0,      -7.0)
 
     def test_TC_90074(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90074
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "LLM", -10.0,  0.6,     -0.7,     1.2,     -0.1,    6.0,      -7.0)
 
     #Invert MRES and dir
     def test_TC_90080(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90080
         encRel = 0
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
@@ -377,22 +412,30 @@ class Test(unittest.TestCase):
         motorInitLimitsWithC(self, self.motor, tc_no)
 
     def test_TC_90081(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90081
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "DHLM", 10,  0.7,      -0.6,    1.1,    -0.2,   6.0,      -7.0)
 
     def test_TC_90082(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90082
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "HLM",  10,  0.7,     -0.6,    1.1,    -0.2,    6.0,      -7.0)
 
     def test_TC_90083(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90083
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "DLLM", -10, 0.7,     -0.6,    1.1,    -0.2,    6.0,      -7.0)
 
     def test_TC_90084(self):
+        self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
         tc_no = 90084
         #setLimit(tself, motor, tc_no,    field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimit(self, self.motor, tc_no, "LLM", -10,  0.7,     -0.6,    1.1,    -0.2,    6.0,      -7.0)
 
+
+    def test_TC_900999(self):
+        if self.drvUseEGU_RB == 1:
+            epics.caput(self.motor + '-DrvUseEGU', 1)

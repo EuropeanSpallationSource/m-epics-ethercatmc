@@ -171,10 +171,18 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-CRDBD") {
     field(SCAN, "I/O Intr")
 }
 
+record(longout,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU") {
+    field(DESC, "Record uses EGU")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_DRIVER_USES_EGU")
+    info(asyn:READBACK,"1")
+}
+
+
 record(longin,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU-RB") {
     field(DESC, "Record uses EGU")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_READBACK_EGU")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_DRIVER_USES_EGU")
     field(SCAN, "I/O Intr")
 }
 
