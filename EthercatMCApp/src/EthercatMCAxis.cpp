@@ -386,8 +386,9 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
   asynStatus status;
   int nvals;
   double scaleFactor = drvlocal.scaleFactor;
-  double velo, vmax, jvel, jar;
+  double velo, vmax, jvel, jar, velToHom;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
+           "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
@@ -395,21 +396,22 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
            0x4000 + axisID, 0x9,   // VELO"
            0x4000 + axisID, 0x27,  // VMAX"
            0x4000 + axisID, 0x8,   // JVEL
-           0x4000 + axisID, 0x101  // JAR"
+           0x4000 + axisID, 0x101, // JAR"
+           0x4000 + axisID, 0x6    // HVEL
            );
   status = writeReadControllerPrint();
   if (status) return status;
-  nvals = sscanf(pC_->inString_, "%lf;%lf;%lf;%lf",
-                 &velo, &vmax, &jvel, &jar);
-  if (nvals != 4) {
+  nvals = sscanf(pC_->inString_, "%lf;%lf;%lf;%lf;%lf",
+                 &velo, &vmax, &jvel, &jar, &velToHom);
+  if (nvals != 5) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%snvals=%d command=\"%s\" response=\"%s\"\n",
               modNamEMC, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%svelo=%f vmax=%f jvel=%f jar=%f\n",
-            modNamEMC, velo, vmax, jvel, jar);
+            "%svelo=%f vmax=%f jvel=%f jar=%f hvel=%f\n",
+            modNamEMC, velo, vmax, jvel, jar, velToHom);
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVELO_, velo / scaleFactor);
 #ifdef motorDefVelocityROString
   setDoubleParam(pC_->motorDefVelocityRO_, velo / scaleFactor);
@@ -423,6 +425,9 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJVEL_, jvel / scaleFactor);
 #ifdef motorDefJogVeloROString
   setDoubleParam(pC_->motorDefJogVeloRO_, jvel / scaleFactor);
+#endif
+#ifdef motorDefHomeVeloROString
+  setDoubleParam(pC_->motorDefHomeVeloRO_, velToHom / scaleFactor);
 #endif
 
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJAR_, jar / scaleFactor);
