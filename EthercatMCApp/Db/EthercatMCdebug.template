@@ -171,8 +171,8 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-CRDBD") {
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(PREFIX)$(MOTOR_NAME)-RB-EGU-RB") {
-    field(DESC, "Readback in EGU")
+record(longin,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU-RB") {
+    field(DESC, "Record uses EGU")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_READBACK_EGU")
     field(SCAN, "I/O Intr")
