@@ -1409,11 +1409,14 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     drvlocal.old_bError = st_axis_status.bError;
     drvlocal.old_MCU_nErrorId = nErrorId;
     drvlocal.dirty.sErrorMessage = 0;
-    /* Get the ErrorMessage to have it in the log file */
-    (void)getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0],
-                            sizeof(sErrorMessage));
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssErrorMessage(%d)=\"%s\"\n",  modNamEMC, axisNo_, sErrorMessage);
+    if (nErrorId) {
+      /* Get the ErrorMessage to have it in the log file */
+      (void)getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0],
+                              sizeof(sErrorMessage));
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%ssErrorMessage(%d)=\"%s\"\n",
+                modNamEMC, axisNo_, sErrorMessage);
+    }
     /* First choice: "well known" ErrorIds */
     if (errIdString[0]) {
       snprintf(printSring, sizeof(printSring)-1, "E: %s %x",
@@ -1422,7 +1425,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
       /* emcmc has error messages */
       snprintf(printSring, sizeof(printSring)-1, "E: %s",
                sErrorMessage);
-    } else {
+    } else if (nErrorId) {
       snprintf(printSring, sizeof(printSring)-1, "E: Cntrl Error %x", nErrorId);
     }
     updateMsgTxtFromDriver(printSring);
