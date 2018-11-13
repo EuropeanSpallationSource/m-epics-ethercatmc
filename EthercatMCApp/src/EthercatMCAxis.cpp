@@ -54,6 +54,9 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 #ifdef motorFlagsDriverUsesEGUString
     setIntegerParam(pC_->motorFlagsDriverUsesEGU_,1);
 #endif
+#ifdef motorFlagsAdjAfterHomedString
+    setIntegerParam(pC_->motorFlagsAdjAfterHomed_, 1);
+#endif
 #ifdef motorWaitPollsBeforeReadyString
   setIntegerParam(pC_->motorWaitPollsBeforeReady_ , WAITNUMPOLLSBEFOREREADY);
 #endif
