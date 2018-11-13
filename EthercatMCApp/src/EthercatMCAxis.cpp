@@ -579,6 +579,8 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "Drv HW not rdy";
   case 0x4655:
     return "Inv IO data";
+  case 0x4B09:
+    return "Axis not ready";
   case 0x4B0A:
     return "Homing failed";
   default:
