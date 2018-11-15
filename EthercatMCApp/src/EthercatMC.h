@@ -141,6 +141,15 @@ private:
     eeAxisErrorNotHomed,
     eeAxisIllegalInTargetWindow
   } eeAxisErrorType;
+
+  typedef enum
+  {
+    eeAxisWarningNoWarning,
+    eeAxisWarningScalZero,
+    eeAxisWarningVeloZero,
+    eeAxisWarningSpeedLimit
+  } eeAxisWarningType;
+
   EthercatMCController *pC_;          /**< Pointer to the asynMotorController to which this axis belongs.
                                    *   Abbreviated because it is used very frequently */
   struct {
@@ -163,6 +172,8 @@ private:
     int old_nCommandActive;
     int homed;
     unsigned int illegalInTargetWindow :1;
+    eeAxisWarningType old_eeAxisWarning;
+    eeAxisWarningType eeAxisWarning;
     eeAxisErrorType old_eeAxisError;
     eeAxisErrorType eeAxisError;
     /* Which values have changed in the EPICS IOC, but are not updated in the
@@ -188,7 +199,8 @@ private:
     }  supported;
     /* Error texts when we talk to the controller, there is not an "OK"
        Or, failure in setValueOnAxisVerify() */
-    char cmdErrorMessage[80];
+    char cmdErrorMessage[80]; /* From driver */
+    char sErrorMessage[80]; /* From controller */
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     char adsport_zero[1]; /* 15 + 1 for '\' keep us aligned in memory */
     unsigned int adsPort;

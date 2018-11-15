@@ -673,18 +673,24 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
 {
   asynStatus status = asynSuccess;
 
-  if (!drvlocal.cmdErrorMessage[0]) {
-    /* Do range check */
-    if (!drvlocal.scaleFactor) {
-      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-               "E: scaleFactor is 0.0\n");
-      return asynSuccess;
-    } else if (!maxVelocity) {
-      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-               "E: velo is 0.0\n");
-      return asynSuccess;
+  drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
+  /* Do range check */
+  if (!drvlocal.scaleFactor) {
+    drvlocal.eeAxisWarning = eeAxisWarningScalZero;
+    return asynSuccess;
+  } else if (!maxVelocity) {
+    drvlocal.eeAxisWarning = eeAxisWarningVeloZero;
+    return asynSuccess;
+#ifdef motorDefHomeVeloROString
+  } else if (!drvlocal.homed) {
+    double velToHom;
+    pC_->getDoubleParam(axisNo_, pC_->motorDefHomeVeloRO_, &velToHom);
+    velToHom *= drvlocal.scaleFactor;
+    if (velToHom && (maxVelocity > velToHom)) {
+      maxVelocity = velToHom;
+      drvlocal.eeAxisWarning = eeAxisWarningSpeedLimit;
     }
-    /* The poller co-ordinates the writing into the parameter library */
+#endif
   }
 
 #if MAX_CONTROLLER_STRING_SIZE > 350
@@ -720,6 +726,7 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
   int homProc = -1;
   double homPos = 0.0;
 
+  drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   /* The homPos may be undefined, then use 0.0 */
   (void)pC_->getDoubleParam(axisNo_, pC_->EthercatMCHomPos_, &homPos);
   status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCHomProc_,&homProc);
@@ -785,18 +792,14 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
  */
 asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, double acceleration)
 {
-  if (!drvlocal.cmdErrorMessage[0]) {
-    /* Do range check */
-    if (!drvlocal.scaleFactor) {
-      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-               "E: scaleFactor is 0.0\n");
-      return asynSuccess;
-    } else if (!maxVelocity) {
-      snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-               "E: velo is 0.0\n");
-      return asynSuccess;
-    }
-    /* The poller co-ordinates the writing into the parameter library */
+  drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
+  /* Do range check */
+  if (!drvlocal.scaleFactor) {
+    drvlocal.eeAxisWarning = eeAxisWarningScalZero;
+    return asynSuccess;
+  } else if (!maxVelocity) {
+    drvlocal.eeAxisWarning = eeAxisWarningVeloZero;
+    return asynSuccess;
   }
 
 #if MAX_CONTROLLER_STRING_SIZE > 350
@@ -859,6 +862,7 @@ asynStatus EthercatMCAxis::resetAxis(void)
   int EthercatMCErr;
   bool moving;
   /* Reset command error, if any */
+  drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   drvlocal.cmdErrorMessage[0] = 0;
   status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCErr_, &EthercatMCErr);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -977,11 +981,13 @@ asynStatus EthercatMCAxis::stopAxisInternal(const char *function_name, double ac
  */
 asynStatus EthercatMCAxis::stop(double acceleration )
 {
+  drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   return stopAxisInternal(__FUNCTION__, acceleration);
 }
 
 void EthercatMCAxis::callParamCallbacksUpdateError()
 {
+  const char *msgTxtFromDriver = NULL;
   int EPICS_nErrorId = drvlocal.MCU_nErrorId;
   drvlocal.eeAxisError = eeAxisErrorNoError;
   if (drvlocal.supported.statusVer == -1) {
@@ -989,6 +995,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
   } else if (EPICS_nErrorId) {
     /* Error from MCU */
     drvlocal.eeAxisError = eeAxisErrorMCUError;
+    msgTxtFromDriver = &drvlocal.sErrorMessage[0];
   } else if (drvlocal.dirty.sErrorMessage) {
     /* print error below */
     drvlocal.eeAxisError = eeAxisErrorIOCcomError;
@@ -1000,53 +1007,69 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     drvlocal.eeAxisError = eeAxisIllegalInTargetWindow;
   }
   if (drvlocal.eeAxisError != drvlocal.old_eeAxisError ||
+      drvlocal.eeAxisWarning != drvlocal.old_eeAxisWarning ||
       drvlocal.old_EPICS_nErrorId != EPICS_nErrorId ||
       drvlocal.old_nCommandActive != drvlocal.nCommandActive) {
 
     if (!drvlocal.cfgDebug_str) {
-      if (!EPICS_nErrorId)
-        updateMsgTxtFromDriver(NULL);
-
-      switch (drvlocal.eeAxisError) {
+      if (drvlocal.nCommandActive && drvlocal.eeAxisWarning) {
+        /* Moving with warning: Show the warning */
+        /* There is a warning */
+        switch(drvlocal.eeAxisWarning) {
+        case eeAxisWarningScalZero:
+          msgTxtFromDriver = "E: scaleFactor is 0.0";
+          break;
+        case eeAxisWarningVeloZero:
+          msgTxtFromDriver = "E: velo is 0.0";
+          break;
+        case eeAxisWarningSpeedLimit:
+          msgTxtFromDriver = "I: Speed Limit";
+          break;
+        default:
+          msgTxtFromDriver = "E: warning XXX";
+          break;
+        }
+      } else {
+        switch (drvlocal.eeAxisError) {
         case eeAxisErrorNoError:
           {
-            switch(drvlocal.nCommandActive) {
+              switch(drvlocal.nCommandActive) {
 #ifdef motorLatestCommandString
-            case NCOMMANDMOVEVEL:
-              setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_VEL);
-              break;
-            case NCOMMANDMOVEREL:
-              setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_REL);
-              break;
-            case NCOMMANDMOVEABS:
-              setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_ABS);
-              break;
-            case NCOMMANDHOME:
-              setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_HOMING);
-              break;
+              case NCOMMANDMOVEVEL:
+                setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_VEL);
+                break;
+              case NCOMMANDMOVEREL:
+                setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_REL);
+                break;
+              case NCOMMANDMOVEABS:
+                setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_MOVE_ABS);
+                break;
+              case NCOMMANDHOME:
+                setIntegerParam(pC_->motorLatestCommand_, LATEST_COMMAND_HOMING);
+                break;
 #endif
-            case 0:
-              updateMsgTxtFromDriver(NULL);
-              break;
-            default:
-              updateMsgTxtFromDriver("I: Moving");
-            }
+              case 0:
+                break;
+              default:
+                msgTxtFromDriver = "I: Moving";
+              }
           }
           break;
         case eeAxisErrorNotFound:
-            updateMsgTxtFromDriver("Not found");
-            break;
+          msgTxtFromDriver = "Not found";
+          break;
         case eeAxisErrorCmdError:
-            updateMsgTxtFromDriver(drvlocal.cmdErrorMessage);
-            break;
+          msgTxtFromDriver = &drvlocal.cmdErrorMessage[0];
+          break;
         case eeAxisIllegalInTargetWindow:
-            updateMsgTxtFromDriver("E: InTargetPosWin");
-            break;
+          msgTxtFromDriver = "E: InTargetPosWin";
+          break;
         case eeAxisErrorIOCcomError:
         case eeAxisErrorNotHomed:
           /* handled by asynMotorAxis, fall through */
         default:
           ;
+        }
       }
     }
     /* Axis has a problem: Report to motor record */
@@ -1069,7 +1092,16 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
               EPICS_nErrorId, drvlocal.old_EPICS_nErrorId,
               drvlocal.nCommandActive, drvlocal.old_nCommandActive);
 
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "ZZZZZ%s(%d) nCommandActive=%d error=%d warning=%d msgTxt=%s\n",
+              modNamEMC, axisNo_,
+              drvlocal.nCommandActive,
+              drvlocal.eeAxisError,
+              drvlocal.eeAxisWarning,
+              msgTxtFromDriver ? msgTxtFromDriver : "NULL");
+    updateMsgTxtFromDriver(msgTxtFromDriver);
     drvlocal.old_eeAxisError = drvlocal.eeAxisError;
+    drvlocal.old_eeAxisWarning = drvlocal.eeAxisWarning;
     drvlocal.old_EPICS_nErrorId = EPICS_nErrorId;
     drvlocal.old_nCommandActive = drvlocal.nCommandActive;
   }
@@ -1402,11 +1434,10 @@ asynStatus EthercatMCAxis::poll(bool *moving)
       drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
       drvlocal.dirty.sErrorMessage) {
     char sErrorMessage[256];
-    char printSring[256];
     int nErrorId = st_axis_status.nErrorId;
     const char *errIdString = errStringFromErrId(nErrorId);
     sErrorMessage[0] = '\0';
-    printSring[0] = '\0';
+    drvlocal.sErrorMessage[0] = '\0';
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
                modNamEMC, axisNo_, st_axis_status.bError,
@@ -1424,16 +1455,17 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     }
     /* First choice: "well known" ErrorIds */
     if (errIdString[0]) {
-      snprintf(printSring, sizeof(printSring)-1, "E: %s %x",
+      snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: %s %x",
                errIdString, nErrorId);
     } else if (drvlocal.supported.bECMC && nErrorId) {
       /* emcmc has error messages */
-      snprintf(printSring, sizeof(printSring)-1, "E: %s",
+      snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: %s",
                sErrorMessage);
     } else if (nErrorId) {
-      snprintf(printSring, sizeof(printSring)-1, "E: Cntrl Error %x", nErrorId);
+      snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: Cntrl Error %x", nErrorId);
     }
-    updateMsgTxtFromDriver(printSring);
+    /* The poller will update the MsgTxt field */
+    // updateMsgTxtFromDriver(drvlocal.sErrorMessage);
   }
   callParamCallbacksUpdateError();
 
