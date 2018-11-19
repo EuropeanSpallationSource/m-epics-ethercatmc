@@ -101,7 +101,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     const char * const encoder_is_str = "encoder=";
     const char * const cfgfile_str = "cfgFile=";
     const char * const cfgDebug_str = "getDebugText=";
-#ifndef motorFlagsReadbackEGUString
+#ifndef motorFlagsDriverUsesEGUString
     const char * const stepSize_str = "stepSize=";
 #endif
     const char * const homProc_str = "HomProc=";
@@ -128,7 +128,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
       } else if (!strncmp(pThisOption, cfgDebug_str, strlen(cfgDebug_str))) {
         pThisOption += strlen(cfgDebug_str);
         drvlocal.cfgDebug_str = strdup(pThisOption);
-#ifndef motorFlagsReadbackEGUString
+#ifndef motorFlagsDriverUsesEGUString
       } else if (!strncmp(pThisOption, stepSize_str, strlen(stepSize_str))) {
         pThisOption += strlen(stepSize_str);
         /* This option is obsolete, depending on motor */
