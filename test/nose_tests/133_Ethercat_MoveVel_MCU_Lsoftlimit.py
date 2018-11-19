@@ -76,6 +76,16 @@ class Test(unittest.TestCase):
             if (msta & self.lib.MSTA_BIT_PROBLEM):
                 epics.caput(motor + '-ErrRst', 1)
 
+            print '%s msta=%s' % (tc_no, self.lib.getMSTAtext(msta))
+
+            echlm = epics.caget(motor + '-ECHLM')
+            ecllm = epics.caget(motor + '-ECLLM')
+            echlmEn = epics.caget(motor + '-ECHLM-En')
+            ecllmEn = epics.caget(motor + '-ECLLM-En')
+            drbv = epics.caget(motor + '.DRBV')
+            print '%s echlm=%f ecllm=%f echlmEn=%d ecllmEn=%d drbv=%f'\
+                % (tc_no, echlm, ecllm, echlmEn, ecllmEn, drbv)
+
             self.assertEqual(0, msta & self.lib.MSTA_BIT_MINUS_LS, 'DLY Minus hard limit not reached MoveVel')
             self.assertEqual(0, msta & self.lib.MSTA_BIT_PLUS_LS,  'DLY Plus hard limit not reached MoveVel')
             self.assertEqual(0, miss,                              'DLY MISS not set MoveVel')
