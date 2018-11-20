@@ -117,7 +117,7 @@ class motor_lib(object):
         self.initializeMotorRecordOneField(motor, tc_no, '.JAR',  20.0)
 
         self.initializeMotorRecordOneField(motor, tc_no, '.RDBD', 0.1)
-        #self.initializeMotorRecordOneField(motor, tc_no, '.SDBD', 0.1)
+        #self.initializeMotorRecordOneField(motor, tc_no, '.SPDB', 0.1)
         self.initializeMotorRecordOneField(motor, tc_no, '.BDST', 0.0)
 
         self.setSoftLimitsOff(motor)

@@ -510,11 +510,11 @@ record(transform, "$(P)$(SLIT)tRev") {
 }
 
 record(transform, "$(P)$(SLIT)tRDbd_") {
-  field(DESC, "xp(a), xn(b) RDBD,SDBD")
+  field(DESC, "xp(a), xn(b) RDBD,SPDB")
   field(INPA, "$(P)$(mXp).RDBD  CP MS")
   field(INPB, "$(P)$(mXn).RDBD  CP MS")
-  field(INPC, "$(P)$(mXp).SDBD  CP MS")
-  field(INPD, "$(P)$(mXn).SDBD  CP MS")
+  field(INPC, "$(P)$(mXp).SPDB  CP MS")
+  field(INPD, "$(P)$(mXn).SPDB  CP MS")
   field(EGU, "mm")
   field(PREC, "$(PREC=3)")
   field(CLCE, "a+b")
@@ -523,12 +523,12 @@ record(transform, "$(P)$(SLIT)tRDbd_") {
   field(CLCH, "c+d")
   field(OUTA, "$(P)$(SLIT)xp.RDBD  NPP MS")
   field(OUTB, "$(P)$(SLIT)xn.RDBD  NPP MS")
-  field(OUTC, "$(P)$(SLIT)xp.SDBD  NPP MS")
-  field(OUTD, "$(P)$(SLIT)xn.SDBD  NPP MS")
+  field(OUTC, "$(P)$(SLIT)xp.SPDB  NPP MS")
+  field(OUTD, "$(P)$(SLIT)xn.SPDB  NPP MS")
   field(OUTE, "$(P)$(SLIT)Gap.RDBD  NPP MS")
-  field(OUTF, "$(P)$(SLIT)Gap.SDBD NPP MS")
+  field(OUTF, "$(P)$(SLIT)Gap.SPDB NPP MS")
   field(OUTG, "$(P)$(SLIT)Center.RDBD  NPP MS")
-  field(OUTH, "$(P)$(SLIT)Center.SDBD NPP MS")
+  field(OUTH, "$(P)$(SLIT)Center.SPDB NPP MS")
 }
 
 # Convert the soft limits from the hard motor into the 4 soft motors

@@ -155,11 +155,11 @@ record(ao, "$(PREFIX)$(MOTOR_NAME)-CFGJAR")
     info(asyn:READBACK,"1")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-CSDBD") {
-    field(DESC, "Controller SDBD")
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CSPDB") {
+    field(DESC, "Controller SPDB")
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_SDBD_RO")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_SPDB_RO")
     field(SCAN, "I/O Intr")
 }
 
