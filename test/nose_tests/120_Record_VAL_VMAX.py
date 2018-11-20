@@ -12,11 +12,17 @@ from motor_globals import motor_globals
 __g = motor_globals()
 ###
 
-def motorPositionTC(self, motor, tc_no, destination):
+def motorPositionTC(self, motor, tc_no, destination, velocity):
     if (self.msta & self.lib.MSTA_BIT_HOMED):
         tc_no = "TC-1202-LLM"
         print '%s' % tc_no
+        if velocity != self.velo:
+            epics.caput(motor + '.VELO', velocity)
+
         res = self.lib.move(motor, destination, 60)
+        if velocity != self.velo:
+            epics.caput(motor + '.VELO', self.velo)
+
         UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
         print '%s postion=%f destination=%f' % (
             tc_no, UserPosition, destination)
@@ -40,22 +46,37 @@ class Test(unittest.TestCase):
     def test_TC_1201(self):
         motor = self.motor
         tc_no = "TC-1201"
-        motorPositionTC(self, motor, tc_no, self.llm)
+        motorPositionTC(self, motor, tc_no, self.llm, self.velo)
 
 
     def test_TC_1202(self):
         motor = self.motor
         tc_no = "TC-1202"
-        motorPositionTC(self, motor, tc_no, self.per10_UserPosition)
+        motorPositionTC(self, motor, tc_no, self.per10_UserPosition, self.velo)
 
 
     def test_TC_1203(self):
         motor = self.motor
-        tc_no = "TC-1202"
-        motorPositionTC(self, motor, tc_no, self.per90_UserPosition)
+        tc_no = "TC-1203"
+        motorPositionTC(self, motor, tc_no, self.per90_UserPosition, self.velo)
 
-    # LLM UserPosition
+
     def test_TC_1204(self):
         motor = self.motor
-        tc_no = "TC-1202"
-        motorPositionTC(self, motor, tc_no, self.hlm)
+        tc_no = "TC-1204"
+        motorPositionTC(self, motor, tc_no, self.hlm, self.velo)
+
+    def test_TC_1205(self):
+        motor = self.motor
+        tc_no = "TC-1205"
+        motorPositionTC(self, motor, tc_no, self.per90_UserPosition, self.vmax)
+
+    def test_TC_1206(self):
+        motor = self.motor
+        tc_no = "TC-1206"
+        motorPositionTC(self, motor, tc_no, self.per10_UserPosition, self.vmax)
+
+    def test_TC_1207(self):
+        motor = self.motor
+        tc_no = "TC-1207"
+        motorPositionTC(self, motor, tc_no, self.llm, self.vmax)
