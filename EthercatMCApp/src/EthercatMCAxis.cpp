@@ -1003,7 +1003,8 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
     msgTxtFromDriver = &drvlocal.cmdErrorMessage[0];
-  } else if (!drvlocal.homed) {
+  } else if (!drvlocal.homed &&
+             (drvlocal.nCommandActive != NCOMMANDHOME)) {
     drvlocal.eeAxisError = eeAxisErrorNotHomed;
   } else if (drvlocal.illegalInTargetWindow) {
     drvlocal.eeAxisError = eeAxisIllegalInTargetWindow;
