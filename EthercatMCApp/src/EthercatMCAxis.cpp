@@ -1331,8 +1331,12 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 
   if (st_axis_status.mvnNRdyNex)
     drvlocal.nCommandActive = st_axis_status.nCommand;
-  else
+  else {
     drvlocal.nCommandActive = 0;
+    if (drvlocal.eeAxisWarning == eeAxisWarningSpeedLimit) {
+      drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
+    }
+  }
 
   if (drvlocal.nCommandActive != NCOMMANDHOME) {
     setDoubleParam(pC_->motorPosition_,
