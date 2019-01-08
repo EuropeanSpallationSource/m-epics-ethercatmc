@@ -706,6 +706,7 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_Motor_status[motor_axis_no].bHomeSensor = getAxisHome(motor_axis_no);
     cmd_Motor_status[motor_axis_no].bError = get_bError(motor_axis_no);
     cmd_Motor_status[motor_axis_no].nErrorId = get_nErrorId(motor_axis_no);
+    cmd_Motor_status[motor_axis_no].fVelocity = cmd_Motor_cmd[motor_axis_no].fVelocity;
     cmd_Motor_status[motor_axis_no].fActVelocity = getMotorVelocity(motor_axis_no);
     cmd_Motor_status[motor_axis_no].bHomed = getAxisHomed(motor_axis_no);
     cmd_Motor_status[motor_axis_no].bBusy = isMotorMoving(motor_axis_no);
