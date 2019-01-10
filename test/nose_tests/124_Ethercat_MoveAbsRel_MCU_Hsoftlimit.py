@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
             rbv = epics.caget(motor + '.RBV')
 
             jar = epics.caget(motor + '.JAR')
-            epics.caput(motor + '-ACSS', jar/mres)
+            epics.caput(motor + '-ACCS', jar/mres)
 
             jvel = epics.caget(motor + '.JVEL')
             epics.caput(motor + '-VELO', jvel/mres)

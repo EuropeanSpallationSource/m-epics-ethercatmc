@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
             print '%s' % tc_no
 
             jar = epics.caget(motor + '.JAR')
-            epics.caput(motor + '-ACSS', jar)
+            epics.caput(motor + '-ACCS', jar)
 
             jvel = epics.caget(motor + '.JVEL')
             res = epics.caput(motor + '-MoveVel', 0 - jvel)

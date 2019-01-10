@@ -57,7 +57,7 @@ record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveVel")
     info(asyn:READBACK,"1")
 }
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-ACSS")
+record(ao, "$(PREFIX)$(MOTOR_NAME)-ACCS")
 {
     field(DESC, "Acc EGU/sec2")
     field(DTYP, "asynFloat64")
