@@ -304,8 +304,8 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
               "%snvals=%d\n", modNamEMC, nvals);
     return asynError;
   }
-  setDoubleParam(pC_->EthercatMCScalSREV_RB_, srev);
-  setDoubleParam(pC_->EthercatMCScalUREV_RB_, urev);
+  setDoubleParam(pC_->EthercatMCCfgSREV_RB_, srev);
+  setDoubleParam(pC_->EthercatMCCfgUREV_RB_, urev);
 #if defined motorSREVROString
 #if defined motorUREVROString
   setDoubleParam(pC_->motorSREVRO_, srev);
@@ -319,11 +319,11 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
   }
 #endif
   if (nvals >= 3) {
-    setIntegerParam(pC_->EthercatMCScalMDIR_RB_, edir);
+    setIntegerParam(pC_->EthercatMCCfgMDIR_RB_, edir);
   }
   if (nvals == 5) {
-    setDoubleParam(pC_->EthercatMCScalRefVelo_RB_, refVelo);
-    setIntegerParam(pC_->EthercatMCScalEDIR_RB_, mdir);
+    setDoubleParam(pC_->EthercatMCCfgRefVelo_RB_, refVelo);
+    setIntegerParam(pC_->EthercatMCCfgEDIR_RB_, mdir);
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%ssrev=%f urev=%f refVelo=%f mdir=%d edir=%d\n",
@@ -366,9 +366,9 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%srdbd=%f, rdbd_tim=%f rdbd_en=%d poslag=%f poslag_tim=%f poslag_en=%d\n",
             modNamEMC, rdbd, rdbd_tim, rdbd_en, poslag, poslag_tim, poslag_en);
-  setDoubleParam(pC_->EthercatMCScalRDBD_RB_, rdbd);
-  setDoubleParam(pC_->EthercatMCScalRDBD_Tim_RB_, rdbd_tim);
-  setIntegerParam(pC_->EthercatMCScalRDBD_En_RB_, rdbd_en);
+  setDoubleParam(pC_->EthercatMCCfgRDBD_RB_, rdbd);
+  setDoubleParam(pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim);
+  setIntegerParam(pC_->EthercatMCCfgRDBD_En_RB_, rdbd_en);
 #ifdef motorRDBDROString
     setDoubleParam(pC_->motorRDBDRO_, rdbd_en ? rdbd / scaleFactor : 0.0);
 #endif
@@ -376,9 +376,9 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
   drvlocal.illegalInTargetWindow = (!rdbd_en || !rdbd);
 
   if (nvals == 6) {
-    setDoubleParam(pC_->EthercatMCScalPOSLAG_RB_, poslag);
-    setDoubleParam(pC_->EthercatMCScalPOSLAG_Tim_RB_, poslag_tim);
-    setIntegerParam(pC_->EthercatMCScalPOSLAG_En_RB_, poslag_en);
+    setDoubleParam(pC_->EthercatMCCfgPOSLAG_RB_, poslag);
+    setDoubleParam(pC_->EthercatMCCfgPOSLAG_Tim_RB_, poslag_tim);
+    setIntegerParam(pC_->EthercatMCCfgPOSLAG_En_RB_, poslag_en);
   }
   return asynSuccess;
 }
@@ -415,17 +415,17 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%svelo=%f vmax=%f jvel=%f jar=%f hvel=%f\n",
             modNamEMC, velo, vmax, jvel, jar, velToHom);
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVELO_, velo / scaleFactor);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVELO_, velo / scaleFactor);
 #ifdef motorDefVelocityROString
   setDoubleParam(pC_->motorDefVelocityRO_, velo / scaleFactor);
 #endif
 
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGVMAX_, vmax / scaleFactor);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVMAX_, vmax / scaleFactor);
 #ifdef motorMaxVelocityROString
   setDoubleParam(pC_->motorMaxVelocityRO_, vmax / scaleFactor);
 #endif
 
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJVEL_, jvel / scaleFactor);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgJVEL_, jvel / scaleFactor);
 #ifdef motorDefJogVeloROString
   setDoubleParam(pC_->motorDefJogVeloRO_, jvel / scaleFactor);
 #endif
@@ -433,7 +433,7 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
   setDoubleParam(pC_->motorDefHomeVeloRO_, velToHom / scaleFactor);
 #endif
 
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCFGJAR_, jar / scaleFactor);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgJAR_, jar / scaleFactor);
 #ifdef motorDefJogAccROString
   setDoubleParam(pC_->motorDefJogAccRO_, jar / scaleFactor);
 #endif
@@ -676,7 +676,7 @@ asynStatus EthercatMCAxis::move(double position, int relative, double minVelocit
   drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   /* Do range check */
   if (!drvlocal.scaleFactor) {
-    drvlocal.eeAxisWarning = eeAxisWarningScalZero;
+    drvlocal.eeAxisWarning = eeAxisWarningCfgZero;
     return asynSuccess;
   } else if (!maxVelocity) {
     drvlocal.eeAxisWarning = eeAxisWarningVeloZero;
@@ -795,7 +795,7 @@ asynStatus EthercatMCAxis::moveVelocity(double minVelocity, double maxVelocity, 
   drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   /* Do range check */
   if (!drvlocal.scaleFactor) {
-    drvlocal.eeAxisWarning = eeAxisWarningScalZero;
+    drvlocal.eeAxisWarning = eeAxisWarningCfgZero;
     return asynSuccess;
   } else if (!maxVelocity) {
     drvlocal.eeAxisWarning = eeAxisWarningVeloZero;
@@ -1018,7 +1018,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
     if (!msgTxtFromDriver && drvlocal.eeAxisWarning) {
        /* No error to show yet */
       switch(drvlocal.eeAxisWarning) {
-      case eeAxisWarningScalZero:
+      case eeAxisWarningCfgZero:
         msgTxtFromDriver = "E: scaleFactor is 0.0";
         break;
       case eeAxisWarningVeloZero:
@@ -1675,24 +1675,24 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     readBackSoftLimits();
     return status;
 #endif
-  } else if (function == pC_->EthercatMCCFGVELO_) {
+  } else if (function == pC_->EthercatMCCfgVELO_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d EthercatMCCFGVELO_)=%f\n", modNamEMC, axisNo_, value);
+              "%ssetDoubleParam(%d EthercatMCCfgVELO_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(0x4000, 0x9, value);
     return status;
-  } else if (function == pC_->EthercatMCCFGVMAX_) {
+  } else if (function == pC_->EthercatMCCfgVMAX_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d EthercatMCCFGVMAX_)=%f\n", modNamEMC, axisNo_, value);
+              "%ssetDoubleParam(%d EthercatMCCfgVMAX_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(0x4000, 0x27, value);
     return status;
-  } else if (function == pC_->EthercatMCCFGJVEL_) {
+  } else if (function == pC_->EthercatMCCfgJVEL_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d EthercatMCCFGJVEL_)=%f\n", modNamEMC, axisNo_, value);
+              "%ssetDoubleParam(%d EthercatMCCfgJVEL_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(0x4000, 0x8, value);
     return status;
-  } else if (function == pC_->EthercatMCCFGJAR_) {
+  } else if (function == pC_->EthercatMCCfgJAR_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d EthercatMCCFGJAR_)=%f\n", modNamEMC, axisNo_, value);
+              "%ssetDoubleParam(%d EthercatMCCfgJAR_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(0x4000, 0x101, value);
     return status;
   }

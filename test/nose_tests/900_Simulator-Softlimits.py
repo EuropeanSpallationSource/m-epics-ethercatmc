@@ -31,11 +31,11 @@ myBDST = 0  # backlash destination, mm
 #Different values, high use even, low uses odd
 #
 myLowHardLimitPos  =   -9.0
-myECLLM             =   -7.0
+myCfgDLLM          =   -7.0
 myDLLM             =   -5.0
 myStartposDial     =    0.0
 myDHLM             =    4.0
-myECHLM             =    6.0
+myCfgDHLM          =    6.0
 myHighHardLimitPos =    8.0
 
 #Comparing floating points may fail because of rounding problems
@@ -70,21 +70,21 @@ def motorInitVeloAcc(tself, motor, tc_no, encRel):
 
 
 def motorInitLimitsNoC(tself, motor, tc_no):
-    epics.caput(motor + '-ECLLM', myECLLM)
-    epics.caput(motor + '-ECHLM', myECHLM)
-    epics.caput(motor + '-ECLLM-En', 0, wait=True)
-    epics.caput(motor + '-ECHLM-En', 0, wait=True)
+    epics.caput(motor + '-CfgDLLM', myCfgDLLM)
+    epics.caput(motor + '-CfgDHLM', myCfgDHLM)
+    epics.caput(motor + '-CfgDLLM-En', 0, wait=True)
+    epics.caput(motor + '-CfgDHLM-En', 0, wait=True)
 
     epics.caput(motor + '.DHLM', myDHLM)
     epics.caput(motor + '.DLLM', myDLLM)
 
 def motorInitLimitsWithC(tself, motor, tc_no):
-    epics.caput(motor + '-ECLLM-En', 0, wait=True)
-    epics.caput(motor + '-ECHLM-En', 0, wait=True)
-    epics.caput(motor + '-ECHLM', myECHLM)
-    epics.caput(motor + '-ECLLM', myECLLM)
-    epics.caput(motor + '-ECLLM-En', 1, wait=True)
-    epics.caput(motor + '-ECHLM-En', 1, wait=True)
+    epics.caput(motor + '-CfgDLLM-En', 0, wait=True)
+    epics.caput(motor + '-CfgDHLM-En', 0, wait=True)
+    epics.caput(motor + '-CfgDHLM', myCfgDHLM)
+    epics.caput(motor + '-CfgDLLM', myCfgDLLM)
+    epics.caput(motor + '-CfgDLLM-En', 1, wait=True)
+    epics.caput(motor + '-CfgDHLM-En', 1, wait=True)
 
     epics.caput(motor + '.DHLM', myDHLM)
     epics.caput(motor + '.DLLM', myDLLM)

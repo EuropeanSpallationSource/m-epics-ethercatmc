@@ -103,8 +103,8 @@ class motor_lib(object):
 
     def initializeMotorRecordSimulatorAxis(self, motor, tc_no):
         # If there are usful values in the controller, use them
-        dhlm = epics.caget(motor + '-ECHLM')
-        dllm = epics.caget(motor + '-ECLLM')
+        dhlm = epics.caget(motor + '-CfgDHLM')
+        dllm = epics.caget(motor + '-CfgDLLM')
         if (dhlm == None or dllm == None or dhlm <= dllm):
             dhlm = 53.0
             dllm = -54.0
@@ -121,10 +121,10 @@ class motor_lib(object):
         self.initializeMotorRecordOneField(motor, tc_no, '.BDST', 0.0)
 
         self.setSoftLimitsOff(motor)
-        self.initializeMotorRecordOneField(motor, tc_no, '-ECHLM', dhlm)
-        self.initializeMotorRecordOneField(motor, tc_no, '-ECLLM', dllm)
-        self.initializeMotorRecordOneField(motor, tc_no, '-ECHLM-En', 1)
-        self.initializeMotorRecordOneField(motor, tc_no, '-ECLLM-En', 1)
+        self.initializeMotorRecordOneField(motor, tc_no, '-CfgDHLM', dhlm)
+        self.initializeMotorRecordOneField(motor, tc_no, '-CfgDLLM', dllm)
+        self.initializeMotorRecordOneField(motor, tc_no, '-CfgDHLM-En', 1)
+        self.initializeMotorRecordOneField(motor, tc_no, '-CfgDLLM-En', 1)
         self.initializeMotorRecordOneField(motor, tc_no, '.DHLM', dhlm)
         self.initializeMotorRecordOneField(motor, tc_no, '.DLLM', dllm)
 
@@ -652,8 +652,8 @@ class motor_lib(object):
         """
         # switch off the controller soft limits
         try:
-            epics.caput(motor + '-ECHLM-En', 0, wait=True, timeout=2)
-            epics.caput(motor + '-ECLLM-En', 0, wait=True, timeout=2)
+            epics.caput(motor + '-CfgDHLM-En', 0, wait=True, timeout=2)
+            epics.caput(motor + '-CfgDLLM-En', 0, wait=True, timeout=2)
         finally:
             oldRBV = epics.caget(motor + '.RBV')
 
@@ -670,8 +670,8 @@ class motor_lib(object):
         """
         # switch on the controller soft limits
         try:
-            epics.caput(motor + '-ECHLM-En', 1, wait=True, timeout=2)
-            epics.caput(motor + '-ECLLM-En', 1, wait=True, timeout=2)
+            epics.caput(motor + '-CfgDHLM-En', 1, wait=True, timeout=2)
+            epics.caput(motor + '-CfgDLLM-En', 1, wait=True, timeout=2)
         finally:
             oldRBV = epics.caget(motor + '.RBV')
 

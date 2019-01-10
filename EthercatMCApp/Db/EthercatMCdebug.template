@@ -89,73 +89,73 @@ record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToMCU") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToMCU")
 }
 
-record(ao,"$(PREFIX)$(MOTOR_NAME)-ECHLM") {
+record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM") {
     field(DESC, "EC High Soft Limit")
     field(VAL,  0.0)
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECHLM")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM")
     info(asyn:READBACK,"1")
 }
 
-record(ao,"$(PREFIX)$(MOTOR_NAME)-ECLLM") {
+record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM") {
     field(DESC, "EC Low Soft Limit")
     field(VAL,  0.0)
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECLLM")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM")
     info(asyn:READBACK,"1")
 }
 
-record(longout,"$(PREFIX)$(MOTOR_NAME)-ECHLM-En") {
+record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-En") {
     field(DESC, "EC High Soft Limit enable")
     field(VAL,  0)
     field(DTYP, "asynInt32")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECHLM-En")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM-En")
     info(asyn:READBACK,"1")
 }
 
-record(longout,"$(PREFIX)$(MOTOR_NAME)-ECLLM-En") {
+record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En") {
     field(DESC, "EC Low Soft Limit enable")
     field(VAL,  0)
     field(DTYP, "asynInt32")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECLLM-En")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM-En")
 }
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CFGVELO")
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgVELO")
 {
     field(DESC, "Controller Velocity(fast)")
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CFGVELO")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVELO")
     info(asyn:READBACK,"1")
 }
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CFGVMAX")
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgVMAX")
 {
     field(DESC, "Controller max Velocity")
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CFGVMAX")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVMAX")
     info(asyn:READBACK,"1")
 }
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CFGJVEL")
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgJVEL")
 {
     field(DESC, "Controller Velocity (slow)")
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CFGJVEL")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgJVEL")
     info(asyn:READBACK,"1")
 }
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CFGJAR")
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgJAR")
 {
     field(DESC, "Controller default acceleration")
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CFGJAR")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgJAR")
     info(asyn:READBACK,"1")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-CSPDB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgSPDB") {
     field(DESC, "Controller SPDB")
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")

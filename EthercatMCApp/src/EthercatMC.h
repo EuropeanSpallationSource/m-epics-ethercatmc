@@ -42,25 +42,25 @@ FILENAME...   EthercatMC.h
 #define EthercatMCVel_RBString               "Vel-RB"
 #define EthercatMCAcc_RBString               "Acc-RB"
 #define EthercatMCDec_RBString               "Dec-RB"
-#define EthercatMCCFGVELO_String             "CFGVELO"
-#define EthercatMCCFGVMAX_String             "CFGVMAX"
-#define EthercatMCCFGJVEL_String             "CFGJVEL"
-#define EthercatMCCFGJAR_String              "CFGJAR"
-#define EthercatMCCHLMString                 "ECHLM"
-#define EthercatMCCLLMString                 "ECLLM"
-#define EthercatMCCHLM_EnString              "ECHLM-En"
-#define EthercatMCCLLM_EnString              "ECLLM-En"
-#define EthercatMCScalSREV_RBString          "SCALSREV-RB"
-#define EthercatMCScalUREV_RBString          "SCALUREV-RB"
-#define EthercatMCScalRefVelo_RBString       "REFVELO-RB"
-#define EthercatMCScalMDIR_RBString          "SCALMDIR-RB"
-#define EthercatMCScalEDIR_RBString          "SCALEDIR-RB"
-#define EthercatMCScalRDBD_RBString          "SCALRDBD-RB"
-#define EthercatMCScalRDBD_Tim_RBString      "SCALRDBD-Tim-RB"
-#define EthercatMCScalRDBD_En_RBString       "SCALRDBD-En-RB"
-#define EthercatMCScalPOSLAG_RBString        "SCALPOSLAG-RB"
-#define EthercatMCScalPOSLAG_Tim_RBString    "SCALPOSLAG-Tim-RB"
-#define EthercatMCScalPOSLAG_En_RBString     "SCALPOSLAG-En-RB"
+#define EthercatMCCfgVELO_String             "CfgVELO"
+#define EthercatMCCfgVMAX_String             "CfgVMAX"
+#define EthercatMCCfgJVEL_String             "CfgJVEL"
+#define EthercatMCCfgJAR_String              "CfgJAR"
+#define EthercatMCCHLMString                 "CfgDHLM"
+#define EthercatMCCLLMString                 "CfgDLLM"
+#define EthercatMCCHLM_EnString              "CfgDHLM-En"
+#define EthercatMCCLLM_EnString              "CfgDLLM-En"
+#define EthercatMCCfgSREV_RBString           "SCALSREV-RB"
+#define EthercatMCCfgUREV_RBString           "SCALUREV-RB"
+#define EthercatMCCfgRefVelo_RBString        "REFVELO-RB"
+#define EthercatMCCfgMDIR_RBString           "SCALMDIR-RB"
+#define EthercatMCCfgEDIR_RBString           "SCALEDIR-RB"
+#define EthercatMCCfgRDBD_RBString           "CfgRDBD-RB"
+#define EthercatMCCfgRDBD_Tim_RBString       "CfgRDBD-Tim-RB"
+#define EthercatMCCfgRDBD_En_RBString        "CfgRDBD-En-RB"
+#define EthercatMCCfgPOSLAG_RBString         "CfgPOSLAG-RB"
+#define EthercatMCCfgPOSLAG_Tim_RBString     "CfgPOSLAG-Tim-RB"
+#define EthercatMCCfgPOSLAG_En_RBString      "CfgPOSLAG-En-RB"
 
 
 #define EthercatMCMCUErrMsgString            "MCUErrMsg"
@@ -145,7 +145,7 @@ private:
   typedef enum
   {
     eeAxisWarningNoWarning,
-    eeAxisWarningScalZero,
+    eeAxisWarningCfgZero,
     eeAxisWarningVeloZero,
     eeAxisWarningSpeedLimit
   } eeAxisWarningType;
@@ -330,21 +330,21 @@ public:
   int EthercatMCVel_RB_;
   int EthercatMCAcc_RB_;
   int EthercatMCDec_RB_;
-  int EthercatMCCFGVELO_;
-  int EthercatMCCFGVMAX_;
-  int EthercatMCCFGJVEL_;
-  int EthercatMCCFGJAR_;
-  int EthercatMCScalSREV_RB_;
-  int EthercatMCScalUREV_RB_;
-  int EthercatMCScalRefVelo_RB_;
-  int EthercatMCScalMDIR_RB_;
-  int EthercatMCScalEDIR_RB_;
-  int EthercatMCScalRDBD_RB_;
-  int EthercatMCScalRDBD_Tim_RB_;
-  int EthercatMCScalRDBD_En_RB_;
-  int EthercatMCScalPOSLAG_RB_;
-  int EthercatMCScalPOSLAG_Tim_RB_;
-  int EthercatMCScalPOSLAG_En_RB_;
+  int EthercatMCCfgVELO_;
+  int EthercatMCCfgVMAX_;
+  int EthercatMCCfgJVEL_;
+  int EthercatMCCfgJAR_;
+  int EthercatMCCfgSREV_RB_;
+  int EthercatMCCfgUREV_RB_;
+  int EthercatMCCfgRefVelo_RB_;
+  int EthercatMCCfgMDIR_RB_;
+  int EthercatMCCfgEDIR_RB_;
+  int EthercatMCCfgRDBD_RB_;
+  int EthercatMCCfgRDBD_Tim_RB_;
+  int EthercatMCCfgRDBD_En_RB_;
+  int EthercatMCCfgPOSLAG_RB_;
+  int EthercatMCCfgPOSLAG_Tim_RB_;
+  int EthercatMCCfgPOSLAG_En_RB_;
   int EthercatMCCHLM_;
   int EthercatMCCLLM_;
   int EthercatMCCHLM_En_;

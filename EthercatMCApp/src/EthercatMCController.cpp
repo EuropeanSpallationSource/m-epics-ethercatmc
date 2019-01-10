@@ -75,26 +75,26 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
   createParam(EthercatMCVel_RBString,        asynParamFloat64,     &EthercatMCVel_RB_);
   createParam(EthercatMCAcc_RBString,        asynParamFloat64,     &EthercatMCAcc_RB_);
   createParam(EthercatMCDec_RBString,        asynParamFloat64,     &EthercatMCDec_RB_);
-  createParam(EthercatMCCFGVELO_String,      asynParamFloat64,     &EthercatMCCFGVELO_);
-  createParam(EthercatMCCFGVMAX_String,      asynParamFloat64,     &EthercatMCCFGVMAX_);
-  createParam(EthercatMCCFGJVEL_String,      asynParamFloat64,     &EthercatMCCFGJVEL_);
-  createParam(EthercatMCCFGJAR_String,       asynParamFloat64,     &EthercatMCCFGJAR_);
+  createParam(EthercatMCCfgVELO_String,      asynParamFloat64,     &EthercatMCCfgVELO_);
+  createParam(EthercatMCCfgVMAX_String,      asynParamFloat64,     &EthercatMCCfgVMAX_);
+  createParam(EthercatMCCfgJVEL_String,      asynParamFloat64,     &EthercatMCCfgJVEL_);
+  createParam(EthercatMCCfgJAR_String,       asynParamFloat64,     &EthercatMCCfgJAR_);
   createParam(EthercatMCCHLMString,          asynParamFloat64,     &EthercatMCCHLM_);
   createParam(EthercatMCCLLMString,          asynParamFloat64,     &EthercatMCCLLM_);
   createParam(EthercatMCCHLM_EnString,       asynParamInt32,       &EthercatMCCHLM_En_);
   createParam(EthercatMCCLLM_EnString,       asynParamInt32,       &EthercatMCCLLM_En_);
 
-  createParam(EthercatMCScalSREV_RBString,   asynParamFloat64,     &EthercatMCScalSREV_RB_);
-  createParam(EthercatMCScalUREV_RBString,   asynParamFloat64,     &EthercatMCScalUREV_RB_);
-  createParam(EthercatMCScalRefVelo_RBString,asynParamFloat64,     &EthercatMCScalRefVelo_RB_);
-  createParam(EthercatMCScalMDIR_RBString,   asynParamInt32,       &EthercatMCScalMDIR_RB_);
-  createParam(EthercatMCScalEDIR_RBString,   asynParamInt32,       &EthercatMCScalEDIR_RB_);
-  createParam(EthercatMCScalRDBD_RBString,   asynParamFloat64,     &EthercatMCScalRDBD_RB_);
-  createParam(EthercatMCScalRDBD_Tim_RBString,asynParamFloat64,    &EthercatMCScalRDBD_Tim_RB_);
-  createParam(EthercatMCScalRDBD_En_RBString, asynParamInt32,      &EthercatMCScalRDBD_En_RB_);
-  createParam(EthercatMCScalPOSLAG_RBString,   asynParamFloat64,   &EthercatMCScalPOSLAG_RB_);
-  createParam(EthercatMCScalPOSLAG_Tim_RBString,asynParamFloat64,  &EthercatMCScalPOSLAG_Tim_RB_);
-  createParam(EthercatMCScalPOSLAG_En_RBString, asynParamInt32,    &EthercatMCScalPOSLAG_En_RB_);
+  createParam(EthercatMCCfgSREV_RBString,    asynParamFloat64,     &EthercatMCCfgSREV_RB_);
+  createParam(EthercatMCCfgUREV_RBString,    asynParamFloat64,     &EthercatMCCfgUREV_RB_);
+  createParam(EthercatMCCfgRefVelo_RBString, asynParamFloat64,     &EthercatMCCfgRefVelo_RB_);
+  createParam(EthercatMCCfgMDIR_RBString,    asynParamInt32,       &EthercatMCCfgMDIR_RB_);
+  createParam(EthercatMCCfgEDIR_RBString,    asynParamInt32,       &EthercatMCCfgEDIR_RB_);
+  createParam(EthercatMCCfgRDBD_RBString,    asynParamFloat64,     &EthercatMCCfgRDBD_RB_);
+  createParam(EthercatMCCfgRDBD_Tim_RBString,asynParamFloat64,     &EthercatMCCfgRDBD_Tim_RB_);
+  createParam(EthercatMCCfgRDBD_En_RBString, asynParamInt32,       &EthercatMCCfgRDBD_En_RB_);
+  createParam(EthercatMCCfgPOSLAG_RBString,  asynParamFloat64,     &EthercatMCCfgPOSLAG_RB_);
+  createParam(EthercatMCCfgPOSLAG_Tim_RBString,asynParamFloat64,   &EthercatMCCfgPOSLAG_Tim_RB_);
+  createParam(EthercatMCCfgPOSLAG_En_RBString, asynParamInt32,     &EthercatMCCfgPOSLAG_En_RB_);
 
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION

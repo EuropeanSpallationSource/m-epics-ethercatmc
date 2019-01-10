@@ -78,10 +78,10 @@ class Test(unittest.TestCase):
 
             print '%s msta=%s' % (tc_no, self.lib.getMSTAtext(msta))
 
-            echlm = epics.caget(motor + '-ECHLM')
-            ecllm = epics.caget(motor + '-ECLLM')
-            echlmEn = epics.caget(motor + '-ECHLM-En')
-            ecllmEn = epics.caget(motor + '-ECLLM-En')
+            echlm = epics.caget(motor + '-CfgDHLM')
+            ecllm = epics.caget(motor + '-CfgDLLM')
+            echlmEn = epics.caget(motor + '-CfgDHLM-En')
+            ecllmEn = epics.caget(motor + '-CfgDLLM-En')
             drbv = epics.caget(motor + '.DRBV')
             print '%s echlm=%f ecllm=%f echlmEn=%d ecllmEn=%d drbv=%f'\
                 % (tc_no, echlm, ecllm, echlmEn, ecllmEn, drbv)

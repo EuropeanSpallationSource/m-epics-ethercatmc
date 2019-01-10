@@ -142,7 +142,7 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-MRES_") {
     field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_RESOLUTION")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalSREV-RB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgSREV-RB") {
     field(DESC, "Micro Steps / Revolution")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -150,7 +150,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalSREV-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalUREV-RB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgUREV-RB") {
     field(DESC, "EGU / Revolution")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -166,7 +166,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-RefVelo-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(bi,"$(PREFIX)$(MOTOR_NAME)-ScalMDIR-RB") {
+record(bi,"$(PREFIX)$(MOTOR_NAME)-CfgMDIR-RB") {
     field(DESC, "Invert Motor Direction")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALMDIR-RB")
@@ -175,7 +175,7 @@ record(bi,"$(PREFIX)$(MOTOR_NAME)-ScalMDIR-RB") {
     field(ONAM, "True")
 }
 
-record(bi,"$(PREFIX)$(MOTOR_NAME)-ScalEDIR-RB") {
+record(bi,"$(PREFIX)$(MOTOR_NAME)-CfgEDIR-RB") {
     field(DESC, "Invert Encoder Direction")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALEDIR-RB")
@@ -184,79 +184,79 @@ record(bi,"$(PREFIX)$(MOTOR_NAME)-ScalEDIR-RB") {
     field(ONAM, "True")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalRDBD-RB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgRDBD-RB") {
     field(DESC, "In target position window")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALRDBD-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgRDBD-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalRDBD-Tim-RB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgRDBD-Tim-RB") {
     field(DESC, "In target position time")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALRDBD-Tim-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgRDBD-Tim-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(PREFIX)$(MOTOR_NAME)-ScalRDBD-En-RB") {
+record(longin,"$(PREFIX)$(MOTOR_NAME)-CfgRDBD-En-RB") {
     field(DESC, "In target position enabled")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ScalRDBD-En-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgRDBD-En-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalPOSLAG-RB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgPOSLAG-RB") {
     field(DESC, "In target position window")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALPOSLAG-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgPOSLAG-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-ScalPOSLAG-Tim-RB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgPOSLAG-Tim-RB") {
     field(DESC, "In target position time")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALPOSLAG-Tim-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgPOSLAG-Tim-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(PREFIX)$(MOTOR_NAME)-ScalPOSLAG-En-RB") {
+record(longin,"$(PREFIX)$(MOTOR_NAME)-CfgPOSLAG-En-RB") {
     field(DESC, "In target position enabled")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ScalPOSLAG-En-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgPOSLAG-En-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-ECHLM-RB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-RB") {
     field(DESC, "EC High Soft Limit RB")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECHLM")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM")
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-ECLLM-RB") {
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-RB") {
     field(DESC, "EC Low Soft Limit RB")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECLLM")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM")
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(PREFIX)$(MOTOR_NAME)-ECHLM-En-RB") {
+record(longin,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-En-RB") {
     field(DESC, "EC High Soft Limit enabled RB")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECHLM-En")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM-En")
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(PREFIX)$(MOTOR_NAME)-ECLLM-En-RB") {
+record(longin,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En-RB") {
     field(DESC, "EC Low Soft Limit enabled RB")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))ECLLM-En")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM-En")
     field(SCAN, "I/O Intr")
 }
 
