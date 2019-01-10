@@ -2008,7 +2008,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>3</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).DVAL</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -2175,7 +2175,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>0</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).OFF</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3246,7 +3246,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>0</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).DLLM</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3309,7 +3309,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>0</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).DHLM</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3546,7 +3546,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_45</name>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
-    <precision>1</precision>
+    <precision>3</precision>
     <precision_from_pv>false</precision_from_pv>
     <pv_name>$(P)$(M).ACCS</pv_name>
     <pv_value />
@@ -3660,7 +3660,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_45</name>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
-    <precision>1</precision>
+    <precision>3</precision>
     <precision_from_pv>false</precision_from_pv>
     <pv_name>$(P)$(M).VELO</pv_name>
     <pv_value />
@@ -3764,7 +3764,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_45</name>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
-    <precision>1</precision>
+    <precision>3</precision>
     <precision_from_pv>false</precision_from_pv>
     <pv_name>$(P)$(M).ACCL</pv_name>
     <pv_value />
@@ -3828,7 +3828,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>1</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(R)Vel-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3891,7 +3891,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>1</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(R)Acc-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -4035,7 +4035,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_48</name>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
-    <precision>2</precision>
+    <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
     <pv_name>$(P)$(R)HomProc-RB</pv_name>
     <pv_value />
