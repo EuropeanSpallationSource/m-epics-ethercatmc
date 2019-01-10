@@ -235,10 +235,10 @@ asynStatus EthercatMCAxis::readBackSoftLimits(void)
             iValueHigh, fValueHigh, iValueLow, fValueLow);
   /* EthercatMCCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX(axisNo_..)  here */
-  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCHLM_En_, iValueHigh);
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCHLM_, fValueHigh);
-  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCLLM_En_, iValueLow);
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCLLM_, fValueLow);
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCfgDHLM_En_, iValueHigh);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgDHLM_, fValueHigh);
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCfgDLLM_En_, iValueLow);
+  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgDLLM_, fValueLow);
 
   if (!iValueHigh || !iValueLow || !scaleFactor || fValueLow >= fValueHigh) {
     /* Any limit not active, or scaleFactor == 0.0
@@ -1528,19 +1528,19 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
 #endif
-#ifdef EthercatMCCHLM_EnString
-  } else if (function == pC_->EthercatMCCHLM_En_) {
+#ifdef EthercatMCCfgDHLM_EnString
+  } else if (function == pC_->EthercatMCCfgDHLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetIntegerParam(%d EthercatMCCHLM_En)=%d\n",
+              "%ssetIntegerParam(%d EthercatMCCfgDHLM_En)=%d\n",
               modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xC, value);
     readBackSoftLimits();
     return status;
 #endif
-#ifdef EthercatMCCLLM_EnString
-  } else if (function == pC_->EthercatMCCLLM_En_) {
+#ifdef EthercatMCCfgDLLM_EnString
+  } else if (function == pC_->EthercatMCCfgDLLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetIntegerParam(%d EthercatMCCLLM_En)=%d\n",
+              "%ssetIntegerParam(%d EthercatMCCfgDLLM_En)=%d\n",
               modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xB, value);
     readBackSoftLimits();
@@ -1659,18 +1659,18 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d HomPos_)=%f\n", modNamEMC, axisNo_, value);
 #endif
-#ifdef EthercatMCCHLMString
-  } else if (function == pC_->EthercatMCCHLM_) {
+#ifdef EthercatMCCfgDHLMString
+  } else if (function == pC_->EthercatMCCfgDHLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d EthercatMCCHLM_)=%f\n", modNamEMC, axisNo_, value);
+              "%ssetDoubleParam(%d EthercatMCCfgDHLM_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xE, value);
     readBackSoftLimits();
     return status;
 #endif
-#ifdef EthercatMCCLLMString
-  } else if (function == pC_->EthercatMCCLLM_) {
+#ifdef EthercatMCCfgDLLMString
+  } else if (function == pC_->EthercatMCCfgDLLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d EthercatMCCLLM_)=%f\n", modNamEMC, axisNo_, value);
+              "%ssetDoubleParam(%d EthercatMCCfgDLLM_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xD, value);
     readBackSoftLimits();
     return status;

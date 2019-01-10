@@ -46,10 +46,10 @@ FILENAME...   EthercatMC.h
 #define EthercatMCCfgVMAX_String             "CfgVMAX"
 #define EthercatMCCfgJVEL_String             "CfgJVEL"
 #define EthercatMCCfgJAR_String              "CfgJAR"
-#define EthercatMCCHLMString                 "CfgDHLM"
-#define EthercatMCCLLMString                 "CfgDLLM"
-#define EthercatMCCHLM_EnString              "CfgDHLM-En"
-#define EthercatMCCLLM_EnString              "CfgDLLM-En"
+#define EthercatMCCfgDHLMString              "CfgDHLM"
+#define EthercatMCCfgDLLMString              "CfgDLLM"
+#define EthercatMCCfgDHLM_EnString           "CfgDHLM-En"
+#define EthercatMCCfgDLLM_EnString           "CfgDLLM-En"
 #define EthercatMCCfgSREV_RBString           "SCALSREV-RB"
 #define EthercatMCCfgUREV_RBString           "SCALUREV-RB"
 #define EthercatMCCfgRefVelo_RBString        "REFVELO-RB"
@@ -345,10 +345,10 @@ public:
   int EthercatMCCfgPOSLAG_RB_;
   int EthercatMCCfgPOSLAG_Tim_RB_;
   int EthercatMCCfgPOSLAG_En_RB_;
-  int EthercatMCCHLM_;
-  int EthercatMCCLLM_;
-  int EthercatMCCHLM_En_;
-  int EthercatMCCLLM_En_;
+  int EthercatMCCfgDHLM_;
+  int EthercatMCCfgDLLM_;
+  int EthercatMCCfgDHLM_En_;
+  int EthercatMCCfgDLLM_En_;
   int EthercatMCErrId_;
   int EthercatMCStup_;
   /* Last parameter */

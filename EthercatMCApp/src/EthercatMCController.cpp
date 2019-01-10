@@ -79,10 +79,10 @@ EthercatMCController::EthercatMCController(const char *portName, const char *Mot
   createParam(EthercatMCCfgVMAX_String,      asynParamFloat64,     &EthercatMCCfgVMAX_);
   createParam(EthercatMCCfgJVEL_String,      asynParamFloat64,     &EthercatMCCfgJVEL_);
   createParam(EthercatMCCfgJAR_String,       asynParamFloat64,     &EthercatMCCfgJAR_);
-  createParam(EthercatMCCHLMString,          asynParamFloat64,     &EthercatMCCHLM_);
-  createParam(EthercatMCCLLMString,          asynParamFloat64,     &EthercatMCCLLM_);
-  createParam(EthercatMCCHLM_EnString,       asynParamInt32,       &EthercatMCCHLM_En_);
-  createParam(EthercatMCCLLM_EnString,       asynParamInt32,       &EthercatMCCLLM_En_);
+  createParam(EthercatMCCfgDHLMString,       asynParamFloat64,     &EthercatMCCfgDHLM_);
+  createParam(EthercatMCCfgDLLMString,       asynParamFloat64,     &EthercatMCCfgDLLM_);
+  createParam(EthercatMCCfgDHLM_EnString,    asynParamInt32,       &EthercatMCCfgDHLM_En_);
+  createParam(EthercatMCCfgDLLM_EnString,    asynParamInt32,       &EthercatMCCfgDLLM_En_);
 
   createParam(EthercatMCCfgSREV_RBString,    asynParamFloat64,     &EthercatMCCfgSREV_RB_);
   createParam(EthercatMCCfgUREV_RBString,    asynParamFloat64,     &EthercatMCCfgUREV_RB_);
