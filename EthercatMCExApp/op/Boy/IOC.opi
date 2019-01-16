@@ -1034,4 +1034,72 @@ $(pv_value)</tooltip>
     <x>30</x>
     <y>360</y>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>motor-4-2.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>LabS-ESSIIP:MC-</P>
+          <M1>SLT-01:SltH-Center</M1>
+          <M2>SLT-01:SltH-Gap</M2>
+          <M3>SLT-01:SltH-xn</M3>
+          <M4>SLT-01:SltH-xp</M4>
+          <M5>MCU-02:m1</M5>
+          <M6>MCU-02:m2</M6>
+          <R1>SLT-01:SltH-Center-</R1>
+          <R2>SLT-01:SltH-Gap-</R2>
+          <R3>SLT-01:SltH-xn-</R3>
+          <R4>SLT-01:SltH-xp-</R4>
+          <R5>MCU-02:m1-</R5>
+          <R6>MCU-02:m2-</R6>
+        </macros>
+        <mode>1</mode>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>31</height>
+    <image></image>
+    <name>Action Button_15</name>
+    <push_action_index>0</push_action_index>
+    <pv_name></pv_name>
+    <pv_value />
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <style>0</style>
+    <text>LabS-ESSIIP:MC-MCU-02</text>
+    <toggle_button>false</toggle_button>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Action Button</widget_type>
+    <width>229</width>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
+    <x>30</x>
+    <y>396</y>
+  </widget>
 </display>
