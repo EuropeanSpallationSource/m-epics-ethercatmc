@@ -554,9 +554,9 @@ $(pv_value)</tooltip>
         <path>EthercatMCaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>xp</M>
-          <R>xp-</R>
-          <P>IOC2:</P>
+          <M>m1</M>
+          <R>m1-</R>
+          <P>LabS-ESSIIP:MC-MCU-01:</P>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -595,13 +595,13 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC2:xp</text>
+    <text>LabS-ESSIIP:MC-MCU-01:m1</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
-    <width>103</width>
+    <width>229</width>
     <wuid>-1c7710df:158ce36c33c:-6aaf</wuid>
     <x>156</x>
     <y>36</y>
@@ -609,12 +609,22 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>motor-4-2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>xg</M>
-          <R>xg-</R>
-          <P>IOC2:</P>
+          <P>LabS-ESSIIP:MC-</P>
+          <M1>SLT-01:SltH-Center</M1>
+          <M2>SLT-01:SltH-Gap</M2>
+          <M3>SLT-01:SltH-xn</M3>
+          <M4>SLT-01:SltH-xp</M4>
+          <M5>MCU-02:m1</M5>
+          <M6>MCU-02:m2</M6>
+          <R1>SLT-01:SltH-Center-</R1>
+          <R2>SLT-01:SltH-Gap-</R2>
+          <R3>SLT-01:SltH-xn-</R3>
+          <R4>SLT-01:SltH-xp-</R4>
+          <R5>MCU-02:m1-</R5>
+          <R6>MCU-02:m2-</R6>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -641,7 +651,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <height>31</height>
     <image></image>
-    <name>Action Button_10</name>
+    <name>Action Button_15</name>
     <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
@@ -653,26 +663,36 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC2:xg</text>
+    <text>LabS-ESSIIP:MC-MCU-02</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>-1c7710df:158ce36c33c:-6948</wuid>
+    <width>229</width>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>156</x>
     <y>72</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>motor-4-2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>xl</M>
-          <R>xl-</R>
-          <P>IOC2:</P>
+          <P>LabS-ESSIIP:MC-</P>
+          <M1>SLT-01:SltH-Center</M1>
+          <M2>SLT-01:SltH-Gap</M2>
+          <M3>SLT-01:SltH-xn</M3>
+          <M4>SLT-01:SltH-xp</M4>
+          <M5>MCU-019:m1</M5>
+          <M6>MCU-019:m2</M6>
+          <R1>SLT-01:SltH-Center-</R1>
+          <R2>SLT-01:SltH-Gap-</R2>
+          <R3>SLT-01:SltH-xn-</R3>
+          <R4>SLT-01:SltH-xp-</R4>
+          <R5>MCU-019:m1-</R5>
+          <R6>MCU-019:m2-</R6>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -699,7 +719,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <height>31</height>
     <image></image>
-    <name>Action Button_11</name>
+    <name>Action Button_15</name>
     <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
@@ -711,26 +731,49 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC2:xl</text>
+    <text>LabS-ESSIIP:MC-MCU-019</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>-5bd7c02:159da108f66:-7ebb</wuid>
+    <width>229</width>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>156</x>
     <y>108</y>
   </widget>
+
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>motor-4x3.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>xr</M>
-          <R>xr-</R>
-          <P>IOC2:</P>
+          <P>HZB-V20:MC-</P>
+          <M1>SLT-01:SltH-Center</M1>
+          <M2>SLT-01:SltH-Gap</M2>
+          <M3>SLT-01:SltH-xn</M3>
+          <M4>SLT-01:SltH-xp</M4>
+          <M5>SLT-01:SltV-Center</M5>
+          <M6>SLT-01:SltV-Gap</M6>
+          <M7>SLT-01:SltV-xn</M7>
+          <M8>SLT-01:SltV-xp</M8>
+          <M9>MCU-01:m9</M9>
+          <M10>MCU-01:m10</M10>
+          <M11>MCU-01:m11</M11>
+          <M12>MCU-01:m12</M12>
+          <R1>SLT-01:SltH-Center-</R1>
+          <R2>SLT-01:SltH-Gap-</R2>
+          <R3>SLT-01:SltH-xn-</R3>
+          <R4>SLT-01:SltH-xp-</R4>
+          <R5>SLT-01:SltV-Center-</R5>
+          <R6>SLT-01:SltV-Gap-</R6>
+          <R7>SLT-01:SltV-xn-</R7>
+          <R8>SLT-01:SltV-xp-</R8>
+          <R9>MCU-01:m9-</R9>
+          <R10>MCU-01:m10-</R10>
+          <R11>MCU-01:m11-</R11>
+          <R12>MCU-01:m12-</R12>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -757,7 +800,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <height>31</height>
     <image></image>
-    <name>Action Button_12</name>
+    <name>Action Button_15</name>
     <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
@@ -769,14 +812,14 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC2:xr</text>
+    <text>HZB-V20:MC-MCU-01</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>-5bd7c02:159da108f66:-7eb6</wuid>
+    <width>229</width>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>156</x>
     <y>144</y>
   </widget>
@@ -895,211 +938,5 @@ $(pv_value)</tooltip>
     <wuid>61faf7d7:15c52a5e3ff:-7ec2</wuid>
     <x>156</x>
     <y>216</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>m1</M>
-          <R>m1-</R>
-          <P>LabS-ESSIIP:MC-MCU-01:</P>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_15</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text> LabS-ESSIIP:MC-MCU-01:m1</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>229</width>
-    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
-    <x>30</x>
-    <y>324</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>motor-4x3.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>HZB-V20:MC-</P>
-          <M1>SLT-01:SltH-Center</M1>
-          <M2>SLT-01:SltH-Gap</M2>
-          <M3>SLT-01:SltH-xn</M3>
-          <M4>SLT-01:SltH-xp</M4>
-          <M5>SLT-01:SltV-Center</M5>
-          <M6>SLT-01:SltV-Gap</M6>
-          <M7>SLT-01:SltV-xn</M7>
-          <M8>SLT-01:SltV-xp</M8>
-          <M9>MCU-01:m9</M9>
-          <M10>MCU-01:m10</M10>
-          <M11>MCU-01:m11</M11>
-          <M12>MCU-01:m12</M12>
-          <R1>SLT-01:SltH-Center-</R1>
-          <R2>SLT-01:SltH-Gap-</R2>
-          <R3>SLT-01:SltH-xn-</R3>
-          <R4>SLT-01:SltH-xp-</R4>
-          <R5>SLT-01:SltV-Center-</R5>
-          <R6>SLT-01:SltV-Gap-</R6>
-          <R7>SLT-01:SltV-xn-</R7>
-          <R8>SLT-01:SltV-xp-</R8>
-          <R9>MCU-01:m9-</R9>
-          <R10>MCU-01:m10-</R10>
-          <R11>MCU-01:m11-</R11>
-          <R12>MCU-01:m12-</R12>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_15</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text>HZB-V20:MC-MCU-01</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>229</width>
-    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
-    <x>30</x>
-    <y>360</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>motor-4-2.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>LabS-ESSIIP:MC-</P>
-          <M1>SLT-01:SltH-Center</M1>
-          <M2>SLT-01:SltH-Gap</M2>
-          <M3>SLT-01:SltH-xn</M3>
-          <M4>SLT-01:SltH-xp</M4>
-          <M5>MCU-02:m1</M5>
-          <M6>MCU-02:m2</M6>
-          <R1>SLT-01:SltH-Center-</R1>
-          <R2>SLT-01:SltH-Gap-</R2>
-          <R3>SLT-01:SltH-xn-</R3>
-          <R4>SLT-01:SltH-xp-</R4>
-          <R5>MCU-02:m1-</R5>
-          <R6>MCU-02:m2-</R6>
-        </macros>
-        <mode>1</mode>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>31</height>
-    <image></image>
-    <name>Action Button_15</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text>LabS-ESSIIP:MC-MCU-02</text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
-    <width>229</width>
-    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
-    <x>30</x>
-    <y>396</y>
   </widget>
 </display>
