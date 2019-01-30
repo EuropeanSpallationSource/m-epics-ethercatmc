@@ -146,7 +146,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgSREV-RB") {
     field(DESC, "Micro Steps / Revolution")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALSREV-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgSREV-RB")
     field(SCAN, "I/O Intr")
 }
 
@@ -154,7 +154,7 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgUREV-RB") {
     field(DESC, "EGU / Revolution")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALUREV-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgUREV-RB")
     field(SCAN, "I/O Intr")
 }
 
@@ -164,24 +164,6 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-RefVelo-RB") {
     field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))RefVelo-RB")
     field(SCAN, "I/O Intr")
-}
-
-record(bi,"$(PREFIX)$(MOTOR_NAME)-CfgMDIR-RB") {
-    field(DESC, "Invert Motor Direction")
-    field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALMDIR-RB")
-    field(SCAN, "I/O Intr")
-    field(ZNAM, "False")
-    field(ONAM, "True")
-}
-
-record(bi,"$(PREFIX)$(MOTOR_NAME)-CfgEDIR-RB") {
-    field(DESC, "Invert Encoder Direction")
-    field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))SCALEDIR-RB")
-    field(SCAN, "I/O Intr")
-    field(ZNAM, "False")
-    field(ONAM, "True")
 }
 
 record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgRDBD-RB") {
@@ -309,6 +291,114 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-HomPos-RB") {
     field(SCAN, "I/O Intr")
 }
 
+record(ai,"$(PREFIX)$(MOTOR_NAME)-VELO-RB") {
+    field(DESC, "Default Velocity")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVELO")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-VMAX-RB") {
+    field(DESC, "Maximun Velocity")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVMAX")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-JVEL-RB") {
+    field(DESC, "Jogging Velocity")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgJVEL")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-ACCS-RB") {
+    field(DESC, "Jogging Acceleration")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgACCS")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-HVEL-RB") {
+    field(DESC, "Homing Velocity")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))VelToHom")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-RDBD-RB") {
+    field(DESC, "Retry Deadband")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgRDBD-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-SREV-RB") {
+    field(DESC, "Steps per revolution")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgSREV-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-UREV-RB") {
+    field(DESC, "Units per revolution")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgUREV-RB")
+    field(SCAN, "I/O Intr")
+}
+
+
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {
+}
+
+#
+# transform record which feeds values from the controler into the record
+#     VELO
+#     VMAX
+#     JVEL
+#     ACCS
+#     HVEL
+#     SPDB
+#     RDBD
+#     SREV
+#     UREV
+#     ERES
+#
+record(transform, "$(PREFIX)$(MOTOR_NAME)-tCfg_") {
+  field(PHAS, "0")
+  field(INPA, "$(PREFIX)$(MOTOR_NAME)-VELO-RB CP NMS")
+  field(OUTA, "$(PREFIX)$(MOTOR_NAME).VELO")
+  field(INPB, "$(PREFIX)$(MOTOR_NAME)-VMAX-RB CP NMS")
+  field(OUTB, "$(PREFIX)$(MOTOR_NAME).VMAX")
+  field(INPC, "$(PREFIX)$(MOTOR_NAME)-JVEL-RB CP NMS")
+  field(OUTC, "$(PREFIX)$(MOTOR_NAME).JVEL")
+  field(INPD, "$(PREFIX)$(MOTOR_NAME)-ACCS-RB CP NMS")
+  field(OUTD, "$(PREFIX)$(MOTOR_NAME).ACCS")
+  field(INPE, "$(PREFIX)$(MOTOR_NAME)-HVEL-RB CP NMS")
+  field(OUTE, "$(PREFIX)$(MOTOR_NAME).HVEL")
+  field(INPF, "$(PREFIX)$(MOTOR_NAME)-RDBD-RB CP NMS")
+  field(OUTF, "$(PREFIX)$(MOTOR_NAME).SPDB")
+  field(INPG, "$(PREFIX)$(MOTOR_NAME)-RDBD-RB CP NMS")
+  field(OUTG, "$(PREFIX)$(MOTOR_NAME).RDBD")
+  field(INPH, "$(PREFIX)$(MOTOR_NAME)-SREV-RB CP NMS")
+  field(OUTH, "$(PREFIX)$(MOTOR_NAME).SREV")
+  field(INPI, "$(PREFIX)$(MOTOR_NAME)-UREV-RB CP NMS")
+  field(OUTI, "$(PREFIX)$(MOTOR_NAME).UREV")
+}
+
+
+## Record to set ACCS field
+record(transform, "$(PREFIX)$(MOTOR_NAME)-tCfg_") {
+  field(PHAS, "0")
+  field(INPD, "$(PREFIX)$(MOTOR_NAME)-ACCS-RB CP NMS")
+  field(OUTD, "$(PREFIX)$(MOTOR_NAME).ACCS")
 }

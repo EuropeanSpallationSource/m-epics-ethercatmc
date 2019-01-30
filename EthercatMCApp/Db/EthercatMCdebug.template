@@ -146,29 +146,13 @@ record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgJVEL")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgJVEL")
     info(asyn:READBACK,"1")
 }
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgJAR")
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgACCS")
 {
-    field(DESC, "Controller default acceleration")
+    field(DESC, "Default acceleration")
     field(DTYP, "asynFloat64")
     field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgJAR")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgACCS")
     info(asyn:READBACK,"1")
-}
-
-record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgSPDB") {
-    field(DESC, "Controller SPDB")
-    field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_SPDB_RO")
-    field(SCAN, "I/O Intr")
-}
-
-record(ai,"$(PREFIX)$(MOTOR_NAME)-CRDBD") {
-    field(DESC, "Controller RDBD")
-    field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_RDBD_RO")
-    field(SCAN, "I/O Intr")
 }
 
 record(longout,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU") {

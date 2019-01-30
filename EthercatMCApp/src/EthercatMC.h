@@ -45,16 +45,14 @@ FILENAME...   EthercatMC.h
 #define EthercatMCCfgVELO_String             "CfgVELO"
 #define EthercatMCCfgVMAX_String             "CfgVMAX"
 #define EthercatMCCfgJVEL_String             "CfgJVEL"
-#define EthercatMCCfgJAR_String              "CfgJAR"
+#define EthercatMCCfgACCS_String             "CfgACCS"
 #define EthercatMCCfgDHLMString              "CfgDHLM"
 #define EthercatMCCfgDLLMString              "CfgDLLM"
 #define EthercatMCCfgDHLM_EnString           "CfgDHLM-En"
 #define EthercatMCCfgDLLM_EnString           "CfgDLLM-En"
-#define EthercatMCCfgSREV_RBString           "SCALSREV-RB"
-#define EthercatMCCfgUREV_RBString           "SCALUREV-RB"
+#define EthercatMCCfgSREV_RBString           "CfgSREV-RB"
+#define EthercatMCCfgUREV_RBString           "CfgUREV-RB"
 #define EthercatMCCfgRefVelo_RBString        "REFVELO-RB"
-#define EthercatMCCfgMDIR_RBString           "SCALMDIR-RB"
-#define EthercatMCCfgEDIR_RBString           "SCALEDIR-RB"
 #define EthercatMCCfgRDBD_RBString           "CfgRDBD-RB"
 #define EthercatMCCfgRDBD_Tim_RBString       "CfgRDBD-Tim-RB"
 #define EthercatMCCfgRDBD_En_RBString        "CfgRDBD-En-RB"
@@ -333,12 +331,10 @@ public:
   int EthercatMCCfgVELO_;
   int EthercatMCCfgVMAX_;
   int EthercatMCCfgJVEL_;
-  int EthercatMCCfgJAR_;
+  int EthercatMCCfgACCS_;
   int EthercatMCCfgSREV_RB_;
   int EthercatMCCfgUREV_RB_;
   int EthercatMCCfgRefVelo_RB_;
-  int EthercatMCCfgMDIR_RB_;
-  int EthercatMCCfgEDIR_RB_;
   int EthercatMCCfgRDBD_RB_;
   int EthercatMCCfgRDBD_Tim_RB_;
   int EthercatMCCfgRDBD_En_RB_;
