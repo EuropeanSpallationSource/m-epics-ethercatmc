@@ -301,6 +301,18 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
   }
   setDoubleParam(pC_->EthercatMCCfgSREV_RB_, srev);
   setDoubleParam(pC_->EthercatMCCfgUREV_RB_, urev);
+#if defined motorSREVROString
+#if defined motorUREVROString
+  setDoubleParam(pC_->motorSREVRO_, srev);
+  setDoubleParam(pC_->motorUREVRO_, urev);
+#endif
+#endif
+#ifdef motorERESROString
+  if (urev) {
+    drvlocal.eres = urev / srev;
+    setDoubleParam(pC_->motorERESRO_, drvlocal.eres);
+  }
+#endif
   setDoubleParam(pC_->EthercatMCCfgRefVelo_RB_, refVelo);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%ssrev=%f urev=%f refVelo=%f\n",
@@ -346,6 +358,9 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
   setDoubleParam(pC_->EthercatMCCfgRDBD_RB_, rdbd);
   setDoubleParam(pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim);
   setIntegerParam(pC_->EthercatMCCfgRDBD_En_RB_, rdbd_en);
+#ifdef motorRDBDROString
+  setDoubleParam(pC_->motorRDBDRO_, rdbd_en ? rdbd / scaleFactor : 0.0);
+#endif
   /* Either the monitoring is off or 0.0 by mistake, set an error */
   drvlocal.illegalInTargetWindow = (!rdbd_en || !rdbd);
 
@@ -390,9 +405,27 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
             "%svelo=%f vmax=%f jvel=%f accs=%f hvel=%f\n",
             modNamEMC, velo, vmax, jvel, accs, velToHom);
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVELO_, velo / scaleFactor);
+#ifdef motorDefVelocityROString
+  setDoubleParam(pC_->motorDefVelocityRO_, velo / scaleFactor);
+#endif
+
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVMAX_, vmax / scaleFactor);
+#ifdef motorMaxVelocityROString
+  setDoubleParam(pC_->motorMaxVelocityRO_, vmax / scaleFactor);
+#endif
+
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgJVEL_, jvel / scaleFactor);
+#ifdef motorDefJogVeloROString
+  setDoubleParam(pC_->motorDefJogVeloRO_, jvel / scaleFactor);
+#endif
+#ifdef motorDefHomeVeloROString
+  setDoubleParam(pC_->motorDefHomeVeloRO_, velToHom / scaleFactor);
+#endif
+
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgACCS_, accs / scaleFactor);
+#ifdef motorDefJogAccROString
+  setDoubleParam(pC_->motorDefJogAccRO_, accs / scaleFactor);
+#endif
   return asynSuccess;
 }
 
