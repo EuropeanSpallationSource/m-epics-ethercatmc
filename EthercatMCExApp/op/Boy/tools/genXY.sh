@@ -5,11 +5,13 @@ Y=1
 OPIS=..
 HIGHT=204
 WIDTH=120
+EXT=opi
 export OPIS WIDTH HIGHT
 
 
 ########################
 genXY() {
+  echo genXY "$@"
   iy=0
   im=0
   while test $iy -lt $Y; do
@@ -29,6 +31,7 @@ genXY() {
 ########################
 
 genXX() {
+  echo genXX "$@"
   iy=0
   im=0
   FILE=motor
@@ -48,7 +51,7 @@ genXX() {
     X=$1
     shift
   done
-  FILE=$FILE.opi
+  FILE=$FILE.$EXT
 }
 
 ########################
@@ -63,7 +66,7 @@ if test "$1" -eq 0; then
 fi
 X=$1
 shift
-FILE=motor-${X}.opi
+FILE=motor-${X}.$EXT
 
 #Do we have e.g. 4 x 3
 if test "$1" = x; then
@@ -75,7 +78,7 @@ if test "$1" = x; then
     fi
     Y=$1
     shift
-    FILE=motor-${X}x${Y}.opi
+    FILE=motor-${X}x${Y}.$EXT
   fi
 fi
 

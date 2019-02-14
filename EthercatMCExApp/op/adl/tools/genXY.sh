@@ -5,6 +5,7 @@ Y=1
 OPIS=..
 HIGHT=204
 WIDTH=120
+EXT=adl
 maxX=1
 maxY=1
 export OPIS WIDTH HIGHT
@@ -12,6 +13,7 @@ export OPIS WIDTH HIGHT
 
 ########################
 genXY() {
+  echo genXY "$@"
   iy=0
   im=0
   while test $iy -lt $Y; do
@@ -31,11 +33,13 @@ genXY() {
 ########################
 
 genXX() {
+  echo genXX "$@"
   iy=0
   im=0
-  FILE=motor
-  while test -n "$X"; do
-    FILE=$FILE-$X
+  #FILE=motor
+  while test -n "$1"; do
+    X=$1
+    #FILE=$FILE-$X
     ix=0
     y=$(($iy * $HIGHT))
     while test $ix -lt $X; do
@@ -47,9 +51,12 @@ genXX() {
       ix=$(($ix + 1))
     done
     iy=$(($iy + 1))
-    X=$1
+    if test -z "$1"; then
+      return
+    fi
+    shift
   done
-  FILE=$FILE.adl
+  #FILE=$FILE.$EXT
 }
 
 ########################
@@ -64,10 +71,11 @@ if test "$1" -eq 0; then
 fi
 X=$1
 shift
-FILE=motor-${X}.adl
 
+HASX=0
 #Do we have e.g. 4 x 3
 if test "$1" = x; then
+  HASX=1
   shift
   if test -n "$1"; then
     if test "$1" -eq 0; then
@@ -76,8 +84,14 @@ if test "$1" = x; then
     fi
     Y=$1
     shift
-    FILE=motor-${X}x${Y}.adl
+    FILE=motor-${X}x${Y}.$EXT
   fi
+elif test -n "$1"; then
+  FILE=$(echo motor-$X-"$@".$EXT | sed -e "s/ /-/g")
+  Y=$(($# + 1))
+  echo Y=$Y
+else
+  FILE=motor-${X}.$EXT
 fi
 
 maxX=$X
@@ -90,8 +104,8 @@ cmd=$(echo ./shiftopi.py --shiftw $x --shifth $y)
 echo cmd=" <motorx.start $cmd >$OPIS/$$"
 eval $cmd <motorx.start >$OPIS/$$ &&
   echo "Creating $OPIS/$FILE" &&
-  if test "$Y" = 1; then
-    genXX "$@"
+  if test "$HASX" = 0; then
+    genXX "$X" "$@"
   else
     genXY "$@"
   fi &&

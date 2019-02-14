@@ -7,7 +7,8 @@ GENERATEDOPIS: \
   ../motor-5.adl \
   ../motor-6.adl  \
   ../motor-4x3.adl \
-
+  ../motor-4x2.adl \
+  ../motor-4-2.adl \
 
 #GENERATEDOPIS: \
 #  ../motor-6-6-4.adl \
@@ -35,6 +36,11 @@ GENERATEDOPIS: \
 ../motor-4x3.adl: $(ALLSRCFILES)
 	./genXY.sh 4 x 3
 
+../motor-4x2.adl: $(ALLSRCFILES)
+	./genXY.sh 4 x 2
+
+../motor-4-2.adl: $(ALLSRCFILES)
+	./genXY.sh 4  2
 
 #../motor-6-6-4.adl: $(ALLSRCFILES)
 #	./genXY.sh 6 6 4
