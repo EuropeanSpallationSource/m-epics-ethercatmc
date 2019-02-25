@@ -25,6 +25,7 @@
 typedef struct
 {
   struct timeval lastPollTime;
+  struct timeval lastJitterTime;
   struct timeval powerOnTime;
 
   int amplifierPercent;
@@ -55,6 +56,7 @@ typedef struct
   int enabledLowSoftLimitPos;
   int enabledHighSoftLimitPos;
   double MotorPosNow;
+  double MotorPosReported;
   double positionJitter;
   int    positionJitterPlus;
   double MotorPosWanted;
@@ -87,7 +89,7 @@ typedef struct
 static motor_axis_type motor_axis[MAX_AXES];
 static motor_axis_type motor_axis_last[MAX_AXES];
 static motor_axis_type motor_axis_reported[MAX_AXES];
-static double getMotorPosStepped(int axis_no);
+static double calcMotorPosReported(int axis_no, double jitter);
 
 
 static double getEncoderPosFromMotorPos(int axis_no, double MotorPosNow)
@@ -579,6 +581,7 @@ static void simulateMotion(int axis_no)
 {
   struct timeval timeNow;
   double velocity;
+  double jitter = 0.0;
   int clipped = 0;
 
   AXIS_CHECK_RETURN(axis_no);
@@ -651,6 +654,17 @@ static void simulateMotion(int axis_no)
   motor_axis[axis_no].lastPollTime = timeNow;
   clipped |= hard_limits_clip(axis_no, velocity);
 
+  /* Jitter only if the motor is not moving */
+  if (!clipped &&
+      !velocity &&
+      motor_axis[axis_no].positionJitterPlus &&
+      timeNow.tv_sec != motor_axis[axis_no].lastJitterTime.tv_sec) {
+    motor_axis[axis_no].lastJitterTime.tv_sec = timeNow.tv_sec;
+    motor_axis[axis_no].positionJitterPlus = -motor_axis[axis_no].positionJitterPlus;
+    jitter = motor_axis[axis_no].positionJitterPlus * motor_axis[axis_no].positionJitter;
+  }
+
+  motor_axis[axis_no].MotorPosReported = calcMotorPosReported(axis_no, jitter);
   /* Compare moving to see if there is anything new */
   if (memcmp(&motor_axis_last[axis_no].moving, &motor_axis[axis_no].moving, sizeof(motor_axis[axis_no].moving)) ||
       motor_axis_last[axis_no].MotorPosNow     != motor_axis[axis_no].MotorPosNow ||
@@ -668,7 +682,7 @@ static void simulateMotion(int axis_no)
             motor_axis[axis_no].moving.rampDownOnLimit,
             getAxisHome(axis_no),
             motor_axis[axis_no].MotorPosNow,
-            getMotorPosStepped(axis_no));
+            motor_axis[axis_no].MotorPosReported);
     memcpy(&motor_axis_last[axis_no], &motor_axis[axis_no], sizeof(motor_axis[axis_no]));
   }
   /*
@@ -684,26 +698,21 @@ static void simulateMotion(int axis_no)
 
 }
 
-double getMotorPosStepped(int axis_no)
+double calcMotorPosReported(int axis_no, double jitter)
 {
   AXIS_CHECK_RETURN_ZERO(axis_no);
+  double MotorPosNow = motor_axis[axis_no].MotorPosNow + jitter;
   if (motor_axis[axis_no].MRES_23 && motor_axis[axis_no].MRES_24) {
     /* If we have a scaling, round the position to a step */
-    double MotorPosNow = motor_axis[axis_no].MotorPosNow;
     double srev = motor_axis[axis_no].MRES_24;
     double urev = motor_axis[axis_no].MRES_23;
     if (urev > 0.0) {
       long step = NINT(MotorPosNow * srev / urev);
       double ret = (double)step * urev / srev;
-      if (motor_axis[axis_no].positionJitterPlus) {
-        /* If we have jitter */
-        ret += (motor_axis[axis_no].positionJitterPlus * motor_axis[axis_no].positionJitter);
-        motor_axis[axis_no].positionJitterPlus = -motor_axis[axis_no].positionJitterPlus;
-      }
       return ret;
     }
   }
-  return motor_axis[axis_no].MotorPosNow;
+  return MotorPosNow;
 }
 
 double getMotorPos(int axis_no)
@@ -712,7 +721,7 @@ double getMotorPos(int axis_no)
   simulateMotion(axis_no);
   /* simulate EncoderPos */
   motor_axis[axis_no].EncoderPos = getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
-  return getMotorPosStepped(axis_no);
+  return motor_axis[axis_no].MotorPosReported;
 }
 
 void setMotorPos(int axis_no, double value)
