@@ -404,28 +404,37 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%svelo=%f vmax=%f jvel=%f accs=%f hvel=%f\n",
             modNamEMC, velo, vmax, jvel, accs, velToHom);
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVELO_, velo / scaleFactor);
+  if (velo > 0.0) {
+    pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVELO_, velo / scaleFactor);
 #ifdef motorDefVelocityROString
-  setDoubleParam(pC_->motorDefVelocityRO_, velo / scaleFactor);
+    setDoubleParam(pC_->motorDefVelocityRO_, velo / scaleFactor);
 #endif
+  }
 
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVMAX_, vmax / scaleFactor);
+  if (vmax > 0.0) {
+    pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVMAX_, vmax / scaleFactor);
 #ifdef motorMaxVelocityROString
-  setDoubleParam(pC_->motorMaxVelocityRO_, vmax / scaleFactor);
+    setDoubleParam(pC_->motorMaxVelocityRO_, vmax / scaleFactor);
 #endif
-
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgJVEL_, jvel / scaleFactor);
+  }
+  if (jvel > 0.0) {
+    pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgJVEL_, jvel / scaleFactor);
 #ifdef motorDefJogVeloROString
-  setDoubleParam(pC_->motorDefJogVeloRO_, jvel / scaleFactor);
+    setDoubleParam(pC_->motorDefJogVeloRO_, jvel / scaleFactor);
 #endif
+  }
+  if (velToHom > 0.0) {
 #ifdef motorDefHomeVeloROString
-  setDoubleParam(pC_->motorDefHomeVeloRO_, velToHom / scaleFactor);
+    setDoubleParam(pC_->motorDefHomeVeloRO_, velToHom / scaleFactor);
 #endif
+  }
 
-  pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgACCS_, accs / scaleFactor);
+  if (accs > 0.0) {
+    pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgACCS_, accs / scaleFactor);
 #ifdef motorDefJogAccROString
-  setDoubleParam(pC_->motorDefJogAccRO_, accs / scaleFactor);
+    setDoubleParam(pC_->motorDefJogAccRO_, accs / scaleFactor);
 #endif
+  }
   return asynSuccess;
 }
 
