@@ -204,21 +204,9 @@ int EthercatMCAxis::getMotionAxisID(void)
         adsport = drvlocal.adsPort;
       }
       if (adsport) {
-#if 1
         /* Save adsport_str for the poller */
         snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
                  "ADSPORT=%u/", adsport);
-#else
-        /* This doesn't seem to work, more investigations needed */
-        snprintf(pC_->outString_, sizeof(pC_->outString_),
-                 ".THIS.stSettings.nADSPort=%u",adsport);
-        status = pC_->writeReadController();
-        asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                  "%sout=%s in=%s status=%s (%d) res=%d ret=%d\n",
-                  modNamEMC,
-                  pC_->outString_, pC_->inString_,
-                  pasynManager->strStatus(status), (int)status, res, ret);
-#endif
       }
       snprintf(pC_->outString_, sizeof(pC_->outString_),
                "%sMain.M%d.nMotionAxisID?", drvlocal.adsport_str, axisNo_);
@@ -234,17 +222,9 @@ int EthercatMCAxis::getMotionAxisID(void)
         continue;
       }
       ret = res;
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%sout=%s in=%s status=%s (%d) res=%d ret=%d\n",
-                modNamEMC,
-                pC_->outString_, pC_->inString_,
-                pasynManager->strStatus(status), (int)status, res, ret);
       break;
     }
     if (ret != -1) drvlocal.dirty.nMotionAxisID = ret;
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%snMotionAxisID(%d)=%d res=%d ret=%d\n",
-              modNamEMC, axisNo_, drvlocal.dirty.nMotionAxisID, res, ret);
   }
   return ret;
 }
