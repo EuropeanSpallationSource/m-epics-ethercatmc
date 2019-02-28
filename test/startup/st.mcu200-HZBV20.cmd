@@ -2,6 +2,7 @@ require asyn,4.31
 #require motor,6.9.3-ESS
 require EthercatMC,USER
 
+epicsEnvSet("ECM_NUMAXES",   "12")
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 
 epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")

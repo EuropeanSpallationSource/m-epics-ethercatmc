@@ -12,8 +12,12 @@
 # @field IPPORT
 # @type  INTEGER
 
+# @field NUMAXES
+# @type  INTEGER
+
 # Additional fields can e initialized in Axis
 epicsEnvSet("ECAXISFIELDINIT",    "")
+epicsEnvSet("NUMAXES", "$(ECM_NUMAXES=8)")
 
 
 ## One of the 2 needs to be done, either drvAsynIPPortConfigure+Eos
@@ -26,7 +30,7 @@ asynOctetSetInputEos("$(ASYN_PORT)", -1, ";\n")
 
 #adsAsynPortDriverConfigure("$(ASYN_PORT)","$(IPADDR)","$(AMSID)",852,1000,0,0,50,100,1000,0)
 
-EthercatMCCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "32", "200", "1000")
+EthercatMCCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "200", "1000")
 
 #/* traceMask definitions*/
 #define ASYN_TRACE_ERROR     0x0001

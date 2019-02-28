@@ -1,5 +1,6 @@
 require EthercatMC,USER
 
+epicsEnvSet("ECM_NUMAXES",   "4")
 epicsEnvSet("MOTOR_PORT",    "MCU1")
 
 epicsEnvSet("IPADDR",        "127.0.0.1")
