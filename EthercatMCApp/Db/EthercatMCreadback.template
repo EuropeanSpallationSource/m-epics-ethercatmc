@@ -1,0 +1,48 @@
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgVELO-RB_")
+{
+    field(PREC, "$(PREC)")
+    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgVELO-RB CP")
+    field(OUT,  "$(PREFIX)$(MOTOR_NAME).VELO")
+    field(OMSL, "closed_loop")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgVMAX-RB_")
+{
+    field(PREC, "$(PREC)")
+    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgVMAX-RB CP")
+    field(OUT,  "$(PREFIX)$(MOTOR_NAME).VMAX")
+    field(OMSL, "closed_loop")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgJVEL-RB_")
+{
+    field(PREC, "$(PREC)")
+    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgJVEL-RB CP")
+    field(OUT,  "$(PREFIX)$(MOTOR_NAME).JVEL")
+    field(OMSL, "closed_loop")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgACCS-RB_")
+{
+    field(PREC, "$(PREC)")
+    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgACCS-RB CP")
+    field(OUT,  "$(PREFIX)$(MOTOR_NAME).ACCS")
+    field(OMSL, "closed_loop")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgRDBD-RB_")
+{
+    field(PREC, "$(PREC)")
+    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgRDBD-RB CP")
+    field(OUT,  "$(PREFIX)$(MOTOR_NAME).RDBD")
+    field(OMSL, "closed_loop")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgSPDB_")
+{
+    field(PREC, "$(PREC)")
+    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgSPDB CP")
+    field(OUT,  "$(PREFIX)$(MOTOR_NAME).SPDB")
+    field(OMSL, "closed_loop")
+}
+

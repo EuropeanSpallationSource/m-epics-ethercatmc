@@ -23,6 +23,7 @@ TEMPLATES = \
   EthercatMCApp/Db/EthercatMC.template \
   EthercatMCApp/Db/EthercatMCdebug.template \
   EthercatMCApp/Db/EthercatMChome.template \
+  EthercatMCApp/Db/EthercatMCreadback.template \
   EthercatMCApp/Db/EthercatMCslit_soft.template \
   EthercatMCApp/Db/EthercatMCslit_hard.template \
   EthercatMCslitAvoidCollSoftlimits.template \
