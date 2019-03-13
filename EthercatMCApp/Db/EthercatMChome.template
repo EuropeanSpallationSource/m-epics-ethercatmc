@@ -39,12 +39,3 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-AccHom") {
     field(PINI, "YES")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))AccHom")
 }
-
-record(ao,"$(PREFIX)$(MOTOR_NAME)-DecHom") {
-    field(DESC, "Homing Deceleration EGU/s^2")
-    field(VAL, "$(HOMEDEC=0)")
-    field(DTYP, "asynFloat64")
-    field(PINI, "YES")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))DecHom")
-}
-

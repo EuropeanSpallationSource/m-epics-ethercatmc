@@ -723,7 +723,6 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
     double velToHom;
     double velFrmHom;
     double accHom;
-    double decHom;
     if (!status) status = stopAxisInternal(__FUNCTION__, 0);
     if (!status) status = setValueOnAxis("fHomePosition", homPos);
     if (!status) status = pC_->getDoubleParam(axisNo_,
@@ -735,15 +734,12 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
     if (!status) status = pC_->getDoubleParam(axisNo_,
                                               pC_->EthercatMCAccHom_,
                                               &accHom);
-    if (!status) status = pC_->getDoubleParam(axisNo_,
-                                              pC_->EthercatMCDecHom_,
-                                              &decHom);
     if (!status) status = setSAFValueOnAxis(0x4000, 0x6,
                                             velToHom);
     if (!status) status = setSAFValueOnAxis(0x4000, 0x7,
                                             velFrmHom);
     if (!status)  status = setValuesOnAxis("fAcceleration", accHom,
-                                           "fDeceleration", decHom);
+                                           "fDeceleration", accHom);
     if (!status) status = setValueOnAxis("nCommand", nCommand );
     if (!status) status = setValueOnAxis("nCmdData", homProc);
     if (!status) status = setValueOnAxis("bExecute", 1);
@@ -1087,6 +1083,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
   const size_t       Main_dot_len = strlen(Main_dot_str);
   struct {
     double velocitySetpoint;
+    double fDecceleration;
     int cycleCounter;
     unsigned int EtherCATtime_low32;
     unsigned int EtherCATtime_high32;
@@ -1121,7 +1118,7 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
                      &notUsed.velocitySetpoint,
                      &pst_axis_status->fActVelocity,
                      &pst_axis_status->fAcceleration,
-                     &pst_axis_status->fDecceleration,
+                     &notUsed.fDecceleration,
                      &notUsed.cycleCounter,
                      &notUsed.EtherCATtime_low32,
                      &notUsed.EtherCATtime_high32,
@@ -1302,7 +1299,6 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   setIntegerParam(pC_->motorStatusPowerOn_, st_axis_status.bEnabled);
   setDoubleParam(pC_->EthercatMCVelAct_, st_axis_status.fActVelocity);
   setDoubleParam(pC_->EthercatMCAcc_RB_, st_axis_status.fAcceleration);
-  setDoubleParam(pC_->EthercatMCDec_RB_, st_axis_status.fDecceleration);
 
 #ifndef motorWaitPollsBeforeReadyString
   if (drvlocal.waitNumPollsBeforeReady) {

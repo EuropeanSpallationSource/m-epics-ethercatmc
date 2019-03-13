@@ -35,13 +35,11 @@ FILENAME...   EthercatMC.h
 #define EthercatMCVelToHomString             "VelToHom"
 #define EthercatMCVelFrmHomString            "VelFrmHom"
 #define EthercatMCAccHomString               "AccHom"
-#define EthercatMCDecHomString               "DecHom"
 #define EthercatMCEnc_ActString              "EncAct"
 #define EthercatMCErrRstString               "ErrRst"
 #define EthercatMCVelActString               "VelAct"
 #define EthercatMCVel_RBString               "Vel-RB"
 #define EthercatMCAcc_RBString               "Acc-RB"
-#define EthercatMCDec_RBString               "Dec-RB"
 #define EthercatMCCfgVELO_String             "CfgVELO"
 #define EthercatMCCfgVMAX_String             "CfgVMAX"
 #define EthercatMCCfgJVEL_String             "CfgJVEL"
@@ -310,7 +308,6 @@ public:
   int EthercatMCVelToHom_;
   int EthercatMCVelFrmHom_;
   int EthercatMCAccHom_;
-  int EthercatMCDecHom_;
   int EthercatMCEncAct_;
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
@@ -326,7 +323,6 @@ public:
   int EthercatMCVelAct_;
   int EthercatMCVel_RB_;
   int EthercatMCAcc_RB_;
-  int EthercatMCDec_RB_;
   int EthercatMCCfgVELO_;
   int EthercatMCCfgVMAX_;
   int EthercatMCCfgJVEL_;
