@@ -27,7 +27,6 @@ FILENAME...   EthercatMC.h
 
 #define EthercatMCErrString                  "MCUErr"
 #define EthercatMCErrIdString                "ErrId"
-#define EthercatMCStupString                 "Stup"
 #define EthercatMCHomProc_RBString           "HomProc-RB"
 #define EthercatMCHomPos_RBString            "HomPos-RB"
 #define EthercatMCHomProcString              "HomProc"
@@ -145,6 +144,14 @@ private:
     eeAxisWarningSpeedLimit
   } eeAxisWarningType;
 
+  typedef enum
+  {
+    pollNowReadScaling,
+    pollNowReadMonitoring,
+    pollNowReadBackSoftLimits,
+    pollNowReadBackVelocities
+  } eeAxisPollNowType;
+
   EthercatMCController *pC_;          /**< Pointer to the asynMotorController to which this axis belongs.
                                    *   Abbreviated because it is used very frequently */
   struct {
@@ -171,6 +178,7 @@ private:
     eeAxisWarningType eeAxisWarning;
     eeAxisErrorType old_eeAxisError;
     eeAxisErrorType eeAxisError;
+    eeAxisPollNowType eeAxisPollNow;
     /* Which values have changed in the EPICS IOC, but are not updated in the
        motion controller */
     struct {
@@ -339,8 +347,8 @@ public:
   int EthercatMCCfgDLLM_;
   int EthercatMCCfgDHLM_En_;
   int EthercatMCCfgDLLM_En_;
+
   int EthercatMCErrId_;
-  int EthercatMCStup_;
   /* Last parameter */
 
   #define FIRST_VIRTUAL_PARAM EthercatMCErr_
