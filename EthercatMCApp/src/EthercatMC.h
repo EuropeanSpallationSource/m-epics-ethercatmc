@@ -52,7 +52,6 @@ FILENAME...   EthercatMC.h
 #define EthercatMCCfgDLLM_EnString           "CfgDLLM-En"
 #define EthercatMCCfgSREV_RBString           "CfgSREV-RB"
 #define EthercatMCCfgUREV_RBString           "CfgUREV-RB"
-#define EthercatMCCfgRefVelo_RBString        "REFVELO-RB"
 #define EthercatMCCfgRDBD_RBString           "CfgRDBD-RB"
 #define EthercatMCCfgRDBD_Tim_RBString       "CfgRDBD-Tim-RB"
 #define EthercatMCCfgRDBD_En_RBString        "CfgRDBD-En-RB"
@@ -334,7 +333,6 @@ public:
   int EthercatMCCfgACCS_;
   int EthercatMCCfgSREV_RB_;
   int EthercatMCCfgUREV_RB_;
-  int EthercatMCCfgRefVelo_RB_;
   int EthercatMCCfgRDBD_RB_;
   int EthercatMCCfgRDBD_Tim_RB_;
   int EthercatMCCfgRDBD_En_RB_;

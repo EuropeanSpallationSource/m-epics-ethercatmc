@@ -158,14 +158,6 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgUREV-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-RefVelo-RB") {
-    field(DESC, "Reference Velocity")
-    field(DTYP, "asynFloat64")
-    field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))RefVelo-RB")
-    field(SCAN, "I/O Intr")
-}
-
 record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgRDBD-RB") {
     field(DESC, "In target position window")
     field(DTYP, "asynFloat64")

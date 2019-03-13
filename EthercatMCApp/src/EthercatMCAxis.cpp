@@ -277,24 +277,22 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
 {
   int nvals;
   asynStatus status;
-  double srev = 0, urev = 0, refVelo = 0;
+  double srev = 0, urev = 0;
   double scaleFactor = drvlocal.scaleFactor;
 
   if (!scaleFactor) return asynError;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
-           "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;",
            0x5000 + axisID, 0x24,  // SREV
-           0x5000 + axisID, 0x23,  // UREV
-           0x7000 + axisID, 0x101  // RefVelo
+           0x5000 + axisID, 0x23   // UREV
            );
   status = pC_->writeReadOnErrorDisconnect();
   if (status) return status;
-  nvals = sscanf(pC_->inString_, "%lf;%lf;%lf",
-                 &srev, &urev, &refVelo);
+  nvals = sscanf(pC_->inString_, "%lf;%lf",
+                 &srev, &urev);
 
-  if (nvals != 3) {
+  if (nvals != 2) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%snvals=%d\n", modNamEMC, nvals);
     return asynError;
@@ -313,10 +311,9 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
     setDoubleParam(pC_->motorERESRO_, drvlocal.eres);
   }
 #endif
-  setDoubleParam(pC_->EthercatMCCfgRefVelo_RB_, refVelo);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%ssrev=%f urev=%f refVelo=%f\n",
-            modNamEMC, srev, urev, refVelo);
+            "%ssrev=%f urev=%f\n",
+            modNamEMC, srev, urev);
   return asynSuccess;
 }
 
