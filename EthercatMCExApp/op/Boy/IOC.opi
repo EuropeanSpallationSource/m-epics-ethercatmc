@@ -677,22 +677,16 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-4-2.opi</path>
+        <path>motor-3.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <P>LabS-ESSIIP:MC-</P>
-          <M1>SLT-01:SltH-Center</M1>
-          <M2>SLT-01:SltH-Gap</M2>
-          <M3>SLT-01:SltH-xn</M3>
-          <M4>SLT-01:SltH-xp</M4>
-          <M5>MCU-019:m1</M5>
-          <M6>MCU-019:m2</M6>
-          <R1>SLT-01:SltH-Center-</R1>
-          <R2>SLT-01:SltH-Gap-</R2>
-          <R3>SLT-01:SltH-xn-</R3>
-          <R4>SLT-01:SltH-xp-</R4>
-          <R5>MCU-019:m1-</R5>
-          <R6>MCU-019:m2-</R6>
+          <P>SES-PREMP:MC-MCU-01:</P>
+          <M1>m1</M1>
+          <M2>m2</M2>
+          <M3>m3</M3>
+          <R1>m1-</R1>
+          <R2>m2-</R2>
+          <R3>m3-</R3>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -731,7 +725,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>LabS-ESSIIP:MC-MCU-019</text>
+    <text>SES-PREMP:MC-MCU-01</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
