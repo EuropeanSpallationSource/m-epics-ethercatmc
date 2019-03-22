@@ -1,0 +1,1 @@
+../test/startup/st.ses-premp.cmd

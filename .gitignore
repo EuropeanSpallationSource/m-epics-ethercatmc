@@ -1,18 +1,17 @@
-*~
-O.*
 *.pyc
 *.swp
 *BAK.adl
+*~
+.cvsignore
+/db/
+/dbmotor/
 bin/
 builddir/
 configure/*local*
-#Note on a case insensitve file system like Mac or Windows
-# db/ is the same as Db/. So: ignore db, but not axisApp/Db/
-/db/
-/dbmotor/
 dbd/
+ethercatmc.Makefile
 html/
 include/
 iocBoot/
 lib/
-
+O.*
