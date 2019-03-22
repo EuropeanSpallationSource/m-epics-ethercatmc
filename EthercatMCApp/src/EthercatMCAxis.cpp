@@ -361,13 +361,13 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
   if (rdbd != old_rdbd || old_rdbd_tim != rdbd_tim || old_rdbd_en != rdbd_en) {
     /* RDBD is really important, print it on change */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%srdbd=%f, rdbd_tim=%f rdbd_en=%d\n",
-                modNamEMC, rdbd, rdbd_tim, rdbd_en);
+              "%s (%d) rdbd=%f, rdbd_tim=%f rdbd_en=%d\n",
+              modNamEMC, axisNo_, rdbd, rdbd_tim, rdbd_en);
   }
   /* poslag (position lag) is much less important, print via "FLOW" */
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
-            "%sposlag=%f poslag_tim=%f poslag_en=%d\n",
-            modNamEMC, poslag, poslag_tim, poslag_en);
+            "%s (%d) poslag=%f poslag_tim=%f poslag_en=%d\n",
+            modNamEMC, axisNo_, poslag, poslag_tim, poslag_en);
 
   setDoubleParam(pC_->EthercatMCCfgRDBD_RB_, rdbd);
   setDoubleParam(pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim);
