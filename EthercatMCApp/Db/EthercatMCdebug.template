@@ -83,7 +83,7 @@ record(longout, "$(PREFIX)$(MOTOR_NAME)-Stop")
 }
 
 record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToMCU") {
-    field(DESC, "Send Debug String to $(PREFIX)$(MOTOR_NAME)")
+    field(DESC, "Send Debug String")
     field(VAL, "")
     field(DTYP, "asynOctetWrite")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToMCU")
