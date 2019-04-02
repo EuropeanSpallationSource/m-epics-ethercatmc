@@ -2,6 +2,7 @@
 ALLSRCFILES=Makefile shiftopi.py genXY.sh motorx.end motorx.mid motorx.start
 
 GENERATEDOPIS: \
+  ../motor-1.adl \
   ../motor-2.adl \
   ../motor-4.adl \
   ../motor-5.adl \
@@ -16,6 +17,9 @@ GENERATEDOPIS: \
 
 
 #
+
+../motor-1.adl: $(ALLSRCFILES)
+	./genXY.sh 1
 
 ../motor-2.adl: $(ALLSRCFILES)
 	./genXY.sh 2

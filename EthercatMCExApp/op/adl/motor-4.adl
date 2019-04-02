@@ -535,16 +535,11 @@ text {
 		height=20
 	}
 	display[0] {
-		label="Help"
-		name="motorx_help.adl"
+		label="Power Home"
+		name="motor-home.adl"
 		args="P=$(P),M=$(M1)"
 	}
 	display[1] {
-		label="More"
-		name="motorx_more.adl"
-		args="P=$(P),M=$(M1)"
-	}
-	display[2] {
 		label="Setup"
 		name="motorx_setup.adl"
 		args="P=$(P),M=$(M1)"
@@ -553,11 +548,6 @@ text {
 		label="All"
 		name="motorx_all.adl"
 		args="P=$(P),M=$(M1)"
-	}
-	display[4] {
-		label="Setup scan parameters"
-		name="scanParms.adl"
-		args="P=$(P),Q=$(M1),PV=$(M1)"
 	}
 	clr=14
 	bclr=51
@@ -1025,16 +1015,11 @@ text {
 		height=20
 	}
 	display[0] {
-		label="Help"
-		name="motorx_help.adl"
+		label="Power Home"
+		name="motor-home.adl"
 		args="P=$(P),M=$(M2)"
 	}
 	display[1] {
-		label="More"
-		name="motorx_more.adl"
-		args="P=$(P),M=$(M2)"
-	}
-	display[2] {
 		label="Setup"
 		name="motorx_setup.adl"
 		args="P=$(P),M=$(M2)"
@@ -1043,11 +1028,6 @@ text {
 		label="All"
 		name="motorx_all.adl"
 		args="P=$(P),M=$(M2)"
-	}
-	display[4] {
-		label="Setup scan parameters"
-		name="scanParms.adl"
-		args="P=$(P),Q=$(M1),PV=$(M2)"
 	}
 	clr=14
 	bclr=51
@@ -1515,16 +1495,11 @@ text {
 		height=20
 	}
 	display[0] {
-		label="Help"
-		name="motorx_help.adl"
+		label="Power Home"
+		name="motor-home.adl"
 		args="P=$(P),M=$(M3)"
 	}
 	display[1] {
-		label="More"
-		name="motorx_more.adl"
-		args="P=$(P),M=$(M3)"
-	}
-	display[2] {
 		label="Setup"
 		name="motorx_setup.adl"
 		args="P=$(P),M=$(M3)"
@@ -1533,11 +1508,6 @@ text {
 		label="All"
 		name="motorx_all.adl"
 		args="P=$(P),M=$(M3)"
-	}
-	display[4] {
-		label="Setup scan parameters"
-		name="scanParms.adl"
-		args="P=$(P),Q=$(M1),PV=$(M3)"
 	}
 	clr=14
 	bclr=51
@@ -2005,16 +1975,11 @@ text {
 		height=20
 	}
 	display[0] {
-		label="Help"
-		name="motorx_help.adl"
+		label="Power Home"
+		name="motor-home.adl"
 		args="P=$(P),M=$(M4)"
 	}
 	display[1] {
-		label="More"
-		name="motorx_more.adl"
-		args="P=$(P),M=$(M4)"
-	}
-	display[2] {
 		label="Setup"
 		name="motorx_setup.adl"
 		args="P=$(P),M=$(M4)"
@@ -2023,11 +1988,6 @@ text {
 		label="All"
 		name="motorx_all.adl"
 		args="P=$(P),M=$(M4)"
-	}
-	display[4] {
-		label="Setup scan parameters"
-		name="scanParms.adl"
-		args="P=$(P),Q=$(M1),PV=$(M4)"
 	}
 	clr=14
 	bclr=51
