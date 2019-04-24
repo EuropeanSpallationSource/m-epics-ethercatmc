@@ -28,6 +28,14 @@ const static char *const strCtrlReset = ".ctrl.ErrRst";
 
 const static char *const modulName = "EthercatMCAxis::";
 
+extern "C"
+double EthercatMCgetNowTimeSecs(void)
+{
+    epicsTimeStamp nowTime;
+    epicsTimeGetCurrent(&nowTime);
+    return nowTime.secPastEpoch + (nowTime.nsec * 0.000000001);
+}
+
 /** Creates a new EthercatMCController object.
   * \param[in] portName          The name of the asyn port that will be created for this driver
   * \param[in] MotorPortName     The name of the drvAsynSerialPort that was created previously to connect to the EthercatMC controller
@@ -247,9 +255,30 @@ asynStatus EthercatMCController::writeReadOnErrorDisconnect(void)
 {
   asynStatus status = asynError;
   size_t outlen = strlen(outString_);
+  double timeBefore = EthercatMCgetNowTimeSecs();
   inString_[0] = '\0';
   status = writeReadOnErrorDisconnect_C(pasynUserController_, outString_, outlen,
                                         inString_, sizeof(inString_));
+  if (!status) {
+    if (strstr(inString_, "State timout") ||
+        strstr(inString_, "To long time in one state")) {
+      double timeDelta = EthercatMCgetNowTimeSecs() - timeBefore;
+
+      asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "%sout=%s in=%s timeDelta=%f\n",
+                modNamEMC, outString_, inString_, timeDelta);
+      /* Try again */
+      timeBefore = EthercatMCgetNowTimeSecs();
+      status = writeReadOnErrorDisconnect_C(pasynUserController_,
+                                            outString_, outlen,
+                                            inString_, sizeof(inString_));
+      timeDelta = EthercatMCgetNowTimeSecs() - timeBefore;
+      asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "%sout=%s in=%s timeDelta=%f status=%s (%d)\n",
+                modNamEMC, outString_, inString_, timeDelta,
+                pasynManager->strStatus(status), (int)status);
+    }
+  }
   handleStatusChange(status);
   if (status)
   {

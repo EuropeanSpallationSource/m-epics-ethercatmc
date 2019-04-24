@@ -62,6 +62,10 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 #endif
   memset(&drvlocal, 0, sizeof(drvlocal));
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
+  /* Force a printout of this 3 variables, once running they are  0 or 1 */
+  drvlocal.old_st_axis_status.bHomed = -1;
+  drvlocal.old_st_axis_status.bLimitBwd = -1;
+  drvlocal.old_st_axis_status.bLimitFwd = -1;
   drvlocal.old_eeAxisError = eeAxisErrorIOCcomError;
   drvlocal.axisFlags = axisFlags;
 
@@ -1276,6 +1280,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
 {
   asynStatus comStatus = asynSuccess;
   st_axis_status_type st_axis_status;
+  double timeBefore = EthercatMCgetNowTimeSecs();
 #ifndef motorWaitPollsBeforeReadyString
   int waitNumPollsBeforeReady_ = drvlocal.waitNumPollsBeforeReady;
 #endif
@@ -1419,14 +1424,15 @@ asynStatus EthercatMCAxis::poll(bool *moving)
         drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
         drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%spoll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d wf=%d ENC=%g fPosition=%g fActPosition=%g\n",
+                "%spoll(%d) mvnNRdy=%d Ver=%d bBusy=%d bExe=%d bEnabled=%d atTarget=%d wf=%d ENC=%g fPos=%g fActPosition=%g time=%f\n",
                 modNamEMC, axisNo_, st_axis_status.mvnNRdyNex,
                 drvlocal.supported.statusVer,
                 st_axis_status.bBusy, st_axis_status.bExecute,
                 st_axis_status.bEnabled, st_axis_status.atTarget,
                 waitNumPollsBeforeReady_,
                 st_axis_status.encoderRaw, st_axis_status.fPosition,
-                st_axis_status.fActPosition);
+                st_axis_status.fActPosition,
+                EthercatMCgetNowTimeSecs() - timeBefore);
     }
   }
   setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);

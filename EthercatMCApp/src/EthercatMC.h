@@ -69,6 +69,7 @@ extern "C" {
                                           const char *outdata, size_t outlen,
                                           char *indata, size_t inlen);
   asynStatus checkACK(const char *outdata, size_t outlen, const char *indata);
+  double EthercatMCgetNowTimeSecs(void);
 }
 
 typedef struct {
