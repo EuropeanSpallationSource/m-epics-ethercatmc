@@ -356,7 +356,8 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
                  );
   if ((nvals != 6) && (nvals != 3)) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%snvals=%d\n", modNamEMC, nvals);
+              "%sreadMonitoring(%d) nvals=%d out=%s in=%s \n",
+              modNamEMC, axisNo_, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   pC_->getDoubleParam(axisNo_,  pC_->EthercatMCCfgRDBD_RB_,     &old_rdbd);
@@ -1262,11 +1263,11 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 
 
 pollAllWrongnvals:
-  drvlocal.supported.statusVer = -1;
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%spollAll(%d) nvals=%d in=%s\n",
-            modNamEMC, axisNo_, nvals, pC_->inString_);
-  return asynSuccess;
+  /* rubbish on the line */
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+            "%spollAll(%d) nvals=%d out=%s in=%s \n",
+            modNamEMC, axisNo_, nvals, pC_->outString_, pC_->inString_);
+  return asynDisabled;
 }
 
 
@@ -1299,6 +1300,9 @@ asynStatus EthercatMCAxis::poll(bool *moving)
               "%sout=%s in=%s return=%s (%d)\n",
               modNamEMC, pC_->outString_, pC_->inString_,
               pasynManager->strStatus(comStatus), (int)comStatus);
+    if (comStatus == asynDisabled) {
+      return asynSuccess;
+    }
     goto skip;
   }
 
