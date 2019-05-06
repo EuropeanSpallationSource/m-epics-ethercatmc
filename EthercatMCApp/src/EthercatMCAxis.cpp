@@ -18,11 +18,6 @@
 #define ASYN_TRACE_INFO      0x0040
 #endif
 
-/* temporally definition */
-#ifndef ERROR_MAIN_ENC_SET_SCALE_FAIL_DRV_ENABLED
-#define ERROR_MAIN_ENC_SET_SCALE_FAIL_DRV_ENABLED 0x2001C
-#endif
-
 #define NCOMMANDMOVEVEL  1
 #define NCOMMANDMOVEREL  2
 #define NCOMMANDMOVEABS  3
@@ -305,18 +300,6 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
 
   pC_->getDoubleParam(axisNo_, pC_->EthercatMCCfgSREV_RB_, &old_srev);
   pC_->getDoubleParam(axisNo_, pC_->EthercatMCCfgUREV_RB_, &old_urev);
-#if defined motorSREVROString
-#if defined motorUREVROString
-  setDoubleParam(pC_->motorSREVRO_, srev);
-  setDoubleParam(pC_->motorUREVRO_, urev);
-#endif
-#endif
-#ifdef motorERESROString
-  if (urev) {
-    drvlocal.eres = urev / srev;
-    setDoubleParam(pC_->motorERESRO_, drvlocal.eres);
-  }
-#endif
   if (srev != old_srev || urev != old_urev) {
     setDoubleParam(pC_->EthercatMCCfgSREV_RB_, srev);
     setDoubleParam(pC_->EthercatMCCfgUREV_RB_, urev);
@@ -377,9 +360,6 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
   setDoubleParam(pC_->EthercatMCCfgRDBD_RB_, rdbd);
   setDoubleParam(pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim);
   setIntegerParam(pC_->EthercatMCCfgRDBD_En_RB_, rdbd_en);
-#ifdef motorRDBDROString
-  setDoubleParam(pC_->motorRDBDRO_, rdbd_en ? rdbd / scaleFactor : 0.0);
-#endif
   /* Either the monitoring is off or 0.0 by mistake, set an error */
   drvlocal.illegalInTargetWindow = (!rdbd_en || !rdbd);
 
@@ -397,9 +377,8 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
   asynStatus status;
   int nvals;
   double scaleFactor = drvlocal.scaleFactor;
-  double velo, vmax, jvel, accs, velToHom;
+  double velo, vmax, jvel, accs;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
-           "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
            "ADSPORT=501/.ADR.16#%X,16#%X,8,5?;"
@@ -407,51 +386,32 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
            0x4000 + axisID, 0x9,   // VELO"
            0x4000 + axisID, 0x27,  // VMAX"
            0x4000 + axisID, 0x8,   // JVEL
-           0x4000 + axisID, 0x101, // ACCS"
-           0x4000 + axisID, 0x6    // HVEL
+           0x4000 + axisID, 0x101  // ACCS"
            );
   status = pC_->writeReadOnErrorDisconnect();
   if (status) return status;
-  nvals = sscanf(pC_->inString_, "%lf;%lf;%lf;%lf;%lf",
-                 &velo, &vmax, &jvel, &accs, &velToHom);
-  if (nvals != 5) {
+  nvals = sscanf(pC_->inString_, "%lf;%lf;%lf;%lf",
+                 &velo, &vmax, &jvel, &accs);
+  if (nvals != 4) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%snvals=%d command=\"%s\" response=\"%s\"\n",
               modNamEMC, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
-            "%svelo=%f vmax=%f jvel=%f accs=%f hvel=%f\n",
-            modNamEMC, velo, vmax, jvel, accs, velToHom);
+            "%svelo=%f vmax=%f jvel=%f accs=%f\n",
+            modNamEMC, velo, vmax, jvel, accs);
   if (velo > 0.0) {
     pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVELO_, velo / scaleFactor);
-#ifdef motorDefVelocityROString
-    setDoubleParam(pC_->motorDefVelocityRO_, velo / scaleFactor);
-#endif
   }
   if (vmax > 0.0) {
     pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVMAX_, vmax / scaleFactor);
-#ifdef motorMaxVelocityROString
-    setDoubleParam(pC_->motorMaxVelocityRO_, vmax / scaleFactor);
-#endif
   }
   if (jvel > 0.0) {
     pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgJVEL_, jvel / scaleFactor);
-#ifdef motorDefJogVeloROString
-    setDoubleParam(pC_->motorDefJogVeloRO_, jvel / scaleFactor);
-#endif
   }
-  if (velToHom > 0.0) {
-#ifdef motorDefHomeVeloROString
-    setDoubleParam(pC_->motorDefHomeVeloRO_, velToHom / scaleFactor);
-#endif
-  }
-
   if (accs > 0.0) {
     pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgACCS_, accs / scaleFactor);
-#ifdef motorDefJogAccROString
-    setDoubleParam(pC_->motorDefJogAccRO_, accs / scaleFactor);
-#endif
   }
   return asynSuccess;
 }
@@ -778,7 +738,6 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
              drvlocal.adsport_str, axisNo_);
     return writeReadACK();
   }
-    
 #ifndef motorWaitPollsBeforeReadyString
   drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
 #endif
@@ -1520,15 +1479,12 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modNamEMC, axisNo_, value);
 #endif
-#ifdef EthercatMCHomProcString
   } else if (function == pC_->EthercatMCHomProc_) {
     int motorNotHomedProblem = 0;
     setIntegerParam(pC_->EthercatMCHomProc_RB_, value);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",
               modNamEMC, axisNo_, value, motorNotHomedProblem);
-#endif
-#ifdef EthercatMCErrRstString
   } else if (function == pC_->EthercatMCErrRst_) {
     if (value) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -1539,8 +1495,6 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     }
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
-#endif
-#ifdef EthercatMCCfgDHLM_EnString
   } else if (function == pC_->EthercatMCCfgDHLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d EthercatMCCfgDHLM_En)=%d\n",
@@ -1548,8 +1502,6 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     status = setSAFValueOnAxis(indexGroup5000, 0xC, value);
     readBackSoftLimits();
     return status;
-#endif
-#ifdef EthercatMCCfgDLLM_EnString
   } else if (function == pC_->EthercatMCCfgDLLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d EthercatMCCfgDLLM_En)=%d\n",
@@ -1557,7 +1509,6 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
     status = setSAFValueOnAxis(indexGroup5000, 0xB, value);
     readBackSoftLimits();
     return status;
-#endif
   }
 
   //Call base class method
@@ -1646,22 +1597,18 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d HomPos_)=%f\n", modNamEMC, axisNo_, value);
 #endif
-#ifdef EthercatMCCfgDHLMString
   } else if (function == pC_->EthercatMCCfgDHLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d EthercatMCCfgDHLM_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xE, value);
     readBackSoftLimits();
     return status;
-#endif
-#ifdef EthercatMCCfgDLLMString
   } else if (function == pC_->EthercatMCCfgDLLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d EthercatMCCfgDLLM_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xD, value);
     readBackSoftLimits();
     return status;
-#endif
   } else if (function == pC_->EthercatMCCfgVELO_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d EthercatMCCfgVELO_)=%f\n", modNamEMC, axisNo_, value);
@@ -1692,14 +1639,6 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
 {
     const char * const Main_this_str = "Main.this.";
     const char * const Sim_this_str = "Sim.this.";
-#if 0
-    unsigned adsport;
-    unsigned indexOffset;
-    int      ivalue;
-    double   fvalue;
-    int nvals = 0;
-    int retryCount = 1;
-#endif
 
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetStringParamDbgStrToMcu(%d)=\"%s\"\n",
@@ -1721,33 +1660,6 @@ asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
               axisNo_, value + strlen(Sim_this_str));
       return writeReadACK();
     }
-#if 0
-    nvals = sscanf(value, "Sim.M%u.", &ivalue);
-    if (nvals == 1) {
-      snprintf(pC_->outString_, sizeof(pC_->outString_), "%s", value);
-      return writeReadACK();
-    }
-    /* ADR commands integer
-     *  # in  target position monitoring
-     *  setADRinteger 501 0x4000 0x15 1
-     */
-    nvals = sscanf(value, "setADRinteger %u %x %x %d",
-                   &indexGroup, &indexOffset, &ivalue);
-    if (nvals == 3) {
-      return setSAFValueOnAxisVerify(indexGroup, indexOffset,
-                                     ivalue, retryCount);
-    }
-    /* ADR commands floating point
-     *  # Target position monitoring window, mm
-     *  setADRdouble  501 0x4000 0x6 0.1 */
-    nvals = sscanf(value, "setADRdouble %u %x %x %lf",
-                   &indexGroup, &indexOffset, &fvalue);
-
-    if (nvals == 3) {
-      return setSAFValueOnAxisVerify(indexGroup, indexOffset,
-                                     fvalue, retryCount);
-    }
-#endif
     /* If we come here, the command was not understood */
     return asynError;
 }
