@@ -327,9 +327,6 @@ double getLowSoftLimitPos(int axis_no)
   double value = 0;
   AXIS_CHECK_RETURN_ZERO(axis_no);
   value = motor_axis[axis_no].lowSoftLimitPos;
-  fprintf(stdlog,
-          "%s/%s:%d axis_no=%d value=%g\n",
-          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
   return value;
 }
 
@@ -373,9 +370,6 @@ double getHighSoftLimitPos(int axis_no)
   double value = 0;
   AXIS_CHECK_RETURN_ZERO(axis_no);
   value = motor_axis[axis_no].highSoftLimitPos;
-  fprintf(stdlog,
-          "%s/%s:%d axis_no=%d value=%g\n",
-          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
   return value;
 }
 
@@ -419,9 +413,6 @@ double getMRES_23(int axis_no)
   double value = 0;
   AXIS_CHECK_RETURN_ZERO(axis_no);
   value = motor_axis[axis_no].MRES_23;
-  fprintf(stdlog,
-          "%s/%s:%d axis_no=%d value=%g\n",
-          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
   return value;
 }
 
@@ -453,9 +444,6 @@ int setMRES_23(int axis_no, double value)
 double getMRES_24(int axis_no)
 {
   double value = 0;
-  fprintf(stdlog,
-          "%s/%s:%d axis_no=%d value=%g\n",
-          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
   AXIS_CHECK_RETURN_ZERO(axis_no);
   value = motor_axis[axis_no].MRES_24;
   return value;
