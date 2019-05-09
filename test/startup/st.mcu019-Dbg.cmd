@@ -3,7 +3,7 @@ require EthercatMC,USER
 epicsEnvSet("ECM_NUMAXES",   "2")
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=10.4.3.205)")
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.242.18)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-ESSIIP:)")
@@ -11,6 +11,7 @@ epicsEnvSet("P",             "$(SM_PREFIX=LabS-ESSIIP:)")
 epicsEnvSet("EGU",           "$(SM_EGU=mm)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 
+epicsEnvSet("ECM_OPTIONS",          "")
 # Controller
 < EthercatMCController.cmd
 
