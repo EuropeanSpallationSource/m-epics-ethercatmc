@@ -18,14 +18,17 @@ epicsEnvSet("DESC",          "$(SM_DESC=motor1)")
 < EthercatMCAxis.cmd
 < EthercatMCAxisdebug.cmd
 
-epicsEnvSet("AXISCONFIG",    "HomProc=15;HomPos=0")
+# Axis 2 and 3 use degree
+epicsEnvSet("ECAXISFIELDINIT", ",EGU=deg")
+
+epicsEnvSet("AXISCONFIG",    "HomProc=1;HomPos=-18.0")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=motor2)")
 < EthercatMCAxis.cmd
 < EthercatMCAxisdebug.cmd
 
-epicsEnvSet("AXISCONFIG",    "HomProc=15;HomPos=0")
+epicsEnvSet("AXISCONFIG",    "HomProc=1;HomPos=-15.0")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 epicsEnvSet("DESC",          "$(SM_DESC=motor3)")
