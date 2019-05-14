@@ -87,11 +87,13 @@ export MOTORIP MOTORPORT
           done
       )
     fi &&
-    (cd ../../motor &&
-     make install) || {
-       echo >&2 make install failed
-       exit 1
-    }
+    if test -d ../../motor; then
+      (cd ../../motor &&
+          make install) || {
+        echo >&2 make install failed
+        exit 1
+      }
+    fi
     (cd .. &&
      make install) || {
        echo >&2 make install failed
