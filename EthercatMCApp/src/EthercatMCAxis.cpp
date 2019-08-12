@@ -197,6 +197,51 @@ void EthercatMCAxis::handleDisconnect(asynStatus status)
   callParamCallbacksUpdateError();
 }
 
+asynStatus EthercatMCAxis::updateCfgValue(int function,
+                                          double newValue,
+                                          const char *name)
+{
+  double oldValue;
+  asynStatus status = pC_->getDoubleParam(axisNo_, function, &oldValue);
+  if (status) {
+    /* First time that we write the value after IOC restart
+       ECMC configures everything from the iocshell, no need to
+       do a print here */
+    if (!drvlocal.supported.bECMC) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%supdateCfgValue(%d) %s=%f\n",
+                modNamEMC, axisNo_, name, newValue);
+    }
+  } else if (newValue != oldValue) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%supdateCfgValue(%d) old%s=%f new%s=%f\n",
+              modNamEMC, axisNo_, name, oldValue, name, newValue);
+  }
+  return pC_->setDoubleParam(axisNo_, function, newValue);
+}
+
+asynStatus EthercatMCAxis::updateCfgValue(int function,
+                                          int newValue,
+                                          const char *name)
+{
+  int oldValue;
+  asynStatus status = pC_->getIntegerParam(axisNo_, function, &oldValue);
+    if (status) {
+    /* First time that we write the value after IOC restart
+       ECMC configures everything from the iocshell, no need to
+       do a print here */
+    if (!drvlocal.supported.bECMC) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%supdateCfgValue(%d) %s=%d\n",
+                modNamEMC, axisNo_, name, newValue);
+    }
+  } else if (newValue != oldValue) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%supdateCfgValue(%d) old%s=%d new%s=%d\n",
+              modNamEMC, axisNo_, name, oldValue, name, newValue);
+  }
+  return pC_->setIntegerParam(axisNo_, function, newValue);
+}
 
 asynStatus EthercatMCAxis::readBackSoftLimits(void)
 {
@@ -276,7 +321,7 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
 {
   int nvals;
   asynStatus status;
-  double srev = 0, urev = 0, old_srev = 0, old_urev = 0;
+  double srev = 0, urev = 0;
 
   double scaleFactor = drvlocal.scaleFactor;
 
@@ -297,16 +342,8 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
               "%snvals=%d\n", modNamEMC, nvals);
     return asynError;
   }
-
-  pC_->getDoubleParam(axisNo_, pC_->EthercatMCCfgSREV_RB_, &old_srev);
-  pC_->getDoubleParam(axisNo_, pC_->EthercatMCCfgUREV_RB_, &old_urev);
-  if (srev != old_srev || urev != old_urev) {
-    setDoubleParam(pC_->EthercatMCCfgSREV_RB_, srev);
-    setDoubleParam(pC_->EthercatMCCfgUREV_RB_, urev);
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssrev=%f urev=%f\n",
-              modNamEMC, srev, urev);
-  }
+  updateCfgValue(pC_->EthercatMCCfgSREV_RB_, srev, "srev");
+  updateCfgValue(pC_->EthercatMCCfgUREV_RB_, urev, "urev");
   return asynSuccess;
 }
 
@@ -314,8 +351,8 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
 {
   int nvals;
   asynStatus status;
-  double old_rdbd = 0, rdbd, old_rdbd_tim = 0, rdbd_tim, poslag = -1, poslag_tim = -1;
-  int old_rdbd_en = 0, rdbd_en, poslag_en = 0;
+  double rdbd, rdbd_tim, poslag = -1, poslag_tim = -1;
+  int rdbd_en, poslag_en = 0;
   double scaleFactor = drvlocal.scaleFactor;
 
   if (!scaleFactor) return asynError;
@@ -343,30 +380,16 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
               modNamEMC, axisNo_, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
-  pC_->getDoubleParam(axisNo_,  pC_->EthercatMCCfgRDBD_RB_,     &old_rdbd);
-  pC_->getDoubleParam(axisNo_,  pC_->EthercatMCCfgRDBD_Tim_RB_, &old_rdbd_tim);
-  pC_->getIntegerParam(axisNo_, pC_->EthercatMCCfgRDBD_En_RB_,  &old_rdbd_en);
-  if (rdbd != old_rdbd || old_rdbd_tim != rdbd_tim || old_rdbd_en != rdbd_en) {
-    /* RDBD is really important, print it on change */
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s (%d) rdbd=%f, rdbd_tim=%f rdbd_en=%d\n",
-              modNamEMC, axisNo_, rdbd, rdbd_tim, rdbd_en);
-  }
-  /* poslag (position lag) is much less important, print via "FLOW" */
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
-            "%s (%d) poslag=%f poslag_tim=%f poslag_en=%d\n",
-            modNamEMC, axisNo_, poslag, poslag_tim, poslag_en);
+  updateCfgValue(pC_->EthercatMCCfgRDBD_RB_, rdbd, "rdbd");
+  updateCfgValue(pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim , "rdbd_time");
+  updateCfgValue(pC_->EthercatMCCfgRDBD_En_RB_, rdbd_en, "rdbd_en");
 
-  setDoubleParam(pC_->EthercatMCCfgRDBD_RB_, rdbd);
-  setDoubleParam(pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim);
-  setIntegerParam(pC_->EthercatMCCfgRDBD_En_RB_, rdbd_en);
-  /* Either the monitoring is off or 0.0 by mistake, set an error */
   drvlocal.illegalInTargetWindow = (!rdbd_en || !rdbd);
 
   if (nvals == 6) {
-    setDoubleParam(pC_->EthercatMCCfgPOSLAG_RB_, poslag);
-    setDoubleParam(pC_->EthercatMCCfgPOSLAG_Tim_RB_, poslag_tim);
-    setIntegerParam(pC_->EthercatMCCfgPOSLAG_En_RB_, poslag_en);
+    updateCfgValue(pC_->EthercatMCCfgPOSLAG_RB_, poslag, "poslag");
+    updateCfgValue(pC_->EthercatMCCfgPOSLAG_Tim_RB_, poslag_tim, "poslag_tim");
+    updateCfgValue(pC_->EthercatMCCfgPOSLAG_En_RB_, poslag_en, "poslag_en");
   }
   return asynSuccess;
 }
@@ -402,16 +425,16 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
             "%svelo=%f vmax=%f jvel=%f accs=%f\n",
             modNamEMC, velo, vmax, jvel, accs);
   if (velo > 0.0) {
-    pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVELO_, velo / scaleFactor);
+    updateCfgValue(pC_->EthercatMCCfgVELO_, velo / scaleFactor, "velo");
   }
   if (vmax > 0.0) {
-    pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgVMAX_, vmax / scaleFactor);
+    updateCfgValue(pC_->EthercatMCCfgVMAX_, vmax / scaleFactor, "vmax");
   }
   if (jvel > 0.0) {
-    pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgJVEL_, jvel / scaleFactor);
+    updateCfgValue(pC_->EthercatMCCfgJVEL_, jvel / scaleFactor, "jvel");
   }
   if (accs > 0.0) {
-    pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgACCS_, accs / scaleFactor);
+    updateCfgValue(pC_->EthercatMCCfgACCS_, accs / scaleFactor, "accs");
   }
   return asynSuccess;
 }
@@ -437,7 +460,12 @@ asynStatus EthercatMCAxis::readBackAllConfig(int axisID)
   asynStatus status = asynSuccess;
   /* for ECMC homing is configured from EPICS, do NOT do the readback */
   if (!drvlocal.supported.bECMC) {
-    if (!drvlocal.scaleFactor) status = asynError;
+    if (!drvlocal.scaleFactor) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%sreadBackAllConfig(%d) drvlocal.scaleFactor=0.0\n",
+                modNamEMC, axisNo_);
+      return asynError;
+    }
     if (status == asynSuccess) status = readBackHoming();
   }
   if (status == asynSuccess) status = readScaling(axisID);
