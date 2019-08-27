@@ -1,64 +1,15 @@
 /*
-FILENAME...   EthercatMC.h
+FILENAME...   EthercatMCAxis.h
 */
 
+#ifndef ETHERCATMCAXIS_H
+#define ETHERCATMCAXIS_H
 
-#ifdef AXISNOTMOTOR
-#include "asynAxisController.h"
-#include "asynAxisAxis.h"
-#else
-#include "asynMotorController.h"
 #include "asynMotorAxis.h"
-#endif
-
-
-
 
 #define AMPLIFIER_ON_FLAG_CREATE_AXIS  (1)
 #define AMPLIFIER_ON_FLAG_WHEN_HOMING  (1<<1)
 #define AMPLIFIER_ON_FLAG_USING_CNEN   (1<<2)
-
-#ifndef motorRecResolutionString
-#define CREATE_MOTOR_REC_RESOLUTION
-#define motorRecDirectionString         "MOTOR_REC_DIRECTION"
-#define motorRecOffsetString            "MOTOR_REC_OFFSET"
-#define motorRecResolutionString        "MOTOR_REC_RESOLUTION"
-#endif
-
-#define EthercatMCErrString                  "MCUErr"
-#define EthercatMCErrIdString                "ErrId"
-#define EthercatMCHomProc_RBString           "HomProc-RB"
-#define EthercatMCHomPos_RBString            "HomPos-RB"
-#define EthercatMCHomProcString              "HomProc"
-#define EthercatMCHomPosString               "HomPos"
-#define EthercatMCVelToHomString             "VelToHom"
-#define EthercatMCVelFrmHomString            "VelFrmHom"
-#define EthercatMCAccHomString               "AccHom"
-#define EthercatMCEnc_ActString              "EncAct"
-#define EthercatMCErrRstString               "ErrRst"
-#define EthercatMCVelActString               "VelAct"
-#define EthercatMCVel_RBString               "Vel-RB"
-#define EthercatMCAcc_RBString               "Acc-RB"
-#define EthercatMCCfgVELO_String             "CfgVELO"
-#define EthercatMCCfgVMAX_String             "CfgVMAX"
-#define EthercatMCCfgJVEL_String             "CfgJVEL"
-#define EthercatMCCfgACCS_String             "CfgACCS"
-#define EthercatMCCfgDHLMString              "CfgDHLM"
-#define EthercatMCCfgDLLMString              "CfgDLLM"
-#define EthercatMCCfgDHLM_EnString           "CfgDHLM-En"
-#define EthercatMCCfgDLLM_EnString           "CfgDLLM-En"
-#define EthercatMCCfgSREV_RBString           "CfgSREV-RB"
-#define EthercatMCCfgUREV_RBString           "CfgUREV-RB"
-#define EthercatMCCfgRDBD_RBString           "CfgRDBD-RB"
-#define EthercatMCCfgRDBD_Tim_RBString       "CfgRDBD-Tim-RB"
-#define EthercatMCCfgRDBD_En_RBString        "CfgRDBD-En-RB"
-#define EthercatMCCfgPOSLAG_RBString         "CfgPOSLAG-RB"
-#define EthercatMCCfgPOSLAG_Tim_RBString     "CfgPOSLAG-Tim-RB"
-#define EthercatMCCfgPOSLAG_En_RBString      "CfgPOSLAG-En-RB"
-
-
-#define EthercatMCMCUErrMsgString            "MCUErrMsg"
-#define EthercatMCDbgStrToMcuString          "StrToMCU"
 
 extern const char *modNamEMC;
 
@@ -184,7 +135,6 @@ private:
        motion controller */
     struct {
       int          nMotionAxisID;     /* Needed for ADR commands */
-      unsigned int stAxisStatus_Vxx :1;
       unsigned int statusVer        :1;
       unsigned int oldStatusDisconnected : 1;
       unsigned int sErrorMessage    :1; /* From MCU */
@@ -192,15 +142,10 @@ private:
     }  dirty;
 
     struct {
-      unsigned int stAxisStatus_V1  :1;
-      unsigned int stAxisStatus_V2  :1;
-      unsigned int bV1BusyNewStyle  :1;
-      unsigned int bSIM             :1;
-      unsigned int bECMC            :1;
-      unsigned int bADS             :1;
       int          statusVer;           /* 0==V1, busy old style 1==V1, new style*/
-                                        /* 2==V2 */
+      unsigned int bV1BusyNewStyle  :1;
     }  supported;
+
     /* Error texts when we talk to the controller, there is not an "OK"
        Or, failure in setValueOnAxisVerify() */
     char cmdErrorMessage[80]; /* From driver */
@@ -210,8 +155,8 @@ private:
     unsigned int adsPort;
   } drvlocal;
 
-  void       handleDisconnect(asynStatus status);
   asynStatus handleConnect(void);
+  asynStatus writeReadControllerPrint(int traceMask);
   asynStatus writeReadControllerPrint(void);
   asynStatus readConfigLine(const char *line, const char **errorTxt_p);
   asynStatus readConfigFile(void);
@@ -223,16 +168,15 @@ private:
   asynStatus readScaling(int axisID);
   asynStatus readMonitoring(int axisID);
   asynStatus readBackVelocities(int axisID);
+  asynStatus readBackEncoders(int axisID);
   asynStatus initialPoll(void);
   asynStatus initialPollInternal(void);
-  asynStatus writeReadACK(void);
   asynStatus setValueOnAxis(const char* var, int value);
   asynStatus setValueOnAxisVerify(const char *var, const char *rbvar,
                                   int value, unsigned int retryCount);
   asynStatus setValueOnAxis(const char* var, double value);
   asynStatus setValuesOnAxis(const char* var1, double value1, const char* var2, double value2);
   int getMotionAxisID(void);
-  asynStatus getFeatures(void);
   asynStatus setSAFValueOnAxis(unsigned indexGroup,
                                unsigned indexOffset,
                                int value);
@@ -292,71 +236,4 @@ private:
   friend class EthercatMCController;
 };
 
-class epicsShareClass EthercatMCController : public asynMotorController {
-public:
-  EthercatMCController(const char *portName, const char *EthercatMCPortName, int numAxes, double movingPollPeriod, double idlePollPeriod);
-
-  void report(FILE *fp, int level);
-  asynStatus setMCUErrMsg(const char *value);
-  asynStatus configController(int needOk, const char *value);
-  asynStatus writeReadOnErrorDisconnect(void);
-  EthercatMCAxis* getAxis(asynUser *pasynUser);
-  EthercatMCAxis* getAxis(int axisNo);
-  protected:
-  void handleStatusChange(asynStatus status);
-  struct {
-    unsigned int local_no_ASYN_;
-    unsigned int hasConfigError;
-    unsigned int isConnected;
-  } ctrlLocal;
-
-  /* First parameter */
-  int EthercatMCErr_;
-  int EthercatMCHomProc_RB_;
-  int EthercatMCHomPos_RB_;
-  int EthercatMCHomProc_;
-  int EthercatMCHomPos_;
-  int EthercatMCVelToHom_;
-  int EthercatMCVelFrmHom_;
-  int EthercatMCAccHom_;
-  int EthercatMCEncAct_;
-
-#ifdef CREATE_MOTOR_REC_RESOLUTION
-  int motorRecResolution_;
-  int motorRecDirection_;
-  int motorRecOffset_;
 #endif
-
-  /* Add parameters here */
-  int EthercatMCErrRst_;
-  int EthercatMCMCUErrMsg_;
-  int EthercatMCDbgStrToMcu_;
-  int EthercatMCVelAct_;
-  int EthercatMCVel_RB_;
-  int EthercatMCAcc_RB_;
-  int EthercatMCCfgVELO_;
-  int EthercatMCCfgVMAX_;
-  int EthercatMCCfgJVEL_;
-  int EthercatMCCfgACCS_;
-  int EthercatMCCfgSREV_RB_;
-  int EthercatMCCfgUREV_RB_;
-  int EthercatMCCfgRDBD_RB_;
-  int EthercatMCCfgRDBD_Tim_RB_;
-  int EthercatMCCfgRDBD_En_RB_;
-  int EthercatMCCfgPOSLAG_RB_;
-  int EthercatMCCfgPOSLAG_Tim_RB_;
-  int EthercatMCCfgPOSLAG_En_RB_;
-  int EthercatMCCfgDHLM_;
-  int EthercatMCCfgDLLM_;
-  int EthercatMCCfgDHLM_En_;
-  int EthercatMCCfgDLLM_En_;
-
-  int EthercatMCErrId_;
-  /* Last parameter */
-
-  #define FIRST_VIRTUAL_PARAM EthercatMCErr_
-  #define LAST_VIRTUAL_PARAM EthercatMCErrId_
-  #define NUM_VIRTUAL_MOTOR_PARAMS ((int) (&LAST_VIRTUAL_PARAM - &FIRST_VIRTUAL_PARAM + 1))
-
-  friend class EthercatMCAxis;
-};

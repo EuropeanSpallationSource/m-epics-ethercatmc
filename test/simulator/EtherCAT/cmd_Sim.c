@@ -41,14 +41,14 @@ static void motorHandleOneArg(const char *myarg_1)
   /* From here on, only M1. commands */
   nvals = sscanf(myarg_1, "M%d.", &motor_axis_no);
   if (nvals != 1) {
-    RETURN_OR_DIE("%s/%s:%d line=%s nvals=%d",
+    CMD_BUF_PRINTF_RETURN_OR_DIE("%s/%s:%d line=%s nvals=%d",
                   __FILE__, __FUNCTION__, __LINE__,
                   myarg, nvals);
   }
   AXIS_CHECK_RETURN(motor_axis_no);
   myarg_1 = strchr(myarg_1, '.');
   if (!myarg_1) {
-    RETURN_OR_DIE("%s/%s:%d line=%s missing '.'",
+    CMD_BUF_PRINTF_RETURN_OR_DIE("%s/%s:%d line=%s missing '.'",
                   __FILE__, __FUNCTION__, __LINE__,
                   myarg);
   }
@@ -208,7 +208,7 @@ static void motorHandleOneArg(const char *myarg_1)
   }
 
   /* if we come here, we do not understand the command */
-  RETURN_OR_DIE("%s/%s:%d line=%s myarg_1=%s",
+  CMD_BUF_PRINTF_RETURN_OR_DIE("%s/%s:%d line=%s myarg_1=%s",
                 __FILE__, __FUNCTION__, __LINE__,
                 myarg, myarg_1);
 }

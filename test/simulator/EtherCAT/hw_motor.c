@@ -275,6 +275,15 @@ double getMotorVelocity(int axis_no)
   return velocity;
 }
 
+int isMotorHoming(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  if (motor_axis[axis_no].moving.velo.HomeVelocity) {
+    return 1;
+  }
+  return 0;
+}
+
 int isMotorMoving(int axis_no)
 {
   AXIS_CHECK_RETURN_ZERO(axis_no);
@@ -597,12 +606,10 @@ static void simulateMotion(int axis_no)
   gettimeofday(&timeNow, NULL);
 
   if (motor_axis[axis_no].moving.velo.JogVelocity) {
+    /* Simulate jogging  */
+    motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].moving.velo.JogVelocity *
+      (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
     clipped = soft_limits_clip(axis_no, velocity);
-    if (!clipped) {
-      /* Simulate jogging  */
-      motor_axis[axis_no].MotorPosNow += motor_axis[axis_no].moving.velo.JogVelocity *
-        (timeNow.tv_sec - motor_axis[axis_no].lastPollTime.tv_sec);
-    }
   }
 
   if (motor_axis[axis_no].moving.velo.PosVelocity) {
@@ -719,6 +726,7 @@ void setMotorPos(int axis_no, double value)
   fprintf(stdlog, "%s/%s:%d axis_no=%d value=%g\n",
           __FILE__, __FUNCTION__, __LINE__,
           axis_no, value);
+  motor_axis[axis_no].homed = 1;
   /* simulate EncoderPos */
   motor_axis[axis_no].MotorPosNow = value;
   motor_axis[axis_no].EncoderPos = getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
@@ -992,16 +1000,19 @@ int getAmplifierOn(int axis_no)
            (timeNow.tv_sec > motor_axis[axis_no].powerOnTime.tv_sec)) {
         timeNow.tv_sec--;
         motor_axis[axis_no].amplifierPercent++;
+#if 0
         fprintf(stdlog, "%s/%s:%d axis_no=%d amplifierPercent=%d\n",
                 __FILE__, __FUNCTION__, __LINE__,
                 axis_no, motor_axis[axis_no].amplifierPercent);
+#endif
     }
+  }
+  if (motor_axis[axis_no].amplifierPercent == 100) {
     fprintf(stdlog, "%s/%s:%d axis_no=%d amplifierPercent=%d\n",
             __FILE__, __FUNCTION__, __LINE__,
             axis_no, motor_axis[axis_no].amplifierPercent);
-  }
-  if (motor_axis[axis_no].amplifierPercent == 100)
     return 1;
+  }
   else
     return 0;
 }

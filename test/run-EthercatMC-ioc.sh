@@ -60,8 +60,19 @@ if test -n "$1"; then
   echo HOST=$HOST MOTORPORT=$MOTORPORT
   MOTORIP=$HOST
   echo MOTORIP=$MOTORIP
+  shift
 fi
 export MOTORIP MOTORPORT
+if test "$MOTORPORT" = 48898; then
+  if test -z "$1"; then
+    echo >&2         $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "<LOCALAMSNETID>"
+    echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT " 192.168.88.154.1.1"
+    exit 1
+  fi
+  LOCALAMSNETID=$1
+  shift
+fi
+export LOCALAMSNETID
 (
   IOCDIR=../iocBoot/ioc${APPXX}
   DBMOTOR=db
@@ -137,6 +148,7 @@ export MOTORIP MOTORPORT
       -e "s/require motor,USER/require motor,$USER/" \
       -e "s/require EthercatMC,USER/require EthercatMC,$USER/" \
       -e "s/^cd /#cd /" \
+      -e "s/192.168.88.154.1.1/$LOCALAMSNETID/" \
       -e "s/127.0.0.1/$MOTORIP/" \
       -e "s/5000/$MOTORPORT/" |
     grep -v '^  *#' >$stcmddst || {
@@ -178,6 +190,7 @@ EOF
       -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
       -e "s/5000/$MOTORPORT/" \
       -e "s/127.0.0.1/$MOTORIP/" \
+      -e "s/192.168.88.154.1.1/$LOCALAMSNETID/" \
       -e "s%cfgFile=./%cfgFile=./test/startup/%"    \
       -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
       -e "s%require%#require%" \

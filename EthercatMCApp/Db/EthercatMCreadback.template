@@ -41,7 +41,7 @@ record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgRDBD-RB_")
 record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgSPDB_")
 {
     field(PREC, "$(PREC)")
-    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgSPDB CP")
+    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgSPDB-RB CP")
     field(OUT,  "$(PREFIX)$(MOTOR_NAME).SPDB")
     field(OMSL, "closed_loop")
 }

@@ -88,6 +88,7 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
 
 class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
+    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__))
     myPOSlow = lib.myPOSlow
     myPOSmid = lib.myPOSmid
     myPOShig = lib.myPOShig

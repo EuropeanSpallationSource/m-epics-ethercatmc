@@ -1,8 +1,14 @@
+#ifndef LOGERR_INFO_H
+#define LOGERR_INFO_H
+#include <stdlib.h> /* exit() */
+#include <stdio.h>  /* FILE */
 #include <string.h> /* strerror */
 #include <errno.h>
 
 extern unsigned int debug_print_flags;
 extern unsigned int die_on_error_flags;
+
+extern FILE *stdlog;
 
 #define PRINT_STDOUT_BIT0() (debug_print_flags & 1)
 #define PRINT_STDOUT_BIT1() (debug_print_flags & (1<<1))
@@ -55,6 +61,17 @@ do {                                             \
   (void)fprintf(stdlog, fmt, ##__VA_ARGS__);     \
 }
 
+#define RETURN_ERROR_OR_DIE(errcode,fmt, ...)   \
+  do {                                          \
+    if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, "Error: ");   \
+    if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, fmt, ##__VA_ARGS__);   \
+    if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, "%s", "\n"); \
+    if (DIE_ON_ERROR_BIT1())  exit(2);          \
+    return errcode;                             \
+  }                                             \
+  while(0)
+
+
 
 #define LOGERR_ERRNO(fmt, ...)                   \
 {                                                \
@@ -62,7 +79,7 @@ do {                                             \
   (void)fprintf(stdlog, fmt, ##__VA_ARGS__);     \
 }
 
-#define RETURN_OR_DIE(fmt, ...)                 \
+#define CMD_BUF_PRINTF_RETURN_OR_DIE(fmt, ...)                 \
   do {                                          \
     cmd_buf_printf("Error: ");                  \
     cmd_buf_printf(fmt, ##__VA_ARGS__);         \
@@ -73,13 +90,17 @@ do {                                             \
   }                                             \
   while(0)
 
-#define RETURN_ERROR_OR_DIE(errcode,fmt, ...)   \
+#define CMD_BUF_PRINTF_RETURN_ERROR_OR_DIE(errcode,fmt, ...)   \
   do {                                          \
     cmd_buf_printf("Error: ");                  \
     cmd_buf_printf(fmt, ##__VA_ARGS__);         \
+    if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, "Error: ");   \
     if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, fmt, ##__VA_ARGS__);   \
     if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, "%s", "\n"); \
     if (DIE_ON_ERROR_BIT1())  exit(2);          \
     return errcode;                             \
   }                                             \
   while(0)
+
+
+#endif

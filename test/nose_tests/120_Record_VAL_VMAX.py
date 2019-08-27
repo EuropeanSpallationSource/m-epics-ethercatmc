@@ -4,6 +4,7 @@
 # https://nose.readthedocs.org/en/latest/testing.html
 
 import epics
+import math
 import unittest
 import os
 import sys
@@ -13,13 +14,18 @@ __g = motor_globals()
 ###
 
 def motorPositionTC(self, motor, tc_no, destination, velocity):
+    if velocity == 0.0:
+        return
     if (self.msta & self.lib.MSTA_BIT_HOMED):
-        tc_no = "TC-1202-LLM"
-        print '%s' % tc_no
+        epics.caput(motor + '-DbgStrToLOG', "Start TC " + tc_no[0:20]);
+        rbv = epics.caget(motor + '.RBV', use_monitor=False)
+        accl = epics.caget(motor + '.ACCL', use_monitor=False)
+        delta = math.fabs(destination - rbv)
+        timeout = delta / velocity + 2 * accl + 2.0
         if velocity != self.velo:
             epics.caput(motor + '.VELO', velocity)
 
-        res = self.lib.move(motor, destination, 60)
+        res = self.lib.move(motor, destination, timeout)
         if velocity != self.velo:
             epics.caput(motor + '.VELO', self.velo)
 
@@ -34,6 +40,7 @@ def motorPositionTC(self, motor, tc_no, destination, velocity):
 class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
+    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__))
 
     hlm = epics.caget(motor + '.HLM')
     llm = epics.caget(motor + '.LLM')

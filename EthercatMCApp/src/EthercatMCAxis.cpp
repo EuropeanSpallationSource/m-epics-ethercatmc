@@ -12,7 +12,8 @@
 #include <epicsThread.h>
 
 #include "motor.h"
-#include "EthercatMC.h"
+#include "EthercatMCAxis.h"
+#include "EthercatMCController.h"
 
 #ifndef ASYN_TRACE_INFO
 #define ASYN_TRACE_INFO      0x0040
@@ -28,7 +29,6 @@
    to "start" (report moving after a new move command */
 #define WAITNUMPOLLSBEFOREREADY 3
 
-const char *modNamEMC = "EthercatMCAxis:: ";
 
 //
 // These are the EthercatMCAxis methods
@@ -42,25 +42,29 @@ const char *modNamEMC = "EthercatMCAxis:: ";
  * Initializes register numbers, etc.
  */
 EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
-                     int axisFlags, const char *axisOptionsStr)
+                               int axisFlags, const char *axisOptionsStr)
   : asynMotorAxis(pC, axisNo),
     pC_(pC)
 {
+  /* Some parameters are only defined in the ESS fork of the motor module.
+     So they have the ifdef */
 #ifdef motorFlagsDriverUsesEGUString
-    setIntegerParam(pC_->motorFlagsDriverUsesEGU_,1);
+  setIntegerParam(pC_->motorFlagsDriverUsesEGU_,1);
 #endif
 #ifdef motorFlagsAdjAfterHomedString
-    setIntegerParam(pC_->motorFlagsAdjAfterHomed_, 1);
+  setIntegerParam(pC_->motorFlagsAdjAfterHomed_, 1);
 #endif
 #ifdef motorWaitPollsBeforeReadyString
   setIntegerParam(pC_->motorWaitPollsBeforeReady_ , WAITNUMPOLLSBEFOREREADY);
 #endif
   memset(&drvlocal, 0, sizeof(drvlocal));
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
-  /* Force a printout of this 3 variables, once running they are  0 or 1 */
+  /* Force a printout of this 3 variables, once the controller is connected,
+     they have 0 or 1 (but never -1) */
   drvlocal.old_st_axis_status.bHomed = -1;
   drvlocal.old_st_axis_status.bLimitBwd = -1;
   drvlocal.old_st_axis_status.bLimitFwd = -1;
+
   drvlocal.old_eeAxisError = eeAxisErrorIOCcomError;
   drvlocal.axisFlags = axisFlags;
 
@@ -101,12 +105,14 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     const char * const cfgfile_str = "cfgFile=";
     const char * const cfgDebug_str = "getDebugText=";
 #ifndef motorFlagsDriverUsesEGUString
+    /* The non-ESS motor needs a dummy "stepm-size" to compensate for MRES */
     const char * const stepSize_str = "stepSize=";
 #endif
     const char * const homProc_str = "HomProc=";
     const char * const homPos_str  = "HomPos=";
     const char * const adsPort_str  = "adsPort=";
     const char * const scaleFactor_str = "scaleFactor=";
+    const char * const sFeatures_str = "sFeatures=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -150,6 +156,11 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
       } else if (!strncmp(pThisOption, scaleFactor_str, strlen(scaleFactor_str))) {
         pThisOption += strlen(scaleFactor_str);
         drvlocal.scaleFactor = atof(pThisOption);
+      } else if (!strncmp(pThisOption, sFeatures_str, strlen(sFeatures_str))) {
+        pThisOption += strlen(sFeatures_str);
+        if (!strcmp(pThisOption, "Gvl")) {
+          pC_->features_ |= FEATURE_BITS_GVL;
+        }
       }
       pThisOption = pNextOption;
     }
@@ -162,13 +173,12 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 
 
 extern "C" int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
-                               int axisFlags, const char *axisOptionsStr)
+                                    int axisFlags, const char *axisOptionsStr)
 {
   EthercatMCController *pC;
 
   pC = (EthercatMCController*) findAsynPortDriver(EthercatMCName);
-  if (!pC)
-  {
+  if (!pC) {
     printf("Error port %s not found\n", EthercatMCName);
     return asynError;
   }
@@ -176,25 +186,6 @@ extern "C" int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
   new EthercatMCAxis(pC, axisNo, axisFlags, axisOptionsStr);
   pC->unlock();
   return asynSuccess;
-}
-
-/** Connection status is changed, the dirty bits must be set and
- *  the values in the controller must be updated
- * \param[in] AsynStatus status
- *
- * Sets the dirty bits
- */
-void EthercatMCAxis::handleDisconnect(asynStatus status)
-{
-  (void)status;
-  if (!drvlocal.dirty.oldStatusDisconnected) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s Communication error(%d)\n", modNamEMC, axisNo_);
-  }
-  memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
-  drvlocal.MCU_nErrorId = 0;
-  setIntegerParam(pC_->motorStatusCommsError_, 1);
-  callParamCallbacksUpdateError();
 }
 
 asynStatus EthercatMCAxis::updateCfgValue(int function,
@@ -207,7 +198,7 @@ asynStatus EthercatMCAxis::updateCfgValue(int function,
     /* First time that we write the value after IOC restart
        ECMC configures everything from the iocshell, no need to
        do a print here */
-    if (!drvlocal.supported.bECMC) {
+    if (!(pC_->features_ & FEATURE_BITS_ECMC)) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%supdateCfgValue(%d) %s=%f\n",
                 modNamEMC, axisNo_, name, newValue);
@@ -226,11 +217,11 @@ asynStatus EthercatMCAxis::updateCfgValue(int function,
 {
   int oldValue;
   asynStatus status = pC_->getIntegerParam(axisNo_, function, &oldValue);
-    if (status) {
+  if (status) {
     /* First time that we write the value after IOC restart
        ECMC configures everything from the iocshell, no need to
        do a print here */
-    if (!drvlocal.supported.bECMC) {
+    if (!((pC_->features_ & FEATURE_BITS_ECMC))) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%supdateCfgValue(%d) %s=%d\n",
                 modNamEMC, axisNo_, name, newValue);
@@ -248,7 +239,7 @@ asynStatus EthercatMCAxis::readBackSoftLimits(void)
   asynStatus status;
   int nvals;
   int axisID = getMotionAxisID();
-  int iValueHigh = 0, iValueLow = 0;
+  int enabledHigh = 0, enabledLow = 0;
   double fValueHigh = 0.0, fValueLow  = 0.0;
   double scaleFactor = drvlocal.scaleFactor;
 
@@ -264,35 +255,30 @@ asynStatus EthercatMCAxis::readBackSoftLimits(void)
   if (status)
     return status;
   nvals = sscanf(pC_->inString_, "%d;%lf;%d;%lf",
-                 &iValueHigh, &fValueHigh, &iValueLow, &fValueLow);
+                 &enabledHigh, &fValueHigh, &enabledLow, &fValueLow);
   if (nvals != 4) {
-     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-     "%snvals=%d command=\"%s\" response=\"%s\"\n",
-             modNamEMC, nvals, pC_->outString_, pC_->inString_);
-    iValueHigh = iValueLow = 0;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%snvals=%d command=\"%s\" response=\"%s\"\n",
+              modNamEMC, nvals, pC_->outString_, pC_->inString_);
+    enabledHigh = enabledLow = 0;
     fValueHigh = fValueLow = 0.0;
     return asynError;
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
             "%sout=%s in=%s CHLM_En=%d CHLM=%f CLLM_En=%d CLLM=%f\n",
             modNamEMC, pC_->outString_, pC_->inString_,
-            iValueHigh, fValueHigh, iValueLow, fValueLow);
+            enabledHigh, fValueHigh, enabledLow, fValueLow);
   /* EthercatMCCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX(axisNo_..)  here */
-  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCfgDHLM_En_, iValueHigh);
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCfgDHLM_En_, enabledHigh);
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgDHLM_, fValueHigh);
-  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCfgDLLM_En_, iValueLow);
+  pC_->setIntegerParam(axisNo_, pC_->EthercatMCCfgDLLM_En_, enabledLow);
   pC_->setDoubleParam(axisNo_, pC_->EthercatMCCfgDLLM_, fValueLow);
 
-  if (!iValueHigh || !iValueLow || !scaleFactor || fValueLow >= fValueHigh) {
-    /* Any limit not active, or scaleFactor == 0.0
-       Set everything to 0 */
-    fValueHigh = fValueLow  = 0.0;
+  if (scaleFactor) {
+    pC_->udateMotorLimitsRO(axisNo_, enabledHigh && enabledLow,
+                            fValueHigh / scaleFactor, fValueLow / scaleFactor);
   }
-#ifdef motorHighLimitROString
-  setDoubleParam(pC_->motorHighLimitRO_, fValueHigh / scaleFactor);
-  setDoubleParam(pC_->motorLowLimitRO_, fValueLow / scaleFactor);
-#endif
   return status;
 }
 
@@ -365,7 +351,7 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
            "ADSPORT=501/.ADR.16#%X,16#%X,2,2?",
            0x4000 + axisID, 0x16,  // RDBD_RB
            0x4000 + axisID, 0x17,  // RDBD_Tim
-           0x4000 + axisID, 0x15,  // RDND_En
+           0x4000 + axisID, 0x15,  // RDBD_En
            0x6000 + axisID, 0x12,  // PosLag
            0x6000 + axisID, 0x13,  // PosLag_Tim
            0x6000 + axisID, 0x10); // Poslag_En
@@ -439,6 +425,33 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
   return asynSuccess;
 }
 
+asynStatus EthercatMCAxis::readBackEncoders(int axisID)
+{
+  /* https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsdevicenc2/index.html&id= */
+  asynStatus status;
+  uint32_t numEncoders = 0;
+  int nvals;
+
+  snprintf(pC_->outString_, sizeof(pC_->outString_),
+           "ADSPORT=501/.ADR.16#%X,16#%X,8,19?;",
+           0x4000 + axisID, 0x57
+           );
+  status = pC_->writeReadOnErrorDisconnect();
+  if (status) return status;
+  nvals = sscanf(pC_->inString_, "%u",
+                 &numEncoders);
+  if (nvals != 1) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%snvals=%d command=\"%s\" response=\"%s\"\n",
+              modNamEMC, nvals, pC_->outString_, pC_->inString_);
+    return asynError;
+  }
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%sreadBackEncoders(%d) numEncoders=%u\n",
+            modNamEMC, axisNo_, numEncoders);
+  return asynSuccess;
+}
+
 asynStatus EthercatMCAxis::initialPoll(void)
 {
   asynStatus status;
@@ -459,7 +472,7 @@ asynStatus EthercatMCAxis::readBackAllConfig(int axisID)
 {
   asynStatus status = asynSuccess;
   /* for ECMC homing is configured from EPICS, do NOT do the readback */
-  if (!drvlocal.supported.bECMC) {
+  if (!(pC_->features_ & FEATURE_BITS_ECMC)) {
     if (!drvlocal.scaleFactor) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%sreadBackAllConfig(%d) drvlocal.scaleFactor=0.0\n",
@@ -472,6 +485,7 @@ asynStatus EthercatMCAxis::readBackAllConfig(int axisID)
   if (status == asynSuccess) status = readMonitoring(axisID);
   if (status == asynSuccess) status = readBackSoftLimits();
   if (status == asynSuccess) status = readBackVelocities(axisID);
+  if (status == asynSuccess) status = readBackEncoders(axisID);
   return status;
 }
 
@@ -489,33 +503,25 @@ asynStatus EthercatMCAxis::initialPollInternal(void)
   /*  Check for Axis ID */
   int axisID = getMotionAxisID();
   switch (axisID) {
-    case -2:
-      updateMsgTxtFromDriver("No AxisID");
-      return asynSuccess;
-    case -1:
-      setIntegerParam(pC_->motorStatusCommsError_, 1);
+  case -2:
+    updateMsgTxtFromDriver("No AxisID");
+    return asynSuccess;
+  case -1:
+    setIntegerParam(pC_->motorStatusCommsError_, 1);
+    return asynError;
+  case 0:
+    return asynSuccess;
+  default:
+    if (axisID != axisNo_) {
+      updateMsgTxtFromDriver("ConfigError AxisID");
       return asynError;
-    case 0:
-      return asynSuccess;
-    default:
-      if (axisID != axisNo_) {
-        updateMsgTxtFromDriver("ConfigError AxisID");
-        return asynError;
-      }
-  }
-  status = getFeatures();
-  if (status) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s(%d) getFeatures() failed\n",
-               modNamEMC, axisNo_);
-    updateMsgTxtFromDriver("getFeatures() failed");
-    return status;
+    }
   }
   status = readConfigFile();
   if (status) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s(%d) readConfigFile() failed\n",
-               modNamEMC, axisNo_);
+              modNamEMC, axisNo_);
     updateMsgTxtFromDriver("ConfigError Config File");
     return status;
   }
@@ -552,52 +558,6 @@ void EthercatMCAxis::report(FILE *fp, int level)
 }
 
 
-extern "C" const char *errStringFromErrId(int nErrorId)
-{
-  switch(nErrorId) {
-  case 0x4221:
-    return "Velo not allowed";
-  case 0x4223:
-    return "Axis positioning enable";
-  case 0x4450:
-  case 0x4451:
-    return "Follow error";
-  case 0x4260:
-    return "Amplifier off";
-  case 0x4263:
-    return "Is still proc";
-  case 0x42A0:
-    return "Consequ Err";
-  case 0x4460:
-    return "Low soft limit";
-  case 0x4461:
-    return "High soft limit";
-  case 0x4462:
-    return "Min position";
-  case 0x4463:
-    return "Max position";
-  case 0x4464:
-    return "HW fault";
-  case 0x4550:
-    return "Follow err pos";
-  case 0x4551:
-    return "Follow err vel";
-  case 0x4650:
-    return "Drv HW not rdy";
-  case 0x4655:
-    return "Inv IO data";
-  case 0x4B09:
-    return "Axis not ready";
-  case 0x4B0A:
-    return "Homing failed";
-  default:
-    return "";
-  }
-}
-
-
-
-
 /** Set velocity and acceleration for the axis
  * \param[in] maxVelocity, mm/sec
  * \param[in] acceleration ???
@@ -619,11 +579,11 @@ asynStatus EthercatMCAxis::sendVelocityAndAccelExecute(double maxVeloEGU, double
 }
 
 /** Move the motor to an absolute location or by a relative amount.
-  * \param[in] posEGU  The absolute position to move to (if relative=0) or the relative distance to move
-  * by (if relative=1). Units=steps.
-  * \param[in] relative  Flag indicating relative move (1) or absolute move (0).
-  * \param[in] maxVeloEGU The maximum velocity, often called the slew velocity. Units=EGU/sec.
-  * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
+ * \param[in] posEGU  The absolute position to move to (if relative=0) or the relative distance to move
+ * by (if relative=1). Units=steps.
+ * \param[in] relative  Flag indicating relative move (1) or absolute move (0).
+ * \param[in] maxVeloEGU The maximum velocity, often called the slew velocity. Units=EGU/sec.
+ * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
 asynStatus EthercatMCAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, double accEGU)
 {
   if (accEGU) {
@@ -662,7 +622,7 @@ asynStatus EthercatMCAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, 
 #ifndef motorWaitPollsBeforeReadyString
   drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
 #endif
-  return writeReadACK();
+  return pC_->writeReadACK(ASYN_TRACE_INFO);
 }
 
 /** Move the axis to a position, either absolute or relative
@@ -728,7 +688,7 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
     return asynError;
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
-  if (drvlocal.supported.bECMC) {
+  if (pC_->features_ & FEATURE_BITS_ECMC) {
     double velToHom;
     double velFrmHom;
     double accHom;
@@ -764,7 +724,7 @@ asynStatus EthercatMCAxis::home(double minVelocity, double maxVelocity, double a
              drvlocal.adsport_str, axisNo_, homProc,
              drvlocal.adsport_str, axisNo_, homPos,
              drvlocal.adsport_str, axisNo_);
-    return writeReadACK();
+    return pC_->writeReadACK(ASYN_TRACE_INFO);
   }
 #ifndef motorWaitPollsBeforeReadyString
   drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
@@ -856,7 +816,7 @@ asynStatus EthercatMCAxis::resetAxis(void)
   status = pC_->getIntegerParam(axisNo_, pC_->EthercatMCErr_, &EthercatMCErr);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%sresetAxis(%d status=%d EthercatMCErr)=%d\n",
-             modNamEMC, axisNo_, (int)status, EthercatMCErr);
+            modNamEMC, axisNo_, (int)status, EthercatMCErr);
 
   if (EthercatMCErr) {
     /* Soft reset of the axis */
@@ -867,10 +827,10 @@ asynStatus EthercatMCAxis::resetAxis(void)
     epicsThreadSleep(.1);
     status = setValueOnAxisVerify("bReset", "bReset", 0, 20);
   }
-  resetAxisReturn:
+ resetAxisReturn:
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%sresetAxis(%d) status=%s (%d)\n",
-             modNamEMC, axisNo_, pasynManager->strStatus(status), (int)status);
+            modNamEMC, axisNo_, EthercatMCstrStatus(status), (int)status);
   /* do a poll */
   poll(&moving);
   return status;
@@ -928,8 +888,8 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
     status = pC_->writeReadOnErrorDisconnect();
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%sout=%s in=%s status=%s (%d)\n",
-               modNamEMC, pC_->outString_, pC_->inString_,
-              pasynManager->strStatus(status), (int)status);
+              modNamEMC, pC_->outString_, pC_->inString_,
+              EthercatMCstrStatus(status), (int)status);
     if (status) return status;
     if (!strcmp("0;1", pC_->inString_)) {
       /* bBusy == 0; bEnable(d) == 1 */
@@ -958,7 +918,7 @@ enableAmplifierPollAndReturn:
  */
 asynStatus EthercatMCAxis::stopAxisInternal(const char *function_name, double acceleration)
 {
-  asynStatus status;
+  asynStatus status = asynError;
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%sstopAxisInternal(%d) (%s)\n", modNamEMC, axisNo_, function_name);
   status = setValueOnAxisVerify("bExecute", "bExecute", 0, 1);
@@ -1005,7 +965,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
       drvlocal.old_nCommandActive != drvlocal.nCommandActive) {
 
     if (!msgTxtFromDriver && drvlocal.eeAxisWarning) {
-       /* No error to show yet */
+      /* No error to show yet */
       switch(drvlocal.eeAxisWarning) {
       case eeAxisWarningCfgZero:
         msgTxtFromDriver = "E: scaleFactor is 0.0";
@@ -1106,14 +1066,10 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     if (comStatus) return comStatus;
   }
 
-  if (drvlocal.supported.stAxisStatus_V1) {
-    drvlocal.dirty.stAxisStatus_Vxx = 0;
-  }
-
-  if (drvlocal.supported.stAxisStatus_V2 || drvlocal.dirty.stAxisStatus_Vxx) {
-    /* V2 is supported, use it. Or. unkown: try it as well */
+  if (pC_->features_ & FEATURE_BITS_V2) {
+    /* V2 is supported, use it. */
     snprintf(pC_->outString_, sizeof(pC_->outString_),
-            "%sMain.M%d.stAxisStatusV2?", drvlocal.adsport_str, axisNo_);
+             "%sMain.M%d.stAxisStatusV2?", drvlocal.adsport_str, axisNo_);
     comStatus = pC_->writeReadOnErrorDisconnect();
     if (!strncasecmp(pC_->inString_,  Main_dot_str, Main_dot_len)) {
       nvals = sscanf(&pC_->inString_[Main_dot_len],
@@ -1148,16 +1104,12 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
                      &notUsed.stall);
     }
     if (nvals == 27) {
-      if (drvlocal.dirty.stAxisStatus_Vxx) {
-        drvlocal.supported.stAxisStatus_V2 = 1;
-      }
       pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy || !pst_axis_status->atTarget;
     }
-  }
-  if (!drvlocal.supported.stAxisStatus_V2) {
+  } else if (pC_->features_ & FEATURE_BITS_V1) {
     /* Read the complete Axis status */
     snprintf(pC_->outString_, sizeof(pC_->outString_),
-            "%sMain.M%d.stAxisStatus?", drvlocal.adsport_str, axisNo_);
+             "%sMain.M%d.stAxisStatus?", drvlocal.adsport_str, axisNo_);
     comStatus = pC_->writeReadOnErrorDisconnect();
     if (comStatus) return comStatus;
     if (!strncasecmp(pC_->inString_,  Main_dot_str, Main_dot_len)) {
@@ -1191,13 +1143,11 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
                      &pst_axis_status->bBusy           /* 23 */);
     }
     if (nvals != 24) {
-      drvlocal.supported.stAxisStatus_V1 = 0;
       goto pollAllWrongnvals;
     }
-    drvlocal.supported.stAxisStatus_V1 = 1;
 
     /* V1 new style: mvnNRdyNex follows bBusy */
-    if (drvlocal.supported.bSIM || drvlocal.supported.bECMC)
+    if (pC_->features_ & (FEATURE_BITS_ECMC | FEATURE_BITS_SIM))
       drvlocal.supported.bV1BusyNewStyle = 1;
 
     pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy && pst_axis_status->bEnabled;
@@ -1208,19 +1158,19 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
   } /* End of V1 */
   /* From here on, either V1 or V2 is supported */
   if (drvlocal.dirty.statusVer) {
-    if (drvlocal.supported.stAxisStatus_V2)
+    if (pC_->features_ & FEATURE_BITS_V2)
       drvlocal.supported.statusVer = 2;
-    else if (drvlocal.supported.stAxisStatus_V1 && !drvlocal.supported.bV1BusyNewStyle)
+    else if ((pC_->features_ & FEATURE_BITS_V1) && !drvlocal.supported.bV1BusyNewStyle)
       drvlocal.supported.statusVer = 0;
-    else if (drvlocal.supported.stAxisStatus_V1 && drvlocal.supported.bV1BusyNewStyle)
+    else if ((pC_->features_ & FEATURE_BITS_V1) && drvlocal.supported.bV1BusyNewStyle)
       drvlocal.supported.statusVer = 1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spollAll(%d) nvals=%d V1=%d V2=%d sim=%d ecmc=%d bV1BusyNew=%d Ver=%d cmd/data=%d/%d fPos=%f fActPos=%f\n",
               modNamEMC, axisNo_, nvals,
-              drvlocal.supported.stAxisStatus_V1,
-              drvlocal.supported.stAxisStatus_V2,
-              drvlocal.supported.bSIM,
-              drvlocal.supported.bECMC,
+              pC_->features_ & FEATURE_BITS_V1,
+              pC_->features_ & FEATURE_BITS_V2,
+              pC_->features_ & FEATURE_BITS_SIM,
+              pC_->features_ & FEATURE_BITS_ECMC,
               drvlocal.supported.bV1BusyNewStyle,
               drvlocal.supported.statusVer,
               pst_axis_status->nCommand,
@@ -1233,7 +1183,6 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
 #ifdef motorFlagsStopOnProblemString
     setIntegerParam(pC_->motorFlagsStopOnProblem_, 0);
 #endif
-    drvlocal.dirty.stAxisStatus_Vxx = 0;
     drvlocal.dirty.statusVer = 0;
   }
   if (axisNo_ != motor_axis_no) return asynError;
@@ -1286,7 +1235,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%sout=%s in=%s return=%s (%d)\n",
               modNamEMC, pC_->outString_, pC_->inString_,
-              pasynManager->strStatus(comStatus), (int)comStatus);
+              EthercatMCstrStatus(comStatus), (int)comStatus);
     if (comStatus == asynDisabled) {
       return asynSuccess;
     }
@@ -1318,33 +1267,33 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   }
   else
 #endif
-  {
-    *moving = st_axis_status.mvnNRdyNex ? true : false;
-    if (!st_axis_status.mvnNRdyNex &&
-        !drvlocal.supported.bECMC) {
-      /* not moving: poll the parameters for this axis */
-      int axisID = getMotionAxisID();
-      switch (drvlocal.eeAxisPollNow) {
-      case pollNowReadScaling:
-        readScaling(axisID);
-        drvlocal.eeAxisPollNow = pollNowReadMonitoring;
-        break;
-      case pollNowReadMonitoring:
-        readMonitoring(axisID);
-        drvlocal.eeAxisPollNow = pollNowReadBackSoftLimits;
-        break;
-      case pollNowReadBackSoftLimits:
-        readBackSoftLimits();
-        drvlocal.eeAxisPollNow = pollNowReadBackVelocities;
-        break;
-      case pollNowReadBackVelocities:
-      default:
-        readBackVelocities(axisID);
-        drvlocal.eeAxisPollNow = pollNowReadScaling;
-        break;
+    {
+      *moving = st_axis_status.mvnNRdyNex ? true : false;
+      if (!st_axis_status.mvnNRdyNex &&
+          !(pC_->features_ & FEATURE_BITS_ECMC)) {
+        /* not moving: poll the parameters for this axis */
+        int axisID = getMotionAxisID();
+        switch (drvlocal.eeAxisPollNow) {
+        case pollNowReadScaling:
+          readScaling(axisID);
+          drvlocal.eeAxisPollNow = pollNowReadMonitoring;
+          break;
+        case pollNowReadMonitoring:
+          readMonitoring(axisID);
+          drvlocal.eeAxisPollNow = pollNowReadBackSoftLimits;
+          break;
+        case pollNowReadBackSoftLimits:
+          readBackSoftLimits();
+          drvlocal.eeAxisPollNow = pollNowReadBackVelocities;
+          break;
+        case pollNowReadBackVelocities:
+        default:
+          readBackVelocities(axisID);
+          drvlocal.eeAxisPollNow = pollNowReadScaling;
+          break;
+        }
       }
     }
-  }
 
   if (st_axis_status.mvnNRdyNex)
     drvlocal.nCommandActive = st_axis_status.nCommand;
@@ -1369,7 +1318,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
                                        &st_axis_status.encoderRaw);
     if (!comStatus) setDoubleParam(pC_->EthercatMCEncAct_,
                                    st_axis_status.encoderRaw);
-  } else if (drvlocal.supported.stAxisStatus_V2) {
+  } else if (pC_->features_ & FEATURE_BITS_V2) {
     setDoubleParam(pC_->EthercatMCEncAct_, st_axis_status.encoderRaw);
   }
 
@@ -1397,7 +1346,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     /* Don't update moving, done, motorStatusProblem_ */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) mvnNRdyNexAt=%d Ver=%d bBusy=%d bExecute=%d bEnabled=%d atTarget=%d waitNumPollsBeforeReady=%d\n",
-               modNamEMC,
+              modNamEMC,
               axisNo_, st_axis_status.mvnNRdyNex,
               drvlocal.supported.statusVer,
               st_axis_status.bBusy, st_axis_status.bExecute,
@@ -1408,24 +1357,24 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   }
   else
 #endif
-  {
-    if (drvlocal.old_st_axis_status.mvnNRdyNex != st_axis_status.mvnNRdyNex ||
-        drvlocal.old_st_axis_status.bBusy      != st_axis_status.bBusy ||
-        drvlocal.old_st_axis_status.bEnabled   != st_axis_status.bEnabled ||
-        drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
-        drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%spoll(%d) mvnNRdy=%d Ver=%d bBusy=%d bExe=%d bEnabled=%d atTarget=%d wf=%d ENC=%g fPos=%g fActPosition=%g time=%f\n",
-                modNamEMC, axisNo_, st_axis_status.mvnNRdyNex,
-                drvlocal.supported.statusVer,
-                st_axis_status.bBusy, st_axis_status.bExecute,
-                st_axis_status.bEnabled, st_axis_status.atTarget,
-                waitNumPollsBeforeReady_,
-                st_axis_status.encoderRaw, st_axis_status.fPosition,
-                st_axis_status.fActPosition,
-                EthercatMCgetNowTimeSecs() - timeBefore);
+    {
+      if (drvlocal.old_st_axis_status.mvnNRdyNex != st_axis_status.mvnNRdyNex ||
+          drvlocal.old_st_axis_status.bBusy      != st_axis_status.bBusy ||
+          drvlocal.old_st_axis_status.bEnabled   != st_axis_status.bEnabled ||
+          drvlocal.old_st_axis_status.bExecute   != st_axis_status.bExecute ||
+          drvlocal.old_st_axis_status.atTarget   != st_axis_status.atTarget) {
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                  "%spoll(%d) mvnNRdy=%d Ver=%d bBusy=%d bExe=%d bEnabled=%d atTarget=%d wf=%d ENC=%g fPos=%g fActPosition=%g time=%f\n",
+                  modNamEMC, axisNo_, st_axis_status.mvnNRdyNex,
+                  drvlocal.supported.statusVer,
+                  st_axis_status.bBusy, st_axis_status.bExecute,
+                  st_axis_status.bEnabled, st_axis_status.atTarget,
+                  waitNumPollsBeforeReady_,
+                  st_axis_status.encoderRaw, st_axis_status.fPosition,
+                  st_axis_status.fActPosition,
+                  EthercatMCgetNowTimeSecs() - timeBefore);
+      }
     }
-  }
   setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);
   setIntegerParam(pC_->motorStatusMoving_, st_axis_status.mvnNRdyNex);
   setIntegerParam(pC_->motorStatusDone_, !st_axis_status.mvnNRdyNex);
@@ -1435,8 +1384,8 @@ asynStatus EthercatMCAxis::poll(bool *moving)
   if (drvlocal.cfgDebug_str) {
     ; /* Do not do the following */
   } else if (drvlocal.old_bError != st_axis_status.bError ||
-      drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
-      drvlocal.dirty.sErrorMessage) {
+             drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
+             drvlocal.dirty.sErrorMessage) {
     char sErrorMessage[256];
     int nErrorId = st_axis_status.nErrorId;
     const char *errIdString = errStringFromErrId(nErrorId);
@@ -1444,7 +1393,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     drvlocal.sErrorMessage[0] = '\0';
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
-               modNamEMC, axisNo_, st_axis_status.bError,
+              modNamEMC, axisNo_, st_axis_status.bError,
               nErrorId);
     drvlocal.old_bError = st_axis_status.bError;
     drvlocal.old_MCU_nErrorId = nErrorId;
@@ -1461,7 +1410,7 @@ asynStatus EthercatMCAxis::poll(bool *moving)
     if (errIdString[0]) {
       snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: %s %x",
                errIdString, nErrorId);
-    } else if (drvlocal.supported.bECMC && nErrorId) {
+    } else if ((pC_->features_ & FEATURE_BITS_ECMC) && nErrorId) {
       /* emcmc has error messages */
       snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: %s",
                sErrorMessage);
@@ -1477,13 +1426,12 @@ asynStatus EthercatMCAxis::poll(bool *moving)
          sizeof(drvlocal.old_st_axis_status));
   return asynSuccess;
 
-  skip:
-  handleDisconnect(asynError);
+skip:
   return asynError;
 }
 
 /** Set the motor closed loop status
-  * \param[in] closedLoop true = close loop, false = open looop. */
+ * \param[in] closedLoop true = close loop, false = open looop. */
 asynStatus EthercatMCAxis::setClosedLoop(bool closedLoop)
 {
   int value = closedLoop ? 1 : 0;
@@ -1502,6 +1450,16 @@ asynStatus EthercatMCAxis::setIntegerParam(int function, int value)
   if (function == pC_->motorUpdateStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d motorUpdateStatus_)=%d\n", modNamEMC, axisNo_, value);
+  } else if (function == pC_->motorStatusCommsError_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%ssetIntegerParam(%d pC_->motorStatusCommsError_)=%d\n",
+              modNamEMC, axisNo_, value);
+    if (value && !drvlocal.dirty.oldStatusDisconnected) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "%s Communication error(%d)\n", modNamEMC, axisNo_);
+      memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
+      drvlocal.MCU_nErrorId = 0;
+    }
 #ifdef motorPowerAutoOnOffString
   } else if (function == pC_->motorPowerAutoOnOff_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -1665,41 +1623,44 @@ asynStatus EthercatMCAxis::setDoubleParam(int function, double value)
 
 asynStatus EthercatMCAxis::setStringParamDbgStrToMcu(const char *value)
 {
-    const char * const Main_this_str = "Main.this.";
-    const char * const Sim_this_str = "Sim.this.";
+  const char * const Main_this_str = "Main.this.";
+  const char * const Sim_this_str = "Sim.this.";
 
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetStringParamDbgStrToMcu(%d)=\"%s\"\n",
-              modNamEMC, axisNo_, value);
-    /* empty strings are not send to the controller */
-    if (!value[0]) return asynSuccess;
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%ssetStringParamDbgStrToMcu(%d)=\"%s\"\n",
+            modNamEMC, axisNo_, value);
+  /* empty strings are not send to the controller */
+  if (!value[0]) return asynSuccess;
 
-    /* Check the string. E.g. Main.this. and Sim.this. are passed
-       as Main.M1 or Sim.M1
-       ADR commands are handled below */
-    if (!strncmp(value, Main_this_str, strlen(Main_this_str))) {
-      snprintf(pC_->outString_, sizeof(pC_->outString_), "%sMain.M%d.%s",
-              drvlocal.adsport_str, axisNo_, value + strlen(Main_this_str));
-      return writeReadACK();
-    }
-    /* caput IOC:m1-DbgStrToMCU Sim.this.log=M1.log */
-    if (!strncmp(value, Sim_this_str, strlen(Sim_this_str))) {
-      snprintf(pC_->outString_, sizeof(pC_->outString_), "Sim.M%d.%s",
-              axisNo_, value + strlen(Sim_this_str));
-      return writeReadACK();
-    }
-    /* If we come here, the command was not understood */
-    return asynError;
+  /* Check the string. E.g. Main.this. and Sim.this. are passed
+     as Main.M1 or Sim.M1
+     ADR commands are handled below */
+  if (!strncmp(value, Main_this_str, strlen(Main_this_str))) {
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "%sMain.M%d.%s",
+             drvlocal.adsport_str, axisNo_, value + strlen(Main_this_str));
+    return pC_->writeReadACK(ASYN_TRACE_INFO);
+  }
+  /* caput IOC:m1-DbgStrToMCU Sim.this.log=M1.log */
+  if (!strncmp(value, Sim_this_str, strlen(Sim_this_str))) {
+    snprintf(pC_->outString_, sizeof(pC_->outString_), "Sim.M%d.%s",
+             axisNo_, value + strlen(Sim_this_str));
+    return pC_->writeReadACK(ASYN_TRACE_INFO);
+  }
+  /* If we come here, the command was not understood */
+  return asynError;
 }
 
 asynStatus EthercatMCAxis::setStringParam(int function, const char *value)
 {
-  if (function == pC_->EthercatMCDbgStrToMcu_) {
+  if (function == pC_->EthercatMCDbgStrToLog_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetStringParamDbgStrToLog(%d)=\"%s\"\n",
+              modNamEMC, axisNo_, value);
+  } else if (function == pC_->EthercatMCDbgStrToMcu_) {
     return setStringParamDbgStrToMcu(value);
-  } else {
-    /* Call base class method */
-    return asynMotorAxis::setStringParam(function, value);
   }
+  /* Call base class method */
+  return asynMotorAxis::setStringParam(function, value);
 }
 
 #ifndef motorMessageTextString

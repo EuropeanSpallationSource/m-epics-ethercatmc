@@ -652,6 +652,8 @@ class motor_lib(object):
         """
         # switch off the controller soft limits
         try:
+            epics.caput(motor + '-CfgDHLM', +3.1e+38, wait=True, timeout=2)
+            epics.caput(motor + '-CfgDLLM', -3.1e+38, wait=True, timeout=2)
             epics.caput(motor + '-CfgDHLM-En', 0, wait=True, timeout=2)
             epics.caput(motor + '-CfgDLLM-En', 0, wait=True, timeout=2)
         finally:
@@ -670,6 +672,8 @@ class motor_lib(object):
         """
         # switch on the controller soft limits
         try:
+            epics.caput(motor + '-CfgDHLM', high_limit, wait=True, timeout=2)
+            epics.caput(motor + '-CfgDLLM', low_limit,  wait=True, timeout=2)
             epics.caput(motor + '-CfgDHLM-En', 1, wait=True, timeout=2)
             epics.caput(motor + '-CfgDLLM-En', 1, wait=True, timeout=2)
         finally:
@@ -699,3 +703,19 @@ class motor_lib(object):
             rbv = epics.caget(motor + '.RBV', use_monitor=False)
             print '%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup)
             time.sleep(polltime)
+
+    def setCNENandWait(self, motor, tc_no, cnen):
+        wait_for_power_changed = 6.0
+        epics.caput(motor + '-DbgStrToLOG', "CNEN= " + tc_no[0:20]);
+        epics.caput(motor + '.CNEN', cnen)
+        while wait_for_power_changed > 0:
+            msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
+            print '%s: wait_for_power_changed=%f msta=%x %s' % (
+                tc_no, wait_for_power_changed, msta, self.getMSTAtext(msta))
+            if (cnen and (msta & self.MSTA_BIT_AMPON)):
+                return True
+            if (not cnen and not (msta & self.MSTA_BIT_AMPON)):
+                return True
+            time.sleep(polltime)
+            wait_for_power_changed -= polltime
+        return False

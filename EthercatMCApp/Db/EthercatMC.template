@@ -14,7 +14,6 @@ record(motor,"$(PREFIX)$(MOTOR_NAME)")
 	field(BACC,"$(BACC=0)")
 	field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))")
 	field(MRES,"$(MRES=1)")
-	field(RDBD,"$(RDBD=0)")
 	field(ERES,"$(ERES=0)")
 	field(PREC,"$(PREC=3)")
 	field(EGU,"$(EGU=mm)")
@@ -38,6 +37,13 @@ record(waveform, "$(PREFIX)$(MOTOR_NAME)-MsgTxt") {
     field(SCAN, "I/O Intr")
 }
 
+# Debug message in IOC log
+record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToLOG") {
+    field(DESC, "Log String in IOC log")
+    field(VAL, "")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToLOG")
+}
 
 # These records make the motor resolution, offset and direction available to the driver
 # which is needed for profile moves and other applications
@@ -139,6 +145,29 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgUREV-RB") {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgUREV-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgPMIN-RB") {
+    field(DESC, "Absolute Minimum")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgPMIN-RB")
+    field(SCAN, "I/O Intr")
+}
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgPMAX-RB") {
+    field(DESC, "Absolute Maximum")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgPMAX-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-CfgSPDB-RB") {
+    field(DESC, "Set point dead band window")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgSPDB-RB")
     field(SCAN, "I/O Intr")
 }
 
@@ -289,7 +318,7 @@ record(mbbi,"$(PREFIX)$(MOTOR_NAME)-HomProc-RB") {
     field(ELST, "IndexNfromLimBwd")
     field(TVST, "IndexNfromLimFwd")
     field(TTST, "HomeSwiLeftRight")
-    field(FTST, "Reserved")
+    field(FTST, "Homable")
     field(FFST, "ManSetPos")
 }
 

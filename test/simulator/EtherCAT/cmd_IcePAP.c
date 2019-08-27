@@ -71,7 +71,7 @@ static int handle_IcePAP_cmd(const char *myarg_1)
   AXIS_CHECK_RETURN_ZERO(motor_axis_no);
   myarg_1 = strchr(myarg_1, ':');
   if (!myarg_1) {
-    RETURN_ERROR_OR_DIE(0, "%s/%s:%d line=%s missing ':'",
+    CMD_BUF_PRINTF_RETURN_ERROR_OR_DIE(0, "%s/%s:%d line=%s missing ':'",
                         __FILE__, __FUNCTION__, __LINE__,
                         myarg_1);
   }
@@ -173,7 +173,7 @@ static int handle_IcePAP_cmd3(const char *myarg_1, const char *myarg_2)
   AXIS_CHECK_RETURN_ZERO(motor_axis_no);
   myarg_1 = strchr(myarg_1, ':');
   if (!myarg_1) {
-    RETURN_ERROR_OR_DIE(0, "%s/%s:%d line=%s missing ':'",
+    CMD_BUF_PRINTF_RETURN_ERROR_OR_DIE(0, "%s/%s:%d line=%s missing ':'",
                         __FILE__, __FUNCTION__, __LINE__,
                         myarg_1);
   }
@@ -322,7 +322,7 @@ static int handle_IcePAP_cmd4(const char *myarg_1,
   AXIS_CHECK_RETURN_ZERO(motor_axis_no);
   myarg_1 = strchr(myarg_1, ':');
   if (!myarg_1) {
-    RETURN_ERROR_OR_DIE(0, "%s/%s:%d line=%s missing ':'",
+    CMD_BUF_PRINTF_RETURN_ERROR_OR_DIE(0, "%s/%s:%d line=%s missing ':'",
                         __FILE__, __FUNCTION__, __LINE__,
                         myarg_1);
   }

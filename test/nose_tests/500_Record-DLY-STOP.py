@@ -14,6 +14,7 @@ from motor_lib import motor_lib
 class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
+    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
 
     # 10% dialPosition
     def test_TC_501(self):

@@ -36,6 +36,7 @@ def setValueOnSimulator(self, motor, tc_no, var, value):
 class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
+    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
     pv_Err   = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-Err")
     pv_nErrorId = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-ErrId")
     pv_nErrRst = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-ErrRst")

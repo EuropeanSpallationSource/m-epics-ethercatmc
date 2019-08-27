@@ -17,7 +17,14 @@
 
 # Additional fields can e initialized in Axis
 epicsEnvSet("ECAXISFIELDINIT",    "")
+# How many axes do we have ?
 epicsEnvSet("NUMAXES", "$(ECM_NUMAXES=8)")
+
+# Default ADS port
+epicsEnvSet("ADSPORT", "$(ECM_ADSPORT=852)")
+
+# Default OPTIONS 
+epicsEnvSet("ECC_OPTIONS", "$(ECM_OPTIONS=;)")
 
 
 ## One of the 2 needs to be done, either drvAsynIPPortConfigure+Eos
@@ -28,9 +35,9 @@ drvAsynIPPortConfigure("$(ASYN_PORT)","$(IPADDR):$(IPPORT)",0,0,0)
 asynOctetSetOutputEos("$(ASYN_PORT)", -1, ";\n")
 asynOctetSetInputEos("$(ASYN_PORT)", -1, ";\n")
 
-#adsAsynPortDriverConfigure("$(ASYN_PORT)","$(IPADDR)","$(AMSID)",852,1000,0,0,50,100,1000,0)
+#adsAsynPortDriverConfigure("$(ASYN_PORT)","$(IPADDR)","$(AMSID)","$(ADSPORT)" ,1000,0,0,50,100,1000,0)
 
-EthercatMCCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "200", "1000")
+EthercatMCCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "200", "1000", "$(ECC_OPTIONS)")
 
 #/* traceMask definitions*/
 #define ASYN_TRACE_ERROR     0x0001
@@ -41,7 +48,6 @@ EthercatMCCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "200",
 #define ASYN_TRACE_WARNING   0x0020
 #define ASYN_TRACE_INFO      0x0040
 asynSetTraceMask("$(ASYN_PORT)", -1, 0x41)
-
 
 
 #/* traceIO mask definitions*/

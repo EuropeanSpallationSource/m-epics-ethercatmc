@@ -20,6 +20,8 @@ class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
     print "motor=%s" % (motor)
+    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
+
 
     hlm = float(epics.caget(motor + '.HLM'))
     llm = float(epics.caget(motor + '.LLM'))

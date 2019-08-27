@@ -71,10 +71,13 @@ MOTOROBJS=\
  $(BIN)/cmd_EAT.o \
  $(BIN)/cmd_IcePAP.o \
  $(BIN)/cmd_TCPsim.o \
- $(BIN)/hw_motor.o
+ $(BIN)/hw_motor.o \
+ $(BIN)/indexer.o
 
 TELOBJS=\
+ $(BIN)/ads.o \
  $(BIN)/main.o \
+ $(BIN)/sock-ads.o \
  $(BIN)/sock-util.o \
  $(BIN)/cmd.o \
  $(BIN)/cmd_buf.o
@@ -99,6 +102,13 @@ ALLOBJS=$(MOTOROBJS) $(TELOBJS) $(WINOBJS)
 $(BIN)/simMotor$(EXE): $(ALLOBJS)
 	$(CC) $(ALLOBJS) $(LINKWINSOCK) -o $@
 
+$(BIN)/ads.o: \
+ Makefile \
+ ads.h \
+ logerr_info.h \
+ ads.c
+	$(CC) -c $(CFLAGS) ads.c -o $@
+
 $(BIN)/main.o: \
  Makefile \
  logerr_info.h \
@@ -106,12 +116,24 @@ $(BIN)/main.o: \
  main.c
 	$(CC) -c $(CFLAGS) main.c -o $@
 
+$(BIN)/sock-ads.o: \
+ Makefile \
+ ads.h \
+ logerr_info.h \
+ sock-util.h \
+ sock-ads.h \
+ sock-util.h \
+ sock-ads.c
+	$(CC) -c $(CFLAGS) sock-ads.c -o $@
+
 $(BIN)/sock-util.o: \
  Makefile \
  logerr_info.h \
  sock-util.h \
+ sock-ads.h \
  sock-util.c
 	$(CC) -c $(CFLAGS) sock-util.c -o $@
+
 
 $(BIN)/cmd.o: \
  Makefile \
@@ -137,8 +159,10 @@ $(BIN)/cmd_Sim.o: \
 
 $(BIN)/cmd_EAT.o: \
  Makefile \
+ ads_defines.h \
  cmd_EAT.c \
  hw_motor.h \
+ indexer.h \
  cmd_EAT.h
 	$(CC) -c $(CFLAGS) cmd_EAT.c -o $@
 
@@ -163,6 +187,13 @@ $(BIN)/hw_motor.o: \
  hw_motor.c
 	$(CC) -c $(CFLAGS) hw_motor.c -o $@
 
+
+$(BIN)/indexer.o: \
+ Makefile \
+ indexer.c \
+ hw_motor.h \
+ indexer.h
+	$(CC) -c $(CFLAGS) indexer.c -o $@
 
 $(BIN)/startWinSock.o: \
  Makefile \

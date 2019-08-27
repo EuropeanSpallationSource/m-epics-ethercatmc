@@ -62,6 +62,7 @@ def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos
 class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
+    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
 
     myPOSlow = lib.myPOSlow
     myPOSmid = lib.myPOSmid

@@ -23,6 +23,7 @@ polltime = 0.2
 class Test(unittest.TestCase):
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
+    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
     #motmotor   = epics.Motor(os.getenv("TESTEDMOTORAXIS"))
     pvmotor = epics.PV(os.getenv("TESTEDMOTORAXIS"))
     pv_Err   = epics.PV(os.getenv("TESTEDMOTORAXIS") + "-Err")
@@ -78,10 +79,11 @@ class Test(unittest.TestCase):
         msta = int(self.pv_MSTA.get(use_monitor=False))
         bError   = self.pv_Err.get(use_monitor=False)
         nErrorId = self.pv_nErrorId.get(use_monitor=False)
-        print '%s Clean self.lib.MSTA_BIT_PROBLEM=%x msta=%x bError=%d nErrorId=%d' % (tc_no, self.lib.MSTA_BIT_PROBLEM, msta, bError, nErrorId)
 
         counter = 7
         while (msta & self.lib.MSTA_BIT_MOVING or bError != 0 or nErrorId != 0):
+            print '%s Clean self.lib.MSTA_BIT_PROBLEM=%x msta=%x bError=%d nErrorId=0x%x (%d)' %\
+            (tc_no, self.lib.MSTA_BIT_PROBLEM, msta, bError, nErrorId, nErrorId)
             time.sleep(polltime)
             print '%s sleep counter = %d' % (tc_no, counter)
             msta = int(self.pv_MSTA.get(use_monitor=False))

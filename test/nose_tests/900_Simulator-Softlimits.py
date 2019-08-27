@@ -130,6 +130,7 @@ class Test(unittest.TestCase):
     drvUseEGU_RB = None
     drvUseEGU = 0
     motor = os.getenv("TESTEDMOTORAXIS")
+    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
     vers = float(epics.caget(motor + '.VERS'))
     if vers >= 6.94 and vers < 6.99 :
         hasROlimit = 1

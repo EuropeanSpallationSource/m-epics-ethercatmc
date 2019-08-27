@@ -14,9 +14,12 @@ DBD += EthercatMcSupport.dbd
 
 # The following are compiled and added to the Support library
 
+EthercatMcSupport_SRCS += EthercatMCADS.cpp
 EthercatMcSupport_SRCS += EthercatMCController.cpp
 EthercatMcSupport_SRCS += EthercatMCAxis.cpp
 EthercatMcSupport_SRCS += EthercatMCHelper.cpp
+EthercatMcSupport_SRCS += EthercatMCIndexer.cpp
+EthercatMcSupport_SRCS += EthercatMCIndexerAxis.cpp
 
 
 EthercatMcSupport_LIBS += asyn

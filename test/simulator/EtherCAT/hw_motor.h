@@ -40,6 +40,7 @@ void setMotorReverseERES(int axis_no, double value);
 
 
 double getMotorVelocity(int axis_no);
+int isMotorHoming(int axis_no);
 int isMotorMoving(int axis_no);
 
 void setHWlowPos (int axis_no, double value);
