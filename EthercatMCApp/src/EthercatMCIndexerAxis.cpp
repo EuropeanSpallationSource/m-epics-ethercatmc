@@ -428,7 +428,7 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
     double actPosition = 0.0;
     double paramValue = 0.0;
     unsigned statusReasonAux, paramCtrl;
-    uint16_t errorID;
+    uint16_t errorID = 0xFFFF;
     bool nowMoving = false;
     int powerIsOn = 0;
     int statusValid = 0;
