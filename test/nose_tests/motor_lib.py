@@ -284,6 +284,34 @@ class motor_lib(object):
             wait_for_MipZero -= polltime
         return False
 
+    def waitForPowerOn(self, motor, tc_no, wait_for_powerOn):
+        while wait_for_powerOn > 0:
+            wait_for_powerOn -= polltime
+            msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
+            powerOn = msta & self.MSTA_BIT_AMPON
+
+            print '%s: wait_for_powerOn=%f powerOn=%d' % (
+                tc_no, wait_for_powerOn, powerOn)
+            if powerOn:
+                return True
+            time.sleep(polltime)
+            wait_for_powerOn -= polltime
+        return False
+
+    def waitForPowerOff(self, motor, tc_no, wait_for_powerOff):
+        while wait_for_powerOff > 0:
+            wait_for_powerOff -= polltime
+            msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
+            powerOn = msta & self.MSTA_BIT_AMPON
+
+            print '%s: wait_for_powerOff=%f powerOn=%d' % (
+                tc_no, wait_for_powerOff, powerOn)
+            if not powerOn:
+                return True
+            time.sleep(polltime)
+            wait_for_powerOff -= polltime
+        return False
+
     def testComplete(self, fail):
         """
         Function to be called at end of test
