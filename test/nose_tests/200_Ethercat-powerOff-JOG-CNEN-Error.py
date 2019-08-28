@@ -59,10 +59,7 @@ class Test(unittest.TestCase):
         ret_0 = self.lib.waitForStart(motor, tc_no, 2.0)
 
         ret_1 = self.lib.waitForStop(motor, tc_no, 10.0)
-
         msta_1 = int(epics.caget(motor + '.MSTA', use_monitor=False))
-        mstaErr_1 = int(epics.caget(motor + '.MSTA', use_monitor=False))
-
         bError_2   = self.pv_Err.get(use_monitor=False)
         nErrorId_2 = self.pv_nErrorId.get(use_monitor=False)
         print '%s Error bError_2=%d nErrorId_2=%d' % (tc_no, bError_2, nErrorId_2)
@@ -100,7 +97,7 @@ class Test(unittest.TestCase):
         # Run all the asserts after we have restored the original state
         self.assertEqual(True, ret_1, 'waitForStop return True')
 
-        print '%s Error mstaErr_1=%s' % (tc_no, self.lib.getMSTAtext(mstaErr_1))
+        print '%s Error msta_1=%s' % (tc_no, self.lib.getMSTAtext(msta_1))
         self.assertNotEqual(0, msta_1 & self.lib.MSTA_BIT_PROBLEM, 'Error MSTA.Problem should be set)')
         self.assertEqual(0, msta_1 & self.lib.MSTA_BIT_SLIP_STALL, 'Error MSTA.Slip stall Error should not be set)')
         self.assertEqual(0, msta_1 & self.lib.MSTA_BIT_MOVING,     'Error MSTA.Moving)')
