@@ -685,12 +685,22 @@ class motor_lib(object):
         finally:
             oldRBV = epics.caget(motor + '.RBV')
 
-        if oldRBV > 0:
-            epics.caput(motor + '.LLM', 0.0)
-            epics.caput(motor + '.HLM', 0.0)
-        else:
-            epics.caput(motor + '.HLM', 0.0)
-            epics.caput(motor + '.LLM', 0.0)
+        wait_for_done = 1.0
+        while wait_for_done > 0:
+            if oldRBV > 0:
+                epics.caput(motor + '.LLM', 0.0)
+                epics.caput(motor + '.HLM', 0.0)
+            else:
+                epics.caput(motor + '.HLM', 0.0)
+                epics.caput(motor + '.LLM', 0.0)
+
+            llm = epics.caget(motor + '.LLM', use_monitor=False)
+            hlm = epics.caget(motor + '.HLM', use_monitor=False)
+            print '%s: setSoftLimitsOff llm=%f hlm=%f' % (motor, llm, hlm)
+            if llm == 0.0 and hlm == 0.0:
+                return
+            time.sleep(polltime)
+            wait_for_done -= polltime
 
     def setSoftLimitsOn(self, motor, low_limit, high_limit):
         """
