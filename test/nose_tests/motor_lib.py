@@ -680,8 +680,6 @@ class motor_lib(object):
         """
         # switch off the controller soft limits
         try:
-            epics.caput(motor + '-CfgDHLM', +3.1e+38, wait=True, timeout=2)
-            epics.caput(motor + '-CfgDLLM', -3.1e+38, wait=True, timeout=2)
             epics.caput(motor + '-CfgDHLM-En', 0, wait=True, timeout=2)
             epics.caput(motor + '-CfgDLLM-En', 0, wait=True, timeout=2)
         finally:

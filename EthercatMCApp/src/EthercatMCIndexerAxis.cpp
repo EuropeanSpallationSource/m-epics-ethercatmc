@@ -673,7 +673,7 @@ asynStatus EthercatMCIndexerAxis::setClosedLoop(bool closedLoop)
 
 asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
 {
-  asynStatus status;
+  asynStatus status = asynSuccess;
   if (function == pC_->motorUpdateStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d motorUpdateStatus_)=%d\n",
@@ -701,6 +701,32 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
 #endif
+  } else if (function == pC_->EthercatMCCfgDHLM_En_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetIntegerParam(%d EthercatMCCfgDHLM_En)=%d\n",
+              modNamEMC, axisNo_, value);
+    if (!value) {
+      static const double fABSMAX = 3.0e+38;
+      status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+                                      PARAM_IDX_USR_MAX_FLOAT32,
+                                      drvlocal.lenInPlcPara,
+                                      fABSMAX);
+      pC_->udateMotorLimitsRO(axisNo_);
+    }
+    return status;
+  } else if (function == pC_->EthercatMCCfgDLLM_En_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetIntegerParam(%d EthercatMCCfgDLLM_En)=%d\n",
+              modNamEMC, axisNo_, value);
+    if (!value) {
+      static const double fABSMIN = -3.0e+38;
+      status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+                                      PARAM_IDX_USR_MIN_FLOAT32,
+                                      drvlocal.lenInPlcPara,
+                                      fABSMIN);
+      pC_->udateMotorLimitsRO(axisNo_);
+    }
+    return status;
   }
   //Call base class method
   status = asynMotorAxis::setIntegerParam(function, value);
