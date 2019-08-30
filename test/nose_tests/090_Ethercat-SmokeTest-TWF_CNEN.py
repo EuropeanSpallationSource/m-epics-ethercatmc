@@ -115,12 +115,11 @@ def tweakToLimit(self, motor, tc_no, direction):
     resetAxis(motor, tc_no)
     print '%s:%d CNEN=1' % (tc_no, lineno())
     self.lib.setCNENandWait(motor, tc_no, 1)
-    epics.caput(motor + '.CNEN', 1)
     # Step through the range in 20 steps or so
     deltaToMove = (old_high_limit - old_low_limit) / 20
     maxDeltaAfterMove = deltaToMove / 2
-    # soft limit range + 50%
-    maxTweaks = (old_high_limit - old_low_limit) * 1.5 / deltaToMove
+    # soft limit range + 110 % (some test crates simulate a slit, with restrictive soft limits
+    maxTweaks = (old_high_limit - old_low_limit) * 2.1 / deltaToMove
     assert(maxTweaks > 0)
     stopTheLoop = 0
     count = 0
@@ -164,6 +163,8 @@ def tweakToLimit(self, motor, tc_no, direction):
         else:
             inPosition = -1
 
+        print '%s:%d old_high_limit=%f old_low_limit=%f deltaToMove=%f' \
+            % (tc_no, lineno(), old_high_limit, old_low_limit, deltaToMove)
         print '%s:%d count=%d maxTweaks=%d stopTheLoop=%d inPosition=%d' \
             % (tc_no, lineno(), count, maxTweaks, stopTheLoop, inPosition)
 
