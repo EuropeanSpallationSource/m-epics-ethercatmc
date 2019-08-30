@@ -97,11 +97,6 @@ def waitForStop(self, motor, tc_no, wait_for_stop, direction, oldRBV, TweakValue
         (lls, hls, movn, dmov, outOfRange) = checkForEmergenyStop(
             self, motor, tc_no + 'stop', wait_for_stop, direction, oldRBV, TweakValue)
 
-        if ((hls and (direction > 0)) or
-            (lls and (direction <= 0)) or
-            outOfRange != 0):
-            return False
-
         if not movn and dmov:
             return True
         time.sleep(polltime)
