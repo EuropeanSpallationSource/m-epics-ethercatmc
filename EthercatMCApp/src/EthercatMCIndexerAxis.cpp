@@ -591,8 +591,11 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
       setIntegerParam(pC_->EthercatMCStatusBits_, statusReasonAux);
       setIntegerParam(pC_->EthercatMCErr_, hasError);
       if (drvlocal.auxBitsNotHomedMask) {
-        setIntegerParam(pC_->motorStatusHomed_,
-                        idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1);
+        int homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
+        setIntegerParam(pC_->motorStatusHomed_, homed);
+        if (!homed) {
+          drvlocal.hasProblem = 1;
+        }
       }
       if (hasError) {
         char sErrorMessage[40];
