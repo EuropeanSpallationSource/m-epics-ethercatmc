@@ -643,7 +643,7 @@ indexerMotorStatusRead5010(unsigned motor_axis_no,
     statusReasonAux32 |= 0x04000000;
   {
     unsigned auxBitIdx = 0;
-    for (auxBitIdx = 0; auxBitIdx <= 7; auxBitIdx++) {
+    for (auxBitIdx = 0; auxBitIdx <= 23; auxBitIdx++) {
       const char *auxBitName = (const char*)&indexerDeviceAbsStraction[motor_axis_no].auxName[auxBitIdx];
       LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
                __FILE__, __FUNCTION__, __LINE__,
