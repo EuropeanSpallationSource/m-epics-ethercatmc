@@ -1359,7 +1359,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_33</name>
     <next_focus>0</next_focus>
@@ -1717,7 +1719,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_34</name>
     <next_focus>0</next_focus>
@@ -1948,7 +1952,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_3</name>
     <next_focus>0</next_focus>
@@ -2115,7 +2121,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_15</name>
     <next_focus>0</next_focus>
@@ -2289,7 +2297,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_4</name>
     <next_focus>0</next_focus>
@@ -2815,7 +2825,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_43</name>
     <next_focus>0</next_focus>
@@ -2878,7 +2890,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_44</name>
     <next_focus>0</next_focus>
@@ -3116,7 +3130,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>0.0</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_45</name>
     <next_focus>0</next_focus>
@@ -3229,7 +3245,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>0.0</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_45</name>
     <next_focus>0</next_focus>
@@ -3333,7 +3351,9 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <height>26</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
+    <limits_from_pv>false</limits_from_pv>
+    <maximum>Infinity</maximum>
+    <minimum>0.0</minimum>
     <multiline_input>false</multiline_input>
     <name>Text Input Template_45</name>
     <next_focus>0</next_focus>
