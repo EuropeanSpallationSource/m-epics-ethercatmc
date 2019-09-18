@@ -8,7 +8,7 @@ FILENAME...   EthercatMCAxis.h
 #include "asynMotorAxis.h"
 
 #define AMPLIFIER_ON_FLAG_CREATE_AXIS  (1)
-#define AMPLIFIER_ON_FLAG_WHEN_HOMING  (1<<1)
+#define AMPLIFIER_ON_FLAG_AUTO_ON      (1<<1)
 #define AMPLIFIER_ON_FLAG_USING_CNEN   (1<<2)
 
 extern const char *modNamEMC;

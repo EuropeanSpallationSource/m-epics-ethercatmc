@@ -82,7 +82,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 #ifdef motorFlagsPwrWaitForOnString
   setIntegerParam(pC_->motorFlagsPwrWaitForOn_, 1);
 #endif
-  if (axisFlags & AMPLIFIER_ON_FLAG_WHEN_HOMING) {
+  if (axisFlags & AMPLIFIER_ON_FLAG_AUTO_ON) {
 #ifdef POWERAUTOONOFFMODE2
     setIntegerParam(pC_->motorPowerAutoOnOff_, POWERAUTOONOFFMODE2);
     setDoubleParam(pC_->motorPowerOnDelay_,   6.0);
