@@ -20,6 +20,6 @@ epicsEnvSet("ADSPORT",       "851")
 epicsEnvSet("AXISCONFIG",    "adsPort=$(ADSPORT);stepSize=1.0;HomProc=1;cfgFile=./ESSIIP-CfgDbg.cfg;encoder=ADSPORT=501/.ADR.16#3040040,16#8000001C,2,2")
 
 
-< EthercatMCController.cmd
-< EthercatMCAxis.cmd
-< EthercatMCAxisdebug.cmd
+< EthercatMCController.iocsh
+< EthercatMCAxis.iocsh
+< EthercatMCAxisdebug.iocsh

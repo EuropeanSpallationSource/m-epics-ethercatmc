@@ -18,17 +18,17 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 # For real terminals the adresses must be adapted
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1;HomPos=-66;cfgFile=./mcu010-SoftSlit-1.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
 
-< EthercatMCController.cmd
-< EthercatMCAxis.cmd
-< EthercatMCAxisdebug.cmd
+< EthercatMCController.iocsh
+< EthercatMCAxis.iocsh
+< EthercatMCAxisdebug.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=2;HomPos=61;cfgFile=./mcu010-SoftSlit-2.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2")
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=Upper=Left)")
-< EthercatMCAxis.cmd
-< EthercatMCAxisdebug.cmd
+< EthercatMCAxis.iocsh
+< EthercatMCAxisdebug.iocsh
 
 ## Logical axes and slit
 epicsEnvSet("P",             "$(PREFIX)")
@@ -37,5 +37,5 @@ epicsEnvSet("mXp",           "$(SM_mXp=m2)")
 epicsEnvSet("mXn",           "$(SM_mXp=m1)")
 
 ## Slit
-< EthercatMC2slit.cmd
+< EthercatMC2slit.iocsh
 #########################

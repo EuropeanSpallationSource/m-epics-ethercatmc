@@ -19,7 +19,7 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 # For real terminals the adresses must be adapted
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SimAxis.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2;HomProc=1")
 
-< EthercatMCController.cmd
-< EthercatMCAxis.cmd
-< EthercatMCAxisdebug.cmd
-< EthercatMCAxishome.cmd
+< EthercatMCController.iocsh
+< EthercatMCAxis.iocsh
+< EthercatMCAxisdebug.iocsh
+< EthercatMCAxishome.iocsh

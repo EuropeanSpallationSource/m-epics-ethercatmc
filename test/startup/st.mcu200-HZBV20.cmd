@@ -10,7 +10,7 @@ epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=HZB-V20:)")
 epicsEnvSet("P",             "$(SM_PREFIX=HZB-V20:)")
-< EthercatMCController.cmd
+< EthercatMCController.iocsh
 
 # Common to all axes
 epicsEnvSet("EGU",           "$(SM_EGU=mm)")
@@ -22,25 +22,25 @@ epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltH-Center")
 epicsEnvSet("AXIS_NO",       "1")
 epicsEnvSet("DESC",          "H Center")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltH-Gap")
 epicsEnvSet("AXIS_NO",       "2")
 epicsEnvSet("DESC",          "H Gap")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltH-xp")
 epicsEnvSet("AXIS_NO",       "3")
 epicsEnvSet("DESC",          "H Pos Blade")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltH-xn")
 epicsEnvSet("AXIS_NO",       "4")
 epicsEnvSet("DESC",          "H Neg Blade")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 #########################
 ## Logical axes and slit
@@ -51,7 +51,7 @@ epicsEnvSet("mXp",           "MC-SLT-01:SltH-xp")
 epicsEnvSet("mXn",           "MC-SLT-01:SltH-xn")
 
 ## Slit
-< EthercatMCslitAvoidCollSoftlimits.cmd
+< EthercatMCslitAvoidCollSoftlimits.iocsh
 #########################
 
 # Real motors and slit systems
@@ -60,25 +60,25 @@ epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltV-Center")
 epicsEnvSet("AXIS_NO",       "5")
 epicsEnvSet("DESC",          "V Center")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltV-Gap")
 epicsEnvSet("AXIS_NO",       "6")
 epicsEnvSet("DESC",          "V Gap")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltV-xp")
 epicsEnvSet("AXIS_NO",       "7")
 epicsEnvSet("DESC",          "V Pos Blade")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "MC-SLT-01:SltV-xn")
 epicsEnvSet("AXIS_NO",       "8")
 epicsEnvSet("DESC",          "V Neg Blade")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 #########################
 ## Logical axes and slit
@@ -89,7 +89,7 @@ epicsEnvSet("mXp",           "MC-SLT-01:SltV-xp")
 epicsEnvSet("mXn",           "MC-SLT-01:SltV-xn")
 
 ## Slit
-< EthercatMCslitAvoidCollSoftlimits.cmd
+< EthercatMCslitAvoidCollSoftlimits.iocsh
 #########################
 
 
@@ -97,22 +97,22 @@ epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m9")
 epicsEnvSet("AXIS_NO",       "9")
 epicsEnvSet("DESC",          "Height 1")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=15")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m10")
 epicsEnvSet("AXIS_NO",       "10")
 epicsEnvSet("DESC",          "Omega 2")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=15")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m11")
 epicsEnvSet("AXIS_NO",       "11")
 epicsEnvSet("DESC",          "Kappa")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1;HomPos=-1.4")
 epicsEnvSet("MOTOR_NAME",    "MC-MCU-01:m12")
 epicsEnvSet("AXIS_NO",       "12")
 epicsEnvSet("DESC",          "Lin3")
-< EthercatMCAxis.cmd
+< EthercatMCAxis.iocsh

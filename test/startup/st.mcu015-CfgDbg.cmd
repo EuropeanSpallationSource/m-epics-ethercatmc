@@ -18,16 +18,16 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 # For real terminals the adresses must be adapted
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1;HomPos=0;cfgFile=./mcu015.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
 
-< EthercatMCController.cmd
-< EthercatMCAxis.cmd
-< EthercatMCAxisdebug.cmd
-< EthercatMCAxishome.cmd
+< EthercatMCController.iocsh
+< EthercatMCAxis.iocsh
+< EthercatMCAxisdebug.iocsh
+< EthercatMCAxishome.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1;HomPos=0;./mcu015.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2")
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=Upper=Left)")
-< EthercatMCAxis.cmd
-< EthercatMCAxisdebug.cmd
-< EthercatMCAxishome.cmd
+< EthercatMCAxis.iocsh
+< EthercatMCAxisdebug.iocsh
+< EthercatMCAxishome.iocsh

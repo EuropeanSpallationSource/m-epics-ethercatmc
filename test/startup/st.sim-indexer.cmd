@@ -11,7 +11,7 @@ epicsEnvSet("ECM_NUMAXES",   "4")
 epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=851)")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=5.40.216.206.1.1;amsNetIdLocal=192.168.209.71.1.1"
 
-< EthercatMCController.cmd
+< EthercatMCController.iocsh
 
 
 #
@@ -22,8 +22,8 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
-< EthercatMCIndexerAxis.cmd
-< EthercatMCAxisdebug.cmd
+< EthercatMCIndexerAxis.iocsh
+< EthercatMCAxisdebug.iocsh
 
 
 #
@@ -32,8 +32,8 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
-< EthercatMCIndexerAxis.cmd
-< EthercatMCAxisdebug.cmd
+< EthercatMCIndexerAxis.iocsh
+< EthercatMCAxisdebug.iocsh
 
 #
 # Axis 3
@@ -41,8 +41,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
-< EthercatMCIndexerAxis.cmd
-< EthercatMCAxisdebug.cmd
+< EthercatMCIndexerAxis.iocsh
+< EthercatMCAxisdebug.iocsh
 
 #
 # Axis 4
@@ -50,5 +50,5 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
-< EthercatMCIndexerAxis.cmd
-< EthercatMCAxisdebug.cmd
+< EthercatMCIndexerAxis.iocsh
+< EthercatMCAxisdebug.iocsh
