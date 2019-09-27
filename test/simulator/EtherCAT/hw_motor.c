@@ -326,6 +326,10 @@ int getAxisHomed(int axis_no)
 
 void setAxisHomed(int axis_no, int value)
 {
+  fprintf(stdlog,
+          "%s/%s:%d axis_no=%d value=%d\n",
+          __FILE__, __FUNCTION__, __LINE__, axis_no,
+          value);
   AXIS_CHECK_RETURN(axis_no);
   motor_axis[axis_no].homed = value;
 }
@@ -518,11 +522,13 @@ static int hard_limits_clip(int axis_no, double velocity)
         velocity > 0 &&
         motor_axis[axis_no].MotorPosNow > motor_axis[axis_no].highHardLimitPos) {
       fprintf(stdlog,
-              "%s/%s:%d axis_no=%d CLIP HLS motorPosNow=%g highHardLimitPos=%g\n",
+              "%s/%s:%d axis_no=%d CLIP HLS motorPosNow=%g highHardLimitPos=%g enabledHighSoftLimitPos=%d highSoftLimitPos=%g\n",
               __FILE__, __FUNCTION__, __LINE__,
               axis_no,
               motor_axis[axis_no].MotorPosNow,
-              motor_axis[axis_no].highHardLimitPos);
+              motor_axis[axis_no].highHardLimitPos,
+              motor_axis[axis_no].enabledHighSoftLimitPos,
+              motor_axis[axis_no].highSoftLimitPos);
       motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].highHardLimitPos;
       clipped = 1;
     }
@@ -530,11 +536,13 @@ static int hard_limits_clip(int axis_no, double velocity)
         velocity < 0 &&
         motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].lowHardLimitPos) {
       fprintf(stdlog,
-              "%s/%s:%d axis_no=%d CLIP LLS motorPosNow=%g lowHardLimitPos=%g\n",
+              "%s/%s:%d axis_no=%d CLIP LLS motorPosNow=%g lowHardLimitPos=%g enabledLowSoftLimitPos=%d lowSoftLimitPos=%g\n",
               __FILE__, __FUNCTION__, __LINE__,
               axis_no,
               motor_axis[axis_no].MotorPosNow,
-              motor_axis[axis_no].lowHardLimitPos);
+              motor_axis[axis_no].lowHardLimitPos,
+              motor_axis[axis_no].enabledLowSoftLimitPos,
+              motor_axis[axis_no].lowSoftLimitPos);
       motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].lowHardLimitPos;
       clipped = 1;
     }

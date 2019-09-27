@@ -59,7 +59,11 @@ class Test(unittest.TestCase):
             jar = epics.caget(motor + '.JAR')
             epics.caput(motor + '-ACCS', jar)
 
+            rbv = epics.caget(motor + '.RBV')
+            destination = epics.caget(motor + '.HLM') + 1
             jvel = epics.caget(motor + '.JVEL')
+            timeout = self.lib.calcTimeOut(motor, destination, jvel)
+            print '%s rbv=%f destination=%f timeout=%f' % (tc_no, rbv, destination, timeout)
             res = epics.caput(motor + '-MoveVel', jvel)
             if (res == None):
                 print '%s caput -MoveVel res=None' % (tc_no)
@@ -68,8 +72,7 @@ class Test(unittest.TestCase):
                 print '%s caput -MoveVel res=%d' % (tc_no, res)
                 self.assertEqual(res, 1, 'caput -MoveVel returned 1')
 
-            time_to_wait = 180
-            done = self.lib.waitForStartAndDone(motor, tc_no, time_to_wait)
+            done = self.lib.waitForStartAndDone(motor, tc_no, timeout)
 
             msta = int(epics.caget(motor + '.MSTA'))
             miss = int(epics.caget(motor + '.MISS'))

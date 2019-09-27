@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "sock-util.h"
+#include "cmd.h"
 #include "cmd_Sim.h"
 #include "cmd_EAT.h"
 #include "cmd_IcePAP.h"
@@ -168,7 +169,7 @@ static int create_argv(const char *line, int had_cr, int had_lf, const char*** a
 }
 
 /*****************************************************************************/
-int handle_input_line(int socket_fd, const char *input_line, int had_cr, int had_lf)
+int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int had_lf)
 {
   static const char *seperator_seperator = ";";
   static const char *terminator_terminator = "\n";
@@ -182,7 +183,9 @@ int handle_input_line(int socket_fd, const char *input_line, int had_cr, int had
   const char *argv1 = (argc > 1) ? my_argv[1] : "";
   int is_EAT_cmd = strchr(input_line, ';') != NULL;
 
-  if (!strncmp(argv1, this_stSettings_iTimeOut_str_s, strlen(this_stSettings_iTimeOut_str_s))) {
+  clear_buf();
+  if ((socket_fd >= 0) &&
+      (!strncmp(argv1, this_stSettings_iTimeOut_str_s, strlen(this_stSettings_iTimeOut_str_s)))) {
     const char *myarg_1 = &argv1[strlen(this_stSettings_iTimeOut_str_s)];
     int timeout;
     int nvals;
@@ -212,28 +215,21 @@ int handle_input_line(int socket_fd, const char *input_line, int had_cr, int had
   else if ((argc > 1) && (0 == strcmp(argv1, "kill"))) {
     exit(0);
   }
-#if 0
-  else if (cmd_TCPsim(argc, my_argv)) {
-    ; /* TCPsim command */
-  }
-#endif
   else if (cmd_IcePAP(argc, my_argv)) {
     ; /* IcePAP command */
   }
-  else if (argv1[0] == 'h' ||
-           argv1[0] == '?') {
-    fd_printf_crlf(socket_fd, had_cr,
-                   "Valid commands :\n");
-    fd_printf_crlf(socket_fd, had_cr,
-                   "bye            : Bye\n"
+  else if (socket_fd >= 0) {
+    if (argv1[0] == 'h' ||
+        argv1[0] == '?') {
+      fd_printf_crlf(socket_fd, had_cr,
+                     "Valid commands :\n");
+      fd_printf_crlf(socket_fd, had_cr,
+                     "bye            : Bye\n"
                    "kill           : exit(0)\n");
-  }
-  else if (argc > 2){
-    fd_printf_crlf(socket_fd, had_cr,"error(%s:%d): invalid command (%s)\n",
-                   __FILE__, __LINE__,  argv1);
-  }
-  else if (argc == 1) {
-    /* Just a return, print a prompt */
+    } else if (argc > 2){
+      fd_printf_crlf(socket_fd, had_cr,"error(%s:%d): invalid command (%s)\n",
+                     __FILE__, __LINE__,  argv1);
+    }
   }
   {
     int i;
@@ -248,14 +244,17 @@ int handle_input_line(int socket_fd, const char *input_line, int had_cr, int had
             __FILE__, __FUNCTION__, __LINE__,
             counter++);
   }
-  {
+  if (socket_fd >= 0) {
     int flags = had_cr ? PRINT_ADD_CR : 0;
     const char *buf = get_buf();
 
     fd_printf_crlf(socket_fd, flags, "%s", buf);
-    clear_buf();
   }
 
   return 0;
 }
 
+int handle_input_line(const char *input_line, int had_cr, int had_lf)
+{
+  return  handle_input_line_fd(-1, input_line, had_cr, had_lf);
+}

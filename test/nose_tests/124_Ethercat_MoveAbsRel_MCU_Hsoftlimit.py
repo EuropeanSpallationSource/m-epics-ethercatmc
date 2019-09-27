@@ -68,9 +68,11 @@ class Test(unittest.TestCase):
             jvel = epics.caget(motor + '.JVEL')
             epics.caput(motor + '-VELO', jvel/mres)
 
-            jvel = epics.caget(motor + '.JVEL')
+            destination = self.hlm + 1
+            timeout = self.lib.calcTimeOut(motor, destination, jvel)
+            print '%s rbv=%f destination=%f timeout=%f' % (tc_no, rbv, destination, timeout)
 
-            res = epics.caput(motor + '-MoveAbs', (self.hlm + 1) / mres)
+            res = epics.caput(motor + '-MoveAbs', (destination) / mres)
             if (res == None):
                 print '%s caput -Moveabs res=None' % (tc_no)
                 self.assertNotEqual(res, None, 'caput -Moveabs retuned not None. PV not found ?')
@@ -78,8 +80,7 @@ class Test(unittest.TestCase):
                 print '%s caput -Moveabs res=%d' % (tc_no, res)
                 self.assertEqual(res, 1, 'caput -Moveabs returned 1')
 
-            time_to_wait = 180
-            done = self.lib.waitForStartAndDone(motor, tc_no, time_to_wait)
+            done = self.lib.waitForStartAndDone(motor, tc_no, timeout)
 
             msta = int(epics.caget(motor + '.MSTA'))
             miss = int(epics.caget(motor + '.MISS'))

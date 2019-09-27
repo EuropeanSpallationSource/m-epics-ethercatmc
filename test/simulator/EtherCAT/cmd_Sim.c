@@ -171,7 +171,7 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("OK");
     return;
   }
-  /* bAxisHomede=1 */
+  /* bAxisHomed=1 */
   nvals = sscanf(myarg_1, "bAxisHomed=%d", &iValue);
   if (nvals == 1) {
     setAxisHomed(motor_axis_no, iValue);
@@ -208,7 +208,7 @@ static void motorHandleOneArg(const char *myarg_1)
   }
 
   /* if we come here, we do not understand the command */
-  CMD_BUF_PRINTF_RETURN_OR_DIE("%s/%s:%d line=%s myarg_1=%s",
+  CMD_BUF_PRINTF_RETURN_OR_DIE("%s/%s:%d illegal line=%s myarg_1=%s",
                 __FILE__, __FUNCTION__, __LINE__,
                 myarg, myarg_1);
 }

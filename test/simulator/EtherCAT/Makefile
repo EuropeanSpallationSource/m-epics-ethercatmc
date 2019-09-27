@@ -128,6 +128,7 @@ $(BIN)/sock-ads.o: \
 
 $(BIN)/sock-util.o: \
  Makefile \
+ cmd.h \
  logerr_info.h \
  sock-util.h \
  sock-ads.h \
@@ -192,7 +193,9 @@ $(BIN)/indexer.o: \
  Makefile \
  indexer.c \
  hw_motor.h \
- indexer.h
+ indexer.h \
+ cmd.h \
+ sock-util.h
 	$(CC) -c $(CFLAGS) indexer.c -o $@
 
 $(BIN)/startWinSock.o: \

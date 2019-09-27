@@ -48,11 +48,13 @@ public:
   asynStatus stop(double acceleration);
   void setIndexerDevNumOffsetTypeCode(unsigned devNum, unsigned iOffset, unsigned iTypCode);
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
+  asynStatus setIntegerParamLog(int function, int newValue, const char *name);
   asynStatus poll(bool *moving);
   asynStatus resetAxis(void);
   asynStatus setClosedLoop(bool closedLoop);
   asynStatus setIntegerParam(int function, int value);
   asynStatus setDoubleParam(int function, double value);
+  asynStatus setStringParamDbgStrToMcu(const char *value);
   asynStatus setStringParam(int function, const char *value);
 
 private:

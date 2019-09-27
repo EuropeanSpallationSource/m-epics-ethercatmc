@@ -106,12 +106,23 @@ asynStatus EthercatMCController::getPlcMemoryUint(unsigned indexOffset,
   return asynError;
 }
 
-asynStatus EthercatMCController::getPlcMemoryString(unsigned indexOffset,
-                                                    char *value,
-                                                    size_t len)
+asynStatus EthercatMCController::getPlcMemoryBytes(unsigned indexOffset,
+                                                   char *value,
+                                                   size_t len)
 {
   memset(value, 0, len);
   return getPlcMemoryViaADS(indexOffset, value, len);
+}
+
+asynStatus EthercatMCController::setPlcMemoryBytes(unsigned indexOffset,
+                                                   const char *value,
+                                                   size_t len)
+{
+  asynPrint(pasynUserController_,
+            ASYN_TRACE_INFO,
+            "%ssetPlcMemoryBytes indexOffset=%d 0x%x\n",
+            modNamEMC, indexOffset, indexOffset);
+  return setPlcMemoryViaADS(indexOffset, value, len);
 }
 
 asynStatus EthercatMCController::setPlcMemoryInteger(unsigned indexOffset,
@@ -669,7 +680,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexer(devNum, infoType16 + auxBitIdx);
         if (status) return status;
-        status = getPlcMemoryString(ctrlLocal.indexerOffset + 1*2,
+        status = getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
                                     auxBitName,
                                     sizeof(auxBitName));
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
@@ -785,25 +796,25 @@ asynStatus EthercatMCController::initialPollIndexer(void)
     }
     status = readDeviceIndexer(devNum, infoType4);
     if (!status) {
-      getPlcMemoryString(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.desc,
                          sizeof(descVersAuthors.desc));
     }
     status = readDeviceIndexer(devNum, infoType5);
     if (!status) {
-      getPlcMemoryString(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.vers,
                          sizeof(descVersAuthors.vers));
     }
     status = readDeviceIndexer(devNum, infoType6);
     if (!status) {
-      getPlcMemoryString(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.author1,
                          sizeof(descVersAuthors.author1));
     }
     status = readDeviceIndexer(devNum, infoType7);
     if (!status) {
-      getPlcMemoryString(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.author2,
                          sizeof(descVersAuthors.author2));
     }
@@ -854,6 +865,19 @@ asynStatus EthercatMCController::initialPollIndexer(void)
                  plcUnitTxtFromUnitCode(iUnit & 0xFF));
         setStringParam(axisNo,  EthercatMCCfgEGU_RB_, unitCodeTxt);
       }
+      break;
+    case 0x0518:
+      /*
+       * Total length should be on a 64 bit border
+       * We need at least 40 bytes payload -> round up to 48
+       * 0x18 == 24dec words -> 48 bytes -> 2byte CTRL + 46 payload */
+      if (!strcmp(descVersAuthors.desc, "DbgStrToMcu"))
+      {
+        ctrlLocal.specialDbgStrToMcuDeviceOffset = iOffset;
+        /* Length of the data area in words is "low byte" */
+        ctrlLocal.specialDbgStrToMcuDeviceLength = 2 * (iTypCode & 0xFF);
+      }
+      break;
     }
   }
 

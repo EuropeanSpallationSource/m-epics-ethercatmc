@@ -18,13 +18,10 @@ def motorPositionTC(self, motor, tc_no, destination, velocity):
         return
     if (self.msta & self.lib.MSTA_BIT_HOMED):
         epics.caput(motor + '-DbgStrToLOG', "Start TC " + tc_no[0:20]);
-        rbv = epics.caget(motor + '.RBV', use_monitor=False)
-        accl = epics.caget(motor + '.ACCL', use_monitor=False)
-        delta = math.fabs(destination - rbv)
-        timeout = delta / velocity + 2 * accl + 2.0
         if velocity != self.velo:
             epics.caput(motor + '.VELO', velocity)
 
+        timeout = self.lib.calcTimeOut(motor, destination, velocity)
         res = self.lib.move(motor, destination, timeout)
         if velocity != self.velo:
             epics.caput(motor + '.VELO', self.velo)

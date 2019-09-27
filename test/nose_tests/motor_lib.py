@@ -102,13 +102,6 @@ class motor_lib(object):
                 tc_no, channelname, value)
 
     def initializeMotorRecordSimulatorAxis(self, motor, tc_no):
-        # If there are usful values in the controller, use them
-        dhlm = epics.caget(motor + '-CfgDHLM')
-        dllm = epics.caget(motor + '-CfgDLLM')
-        if (dhlm == None or dllm == None or dhlm <= dllm):
-            dhlm = 53.0
-            dllm = -54.0
-
 
         self.initializeMotorRecordOneField(motor, tc_no, '.VMAX', 50.0)
         self.initializeMotorRecordOneField(motor, tc_no, '.VELO', 20.0)
@@ -120,13 +113,19 @@ class motor_lib(object):
         #self.initializeMotorRecordOneField(motor, tc_no, '.SPDB', 0.1)
         self.initializeMotorRecordOneField(motor, tc_no, '.BDST', 0.0)
 
-        self.setSoftLimitsOff(motor)
-        self.initializeMotorRecordOneField(motor, tc_no, '-CfgDHLM', dhlm)
-        self.initializeMotorRecordOneField(motor, tc_no, '-CfgDLLM', dllm)
-        self.initializeMotorRecordOneField(motor, tc_no, '-CfgDHLM-En', 1)
-        self.initializeMotorRecordOneField(motor, tc_no, '-CfgDLLM-En', 1)
-        self.initializeMotorRecordOneField(motor, tc_no, '.DHLM', dhlm)
-        self.initializeMotorRecordOneField(motor, tc_no, '.DLLM', dllm)
+        # If there are usful values in the controller, use them
+        cfgDHLM = epics.caget(motor + '-CfgDHLM')
+        cfgDLLM = epics.caget(motor + '-CfgDLLM')
+        if (cfgDHLM == None or cfgDLLM == None or cfgDHLM <= cfgDLLM):
+            cfgDHLM = 53.0
+            cfgDLLM = -54.0
+            self.setSoftLimitsOff(motor)
+            self.initializeMotorRecordOneField(motor, tc_no, '-CfgDHLM', cfgDHLM)
+            self.initializeMotorRecordOneField(motor, tc_no, '-CfgDLLM', cfgDLLM)
+            self.initializeMotorRecordOneField(motor, tc_no, '-CfgDHLM-En', 1)
+            self.initializeMotorRecordOneField(motor, tc_no, '-CfgDLLM-En', 1)
+            self.initializeMotorRecordOneField(motor, tc_no, '.DHLM', cfgDHLM)
+            self.initializeMotorRecordOneField(motor, tc_no, '.DLLM', cfgDLLM)
 
     def getMSTAtext(self, msta):
         ret = ''
@@ -218,6 +217,13 @@ class motor_lib(object):
         print '%s: assertAlmostEqual expected=%f actual=%f delta=%f maxdelta=%f inrange=%d' % (
             tc_no, expected, actual, delta, maxdelta, inrange)
         return inrange
+
+    def calcTimeOut(self, motor, destination, velocity):
+        rbv = epics.caget(motor + '.RBV', use_monitor=False)
+        accl = epics.caget(motor + '.ACCL', use_monitor=False)
+        delta = math.fabs(destination - rbv)
+        timeout = delta / velocity + 2 * accl + 2.0
+        return timeout
 
     def waitForStart(self, motor, tc_no, wait_for_start):
         while wait_for_start > 0:

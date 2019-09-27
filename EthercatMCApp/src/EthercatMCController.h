@@ -201,8 +201,10 @@ public:
   asynStatus writeReadACK(int traceMask);
   asynStatus getPlcMemoryUint(unsigned indexOffset,
                               unsigned *value, size_t lenInPlc);
-  asynStatus getPlcMemoryString(unsigned indexOffset,
-                                char *value, size_t len);
+  asynStatus setPlcMemoryBytes(unsigned indexOffset,
+                               const char *value, size_t len);
+  asynStatus getPlcMemoryBytes(unsigned indexOffset,
+                               char *value, size_t len);
   asynStatus setPlcMemoryInteger(unsigned indexOffset,
                                  int value, size_t lenInPlc);
   asynStatus getPlcMemoryDouble(unsigned indexOffset,
@@ -227,6 +229,8 @@ public:
     unsigned int hasConfigError;
     unsigned int initialPollDone;
     unsigned int indexerOffset;
+    unsigned int specialDbgStrToMcuDeviceLength;
+    unsigned int specialDbgStrToMcuDeviceOffset;
     AmsNetidAndPortType remote;
     AmsNetidAndPortType local;
     unsigned adsport;

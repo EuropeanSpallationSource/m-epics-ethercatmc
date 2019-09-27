@@ -12,12 +12,17 @@
 #include "hw_motor.h"
 #include "indexer.h"
 #include "logerr_info.h"
+#include "cmd.h"
 
 /* type codes and sizes */
 #define TYPECODE_INDEXER               0
-#define SIZE_INDEXER                  38
+/* The lenght of the indexer data, the longest is
+   probably netInfoType4_type with 34 byte */
+#define WORDS_SIZE_INDEXER_DATA       17
+#define TYPECODE_SPECIALDEVICE_0518 0x0518
 #define TYPECODE_PARAMDEVICE_5008 0x5008
 #define TYPECODE_PARAMDEVICE_5010 0x5010
+#define WORDS_SPECIALDEVICE_0518    0x18
 #define WORDS_PARAMDEVICE_5008       0x8
 #define WORDS_PARAMDEVICE_5010      0x10
 
@@ -27,14 +32,16 @@
 #define UNITCODE_MM                 0xfd04
 #define UNITCODE_DEGREE             0x000C
 
-/* axis 0 (not used), axis1, axis2 */
-#define  NUM_MOTORS5008     3
+#define AXISNO_NONE         0
+/* axis1, axis2 */
+#define  NUM_MOTORS5008     2
 
 /* axis3 axis4 */
 #define  NUM_MOTORS5010     2
 
-/* 5 devices for the indexer: the indexer itself + 4 motors */
-#define  NUM_DEVICES        5
+/* 10 devices for the indexer:
+   the indexer itself + 1 special + 4 motors */
+#define  NUM_DEVICES        6
 
 typedef enum {
   idxStatusCodeRESET    = 0,
@@ -154,6 +161,13 @@ typedef struct {
   uint8_t  parameters[32]; /* counting 0..31 */
 } netInfoType15_type;
 
+/* The special device structure. */
+typedef struct {
+  /* 2 bytes control, 46 payload */
+  uint8_t   control[2];
+  uint8_t   value[46];
+} netDevice0518interface_type;
+
 /* The paramDevice structure.
    floating point values are 4 bytes long,
    the whole structure uses 16 bytes, 8 words */
@@ -180,8 +194,9 @@ typedef struct {
 /* Info type as seen here locally in memory */
 typedef struct {
   uint16_t  typeCode;
-  uint16_t  size;
+  uint16_t  sizeInBytes;
   uint16_t  unitCode;
+  uint16_t  axisNo;
   uint8_t   paramAvail[32]; /* counting 0..31 */
   char      devName[34];
   char      auxName[24][34];
@@ -193,8 +208,8 @@ typedef struct {
 indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
   {
     /* device 0, the indexer itself */
-    { TYPECODE_INDEXER, SIZE_INDEXER,
-      UNITCODE_NONE,
+    { TYPECODE_INDEXER, 2*WORDS_SIZE_INDEXER_DATA,
+      UNITCODE_NONE, AXISNO_NONE,
       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
       "indexer",
       { "", "", "", "", "", "", "", "",
@@ -202,8 +217,18 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
-    { TYPECODE_PARAMDEVICE_5008, WORDS_PARAMDEVICE_5008,
-      UNITCODE_MM,
+    /* special device */
+    { TYPECODE_SPECIALDEVICE_0518, 2*WORDS_SPECIALDEVICE_0518,
+      UNITCODE_NONE, AXISNO_NONE,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "DbgStrToMcu",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
+    { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
+      UNITCODE_MM, 1,
       {0, 0,
        0, 0,
        PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32, 0,
@@ -226,8 +251,8 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", "notHomed"},
       5.0, 175.0
     },
-    { TYPECODE_PARAMDEVICE_5008, WORDS_PARAMDEVICE_5008,
-      UNITCODE_DEGREE,
+    { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
+      UNITCODE_DEGREE, 2,
       {PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32, 0,
        0, 0,
        PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32, 0,
@@ -248,8 +273,8 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", "notHomed"},
       -181.0, +181.0
     },
-    { TYPECODE_PARAMDEVICE_5010, WORDS_PARAMDEVICE_5010,
-      UNITCODE_MM,
+    { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
+      UNITCODE_MM, 3,
       {PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32, 0,
        0, 0,
        PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32, 0,
@@ -271,8 +296,8 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", "notHomed"},
       0, +173.0
     },
-    { TYPECODE_PARAMDEVICE_5010, WORDS_PARAMDEVICE_5010,
-      UNITCODE_MM,
+    { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
+      UNITCODE_MM, 4,
       {PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32, 0,
        0, 0,
        PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32, 0,
@@ -318,6 +343,7 @@ static union {
       netInfoType4_type  infoType4;
       netInfoType15_type infoType15;
     } indexer;
+    netDevice0518interface_type special0518; /* 42 bytes for ASCII to the simulator */
     /* Remember that motor[0] is defined, but never used */
     netDevice5008interface_type motors5008[NUM_MOTORS5008];
     netDevice5010interface_type motors5010[NUM_MOTORS5010];
@@ -899,7 +925,7 @@ static int indexerHandleIndexerCmd(unsigned offset,
     /* get values from device table */
     UINTTONET(indexerDeviceAbsStraction[devNum].typeCode,
               netData.memoryStruct.indexer.infoType0.typeCode);
-    UINTTONET(indexerDeviceAbsStraction[devNum].size,
+    UINTTONET(indexerDeviceAbsStraction[devNum].sizeInBytes,
               netData.memoryStruct.indexer.infoType0.size);
     UINTTONET(indexerDeviceAbsStraction[devNum].unitCode,
               netData.memoryStruct.indexer.infoType0.unit);
@@ -916,7 +942,6 @@ static int indexerHandleIndexerCmd(unsigned offset,
       unsigned auxIdx;
       unsigned flags = 0;
       unsigned maxAuxIdx;
-      unsigned offset = 0;
       maxAuxIdx = sizeof(indexerDeviceAbsStraction[devNum].auxName) /
         sizeof(indexerDeviceAbsStraction[devNum].auxName[0]);
 
@@ -930,21 +955,29 @@ static int indexerHandleIndexerCmd(unsigned offset,
       }
       UINTTONET(flags, netData.memoryStruct.indexer.infoType0.flags);
 
-      /* Offset to the first motor */
-      if (devNum <= NUM_MOTORS5008) {
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5008[devNum] - (void*)&netData);
-      } else {
-        /* Assume that the 5010 come after the 5008 motors */
-        unsigned motor5010Num = devNum-NUM_MOTORS5008;
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5010[motor5010Num] - (void*)&netData);
+      /* Calculate offset */
+      {
+        unsigned offset =
+          (unsigned)((void*)&netData.memoryStruct.indexer - (void*)&netData);
+        unsigned tmpDevNum = 0;
+        LOGINFO6("%s/%s:%d devNum=%u offset=%u\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 devNum, offset);
+        while (tmpDevNum < devNum) {
+          LOGINFO6("%s/%s:%d devNum=%u tmpDevNum=%u (%s) offsetW=%u (0x%x)\n",
+                   __FILE__, __FUNCTION__, __LINE__,
+                   devNum, tmpDevNum,
+                   indexerDeviceAbsStraction[tmpDevNum].devName,
+                   offset,offset);
+          offset += indexerDeviceAbsStraction[tmpDevNum].sizeInBytes;
+          tmpDevNum++;
+        }
+        UINTTONET(offset, netData.memoryStruct.indexer.infoType0.offset);
       }
-
-      /* TODO: Support other interface types */
-      UINTTONET(offset, netData.memoryStruct.indexer.infoType0.offset);
     }
-    LOGINFO6("%s/%s:%d netData=%p indexer=%p delta=%u typeCode=%x size=%u offset=%u flagsLow=0x%x ack=0x%x\n",
+    LOGINFO6("%s/%s:%d devNum=%u netData=%p indexer=%p delta=%u typeCode=%x sizeW=%u offsetW=%u flagsLow=0x%x ack=0x%x\n",
              __FILE__, __FUNCTION__, __LINE__,
-             &netData, &netData.memoryStruct.indexer,
+             devNum, &netData, &netData.memoryStruct.indexer,
              (unsigned)((void*)&netData.memoryStruct.indexer - (void*)&netData),
              NETTOUINT(netData.memoryStruct.indexer.infoType0.typeCode),
              NETTOUINT(netData.memoryStruct.indexer.infoType0.size),
@@ -955,7 +988,7 @@ static int indexerHandleIndexerCmd(unsigned offset,
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
   case 1:
-    UINTTONET(indexerDeviceAbsStraction[devNum].size,
+    UINTTONET(indexerDeviceAbsStraction[devNum].sizeInBytes,
               netData.memoryStruct.indexer.infoType1.size);
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
@@ -1150,24 +1183,26 @@ void indexerHandlePLCcycle(void)
         double fRet;
         size_t lenInPlcPara = 4;
         unsigned offset;
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5008[devNum].actualValue -
+        unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
+        unsigned motor5008Num = axisNo - 1;
+        offset = (unsigned)((void*)&netData.memoryStruct.motors5008[motor5008Num] -
                             (void*)&netData);
 
-        fRet = getMotorPos((int)devNum);
-        LOGINFO6("%s/%s:%d devNum=%u offset=%u fRet=%f\n",
+        fRet = getMotorPos((int)axisNo);
+        LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u offset=%u fRet=%f\n",
                  __FILE__, __FUNCTION__, __LINE__,
-                 devNum, offset, (double)fRet);
+                 devNum, axisNo, motor5008Num, offset, (double)fRet);
         doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
         /* status */
-        indexerMotorStatusRead5008(devNum, &netData.memoryStruct.motors5008[devNum]);
+        indexerMotorStatusRead5008(axisNo, &netData.memoryStruct.motors5008[motor5008Num]);
 
         /* param interface */
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5008[devNum].paramCtrl -
+        offset = (unsigned)((void*)&netData.memoryStruct.motors5008[motor5008Num].paramCtrl -
                             (void*)&netData);
-        LOGINFO6("%s/%s:%d devNum=%u offset=%u\n",
+        LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u paramoffset=%u\n",
                  __FILE__, __FUNCTION__, __LINE__,
-                 devNum, offset);
-        indexerMotorParamInterface(devNum, offset, lenInPlcPara);
+                 devNum, axisNo, motor5008Num, offset);
+        indexerMotorParamInterface(axisNo, offset, lenInPlcPara);
       }
       break;
     case TYPECODE_PARAMDEVICE_5010:
@@ -1175,26 +1210,27 @@ void indexerHandlePLCcycle(void)
         double fRet;
         size_t lenInPlcPara = 8;
         unsigned offset;
-        unsigned motor5010Num = devNum-NUM_MOTORS5008;
+        unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
+        unsigned motor5010Num = axisNo - NUM_MOTORS5008 - 1;
         offset = (unsigned)((void*)&netData.memoryStruct.motors5010[motor5010Num].actualValue -
                             (void*)&netData);
 
-        fRet = getMotorPos((int)devNum);
-        LOGINFO6("%s/%s:%d devNum=%u motor5010Num=%u offset=%u fRet=%f\n",
+        fRet = getMotorPos((int)axisNo);
+        LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u offset=%u fRet=%f\n",
                  __FILE__, __FUNCTION__, __LINE__,
-                 devNum, motor5010Num, offset, (double)fRet);
+                 devNum, axisNo, motor5010Num, offset, (double)fRet);
         doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
         /* status */
-        indexerMotorStatusRead5010(devNum,
+        indexerMotorStatusRead5010(axisNo,
                                    &netData.memoryStruct.motors5010[motor5010Num]);
 
         /* param interface */
         offset = (unsigned)((void*)&netData.memoryStruct.motors5010[motor5010Num].paramCtrl -
                             (void*)&netData);
-        LOGINFO6("%s/%s:%d devNum=%u motor5010Num=%u offset=%u\n",
+        LOGINFO6("%s/%s:%d devNum=%u motor5010Num=%u paramoffset=%u\n",
                  __FILE__, __FUNCTION__, __LINE__,
                  devNum, motor5010Num, offset);
-        indexerMotorParamInterface(devNum, offset, lenInPlcPara);
+        indexerMotorParamInterface(axisNo, offset, lenInPlcPara);
       }
       break;
     case TYPECODE_INDEXER:
@@ -1209,6 +1245,49 @@ void indexerHandlePLCcycle(void)
           indexerHandleIndexerCmd(offsetIndexer, lenInPlc, indexer_ack);
         }
       }
+      break;
+    case TYPECODE_SPECIALDEVICE_0518:
+      {
+        uint16_t ctrl_word = NETTOUINT(netData.memoryStruct.special0518.control);
+        unsigned plcNotHostHasWritten = (ctrl_word & 0x8000) ? 1 : 0;
+        unsigned numBytes  = ctrl_word & 0x02FF; /* Bit 9..0 */
+        LOGINFO6("%s/%s:%d devNum=%u special0518 ctrl0=0x%x crtl1=0x%x "
+                 "plcNotHostHasWritten=%u numBytes=%u\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 netData.memoryStruct.special0518.control[0],
+                 netData.memoryStruct.special0518.control[1],
+                 devNum, plcNotHostHasWritten, numBytes);
+        if (!plcNotHostHasWritten && numBytes) {
+          char *pNewline;
+          pNewline = strchr((char *)&netData.memoryStruct.special0518.value, '\n');
+          if (pNewline) {
+            size_t line_len = 1 +
+              (void*)pNewline -
+              (void*)&netData.memoryStruct.special0518.value;
+            int had_cr = 0;
+            *pNewline = 0; /* Remove '\n' */
+            if (line_len > 1) pNewline--;
+            if (*pNewline == '\r') {
+              had_cr = 1;
+              *pNewline = '\0';
+            }
+            LOGINFO6("%s/%s:%d devNum=%u special0518 value=\"%s\"\n",
+                     __FILE__, __FUNCTION__, __LINE__,
+                     devNum, (const char*)netData.memoryStruct.special0518.value);
+            (void)handle_input_line((const char *)&netData.memoryStruct.special0518.value,
+                                    had_cr, 1);
+          } else {
+            LOGINFO3("%s/%s:%d devNum=%u special0518=\"%s\"\n",
+                     __FILE__, __FUNCTION__, __LINE__,
+                     devNum, (const char*)netData.memoryStruct.special0518.value);
+          }
+          memset(&netData.memoryStruct.special0518, 0,
+                 sizeof(netData.memoryStruct.special0518));
+          ctrl_word = 0;
+          UINTTONET(ctrl_word, netData.memoryStruct.special0518.control);
+        }
+      }
+      break;
     default:
       break;
     }

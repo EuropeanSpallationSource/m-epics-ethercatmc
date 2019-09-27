@@ -410,6 +410,20 @@ asynStatus EthercatMCIndexerAxis::stop(double acceleration )
   return stopAxisInternal(__FUNCTION__, acceleration);
 }
 
+asynStatus EthercatMCIndexerAxis::setIntegerParamLog(int function,
+                                                     int newValue,
+                                                     const char *name)
+{
+  int oldValue;
+  asynStatus status = pC_->getIntegerParam(axisNo_, function, &oldValue);
+  if (status || (newValue != oldValue)) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%spoll(%d) %s=%d\n",
+              modNamEMC, axisNo_, name, newValue);
+  }
+  return setIntegerParam(function, newValue);
+}
+
 /** Polls the axis.
  * This function reads the motor position, the limit status, the home status,
  * the moving status,
@@ -584,15 +598,15 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
     if (statusValid) {
       int hls = idxReasonBits & 0x8 ? 1 : 0;
       int lls = idxReasonBits & 0x4 ? 1 : 0;
-      setIntegerParam(pC_->motorStatusLowLimit_, lls);
-      setIntegerParam(pC_->motorStatusHighLimit_, hls);
+      setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
+      setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
       setIntegerParam(pC_->motorStatusMoving_, nowMoving);
       setIntegerParam(pC_->motorStatusDone_, !nowMoving);
       setIntegerParam(pC_->EthercatMCStatusBits_, statusReasonAux);
       setIntegerParam(pC_->EthercatMCErr_, hasError);
       if (drvlocal.auxBitsNotHomedMask) {
         int homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
-        setIntegerParam(pC_->motorStatusHomed_, homed);
+        setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
         if (!homed) {
           drvlocal.hasProblem = 1;
         }
@@ -640,6 +654,8 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
         ;
       }
     }
+    drvlocal.old_statusReasonAux = statusReasonAux;
+    drvlocal.old_idxAuxBits      = idxAuxBits;
     callParamCallbacks();
   }
   return status;
@@ -767,12 +783,72 @@ asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
 
 }
 
+asynStatus EthercatMCIndexerAxis::setStringParamDbgStrToMcu(const char *value)
+{
+  const char * const Main_this_str = "Main.this.";
+  const char * const Sim_this_str = "Sim.this.";
+  /* The special device structure. */
+  struct {
+    /* 2 bytes control, 46 payload */
+    uint8_t   control[2];
+    uint8_t   value[46];
+  } netDevice0518interface;
+  int valueLen;
+
+
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%ssetStringParamDbgStrToMcu(%d)=\"%s\"\n",
+            modNamEMC, axisNo_, value);
+  /* empty strings are not send to the controller */
+  if (!value[0]) return asynSuccess;
+  /* No special device found */
+  if (!pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset) return asynError;
+
+  /* Check the string. E.g. Main.this. and Sim.this. are passed
+     as Main.M1 or Sim.M1 */
+  if (!strncmp(value, Main_this_str, strlen(Main_this_str))) {
+    valueLen = snprintf((char*)&netDevice0518interface.value,
+                        sizeof(netDevice0518interface.value),
+                        "Main.M%d.%s;\n",
+                        axisNo_, value + strlen(Main_this_str));
+  }
+  /* caput IOC:m1-DbgStrToMCU Sim.this.log=M1.log */
+  else if (!strncmp(value, Sim_this_str, strlen(Sim_this_str))) {
+    valueLen = snprintf((char*)&netDevice0518interface.value,
+                        sizeof(netDevice0518interface.value),
+                        "Sim.M%d.%s;\n",
+                        axisNo_, value + strlen(Sim_this_str));
+  } else {
+    /* If we come here, the command was not understood */
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
+              "%ssetStringParamDbgStrToMcu (%d) illegal value=\"%s\"\n",
+              "EthercatMCIndexerAxis", axisNo_, value);
+    return asynError;
+  }
+  if (valueLen < 0 || valueLen >= sizeof(netDevice0518interface.value)) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
+              "%ssetStringParamDbgStrToMcu (%d) valueLen=%d value=\"%s\"\n",
+              "EthercatMCIndexerAxis", axisNo_,
+              valueLen, value);
+    return asynError;
+  }
+  uintToNet(valueLen, &netDevice0518interface.control,
+            sizeof(netDevice0518interface.control));
+  /* TODO:  obey the handshake,  bit 15 must be low */
+  /* TODO2: update the simulator to send the "OK" and read it here */
+  return pC_->setPlcMemoryBytes(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
+                                 (char*)&netDevice0518interface,
+                                 pC_->ctrlLocal.specialDbgStrToMcuDeviceLength);
+}
+
 asynStatus EthercatMCIndexerAxis::setStringParam(int function, const char *value)
 {
   if (function == pC_->EthercatMCDbgStrToLog_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetStringParamDbgStrToLog(%d)=\"%s\"\n",
               modNamEMC, axisNo_, value);
+  } else if (function == pC_->EthercatMCDbgStrToMcu_) {
+    return setStringParamDbgStrToMcu(value);
   }
   /* Call base class method */
   return asynMotorAxis::setStringParam(function, value);

@@ -36,7 +36,7 @@ static int deftracelevel = ASYN_TRACE_DEBUG;
     for (count = 0; count < 8; count++) {\
       if (count < len) {\
         unsigned char c = (unsigned char)data[count];\
-        if (c > 0x32 && c < 0x7F)\
+        if (c >= 0x20 && c < 0x7F)\
           print_buf.asc_txt[count] = c;\
         else\
           print_buf.asc_txt[count] = '.';\

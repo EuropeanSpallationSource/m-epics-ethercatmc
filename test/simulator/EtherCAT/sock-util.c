@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <sys/time.h>
 
+#include "cmd.h"
 #include "sock-util.h"
 #include "sock-ads.h"
 
@@ -313,7 +314,7 @@ static void handle_data_on_ASC_socket(int i, int fd, ssize_t read_res, size_t le
       had_cr = 1;
       *pNewline = '\0';
     }
-    if (handle_input_line(fd, (const char *)&client_cons[i].buffer[0], had_cr, 1)) {
+    if (handle_input_line_fd(fd, (const char *)&client_cons[i].buffer[0], had_cr, 1)) {
       close_and_remove_client_con_i(i);
     }
     client_cons[i].len_used = 0;
