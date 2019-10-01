@@ -1,6 +1,7 @@
 
 GNERATEDOPIS: \
   ../motor-2.opi \
+  ../motor-2-2.opi \
   ../motor-3.opi \
   ../motor-4.opi \
   ../motor-5.opi \
@@ -15,9 +16,11 @@ GNERATEDOPIS: \
 
 
 #
+ ../motor-2-2.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+	./genXY.sh 2 2
+
  ../motor-2.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
 	./genXY.sh 2
-
 
 ../motor-3.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
 	./genXY.sh 3
