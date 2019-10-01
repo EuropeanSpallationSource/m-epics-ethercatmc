@@ -65,8 +65,10 @@ if test "$1" -eq 0; then
   exit 1
 fi
 X=$1
+# Get the right name inside the opi, like motor-2-2.opi
+XXYY=$(echo "$@" | sed -e "s/ /-/g")
 shift
-FILE=motor-${X}.$EXT
+FILE=motor-${XXYY}.$EXT
 
 #Do we have e.g. 4 x 3
 if test "$1" = x; then
