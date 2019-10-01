@@ -825,7 +825,7 @@ asynStatus EthercatMCIndexerAxis::setStringParamDbgStrToMcu(const char *value)
               "EthercatMCIndexerAxis", axisNo_, value);
     return asynError;
   }
-  if (valueLen < 0 || valueLen >= sizeof(netDevice0518interface.value)) {
+  if (valueLen < 0 || (unsigned)valueLen >= sizeof(netDevice0518interface.value)) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
               "%ssetStringParamDbgStrToMcu (%d) valueLen=%d value=\"%s\"\n",
               "EthercatMCIndexerAxis", axisNo_,
