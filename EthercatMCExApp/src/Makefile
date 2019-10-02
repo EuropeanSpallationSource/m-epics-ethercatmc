@@ -37,6 +37,13 @@ ifneq (,$(findstring /,$(MOTOR)))
   EthercatMC_LIBS += softMotor
 endif
 
+ifneq (,$(findstring base-7,$(EPICS_BASE)))
+ EthercatMC_DBD += PVAServerRegister.dbd
+ EthercatMC_DBD += PVACommonRegister.dbd
+ EthercatMC_DBD += softIocPVA.dbd
+ EthercatMC_DBD += registerChannelProviderLocal.dbd
+endif
+
 EthercatMC_DBD += EthercatMcSupport.dbd
 
 # <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
@@ -63,6 +70,12 @@ EthercatMC_LIBS += ads
 EthercatMC_DBD  += ads.dbd
 endif
 
+ifneq (,$(findstring base-7,$(EPICS_BASE)))
+EthercatMC_LIBS += pvAccess
+EthercatMC_LIBS += pvDatabase
+EthercatMC_LIBS += pvAccessIOC
+EthercatMC_LIBS += qsrv
+endif
 
 EthercatMC_LIBS += EthercatMcSupport
 EthercatMC_LIBS += $(EPICS_BASE_IOC_LIBS)
