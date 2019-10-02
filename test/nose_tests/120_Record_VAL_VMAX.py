@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 #
-# https://nose.readthedocs.org/en/latest/
-# https://nose.readthedocs.org/en/latest/testing.html
 
 import epics
 import math

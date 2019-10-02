@@ -4,9 +4,6 @@
 #
 # http://cars9.uchicago.edu/software/python/pyepics3/
 #
-# m-epics-singlemotion/src/main/test/singlemotion_test.py
-# https://nose.readthedocs.org/en/latest/
-# https://nose.readthedocs.org/en/latest/testing.html
 
 import epics
 import unittest

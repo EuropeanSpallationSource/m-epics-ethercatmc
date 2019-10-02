@@ -42,9 +42,9 @@ if ! python -c 'import epics' >/dev/null 2>&1; then
     fi
   fi
 fi &&
-if ! which nosetests >/dev/null 2>&1; then
+if ! which pytest >/dev/null 2>&1; then
   if which easy_install >/dev/null 2>&1; then
-    sudo easy_install nose
+    sudo easy_install pytest
   else
     if ! which pip >/dev/null 2>&1; then
       if which yum >/dev/null 2>&1; then
@@ -55,7 +55,7 @@ if ! which nosetests >/dev/null 2>&1; then
       fi
     fi
     if which pip >/dev/null 2>&1; then
-      sudo pip install nose
+      sudo pip install pytest
     else
       false
     fi
@@ -102,10 +102,10 @@ fi
   exit 1
 }
 
-run_nosetests ()
+run_pytest ()
 {
-  echo nosetests $TESTEDMOTORAXIS "$@"
-  nosetests "$@" || exit 1
+  echo pytest $TESTEDMOTORAXIS "$@"
+  pytest "$@" || exit 1
 }
 
 if test -z "$EPICS_CA_ADDR_LIST" && test -z "$EPICS_CA_AUTO_ADDR_LIST"; then
@@ -126,14 +126,14 @@ while test $numruns -gt 0; do
     echo files=$files
     for file in $files; do
       echo file=$file
-      run_nosetests "$@" $file || exit 1
+      run_pytest "$@" $file || exit 1
     done
   else
     py=$(echo *.py | sort)
     echo py=$py
     for p in $py
     do
-      run_nosetests "$@" $p || exit 1
+      run_pytest "$@" $p || exit 1
     done
   fi
   echo Runs left=$numruns
