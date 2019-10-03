@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
     range_postion    = hlm - llm
     msta             = int(epics.caget(motor + '.MSTA'))
 
-    print 'llm=%f hlm=%f per10_UserPosition=%f' % (llm, hlm, per10_UserPosition)
+    print('llm=%f hlm=%f per10_UserPosition=%f' % (llm, hlm, per10_UserPosition))
 
     # Assert that motor is homed
     def test_TC_1331(self):
@@ -39,12 +39,12 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1332-90-percent-UserPosition"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             destination = self.per10_UserPosition
             res = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per10_UserPosition=%f' % (
-                tc_no, UserPosition, self.per10_UserPosition)
+            print('%s postion=%f per10_UserPosition=%f' % (
+                tc_no, UserPosition, self.per10_UserPosition))
             self.assertEqual(res, self.__g.SUCCESS, 'move returned SUCCESS')
 
     # Low soft limit in controller when using MoveVel
@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1333-low-soft-limit MoveVel"
-            print '%s' % tc_no
+            print('%s' % tc_no)
 
             jar = epics.caget(motor + '.JAR')
             epics.caput(motor + '-ACCS', jar)
@@ -60,10 +60,10 @@ class Test(unittest.TestCase):
             jvel = epics.caget(motor + '.JVEL')
             res = epics.caput(motor + '-MoveVel', 0 - jvel)
             if (res == None):
-                print '%s caput -MoveVel res=None' % (tc_no)
+                print('%s caput -MoveVel res=None' % (tc_no))
                 self.assertNotEqual(res, None, 'caput -MoveVel retuned not None. PV not found ?')
             else:
-                print '%s caput -MoveVel res=%d' % (tc_no, res)
+                print('%s caput -MoveVel res=%d' % (tc_no, res))
                 self.assertEqual(res, 1, 'caput -MoveVel returned 1')
 
             time_to_wait = 180
@@ -75,15 +75,15 @@ class Test(unittest.TestCase):
             if (msta & self.lib.MSTA_BIT_PROBLEM):
                 epics.caput(motor + '-ErrRst', 1)
 
-            print '%s msta=%s' % (tc_no, self.lib.getMSTAtext(msta))
+            print('%s msta=%s' % (tc_no, self.lib.getMSTAtext(msta)))
 
             echlm = epics.caget(motor + '-CfgDHLM')
             ecllm = epics.caget(motor + '-CfgDLLM')
             echlmEn = epics.caget(motor + '-CfgDHLM-En')
             ecllmEn = epics.caget(motor + '-CfgDLLM-En')
             drbv = epics.caget(motor + '.DRBV')
-            print '%s echlm=%f ecllm=%f echlmEn=%d ecllmEn=%d drbv=%f'\
-                % (tc_no, echlm, ecllm, echlmEn, ecllmEn, drbv)
+            print('%s echlm=%f ecllm=%f echlmEn=%d ecllmEn=%d drbv=%f'\
+                % (tc_no, echlm, ecllm, echlmEn, ecllmEn, drbv))
 
             self.assertEqual(0, msta & self.lib.MSTA_BIT_MINUS_LS, 'DLY Minus hard limit not reached MoveVel')
             self.assertEqual(0, msta & self.lib.MSTA_BIT_PLUS_LS,  'DLY Plus hard limit not reached MoveVel')

@@ -28,8 +28,8 @@ class Test(unittest.TestCase):
     else:
         jogging_velocity = moving_velocity / 2.0;
 
-    print 'llm=%f hlm=%f per30_UserPosition=%f' % (llm, hlm, per30_UserPosition)
-    print 'saved_JVEL=%f jogging_velocity=%f' % (saved_JVEL, jogging_velocity)
+    print('llm=%f hlm=%f per30_UserPosition=%f' % (llm, hlm, per30_UserPosition))
+    print('saved_JVEL=%f jogging_velocity=%f' % (saved_JVEL, jogging_velocity))
 
     # Assert if motor is homed
     def test_TC_1321(self):
@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED) and (self.jogging_velocity != 0.0):
             tc_no = "TC-1322-low-limit-switch"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             old_high_limit = epics.caget(motor + '.HLM')
             old_low_limit = epics.caget(motor + '.LLM')
             epics.caput(motor + '.STOP', 1)
@@ -63,7 +63,7 @@ class Test(unittest.TestCase):
             mstaE = int(epics.caget(motor + '.MSTA'))
             #Go away from limit switch
             self.lib.movePosition(motor, tc_no, old_high_limit, self.moving_velocity, self.acceleration)
-            print '%s msta=%x lvio=%d' % (tc_no, mstaE, lvio)
+            print('%s msta=%x lvio=%d' % (tc_no, mstaE, lvio))
 
             self.lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
             epics.caput(motor + '.JVEL', self.saved_JVEL)

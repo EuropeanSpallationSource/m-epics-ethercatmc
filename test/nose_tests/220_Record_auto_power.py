@@ -29,17 +29,17 @@ def do_220_autopower(self, motor, tc_no, autopower):
     epics.caput(motor + '-PwrAuto', autopower, wait=True, timeout=self.g.TIMEOUT)
     epics.caput(motor + '-PwrOnDly', PwrOnDly, wait=True, timeout=self.g.TIMEOUT)
     epics.caput(motor + '-PwrOffDly', PwrOffDly, wait=True, timeout=self.g.TIMEOUT)
-    print '%s Enable move to LLM +10' % tc_no
+    print('%s Enable move to LLM +10' % tc_no)
     res1 = self.lib.move(motor, self.saved_LLM + 10 + 2*autopower, self.g.TIMEOUT)
 
     #Make sure drive is still enabled
     power1 = epics.caget(motor + '.CNEN', use_monitor=False)
-    print '%s Check drive is still enabled power1=%d' % (tc_no, power1)
+    print('%s Check drive is still enabled power1=%d' % (tc_no, power1))
 
 
     time.sleep(PwrOnDly + PwrOffDly + 2.0)
     power2 = epics.caget(motor + '.CNEN', use_monitor=False)
-    print '%s Wait 8s and check drive is now disabled power2=%d' % (tc_no, power2)
+    print('%s Wait 8s and check drive is now disabled power2=%d' % (tc_no, power2))
     restorePwrSettings(self, motor, tc_no, self.saved_PwrAuto, self.saved_PwrOnDly, self.saved_PwrOffDly)
     assert(res1 == 0)
     assert(power1 == 1)
@@ -67,7 +67,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-2201-Enable_goto_LLM"
 
         #Enable power
-        print '%s Enable drive and move to LLM' % tc_no
+        print('%s Enable drive and move to LLM' % tc_no)
         epics.caput(motor + '-PwrAuto', 2,         wait=True, timeout=self.g.TIMEOUT)
         epics.caput(motor + '-PwrOnDly', PwrOnDly, wait=True, timeout=self.g.TIMEOUT)
         self.lib.setCNENandWait(motor, tc_no, 1)
@@ -79,12 +79,12 @@ class Test(unittest.TestCase):
     def test_TC_2201(self):
         motor = self.motor
         tc_no = "TC-2201-Auto_power_mode_1"
-        print '%s autopower ' % tc_no
+        print('%s autopower ' % tc_no)
         do_220_autopower(self, motor, tc_no, 1)
 
     def test_TC_2202(self):
         motor = self.motor
         tc_no = "TC-2202-Auto_power_mode_2"
-        print '%s autopower ' % tc_no
+        print('%s autopower ' % tc_no)
         do_220_autopower(self, motor, tc_no, 2)
         self.lib.setCNENandWait(motor, tc_no, self.saved_CNEN)

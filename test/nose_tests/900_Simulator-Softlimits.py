@@ -111,10 +111,10 @@ def setLimit(tself, motor, tc_no, field, value, expDHLM, expDLLM, expHLM, expLLM
 
     actM3rhlm = epics.caget(motor + '-M3RHLM', use_monitor=False)
     actM3rllm = epics.caget(motor + '-M3RLLM', use_monitor=False)
-    print '%s expDHLM=%g expDLLM=%g expHLM=%g expLLM=%g expM3rhlm=%g expM3rllm=%g' % \
-        (tc_no, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm)
-    print '%s actDHLM=%g actDLLM=%g actHLM=%g actLLM=%g actM3rhlm=%g actM3rllm=%g' % \
-        (tc_no, actDHLM, actDLLM, actHLM, actLLM, actM3rhlm, actM3rllm)
+    print('%s expDHLM=%g expDLLM=%g expHLM=%g expLLM=%g expM3rhlm=%g expM3rllm=%g' % \
+        (tc_no, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm))
+    print('%s actDHLM=%g actDLLM=%g actHLM=%g actLLM=%g actM3rhlm=%g actM3rllm=%g' % \
+        (tc_no, actDHLM, actDLLM, actHLM, actLLM, actM3rhlm, actM3rllm))
     okDHLM   = lib.calcAlmostEqual(motor, tc_no, expDHLM,  actDHLM, maxdelta)
     okDLLM   = lib.calcAlmostEqual(motor, tc_no, expDLLM,  actDLLM, maxdelta)
     okHLM    = lib.calcAlmostEqual(motor, tc_no, expHLM,    actHLM, maxdelta)
@@ -147,7 +147,7 @@ class Test(unittest.TestCase):
         tc_no = 90010
         encRel = 0
         #vers = float(epics.caget(self.motor + '.VERS'))
-        #print '%s vers=%g' %  (tc_no, vers)
+        #print('%s vers=%g' %  (tc_no, vers))
         #self.assertEqual(0, 1, '1 != 0')
 
         self.assertEqual(0, self.drvUseEGU, 'drvUseEGU must be 0')
@@ -290,7 +290,7 @@ class Test(unittest.TestCase):
         tc_no = 90050
         encRel = 0
 
-        print '%s vers=%g hasROlimit=%d' %  (tc_no, self.vers, self.hasROlimit)
+        print('%s vers=%g hasROlimit=%d' %  (tc_no, self.vers, self.hasROlimit))
         self.assertEqual(1, self.hasROlimit, 'motorRecord supports RO soft limits')
 
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)

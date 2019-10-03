@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
     range_postion    = hlm - llm
     msta             = int(epics.caget(motor + '.MSTA'))
 
-    print 'llm=%f hlm=%f per90_UserPosition=%f' % (llm, hlm, per90_UserPosition)
+    print('llm=%f hlm=%f per90_UserPosition=%f' % (llm, hlm, per90_UserPosition))
 
     # Assert that motor is homed
     def test_TC_1211(self):
@@ -40,12 +40,12 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1212-90-percent-UserPosition"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             destination = self.per90_UserPosition
             res = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per90_UserPosition=%f' % (
-                tc_no, UserPosition, self.per90_UserPosition)
+            print('%s postion=%f per90_UserPosition=%f' % (
+                tc_no, UserPosition, self.per90_UserPosition))
             self.assertNotEqual(res == self.__g.SUCCESS, 'move returned SUCCESS')
 
     # High soft limit JOGF
@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1213-low-soft-limit JOGF"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             epics.caput(motor + '.DLY', 1.0)
             epics.caput(motor + '.JOGF', 1, wait=True)
             lvio = int(epics.caget(motor + '.LVIO'))
@@ -73,19 +73,19 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1214-90-percent-UserPosition"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             destination = self.per90_UserPosition
             res = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per90_UserPosition=%f' % (
-                tc_no, UserPosition, self.per90_UserPosition)
+            print('%s postion=%f per90_UserPosition=%f' % (
+                tc_no, UserPosition, self.per90_UserPosition))
             self.assertNotEqual(res == self.__g.SUCCESS, 'move returned SUCCESS')
 
     def test_TC_1215(self):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1215-high-soft-limit JOGF"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             epics.caput(motor + '.DLY', 0.0)
             epics.caput(motor + '.JOGF', 1, wait=True)
             lvio = int(epics.caget(motor + '.LVIO'))
@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-12152-high-soft-limit JOGF"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             epics.caput(motor + '.DLY', 0.0)
             mip1  = int(epics.caget(motor + '.MIP'))
             epics.caput(motor + '.JOGF', 1, wait=True)
@@ -118,8 +118,8 @@ class Test(unittest.TestCase):
             jogf = int(epics.caget(motor + '.JOGF'))
 
             epics.caput(motor + '.DLY', self.saved_DLY)
-            print '%s mip1=%x mip2=%x' % (
-                tc_no, mip1, mip2)
+            print('%s mip1=%x mip2=%x' % (
+                tc_no, mip1, mip2))
 
             self.assertEqual(0, msta & self.lib.MSTA_BIT_PROBLEM,  'ndly2 No MSTA.Problem JOGF')
             self.assertEqual(0, msta & self.lib.MSTA_BIT_MINUS_LS, 'ndly2 Minus hard limit not reached JOGF')
@@ -137,12 +137,12 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1216-90-percent-UserPosition"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             destination = self.per90_UserPosition
             res = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per90_UserPosition=%f' % (
-                tc_no, UserPosition, self.per90_UserPosition)
+            print('%s postion=%f per90_UserPosition=%f' % (
+                tc_no, UserPosition, self.per90_UserPosition))
             self.assertNotEqual(res == self.__g.SUCCESS, 'move returned SUCCESS')
 
     # High soft limit JOGR + DIR
@@ -150,7 +150,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1217-low-soft-limit JOGF DIR"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             saved_DIR = epics.caget(motor + '.DIR')
             saved_FOFF = epics.caget(motor + '.FOFF')
             epics.caput(motor + '.FOFF', 1)

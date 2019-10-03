@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
     acceleration     = epics.caget(motor + '.ACCL')
     msta             = int(epics.caget(motor + '.MSTA'))
 
-    print 'llm=%f hlm=%f per70_UserPosition=%f' % (llm, hlm, per70_UserPosition)
+    print('llm=%f hlm=%f per70_UserPosition=%f' % (llm, hlm, per70_UserPosition))
 
     # Assert if motor is not homed
     def test_TC_1221(self):
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1222-high-limit-switch"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             old_high_limit = epics.caget(motor + '.HLM')
             old_low_limit = epics.caget(motor + '.LLM')
             epics.caput(motor + '.STOP', 1)
@@ -55,7 +55,7 @@ class Test(unittest.TestCase):
             mstaE = int(epics.caget(motor + '.MSTA'))
             #Go away from limit switch
             self.lib.movePosition(motor, tc_no, old_high_limit, self.moving_velocity, self.acceleration)
-            print '%s msta=%x lvio=%d' % (tc_no, mstaE, lvio)
+            print('%s msta=%x lvio=%d' % (tc_no, mstaE, lvio))
 
             self.lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
 

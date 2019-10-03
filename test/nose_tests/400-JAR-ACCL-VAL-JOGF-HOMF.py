@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
     msta             = int(epics.caget(motor + '.MSTA'))
 
     def getAcceleration(self, motor, tc_no):
-        print '%s: getAcceleration %s' % (tc_no, motor)
+        print('%s: getAcceleration %s' % (tc_no, motor))
         res = epics.caget(motor + '-Acc-RB', use_monitor=False)
         return res
 
@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
     # 10% dialPosition
     def test_TC_402(self):
         tc_no = "TC-402-10-percent"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             ret = self.lib.move(self.motor, self.per10_UserPosition, 60)
@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
     # 20% dialPosition
     def test_TC_403(self):
         tc_no = "TC-403-20-percent"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             saved_ACCL = float(epics.caget(motor + '.ACCL'))
@@ -64,7 +64,7 @@ class Test(unittest.TestCase):
             resacc = self.getAcceleration(motor, tc_no)
             expacc = saved_VELO / used_ACCL
             epics.caput(motor + '.ACCL', saved_ACCL)
-            print '%s ACCL=%f expacc=%f resacc=%f' % (tc_no,used_ACCL,expacc,resacc)
+            print('%s ACCL=%f expacc=%f resacc=%f' % (tc_no,used_ACCL,expacc,resacc))
             assert self.lib.calcAlmostEqual(self.motor, tc_no, expacc, resacc, 2)
             assert (ret == 0)
 
@@ -72,7 +72,7 @@ class Test(unittest.TestCase):
     # JOGR
     def test_TC_404(self):
         tc_no = "TC-404-JOGR"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             accl = float(epics.caget(motor + '.ACCL'))
@@ -84,7 +84,7 @@ class Test(unittest.TestCase):
             resacc = self.getAcceleration(motor, tc_no)
             expacc = used_JAR
             epics.caput(motor + '.JAR', saved_JAR)
-            print '%s JAR=%f expacc=%f resacc=%f' % (tc_no,used_JAR,expacc,resacc)
+            print('%s JAR=%f expacc=%f resacc=%f' % (tc_no,used_JAR,expacc,resacc))
 
             assert self.lib.calcAlmostEqual(self.motor, tc_no, expacc, resacc, 2)
 

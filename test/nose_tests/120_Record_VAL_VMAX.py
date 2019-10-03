@@ -25,8 +25,8 @@ def motorPositionTC(self, motor, tc_no, destination, velocity):
             epics.caput(motor + '.VELO', self.velo)
 
         UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-        print '%s postion=%f destination=%f' % (
-            tc_no, UserPosition, destination)
+        print('%s postion=%f destination=%f' % (
+            tc_no, UserPosition, destination))
         self.assertEqual(res, __g.SUCCESS, 'move returned SUCCESS')
         res2 = self.lib.postMoveCheck(motor)
         self.assertEqual(res2, __g.SUCCESS, 'postMoveCheck returned SUCCESS')

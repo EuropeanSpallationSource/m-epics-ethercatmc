@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
     range_postion    = hlm - llm
     msta             = int(epics.caget(motor + '.MSTA'))
 
-    print 'llm=%f hlm=%f per90_UserPosition=%f' % (llm, hlm, per90_UserPosition)
+    print('llm=%f hlm=%f per90_UserPosition=%f' % (llm, hlm, per90_UserPosition))
 
     # Assert that motor is homed
     def test_TC_1231(self):
@@ -39,12 +39,12 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1232-90-percent-UserPosition"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             destination = self.per90_UserPosition
             res = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per90_UserPosition=%f' % (
-                tc_no, UserPosition, self.per90_UserPosition)
+            print('%s postion=%f per90_UserPosition=%f' % (
+                tc_no, UserPosition, self.per90_UserPosition))
             self.assertEqual(res, self.__g.SUCCESS, 'move returned SUCCESS')
 
     # High soft limit in controller when using MoveVel
@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1233-high-soft-limit MoveVel"
-            print '%s' % tc_no
+            print('%s' % tc_no)
 
             jar = epics.caget(motor + '.JAR')
             epics.caput(motor + '-ACCS', jar)
@@ -61,13 +61,13 @@ class Test(unittest.TestCase):
             destination = epics.caget(motor + '.HLM') + 1
             jvel = epics.caget(motor + '.JVEL')
             timeout = self.lib.calcTimeOut(motor, destination, jvel)
-            print '%s rbv=%f destination=%f timeout=%f' % (tc_no, rbv, destination, timeout)
+            print('%s rbv=%f destination=%f timeout=%f' % (tc_no, rbv, destination, timeout))
             res = epics.caput(motor + '-MoveVel', jvel)
             if (res == None):
-                print '%s caput -MoveVel res=None' % (tc_no)
+                print('%s caput -MoveVel res=None' % (tc_no))
                 self.assertNotEqual(res, None, 'caput -MoveVel retuned not None. PV not found ?')
             else:
-                print '%s caput -MoveVel res=%d' % (tc_no, res)
+                print('%s caput -MoveVel res=%d' % (tc_no, res))
                 self.assertEqual(res, 1, 'caput -MoveVel returned 1')
 
             done = self.lib.waitForStartAndDone(motor, tc_no, timeout)

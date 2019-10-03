@@ -23,8 +23,8 @@ def setValueOnSimulator(self, motor, tc_no, var, value):
     var = str(var)
     value = str(value)
     outStr = 'Sim.this.' + var + '=' + value
-    print '%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
-          (tc_no, motor, var, value, outStr)
+    print('%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
+          (tc_no, motor, var, value, outStr))
     assert(len(outStr) < 40)
     epics.caput(motor + '-DbgStrToMCU', outStr)
 
@@ -54,7 +54,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         motor2 = self.motor2
         tc_no = "TC-232-NetYetStarted"
-        print '%s' % tc_no
+        print('%s' % tc_no)
 
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             setValueOnSimulator(self, motor2, tc_no, "usleep", 1700000)
@@ -62,14 +62,14 @@ class Test(unittest.TestCase):
             destination = self.per90_UserPosition
             res1 = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per90_UserPosition=%f' % (
-                tc_no, UserPosition, self.per90_UserPosition)
+            print('%s postion=%f per90_UserPosition=%f' % (
+                tc_no, UserPosition, self.per90_UserPosition))
 
             destination = self.per10_UserPosition
             res2 = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per10_UserPosition=%f' % (
-                tc_no, UserPosition, self.per90_UserPosition)
+            print('%s postion=%f per10_UserPosition=%f' % (
+                tc_no, UserPosition, self.per90_UserPosition))
 
             setValueOnSimulator(self, motor2, tc_no, "usleep", 0)
 

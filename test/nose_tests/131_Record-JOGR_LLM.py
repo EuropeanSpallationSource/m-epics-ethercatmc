@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
     acceleration     = epics.caget(motor + '.ACCL')
     msta             = int(epics.caget(motor + '.MSTA'))
 
-    print 'llm=%f hlm=%f per10_UserPosition=%f' % (llm, hlm, per10_UserPosition)
+    print('llm=%f hlm=%f per10_UserPosition=%f' % (llm, hlm, per10_UserPosition))
 
     # Assert if motor is not homed
     def test_TC_1311(self):
@@ -38,14 +38,14 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1312-10-percent-UserPosition"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             destination = self.per10_UserPosition
             self.lib.movePosition(motor, tc_no, destination,
                                    self.moving_velocity, self.acceleration)
 
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per10_UserPosition=%f' % (
-                tc_no, UserPosition, self.per10_UserPosition)
+            print('%s postion=%f per10_UserPosition=%f' % (
+                tc_no, UserPosition, self.per10_UserPosition))
             assert self.lib.calcAlmostEqual(motor, tc_no, destination, UserPosition, 2)
 
     # Low soft limit JOGR
@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1313-low-soft-limit JOGR"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             epics.caput(motor + '.JOGR', 1, wait=True)
             lvio = int(epics.caget(motor + '.LVIO'))
             msta = int(epics.caget(motor + '.MSTA'))
@@ -70,14 +70,14 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1314-10-percent-UserPosition"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             destination = self.per10_UserPosition
             self.lib.movePosition(motor, tc_no, destination,
                                   self.moving_velocity, self.acceleration)
 
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per10_UserPosition=%f' % (
-                tc_no, UserPosition, self.per10_UserPosition)
+            print('%s postion=%f per10_UserPosition=%f' % (
+                tc_no, UserPosition, self.per10_UserPosition))
             assert self.lib.calcAlmostEqual(motor, tc_no, destination, UserPosition, 2)
 
     # Low soft limit JOGF + DIR
@@ -85,7 +85,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1315-low-soft-limit JOGF DIR"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             saved_DIR = epics.caget(motor + '.DIR')
             saved_FOFF = epics.caget(motor + '.FOFF')
             epics.caput(motor + '.FOFF', 1)

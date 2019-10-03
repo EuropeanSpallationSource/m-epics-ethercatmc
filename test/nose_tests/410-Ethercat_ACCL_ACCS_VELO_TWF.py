@@ -14,7 +14,7 @@ __g = motor_globals()
 ###
 
 def getAccEGUfromMCU(self, motor, tc_no):
-    print '%s: getAccEGUfromMCU %s' % (tc_no, motor)
+    print('%s: getAccEGUfromMCU %s' % (tc_no, motor))
     res = epics.caget(motor + '-Acc-RB', use_monitor=False)
     return res
 
@@ -32,14 +32,14 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, motor, tc_no, vbas, velo, accl, accs,
     destination = 2.0 + epics.caget(motor + '.VAL')
     res = self.lib.move(motor, destination, 60)
     resAccEGU = getAccEGUfromMCU(self, motor, tc_no)
-    print '%s: check_accEGU_ACCS_ACCL_VELO %s vbas=%f velo=%f accl=%f accs=%f expAccEGU=%f resAccEGU=%f' % \
-           (tc_no, motor, vbas, velo, accl, accs, expAccEGU, resAccEGU)
+    print('%s: check_accEGU_ACCS_ACCL_VELO %s vbas=%f velo=%f accl=%f accs=%f expAccEGU=%f resAccEGU=%f' % \
+           (tc_no, motor, vbas, velo, accl, accs, expAccEGU, resAccEGU))
     actVelo = epics.caget(motor + '.VELO', use_monitor=False)
     actAccl = epics.caget(motor + '.ACCL', use_monitor=False)
     actAccs = epics.caget(motor + '.ACCS', use_monitor=False)
     expAccs = actVelo / actAccl
     expAccl = actVelo / actAccs
-    print '%s expAccl=%f expAccs=%f actVelo=%f actAccl=%f actAccs=%f' % (tc_no, expAccl, expAccs, actVelo,actAccl, actAccs)
+    print('%s expAccl=%f expAccs=%f actVelo=%f actAccl=%f actAccs=%f' % (tc_no, expAccl, expAccs, actVelo,actAccl, actAccs))
     assert self.lib.calcAlmostEqual(self.motor, tc_no, expAccEGU, resAccEGU, 0.1)
     self.assertEqual(res, __g.SUCCESS, 'move returned SUCCESS')
     # Check if VELO, ACCL and ACCS are aligned
@@ -74,7 +74,7 @@ class Test(unittest.TestCase):
     # 10% dialPosition
     def test_TC_412(self):
         tc_no = "TC-412-10-percent"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             ret = self.lib.move(self.motor, self.per10_UserPosition, 60)
@@ -82,7 +82,7 @@ class Test(unittest.TestCase):
 
     def test_TC_41311(self):
         tc_no = "TC-41311"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.homedAndPwrAndACCS):
             #                                                   vbas, velo. accl, accs, expAccEGU
@@ -90,7 +90,7 @@ class Test(unittest.TestCase):
 
     def test_TC_41312(self):
         tc_no = "TC-41312"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.homedAndPwrAndACCS):
             #                                                   vbas, velo. accl, accs, expAccEGU
@@ -98,7 +98,7 @@ class Test(unittest.TestCase):
 
     def test_TC_41313(self):
         tc_no = "TC-41313"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.homedAndPwrAndACCS):
             #                                                   vbas, velo. accl, accs, expAccEGU
@@ -106,7 +106,7 @@ class Test(unittest.TestCase):
 
     def test_TC_41314(self):
         tc_no = "TC-41314"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.homedAndPwrAndACCS):
             #                                                   vbas, velo. accl, accs, expAccEGU
@@ -114,7 +114,7 @@ class Test(unittest.TestCase):
 
     def test_TC_41315(self):
         tc_no = "TC-41315"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.homedAndPwrAndACCS):
             #                                                   vbas, velo. accl, accs, expAccEGU
@@ -122,7 +122,7 @@ class Test(unittest.TestCase):
 
     def test_TC_41316(self):
         tc_no = "TC-41316"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.homedAndPwrAndACCS):
             #                                                   vbas, velo. accl, accs, expAccEGU
@@ -131,7 +131,7 @@ class Test(unittest.TestCase):
     # Keep ACCS and expAccEGU if velociy is changed
     def test_TC_41317(self):
         tc_no = "TC-41317"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         motor = self.motor
         if (self.homedAndPwrAndACCS):
             #                                                   vbas, velo. accl, accs, expAccEGU

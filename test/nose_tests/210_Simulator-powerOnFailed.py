@@ -24,8 +24,8 @@ def setValueOnSimulator(self, motor, tc_no, var, value):
     var = str(var)
     value = str(value)
     outStr = 'Sim.this.' + var + '=' + value
-    print '%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
-          (tc_no, motor, var, value, outStr)
+    print('%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
+          (tc_no, motor, var, value, outStr))
     assert(len(outStr) < 40)
     epics.caput(motor + '-DbgStrToMCU', outStr)
 
@@ -54,7 +54,7 @@ class Test(unittest.TestCase):
         epics.caput(motor + '.CNEN', 1, wait=True)
         time.sleep(4.0)
         mstaErr = int(epics.caget(motor + '.MSTA', use_monitor=False))
-        print '%s Error mstaErr=%s' % (tc_no, self.lib.getMSTAtext(mstaErr))
+        print('%s Error mstaErr=%s' % (tc_no, self.lib.getMSTAtext(mstaErr)))
         self.pv_nErrRst.put(1, wait=True)
 
         setValueOnSimulator(self, motor, tc_no, "bAmplifierLockedToBeOff", 0)
@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
         mstaOKagain = int(epics.caget(motor + '.MSTA', use_monitor=False))
         bError   = self.pv_Err.get(use_monitor=False)
         nErrorId = self.pv_nErrorId.get(use_monitor=False)
-        print '%s Clean self.lib.MSTA_BIT_PROBLEM=%x mstaOKagain=%s bError=%d nErrorId=%d' % (tc_no, self.lib.MSTA_BIT_PROBLEM, self.lib.getMSTAtext(mstaOKagain), bError, nErrorId)
+        print('%s Clean self.lib.MSTA_BIT_PROBLEM=%x mstaOKagain=%s bError=%d nErrorId=%d' % (tc_no, self.lib.MSTA_BIT_PROBLEM, self.lib.getMSTAtext(mstaOKagain), bError, nErrorId))
 
         epics.caput(motor + '.CNEN', self.saved_CNEN)
         epics.caput(motor + '-PwrAuto', self.saved_PwrAuto)

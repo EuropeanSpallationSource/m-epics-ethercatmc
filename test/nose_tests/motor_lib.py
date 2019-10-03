@@ -92,14 +92,14 @@ class motor_lib(object):
         channelname = motor + field
         oldVal = epics.caget(channelname)
         if (oldVal != None):
-            print '%s: initializeMotorRecordOneField field=%s oldVal=%f value=%f' % (
-                tc_no, channelname, oldVal, value)
+            print('%s: initializeMotorRecordOneField field=%s oldVal=%f value=%f' % (
+                tc_no, channelname, oldVal, value))
             if (oldVal != value):
                 epics.caput(channelname, value)
 
         else:
-            print '%s: initializeMotorRecordOneField field=%s not found value=%f' % (
-                tc_no, channelname, value)
+            print('%s: initializeMotorRecordOneField field=%s not found value=%f' % (
+                tc_no, channelname, value))
 
     def initializeMotorRecordSimulatorAxis(self, motor, tc_no):
 
@@ -214,8 +214,8 @@ class motor_lib(object):
     def calcAlmostEqual(self, motor, tc_no, expected, actual, maxdelta):
         delta = math.fabs(expected - actual)
         inrange = delta < maxdelta
-        print '%s: assertAlmostEqual expected=%f actual=%f delta=%f maxdelta=%f inrange=%d' % (
-            tc_no, expected, actual, delta, maxdelta, inrange)
+        print('%s: assertAlmostEqual expected=%f actual=%f delta=%f maxdelta=%f inrange=%d' % (
+            tc_no, expected, actual, delta, maxdelta, inrange))
         return inrange
 
     def calcTimeOut(self, motor, destination, velocity):
@@ -231,8 +231,8 @@ class motor_lib(object):
             dmov = int(epics.caget(motor + '.DMOV', use_monitor=False))
             movn = int(epics.caget(motor + '.MOVN', use_monitor=False))
             rbv = epics.caget(motor + '.RBV')
-            print '%s: wait_for_start=%f dmov=%d movn=%d rbv=%f' % (
-                tc_no, wait_for_start, dmov, movn, rbv)
+            print('%s: wait_for_start=%f dmov=%d movn=%d rbv=%f' % (
+                tc_no, wait_for_start, dmov, movn, rbv))
             if movn and not dmov:
                 return True
             time.sleep(polltime)
@@ -245,8 +245,8 @@ class motor_lib(object):
             dmov = int(epics.caget(motor + '.DMOV', use_monitor=False))
             movn = int(epics.caget(motor + '.MOVN', use_monitor=False))
             rbv = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s: wait_for_stop=%f dmov=%d movn=%d rbv=%f' % (
-                tc_no, wait_for_stop, dmov, movn, rbv)
+            print('%s: wait_for_stop=%f dmov=%d movn=%d rbv=%f' % (
+                tc_no, wait_for_stop, dmov, movn, rbv))
             if not movn and dmov:
                 return True
             time.sleep(polltime)
@@ -259,8 +259,8 @@ class motor_lib(object):
             wait_for_start -= polltime
             dmov = int(caget(motor + '.DMOV'))
             movn = int(caget(motor + '.MOVN'))
-            print '%s: wait_for_start=%f dmov=%d movn=%d dpos=%f' % (
-                tc_no, wait_for_start, dmov, movn, caget(motor + '.DRBV', use_monitor=False))
+            print('%s: wait_for_start=%f dmov=%d movn=%d dpos=%f' % (
+                tc_no, wait_for_start, dmov, movn, caget(motor + '.DRBV', use_monitor=False)))
             if movn and not dmov:
                break
             time.sleep(polltime)
@@ -270,8 +270,8 @@ class motor_lib(object):
         while wait_for_done > 0:
             dmov = int(caget(motor + '.DMOV'))
             movn = int(caget(motor + '.MOVN'))
-            print '%s: wait_for_done=%f dmov=%d movn=%d dpos=%f' % (
-                tc_no, wait_for_done, dmov, movn, caget(motor + '.DRBV', use_monitor=False))
+            print('%s: wait_for_done=%f dmov=%d movn=%d dpos=%f' % (
+                tc_no, wait_for_done, dmov, movn, caget(motor + '.DRBV', use_monitor=False)))
             if dmov and not movn:
                 return True
             time.sleep(polltime)
@@ -282,8 +282,8 @@ class motor_lib(object):
         while wait_for_MipZero > -10.0: # Extra long wait
             wait_for_MipZero -= polltime
             mip = int(epics.caget(motor + '.MIP', use_monitor=False))
-            print '%s: wait_for_MipZero=%f mip=%s (%x)' % (
-                tc_no, wait_for_MipZero, self.getMIPtext(mip),mip)
+            print('%s: wait_for_MipZero=%f mip=%s (%x)' % (
+                tc_no, wait_for_MipZero, self.getMIPtext(mip),mip))
             if not mip:
                 return True
             time.sleep(polltime)
@@ -296,8 +296,8 @@ class motor_lib(object):
             msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
             powerOn = msta & self.MSTA_BIT_AMPON
 
-            print '%s: wait_for_powerOn=%f powerOn=%d' % (
-                tc_no, wait_for_powerOn, powerOn)
+            print('%s: wait_for_powerOn=%f powerOn=%d' % (
+                tc_no, wait_for_powerOn, powerOn))
             if powerOn:
                 return True
             time.sleep(polltime)
@@ -310,8 +310,8 @@ class motor_lib(object):
             msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
             powerOn = msta & self.MSTA_BIT_AMPON
 
-            print '%s: wait_for_powerOff=%f powerOn=%d' % (
-                tc_no, wait_for_powerOff, powerOn)
+            print('%s: wait_for_powerOff=%f powerOn=%d' % (
+                tc_no, wait_for_powerOff, powerOn))
             if not powerOn:
                 return True
             time.sleep(polltime)
@@ -324,10 +324,10 @@ class motor_lib(object):
         fail = true or false
         """
         if not fail:
-            print "Test Complete"
+            print("Test Complete")
             return self.__g.SUCCESS
         else:
-            print "Test Failed"
+            print("Test Failed")
             return self.__g.FAIL
 
 
@@ -354,9 +354,9 @@ class motor_lib(object):
             caput(motor, position, wait=True, timeout=timeout)
         except:
             e = sys.exc_info()
-            print str(e)
-            print "ERROR: caput failed."
-            print (motor + " pos:" + str(position) + " timeout:" + str(timeout))
+            print(str(e))
+            print("ERROR: caput failed.")
+            print((motor + " pos:" + str(position) + " timeout:" + str(timeout)))
             return self.__g.FAIL
 
         rdbd = motor + ".RDBD"
@@ -368,14 +368,14 @@ class motor_lib(object):
         success = True
 
         if ((final_pos < position-deadband) or (final_pos > position+deadband)):
-            print "ERROR: final_pos out of deadband."
+            print("ERROR: final_pos out of deadband.")
             success = False
         else:
-            print "Final_pos inside deadband."
-        print (motor + " pos=" + str(position) +
+            print("Final_pos inside deadband.")
+        print((motor + " pos=" + str(position) +
                " timeout=" + str(timeout) +
                " final_pos=" + str(final_pos) +
-               " deadband=" + str(deadband))
+               " deadband=" + str(deadband)))
 
         if (success):
             return self.postMoveCheck(motor)
@@ -415,7 +415,7 @@ class motor_lib(object):
         try:
             self.verifyPosition(motor, position+offset)
         except Exception as e:
-            print str(e)
+            print(str(e))
             return self.__g.FAIL
 
     def checkInitRecord(self, motor):
@@ -435,7 +435,7 @@ class motor_lib(object):
         current_pos = caget(_rbv)
 
         if ((current_pos < position-deadband) or (current_pos > position+deadband)):
-            print "ERROR: verifyPosition out of deadband."
+            print("ERROR: verifyPosition out of deadband.")
             msg = (motor + " pos=" + str(position) +
                    " currentPos=" + str(current_pos) +
                    " deadband=" + str(deadband))
@@ -479,7 +479,7 @@ class motor_lib(object):
             self.verifyField(motor, "RHLS", RHLS)
             self.verifyField(motor, "RLLS", RLLS)
         except Exception as e:
-            print str(e)
+            print(str(e))
             return self.__g.FAIL
 
         return self.__g.SUCCESS
@@ -489,13 +489,13 @@ class motor_lib(object):
         var = str(var)
         value = str(value)
         outStr = 'Sim.this.' + var + '=' + value
-        print '%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
-              (tc_no, motor, var, value, outStr)
+        print('%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
+              (tc_no, motor, var, value, outStr))
         assert(len(outStr) < 40)
         epics.caput(motor + '-DbgStrToMCU', outStr, wait=True)
         err = int(epics.caget(motor + '-Err', use_monitor=False))
-        print '%s: DbgStrToMCU motor=%s var=%s value=%s err=%d' % \
-              (tc_no, motor, var, value, err)
+        print('%s: DbgStrToMCU motor=%s var=%s value=%s err=%d' % \
+              (tc_no, motor, var, value, err))
         assert (not err)
 
     def motorInitAllForBDST(self, motor, tc_no):
@@ -534,8 +534,8 @@ class motor_lib(object):
         else:
             directionOfBL = -1
 
-        print '%s: writeExpFileRMOD_X motor=%s encRel=%d motorStartPos=%f motorEndPos=%f directionOfMove=%d directionOfBL=%d' % \
-              (tc_no, motor, encRel, motorStartPos, motorEndPos, directionOfMove, directionOfBL)
+        print('%s: writeExpFileRMOD_X motor=%s encRel=%d motorStartPos=%f motorEndPos=%f directionOfMove=%d directionOfBL=%d' % \
+              (tc_no, motor, encRel, motorStartPos, motorEndPos, directionOfMove, directionOfBL))
 
         if dbgFile != None:
             dbgFile.write('#%s: writeExpFileRMOD_X motor=%s rmod=%d encRel=%d motorStartPos=%f motorEndPos=%f directionOfMove=%d directionOfBL=%d\n' % \
@@ -655,13 +655,13 @@ class motor_lib(object):
             for line in file:
                 if line[-1] == '\n':
                     line = line[0:-1]
-                print ("%s: %s" % (expFileName, str(line)));
+                print(("%s: %s" % (expFileName, str(line))))
             file.close();
             file = open(actFileName, 'r')
             for line in file:
                 if line[-1] == '\n':
                     line = line[0:-1]
-                print ("%s: %s" % (actFileName, str(line)));
+                print(("%s: %s" % (actFileName, str(line))))
             file.close();
             assert(sameContent)
         elif dbgFileName == None:
@@ -671,13 +671,13 @@ class motor_lib(object):
             except:
                 unlinkOK = False
                 e = sys.exc_info()
-                print str(e)
+                print(str(e))
             try:
                 os.unlink(actFileName)
             except:
                 unlinkOK = False
                 e = sys.exc_info()
-                print str(e)
+                print(str(e))
             assert(unlinkOK)
 
     def setSoftLimitsOff(self, motor):
@@ -702,7 +702,7 @@ class motor_lib(object):
 
             llm = epics.caget(motor + '.LLM', use_monitor=False)
             hlm = epics.caget(motor + '.HLM', use_monitor=False)
-            print '%s: setSoftLimitsOff llm=%f hlm=%f' % (motor, llm, hlm)
+            print('%s: setSoftLimitsOff llm=%f hlm=%f' % (motor, llm, hlm))
             if llm == 0.0 and hlm == 0.0:
                 return
             time.sleep(polltime)
@@ -733,17 +733,17 @@ class motor_lib(object):
         stup = epics.caget(motor + '.STUP', use_monitor=False)
         while stup != 0:
             stup = epics.caget(motor + '.STUP', use_monitor=False)
-            print '%s .STUP=%s' % (tc_no, stup)
+            print('%s .STUP=%s' % (tc_no, stup))
             time.sleep(polltime)
 
         epics.caput(motor + '.STUP', 1)
         epics.caput(motor + '.SYNC', 1)
         rbv = epics.caget(motor + '.RBV', use_monitor=False)
-        print '%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup)
+        print('%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup))
         while stup != 0:
             stup = epics.caget(motor + '.STUP', use_monitor=False)
             rbv = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup)
+            print('%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup))
             time.sleep(polltime)
 
     def setCNENandWait(self, motor, tc_no, cnen):
@@ -752,8 +752,8 @@ class motor_lib(object):
         epics.caput(motor + '.CNEN', cnen)
         while wait_for_power_changed > 0:
             msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
-            print '%s: wait_for_power_changed=%f msta=%x %s' % (
-                tc_no, wait_for_power_changed, msta, self.getMSTAtext(msta))
+            print('%s: wait_for_power_changed=%f msta=%x %s' % (
+                tc_no, wait_for_power_changed, msta, self.getMSTAtext(msta)))
             if (cnen and (msta & self.MSTA_BIT_AMPON)):
                 return True
             if (not cnen and not (msta & self.MSTA_BIT_AMPON)):

@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
     def test_TC_2001(self):
         motor = self.motor
         tc_no = "TC-2001-10-percent-dialPosition"
-        print '%s' % tc_no
+        print('%s' % tc_no)
         epics.caput(motor + '.CNEN', 1)
         self.lib.waitForPowerOn(motor, tc_no, 8.0)
         destination =  (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
@@ -59,14 +59,14 @@ class Test(unittest.TestCase):
         msta_1 = int(epics.caget(motor + '.MSTA', use_monitor=False))
         bError_2   = self.pv_Err.get(use_monitor=False)
         nErrorId_2 = self.pv_nErrorId.get(use_monitor=False)
-        print '%s Error bError_2=%d nErrorId_2=%d' % (tc_no, bError_2, nErrorId_2)
+        print('%s Error bError_2=%d nErrorId_2=%d' % (tc_no, bError_2, nErrorId_2))
 
         self.pv_nErrRst.put(1)
 
         msta_3 = int(self.pv_MSTA.get(use_monitor=False))
         bError_3   = self.pv_Err.get(use_monitor=False)
         nErrorId_3 = self.pv_nErrorId.get(use_monitor=False)
-        print '%s Clean self.lib.MSTA_BIT_PROBLEM=%x msta_3=%x bError_3=%d nErrorId=%d' % (tc_no, self.lib.MSTA_BIT_PROBLEM, msta_3, bError_3, nErrorId_3)
+        print('%s Clean self.lib.MSTA_BIT_PROBLEM=%x msta_3=%x bError_3=%d nErrorId=%d' % (tc_no, self.lib.MSTA_BIT_PROBLEM, msta_3, bError_3, nErrorId_3))
 
         # Loop until moving has stopped and error has been reseted
         counter = 7
@@ -75,7 +75,7 @@ class Test(unittest.TestCase):
         bError = bError_3
         while (msta & self.lib.MSTA_BIT_MOVING or bError != 0 or nErrorId != 0):
             time.sleep(polltime)
-            print '%s sleep counter = %d' % (tc_no, counter)
+            print('%s sleep counter = %d' % (tc_no, counter))
             msta = int(self.pv_MSTA.get(use_monitor=False))
             bError   = self.pv_Err.get(use_monitor=False)
             nErrorId = self.pv_nErrorId.get(use_monitor=False)
@@ -94,7 +94,7 @@ class Test(unittest.TestCase):
         # Run all the asserts after we have restored the original state
         self.assertEqual(True, ret_1, 'waitForStop return True')
 
-        print '%s Error msta_1=%s' % (tc_no, self.lib.getMSTAtext(msta_1))
+        print('%s Error msta_1=%s' % (tc_no, self.lib.getMSTAtext(msta_1)))
         self.assertNotEqual(0, msta_1 & self.lib.MSTA_BIT_PROBLEM, 'Error MSTA.Problem should be set)')
         self.assertEqual(0, msta_1 & self.lib.MSTA_BIT_SLIP_STALL, 'Error MSTA.Slip stall Error should not be set)')
         self.assertEqual(0, msta_1 & self.lib.MSTA_BIT_MOVING,     'Error MSTA.Moving)')

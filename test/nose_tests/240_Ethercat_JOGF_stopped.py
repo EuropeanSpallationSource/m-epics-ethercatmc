@@ -39,15 +39,15 @@ class Test(unittest.TestCase):
     def test_TC_242(self):
         motor = self.motor
         tc_no = "TC-242-JOGF_stopped"
-        print '%s' % tc_no
+        print('%s' % tc_no)
 
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             epics.caput(motor + '.DLY', 0)
             destination = self.per10_UserPosition
             res1 = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per10_UserPosition=%f' % (
-                tc_no, UserPosition, self.per90_UserPosition)
+            print('%s postion=%f per10_UserPosition=%f' % (
+                tc_no, UserPosition, self.per90_UserPosition))
 
             epics.caput(motor + '.JOGF', 1)
             ret2 = self.lib.waitForStart(motor, tc_no, 2.0)
@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
                 res4 = self.lib.verifyPosition(motor, val)
             except:
                 e = sys.exc_info()
-                print str(e)
+                print(str(e))
                 res4 = self.__g.FAIL
 
 

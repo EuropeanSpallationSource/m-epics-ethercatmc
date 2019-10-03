@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
 
     lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
-    print "motor=%s" % (motor)
+    print( "motor=%s" % (motor))
     epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
 
 
@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
     def test_TC_100(self):
         motor = self.motor
         tc_no = "TC-100"
-        print '%s Home the motor' % tc_no
+        print( '%s Home the motor' % tc_no)
         msta = int(epics.caget(motor + '.MSTA'))
         if (msta & self.lib.MSTA_BIT_PLUS_LS):
             epics.caput(motor + '.HOMR', 1)

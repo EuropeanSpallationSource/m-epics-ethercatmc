@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
     range_postion    = hlm - llm
     msta             = int(epics.caget(motor + '.MSTA'))
 
-    print 'llm=%f hlm=%f per10_UserPosition=%f' % (llm, hlm, per10_UserPosition)
+    print('llm=%f hlm=%f per10_UserPosition=%f' % (llm, hlm, per10_UserPosition))
 
     # Assert that motor is homed
     def test_TC_1341(self):
@@ -39,12 +39,12 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1342-90-percent-UserPosition"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             destination = self.per10_UserPosition
             res = self.lib.move(motor, destination, 60)
             UserPosition = epics.caget(motor + '.RBV', use_monitor=False)
-            print '%s postion=%f per10_UserPosition=%f' % (
-                tc_no, UserPosition, self.per10_UserPosition)
+            print('%s postion=%f per10_UserPosition=%f' % (
+                tc_no, UserPosition, self.per10_UserPosition))
             self.assertEqual(res, self.__g.SUCCESS, 'move returned SUCCESS')
 
     # Low soft limit in controller when using MoveAbs
@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         if (self.msta & self.lib.MSTA_BIT_HOMED):
             tc_no = "TC-1343-low-soft-limit Moveabs"
-            print '%s' % tc_no
+            print('%s' % tc_no)
             drvUseEGU = epics.caget(motor + '-DrvUseEGU-RB')
             if drvUseEGU == 1:
                 mres = 1.0
@@ -71,10 +71,10 @@ class Test(unittest.TestCase):
 
             res = epics.caput(motor + '-MoveAbs', (self.llm - 1) / mres)
             if (res == None):
-                print '%s caput -Moveabs res=None' % (tc_no)
+                print('%s caput -Moveabs res=None' % (tc_no))
                 self.assertNotEqual(res, None, 'caput -Moveabs retuned not None. PV not found ?')
             else:
-                print '%s caput -Moveabs res=%d' % (tc_no, res)
+                print('%s caput -Moveabs res=%d' % (tc_no, res))
                 self.assertEqual(res, 1, 'caput -Moveabs returned 1')
 
             time_to_wait = 180
