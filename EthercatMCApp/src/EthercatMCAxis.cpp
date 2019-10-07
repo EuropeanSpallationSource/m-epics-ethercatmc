@@ -974,7 +974,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
         msgTxtFromDriver = "E: velo is 0.0";
         break;
       case eeAxisWarningSpeedLimit:
-        msgTxtFromDriver = "I: Speed Limit";
+        msgTxtFromDriver = "Speed Limit";
         break;
       case eeAxisWarningNoWarning:
         break;
@@ -1000,7 +1000,7 @@ void EthercatMCAxis::callParamCallbacksUpdateError()
       case 0:
         break;
       default:
-        msgTxtFromDriver = "I: Moving";
+        msgTxtFromDriver = "Moving";
       }
     }
     /* End of error/warning text messages */

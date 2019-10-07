@@ -853,3 +853,14 @@ asynStatus EthercatMCIndexerAxis::setStringParam(int function, const char *value
   /* Call base class method */
   return asynMotorAxis::setStringParam(function, value);
 }
+
+#ifndef motorMessageTextString
+void EthercatMCIndexerAxis::updateMsgTxtFromDriver(const char *value)
+{
+  if (value && value[0]) {
+    setStringParam(pC_->EthercatMCMCUErrMsg_,value);
+  } else {
+    setStringParam(pC_->EthercatMCMCUErrMsg_, "");
+  }
+}
+#endif

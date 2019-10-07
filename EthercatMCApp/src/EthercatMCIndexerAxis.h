@@ -80,6 +80,10 @@ private:
     unsigned int hasProblem :1;
   } drvlocal;
 
+#ifndef motorMessageTextString
+  void updateMsgTxtFromDriver(const char *value);
+#endif
+
   friend class EthercatMCController;
 };
 
