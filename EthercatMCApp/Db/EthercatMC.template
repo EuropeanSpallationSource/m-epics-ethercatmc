@@ -29,11 +29,9 @@ record(motor,"$(PREFIX)$(MOTOR_NAME)")
 }
 
 # The message text
-record(waveform, "$(PREFIX)$(MOTOR_NAME)-MsgTxt") {
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-MsgTxt") {
     field(DTYP, "asynOctetRead")
     field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MESSAGE_TEXT")
-    field(FTVL, "CHAR")
-    field(NELM, "80")
     field(SCAN, "I/O Intr")
 }
 
