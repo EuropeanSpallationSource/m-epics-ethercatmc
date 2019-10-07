@@ -30,9 +30,7 @@ cd <local-repository>/EthercatMC/test
 Open another terminal window and execute the following commands:
 
 ```
-cd <local-repository>/axis
-make install
-cd test
+cd <local-repository>/EthercatMC/test
 ./run-EthercatMC-ioc.sh SolAxis-SimCfgDbg
 ```
 
