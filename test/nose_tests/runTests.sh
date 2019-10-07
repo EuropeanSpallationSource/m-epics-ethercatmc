@@ -1,9 +1,109 @@
 #!/bin/sh
+#
+# Wrapper scipt to run tests
+# Usage:
+# ./runTests.sh <PV> [test.py]
+#
+# Examples:
+#
+# run all tests on a motor PV
+# ./runtests.sh IOC:m1
+#
+# run some tests on a motor PV
+# ./runtests.sh IOC:m1 100*.py 12*.py
+#
+# run specif test on a motor PV a couple of times
+# ./runTests.sh IOC:m1 100_Record-HOMF.py 4
 
+
+# First of all, check for whitespace damage (TAB, trailing WS
+../checkws.sh || {
+  echo >&2   ../checkws.sh failed
+  exit 1
+}
+
+#centos 7 may have python 36
+if which python36 >/dev/null 2>&1; then
+  PYTHON=python36
+elif which python3.7 >/dev/null 2>&1; then
+  PYTHON=python3.7
+else
+  echo >&2 "No python 36 or python3.7 found"
+  exit 1
+fi
+
+##############################################################################
+# functions
+#
+#
+checkAndInstallSystemPackage()
+{
+  BINARYNAME=$1
+  PACKAGENAME=$2
+  if ! which $BINARYNAME; then
+    if which yum >/dev/null 2>&1; then
+      sudo yum install $PACKAGENAME
+    fi
+    if which apt-get >/dev/null 2>&1; then
+      sudo apt-get install $PACKAGENAME
+    fi
+  fi
+}
+
+########################################
+checkAndInstallPythonPackage()
+{
+  IMPORTNAME=$1
+  PACKAGENAME=$2
+
+  if ! $PYTHON -c "import $IMPORTNAME" >/dev/null 2>&1; then
+    if which pip3 >/dev/null 2>&1; then
+      pip3 install $PACKAGENAME || sudo pip3 install $PACKAGENAME
+    else
+      checkAndInstallSystemPackage pip python-pip
+      if which pip >/dev/null 2>&1; then
+        sudo pip install $PACKAGENAME
+      fi
+      return 0
+    fi
+    if which easy_install >/dev/null 2>&1; then
+      sudo easy_install -U $PACKAGENAME
+    else
+      echo >&2 "neither 'easy_install' nor 'pip' are found"
+      exit 1
+    fi
+  fi
+}
+##############################################################################
+
+# no virtualenv for centos at the moment
+if ! which yum >/dev/null 2>&1; then
+  # Set up a virtual environment with python 3.7
+  VIRTUALENVDIR=virtual37
+  if ! test -d $VIRTUALENVDIR; then
+      checkAndInstallSystemPackage virtualenv python-virtualenv
+      if ! type virtualenv >/dev/null 2>&1; then
+          if ! which yum >/dev/null 2>&1; then
+              # centos has yum, but no virtualenv
+              echo >&2 virtualenv not found.
+              exit 1
+          fi
+      fi
+      if type virtualenv >/dev/null 2>&1; then
+        virtualenv --python=python3.7 $VIRTUALENVDIR || {
+          echo >&2 virtualenv failed
+          exit 1
+        }
+      fi
+  fi
+  if test -r $VIRTUALENVDIR/bin/activate; then
+    .  $VIRTUALENVDIR/bin/activate
+  fi
+fi
+
+# See if we have a local EPICS installation
 uname_s=$(uname -s 2>/dev/null || echo unknown)
 uname_m=$(uname -m 2>/dev/null || echo unknown)
-
-
 INSTALLED_EPICS=../../../.epics.$(hostname).$uname_s.$uname_m
 if test -r $INSTALLED_EPICS; then
   echo INSTALLED_EPICS=$INSTALLED_EPICS
@@ -23,44 +123,11 @@ if test -z "$PYEPICS_LIBCA"; then
       fi
     fi
 fi &&
-if ! python -c 'import epics' >/dev/null 2>&1; then
-  if which easy_install >/dev/null 2>&1; then
-    sudo easy_install -U pyepics
-  else
-    if ! which pip >/dev/null 2>&1; then
-      if which yum >/dev/null 2>&1; then
-        sudo yum install python-pip
-      fi
-      if which apt-get >/dev/null 2>&1; then
-        sudo apt-get install python-pip
-      fi
-    fi
-    if which pip >/dev/null 2>&1; then
-      sudo pip install pyepics
-    else
-      false
-    fi
-  fi
-fi &&
-if ! which pytest >/dev/null 2>&1; then
-  if which easy_install >/dev/null 2>&1; then
-    sudo easy_install pytest
-  else
-    if ! which pip >/dev/null 2>&1; then
-      if which yum >/dev/null 2>&1; then
-        sudo yum install python-pip
-      fi
-      if which apt-get >/dev/null 2>&1; then
-        sudo apt-get install python-pip
-      fi
-    fi
-    if which pip >/dev/null 2>&1; then
-      sudo pip install pytest
-    else
-      false
-    fi
-  fi
-fi || {
+
+
+# See if we have pyepics
+checkAndInstallPythonPackage epics pyepics &&
+checkAndInstallPythonPackage pytest pytest || {
   echo >&2 Installation problem:
   echo >&2 pip not found
   echo >&2 easy_install not found
@@ -96,11 +163,6 @@ if test -n "$1" && test "$1" -ne 0; then
 else
     numruns=1
 fi
-
-../checkws.sh || {
-  echo >&2   ../checkws.sh failed
-  exit 1
-}
 
 run_pytest ()
 {
