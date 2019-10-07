@@ -3529,10 +3529,10 @@ $(pv_value)</tooltip>
         <pv trig="true">$(pv_name)</pv>
       </rule>
       <rule name="ACCS-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="((pv0 &lt; 6.96) || (pv0 &gt; 6.99))">
+        <exp bool_exp="((pv0 &lt; 6.96) || (pv0 &gt; 7.09))">
           <value>false</value>
         </exp>
-        <exp bool_exp="((pv0 &gt; 6.95) &amp;&amp; (pv0 &lt; 6.99))">
+        <exp bool_exp="((pv0 &gt; 6.95) &amp;&amp; (pv0 &lt; 7.10))">
           <value>true</value>
         </exp>
         <pv trig="true">$(P)$(M).VERS</pv>
