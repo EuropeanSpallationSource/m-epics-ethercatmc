@@ -366,6 +366,7 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
               modNamEMC, axisNo_, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
+  updateCfgValue(pC_->EthercatMCCfgSPDB_RB_, rdbd, "spbd");
   updateCfgValue(pC_->EthercatMCCfgRDBD_RB_, rdbd, "rdbd");
   updateCfgValue(pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim , "rdbd_time");
   updateCfgValue(pC_->EthercatMCCfgRDBD_En_RB_, rdbd_en, "rdbd_en");
@@ -636,6 +637,10 @@ asynStatus EthercatMCAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, 
 asynStatus EthercatMCAxis::move(double position, int relative, double minVelocity, double maxVelocity, double acceleration)
 {
   asynStatus status = asynSuccess;
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+            "%smove(%d) position=%f relative=%d maxVelocity=%f acceleration=%f\n",
+            modNamEMC, axisNo_,
+            position, relative, maxVelocity, acceleration);
 
   drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   /* Do range check */
