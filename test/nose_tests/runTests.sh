@@ -22,13 +22,22 @@
   exit 1
 }
 
-#centos 7 may have python 36
-if which python36 >/dev/null 2>&1; then
-  PYTHON=python36
-elif which python3.7 >/dev/null 2>&1; then
+#
+PYTEST=pytest
+if which python3.7 >/dev/null 2>&1; then
   PYTHON=python3.7
+elif which python36 >/dev/null 2>&1; then
+  PYTHON=python37
+elif which python3.6 >/dev/null 2>&1; then
+  PYTHON=python3.6
+elif which python36 >/dev/null 2>&1; then
+  PYTHON=python36
+elif which python3.4 >/dev/null 2>&1; then
+  PYTHON=python3.4
+  # need $ pip install "pytest<5"
+  PYTEST="pytest<5"
 else
-  echo >&2 "No python 36 or python3.7 found"
+  echo >&2 "No pyton 3.7, 3.6, 36 or 3.4 found"
   exit 1
 fi
 
@@ -42,10 +51,16 @@ checkAndInstallSystemPackage()
   PACKAGENAME=$2
   if ! which $BINARYNAME; then
     if which yum >/dev/null 2>&1; then
-      sudo yum install $PACKAGENAME
+      sudo yum install $PACKAGENAME || {
+        echo >&2 failed: sudo yum install $PACKAGENAME
+        exit 1
+      }
     fi
     if which apt-get >/dev/null 2>&1; then
-      sudo apt-get install $PACKAGENAME
+      sudo apt-get install $PACKAGENAME || {
+        echo >&2 failed: sudo apt-get install $PACKAGENAME
+        exit 1
+      }
     fi
   fi
 }
@@ -57,48 +72,50 @@ checkAndInstallPythonPackage()
   PACKAGENAME=$2
 
   if ! $PYTHON -c "import $IMPORTNAME" >/dev/null 2>&1; then
+    $PYTHON -c "import $IMPORTNAME"
+    echo failed: $PYTHON -c "import $IMPORTNAME"
     if which pip3 >/dev/null 2>&1; then
-      pip3 install $PACKAGENAME || sudo pip3 install $PACKAGENAME
-    else
-      checkAndInstallSystemPackage pip python-pip
-      if which pip >/dev/null 2>&1; then
-        sudo pip install $PACKAGENAME
-      fi
-      return 0
+      pip3 install $PACKAGENAME || sudo pip3 install $PACKAGENAME || {
+          echo >&1 pip3 install $PACKAGENAME failed
+          exit 1
+        }
+      return
     fi
-    if which easy_install >/dev/null 2>&1; then
-      sudo easy_install -U $PACKAGENAME
-    else
-      echo >&2 "neither 'easy_install' nor 'pip' are found"
-      exit 1
-    fi
+    #checkAndInstallSystemPackage pip python-pip
+    #if which pip >/dev/null 2>&1; then
+    #  sudo pip install $PACKAGENAME
+    #fi
+    #return 0
+    #if which easy_install >/dev/null 2>&1; then
+    #  sudo easy_install -U $PACKAGENAME
+    #else
+    #  echo >&2 "neither 'easy_install' nor 'pip' are found"
+    #  exit 1
+    #fi
   fi
 }
 ##############################################################################
 
-# no virtualenv for centos at the moment
-if ! which yum >/dev/null 2>&1; then
-  # Set up a virtual environment with python 3.7
-  VIRTUALENVDIR=virtual37
-  if ! test -d $VIRTUALENVDIR; then
-      checkAndInstallSystemPackage virtualenv python-virtualenv
-      if ! type virtualenv >/dev/null 2>&1; then
-          if ! which yum >/dev/null 2>&1; then
-              # centos has yum, but no virtualenv
-              echo >&2 virtualenv not found.
-              exit 1
-          fi
-      fi
-      if type virtualenv >/dev/null 2>&1; then
-        virtualenv --python=python3.7 $VIRTUALENVDIR || {
-          echo >&2 virtualenv failed
-          exit 1
-        }
-      fi
-  fi
-  if test -r $VIRTUALENVDIR/bin/activate; then
-    .  $VIRTUALENVDIR/bin/activate
-  fi
+# Set up a virtual environment with python 3.x
+VIRTUALENVDIR=virtual$PYTHON
+if ! test -d $VIRTUALENVDIR; then
+    checkAndInstallSystemPackage virtualenv python-virtualenv
+    if ! type virtualenv >/dev/null 2>&1; then
+        if ! which yum >/dev/null 2>&1; then
+            # centos has yum, but no virtualenv
+            echo >&2 virtualenv not found.
+            exit 1
+        fi
+    fi
+    if type virtualenv >/dev/null 2>&1; then
+      virtualenv --python=$PYTHON $VIRTUALENVDIR || {
+        echo >&2 virtualenv failed
+        exit 1
+      }
+    fi
+fi
+if test -r $VIRTUALENVDIR/bin/activate; then
+  .  $VIRTUALENVDIR/bin/activate
 fi
 
 # See if we have a local EPICS installation
@@ -124,10 +141,12 @@ if test -z "$PYEPICS_LIBCA"; then
     fi
 fi &&
 
+checkAndInstallSystemPackage virtualenv python-virtualenv
+
 
 # See if we have pyepics
 checkAndInstallPythonPackage epics pyepics &&
-checkAndInstallPythonPackage pytest pytest || {
+checkAndInstallPythonPackage pytest $PYTEST || {
   echo >&2 Installation problem:
   echo >&2 pip not found
   echo >&2 easy_install not found
@@ -166,8 +185,8 @@ fi
 
 run_pytest ()
 {
-  echo pytest $TESTEDMOTORAXIS "$@"
-  pytest "$@" || exit 1
+  echo $PYTHON $VIRTUALENVDIR/bin/pytest $TESTEDMOTORAXIS "$@"
+  $PYTHON $VIRTUALENVDIR/bin/pytest "$@" || exit 1
 }
 
 if test -z "$EPICS_CA_ADDR_LIST" && test -z "$EPICS_CA_AUTO_ADDR_LIST"; then
