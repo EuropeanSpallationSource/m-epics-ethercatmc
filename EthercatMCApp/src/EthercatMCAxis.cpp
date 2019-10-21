@@ -486,7 +486,9 @@ asynStatus EthercatMCAxis::readBackAllConfig(int axisID)
   if (status == asynSuccess) status = readMonitoring(axisID);
   if (status == asynSuccess) status = readBackSoftLimits();
   if (status == asynSuccess) status = readBackVelocities(axisID);
-  if (status == asynSuccess) status = readBackEncoders(axisID);
+  if (!(pC_->features_ & FEATURE_BITS_ECMC)) {
+    if (status == asynSuccess) status = readBackEncoders(axisID);
+  }
   return status;
 }
 
