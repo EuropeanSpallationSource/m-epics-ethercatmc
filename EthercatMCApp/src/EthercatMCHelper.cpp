@@ -42,7 +42,7 @@ asynStatus EthercatMCAxis::writeReadControllerPrint(void)
 asynStatus EthercatMCAxis::setValueOnAxis(const char* var, int value)
 {
   snprintf(pC_->outString_, sizeof(pC_->outString_),
-           pC_->features_ & FEATURE_BITS_GVL ? "%sGvl.axes[%d].%s=%d" : "%sMain.M%d.%s=%d",
+           "%sMain.M%d.%s=%d",
            drvlocal.adsport_str, axisNo_, var, value);
   return pC_->writeReadACK(ASYN_TRACE_INFO);
 }
@@ -62,8 +62,7 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
   int rbvalue = 0 - value;
   while (counter <= retryCount) {
     snprintf(pC_->outString_, sizeof(pC_->outString_),
-             pC_->features_ & FEATURE_BITS_GVL
-             ? "%sGvl.axes[%d].%s=%d;%sGvl.axes[%d].%s?" : "%sMain.M%d.%s=%d;%sMain.M%d.%s?",
+             "%sMain.M%d.%s=%d;%sMain.M%d.%s?",
              drvlocal.adsport_str, axisNo_, var, value,
              drvlocal.adsport_str, axisNo_, rbvar);
     status = pC_->writeReadOnErrorDisconnect();
@@ -111,7 +110,7 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
 asynStatus EthercatMCAxis::setValueOnAxis(const char* var, double value)
 {
   snprintf(pC_->outString_, sizeof(pC_->outString_),
-           pC_->features_ & FEATURE_BITS_GVL ? "%sGvl.axes[%d].%s=%g" : "%sMain.M%d.%s=%g",
+           "%sMain.M%d.%s=%g",
            drvlocal.adsport_str, axisNo_, var, value);
   return pC_->writeReadACK(ASYN_TRACE_INFO);
 }
@@ -126,8 +125,7 @@ asynStatus EthercatMCAxis::setValuesOnAxis(const char* var1, double value1,
                                            const char* var2, double value2)
 {
   snprintf(pC_->outString_, sizeof(pC_->outString_),
-           pC_->features_ & FEATURE_BITS_GVL
-           ? "%sGvl.axes[%d].%s=%g;%sGvl.axes[%d].%s=%g" : "%sMain.M%d.%s=%g;%sMain.M%d.%s=%g",
+           "%sMain.M%d.%s=%g;%sMain.M%d.%s=%g",
            drvlocal.adsport_str, axisNo_, var1, value1,
            drvlocal.adsport_str, axisNo_, var2, value2);
   return pC_->writeReadACK(ASYN_TRACE_INFO);
@@ -137,10 +135,6 @@ asynStatus EthercatMCAxis::setValuesOnAxis(const char* var1, double value1,
 int EthercatMCAxis::getMotionAxisID(void)
 {
   int ret = drvlocal.dirty.nMotionAxisID;
-  if (pC_->features_ & FEATURE_BITS_GVL) {
-    drvlocal.dirty.nMotionAxisID = 0;
-    return 0;
-  }
   if (ret == -1) {
     int res = -3;
     asynStatus status;
@@ -311,8 +305,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
   asynStatus status;
   int res;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
-           pC_->features_ & FEATURE_BITS_GVL
-           ? "%sGvl.axes[%d]%s?" : "%sMain.M%d%s?",
+           "%sMain.M%d%s?",
            drvlocal.adsport_str, axisNo_, var);
   status = pC_->writeReadOnErrorDisconnect();
   if (status)
@@ -401,8 +394,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
   int nvals;
   double res;
   snprintf(pC_->outString_, sizeof(pC_->outString_),
-           pC_->features_ & FEATURE_BITS_GVL
-           ? "%sGvl.axes[%d]%s?" : "%sMain.M%d%s?",
+           "%sMain.M%d%s?",
            drvlocal.adsport_str, axisNo_, var);
   status = pC_->writeReadOnErrorDisconnect();
   if (status)
@@ -425,15 +417,14 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
  */
 asynStatus EthercatMCAxis::getStringFromAxis(const char *var, char *value, size_t maxlen)
 {
+  asynStatus status;
   value[0] = '\0'; /* Always have a valid string */
-  if (!(pC_->features_ & FEATURE_BITS_GVL)) {
-    asynStatus status;
-    snprintf(pC_->outString_, sizeof(pC_->outString_),
-             "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
-    status = pC_->writeReadOnErrorDisconnect();
-    if (status) return status;
-    memcpy(value, pC_->inString_, maxlen);
-  }
+  snprintf(pC_->outString_, sizeof(pC_->outString_),
+           "%sMain.M%d.%s?", drvlocal.adsport_str, axisNo_, var);
+  status = pC_->writeReadOnErrorDisconnect();
+  if (status) return status;
+  memcpy(value, pC_->inString_, maxlen);
+
   return asynSuccess;
 }
 
