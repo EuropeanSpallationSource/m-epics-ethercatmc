@@ -655,10 +655,6 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
   asynStatus status = asynSuccess;
   unsigned axisNo = pAxis->axisNo_;
 
-  pAxis->setStringParam(EthercatMCreason27_, "High limit");
-  pAxis->setStringParam(EthercatMCreason26_, "Low limit");
-  pAxis->setStringParam(EthercatMCreason25_,  "Dynamic problem, timeout");
-  pAxis->setStringParam(EthercatMCreason24_,  "Static problem, inhibit");
 #if 0
   pAxis->setStringParam(EthercatMCaux7_,  "Aux 7");
   pAxis->setStringParam(EthercatMCaux6_,  "Aux 6");
@@ -842,7 +838,7 @@ asynStatus EthercatMCController::initialPollIndexer(void)
         axisNo++;
         pAxis = static_cast<EthercatMCIndexerAxis*>(asynMotorController::getAxis(axisNo));
         if (!pAxis) {
-          pAxis = new EthercatMCIndexerAxis(this, axisNo);
+          pAxis = new EthercatMCIndexerAxis(this, axisNo, 0, NULL);
         }
         /* Now we have an axis */
 

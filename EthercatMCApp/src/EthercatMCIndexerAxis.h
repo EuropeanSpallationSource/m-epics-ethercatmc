@@ -36,7 +36,8 @@ class epicsShareClass EthercatMCIndexerAxis : public asynMotorAxis
 {
 public:
   /* These are the methods we override from the base class */
-  EthercatMCIndexerAxis(class EthercatMCController *pC, int axisNo);
+  EthercatMCIndexerAxis(class EthercatMCController *pC, int axisNo,
+                               int axisFlags, const char *axisOptionsStr);
   void report(FILE *fp, int level);
   asynStatus move(double position, int relative, double min_velocity, double max_velocity, double acceleration);
   asynStatus moveVelocity(double min_velocity, double max_velocity, double acceleration);
@@ -78,6 +79,8 @@ private:
     unsigned old_idxAuxBits;
     unsigned old_paramCtrl;
     unsigned int hasProblem :1;
+    char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
+    unsigned adsPort;
   } drvlocal;
 
 #ifndef motorMessageTextString
