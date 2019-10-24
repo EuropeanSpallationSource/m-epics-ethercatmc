@@ -118,7 +118,6 @@ static void init_axis(int axis_no)
 static const char * const ADSPORT_equals_str = "ADSPORT=";
 static const char * const Main_dot_str = "Main.";
 static const char * const MAIN_dot_str = "MAIN.";
-static const char * const Gvl_dot_str  = "Gvl.";
 static const char * const getAxisDebugInfoData_str = "getAxisDebugInfoData";
 
 static const char *seperator_seperator = ";";
@@ -852,39 +851,6 @@ static int motorHandleOneSetArg(const char *myarg_1, int motor_axis_no)
   return __LINE__;
 }
 
-static int motorHandleGvlArg(const char *myarg_1)
-{
-  const char *pTmp;
-  int motor_axis_no = 0;
-  int nvals;
-
-  nvals = sscanf(myarg_1, "axes[%d]", &motor_axis_no);
-  if (nvals != 1) {
-    CMD_BUF_PRINTF_RETURN_ERROR_OR_DIE(__LINE__,
-                        "%s/%s:%d line=%s myarg_1=%s nvals=%d",
-                        __FILE__, __FUNCTION__, __LINE__,
-                        myarg_1, myarg_1, nvals);
-  }
-  AXIS_CHECK_RETURN_ERROR(motor_axis_no);
-  /* Jump over "]." */
-  myarg_1 = strchr(myarg_1, '.');
-  if (!myarg_1) {
-    CMD_BUF_PRINTF_RETURN_ERROR_OR_DIE(__LINE__,
-                        "%s/%s:%d line=%s missing '.'",
-                        __FILE__, __FUNCTION__, __LINE__,
-                        myarg_1);
-  }
-  myarg_1++; /* Jump over '.' */
-  pTmp = strchr(myarg_1, '?');
-  if (pTmp) {
-    return motorHandleOneGetArg(myarg_1, motor_axis_no);
-  }
-  pTmp = strchr(myarg_1, '=');
-  if (pTmp) {
-    return motorHandleOneSetArg(myarg_1, motor_axis_no);
-  }
-  return __LINE__;
-}
 
 static void motorHandleOneArg(const char *myarg_1)
 {
@@ -969,13 +935,6 @@ static void motorHandleOneArg(const char *myarg_1)
       CMD_BUF_PRINTF_RETURN_OR_DIE("%s/%s:%d line=%s nvals=%d",
                     __FILE__, __FUNCTION__, __LINE__,
                     myarg, nvals);
-    }
-  }
-  /* Gvl. */
-  if (!strncmp(myarg_1, Gvl_dot_str, strlen(Gvl_dot_str))) {
-    myarg_1 += strlen(Gvl_dot_str);
-    if (!motorHandleGvlArg(myarg_1)) {
-      return;
     }
   }
 
