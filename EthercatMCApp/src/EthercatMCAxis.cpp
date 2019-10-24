@@ -112,7 +112,6 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     const char * const homPos_str  = "HomPos=";
     const char * const adsPort_str  = "adsPort=";
     const char * const scaleFactor_str = "scaleFactor=";
-    const char * const sFeatures_str = "sFeatures=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -156,11 +155,6 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
       } else if (!strncmp(pThisOption, scaleFactor_str, strlen(scaleFactor_str))) {
         pThisOption += strlen(scaleFactor_str);
         drvlocal.scaleFactor = atof(pThisOption);
-      } else if (!strncmp(pThisOption, sFeatures_str, strlen(sFeatures_str))) {
-        pThisOption += strlen(sFeatures_str);
-        if (!strcmp(pThisOption, "Gvl")) {
-          pC_->features_ |= FEATURE_BITS_GVL;
-        }
       }
       pThisOption = pNextOption;
     }
