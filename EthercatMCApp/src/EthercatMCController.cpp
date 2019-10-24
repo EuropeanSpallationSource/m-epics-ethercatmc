@@ -33,6 +33,10 @@ const static char *const strCtrlReset = ".ctrl.ErrRst";
 
 const static char *const modulName = "EthercatMCAxis::";
 
+const static unsigned reportedFeatureBits =
+  FEATURE_BITS_SIM | FEATURE_BITS_ECMC |
+  FEATURE_BITS_V1 | FEATURE_BITS_V2 | FEATURE_BITS_ADS;
+
 extern "C"
 double EthercatMCgetNowTimeSecs(void)
 {
@@ -645,9 +649,9 @@ void EthercatMCController::handleStatusChange(asynStatus status)
       /* Connected -> Disconnected */
       int i;
       ctrlLocal.initialPollDone = 0;
-      /* Gvl comes via EthercatMCCreateAxis,
-         keep that bit  */
-      features_ &= ~FEATURE_BITS_GVL;
+      /* Keep bits that are specified via options,
+         clear bits that are fetched from the controller */
+      features_ &= ~reportedFeatureBits;
       setMCUErrMsg("MCU Disconnected");
       for (i=0; i<numAxes_; i++) {
         asynMotorAxis *pAxis=getAxis(i);
@@ -668,8 +672,8 @@ asynStatus EthercatMCController::poll(void)
   asynStatus status = asynSuccess;
 
   asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
-            "%spoll ctrlLocal.initialPollDone=%d\n",
-            modNamEMC, ctrlLocal.initialPollDone);
+            "%spoll ctrlLocal.initialPollDone=%d features_=0x%x\n",
+            modNamEMC, ctrlLocal.initialPollDone, features_);
 
   if (ctrlLocal.useADSbinary) {
     if (!ctrlLocal.initialPollDone) {
@@ -686,8 +690,11 @@ asynStatus EthercatMCController::poll(void)
       }
     }
   } else {
-    if (!features_) {
+    if (!(features_ & reportedFeatureBits)) {
       features_ = getFeatures();
+    }
+    if (features_ & reportedFeatureBits) {
+      ctrlLocal.initialPollDone = 1;
     }
   }
   return status;
