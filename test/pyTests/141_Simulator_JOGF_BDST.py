@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #
 
-import epics
 import unittest
 import os
 import sys
 import time
 from motor_lib import motor_lib
 lib = motor_lib()
+import capv_lib
 ###
 
 
@@ -20,8 +20,8 @@ withFRAC = 1.5
 
 
 def motorInitTC(tself, motor, tc_no, frac, encRel):
-    epics.caput(motor + '.FRAC', frac)
-    epics.caput(motor + '.UEIP', encRel)
+    capv_lib.capvput(motor + '.FRAC', frac)
+    capv_lib.capvput(motor + '.UEIP', encRel)
 
 
 def setMotorStartPos(tself, motor, tc_no, startpos):
@@ -32,7 +32,11 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
 
 def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos, myJOGX):
     # expected and actual
-    fileName = "/tmp/" + motor.replace(':', '-') + "-" + str(tc_no)
+    if motor.startswith('pva://'):
+        mot = motor[6:]
+    else:
+        mot = motor
+    fileName = "/tmp/" + mot.replace(':', '-') + "-" + str(tc_no)
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
 
@@ -46,11 +50,11 @@ def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos
     else:
         assert(0)
     #
-    epics.caput(motor + '.' + myJOGX, 1)
+    capv_lib.capvput(motor + '.' + myJOGX, 1)
     time.sleep(3)
     lib.setValueOnSimulator(motor, tc_no, "fActPosition", motorEndPos)
-    epics.caput(motor + '.' + myJOGX, 0)
-    resW = tself.lib.waitForMipZero(motor, tc_no, 12)
+    capv_lib.capvput(motor + '.' + myJOGX, 0)
+    resW = lib.waitForMipZero(motor, tc_no, 12)
     lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
 
     dbgFileName = None
@@ -60,9 +64,8 @@ def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos
     lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
 
 class Test(unittest.TestCase):
-    lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
-    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
+    capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
 
     myPOSlow = lib.myPOSlow
     myPOSmid = lib.myPOSmid

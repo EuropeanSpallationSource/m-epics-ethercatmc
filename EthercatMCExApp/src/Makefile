@@ -37,7 +37,7 @@ ifneq (,$(findstring /,$(MOTOR)))
   EthercatMC_LIBS += softMotor
 endif
 
-ifneq (,$(findstring base-7,$(EPICS_BASE)))
+ifdef BASE_7_0
  EthercatMC_DBD += PVAServerRegister.dbd
  EthercatMC_DBD += PVACommonRegister.dbd
  EthercatMC_DBD += softIocPVA.dbd
@@ -70,7 +70,7 @@ EthercatMC_LIBS += ads
 EthercatMC_DBD  += ads.dbd
 endif
 
-ifneq (,$(findstring base-7,$(EPICS_BASE)))
+ifdef BASE_7_0
 EthercatMC_LIBS += pvAccess
 EthercatMC_LIBS += pvDatabase
 EthercatMC_LIBS += pvAccessIOC

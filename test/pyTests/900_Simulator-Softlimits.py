@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #
 
-import epics
 import unittest
 import os
 import sys
 import time
 from motor_lib import motor_lib
 lib = motor_lib()
+import capv_lib
 
 ###
 
@@ -52,65 +52,65 @@ maxdelta           = 0.01
 
 
 def motorInitVeloAcc(tself, motor, tc_no, encRel):
-    msta             = int(epics.caget(motor + '.MSTA'))
+    msta             = int(capv_lib.capvget(motor + '.MSTA'))
     assert (msta & lib.MSTA_BIT_HOMED) #, 'MSTA.homed (Axis has been homed)')
 
     # Prepare parameters for jogging and backlash
-    epics.caput(motor + '.VELO', myVELO)
-    epics.caput(motor + '.ACCL', myACCL)
+    capv_lib.capvput(motor + '.VELO', myVELO)
+    capv_lib.capvput(motor + '.ACCL', myACCL)
 
-    epics.caput(motor + '.JVEL', myJVEL)
-    epics.caput(motor + '.JAR', myJAR)
+    capv_lib.capvput(motor + '.JVEL', myJVEL)
+    capv_lib.capvput(motor + '.JAR', myJAR)
 
-    epics.caput(motor + '.BVEL', myBVEL)
-    epics.caput(motor + '.BACC', myBACC)
-    epics.caput(motor + '.BDST', myBDST)
-    epics.caput(motor + '.UEIP', encRel)
-    epics.caput(motor + '.DVAL', myStartposDial, wait=True)
+    capv_lib.capvput(motor + '.BVEL', myBVEL)
+    capv_lib.capvput(motor + '.BACC', myBACC)
+    capv_lib.capvput(motor + '.BDST', myBDST)
+    capv_lib.capvput(motor + '.UEIP', encRel)
+    capv_lib.capvput(motor + '.DVAL', myStartposDial, wait=True)
 
 
 def motorInitLimitsNoC(tself, motor, tc_no):
-    epics.caput(motor + '-CfgDLLM', myCfgDLLM)
-    epics.caput(motor + '-CfgDHLM', myCfgDHLM)
-    epics.caput(motor + '-CfgDLLM-En', 0, wait=True)
-    epics.caput(motor + '-CfgDHLM-En', 0, wait=True)
+    capv_lib.capvput(motor + '-CfgDLLM', myCfgDLLM)
+    capv_lib.capvput(motor + '-CfgDHLM', myCfgDHLM)
+    capv_lib.capvput(motor + '-CfgDLLM-En', 0, wait=True)
+    capv_lib.capvput(motor + '-CfgDHLM-En', 0, wait=True)
 
-    epics.caput(motor + '.DHLM', myDHLM)
-    epics.caput(motor + '.DLLM', myDLLM)
+    capv_lib.capvput(motor + '.DHLM', myDHLM)
+    capv_lib.capvput(motor + '.DLLM', myDLLM)
 
 def motorInitLimitsWithC(tself, motor, tc_no):
-    epics.caput(motor + '-CfgDLLM-En', 0, wait=True)
-    epics.caput(motor + '-CfgDHLM-En', 0, wait=True)
-    epics.caput(motor + '-CfgDHLM', myCfgDHLM)
-    epics.caput(motor + '-CfgDLLM', myCfgDLLM)
-    epics.caput(motor + '-CfgDLLM-En', 1, wait=True)
-    epics.caput(motor + '-CfgDHLM-En', 1, wait=True)
+    capv_lib.capvput(motor + '-CfgDLLM-En', 0, wait=True)
+    capv_lib.capvput(motor + '-CfgDHLM-En', 0, wait=True)
+    capv_lib.capvput(motor + '-CfgDHLM', myCfgDHLM)
+    capv_lib.capvput(motor + '-CfgDLLM', myCfgDLLM)
+    capv_lib.capvput(motor + '-CfgDLLM-En', 1, wait=True)
+    capv_lib.capvput(motor + '-CfgDHLM-En', 1, wait=True)
 
-    epics.caput(motor + '.DHLM', myDHLM)
-    epics.caput(motor + '.DLLM', myDLLM)
+    capv_lib.capvput(motor + '.DHLM', myDHLM)
+    capv_lib.capvput(motor + '.DLLM', myDLLM)
 
 def setMresDirOff(tself, motor, tc_no, mres, dir, off):
-    epics.caput(motor + '.MRES', mres)
-    epics.caput(motor + '.DIR',  dir)
-    epics.caput(motor + '.OFF', off)
+    capv_lib.capvput(motor + '.MRES', mres)
+    capv_lib.capvput(motor + '.DIR',  dir)
+    capv_lib.capvput(motor + '.OFF', off)
 
 def setLimit(tself, motor, tc_no, field, value, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
-    oldDHLM = epics.caget(motor + '.DHLM', use_monitor=False)
-    oldDLLM = epics.caget(motor + '.DLLM', use_monitor=False)
+    oldDHLM = capv_lib.capvget(motor + '.DHLM', use_monitor=False)
+    oldDLLM = capv_lib.capvget(motor + '.DLLM', use_monitor=False)
 
-    epics.caput(motor + '.DHLM', oldDHLM)
-    epics.caput(motor + '.DLLM', oldDLLM)
-    epics.caput(motor + '.' + field, value)
+    capv_lib.capvput(motor + '.DHLM', oldDHLM)
+    capv_lib.capvput(motor + '.DLLM', oldDLLM)
+    capv_lib.capvput(motor + '.' + field, value)
 
     time.sleep(0.5)
 
-    actDHLM = epics.caget(motor + '.DHLM', use_monitor=False)
-    actDLLM = epics.caget(motor + '.DLLM', use_monitor=False)
-    actHLM = epics.caget(motor + '.HLM', use_monitor=False)
-    actLLM = epics.caget(motor + '.LLM', use_monitor=False)
+    actDHLM = capv_lib.capvget(motor + '.DHLM', use_monitor=False)
+    actDLLM = capv_lib.capvget(motor + '.DLLM', use_monitor=False)
+    actHLM = capv_lib.capvget(motor + '.HLM', use_monitor=False)
+    actLLM = capv_lib.capvget(motor + '.LLM', use_monitor=False)
 
-    actM3rhlm = epics.caget(motor + '-M3RHLM', use_monitor=False)
-    actM3rllm = epics.caget(motor + '-M3RLLM', use_monitor=False)
+    actM3rhlm = capv_lib.capvget(motor + '-M3RHLM', use_monitor=False)
+    actM3rllm = capv_lib.capvget(motor + '-M3RLLM', use_monitor=False)
     print('%s expDHLM=%g expDLLM=%g expHLM=%g expLLM=%g expM3rhlm=%g expM3rllm=%g' % \
         (tc_no, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm))
     print('%s actDHLM=%g actDLLM=%g actHLM=%g actLLM=%g actM3rhlm=%g actM3rllm=%g' % \
@@ -130,15 +130,15 @@ class Test(unittest.TestCase):
     drvUseEGU_RB = None
     drvUseEGU = 0
     motor = os.getenv("TESTEDMOTORAXIS")
-    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
-    vers = float(epics.caget(motor + '.VERS'))
+    capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
+    vers = float(capv_lib.capvget(motor + '.VERS'))
     if vers >= 6.94 and vers <= 7.09 :
         hasROlimit = 1
-        drvUseEGU_RB = epics.caget(motor + '-DrvUseEGU-RB')
+        drvUseEGU_RB = capv_lib.capvget(motor + '-DrvUseEGU-RB')
         drvUseEGU = 0
         if drvUseEGU_RB == 1:
-            epics.caput(motor + '-DrvUseEGU', drvUseEGU)
-            drvUseEGU = epics.caget(motor + '-DrvUseEGU-RB')
+            capv_lib.capvput(motor + '-DrvUseEGU', drvUseEGU)
+            drvUseEGU = capv_lib.capvget(motor + '-DrvUseEGU-RB')
 
     def test_TC_90000(self):
         lib.motorInitAllForBDST(self.motor, 90000)
@@ -146,7 +146,7 @@ class Test(unittest.TestCase):
     def test_TC_90010(self):
         tc_no = 90010
         encRel = 0
-        #vers = float(epics.caget(self.motor + '.VERS'))
+        #vers = float(capv_lib.capvget(self.motor + '.VERS'))
         #print('%s vers=%g' %  (tc_no, vers))
         #self.assertEqual(0, 1, '1 != 0')
 
@@ -439,4 +439,4 @@ class Test(unittest.TestCase):
 
     def test_TC_900999(self):
         if self.drvUseEGU_RB == 1:
-            epics.caput(self.motor + '-DrvUseEGU', 1)
+            capv_lib.capvput(self.motor + '-DrvUseEGU', 1)

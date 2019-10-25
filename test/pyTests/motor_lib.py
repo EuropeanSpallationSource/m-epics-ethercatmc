@@ -13,8 +13,7 @@ import time
 import os
 import filecmp
 
-from epics import caput, caget
-import epics
+import capv_lib
 
 from motor_globals import motor_globals
 
@@ -32,7 +31,7 @@ class motor_lib(object):
     Library of useful test functions for motor record applications
     """
 
-    __g = motor_globals()
+    globals = motor_globals()
     MSTA_BIT_HOMED        =  1 << (15 -1)    #4000
     MSTA_BIT_MINUS_LS     =  1 << (14 -1)    #2000
     MSTA_BIT_COMM_ERR     =  1 << (13 -1)    #1000
@@ -90,12 +89,12 @@ class motor_lib(object):
 
     def initializeMotorRecordOneField(self, motor, tc_no, field, value):
         channelname = motor + field
-        oldVal = epics.caget(channelname)
+        oldVal = capv_lib.capvget(channelname)
         if (oldVal != None):
             print('%s: initializeMotorRecordOneField field=%s oldVal=%f value=%f' % (
                 tc_no, channelname, oldVal, value))
             if (oldVal != value):
-                epics.caput(channelname, value)
+                capv_lib.capvput(channelname, value)
 
         else:
             print('%s: initializeMotorRecordOneField field=%s not found value=%f' % (
@@ -114,8 +113,8 @@ class motor_lib(object):
         self.initializeMotorRecordOneField(motor, tc_no, '.BDST', 0.0)
 
         # If there are usful values in the controller, use them
-        cfgDHLM = epics.caget(motor + '-CfgDHLM')
-        cfgDLLM = epics.caget(motor + '-CfgDLLM')
+        cfgDHLM = capv_lib.capvget(motor + '-CfgDHLM')
+        cfgDLLM = capv_lib.capvget(motor + '-CfgDLLM')
         if (cfgDHLM == None or cfgDLLM == None or cfgDHLM <= cfgDLLM):
             cfgDHLM = 53.0
             cfgDLLM = -54.0
@@ -219,8 +218,8 @@ class motor_lib(object):
         return inrange
 
     def calcTimeOut(self, motor, destination, velocity):
-        rbv = epics.caget(motor + '.RBV', use_monitor=False)
-        accl = epics.caget(motor + '.ACCL', use_monitor=False)
+        rbv = capv_lib.capvget(motor + '.RBV', use_monitor=False)
+        accl = capv_lib.capvget(motor + '.ACCL', use_monitor=False)
         delta = math.fabs(destination - rbv)
         timeout = delta / velocity + 2 * accl + 2.0
         return timeout
@@ -228,9 +227,9 @@ class motor_lib(object):
     def waitForStart(self, motor, tc_no, wait_for_start):
         while wait_for_start > 0:
             wait_for_start -= polltime
-            dmov = int(epics.caget(motor + '.DMOV', use_monitor=False))
-            movn = int(epics.caget(motor + '.MOVN', use_monitor=False))
-            rbv = epics.caget(motor + '.RBV')
+            dmov = int(capv_lib.capvget(motor + '.DMOV', use_monitor=False))
+            movn = int(capv_lib.capvget(motor + '.MOVN', use_monitor=False))
+            rbv = capv_lib.capvget(motor + '.RBV')
             print('%s: wait_for_start=%f dmov=%d movn=%d rbv=%f' % (
                 tc_no, wait_for_start, dmov, movn, rbv))
             if movn and not dmov:
@@ -242,9 +241,9 @@ class motor_lib(object):
     def waitForStop(self, motor, tc_no, wait_for_stop):
         while wait_for_stop > 0:
             wait_for_stop -= polltime
-            dmov = int(epics.caget(motor + '.DMOV', use_monitor=False))
-            movn = int(epics.caget(motor + '.MOVN', use_monitor=False))
-            rbv = epics.caget(motor + '.RBV', use_monitor=False)
+            dmov = int(capv_lib.capvget(motor + '.DMOV', use_monitor=False))
+            movn = int(capv_lib.capvget(motor + '.MOVN', use_monitor=False))
+            rbv = capv_lib.capvget(motor + '.RBV', use_monitor=False)
             print('%s: wait_for_stop=%f dmov=%d movn=%d rbv=%f' % (
                 tc_no, wait_for_stop, dmov, movn, rbv))
             if not movn and dmov:
@@ -257,10 +256,10 @@ class motor_lib(object):
         wait_for_start = 2
         while wait_for_start > 0:
             wait_for_start -= polltime
-            dmov = int(caget(motor + '.DMOV'))
-            movn = int(caget(motor + '.MOVN'))
+            dmov = int(capv_lib.capvget(motor + '.DMOV'))
+            movn = int(capv_lib.capvget(motor + '.MOVN'))
             print('%s: wait_for_start=%f dmov=%d movn=%d dpos=%f' % (
-                tc_no, wait_for_start, dmov, movn, caget(motor + '.DRBV', use_monitor=False)))
+                tc_no, wait_for_start, dmov, movn, capv_lib.capvget(motor + '.DRBV', use_monitor=False)))
             if movn and not dmov:
                break
             time.sleep(polltime)
@@ -268,10 +267,10 @@ class motor_lib(object):
         wait_for_done = math.fabs(wait_for_done) #negative becomes positive
         wait_for_done += 1 # One extra second for rounding
         while wait_for_done > 0:
-            dmov = int(caget(motor + '.DMOV'))
-            movn = int(caget(motor + '.MOVN'))
+            dmov = int(capv_lib.capvget(motor + '.DMOV'))
+            movn = int(capv_lib.capvget(motor + '.MOVN'))
             print('%s: wait_for_done=%f dmov=%d movn=%d dpos=%f' % (
-                tc_no, wait_for_done, dmov, movn, caget(motor + '.DRBV', use_monitor=False)))
+                tc_no, wait_for_done, dmov, movn, capv_lib.capvget(motor + '.DRBV', use_monitor=False)))
             if dmov and not movn:
                 return True
             time.sleep(polltime)
@@ -281,7 +280,7 @@ class motor_lib(object):
     def waitForMipZero(self, motor, tc_no, wait_for_MipZero):
         while wait_for_MipZero > -10.0: # Extra long wait
             wait_for_MipZero -= polltime
-            mip = int(epics.caget(motor + '.MIP', use_monitor=False))
+            mip = int(capv_lib.capvget(motor + '.MIP', use_monitor=False))
             print('%s: wait_for_MipZero=%f mip=%s (%x)' % (
                 tc_no, wait_for_MipZero, self.getMIPtext(mip),mip))
             if not mip:
@@ -293,7 +292,7 @@ class motor_lib(object):
     def waitForPowerOn(self, motor, tc_no, wait_for_powerOn):
         while wait_for_powerOn > 0:
             wait_for_powerOn -= polltime
-            msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
+            msta = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
             powerOn = msta & self.MSTA_BIT_AMPON
 
             print('%s: wait_for_powerOn=%f powerOn=%d' % (
@@ -307,7 +306,7 @@ class motor_lib(object):
     def waitForPowerOff(self, motor, tc_no, wait_for_powerOff):
         while wait_for_powerOff > 0:
             wait_for_powerOff -= polltime
-            msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
+            msta = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
             powerOn = msta & self.MSTA_BIT_AMPON
 
             print('%s: wait_for_powerOff=%f powerOn=%d' % (
@@ -325,24 +324,24 @@ class motor_lib(object):
         """
         if not fail:
             print("Test Complete")
-            return self.__g.SUCCESS
+            return self.globals.SUCCESS
         else:
             print("Test Failed")
-            return self.__g.FAIL
+            return self.globals.FAIL
 
 
     def jogDirection(self, motor, tc_no, direction, time_to_wait):
         if direction > 0:
-            epics.caput(motor + '.JOGF', 1)
+            capv_lib.capvput(motor + '.JOGF', 1)
         else:
-            epics.caput(motor + '.JOGR', 1)
+            capv_lib.capvput(motor + '.JOGR', 1)
 
         done = self.waitForStartAndDone(motor, tc_no + " jogDirection", 30 + time_to_wait + 3.0)
 
         if direction > 0:
-            epics.caput(motor + '.JOGF', 0)
+            capv_lib.capvput(motor + '.JOGF', 0)
         else:
-            epics.caput(motor + '.JOGR', 0)
+            capv_lib.capvput(motor + '.JOGR', 0)
 
     def move(self, motor, position, timeout):
         """
@@ -351,19 +350,19 @@ class motor_lib(object):
         """
 
         try:
-            caput(motor, position, wait=True, timeout=timeout)
+            capv_lib.capvput(motor, position, wait=True, timeout=timeout)
         except:
             e = sys.exc_info()
             print(str(e))
-            print("ERROR: caput failed.")
+            print("ERROR: capv_lib.capvput failed.")
             print((motor + " pos:" + str(position) + " timeout:" + str(timeout)))
-            return self.__g.FAIL
+            return self.globals.FAIL
 
         rdbd = motor + ".RDBD"
         rbv = motor + ".RBV"
 
-        final_pos = caget(rbv, use_monitor=False)
-        deadband = caget(rdbd)
+        final_pos = capv_lib.capvget(rbv, use_monitor=False)
+        deadband = capv_lib.capvget(rdbd)
 
         success = True
 
@@ -381,15 +380,15 @@ class motor_lib(object):
             return self.postMoveCheck(motor)
         else:
             self.postMoveCheck(motor)
-            return self.__g.FAIL
+            return self.globals.FAIL
 
 
     def movePosition(self, motor, tc_no, destination, velocity, acceleration):
         time_to_wait = 30
         if velocity > 0:
-            distance = math.fabs(caget(motor + '.RBV') - destination)
+            distance = math.fabs(capv_lib.capvget(motor + '.RBV') - destination)
             time_to_wait += distance / velocity + 2 * acceleration
-        caput(motor + '.VAL', destination)
+        capv_lib.capvput(motor + '.VAL', destination)
         done = self.waitForStartAndDone(motor, tc_no + " movePosition", time_to_wait)
 
     def setPosition(self, motor, position, timeout):
@@ -402,21 +401,21 @@ class motor_lib(object):
         _dval = motor + ".DVAL"
         _off = motor + ".OFF"
 
-        offset = caget(_off)
+        offset = capv_lib.capvget(_off)
 
-        caput(_set, 1, wait=True, timeout=timeout)
-        caput(_dval, position, wait=True, timeout=timeout)
-        caput(_off, offset, wait=True, timeout=timeout)
-        caput(_set, 0, wait=True, timeout=timeout)
+        capv_lib.capvput(_set, 1, wait=True, timeout=timeout)
+        capv_lib.capvput(_dval, position, wait=True, timeout=timeout)
+        capv_lib.capvput(_off, offset, wait=True, timeout=timeout)
+        capv_lib.capvput(_set, 0, wait=True, timeout=timeout)
 
-        if (self.postMoveCheck(motor) != self.__g.SUCCESS):
-            return self.__g.FAIL
+        if (self.postMoveCheck(motor) != self.globals.SUCCESS):
+            return self.globals.FAIL
 
         try:
             self.verifyPosition(motor, position+offset)
         except Exception as e:
             print(str(e))
-            return self.__g.FAIL
+            return self.globals.FAIL
 
     def checkInitRecord(self, motor):
         """
@@ -430,9 +429,9 @@ class motor_lib(object):
         Verify that field == reference.
         """
         _rdbd = motor + ".RDBD"
-        deadband = caget(_rdbd)
+        deadband = capv_lib.capvget(_rdbd)
         _rbv = motor + ".RBV"
-        current_pos = caget(_rbv)
+        current_pos = capv_lib.capvget(_rbv)
 
         if ((current_pos < position-deadband) or (current_pos > position+deadband)):
             print("ERROR: verifyPosition out of deadband.")
@@ -441,18 +440,18 @@ class motor_lib(object):
                    " deadband=" + str(deadband))
             raise Exception(__name__ + msg)
 
-        return self.__g.SUCCESS
+        return self.globals.SUCCESS
 
     def verifyField(self, pv, field, reference):
         """
         Verify that field == reference.
         """
         full_pv = pv + "." + field
-        if (caget(full_pv) != reference):
+        if (capv_lib.capvget(full_pv) != reference):
             msg = "ERROR: " + full_pv + " not equal to " + str(reference)
             raise Exception(__name__ + msg)
 
-        return self.__g.SUCCESS
+        return self.globals.SUCCESS
 
 
     def postMoveCheck(self, motor):
@@ -480,9 +479,9 @@ class motor_lib(object):
             self.verifyField(motor, "RLLS", RLLS)
         except Exception as e:
             print(str(e))
-            return self.__g.FAIL
+            return self.globals.FAIL
 
-        return self.__g.SUCCESS
+        return self.globals.SUCCESS
 
 
     def setValueOnSimulator(self, motor, tc_no, var, value):
@@ -491,9 +490,10 @@ class motor_lib(object):
         outStr = 'Sim.this.' + var + '=' + value
         print('%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
               (tc_no, motor, var, value, outStr))
-        assert(len(outStr) < 40)
-        epics.caput(motor + '-DbgStrToMCU', outStr, wait=True)
-        err = int(epics.caget(motor + '-Err', use_monitor=False))
+        if not motor.startswith('pva://'):
+            assert(len(outStr) < 40)
+        capv_lib.capvput(motor + '-DbgStrToMCU', outStr, wait=True)
+        err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
         print('%s: DbgStrToMCU motor=%s var=%s value=%s err=%d' % \
               (tc_no, motor, var, value, err))
         assert (not err)
@@ -506,22 +506,22 @@ class motor_lib(object):
         self.setValueOnSimulator(motor, tc_no, "setMRES_23", 0)
         self.setValueOnSimulator(motor, tc_no, "setMRES_24", 0)
 
-        epics.caput(motor + '-ErrRst', 1)
+        capv_lib.capvput(motor + '-ErrRst', 1)
         # Prepare parameters for jogging and backlash
         self.setSoftLimitsOff(motor)
-        epics.caput(motor + '.VELO', self.myVELO)
-        epics.caput(motor + '.ACCL', self.myACCL)
+        capv_lib.capvput(motor + '.VELO', self.myVELO)
+        capv_lib.capvput(motor + '.ACCL', self.myACCL)
 
-        epics.caput(motor + '.JVEL', self.myJVEL)
-        epics.caput(motor + '.JAR',  self.myJAR)
+        capv_lib.capvput(motor + '.JVEL', self.myJVEL)
+        capv_lib.capvput(motor + '.JAR',  self.myJAR)
 
-        epics.caput(motor + '.BVEL', self.myBVEL)
-        epics.caput(motor + '.BACC', self.myBACC)
-        epics.caput(motor + '.BDST', self.myBDST)
-        epics.caput(motor + '.FRAC', self.myFRAC)
-        epics.caput(motor + '.RTRY', self.myRTRY)
-        epics.caput(motor + '.RMOD', motorRMOD_D)
-        epics.caput(motor + '.DLY',  self.myDLY)
+        capv_lib.capvput(motor + '.BVEL', self.myBVEL)
+        capv_lib.capvput(motor + '.BACC', self.myBACC)
+        capv_lib.capvput(motor + '.BDST', self.myBDST)
+        capv_lib.capvput(motor + '.FRAC', self.myFRAC)
+        capv_lib.capvput(motor + '.RTRY', self.myRTRY)
+        capv_lib.capvput(motor + '.RMOD', motorRMOD_D)
+        capv_lib.capvput(motor + '.DLY',  self.myDLY)
 
     def writeExpFileRMOD_X(self, motor, tc_no, rmod, dbgFile, expFile, maxcnt, frac, encRel, motorStartPos, motorEndPos):
         cnt = 0
@@ -686,22 +686,22 @@ class motor_lib(object):
         """
         # switch off the controller soft limits
         try:
-            epics.caput(motor + '-CfgDHLM-En', 0, wait=True, timeout=2)
-            epics.caput(motor + '-CfgDLLM-En', 0, wait=True, timeout=2)
+            capv_lib.capvput(motor + '-CfgDHLM-En', 0, wait=True, timeout=2)
+            capv_lib.capvput(motor + '-CfgDLLM-En', 0, wait=True, timeout=2)
         finally:
-            oldRBV = epics.caget(motor + '.RBV')
+            oldRBV = capv_lib.capvget(motor + '.RBV')
 
         wait_for_done = 1.0
         while wait_for_done > 0:
             if oldRBV > 0:
-                epics.caput(motor + '.LLM', 0.0)
-                epics.caput(motor + '.HLM', 0.0)
+                capv_lib.capvput(motor + '.LLM', 0.0)
+                capv_lib.capvput(motor + '.HLM', 0.0)
             else:
-                epics.caput(motor + '.HLM', 0.0)
-                epics.caput(motor + '.LLM', 0.0)
+                capv_lib.capvput(motor + '.HLM', 0.0)
+                capv_lib.capvput(motor + '.LLM', 0.0)
 
-            llm = epics.caget(motor + '.LLM', use_monitor=False)
-            hlm = epics.caget(motor + '.HLM', use_monitor=False)
+            llm = capv_lib.capvget(motor + '.LLM', use_monitor=False)
+            hlm = capv_lib.capvget(motor + '.HLM', use_monitor=False)
             print('%s: setSoftLimitsOff llm=%f hlm=%f' % (motor, llm, hlm))
             if llm == 0.0 and hlm == 0.0:
                 return
@@ -714,44 +714,44 @@ class motor_lib(object):
         """
         # switch on the controller soft limits
         try:
-            epics.caput(motor + '-CfgDHLM', high_limit, wait=True, timeout=2)
-            epics.caput(motor + '-CfgDLLM', low_limit,  wait=True, timeout=2)
-            epics.caput(motor + '-CfgDHLM-En', 1, wait=True, timeout=2)
-            epics.caput(motor + '-CfgDLLM-En', 1, wait=True, timeout=2)
+            capv_lib.capvput(motor + '-CfgDHLM', high_limit, wait=True, timeout=2)
+            capv_lib.capvput(motor + '-CfgDLLM', low_limit,  wait=True, timeout=2)
+            capv_lib.capvput(motor + '-CfgDHLM-En', 1, wait=True, timeout=2)
+            capv_lib.capvput(motor + '-CfgDLLM-En', 1, wait=True, timeout=2)
         finally:
-            oldRBV = epics.caget(motor + '.RBV')
+            oldRBV = capv_lib.capvget(motor + '.RBV')
 
         if oldRBV < 0:
-            epics.caput(motor + '.LLM', low_limit)
-            epics.caput(motor + '.HLM', high_limit)
+            capv_lib.capvput(motor + '.LLM', low_limit)
+            capv_lib.capvput(motor + '.HLM', high_limit)
         else:
-            epics.caput(motor + '.HLM', high_limit)
-            epics.caput(motor + '.LLM', low_limit)
+            capv_lib.capvput(motor + '.HLM', high_limit)
+            capv_lib.capvput(motor + '.LLM', low_limit)
 
 
     def doSTUPandSYNC(self, motor, tc_no):
-        stup = epics.caget(motor + '.STUP', use_monitor=False)
+        stup = capv_lib.capvget(motor + '.STUP', use_monitor=False)
         while stup != 0:
-            stup = epics.caget(motor + '.STUP', use_monitor=False)
+            stup = capv_lib.capvget(motor + '.STUP', use_monitor=False)
             print('%s .STUP=%s' % (tc_no, stup))
             time.sleep(polltime)
 
-        epics.caput(motor + '.STUP', 1)
-        epics.caput(motor + '.SYNC', 1)
-        rbv = epics.caget(motor + '.RBV', use_monitor=False)
+        capv_lib.capvput(motor + '.STUP', 1)
+        capv_lib.capvput(motor + '.SYNC', 1)
+        rbv = capv_lib.capvget(motor + '.RBV', use_monitor=False)
         print('%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup))
         while stup != 0:
-            stup = epics.caget(motor + '.STUP', use_monitor=False)
-            rbv = epics.caget(motor + '.RBV', use_monitor=False)
+            stup = capv_lib.capvget(motor + '.STUP', use_monitor=False)
+            rbv = capv_lib.capvget(motor + '.RBV', use_monitor=False)
             print('%s .RBV=%f .STUP=%s' % (tc_no, rbv, stup))
             time.sleep(polltime)
 
     def setCNENandWait(self, motor, tc_no, cnen):
         wait_for_power_changed = 6.0
-        epics.caput(motor + '-DbgStrToLOG', "CNEN= " + tc_no[0:20]);
-        epics.caput(motor + '.CNEN', cnen)
+        capv_lib.capvput(motor + '-DbgStrToLOG', "CNEN= " + tc_no[0:20]);
+        capv_lib.capvput(motor + '.CNEN', cnen)
         while wait_for_power_changed > 0:
-            msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
+            msta = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
             print('%s: wait_for_power_changed=%f msta=%x %s' % (
                 tc_no, wait_for_power_changed, msta, self.getMSTAtext(msta)))
             if (cnen and (msta & self.MSTA_BIT_AMPON)):

@@ -5,31 +5,32 @@
 # http://cars9.uchicago.edu/software/python/pyepics3/
 #
 
-import epics
+
 import unittest
 import os
 import sys
 import math
 import time
 from motor_lib import motor_lib
+lib = motor_lib()
 ###
 
 def homeTheMotor(self, motor, tc_no, homProce, jogToLSBefore):
-    old_high_limit = epics.caget(motor + '.HLM')
-    old_low_limit = epics.caget(motor + '.LLM')
+    old_high_limit = lib.pvget(motor + '.HLM')
+    old_low_limit = lib.pvget(motor + '.LLM')
     old_HomProc   = self.pv_HomProc.get(use_monitor=False)
     if jogToLSBefore != 0:
-        self.lib.setSoftLimitsOff(motor)
+        lib.setSoftLimitsOff(motor)
         # soft limit range assumed to be = hard range /1.5
-        jvel = epics.caget(motor + '.JVEL')
-        accl = epics.caget(motor + '.ACCL')
+        jvel = lib.pvget(motor + '.JVEL')
+        accl = lib.pvget(motor + '.ACCL')
         time_to_wait = 1.5 * (old_high_limit - old_low_limit) / jvel + 2 * accl
 
-        self.lib.jogDirection(motor, tc_no, jogToLSBefore, time_to_wait)
-        epics.caput(motor + '.LLM', old_low_limit)
-        epics.caput(motor + '.HLM', old_high_limit)
+        lib.jogDirection(motor, tc_no, jogToLSBefore, time_to_wait)
+        lib.pvput(motor + '.LLM', old_low_limit)
+        lib.pvput(motor + '.HLM', old_high_limit)
     else:
-        self.lib.movePosition(motor, tc_no, (
+        lib.movePosition(motor, tc_no, (
             old_high_limit + old_low_limit) / 2.0, self.moving_velocity, self.acceleration)
 
     res = self.pv_HomProc.put(homProce)
@@ -37,33 +38,33 @@ def homeTheMotor(self, motor, tc_no, homProce, jogToLSBefore):
         print('%s caput -HomProc res=None' % (tc_no))
         self.assertNotEqual(res, None, 'caput -HomProc retuned not None. PV not found ?')
 
-    msta = int(epics.caget(motor + '.MSTA'))
+    msta = int(lib.pvget(motor + '.MSTA'))
     # We can home while sitting on a limit switch
-    if (msta & self.lib.MSTA_BIT_MINUS_LS):
-        epics.caput(motor + '.HOMR', 1)
+    if (msta & lib.MSTA_BIT_MINUS_LS):
+        lib.pvput(motor + '.HOMR', 1)
     else:
-        epics.caput(motor + '.HOMF', 1)
+        lib.pvput(motor + '.HOMF', 1)
 
     time_to_wait = 180
-    started = self.lib.waitForStart(motor, tc_no + " homeTheMotor", 3)
-    msta1 = int(epics.caget(motor + '.MSTA'))
-    if (msta1 & self.lib.MSTA_BIT_HOMED):
+    started = lib.waitForStart(motor, tc_no + " homeTheMotor", 3)
+    msta1 = int(lib.pvget(motor + '.MSTA'))
+    if (msta1 & lib.MSTA_BIT_HOMED):
         unhomed = 0
     else:
         unhomed = 1
     print('%s homeTheMotor started=%d msta1=%s unhomed=%d' % \
-           (tc_no, started, self.lib.getMSTAtext(msta1), unhomed))
-    stopped = self.lib.waitForStop(motor, tc_no + " homeTheMotor", time_to_wait)
+           (tc_no, started, lib.getMSTAtext(msta1), unhomed))
+    stopped = lib.waitForStop(motor, tc_no + " homeTheMotor", time_to_wait)
 
-    msta2 = int(epics.caget(motor + '.MSTA'))
+    msta2 = int(lib.pvget(motor + '.MSTA'))
     homed = 0
-    if (msta2 & self.lib.MSTA_BIT_HOMED):
+    if (msta2 & lib.MSTA_BIT_HOMED):
         homed = 1
     print('%s homeTheMotor stopped=%d msta2=%s homed=%d' % \
-        (tc_no, stopped, self.lib.getMSTAtext(msta2), homed))
+        (tc_no, stopped, lib.getMSTAtext(msta2), homed))
     #self.assertEqual(True, started,                          tc_no +  "started = True")
     self.assertEqual(True, stopped,                          tc_no +  "stopped = True")
-    self.assertEqual(0, msta2 & self.lib.MSTA_BIT_SLIP_STALL, tc_no + "MSTA.no MSTA_BIT_SLIP_STALL")
+    self.assertEqual(0, msta2 & lib.MSTA_BIT_SLIP_STALL, tc_no + "MSTA.no MSTA_BIT_SLIP_STALL")
     self.assertNotEqual(0, homed,   tc_no + "MSTA.homed (Axis has been homed)")
     self.pv_HomProc.put(old_HomProc, wait=True)
 
@@ -138,8 +139,8 @@ class Test(unittest.TestCase):
     else:
         old_HomProc   = pv_HomProc.get(use_monitor=False)
 
-    acceleration     = epics.caget(m1 + '.ACCL')
-    moving_velocity  = epics.caget(m1 + '.VELO')
+    acceleration     = lib.pvget(m1 + '.ACCL')
+    moving_velocity  = lib.pvget(m1 + '.VELO')
 
     def test_TC_11100(self):
         tc_no = "TC-11100"

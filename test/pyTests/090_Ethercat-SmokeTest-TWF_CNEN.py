@@ -5,17 +5,17 @@
 # http://cars9.uchicago.edu/software/python/pyepics3/
 #
 
-import epics
 import unittest
 import os
 import sys
 import math
 import time
 from motor_lib import motor_lib
+lib = motor_lib()
+import capv_lib
 import inspect
 ###
 
-epics.ca.DEFAULT_CONNECTION_TIMEOUT=10.
 polltime = 0.1
 
 def lineno():
@@ -32,17 +32,17 @@ def checkForEmergenyStop(self, motor, tc_no, wait, direction, oldRBV, TweakValue
     lls = 0
     hls = 0
     outOfRange = 0
-    rbv = epics.caget(motor + '.RBV', use_monitor=False)
-    msta = int(epics.caget(motor + '.MSTA', use_monitor=False))
-    dmov = int(epics.caget(motor + '.DMOV', use_monitor=False))
-    movn = int(epics.caget(motor + '.MOVN', use_monitor=False))
+    rbv = capv_lib.capvget(motor + '.RBV', use_monitor=False)
+    msta = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
+    dmov = int(capv_lib.capvget(motor + '.DMOV', use_monitor=False))
+    movn = int(capv_lib.capvget(motor + '.MOVN', use_monitor=False))
     if (rbv - oldRBV) > 2 * TweakValue:
         outOfRange = 1
     if (oldRBV -rbv) > 2 * TweakValue:
         outOfRange = -1
-    if (msta & self.lib.MSTA_BIT_MINUS_LS):
+    if (msta & lib.MSTA_BIT_MINUS_LS):
         lls = 1
-    if (msta & self.lib.MSTA_BIT_PLUS_LS):
+    if (msta & lib.MSTA_BIT_PLUS_LS):
         hls = 1
 
     print('%s:%d wait=%f dmov=%d movn=%d direction=%d lls=%d hls=%d OOR=%d oldRBV=%f rbv=%f' % \
@@ -51,19 +51,19 @@ def checkForEmergenyStop(self, motor, tc_no, wait, direction, oldRBV, TweakValue
         (lls and (direction <= 0)) or
         outOfRange != 0):
         print('%s:%d  STOP=1 CNEN=0 Emergency stop' % (tc_no, lineno()))
-        epics.caput(motor + '.STOP', 1)
-        epics.caput(motor + '.CNEN', 0)
+        capv_lib.capvput(motor + '.STOP', 1)
+        capv_lib.capvput(motor + '.CNEN', 0)
 
     return (lls, hls, movn, dmov, outOfRange)
 
 
 def waitForStart(self, motor, tc_no, wait_for, direction, oldRBV):
-    TweakValue = epics.caget(motor + '.TWV')
+    TweakValue = capv_lib.capvget(motor + '.TWV')
     while wait_for > 0:
         wait_for -= polltime
         (lls, hls, movn, dmov, outOfRange) = checkForEmergenyStop(
             self, motor, tc_no + 'strt', wait_for, direction, oldRBV, TweakValue)
-        rbv = epics.caget(motor + '.RBV')
+        rbv = capv_lib.capvget(motor + '.RBV')
         if movn and not dmov:
             return True
         time.sleep(polltime)
@@ -72,15 +72,15 @@ def waitForStart(self, motor, tc_no, wait_for, direction, oldRBV):
 
 def resetAxis(motor, tc_no):
     wait_for_ErrRst = 5
-    err = int(epics.caget(motor + '-Err', use_monitor=False))
+    err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
     print('%s:%d resetAxis err=%d' % (tc_no, lineno(), err))
     #if not err:
     #    return True
 
-    epics.caput(motor + '-ErrRst', 1)
+    capv_lib.capvput(motor + '-ErrRst', 1)
     while wait_for_ErrRst > 0:
         wait_for_ErrRst -= polltime
-        err = int(epics.caget(motor + '-Err', use_monitor=False))
+        err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
         print('%s:%d wait_for_ErrRst=%f err=%d' % (tc_no, lineno(), wait_for_ErrRst, err))
         if not err:
             return True
@@ -102,16 +102,16 @@ def waitForStop(self, motor, tc_no, wait_for_stop, direction, oldRBV, TweakValue
 
 def tweakToLimit(self, motor, tc_no, direction):
     assert(direction)
-    old_high_limit = epics.caget(motor + '.HLM', timeout=5)
-    old_low_limit = epics.caget(motor + '.LLM', timeout=5)
+    old_high_limit = capv_lib.capvget(motor + '.HLM', timeout=5)
+    old_low_limit = capv_lib.capvget(motor + '.LLM', timeout=5)
     # switch off the soft limits, save the values
-    self.lib.setSoftLimitsOff(motor)
+    lib.setSoftLimitsOff(motor)
 
     # If we reached the limit switch, we are fine and
     # can reset the error
     resetAxis(motor, tc_no)
     print('%s:%d CNEN=1' % (tc_no, lineno()))
-    self.lib.setCNENandWait(motor, tc_no, 1)
+    lib.setCNENandWait(motor, tc_no, 1)
     # Step through the range in 20 steps or so
     deltaToMove = (old_high_limit - old_low_limit) / 20
     maxDeltaAfterMove = deltaToMove / 2
@@ -123,7 +123,7 @@ def tweakToLimit(self, motor, tc_no, direction):
     lls = 0
     hls = 0
     while not stopTheLoop:
-        oldRBV = epics.caget(motor + '.RBV', timeout=5)
+        oldRBV = capv_lib.capvget(motor + '.RBV', timeout=5)
         if direction > 0:
             destination = oldRBV + deltaToMove
         else:
@@ -131,22 +131,22 @@ def tweakToLimit(self, motor, tc_no, direction):
         print('%s:%d Tweak the motor direction=%d oldRBV=%f destination=%f' \
             % (tc_no, lineno(), direction, oldRBV, destination))
 
-        epics.caput(motor + '.VAL', destination)
+        capv_lib.capvput(motor + '.VAL', destination)
 
         ret1 = waitForStart(self, motor, tc_no, 0.4, direction, oldRBV)
         ret2 = waitForStop(self, motor, tc_no, 10.0, direction, oldRBV, deltaToMove)
-        msta = int(epics.caget(motor + '.MSTA', timeout=5))
-        if (msta & self.lib.MSTA_BIT_MINUS_LS):
+        msta = int(capv_lib.capvget(motor + '.MSTA', timeout=5))
+        if (msta & lib.MSTA_BIT_MINUS_LS):
             stopTheLoop = 1
             lls = 1
-        if (msta & self.lib.MSTA_BIT_PLUS_LS):
+        if (msta & lib.MSTA_BIT_PLUS_LS):
             stopTheLoop = 1
             hls = 1
 
-        rbv = epics.caget(motor + '.RBV', timeout=5)
+        rbv = capv_lib.capvget(motor + '.RBV', timeout=5)
         print('%s:%d STOP=1 start=%d stop=%d rbv=%f lls=%d hls=%d msta=%s' \
-              % (tc_no, lineno(), ret1, ret2, rbv, lls, hls, self.lib.getMSTAtext(msta)))
-        epics.caput(motor + '.STOP', 1)
+              % (tc_no, lineno(), ret1, ret2, rbv, lls, hls, lib.getMSTAtext(msta)))
+        capv_lib.capvput(motor + '.STOP', 1)
         count += 1
         if (count > maxTweaks):
             stopTheLoop = 1
@@ -155,8 +155,8 @@ def tweakToLimit(self, motor, tc_no, direction):
             if not inPosition:
                 stopTheLoop = 1
                 print('%s:%d STOP=1 CNEN=0 Emergeny stop' % (tc_no, lineno()))
-                epics.caput(motor + '.STOP', 1)
-                epics.caput(motor + '.CNEN', 0)
+                capv_lib.capvput(motor + '.STOP', 1)
+                capv_lib.capvput(motor + '.CNEN', 0)
         else:
             inPosition = -1
 
@@ -168,7 +168,7 @@ def tweakToLimit(self, motor, tc_no, direction):
     print('%s:%d direction=%d hls=%d lls=%d' \
           % (tc_no, lineno(), direction, hls, lls))
     # Put back the limits for the next run
-    self.lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
+    lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
 
     # Check if we reached the limit switch, prepare to move away from it
     if direction > 0:
@@ -181,18 +181,17 @@ def tweakToLimit(self, motor, tc_no, direction):
     # can reset the error
     resetAxis(motor, tc_no)
     print('%s:%d CNEN=%d' % (tc_no, lineno(), self.old_Enable))
-    self.lib.setCNENandWait(motor, tc_no, self.old_Enable)
+    lib.setCNENandWait(motor, tc_no, self.old_Enable)
 
     # Move away from the limit switch
-    epics.caput(motor + '.VAL', rbv)
+    capv_lib.capvput(motor + '.VAL', rbv)
 
 
 class Test(unittest.TestCase):
-    lib = motor_lib()
     motor = os.getenv("TESTEDMOTORAXIS")
 
-    old_Enable = epics.caget(motor + '.CNEN')
-    TweakValue = epics.caget(motor + '.TWV')
+    old_Enable = capv_lib.capvget(motor + '.CNEN')
+    TweakValue = capv_lib.capvget(motor + '.TWV')
 
     # TWF/TWR
     def test_TC_091(self):
@@ -201,17 +200,17 @@ class Test(unittest.TestCase):
         motor = self.motor
         resetAxis(motor, tc_no)
         print('%s:%d .CNEN=1' % (tc_no, lineno()))
-        self.lib.setCNENandWait(motor, tc_no, 1)
+        lib.setCNENandWait(motor, tc_no, 1)
 
-        oldRBV = epics.caget(motor + '.RBV', use_monitor=False)
-        old_high_limit = epics.caget(motor + '.HLM')
-        old_low_limit = epics.caget(motor + '.LLM')
+        oldRBV = capv_lib.capvget(motor + '.RBV', use_monitor=False)
+        old_high_limit = capv_lib.capvget(motor + '.HLM')
+        old_low_limit = capv_lib.capvget(motor + '.LLM')
         # Switch off soft limits
-        self.lib.setSoftLimitsOff(motor)
+        lib.setSoftLimitsOff(motor)
 
-        msta = int(epics.caget(motor + '.MSTA'))
+        msta = int(capv_lib.capvget(motor + '.MSTA'))
         direction = 0
-        if (msta & self.lib.MSTA_BIT_PLUS_LS):
+        if (msta & lib.MSTA_BIT_PLUS_LS):
             direction = -1
             destination = oldRBV - self.TweakValue
         else:
@@ -221,18 +220,18 @@ class Test(unittest.TestCase):
         print('%s:%d Tweak the motor oldRBV=%f destination=%f' %
               (tc_no, lineno(), oldRBV, destination))
 
-        epics.caput(motor + '.VAL', destination)
+        capv_lib.capvput(motor + '.VAL', destination)
 
         ret1 = waitForStart(self, motor, tc_no, 0.4, direction, oldRBV)
         ret2 = waitForStop(self, motor, tc_no, 10.0, direction, oldRBV, self.TweakValue)
-        msta = int(epics.caget(motor + '.MSTA'))
+        msta = int(capv_lib.capvget(motor + '.MSTA'))
 
         print('%s STOP=1 start=%d stop=%d' % (tc_no, ret1, ret2))
-        epics.caput(motor + '.STOP', 1)
+        capv_lib.capvput(motor + '.STOP', 1)
 
-        epics.caput(motor + '.LLM', old_low_limit)
-        epics.caput(motor + '.HLM', old_high_limit)
-        ReadBackValue = epics.caget(motor + '.RBV', use_monitor=False)
+        capv_lib.capvput(motor + '.LLM', old_low_limit)
+        capv_lib.capvput(motor + '.HLM', old_high_limit)
+        ReadBackValue = capv_lib.capvget(motor + '.RBV', use_monitor=False)
         print('%s destination=%d postion=%f' % (
             tc_no, destination, ReadBackValue))
         #self.assertEqual(True, ret1, 'waitForStart return True')
@@ -262,5 +261,5 @@ class Test(unittest.TestCase):
         motor = self.motor
         resetAxis(motor, tc_no)
         print('%s:%d CNEN=%d' % (tc_no, lineno(), self.old_Enable))
-        self.lib.setCNENandWait(motor, tc_no, self.old_Enable)
+        lib.setCNENandWait(motor, tc_no, self.old_Enable)
         #assert False

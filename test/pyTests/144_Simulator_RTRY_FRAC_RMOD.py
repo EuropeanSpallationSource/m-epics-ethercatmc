@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 #
-import epics
 import unittest
 import os
 import sys
 import time
 from motor_lib import motor_lib
 lib = motor_lib()
+import capv_lib
 ###
 
 myFRAC   = 1.5
@@ -26,8 +26,8 @@ use_rel = 1
 
 
 def motorInitTC(tself, motor, tc_no, rmod, encRel):
-    epics.caput(motor + '.RMOD', rmod)
-    epics.caput(motor + '.UEIP', encRel)
+    capv_lib.capvput(motor + '.RMOD', rmod)
+    capv_lib.capvput(motor + '.UEIP', encRel)
 
 
 def setMotorStartPos(tself, motor, tc_no, startpos):
@@ -42,7 +42,11 @@ def setMotorStartPos(tself, motor, tc_no, startpos):
 def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorEndPos):
     ###########
     # expected and actual
-    fileName = "/tmp/" + motor.replace(':', '-') + "-" + str(tc_no)
+    if motor.startswith('pva://'):
+        mot = motor[6:]
+    else:
+        mot = motor
+    fileName = "/tmp/" + mot.replace(':', '-') + "-" + str(tc_no)
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
     dbgFileName = fileName + ".dbg"
@@ -50,14 +54,11 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
     motorInitTC(tself, motor, tc_no, rmod, encRel)
     setMotorStartPos(tself, motor, tc_no, motorStartPos)
     lib.setValueOnSimulator(motor, tc_no, "bManualSimulatorMode", 1)
-    time.sleep(2)
+    #time.sleep(2)
     lib.setValueOnSimulator(motor, tc_no, "log", actFileName)
-    time.sleep(2)
+    #time.sleep(2)
     #
-    epics.caput(motor + '.VAL', motorEndPos, wait=True)
-    lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
-    time.sleep(2)
-    lib.setValueOnSimulator(motor, tc_no, "bManualSimulatorMode", 0)
+    capv_lib.capvput(motor + '.VAL', motorEndPos, wait=True)
 
     # Create a "expected" file
     expFile=open(expFileName, 'w')
@@ -72,30 +73,33 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
     # - against the backlash direction -or- bigger than the backlash distance:
     #   two moves, first with moving, second with backlash parameters
 
-    cnt = 1 + int(epics.caget(motor + '.RTRY'))
+    cnt = 1 + int(capv_lib.capvget(motor + '.RTRY'))
     lib.writeExpFileRMOD_X(motor, tc_no, rmod, dbgFile, expFile, cnt, myFRAC, encRel, motorStartPos, motorEndPos)
 
     expFile.close()
     if dbgFileName != None:
         dbgFile.close()
-    lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
+    #lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
 
     time_to_wait = 100
     lib.waitForStop(motor, tc_no, time_to_wait)
+    lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
+    #time.sleep(2)
+    lib.setValueOnSimulator(motor, tc_no, "bManualSimulatorMode", 0)
     lib.cmpUnlinkExpectedActualFile(dbgFileName, expFileName, actFileName)
 
 
 
 class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
-    epics.caput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
+    capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
     myPOSlow = lib.myPOSlow
     myPOSmid = lib.myPOSmid
     myPOShig = lib.myPOShig
 
     def test_TC_14400(self):
         lib.motorInitAllForBDST(self.motor, 14400)
-        epics.caput(self.motor + '.FRAC', myFRAC)
+        capv_lib.capvput(self.motor + '.FRAC', myFRAC)
 
 
     # motorRMOD_D = 0 # "Default"
