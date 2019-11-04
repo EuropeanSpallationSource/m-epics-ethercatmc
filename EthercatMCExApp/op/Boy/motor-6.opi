@@ -515,141 +515,6 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>28</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>39872d87:13e14015f61:d19</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name>$(P)$(M1).STOP</pv_name>
-    <background_color>
-      <color name="alarm" red="253" green="0" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>STOP</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image></image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="WRITE_PV">
-        <pv_name>$(P)$(M1).STOP</pv_name>
-        <value>1</value>
-        <timeout>10</timeout>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>60</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <actions_from_pv>false</actions_from_pv>
-    <wuid>39872d87:13e14015f61:d1a</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Menu Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <transparent>false</transparent>
-    <pv_name></pv_name>
-    <background_color>
-      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="Gray_0" red="255" green="255" blue="255" />
-    </foreground_color>
-    <widget_type>Menu Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>40</width>
-    <border_style>6</border_style>
-    <label>More</label>
-    <rules />
-    <pv_value />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
-          <R>$(R1)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M1) (Basic)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
-          <R>$(R1)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M1) (Expert)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
-          <R>$(R1)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M1) (Indexer)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>motorx_setup.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
-          <R>$(R1)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M1) (setup)</description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>5</x>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -1212,6 +1077,202 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>28</x>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <actions_from_pv>false</actions_from_pv>
+    <wuid>39872d87:13e14015f61:d1a</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Menu Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </foreground_color>
+    <widget_type>Menu Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>40</width>
+    <border_style>6</border_style>
+    <label>More</label>
+    <rules />
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M1)</M>
+          <R>$(R1)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M1) (Basic)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisExpert.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M1)</M>
+          <R>$(R1)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M1) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisIndexer.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M1)</M>
+          <R>$(R1)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M1) (Indexer)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M1)</M>
+          <R>$(R1)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M1) (setup)</description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>0</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M1)-ErrRst</pv_name>
+    <background_color>
+      <color name="alarm" red="0" green="0" blue="253" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="253" green="253" blue="253" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Rst</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>30</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Visibility" prop_id="visible" out_exp="false">
+        <exp bool_exp="!(pv0==0)">
+          <value>true</value>
+        </exp>
+        <exp bool_exp="(pv0==0)">
+          <value>false</value>
+        </exp>
+        <pv trig="true">$(P)$(M1)-Err</pv>
+      </rule>
+    </rules>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M1)-ErrRst</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>42</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M1).STOP</pv_name>
+    <background_color>
+      <color name="alarm" red="253" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>STOP</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>45</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M1).STOP</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>72</x>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -1695,141 +1756,6 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>148</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>39872d87:13e14015f61:d19</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name>$(P)$(M2).STOP</pv_name>
-    <background_color>
-      <color name="alarm" red="253" green="0" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>STOP</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image></image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="WRITE_PV">
-        <pv_name>$(P)$(M2).STOP</pv_name>
-        <value>1</value>
-        <timeout>10</timeout>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>180</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <actions_from_pv>false</actions_from_pv>
-    <wuid>39872d87:13e14015f61:d1a</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Menu Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <transparent>false</transparent>
-    <pv_name></pv_name>
-    <background_color>
-      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="Gray_0" red="255" green="255" blue="255" />
-    </foreground_color>
-    <widget_type>Menu Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>40</width>
-    <border_style>6</border_style>
-    <label>More</label>
-    <rules />
-    <pv_value />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
-          <R>$(R2)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M2) (Basic)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
-          <R>$(R2)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M2) (Expert)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
-          <R>$(R2)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M2) (Indexer)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>motorx_setup.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
-          <R>$(R2)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M2) (setup)</description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>125</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -2393,6 +2319,202 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>148</x>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <actions_from_pv>false</actions_from_pv>
+    <wuid>39872d87:13e14015f61:d1a</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Menu Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </foreground_color>
+    <widget_type>Menu Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>40</width>
+    <border_style>6</border_style>
+    <label>More</label>
+    <rules />
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M2)</M>
+          <R>$(R2)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M2) (Basic)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisExpert.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M2)</M>
+          <R>$(R2)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M2) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisIndexer.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M2)</M>
+          <R>$(R2)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M2) (Indexer)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M2)</M>
+          <R>$(R2)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M2) (setup)</description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>120</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M2)-ErrRst</pv_name>
+    <background_color>
+      <color name="alarm" red="0" green="0" blue="253" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="253" green="253" blue="253" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Rst</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>30</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Visibility" prop_id="visible" out_exp="false">
+        <exp bool_exp="!(pv0==0)">
+          <value>true</value>
+        </exp>
+        <exp bool_exp="(pv0==0)">
+          <value>false</value>
+        </exp>
+        <pv trig="true">$(P)$(M2)-Err</pv>
+      </rule>
+    </rules>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M2)-ErrRst</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>162</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M2).STOP</pv_name>
+    <background_color>
+      <color name="alarm" red="253" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>STOP</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>45</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M2).STOP</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>192</x>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -2876,141 +2998,6 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>268</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>39872d87:13e14015f61:d19</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name>$(P)$(M3).STOP</pv_name>
-    <background_color>
-      <color name="alarm" red="253" green="0" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>STOP</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image></image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="WRITE_PV">
-        <pv_name>$(P)$(M3).STOP</pv_name>
-        <value>1</value>
-        <timeout>10</timeout>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>300</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <actions_from_pv>false</actions_from_pv>
-    <wuid>39872d87:13e14015f61:d1a</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Menu Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <transparent>false</transparent>
-    <pv_name></pv_name>
-    <background_color>
-      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="Gray_0" red="255" green="255" blue="255" />
-    </foreground_color>
-    <widget_type>Menu Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>40</width>
-    <border_style>6</border_style>
-    <label>More</label>
-    <rules />
-    <pv_value />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M3)</M>
-          <R>$(R3)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M3) (Basic)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M3)</M>
-          <R>$(R3)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M3) (Expert)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M3)</M>
-          <R>$(R3)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M3) (Indexer)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>motorx_setup.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M3)</M>
-          <R>$(R3)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M3) (setup)</description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>245</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -3574,6 +3561,202 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>268</x>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <actions_from_pv>false</actions_from_pv>
+    <wuid>39872d87:13e14015f61:d1a</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Menu Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </foreground_color>
+    <widget_type>Menu Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>40</width>
+    <border_style>6</border_style>
+    <label>More</label>
+    <rules />
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M3)</M>
+          <R>$(R3)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M3) (Basic)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisExpert.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M3)</M>
+          <R>$(R3)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M3) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisIndexer.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M3)</M>
+          <R>$(R3)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M3) (Indexer)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M3)</M>
+          <R>$(R3)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M3) (setup)</description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>240</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M3)-ErrRst</pv_name>
+    <background_color>
+      <color name="alarm" red="0" green="0" blue="253" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="253" green="253" blue="253" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Rst</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>30</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Visibility" prop_id="visible" out_exp="false">
+        <exp bool_exp="!(pv0==0)">
+          <value>true</value>
+        </exp>
+        <exp bool_exp="(pv0==0)">
+          <value>false</value>
+        </exp>
+        <pv trig="true">$(P)$(M3)-Err</pv>
+      </rule>
+    </rules>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M3)-ErrRst</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>282</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M3).STOP</pv_name>
+    <background_color>
+      <color name="alarm" red="253" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>STOP</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>45</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M3).STOP</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>312</x>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -4057,141 +4240,6 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>388</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>39872d87:13e14015f61:d19</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name>$(P)$(M4).STOP</pv_name>
-    <background_color>
-      <color name="alarm" red="253" green="0" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>STOP</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image></image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="WRITE_PV">
-        <pv_name>$(P)$(M4).STOP</pv_name>
-        <value>1</value>
-        <timeout>10</timeout>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>420</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <actions_from_pv>false</actions_from_pv>
-    <wuid>39872d87:13e14015f61:d1a</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Menu Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <transparent>false</transparent>
-    <pv_name></pv_name>
-    <background_color>
-      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="Gray_0" red="255" green="255" blue="255" />
-    </foreground_color>
-    <widget_type>Menu Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>40</width>
-    <border_style>6</border_style>
-    <label>More</label>
-    <rules />
-    <pv_value />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M4)</M>
-          <R>$(R4)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M4) (Basic)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M4)</M>
-          <R>$(R4)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M4) (Expert)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M4)</M>
-          <R>$(R4)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M4) (Indexer)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>motorx_setup.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M4)</M>
-          <R>$(R4)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M4) (setup)</description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>365</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -4755,6 +4803,202 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>388</x>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <actions_from_pv>false</actions_from_pv>
+    <wuid>39872d87:13e14015f61:d1a</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Menu Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </foreground_color>
+    <widget_type>Menu Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>40</width>
+    <border_style>6</border_style>
+    <label>More</label>
+    <rules />
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M4)</M>
+          <R>$(R4)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M4) (Basic)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisExpert.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M4)</M>
+          <R>$(R4)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M4) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisIndexer.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M4)</M>
+          <R>$(R4)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M4) (Indexer)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M4)</M>
+          <R>$(R4)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M4) (setup)</description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>360</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M4)-ErrRst</pv_name>
+    <background_color>
+      <color name="alarm" red="0" green="0" blue="253" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="253" green="253" blue="253" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Rst</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>30</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Visibility" prop_id="visible" out_exp="false">
+        <exp bool_exp="!(pv0==0)">
+          <value>true</value>
+        </exp>
+        <exp bool_exp="(pv0==0)">
+          <value>false</value>
+        </exp>
+        <pv trig="true">$(P)$(M4)-Err</pv>
+      </rule>
+    </rules>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M4)-ErrRst</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>402</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M4).STOP</pv_name>
+    <background_color>
+      <color name="alarm" red="253" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>STOP</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>45</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M4).STOP</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>432</x>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -5238,141 +5482,6 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>508</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>39872d87:13e14015f61:d19</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name>$(P)$(M5).STOP</pv_name>
-    <background_color>
-      <color name="alarm" red="253" green="0" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>STOP</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image></image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="WRITE_PV">
-        <pv_name>$(P)$(M5).STOP</pv_name>
-        <value>1</value>
-        <timeout>10</timeout>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>540</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <actions_from_pv>false</actions_from_pv>
-    <wuid>39872d87:13e14015f61:d1a</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Menu Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <transparent>false</transparent>
-    <pv_name></pv_name>
-    <background_color>
-      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="Gray_0" red="255" green="255" blue="255" />
-    </foreground_color>
-    <widget_type>Menu Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>40</width>
-    <border_style>6</border_style>
-    <label>More</label>
-    <rules />
-    <pv_value />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M5)</M>
-          <R>$(R5)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M5) (Basic)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M5)</M>
-          <R>$(R5)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M5) (Expert)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M5)</M>
-          <R>$(R5)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M5) (Indexer)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>motorx_setup.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M5)</M>
-          <R>$(R5)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M5) (setup)</description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>485</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -5936,6 +6045,202 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>508</x>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <actions_from_pv>false</actions_from_pv>
+    <wuid>39872d87:13e14015f61:d1a</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Menu Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </foreground_color>
+    <widget_type>Menu Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>40</width>
+    <border_style>6</border_style>
+    <label>More</label>
+    <rules />
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M5)</M>
+          <R>$(R5)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M5) (Basic)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisExpert.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M5)</M>
+          <R>$(R5)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M5) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisIndexer.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M5)</M>
+          <R>$(R5)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M5) (Indexer)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M5)</M>
+          <R>$(R5)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M5) (setup)</description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>480</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M5)-ErrRst</pv_name>
+    <background_color>
+      <color name="alarm" red="0" green="0" blue="253" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="253" green="253" blue="253" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Rst</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>30</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Visibility" prop_id="visible" out_exp="false">
+        <exp bool_exp="!(pv0==0)">
+          <value>true</value>
+        </exp>
+        <exp bool_exp="(pv0==0)">
+          <value>false</value>
+        </exp>
+        <pv trig="true">$(P)$(M5)-Err</pv>
+      </rule>
+    </rules>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M5)-ErrRst</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>522</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M5).STOP</pv_name>
+    <background_color>
+      <color name="alarm" red="253" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>STOP</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>45</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M5).STOP</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>552</x>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -6419,141 +6724,6 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>628</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>39872d87:13e14015f61:d19</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name>$(P)$(M6).STOP</pv_name>
-    <background_color>
-      <color name="alarm" red="253" green="0" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>STOP</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image></image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="WRITE_PV">
-        <pv_name>$(P)$(M6).STOP</pv_name>
-        <value>1</value>
-        <timeout>10</timeout>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>660</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <actions_from_pv>false</actions_from_pv>
-    <wuid>39872d87:13e14015f61:d1a</wuid>
-    <scripts />
-    <height>20</height>
-    <name>Menu Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <transparent>false</transparent>
-    <pv_name></pv_name>
-    <background_color>
-      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
-    </background_color>
-    <foreground_color>
-      <color name="Gray_0" red="255" green="255" blue="255" />
-    </foreground_color>
-    <widget_type>Menu Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>40</width>
-    <border_style>6</border_style>
-    <label>More</label>
-    <rules />
-    <pv_value />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>174</y>
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M6)</M>
-          <R>$(R6)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M6) (Basic)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M6)</M>
-          <R>$(R6)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M6) (Expert)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M6)</M>
-          <R>$(R6)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M6) (Indexer)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>motorx_setup.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M6)</M>
-          <R>$(R6)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M6) (setup)</description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>605</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -7116,5 +7286,201 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>628</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <actions_from_pv>false</actions_from_pv>
+    <wuid>39872d87:13e14015f61:d1a</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Menu Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </foreground_color>
+    <widget_type>Menu Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>40</width>
+    <border_style>6</border_style>
+    <label>More</label>
+    <rules />
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M6)</M>
+          <R>$(R6)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M6) (Basic)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisExpert.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M6)</M>
+          <R>$(R6)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M6) (Expert)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>EthercatMCaxisIndexer.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M6)</M>
+          <R>$(R6)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M6) (Indexer)</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>motorx_setup.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <M>$(M6)</M>
+          <R>$(R6)</R>
+        </macros>
+        <replace>0</replace>
+        <description>$(M6) (setup)</description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>600</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M6)-ErrRst</pv_name>
+    <background_color>
+      <color name="alarm" red="0" green="0" blue="253" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="253" green="253" blue="253" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Rst</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>30</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Visibility" prop_id="visible" out_exp="false">
+        <exp bool_exp="!(pv0==0)">
+          <value>true</value>
+        </exp>
+        <exp bool_exp="(pv0==0)">
+          <value>false</value>
+        </exp>
+        <pv trig="true">$(P)$(M6)-Err</pv>
+      </rule>
+    </rules>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M6)-ErrRst</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>642</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>39872d87:13e14015f61:d19</wuid>
+    <scripts />
+    <height>20</height>
+    <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name>$(P)$(M6).STOP</pv_name>
+    <background_color>
+      <color name="alarm" red="253" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>STOP</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>45</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image></image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>174</y>
+    <actions hook="false" hook_all="false">
+      <action type="WRITE_PV">
+        <pv_name>$(P)$(M6).STOP</pv_name>
+        <value>1</value>
+        <timeout>10</timeout>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>672</x>
   </widget>
 </display>
