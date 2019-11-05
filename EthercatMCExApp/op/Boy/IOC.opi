@@ -485,18 +485,14 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-4.opi</path>
+        <path>motor-2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <P>IOC:MC-SltH-01:</P>
-          <M1>xn</M1>
-          <M2>xp</M2>
-          <M3>Center</M3>
-          <M4>Gap</M4>
-          <R1>xn-</R1>
-          <R2>xp-</R2>
-          <R3>Center-</R3>
-          <R4>Gap-</R4>
+          <P>LabS-MCAG:MC-MCU-28:</P>
+          <M1>m1</M1>
+          <M2>m2</M2>
+          <R1>m1-</R1>
+          <R2>m2-</R2>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -535,7 +531,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:SltH-01</text>
+    <text>MC-MCU028</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
