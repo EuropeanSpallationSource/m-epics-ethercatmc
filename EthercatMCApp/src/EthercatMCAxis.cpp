@@ -46,6 +46,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   : asynMotorAxis(pC, axisNo),
     pC_(pC)
 {
+  int powerAutoOnOff = -1; /* undefined */
   /* Some parameters are only defined in the ESS fork of the motor module.
      So they have the ifdef */
 #ifdef motorFlagsDriverUsesEGUString
@@ -66,7 +67,6 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
   drvlocal.old_st_axis_status.bLimitFwd = -1;
 
   drvlocal.old_eeAxisError = eeAxisErrorIOCcomError;
-  drvlocal.axisFlags = axisFlags;
 
   /* We pretend to have an encoder (fActPosition) */
   setIntegerParam(pC_->motorStatusHasEncoder_, 1);
@@ -82,12 +82,6 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
 #ifdef motorFlagsPwrWaitForOnString
   setIntegerParam(pC_->motorFlagsPwrWaitForOn_, 1);
 #endif
-  if (axisFlags & AMPLIFIER_ON_FLAG_AUTO_ON) {
-#ifdef POWERAUTOONOFFMODE2
-    setIntegerParam(pC_->motorPowerAutoOnOff_, POWERAUTOONOFFMODE2);
-    setDoubleParam(pC_->motorPowerOnDelay_,   6.0);
-    setDoubleParam(pC_->motorPowerOffDelay_, -1.0);
-#endif
 #ifdef motorShowPowerOffString
     setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
@@ -95,11 +89,7 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
 
-  }
   drvlocal.scaleFactor = 1.0;
-  if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
-    setIntegerParam(pC->motorStatusGainSupport_, 1);
-  }
   if (axisOptionsStr && axisOptionsStr[0]) {
     const char * const encoder_is_str = "encoder=";
     const char * const cfgfile_str = "cfgFile=";
@@ -108,10 +98,14 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
     /* The non-ESS motor needs a dummy "stepm-size" to compensate for MRES */
     const char * const stepSize_str = "stepSize=";
 #endif
-    const char * const homProc_str = "HomProc=";
-    const char * const homPos_str  = "HomPos=";
-    const char * const adsPort_str  = "adsPort=";
-    const char * const scaleFactor_str = "scaleFactor=";
+    const char * const homProc_str 	   = "HomProc=";
+    const char * const homPos_str  	   = "HomPos=";
+    const char * const adsPort_str         = "adsPort=";
+    const char * const axisFlags_str       = "axisFlags=";
+    const char * const powerAutoOnOff_str  = "powerAutoOnOff=";
+    const char * const powerOffDelay_str   = "powerOffDelay=";
+    const char * const powerOnDelay_str    = "powerOnDelay=";
+    const char * const scaleFactor_str     = "scaleFactor=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -144,6 +138,15 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
         if (adsPort > 0) {
           drvlocal.adsPort = (unsigned)adsPort;
         }
+      } else if (!strncmp(pThisOption, axisFlags_str, strlen(axisFlags_str))) {
+        pThisOption += strlen(axisFlags_str);
+        int myAxisFlags = atoi(pThisOption);
+        if (myAxisFlags > 0) {
+          axisFlags = myAxisFlags;
+        }
+      } else if (!strncmp(pThisOption, powerAutoOnOff_str, strlen(powerAutoOnOff_str))) {
+        pThisOption += strlen(powerAutoOnOff_str);
+	powerAutoOnOff = atoi(pThisOption);
       } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
         pThisOption += strlen(homProc_str);
         int homProc = atoi(pThisOption);
@@ -155,10 +158,36 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
       } else if (!strncmp(pThisOption, scaleFactor_str, strlen(scaleFactor_str))) {
         pThisOption += strlen(scaleFactor_str);
         drvlocal.scaleFactor = atof(pThisOption);
+      } else if (!strncmp(pThisOption, powerOffDelay_str, strlen(powerOffDelay_str))) {
+        double powerOffDelay;
+        pThisOption += strlen(powerOffDelay_str);
+        powerOffDelay = atof(pThisOption);
+        updateCfgValue(pC_->motorPowerOffDelay_, powerOffDelay, "powerOffDelay");
+      } else if (!strncmp(pThisOption, powerOnDelay_str, strlen(powerOnDelay_str))) {
+        double powerOnDelay;
+        pThisOption += strlen(powerOnDelay_str);
+        powerOnDelay = atof(pThisOption);
+        updateCfgValue(pC_->motorPowerOnDelay_, powerOnDelay, "powerOnDelay");
       }
       pThisOption = pNextOption;
     }
     free(pOptions);
+  }
+  drvlocal.axisFlags = axisFlags;
+  if (axisFlags & AMPLIFIER_ON_FLAG_USING_CNEN) {
+    setIntegerParam(pC->motorStatusGainSupport_, 1);
+  }
+  if (powerAutoOnOff >= 0) {
+    /* The new handling using options */
+    setIntegerParam(pC_->motorPowerAutoOnOff_, powerAutoOnOff);
+    /* the delays had been set up above */
+  } else if (axisFlags & AMPLIFIER_ON_FLAG_AUTO_ON) {
+    /* old, legacy, to support old start scripts where flags == 6 are used */
+#ifdef POWERAUTOONOFFMODE2
+    setIntegerParam(pC_->motorPowerAutoOnOff_, POWERAUTOONOFFMODE2);
+    setDoubleParam(pC_->motorPowerOnDelay_,   6.0);
+    setDoubleParam(pC_->motorPowerOffDelay_, -1.0);
+#endif
   }
   /* Set the module name to "" if we have FILE/LINE enabled by asyn */
   if (pasynTrace->getTraceInfoMask(pC_->pasynUserController_) & ASYN_TRACEINFO_SOURCE) modNamEMC = "";
