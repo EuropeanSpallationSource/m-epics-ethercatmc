@@ -224,6 +224,7 @@ public:
 
   struct {
     asynStatus   oldStatus;
+    unsigned int cntADSstatus;
     unsigned int local_no_ASYN_;
     unsigned int hasConfigError;
     unsigned int initialPollDone;

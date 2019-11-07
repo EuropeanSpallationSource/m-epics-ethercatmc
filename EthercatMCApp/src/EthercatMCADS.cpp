@@ -13,6 +13,7 @@
 #endif
 
 //#define DEFAULT_CONTROLLER_TIMEOUT 2.0
+#define MAXCNTADSSTATUS 10
 
 static uint32_t invokeID;
 static int deftracelevel = ASYN_TRACE_DEBUG;
@@ -250,7 +251,7 @@ EthercatMCController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
                                    DEFAULT_CONTROLLER_TIMEOUT,
                                    &nwrite);
   if (nwrite != outlen) {
-    if (!ctrlLocal.oldStatus) {
+    if (ctrlLocal.cntADSstatus < MAXCNTADSSTATUS) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "%soutlen=%lu nwrite=%lu timeout=%f err=%s status=%s (%d)\n",
                 modNamEMC,
@@ -259,6 +260,7 @@ EthercatMCController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
                 DEFAULT_CONTROLLER_TIMEOUT,
                 pasynUser->errorMessage,
                 EthercatMCstrStatus(status), status);
+      ctrlLocal.cntADSstatus++;
     }
     status = asynError; /* TimeOut -> Error */
     return status;
@@ -273,8 +275,8 @@ EthercatMCController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
   EthercatMChexdump(pasynUser, tracelevel, "IN ams/tcp ",
                     indata, nread);
   if (nread != part_1_len) {
-    if (!ctrlLocal.oldStatus) {
-      /* Do not spam the log:  print only once */
+    if (ctrlLocal.cntADSstatus < MAXCNTADSSTATUS) {
+      /* Do not spam the log */
       EthercatMCamsdump(pasynUser, tracelevel | ASYN_TRACE_INFO,
                         "OUT ", outdata);
       if (nread) {
@@ -301,6 +303,7 @@ EthercatMCController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
                   pasynUser->errorMessage,
                   EthercatMCstrStatus(status), status);
       }
+      ctrlLocal.cntADSstatus++;
     }
     disconnect_C(pasynUser);
   }
