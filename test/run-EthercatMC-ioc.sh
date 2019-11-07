@@ -68,15 +68,25 @@ if test -n "$1"; then
 fi
 export MOTORIP MOTORPORT
 if test "$MOTORPORT" = 48898; then
-  if test -z "$1"; then
-    echo >&2         $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "<LOCALAMSNETID>"
-    echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT " 192.168.88.154.1.1"
+  if test -z "$2"; then
+    if which ifconfig >/dev/null 2>&1; then
+      LOCALIPS=$(ifconfig | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g" -e "s/ netmask.*//")
+    else
+       LOCALIPS=$(ip addr | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g"  -e "s%/.*%%g")
+    fi
+    #echo LOCALIP=$LOCALIP
+    echo >&2         $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "<REMOTEAMSNETID> <LOCALAMSNETID>"
+    for LOCALIP in $LOCALIPS; do
+      echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "  5.40.216.206.1.1     $LOCALIP.1.1"
+    done
     exit 1
   fi
+  REMOTEAMSNETID=$1
+  shift
   LOCALAMSNETID=$1
   shift
 fi
-export LOCALAMSNETID
+export LOCALAMSNETID REMOTEAMSNETID
 (
   IOCDIR=../iocBoot/ioc${APPXX}
   DBMOTOR=db
@@ -84,66 +94,66 @@ export LOCALAMSNETID
   stcmddst=./st.cmd.$EPICS_HOST_ARCH &&
   mkdir -p  $IOCDIR/ &&
   case $EPICS_EEE_E3 in
-      n)
-          if test -d ../motor; then
-              DBMOTOR=dbmotor
-              #motor
-              (cd ../motor && make install) && (cd .. && make install) || {
-                  echo >&2 make install failed
-                  exit 1
-              }
-              (cd .. &&
-                  mkdir -p dbmotor &&
-                  for src in db/*template; do
-                      dst=dbmotor/${src##*/}
-                      echo sed PWD=$PWD src=$src dst=$dst
-                      sed <"$src" >"$dst" \
-                          -e "s%record(axis%record(motor%" \
-                          -e "s%asynAxis%asynMotor%"
-                  done
-              )
-          fi &&
-          if test -d ../../motor; then
-              (cd ../../motor &&
-                  make install) || {
-                  echo >&2 make install failed
-                  exit 1
-              }
-          fi
-          (cd .. &&
-              make install) || {
-              echo >&2 make install failed
-              exit 1
-          }
-          ;;
-      y)
-          #EEE
-          if sed -e "s/#.*//" -e "s/-ESS\$//"  <startup/st.${MOTORCFG}.cmd |
-              grep "require *motor,.*[A-Za-z]"; then
-              (cd ../../motor &&
-                  rm -rfv ./dbd ./include ./doc ./db &&
-                  make install) || {
-                  echo >&2 make install failed
-                  exit 1
-              }
-          fi &&
-          if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
-              grep "require *EthercatMC,.*[A-Za-z]"; then
-              (cd .. &&
-                  rm -rfv ./dbd ./include ./doc ./db &&
-                  make install) || {
-                  echo >&2 make install failed
-                  exit 1
-              }
-          fi
-          ;;
-      e3)
-          ( cd ../.. && make devinstall)
-          ;;
-      *)
-          echo >&2 invalid1 EPICS_EEE_E3 $EPICS_EEE_E3
+    n)
+      if test -d ../motor; then
+        DBMOTOR=dbmotor
+        #motor
+        (cd ../motor && make install) && (cd .. && make install) || {
+          echo >&2 make install failed
           exit 1
-          ;;
+        }
+        (cd .. &&
+            mkdir -p dbmotor &&
+            for src in db/*template; do
+              dst=dbmotor/${src##*/}
+              echo sed PWD=$PWD src=$src dst=$dst
+              sed <"$src" >"$dst" \
+                  -e "s%record(axis%record(motor%" \
+                  -e "s%asynAxis%asynMotor%"
+            done
+        )
+      fi &&
+        if test -d ../../motor; then
+          (cd ../../motor &&
+              make install) || {
+            echo >&2 make install failed
+            exit 1
+          }
+        fi
+      (cd .. &&
+          make install) || {
+        echo >&2 make install failed
+        exit 1
+      }
+      ;;
+    y)
+      #EEE
+      if sed -e "s/#.*//" -e "s/-ESS\$//"  <startup/st.${MOTORCFG}.cmd |
+          grep "require *motor,.*[A-Za-z]"; then
+        (cd ../../motor &&
+            rm -rfv ./dbd ./include ./doc ./db &&
+            make install) || {
+          echo >&2 make install failed
+          exit 1
+        }
+      fi &&
+        if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
+            grep "require *EthercatMC,.*[A-Za-z]"; then
+          (cd .. &&
+              rm -rfv ./dbd ./include ./doc ./db &&
+              make install) || {
+            echo >&2 make install failed
+            exit 1
+          }
+        fi
+      ;;
+    e3)
+      ( cd ../.. && make devinstall)
+      ;;
+    *)
+      echo >&2 invalid1 EPICS_EEE_E3 $EPICS_EEE_E3
+      exit 1
+      ;;
   esac &&
   cd $IOCDIR/ &&
   case $EPICS_EEE_E3 in
@@ -162,7 +172,8 @@ export LOCALAMSNETID
               -e "s/require motor,USER/require motor,$USER/" \
               -e "s/require EthercatMC,USER/require EthercatMC,$USER/" \
               -e "s/^cd /#cd /" \
-              -e "s/192.168.88.154.1.1/$LOCALAMSNETID/" \
+              -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
+              -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
               -e "s/127.0.0.1/$MOTORIP/" \
               -e "s/5000/$MOTORPORT/" |
           grep -v '^  *#' >$stcmddst || {
@@ -205,7 +216,8 @@ EOF
               -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
               -e "s/5000/$MOTORPORT/" \
               -e "s/127.0.0.1/$MOTORIP/" \
-              -e "s/192.168.88.154.1.1/$LOCALAMSNETID/" \
+              -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
+              -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
               -e "s%cfgFile=./%cfgFile=./test/startup/%"    \
               -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
               -e "s%require%#require%" \
@@ -234,7 +246,8 @@ EOF
               -e "s/require EthercatMC,USER/require EthercatMC,develop/" \
               -e "s%require asyn%#require assyn%" \
               -e "s/^cd /#cd /" \
-              -e "s/192.168.88.154.1.1/$LOCALAMSNETID/" \
+              -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
+              -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
               -e "s/127.0.0.1/$MOTORIP/" \
               -e "s/5000/$MOTORPORT/" |
           grep -v '^  *#' >$stcmddst || {
