@@ -3,7 +3,7 @@ TAB=$(printf '\t')
 LF=$(printf '\n')
 #echo TABX=${TAB}X
 
-fileswscheck=$(git ls-files '*.[ch]' '*.cpp' '*.hpp' '*.sh' '*.py')
+fileswscheck=$(git ls-files '*.[ch]' '*.cpp' '*.hpp' '*.sh' '*.py' '*.iocsh')
 if test -n "$fileswscheck"; then
   #echo fileswscheck=$fileswscheck
   cmd=$(printf "%s %s" 'egrep -n "$TAB| \$"' "$fileswscheck")
