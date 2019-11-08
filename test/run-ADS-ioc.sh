@@ -2,25 +2,27 @@
 APPXX=EthercatMC
 TOP=$(echo $PWD/.. | sed -e "s%/test/\.\.$%%")
 export APPXX
-EPICS_EEE=n
+EPICS_EEE_E3=n
 
 uname_s=$(uname -s 2>/dev/null || echo unknown)
 uname_m=$(uname -m 2>/dev/null || echo unknown)
 
 INSTALLED_EPICS=../../../../.epics.$(hostname).$uname_s.$uname_m
 
-if test "$EPICS_ENV_PATH" &&
+if test "$EPICS_DRIVER_PATH" ; then
+  EPICS_EEE_E3=e3
+elif test "$EPICS_ENV_PATH" &&
     test "$EPICS_MODULES_PATH" &&
     test "$EPICS_BASES_PATH"; then
-  EPICS_EEE=y
+  EPICS_EEE_E3=y
 elif test -r $INSTALLED_EPICS; then
   echo INSTALLED_EPICS=$INSTALLED_EPICS
  . $INSTALLED_EPICS
 else
   echo not found: INSTALLED_EPICS=$INSTALLED_EPICS
 fi
-export EPICS_EEE
-echo EPICS_EEE=$EPICS_EEE
+export EPICS_EEE_E3
+echo EPICS_EEE_E3=$EPICS_EEE_E3
 
 if test -z "$EPICS_BASE";then
   echo >&2 "EPICS_BASE" is not set
@@ -38,7 +40,7 @@ echo MOTORCFG=$MOTORCFG
     test -n "$1" && echo >&2 "not found st.${1}.cmd"
     echo >&2 "try one of these:"
     for cmd in $CMDS; do
-      echo >&2 $0 " $cmd" " <ip>  <AMSID>"
+      echo >&2 $0 " $cmd" " <ip>  <REMOTEAMSNETID> <LOCALAMSNETID>"
     done
     exit 1
   fi
@@ -59,118 +61,146 @@ echo MOTORIP=$MOTORIP
 shift
 
 
-if test -z "$1"; then
-  echo >&2 $0 " <AMSID> missing"
-  echo >&2 $0 "  SolAxis" " <ip>[:port] <AMSID>"
+if test -z "$2"; then
+  if which ifconfig >/dev/null 2>&1; then
+    LOCALIPS=$(ifconfig | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g" -e "s/ netmask.*//")
+  else
+    LOCALIPS=$(ip addr | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g"  -e "s%/.*%%g")
+  fi
+  #echo LOCALIP=$LOCALIP
+  echo >&2         $0 "${MOTORCFG} " $MOTORIP "<REMOTEAMSNETID> <LOCALAMSNETID>"
+  for LOCALIP in $LOCALIPS; do
+    echo >&2 Example $0 "${MOTORCFG} " $MOTORIP"  5.40.216.206.1.1     $LOCALIP.1.1"
+  done
   exit 1
 fi
-AMSID=$1
+REMOTEAMSNETID=$1
+shift
+LOCALAMSNETID=$1
+shift
 
-export MOTORIP AMSID
+export LOCALAMSNETID REMOTEAMSNETID
+echo LOCALAMSNETID=$LOCALAMSNETID
+echo REMOTEAMSNETID=$REMOTEAMSNETID
+
 (
   IOCDIR=../iocBoot/ioc${APPXX}
   DBMOTOR=db
   envPathsdst=./envPaths.$EPICS_HOST_ARCH &&
   stcmddst=./st.cmd.$EPICS_HOST_ARCH &&
   mkdir -p  $IOCDIR/ &&
-  if test "x$EPICS_EEE" = "xn"; then
-    if test -d ../motor; then
-      DBMOTOR=dbmotor
-      #motor
-      (cd ../motor && make install) && (cd .. && make install) || {
-        echo >&2 make install failed
-        exit 1
+  case $EPICS_EEE_E3 in
+    n)
+      if test -d ../motor; then
+        DBMOTOR=dbmotor
+        #motor
+        (cd ../motor && make install) && (cd .. && make install) || {
+          echo >&2 make install failed
+          exit 1
         }
-      (cd .. &&
-          mkdir -p dbmotor &&
-          for src in db/*template; do
-            dst=dbmotor/${src##*/}
-            echo sed PWD=$PWD src=$src dst=$dst
-            sed <"$src" >"$dst" \
-                -e "s%record(axis%record(motor%" \
-                -e "s%asynAxis%asynMotor%"
-          done
-      )
-    fi &&
-    (cd ../../motor &&
-     make install) || {
-       echo >&2 make install failed
-       exit 1
-    }
-    (cd ../../ads &&
-     make install) || {
-       echo >&2 make install failed
-       exit 1
-    }
-    (cd .. &&
-     make install) || {
-       echo >&2 make install failed
-       exit 1
-    }
-
-  else
-    #EEE
-    if sed -e "s/#.*//" -e "s/-ESS\$//"  <startup/st.${MOTORCFG}.cmd |
-        grep "require *motor,.*[A-Za-z]"; then
-      (cd ../../motor &&
-         rm -rfv ./dbd ./include ./doc ./db &&
-         make install) || {
-         echo >&2 make install failed
-         exit 1
-      }
-    fi &&
-    if sed -e "s/#.*//"  <startup/st.${ADSCFG}.cmd |
-        grep "require *ads,.*[A-Za-z]"; then
+        (cd .. &&
+            mkdir -p dbmotor &&
+            for src in db/*template; do
+              dst=dbmotor/${src##*/}
+              echo sed PWD=$PWD src=$src dst=$dst
+              sed <"$src" >"$dst" \
+                  -e "s%record(axis%record(motor%" \
+                  -e "s%asynAxis%asynMotor%"
+            done
+        )
+      fi &&
+      if test -d ../../motor; then
+        (cd ../../motor &&
+            make install) || {
+            echo >&2 make install failed
+            exit 1
+        }
+      fi
       (cd ../../ads &&
-         rm -rfv ./dbd ./include ./doc ./db &&
-         make install) || {
+       make install) || {
          echo >&2 make install failed
          exit 1
       }
-    fi &&
-    if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
-        grep "require *EthercatMC,.*[A-Za-z]"; then
       (cd .. &&
-         rm -rfv ./dbd ./include ./doc ./db &&
-         make install) || {
+       make install) || {
          echo >&2 make install failed
          exit 1
       }
-    fi
-  fi &&
-  cd $IOCDIR/ &&
-  if test "x$EPICS_EEE" = "xy"; then
-    #EEE
-    stcmddst=./st.cmd.EEE.$EPICS_HOST_ARCH &&
-    # We need to patch the cmd files to adjust "<"
-    # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-    for src in  ../../startup/*cmd ../../test/startup/*cfg ../../test/startup/*cmd; do
-      dst=${src##*/}
-      echo cp PWD=$PWD src=$src dst=$dst
-      cp "$src" "$dst"
-    done &&
-    rm -f $stcmddst &&
-    sed  <st.${MOTORCFG}.cmd  \
-      -e "s/require motor,USER/require motor,$USER/" \
-      -e "s/require EthercatMC,USER/require EthercatMC,$USER/" \
-      -e "s/require ads.*/require ads,$USER/" \
-      -e "s/^cd /#cd /" \
-      -e "s/5.39.66.76.1.1/$AMSID/"  \
-      -e "s/127.0.0.1/$MOTORIP/" |
-    grep -v '^  *#' >$stcmddst || {
-      echo >&2 can not create stcmddst $stcmddst
+    ;;
+    y)
+      #EEE
+      if sed -e "s/#.*//" -e "s/-ESS\$//"  <startup/st.${MOTORCFG}.cmd |
+          grep "require *motor,.*[A-Za-z]"; then
+        (cd ../../motor &&
+           rm -rfv ./dbd ./include ./doc ./db &&
+           make install) || {
+           echo >&2 make install failed
+           exit 1
+        }
+      fi &&
+      if sed -e "s/#.*//"  <startup/st.${ADSCFG}.cmd |
+          grep "require *ads,.*[A-Za-z]"; then
+        (cd ../../ads &&
+           rm -rfv ./dbd ./include ./doc ./db &&
+           make install) || {
+           echo >&2 make install failed
+           exit 1
+        }
+      fi &&
+      if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
+          grep "require *EthercatMC,.*[A-Za-z]"; then
+        (cd .. &&
+           rm -rfv ./dbd ./include ./doc ./db &&
+           make install) || {
+           echo >&2 make install failed
+           exit 1
+        }
+      fi
+    ;;
+    e3)
+      ( cd ../.. && make devinstall)
+      ;;
+    *)
+      echo >&2 invalid1 EPICS_EEE_E3 $EPICS_EEE_E3
       exit 1
-    }
-    rm -fv  require.lock* &&
-    chmod +x $stcmddst &&
-    cmd=$(echo iocsh $stcmddst) &&
-    echo PWD=$PWD cmd=$cmd &&
-    eval $cmd
-  else
+      ;;
+  esac &&
+  cd $IOCDIR/ &&
+  case $EPICS_EEE_E3 in
+    y)
+      #EEE
+      stcmddst=./st.cmd.EEE.$EPICS_HOST_ARCH &&
+      # We need to patch the cmd files to adjust "<"
+      # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
+      for src in  ../../startup/*cmd ../../test/startup/*cfg ../../test/startup/*cmd; do
+        dst=${src##*/}
+        echo cp PWD=$PWD src=$src dst=$dst
+        cp "$src" "$dst"
+      done &&
+      rm -f $stcmddst &&
+      sed  <st.${MOTORCFG}.cmd  \
+        -e "s/require motor,USER/require motor,$USER/" \
+        -e "s/require EthercatMC,USER/require EthercatMC,$USER/" \
+        -e "s/require ads.*/require ads,$USER/" \
+        -e "s/^cd /#cd /" \
+        -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
+        -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
+        -e "s/127.0.0.1/$MOTORIP/" |
+      grep -v '^  *#' >$stcmddst || {
+        echo >&2 can not create stcmddst $stcmddst
+        exit 1
+      }
+      rm -fv  require.lock* &&
+      chmod +x $stcmddst &&
+      cmd=$(echo iocsh $stcmddst) &&
+      echo PWD=$PWD cmd=$cmd &&
+      eval $cmd
+      ;;
+    n)
     # classic EPICS, non EEE
     # We need to patch the cmd files to adjust dbLoadRecords
     # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-    for src in ../../test/startup/*cmd  ../../startup/*cmd; do
+    for src in ../../test/startup/*cmd  ../../iocsh/*iocsh; do
       dst=${src##*/}
       echo sed PWD=$PWD src=$src dst=$dst
       sed <"$src" >"$dst" \
@@ -196,7 +226,8 @@ EOF
    echo sed PWD=$PWD "<../../startup/st.${MOTORCFG}.cmd >>$stcmddst"
    sed <../../test/startup/st.${MOTORCFG}.cmd  \
       -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
-      -e "s/5.39.66.76.1.1/$AMSID/"  \
+      -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
+      -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
       -e "s/127.0.0.1/$MOTORIP/" \
       -e "s%cfgFile=./%cfgFile=./test/startup/%"    \
       -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
@@ -209,5 +240,10 @@ EOF
     egrep -v "^ *#" $stcmddst >xx
     echo PWD=$PWD $stcmddst
     $stcmddst
-  fi
+    ;;
+  *)
+      echo >&2 invalid2 EPICS_EEE_E3 $EPICS_EEE_E3
+      exit 1
+      ;;
+  esac
 )
