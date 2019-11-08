@@ -9,8 +9,6 @@ uname_m=$(uname -m 2>/dev/null || echo unknown)
 
 INSTALLED_EPICS=../../../../.epics.$(hostname).$uname_s.$uname_m
 
-
-## &&    test "$EPICS_DB_INCLUDE"
 if test "$EPICS_DRIVER_PATH" ; then
   EPICS_EEE_E3=e3
 elif test "$EPICS_ENV_PATH" &&
@@ -113,15 +111,15 @@ export LOCALAMSNETID REMOTEAMSNETID
             done
         )
       fi &&
-        if test -d ../../motor; then
-          (cd ../../motor &&
-              make install) || {
+      if test -d ../../motor; then
+        (cd ../../motor &&
+            make install) || {
             echo >&2 make install failed
             exit 1
-          }
-        fi
+        }
+      fi
       (cd .. &&
-          make install) || {
+        make install) || {
         echo >&2 make install failed
         exit 1
       }
