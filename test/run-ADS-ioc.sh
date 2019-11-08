@@ -34,10 +34,10 @@ export MOTORCFG
 echo MOTORCFG=$MOTORCFG
 (
   cd startup &&
-  if ! test -f st.${MOTORCFG}.cmd; then
-    CMDS=$(echo st.*.cmd | sed -e "s/st\.//g" -e "s/\.cmd//g")
+  if ! test -f st.${MOTORCFG}.iocsh; then
+    CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g")
     #echo CMDS=$CMDS
-    test -n "$1" && echo >&2 "not found st.${1}.cmd"
+    test -n "$1" && echo >&2 "not found st.${1}.iocsh"
     echo >&2 "try one of these:"
     for cmd in $CMDS; do
       echo >&2 $0 " $cmd" " <ip>  <REMOTEAMSNETID> <LOCALAMSNETID>"
@@ -87,7 +87,7 @@ echo REMOTEAMSNETID=$REMOTEAMSNETID
   IOCDIR=../iocBoot/ioc${APPXX}
   DBMOTOR=db
   envPathsdst=./envPaths.$EPICS_HOST_ARCH &&
-  stcmddst=./st.cmd.$EPICS_HOST_ARCH &&
+  stcmddst=./st.iocsh.$EPICS_HOST_ARCH &&
   mkdir -p  $IOCDIR/ &&
   case $EPICS_EEE_E3 in
     n)
@@ -129,7 +129,7 @@ echo REMOTEAMSNETID=$REMOTEAMSNETID
     ;;
     y)
       #EEE
-      if sed -e "s/#.*//" -e "s/-ESS\$//"  <startup/st.${MOTORCFG}.cmd |
+      if sed -e "s/#.*//" -e "s/-ESS\$//"  <startup/st.${MOTORCFG}.iocsh |
           grep "require *motor,.*[A-Za-z]"; then
         (cd ../../motor &&
            rm -rfv ./dbd ./include ./doc ./db &&
@@ -138,7 +138,7 @@ echo REMOTEAMSNETID=$REMOTEAMSNETID
            exit 1
         }
       fi &&
-      if sed -e "s/#.*//"  <startup/st.${ADSCFG}.cmd |
+      if sed -e "s/#.*//"  <startup/st.${ADSCFG}.iocsh |
           grep "require *ads,.*[A-Za-z]"; then
         (cd ../../ads &&
            rm -rfv ./dbd ./include ./doc ./db &&
@@ -147,7 +147,7 @@ echo REMOTEAMSNETID=$REMOTEAMSNETID
            exit 1
         }
       fi &&
-      if sed -e "s/#.*//" <startup/st.${MOTORCFG}.cmd |
+      if sed -e "s/#.*//" <startup/st.${MOTORCFG}.iocsh |
           grep "require *EthercatMC,.*[A-Za-z]"; then
         (cd .. &&
            rm -rfv ./dbd ./include ./doc ./db &&
@@ -169,7 +169,7 @@ echo REMOTEAMSNETID=$REMOTEAMSNETID
   case $EPICS_EEE_E3 in
     y)
       #EEE
-      stcmddst=./st.cmd.EEE.$EPICS_HOST_ARCH &&
+      stcmddst=./st.iocsh.EEE.$EPICS_HOST_ARCH &&
       # We need to patch the cmd files to adjust "<"
       # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
       for src in  ../../startup/*cmd ../../test/startup/*cfg ../../test/startup/*cmd; do
@@ -178,7 +178,7 @@ echo REMOTEAMSNETID=$REMOTEAMSNETID
         cp "$src" "$dst"
       done &&
       rm -f $stcmddst &&
-      sed  <st.${MOTORCFG}.cmd  \
+      sed  <st.${MOTORCFG}.iocsh  \
         -e "s/require motor,USER/require motor,$USER/" \
         -e "s/require EthercatMC,USER/require EthercatMC,$USER/" \
         -e "s/require ads.*/require ads,$USER/" \
@@ -222,9 +222,9 @@ cd ${TOP}
 dbLoadDatabase "dbd/${APPXX}.dbd"
 ${APPXX}_registerRecordDeviceDriver pdbbase
 EOF
-   # Side note: st.${MOTORCFG}.cmd needs extra patching
-   echo sed PWD=$PWD "<../../startup/st.${MOTORCFG}.cmd >>$stcmddst"
-   sed <../../test/startup/st.${MOTORCFG}.cmd  \
+   # Side note: st.${MOTORCFG}.iocsh needs extra patching
+   echo sed PWD=$PWD "<../../startup/st.${MOTORCFG}.iocsh >>$stcmddst"
+   sed <../../test/startup/st.${MOTORCFG}.iocsh  \
       -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
       -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
       -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
