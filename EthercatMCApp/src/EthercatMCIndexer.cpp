@@ -550,7 +550,7 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
 asynStatus
 EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                                                 unsigned devNum,
-                                                unsigned iOffset,
+                                                unsigned iOffsBytes,
                                                 unsigned lenInPlcPara)
 {
   unsigned axisNo = pAxis->axisNo_;
@@ -593,10 +593,10 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
     unsigned paramIfOffset;
     switch (lenInPlcPara) {
     case 4:
-      paramIfOffset = iOffset + 10;
+      paramIfOffset = iOffsBytes + 10;
       break;
     case 8:
-      paramIfOffset = iOffset + 22;
+      paramIfOffset = iOffsBytes + 22;
       break;
     default:
       asynPrint(pasynUserController_,
@@ -650,7 +650,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
                                      unsigned iAllFlags,
                                      double   fAbsMin,
                                      double   fAbsMax,
-                                     unsigned iOffset)
+                                     unsigned iOffsBytes)
 {
   asynStatus status = asynSuccess;
   unsigned axisNo = pAxis->axisNo_;
@@ -751,8 +751,8 @@ asynStatus EthercatMCController::initialPollIndexer(void)
 
   for (devNum = 0; devNum < 100; devNum++) {
     unsigned iTypCode = -1;
-    unsigned iSize = -1;
-    unsigned iOffset = -1;
+    unsigned iSizeBytes = -1;
+    unsigned iOffsBytes = -1;
     unsigned iUnit = -1;
     unsigned iAllFlags = -1;
     double fAbsMin = 0;
@@ -779,8 +779,8 @@ asynStatus EthercatMCController::initialPollIndexer(void)
                                   &infoType0_data, sizeof(infoType0_data));
       if (!status) {
         iTypCode  = infoType0_data.typCode_0 + (infoType0_data.typCode_1 << 8);
-        iSize     = infoType0_data.size_0 + (infoType0_data.size_1 << 8);
-        iOffset   = infoType0_data.offset_0 + (infoType0_data.offset_1 << 8);
+        iSizeBytes= infoType0_data.size_0 + (infoType0_data.size_1 << 8);
+        iOffsBytes= infoType0_data.offset_0 + (infoType0_data.offset_1 << 8);
         iUnit     = infoType0_data.unit_0 + (infoType0_data.unit_1 << 8);
         iAllFlags = infoType0_data.flags_0 + (infoType0_data.flags_1 << 8) +
           (infoType0_data.flags_2 << 16) + (infoType0_data.flags_3 << 24);
@@ -815,10 +815,10 @@ asynStatus EthercatMCController::initialPollIndexer(void)
                          sizeof(descVersAuthors.author2));
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sindexerDevice Offset=%u %20s "
-              "TypCode=0x%x Size=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
-              modNamEMC, iOffset, descVersAuthors.desc,
-              iTypCode, iSize, iUnit,
+              "%sindexerDevice OffsBytes=%u %20s "
+              "TypCode=0x%x SizeBytes=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
+              modNamEMC, iOffsBytes, descVersAuthors.desc,
+              iTypCode, iSizeBytes, iUnit,
               plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
               plcUnitTxtFromUnitCode(iUnit & 0xFF),
               iAllFlags, fAbsMin, fAbsMax);
@@ -829,7 +829,7 @@ asynStatus EthercatMCController::initialPollIndexer(void)
               descVersAuthors.vers,
               descVersAuthors.author1,
               descVersAuthors.author2);
-    if (!iTypCode && !iSize && !iOffset) {
+    if (!iTypCode && !iSizeBytes && !iOffsBytes) {
       break; /* End of list ?? */
     }
     switch (iTypCode) {
@@ -851,14 +851,14 @@ asynStatus EthercatMCController::initialPollIndexer(void)
                                 iAllFlags,
                                 fAbsMin,
                                 fAbsMax,
-                                iOffset);
+                                iOffsBytes);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sTypeCode(%d) iTypCode=%x pAxis=%p status=%s (%d)\n",
                   modNamEMC, axisNo, iTypCode, pAxis,
                   EthercatMCstrStatus(status), (int)status);
         if (status) goto endPollIndexer;
 
-        pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffset, iTypCode);
+        pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffsBytes, iTypCode);
         setStringParam(axisNo,  EthercatMCCfgDESC_RB_, descVersAuthors.desc);
         snprintf(unitCodeTxt, sizeof(unitCodeTxt), "%s%s",
                  plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
@@ -873,7 +873,7 @@ asynStatus EthercatMCController::initialPollIndexer(void)
        * 0x18 == 24dec words -> 48 bytes -> 2byte CTRL + 46 payload */
       if (!strcmp(descVersAuthors.desc, "DbgStrToMcu"))
       {
-        ctrlLocal.specialDbgStrToMcuDeviceOffset = iOffset;
+        ctrlLocal.specialDbgStrToMcuDeviceOffset = iOffsBytes;
         /* Length of the data area in words is "low byte" */
         ctrlLocal.specialDbgStrToMcuDeviceLength = 2 * (iTypCode & 0xFF);
       }
