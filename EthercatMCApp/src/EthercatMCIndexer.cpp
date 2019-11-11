@@ -816,9 +816,13 @@ asynStatus EthercatMCController::initialPollIndexer(void)
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%sindexerDevice Offset=%u %20s "
-              "TypCode=0x%x Size=%u UnitCode=0x%x AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
+              "TypCode=0x%x Size=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
               modNamEMC, iOffset, descVersAuthors.desc,
-              iTypCode, iSize, iUnit, iAllFlags, fAbsMin, fAbsMax);
+              iTypCode, iSize, iUnit,
+              plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
+              plcUnitTxtFromUnitCode(iUnit & 0xFF),
+              iAllFlags, fAbsMin, fAbsMax);
+
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%sdescVersAuthors(%d)  vers=%s author1=%s author2=%s\n",
               modNamEMC, axisNo,
