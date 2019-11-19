@@ -156,12 +156,6 @@
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -220,12 +214,6 @@ $(pv_value)</tooltip>
     <pv_value />
     <read_only>false</read_only>
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -287,12 +275,6 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M).LLS</pv_name>
     <pv_value />
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -352,12 +334,6 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M).HLS</pv_name>
     <pv_value />
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -417,12 +393,6 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M).MOVN</pv_name>
     <pv_value />
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -482,12 +452,6 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M).DMOV</pv_name>
     <pv_value />
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -547,12 +511,6 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M).LVIO</pv_name>
     <pv_value />
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -613,12 +571,6 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M).STAT</pv_name>
     <pv_value />
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -880,12 +832,6 @@ $(pv_value)</tooltip>
     <pv_value />
     <read_only>false</read_only>
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -943,12 +889,6 @@ $(pv_value)</tooltip>
     <pv_value />
     <read_only>false</read_only>
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1065,12 +1005,6 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M).MISS</pv_name>
     <pv_value />
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1128,12 +1062,6 @@ $(pv_value)</tooltip>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1197,12 +1125,6 @@ $(pv_value)</tooltip>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
       <rule name="HOMF-Visible" prop_id="visible" out_exp="false">
         <exp bool_exp="((pv0 &lt; 1) || (pv0 &gt; 14))">
           <value>false</value>
@@ -1274,12 +1196,6 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(R)Err</pv_name>
     <pv_value />
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1340,12 +1256,6 @@ $(pv_value)</tooltip>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1403,12 +1313,6 @@ $(pv_value)</tooltip>
     <pv_value />
     <read_only>false</read_only>
     <rules>
-      <rule name="BorderRule" prop_id="border_style" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>9</value>
-        </exp>
-        <pv trig="true">$(pv_name)</pv>
-      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
