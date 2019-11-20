@@ -106,28 +106,28 @@ class EthercatMCIndexerAxis;
 
 class epicsShareClass EthercatMCController : public asynMotorController {
 public:
-#define PARAM_IDX_OPMODE_AUTO_UINT32            1
-#define PARAM_IDX_MICROSTEPS_UINT32             2
-#define PARAM_IDX_ABS_MIN_FLOAT32              30
-#define PARAM_IDX_ABS_MAX_FLOAT32              31
-#define PARAM_IDX_USR_MIN_FLOAT32              32
-#define PARAM_IDX_USR_MAX_FLOAT32              33
-#define PARAM_IDX_WRN_MIN_FLOAT32              34
-#define PARAM_IDX_WRN_MAX_FLOAT32              35
-#define PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT32    55
-#define PARAM_IDX_HYTERESIS_FLOAT32            56
-#define PARAM_IDX_REFSPEED_FLOAT32             58
-#define PARAM_IDX_VBAS_FLOAT32                 59
-#define PARAM_IDX_SPEED_FLOAT32                60
-#define PARAM_IDX_ACCEL_FLOAT32                61
-#define PARAM_IDX_IDLE_CURRENT_FLOAT32         62
-#define PARAM_IDX_MOVE_CURRENT_FLOAT32         64
-#define PARAM_IDX_MICROSTEPS_FLOAT32           67
-#define PARAM_IDX_STEPS_PER_UNIT_FLOAT32       68
-#define PARAM_IDX_HOME_POSITION_FLOAT32        69
-#define PARAM_IDX_FUN_REFERENCE               133
-#define PARAM_IDX_FUN_SET_POSITION            137
-#define PARAM_IDX_FUN_MOVE_VELOCITY           142
+#define PARAM_IDX_OPMODE_AUTO_UINT            1
+#define PARAM_IDX_MICROSTEPS_UINT             2
+#define PARAM_IDX_ABS_MIN_FLOAT              30
+#define PARAM_IDX_ABS_MAX_FLOAT              31
+#define PARAM_IDX_USR_MIN_FLOAT              32
+#define PARAM_IDX_USR_MAX_FLOAT              33
+#define PARAM_IDX_WRN_MIN_FLOAT              34
+#define PARAM_IDX_WRN_MAX_FLOAT              35
+#define PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT    55
+#define PARAM_IDX_HYTERESIS_FLOAT            56
+#define PARAM_IDX_REFSPEED_FLOAT             58
+#define PARAM_IDX_VBAS_FLOAT                 59
+#define PARAM_IDX_SPEED_FLOAT                60
+#define PARAM_IDX_ACCEL_FLOAT                61
+#define PARAM_IDX_IDLE_CURRENT_FLOAT         62
+#define PARAM_IDX_MOVE_CURRENT_FLOAT         64
+#define PARAM_IDX_MICROSTEPS_FLOAT           67
+#define PARAM_IDX_STEPS_PER_UNIT_FLOAT       68
+#define PARAM_IDX_HOME_POSITION_FLOAT        69
+#define PARAM_IDX_FUN_REFERENCE             133
+#define PARAM_IDX_FUN_SET_POSITION          137
+#define PARAM_IDX_FUN_MOVE_VELOCITY         142
 
 
 #define FEATURE_BITS_V1               (1)

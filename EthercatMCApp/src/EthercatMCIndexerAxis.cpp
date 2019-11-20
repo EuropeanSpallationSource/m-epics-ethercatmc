@@ -258,7 +258,7 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
     pC_->getDoubleParam(axisNo_, pC_->EthercatMCVel_RB_, &oldValue);
     if (maxVelocity != oldValue) {
       status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
-                                      PARAM_IDX_SPEED_FLOAT32,
+                                      PARAM_IDX_SPEED_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       maxVelocity);
       if (status) {
@@ -276,7 +276,7 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
     pC_->getDoubleParam(axisNo_, pC_->EthercatMCAcc_RB_, &oldValue);
     if (acceleration != oldValue) {
       status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
-                                      PARAM_IDX_ACCEL_FLOAT32,
+                                      PARAM_IDX_ACCEL_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       acceleration);
       if (status) {
@@ -376,7 +376,7 @@ asynStatus EthercatMCIndexerAxis::moveVelocity(double minVelocity,
     pC_->getDoubleParam(axisNo_, pC_->EthercatMCAcc_RB_, &oldValue);
     if (acceleration != oldValue) {
       status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
-                                      PARAM_IDX_ACCEL_FLOAT32,
+                                      PARAM_IDX_ACCEL_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       acceleration);
       if (status) {
@@ -787,7 +787,7 @@ asynStatus EthercatMCIndexerAxis::setClosedLoop(bool closedLoop)
   }
   if (drvlocal.paramIfOffset) {
     status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
-                                    PARAM_IDX_OPMODE_AUTO_UINT32,
+                                    PARAM_IDX_OPMODE_AUTO_UINT,
                                     drvlocal.lenInPlcPara,
                                     value);
   }
@@ -832,7 +832,7 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
     if (!value) {
       static const double fABSMAX = 3.0e+38;
       status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
-                                      PARAM_IDX_USR_MAX_FLOAT32,
+                                      PARAM_IDX_USR_MAX_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       fABSMAX);
       pC_->udateMotorLimitsRO(axisNo_);
@@ -845,7 +845,7 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
     if (!value) {
       static const double fABSMIN = -3.0e+38;
       status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
-                                      PARAM_IDX_USR_MIN_FLOAT32,
+                                      PARAM_IDX_USR_MIN_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       fABSMIN);
       pC_->udateMotorLimitsRO(axisNo_);
@@ -864,7 +864,7 @@ asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d EthercatMCCfgDHLM_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
-                                    PARAM_IDX_USR_MAX_FLOAT32,
+                                    PARAM_IDX_USR_MAX_FLOAT,
                                     drvlocal.lenInPlcPara,
                                     value);
     asynMotorAxis::setDoubleParam(function, value);
@@ -874,7 +874,7 @@ asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d EthercatMCCfgDLLM_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
-                                    PARAM_IDX_USR_MIN_FLOAT32,
+                                    PARAM_IDX_USR_MIN_FLOAT,
                                     drvlocal.lenInPlcPara,
                                     value);
     asynMotorAxis::setDoubleParam(function, value);

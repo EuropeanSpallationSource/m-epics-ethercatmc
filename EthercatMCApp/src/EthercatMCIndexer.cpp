@@ -461,38 +461,38 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
   const static double fullsrev = 200;    /* (default) Full steps/revolution */
 
   switch(paramIndex) {
-  case PARAM_IDX_OPMODE_AUTO_UINT32:
+  case PARAM_IDX_OPMODE_AUTO_UINT:
     /* CNEN for EPICS */
     pAxis->setIntegerParam(motorStatusGainSupport_, 1);
     break;
-  case PARAM_IDX_MICROSTEPS_FLOAT32:
+  case PARAM_IDX_MICROSTEPS_FLOAT:
     pAxis->setDoubleParam(EthercatMCCfgSREV_RB_, fullsrev * fValue);
     break;
-  case PARAM_IDX_USR_MIN_FLOAT32:
+  case PARAM_IDX_USR_MIN_FLOAT:
     setIntegerParam(axisNo,EthercatMCCfgDLLM_En_, fValue > fABSMIN ? 1 : 0);
     setDoubleParam(axisNo, EthercatMCCfgDLLM_,    fValue);
     udateMotorLimitsRO(axisNo);
     break;
-  case PARAM_IDX_ABS_MIN_FLOAT32:
+  case PARAM_IDX_ABS_MIN_FLOAT:
     setDoubleParam(axisNo,  EthercatMCCfgPMIN_RB_, fValue);
     break;
-  case PARAM_IDX_ABS_MAX_FLOAT32:
+  case PARAM_IDX_ABS_MAX_FLOAT:
     setDoubleParam(axisNo,  EthercatMCCfgPMAX_RB_, fValue);
     break;
-  case PARAM_IDX_USR_MAX_FLOAT32:
+  case PARAM_IDX_USR_MAX_FLOAT:
     setIntegerParam(axisNo, EthercatMCCfgDHLM_En_, fValue < fABSMAX ? 1 : 0);
     setDoubleParam(axisNo,  EthercatMCCfgDHLM_, fValue);
     udateMotorLimitsRO(axisNo);
     break;
-  case PARAM_IDX_WRN_MIN_FLOAT32:
+  case PARAM_IDX_WRN_MIN_FLOAT:
     break;
-  case PARAM_IDX_WRN_MAX_FLOAT32:
+  case PARAM_IDX_WRN_MAX_FLOAT:
     break;
-  case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT32:
+  case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
     pAxis->setDoubleParam(EthercatMCCfgPOSLAG_RB_, fValue);
     setIntegerParam(axisNo, EthercatMCCfgPOSLAG_En_RB_, 1);
     break;
-  case PARAM_IDX_HYTERESIS_FLOAT32:
+  case PARAM_IDX_HYTERESIS_FLOAT:
     pAxis->setDoubleParam(EthercatMCCfgSPDB_RB_, fValue);
     pAxis->setDoubleParam(EthercatMCCfgRDBD_RB_, fValue);
     setIntegerParam(axisNo, EthercatMCCfgRDBD_En_RB_, 1);
@@ -500,36 +500,36 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
     pAxis->setDoubleParam(motorRDBDRO_, fValue);
 #endif
     break;
-  case PARAM_IDX_REFSPEED_FLOAT32:
+  case PARAM_IDX_REFSPEED_FLOAT:
     pAxis->setDoubleParam(EthercatMCVelToHom_, fValue);
     break;
-  case PARAM_IDX_SPEED_FLOAT32:
+  case PARAM_IDX_SPEED_FLOAT:
     pAxis->setDoubleParam(EthercatMCCfgVELO_, fValue);
     pAxis->setDoubleParam(EthercatMCVel_RB_, fValue);
 #ifdef motorDefVelocityROString
     pAxis->setDoubleParam(motorDefVelocityRO_, fValue);
 #endif
     break;
-  case PARAM_IDX_ACCEL_FLOAT32:
+  case PARAM_IDX_ACCEL_FLOAT:
     pAxis->setDoubleParam(EthercatMCCfgACCS_, fValue);
     pAxis->setDoubleParam(EthercatMCAcc_RB_, fValue);
 #ifdef motorDefJogAccROString
     pAxis->setDoubleParam(motorDefJogAccRO_, fValue);
 #endif
     break;
-  case PARAM_IDX_IDLE_CURRENT_FLOAT32:
+  case PARAM_IDX_IDLE_CURRENT_FLOAT:
     break;
-  case PARAM_IDX_MOVE_CURRENT_FLOAT32:
+  case PARAM_IDX_MOVE_CURRENT_FLOAT:
     break;
-  case PARAM_IDX_MICROSTEPS_UINT32:
+  case PARAM_IDX_MICROSTEPS_UINT:
     break;
-  case PARAM_IDX_STEPS_PER_UNIT_FLOAT32:
+  case PARAM_IDX_STEPS_PER_UNIT_FLOAT:
     {
       double urev = fabs(fullsrev / fValue);
       pAxis->setDoubleParam(EthercatMCCfgUREV_RB_, urev);
     }
     break;
-  case PARAM_IDX_HOME_POSITION_FLOAT32:
+  case PARAM_IDX_HOME_POSITION_FLOAT:
     pAxis->setDoubleParam(EthercatMCHomPos_, fValue);
     break;
   case PARAM_IDX_FUN_REFERENCE:
