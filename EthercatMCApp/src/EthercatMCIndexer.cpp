@@ -87,6 +87,38 @@ extern "C" {
   }
 };
 
+
+extern "C" {
+  const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex)
+ {
+   switch(paramIndex) {
+   case PARAM_IDX_OPMODE_AUTO_UINT:        return "OPMODE_AUTO";
+   case PARAM_IDX_MICROSTEPS_UINT:         return "MICROSTEPS";
+   case PARAM_IDX_ABS_MIN_FLOAT:           return "ABS_MIN";
+   case PARAM_IDX_ABS_MAX_FLOAT:           return "ABS_MAX";
+   case PARAM_IDX_USR_MIN_FLOAT:           return "USR_MIN";
+   case PARAM_IDX_USR_MAX_FLOAT:           return "USR_MAX";
+   case PARAM_IDX_WRN_MIN_FLOAT:           return "WRN_MIN";
+   case PARAM_IDX_WRN_MAX_FLOAT:           return "WRN_MAX";
+   case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT: return "FOLLOWING_ERR_WIN";
+   case PARAM_IDX_HYTERESIS_FLOAT:         return "HYTERESIS";
+   case PARAM_IDX_REFSPEED_FLOAT:          return "REFSPEED";
+   case PARAM_IDX_VBAS_FLOAT:              return "VBAS";
+   case PARAM_IDX_SPEED_FLOAT:             return "SPEED";
+   case PARAM_IDX_ACCEL_FLOAT:             return "ACCEL";
+   case PARAM_IDX_IDLE_CURRENT_FLOAT:      return "IDLE_CURRENT";
+   case PARAM_IDX_MOVE_CURRENT_FLOAT:      return "MOVE_CURRENT";
+   case PARAM_IDX_MICROSTEPS_FLOAT:        return "MICROSTEPS";
+   case PARAM_IDX_STEPS_PER_UNIT_FLOAT:    return "STEPS_PER_UNIT";
+   case PARAM_IDX_HOME_POSITION_FLOAT:     return "HOME_POSITION";
+   case PARAM_IDX_FUN_REFERENCE:           return "REFERENCE";
+   case PARAM_IDX_FUN_SET_POSITION:        return "SET_POSITION";
+   case PARAM_IDX_FUN_MOVE_VELOCITY:       return "MOVE_VELOCITY";
+   default: return "";
+   }
+ }
+};
+
 static const double fABSMIN = -3.0e+38;
 static const double fABSMAX =  3.0e+38;
 
@@ -409,8 +441,8 @@ asynStatus EthercatMCController::indexerParamWrite(unsigned paramIfOffset,
     status = getPlcMemoryUint(paramIfOffset, &cmdSubParamIndex, 2);
     if (status) traceMask |= ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER;
     asynPrint(pasynUserController_, traceMask,
-              "%sparamIndex=%u lenInPlcPara=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
-              modNamEMC,
+              "%sparamIndex=%s (%u) lenInPlcPara=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
+              modNamEMC, plcParamIndexTxtFromParamIndex(paramIndex),
               paramIndex, lenInPlcPara, cmdSubParamIndex, counter,
               EthercatMCstrStatus(status), (int)status);
     if (status) return status;
@@ -630,12 +662,16 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
             return status;
           }
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdx=%u fValue=%f\n",
-                    modNamEMC, axisNo, paramIndex, fValue);
+                    "%sparameters(%d) paramIdx=%s (%u) fValue=%f\n",
+                    modNamEMC, axisNo,
+                    plcParamIndexTxtFromParamIndex(paramIndex),
+                    paramIndex, fValue);
         } else {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdxFunction=%u\n",
-                    modNamEMC, axisNo, paramIndex);
+                    "%sparameters(%d) paramIdxFunction=%s (%u)\n",
+                    modNamEMC, axisNo,
+                    plcParamIndexTxtFromParamIndex(paramIndex),
+                    paramIndex);
         }
         parameterFloatReadBack(axisNo, paramIndex, fValue);
       }

@@ -94,6 +94,7 @@ extern "C" {
                                           char *indata, size_t inlen);
   asynStatus checkACK(const char *outdata, size_t outlen, const char *indata);
   const char *plcUnitTxtFromUnitCode(unsigned unitCode);
+  const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex);
   const char *EthercatMCstrStatus(asynStatus status);
   const char *errStringFromErrId(int nErrorId);
 }
