@@ -5,7 +5,7 @@ epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("PREFIX",        "$(SM_PREFIX=IOC:)")
+epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-MCAG:MC-MCU-28:)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "3")
 epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
@@ -32,14 +32,5 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
-< EthercatMCIndexerAxis.iocsh
-< EthercatMCAxisdebug.iocsh
-
-#
-# Axis 3
-#
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 < EthercatMCIndexerAxis.iocsh
 < EthercatMCAxisdebug.iocsh
