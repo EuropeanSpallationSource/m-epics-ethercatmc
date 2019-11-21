@@ -146,7 +146,7 @@ export LOCALAMSNETID REMOTEAMSNETID
         fi
       ;;
     e3)
-      ( cd ../.. && make devinstall)
+      #( cd ../.. && make devinstall)
       ;;
     *)
       echo >&2 invalid1 EPICS_EEE_E3 $EPICS_EEE_E3
@@ -160,7 +160,7 @@ export LOCALAMSNETID REMOTEAMSNETID
           stcmddst=./st.iocsh.EEE.$EPICS_HOST_ARCH &&
           # We need to patch the cmd files to adjust "<"
           # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-          for src in  ../../iocsh/*iocsh ../../test/startup/*cfg ../../test/startup/*cmd; do
+          for src in  ../../iocsh/*iocsh ../../test/startup/*cfg ../../test/startup/*iocsh; do
               dst=${src##*/}
               echo cp PWD=$PWD src=$src dst=$dst
               cp "$src" "$dst"
@@ -188,7 +188,7 @@ export LOCALAMSNETID REMOTEAMSNETID
           # classic EPICS, non EEE
           # We need to patch the cmd files to adjust dbLoadRecords
           # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-          for src in ../../test/startup/*cmd  ../../iocsh/*iocsh; do
+          for src in ../../test/startup/*iocsh  ../../iocsh/*iocsh; do
               dst=${src##*/}
               echo sed PWD=$PWD src=$src dst=$dst
               sed <"$src" >"$dst" \
@@ -233,7 +233,7 @@ EOF
           stcmddst=./st.iocsh.EEE.$EPICS_HOST_ARCH &&
           # We need to patch the cmd files to adjust "<"
           # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-          for src in  ../../iocsh/*iocsh ../../test/startup/*cfg ../../test/startup/*cmd; do
+          for src in  ../../iocsh/*iocsh ../../test/startup/*cfg ../../test/startup/*iocsh; do
               dst=${src##*/}
               echo cp PWD=$PWD src=$src dst=$dst
               cp "$src" "$dst"
@@ -241,7 +241,7 @@ EOF
           rm -f $stcmddst &&
           sed  <st.${MOTORCFG}.iocsh  \
               -e "s/require motor,USER/require motor,develop/" \
-              -e "s/require EthercatMC,USER/require EthercatMC,develop/" \
+              -e "s/require EthercatMC,USER/require EthercatMC,3.0.2/" \
               -e "s%require asyn%#require assyn%" \
               -e "s/^cd /#cd /" \
               -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
