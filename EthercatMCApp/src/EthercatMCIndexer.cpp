@@ -576,6 +576,9 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
 #endif
     pAxis->setIntegerParam(EthercatMCHomProc_RB_, 15);
     break;
+  case PARAM_IDX_FUN_MOVE_VELOCITY:
+    pAxis->setDoubleParam(EthercatMCCfgJVEL_, fabs(fValue));
+    break;
   }
 }
 
@@ -644,10 +647,12 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
       unsigned bitIsSet = parameters & (1 << bitIdx) ? 1 : 0;
       if (bitIsSet) {
         double fValue = 0.0;
-        if (paramIndex < 128) {
+        if ((paramIndex < 128) ||
+	    (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
           /* paramIndex >= 128 are functions.
              Don't read them.
-             tell driver that the function exist */
+             tell driver that the function exist
+	     But read 142, which becomes JVEL */
           status = indexerParamRead(axisNo,
                                     paramIfOffset,
                                     paramIndex,
