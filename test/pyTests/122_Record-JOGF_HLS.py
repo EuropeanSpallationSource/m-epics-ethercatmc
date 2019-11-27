@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
     # Assert if motor is not homed
     def test_TC_1221(self):
         tc_no = "TC-1221"
-        self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+        self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
         self.assertNotEqual(self.llm, self.hlm, 'llm must be != hlm')
 
 

@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
     def test_TC_1321(self):
         motor = self.motor
         tc_no = "TC-1321"
-        self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+        self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
         self.assertNotEqual(self.llm, self.hlm, 'llm must be != hlm')
         self.assertNotEqual(0, self.jogging_velocity, 'JVEL or VELO must be != 0.0')
 

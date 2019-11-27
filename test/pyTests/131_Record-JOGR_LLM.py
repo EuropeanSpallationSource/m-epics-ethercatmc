@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
     def test_TC_1311(self):
         tc_no = "TC-1311"
         if not (self.msta & lib.MSTA_BIT_HOMED):
-            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
 
 
     # per90 UserPosition

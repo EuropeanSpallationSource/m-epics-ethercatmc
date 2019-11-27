@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
         motor = self.motor
         tc_no = "TC-1241"
         if not (self.msta & lib.MSTA_BIT_HOMED):
-            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
         lib.initializeMotorRecordSimulatorAxis(motor, '1241')
 
 

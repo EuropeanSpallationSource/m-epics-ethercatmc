@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-241"
 
         if not (self.msta & lib.MSTA_BIT_HOMED):
-            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
 
     # Jog, wait for start, stop behind MR
     def test_TC_242(self):

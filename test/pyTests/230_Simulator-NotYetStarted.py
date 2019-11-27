@@ -49,7 +49,7 @@ class XTest(unittest.TestCase):
         motor = self.motor
         tc_no = "TC-231"
         if not (self.msta & lib.MSTA_BIT_HOMED):
-            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
 
     # Jog, wait for start, power off, check error, reset error
     def Xtest_TC_232(self):
