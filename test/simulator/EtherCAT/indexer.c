@@ -306,7 +306,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        0, 0,
        0, 0,
        0, 0,
-       0, PARAM_AVAIL_136_143_FUN_SET_POSITION,
+       0, PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
        0, 0,
        0, 0,
        0, 0,
@@ -757,6 +757,10 @@ indexerMotorParamRead(unsigned motor_axis_no,
     return ret;
   case PARAM_IDX_ACCEL_FLOAT32:
     *fRet = cmd_Motor_cmd[motor_axis_no].fAcceleration;
+    return ret;
+  case PARAM_IDX_FUN_MOVE_VELOCITY:
+    /* Use half of the velocity as "JVEL" */
+    *fRet = cmd_Motor_cmd[motor_axis_no].fVelocity / 2.0;
     return ret;
   default:
     break;
