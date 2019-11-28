@@ -4093,6 +4093,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="ReasonBitLED25-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-ReasonBit25.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4149,6 +4158,15 @@ $(pv_value)</tooltip>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
+      <rule name="ReasonBit25-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-ReasonBit25.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4211,6 +4229,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="ReasonBitLED24-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-ReasonBit24.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4267,6 +4294,15 @@ $(pv_value)</tooltip>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
+      <rule name="ReasonBit24-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-ReasonBit24.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4329,6 +4365,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="AuxBitLED0-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-AuxBit0.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4456,6 +4501,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="AuxBitLED1-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-AuxBit1.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4583,6 +4637,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="AuxBitLED2-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-AuxBit2.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4710,6 +4773,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="AuxBitLED3-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-AuxBit3.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4837,6 +4909,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="AuxBitLED4-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-AuxBit4.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -4964,6 +5045,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="AuxBitLED5LED-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-AuxBit5.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -5091,6 +5181,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="AuxBitLED6-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-AuxBit6.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -5218,6 +5317,15 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
+      <rule name="AuxBitLED7-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-AuxBit7.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -5274,7 +5382,7 @@ $(pv_value)</tooltip>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
-      <rule name="AuxBit0-Visible" prop_id="visible" out_exp="false">
+      <rule name="AuxBit7-Visible" prop_id="visible" out_exp="false">
         <exp bool_exp="pv0==17">
           <value>false</value>
         </exp>
