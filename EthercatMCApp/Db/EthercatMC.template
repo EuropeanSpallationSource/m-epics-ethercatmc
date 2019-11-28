@@ -328,6 +328,46 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-HomPos-RB") {
     field(SCAN, "I/O Intr")
 }
 
+record(mbbi,"$(PREFIX)$(MOTOR_NAME)-StatusCode") {
+    field(DESC,"StatusCode")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))StatusCode")
+    field(SCAN, "I/O Intr")
+    field(ZRVL,  "0")
+    field(ONVL,  "1")
+    field(TWVL,  "2")
+    field(THVL,  "3")
+    field(FRVL,  "4")
+    field(FVVL,  "5")
+    field(SXVL,  "6")
+    field(SVVL,  "7")
+    field(EIVL,  "8")
+    field(NIVL,  "9")
+    field(TEVL, "10")
+    field(ELVL, "11")
+    field(TVVL, "12")
+    field(TTVL, "13")
+    field(FTVL, "14")
+    field(FFVL, "15")
+
+    field(ZRST, "RESET")
+    field(ONST, "IDLE")
+    field(TWST, "DISABLED")
+    field(THST, "WARN")
+    field(FRST, "ERR-4")
+    field(FVST, "START")
+    field(SXST, "BUSY")
+    field(SVST, "STOP")
+    field(EIST, "ERROR")
+    field(NIST, "ERR-9")
+    field(TEST, "ERR-A")
+    field(ELST, "ERR-B")
+    field(TVST, "ERR-C")
+    field(TTST, "ERR-D")
+    field(FTST, "ERR-E")
+    field(FFST, "ERR-F")
+}
+
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {
 }
