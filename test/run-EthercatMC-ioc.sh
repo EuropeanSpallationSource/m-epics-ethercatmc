@@ -35,12 +35,22 @@ echo MOTORCFG=$MOTORCFG
 (
   cd startup &&
   if ! test -f st.${MOTORCFG}.iocsh; then
-    CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g")
+    CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g" | sort)
     #echo CMDS=$CMDS
     test -n "$1" && echo >&2 "not found st.${1}.iocsh"
     echo >&2 "try one of these:"
     for cmd in $CMDS; do
-      echo >&2 $0 " $cmd" " <ip>[:port]"
+      case $cmd in
+        *sim-indexer)
+          echo >&2 $0 " $cmd" " 127.0.0.1:48898"
+          ;;
+        *-indexer)
+          echo >&2 $0 " $cmd" " <ip>:48898"
+          ;;
+        *)
+          echo >&2 $0 " $cmd" " <ip>[:port]"
+          ;;
+      esac
     done
     exit 1
   fi
