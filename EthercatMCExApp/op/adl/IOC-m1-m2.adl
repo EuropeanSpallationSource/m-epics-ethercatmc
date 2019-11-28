@@ -287,7 +287,7 @@ rectangle {
 	}
         "dynamic attribute" {
                vis="calc"
-               calc="!(A & 32)"
+               calc="(A & 2080) = 2048"
                chan="$(P)$(M1).MSTA"
        }
 }
@@ -383,7 +383,7 @@ rectangle {
 		x=2
 		y=116
 		width=25
-		height=20
+		height=36
 	}
 	control {
 		chan="$(P)$(M1).TWR"
@@ -412,7 +412,7 @@ rectangle {
 		x=89
 		y=116
 		width=25
-		height=20
+		height=36
 	}
 	control {
 		chan="$(P)$(M1).TWF"
@@ -421,38 +421,6 @@ rectangle {
 	}
 	label=">"
 	press_msg="1"
-}
-"message button" {
-	object {
-		x=2
-		y=136
-		width=25
-		height=20
-	}
-	control {
-		chan="$(P)$(M1).JOGR"
-		clr=14
-		bclr=51
-	}
-	label="<<<"
-	press_msg="1"
-	release_msg="0"
-}
-"message button" {
-	object {
-		x=89
-		y=136
-		width=25
-		height=20
-	}
-	control {
-		chan="$(P)$(M1).JOGF"
-		clr=14
-		bclr=51
-	}
-	label=">>>"
-	press_msg="1"
-	release_msg="0"
 }
 text {
 	object {
@@ -567,16 +535,11 @@ text {
 		height=20
 	}
 	display[0] {
-		label="Help"
-		name="motorx_help.adl"
+		label="Power Home"
+		name="motor-home.adl"
 		args="P=$(P),M=$(M1)"
 	}
 	display[1] {
-		label="More"
-		name="motorx_more.adl"
-		args="P=$(P),M=$(M1)"
-	}
-	display[2] {
 		label="Setup"
 		name="motorx_setup.adl"
 		args="P=$(P),M=$(M1)"
@@ -585,11 +548,6 @@ text {
 		label="All"
 		name="motorx_all.adl"
 		args="P=$(P),M=$(M1)"
-	}
-	display[4] {
-		label="Setup scan parameters"
-		name="scanParms.adl"
-		args="P=$(P),Q=$(M1),PV=$(M1)"
 	}
 	clr=14
 	bclr=51
@@ -809,7 +767,7 @@ rectangle {
 	}
         "dynamic attribute" {
                vis="calc"
-               calc="!(A & 32)"
+               calc="(A & 2080) = 2048"
                chan="$(P)$(M2).MSTA"
        }
 }
@@ -905,7 +863,7 @@ rectangle {
 		x=122
 		y=116
 		width=25
-		height=20
+		height=36
 	}
 	control {
 		chan="$(P)$(M2).TWR"
@@ -934,7 +892,7 @@ rectangle {
 		x=209
 		y=116
 		width=25
-		height=20
+		height=36
 	}
 	control {
 		chan="$(P)$(M2).TWF"
@@ -943,38 +901,6 @@ rectangle {
 	}
 	label=">"
 	press_msg="1"
-}
-"message button" {
-	object {
-		x=122
-		y=136
-		width=25
-		height=20
-	}
-	control {
-		chan="$(P)$(M2).JOGR"
-		clr=14
-		bclr=51
-	}
-	label="<<<"
-	press_msg="1"
-	release_msg="0"
-}
-"message button" {
-	object {
-		x=209
-		y=136
-		width=25
-		height=20
-	}
-	control {
-		chan="$(P)$(M2).JOGF"
-		clr=14
-		bclr=51
-	}
-	label=">>>"
-	press_msg="1"
-	release_msg="0"
 }
 text {
 	object {
@@ -1089,16 +1015,11 @@ text {
 		height=20
 	}
 	display[0] {
-		label="Help"
-		name="motorx_help.adl"
+		label="Power Home"
+		name="motor-home.adl"
 		args="P=$(P),M=$(M2)"
 	}
 	display[1] {
-		label="More"
-		name="motorx_more.adl"
-		args="P=$(P),M=$(M2)"
-	}
-	display[2] {
 		label="Setup"
 		name="motorx_setup.adl"
 		args="P=$(P),M=$(M2)"
@@ -1107,11 +1028,6 @@ text {
 		label="All"
 		name="motorx_all.adl"
 		args="P=$(P),M=$(M2)"
-	}
-	display[4] {
-		label="Setup scan parameters"
-		name="scanParms.adl"
-		args="P=$(P),Q=$(M1),PV=$(M2)"
 	}
 	clr=14
 	bclr=51
