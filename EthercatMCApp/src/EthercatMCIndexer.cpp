@@ -664,6 +664,12 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                       "%sindexerReadAxisParameters paramIndex=%u lenInPlcPara=%u status=%s (%d)\n",
                       modNamEMC, paramIndex, lenInPlcPara,
                       EthercatMCstrStatus(status), (int)status);
+            if ((paramIndex >= 128) && (status == asynDisabled)) {
+              /* Read back of functions as parameters is not defined in PILS
+                 if it fails, that is OK */
+              return asynSuccess;
+            }
+
             return status;
           }
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,

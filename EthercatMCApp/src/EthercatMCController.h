@@ -31,8 +31,6 @@ FILENAME...   EthercatMCController.h
 #define EthercatMCaux7_String                "AuxBit7"
 #define EthercatMCreason24_String             "ReasonBit24"
 #define EthercatMCreason25_String             "ReasonBit25"
-#define EthercatMCreason26_String            "ReasonBit26"
-#define EthercatMCreason27_String            "ReasonBit27"
 #define EthercatMCHomProc_RBString           "HomProc-RB"
 #define EthercatMCHomPos_RBString            "HomPos-RB"
 #define EthercatMCHomProcString              "HomProc"

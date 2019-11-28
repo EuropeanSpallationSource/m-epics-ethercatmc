@@ -112,8 +112,6 @@ EthercatMCIndexerAxis::EthercatMCIndexerAxis(EthercatMCController *pC,
 #ifdef motorShowPowerOffString
   setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
-  setStringParam(pC_->EthercatMCreason27_, "High limit");
-  setStringParam(pC_->EthercatMCreason26_, "Low limit");
   setStringParam(pC_->EthercatMCreason25_, "Dynamic problem, timeout");
   setStringParam(pC_->EthercatMCreason24_, "Static problem, inhibit");
 
