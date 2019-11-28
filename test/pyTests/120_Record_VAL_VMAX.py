@@ -13,8 +13,6 @@ import capv_lib
 ###
 
 def motorPositionTC(self, motor, tc_no, destination, velocity):
-    if velocity == 0.0:
-        return
     if (self.msta & lib.MSTA_BIT_HOMED):
         #capv_lib.capvput(motor + '-DbgStrToLOG', "Start TC " + tc_no[0:20]);
         if velocity != self.velo:
@@ -41,9 +39,17 @@ class Test(unittest.TestCase):
     llm = capv_lib.capvget(motor + '.LLM')
     velo = capv_lib.capvget(motor + '.VELO')
     vmax = capv_lib.capvget(motor + '.VMAX')
+    if vmax == 0.0:
+        vmax = velo * 100.0
     msta             = int(capv_lib.capvget(motor + '.MSTA'))
     per10_UserPosition  = round((9 * llm + 1 * hlm) / 10)
     per90_UserPosition  = round((1 * llm + 9 * hlm) / 10)
+
+    def test_TC_1200(self):
+        motor = self.motor
+        tc_no = "TC-1200"
+        if not (self.msta & lib.MSTA_BIT_HOMED):
+            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
 
     def test_TC_1201(self):
         motor = self.motor
