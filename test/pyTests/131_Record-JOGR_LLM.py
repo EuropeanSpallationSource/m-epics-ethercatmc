@@ -54,15 +54,17 @@ class Test(unittest.TestCase):
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1313-low-soft-limit JOGR"
             print('%s' % tc_no)
-            capv_lib.capvput(motor + '.JOGR', 1, wait=True)
+            done = lib.jogDirection(motor, tc_no, 1)
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
             msta = int(capv_lib.capvget(motor + '.MSTA'))
+            dmov = int(capv_lib.capvget(motor + '.DMOV'))
 
-            self.assertEqual(0, msta & lib.MSTA_BIT_PROBLEM,  'No MSTA.Problem JOGF')
-            self.assertEqual(0, msta & lib.MSTA_BIT_MINUS_LS, 'Minus hard limit not reached JOGF')
-            self.assertEqual(0, msta & lib.MSTA_BIT_PLUS_LS,  'Plus hard limit not reached JOGF')
+            self.assertEqual(True, done, 'done should be True after jogDirection')
+            self.assertEqual(1, dmov, 'DMOV should be 1 after jogging')
+            self.assertEqual(0, msta & lib.MSTA_BIT_PROBLEM,  'MSTA.Problem JOGF')
+            self.assertEqual(0, msta & lib.MSTA_BIT_MINUS_LS, 'Minus hard limit should not be reached JOGF')
+            self.assertEqual(0, msta & lib.MSTA_BIT_PLUS_LS,  'Plus hard limit should not ne reached JOGF')
             self.assertEqual(1, lvio, 'LVIO == 1 JOGF')
-            capv_lib.capvput(motor + '.JOGF', 0)
 
 
     # per10 UserPosition
@@ -90,18 +92,19 @@ class Test(unittest.TestCase):
             saved_FOFF = capv_lib.capvget(motor + '.FOFF')
             capv_lib.capvput(motor + '.FOFF', 1)
             capv_lib.capvput(motor + '.DIR', 1)
-            capv_lib.capvput(motor + '.JOGF', 1, wait=True)
+            done = lib.jogDirection(motor, tc_no, 1)
 
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
             msta = int(capv_lib.capvget(motor + '.MSTA'))
 
+            capv_lib.capvput(motor + '.DIR', saved_DIR)
+            capv_lib.capvput(motor + '.FOFF', saved_FOFF)
+
+            self.assertEqual(True, done, 'done should be True after jogDirection')
             self.assertEqual(0, msta & lib.MSTA_BIT_PROBLEM,  'No Error MSTA.Problem JOGF DIR')
             self.assertEqual(0, msta & lib.MSTA_BIT_MINUS_LS, 'Minus hard limit not reached JOGF DIR')
             self.assertEqual(0, msta & lib.MSTA_BIT_PLUS_LS,  'Plus hard limit not reached JOGR DIR')
             ### commit  4efe15e76cefdc060e14dbc3 needed self.assertEqual(1, lvio, 'LVIO == 1 JOGF')
-            capv_lib.capvput(motor + '.JOGF', 0)
-            capv_lib.capvput(motor + '.DIR', saved_DIR)
-            capv_lib.capvput(motor + '.FOFF', saved_FOFF)
 
 
 
