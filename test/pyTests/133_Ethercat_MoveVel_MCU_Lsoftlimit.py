@@ -23,6 +23,7 @@ class Test(unittest.TestCase):
 
     range_postion    = hlm - llm
     msta             = int(capv_lib.capvget(motor + '.MSTA'))
+    velo             = capv_lib.capvget(motor + '.VELO')
 
     print('llm=%f hlm=%f per10_UserPosition=%f' % (llm, hlm, per10_UserPosition))
 
@@ -32,7 +33,6 @@ class Test(unittest.TestCase):
         tc_no = "TC-1331"
         if not (self.msta & lib.MSTA_BIT_HOMED):
             self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
-        lib.initializeMotorRecordSimulatorAxis(motor, '1331')
 
 
     # per90 UserPosition
@@ -42,7 +42,8 @@ class Test(unittest.TestCase):
             tc_no = "TC-1332-90-percent-UserPosition"
             print('%s' % tc_no)
             destination = self.per10_UserPosition
-            res = lib.move(motor, destination, 60)
+            timeout = lib.calcTimeOut(motor, destination, self.velo)
+            res = lib.move(motor, destination, timeout)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
             print('%s postion=%f per10_UserPosition=%f' % (
                 tc_no, UserPosition, self.per10_UserPosition))
