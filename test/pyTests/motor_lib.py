@@ -330,7 +330,22 @@ class motor_lib(object):
             return self.globals.FAIL
 
 
-    def jogDirection(self, motor, tc_no, direction, time_to_wait):
+    def jogDirection(self, motor, tc_no, direction):
+        jvel = capv_lib.capvget(motor + ".JVEL")
+        hlm  = capv_lib.capvget(motor + ".HLM")
+        llm  = capv_lib.capvget(motor + ".LLM")
+        rbv  = capv_lib.capvget(motor + ".RBV")
+        accl = capv_lib.capvget(motor + '.ACCL')
+        deltah = math.fabs(hlm - rbv)
+        deltal = math.fabs(llm - rbv)
+        # TODO: we could use at the DIR field, which delta to use
+        # This can be done in a cleanup
+        if deltah > deltal:
+            delta = deltah
+        else:
+            delta = deltal
+        # TODO: add JAR to the calculation
+        time_to_wait = delta / jvel + 2 * accl + 2.0
         if direction > 0:
             capv_lib.capvput(motor + '.JOGF', 1)
         else:
@@ -342,6 +357,8 @@ class motor_lib(object):
             capv_lib.capvput(motor + '.JOGF', 0)
         else:
             capv_lib.capvput(motor + '.JOGR', 0)
+        print('%s: jogDirection done=%d' % (tc_no, done))
+        return done
 
     def move(self, motor, position, timeout):
         """
