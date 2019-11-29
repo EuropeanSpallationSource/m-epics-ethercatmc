@@ -54,16 +54,13 @@ class Test(unittest.TestCase):
 
             if (self.saved_JVEL == 0.0) :
                 capv_lib.capvput(motor + '.JVEL', self.jogging_velocity)
-            destination = capv_lib.capvget(motor + '.LLM')
-            rbv = capv_lib.capvget(motor + '.RBV')
             jvel = capv_lib.capvget(motor + '.JVEL')
-            timeout = lib.calcTimeOut(motor, destination, jvel) * 2
 
             #switch off the soft limits. Depending on the postion
             # low or high must be set to 0 first
             lib.setSoftLimitsOff(motor)
+            done = lib.jogDirection(motor, tc_no, 0)
 
-            capv_lib.capvput(motor + '.JOGR', 1, wait=True, timeout=timeout)
             # Get values, check them later
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
             mstaE = int(capv_lib.capvget(motor + '.MSTA'))
@@ -74,9 +71,9 @@ class Test(unittest.TestCase):
             lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
             capv_lib.capvput(motor + '.JVEL', self.saved_JVEL)
 
-            #self.assertEqual(0, lvio, 'LVIO == 0')
-            self.assertEqual(0, mstaE & lib.MSTA_BIT_PROBLEM,    'No Error MSTA.Problem at PLUS_LS')
-            self.assertNotEqual(0, mstaE & lib.MSTA_BIT_MINUS_LS,   'Minus hard limit switch not active')
-            self.assertEqual(0, mstaE & lib.MSTA_BIT_PLUS_LS, 'Plus hard limit switch active')
+            self.assertEqual(True, done, 'done should be True after jogDirection')
+            self.assertEqual(0, mstaE & lib.MSTA_BIT_PROBLEM,    'Schould be no Error MSTA.Problem at PLUS_LS')
+            self.assertNotEqual(0, mstaE & lib.MSTA_BIT_MINUS_LS,'Minus hard limit switch should be active')
+            self.assertEqual(0, mstaE & lib.MSTA_BIT_PLUS_LS, 'Plus hard limit switch should not ne active')
 
 
