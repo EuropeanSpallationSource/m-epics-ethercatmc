@@ -399,6 +399,21 @@ class motor_lib(object):
             self.postMoveCheck(motor)
             return self.globals.FAIL
 
+    def moveWait(self, motor, tc_no, destination):
+        timeout = 30
+        acceleration = capv_lib.capvget(motor + '.ACCL')
+        velocity = capv_lib.capvget(motor + '.VELO')
+        timeout += 2 * acceleration + 1.0
+        if velocity > 0:
+            distance = math.fabs(capv_lib.capvget(motor + '.RBV') - destination)
+            timeout += distance / velocity
+
+        capv_lib.capvput(motor + '.VAL', destination)
+        success_or_failed = self.move(motor, destination, timeout)
+        if (success_or_failed == self.globals.FAIL):
+            return False
+        else:
+            return True
 
     def movePosition(self, motor, tc_no, destination, velocity, acceleration):
         time_to_wait = 30
