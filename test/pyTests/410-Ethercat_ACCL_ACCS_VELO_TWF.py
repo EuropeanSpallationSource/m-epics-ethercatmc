@@ -67,7 +67,6 @@ class Test(unittest.TestCase):
             self.assertNotEqual(self.msta & lib.MSTA_BIT_HOMED, 0, 'Axis has been homed')
             self.assertNotEqual(self.msta & lib.MSTA_BIT_AMPON, 0, 'Amplifier is on')
             self.assertNotEqual(self.accs, None, 'ACCS field in record')
-        lib.initializeMotorRecordSimulatorAxis(motor, '411')
 
     # 10% dialPosition
     def test_TC_412(self):
