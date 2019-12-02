@@ -24,7 +24,6 @@ class Test(unittest.TestCase):
     jog_start_pos    = hlm - jvel - margin
 
     msta             = int(capv_lib.capvget(motor + '.MSTA'))
-    velo             = capv_lib.capvget(motor + '.VELO')
 
     print('llm=%f hlm=%f jog_start_pos=%f' % (llm, hlm, jog_start_pos))
 
@@ -42,13 +41,11 @@ class Test(unittest.TestCase):
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1232-90-percent-UserPosition"
             print('%s' % tc_no)
-            destination = self.jog_start_pos
-            timeout = lib.calcTimeOut(motor, destination, self.velo)
-            res = lib.move(motor, destination, timeout)
+            done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
-            print('%s postion=%f jog_start_pos=%f' % (
-                tc_no, UserPosition, self.jog_start_pos))
-            self.assertEqual(res, globals.SUCCESS, 'move returned SUCCESS')
+            print('%s postion=%f jog_start_pos=%f done=%s' % (
+                   tc_no, UserPosition, self.jog_start_pos, done))
+            self.assertEqual(1, done,                'moveWait should return done')
 
     # High soft limit in controller when using MoveVel
     def test_TC_1233(self):
@@ -94,12 +91,11 @@ class Test(unittest.TestCase):
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1234-90-percent-UserPosition"
             print('%s' % tc_no)
-            destination = self.jog_start_pos
-            res = lib.move(motor, destination, 60)
+            done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
-            print('%s postion=%f jog_start_pos=%f' % (
-                tc_no, UserPosition, self.jog_start_pos))
-            self.assertEqual(res, globals.SUCCESS, 'move returned SUCCESS')
+            print('%s postion=%f jog_start_pos=%f done=%s' % (
+                   tc_no, UserPosition, self.jog_start_pos, done))
+            self.assertEqual(1, done,                'moveWait should return done')
 
     # High soft limit in controller when using MoveAbs
     def test_TC_1235(self):
