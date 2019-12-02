@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
     def test_TC_1213(self):
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
-            tc_no = "TC-1213-low-soft-limit JOGF"
+            tc_no = "TC-1213-high-soft-limit JOGF"
             print('%s' % tc_no)
             capv_lib.capvput(motor + '.DLY', 1.0)
             done = lib.jogDirection(motor, tc_no, 1)
@@ -69,7 +69,6 @@ class Test(unittest.TestCase):
             self.assertEqual(0, miss,                         'DLY JOGF should not have MISS set')
             self.assertEqual(1, resW,                         'DLY JOGF should have MIP = 0')
             self.assertEqual(1, lvio,                         'DLY JOGF should have LVIO set')
-
 
     # per90 UserPosition
     def test_TC_1214(self):
@@ -105,14 +104,14 @@ class Test(unittest.TestCase):
             self.assertEqual(1, resW,                         'ndly JOGF should have MIP = 0')
             self.assertEqual(1, lvio,                         'ndly JOGF should have LVIO set')
 
-    def test_TC_12152(self):
+    # High soft limt JOGF
+    def test_TC_1216(self):
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-12152-high-soft-limit JOGF"
             print('%s' % tc_no)
             capv_lib.capvput(motor + '.DLY', 0.0)
             mip1  = int(capv_lib.capvget(motor + '.MIP'))
-            capv_lib.capvput(motor + '.JOGF', 1, wait=True)
             done = lib.jogDirection(motor, tc_no, 1)
 
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
@@ -135,11 +134,11 @@ class Test(unittest.TestCase):
             self.assertEqual(0, mip2 & lib.MIP_BIT_JOGF,      'ndly2 MIP2.JOGF not set JOGF')
             #self.assertEqual(1, resW,                        'ndly1 JOGF not set')
             self.assertEqual(0, jogf,                         'ndly2 MIP1 not set JOGF')
-            self.assertEqual(1, lvio, 'LVIO == 1 JOGF')
+            self.assertEqual(1, lvio,                         'ndly2 should have LVIO set')
 
 
     # per90 UserPosition
-    def test_TC_1216(self):
+    def test_TC_1217(self):
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1216-90-percent-UserPosition"
@@ -151,7 +150,7 @@ class Test(unittest.TestCase):
             self.assertEqual(1, done,                    'moveWait should return done')
 
     # High soft limit JOGR + DIR
-    def test_TC_1217(self):
+    def test_TC_1218(self):
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1217-low-soft-limit JOGF DIR"
@@ -165,7 +164,6 @@ class Test(unittest.TestCase):
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
             msta = int(capv_lib.capvget(motor + '.MSTA'))
 
-            ### commit  4efe15e76cefdc060e14dbc3 needed self.assertEqual(1, lvio, 'LVIO == 1 JOGF')
             capv_lib.capvput(motor + '.JOGF', 0)
             capv_lib.capvput(motor + '.DIR', saved_DIR)
             capv_lib.capvput(motor + '.FOFF', saved_FOFF)
