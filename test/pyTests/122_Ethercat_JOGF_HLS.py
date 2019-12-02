@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
             old_low_limit = capv_lib.capvget(motor + '.LLM')
             capv_lib.capvput(motor + '.STOP', 1)
             #Go away from limit switch
-            lib.movePosition(motor, tc_no, self.jog_start_pos, self.velo, self.accl)
+            done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             destination = capv_lib.capvget(motor + '.HLM')
             rbv = capv_lib.capvget(motor + '.RBV')
             jvel = capv_lib.capvget(motor + '.JVEL')
@@ -53,19 +53,21 @@ class Test(unittest.TestCase):
 
             lib.setSoftLimitsOff(motor)
 
-            done = lib.jogDirection(motor, tc_no, 1)
+            done1 = lib.jogDirection(motor, tc_no, 1)
             # Get values, check them later
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
             mstaE = int(capv_lib.capvget(motor + '.MSTA'))
             #Go away from limit switch
-            lib.movePosition(motor, tc_no, old_high_limit, self.velo, self.accl)
+            done2 = lib.moveWait(motor, tc_no, old_high_limit)
             print('%s msta=%x lvio=%d' % (tc_no, mstaE, lvio))
 
             lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
 
             #self.assertEqual(0, lvio, 'LVIO == 0')
-            self.assertEqual(0, mstaE & lib.MSTA_BIT_PROBLEM,    'No Error MSTA.Problem at PLUS_LS')
-            self.assertEqual(0, mstaE & lib.MSTA_BIT_MINUS_LS,   'Minus hard limit switch not active')
-            self.assertNotEqual(0, mstaE & lib.MSTA_BIT_PLUS_LS, 'Plus hard limit switch active')
+            self.assertEqual(0, mstaE & lib.MSTA_BIT_PROBLEM,    'MSTA.Problem should not be set')
+            self.assertEqual(0, mstaE & lib.MSTA_BIT_MINUS_LS,   'LLS should not be active')
+            self.assertNotEqual(0, mstaE & lib.MSTA_BIT_PLUS_LS, 'HLS should be active')
+            self.assertEqual(1, done1,                           'moveWait1 should return done')
+            self.assertEqual(1, done2,                           'moveWait2 should return done')
 
 
