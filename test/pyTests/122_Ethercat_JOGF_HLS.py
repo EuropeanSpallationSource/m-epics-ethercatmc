@@ -15,16 +15,17 @@ class Test(unittest.TestCase):
 
     hlm = capv_lib.capvget(motor + '.HLM')
     llm = capv_lib.capvget(motor + '.LLM')
+    jvel = capv_lib.capvget(motor + '.JVEL')
 
-    per70_UserPosition  = round((3 * llm + 7 * hlm) / 10)
+    margin = 1.0
+    # motorRecord stops jogging 1 second before reaching HLM
+    jog_start_pos    = hlm - jvel - margin
 
-    range_postion    = hlm - llm
-    jogging_velocity = capv_lib.capvget(motor + '.JVEL')
-    moving_velocity  = capv_lib.capvget(motor + '.VELO')
-    acceleration     = capv_lib.capvget(motor + '.ACCL')
     msta             = int(capv_lib.capvget(motor + '.MSTA'))
+    velo             = capv_lib.capvget(motor + '.VELO')
+    accl             = capv_lib.capvget(motor + '.ACCL')
 
-    print('llm=%f hlm=%f per70_UserPosition=%f' % (llm, hlm, per70_UserPosition))
+    print('llm=%f hlm=%f jog_start_pos=%f' % (llm, hlm, jog_start_pos))
 
     # Assert if motor is not homed
     def test_TC_1221(self):
@@ -44,7 +45,7 @@ class Test(unittest.TestCase):
             old_low_limit = capv_lib.capvget(motor + '.LLM')
             capv_lib.capvput(motor + '.STOP', 1)
             #Go away from limit switch
-            lib.movePosition(motor, tc_no, self.per70_UserPosition, self.moving_velocity, self.acceleration)
+            lib.movePosition(motor, tc_no, self.jog_start_pos, self.velo, self.accl)
             destination = capv_lib.capvget(motor + '.HLM')
             rbv = capv_lib.capvget(motor + '.RBV')
             jvel = capv_lib.capvget(motor + '.JVEL')
@@ -52,12 +53,12 @@ class Test(unittest.TestCase):
 
             lib.setSoftLimitsOff(motor)
 
-            capv_lib.capvput(motor + '.JOGF', 1, wait=True, timeout=timeout)
+            done = lib.jogDirection(motor, tc_no, 1)
             # Get values, check them later
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
             mstaE = int(capv_lib.capvget(motor + '.MSTA'))
             #Go away from limit switch
-            lib.movePosition(motor, tc_no, old_high_limit, self.moving_velocity, self.acceleration)
+            lib.movePosition(motor, tc_no, old_high_limit, self.velo, self.accl)
             print('%s msta=%x lvio=%d' % (tc_no, mstaE, lvio))
 
             lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
