@@ -17,13 +17,16 @@ class Test(unittest.TestCase):
 
     hlm = capv_lib.capvget(motor + '.HLM')
     llm = capv_lib.capvget(motor + '.LLM')
+    jvel = capv_lib.capvget(motor + '.JVEL')
 
-    per90_UserPosition  = round((1 * llm + 9 * hlm) / 10)
+    margin = 1.0
+    # motorRecord stops jogging 1 second before reaching HLM
+    jog_start_pos    = hlm - jvel - margin
 
-    range_postion    = hlm - llm
     msta             = int(capv_lib.capvget(motor + '.MSTA'))
+    velo             = capv_lib.capvget(motor + '.VELO')
 
-    print('llm=%f hlm=%f per90_UserPosition=%f' % (llm, hlm, per90_UserPosition))
+    print('llm=%f hlm=%f jog_start_pos=%f' % (llm, hlm, jog_start_pos))
 
     # Assert that motor is homed
     def test_TC_1231(self):
@@ -31,7 +34,6 @@ class Test(unittest.TestCase):
         tc_no = "TC-1231"
         if not (self.msta & lib.MSTA_BIT_HOMED):
             self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
-        lib.initializeMotorRecordSimulatorAxis(motor, '1231')
 
 
     # per90 UserPosition
@@ -40,11 +42,12 @@ class Test(unittest.TestCase):
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1232-90-percent-UserPosition"
             print('%s' % tc_no)
-            destination = self.per90_UserPosition
-            res = lib.move(motor, destination, 60)
+            destination = self.jog_start_pos
+            timeout = lib.calcTimeOut(motor, destination, self.velo)
+            res = lib.move(motor, destination, timeout)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
-            print('%s postion=%f per90_UserPosition=%f' % (
-                tc_no, UserPosition, self.per90_UserPosition))
+            print('%s postion=%f jog_start_pos=%f' % (
+                tc_no, UserPosition, self.jog_start_pos))
             self.assertEqual(res, globals.SUCCESS, 'move returned SUCCESS')
 
     # High soft limit in controller when using MoveVel
@@ -82,5 +85,5 @@ class Test(unittest.TestCase):
 
             self.assertEqual(0, msta & lib.MSTA_BIT_MINUS_LS, 'DLY Minus hard limit not reached MoveVel')
             self.assertEqual(0, msta & lib.MSTA_BIT_PLUS_LS,  'DLY Plus hard limit not reached MoveVel')
-            self.assertEqual(0, miss,                              'DLY MISS not set MoveVel')
+            self.assertEqual(0, miss,                         'DLY MISS not set MoveVel')
 
