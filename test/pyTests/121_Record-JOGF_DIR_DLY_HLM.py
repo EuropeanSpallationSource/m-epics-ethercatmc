@@ -25,7 +25,6 @@ class Test(unittest.TestCase):
     jog_start_pos    = hlm - jvel - margin
 
     msta             = int(capv_lib.capvget(motor + '.MSTA'))
-    velo             = capv_lib.capvget(motor + '.VELO')
 
     print('llm=%f hlm=%f jog_start_pos=%f' % (llm, hlm, jog_start_pos))
 
@@ -43,13 +42,11 @@ class Test(unittest.TestCase):
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1212-90-percent-UserPosition"
             print('%s' % tc_no)
-            destination = self.jog_start_pos
-            timeout = lib.calcTimeOut(motor, destination, self.velo)
-            res = lib.move(motor, destination, 60)
+            done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
-            print('%s postion=%f jog_start_pos=%f' % (
-                tc_no, UserPosition, self.jog_start_pos))
-            self.assertNotEqual(res == globals.SUCCESS, 'move returned SUCCESS')
+            print('%s postion=%f jog_start_pos=%f done=%s' % (
+                   tc_no, UserPosition, self.jog_start_pos, done))
+            self.assertEqual(1, done,                'moveWait should return done')
 
     # High soft limit JOGF
     def test_TC_1213(self):
@@ -65,7 +62,7 @@ class Test(unittest.TestCase):
 
             capv_lib.capvput(motor + '.DLY', self.saved_DLY)
             resW = lib.waitForMipZero(motor, tc_no, self.saved_DLY)
-            self.assertEqual(True, done,                      'DLY JOGF should be done after jogDirection')
+            self.assertEqual(1, done,                         'DLY JOGF should be done after jogDirection')
             self.assertEqual(0, msta & lib.MSTA_BIT_PROBLEM,  'DLY JOGF should not give MSTA.Problem')
             self.assertEqual(0, msta & lib.MSTA_BIT_MINUS_LS, 'DLY JOGF should not reach LLS')
             self.assertEqual(0, msta & lib.MSTA_BIT_PLUS_LS,  'DLY JOGF should not reach HLS')
@@ -80,13 +77,11 @@ class Test(unittest.TestCase):
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1214-90-percent-UserPosition"
             print('%s' % tc_no)
-            destination = self.jog_start_pos
-            timeout = lib.calcTimeOut(motor, destination, self.velo)
-            res = lib.move(motor, destination, timeout)
+            done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
-            print('%s postion=%f jog_start_pos=%f' % (
-                tc_no, UserPosition, self.jog_start_pos))
-            self.assertNotEqual(res == globals.SUCCESS, 'move returned SUCCESS')
+            print('%s postion=%f jog_start_pos=%f done=%s' % (
+                tc_no, UserPosition, self.jog_start_pos, done))
+            self.assertEqual(1, done,                         'moveWait should return done')
 
     def test_TC_1215(self):
         motor = self.motor
@@ -149,13 +144,11 @@ class Test(unittest.TestCase):
         if (self.msta & lib.MSTA_BIT_HOMED):
             tc_no = "TC-1216-90-percent-UserPosition"
             print('%s' % tc_no)
-            destination = self.jog_start_pos
-            timeout = lib.calcTimeOut(motor, destination, self.velo)
-            res = lib.move(motor, destination, timeout)
+            done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
-            print('%s postion=%f jog_start_pos=%f' % (
-                tc_no, UserPosition, self.jog_start_pos))
-            self.assertNotEqual(res == globals.SUCCESS, 'move returned SUCCESS')
+            print('%s postion=%f jog_start_pos=%f done=%s' % (
+                   tc_no, UserPosition, self.jog_start_pos, done))
+            self.assertEqual(1, done,                    'moveWait should return done')
 
     # High soft limit JOGR + DIR
     def test_TC_1217(self):
