@@ -18,7 +18,6 @@ import capv_lib
 class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
     capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
-    lib.initializeMotorRecordSimulatorAxis(motor, '240')
     saved_DLY  = capv_lib.capvget(motor + '.DLY')
     msta             = int(capv_lib.capvget(motor + '.MSTA'))
 
