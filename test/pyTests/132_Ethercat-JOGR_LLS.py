@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
 
 
 
-    # high limit switch
+    # low limit switch
     def test_TC_1322(self):
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
@@ -59,7 +59,7 @@ class Test(unittest.TestCase):
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
             mstaE = int(capv_lib.capvget(motor + '.MSTA'))
             #Go away from limit switch
-            done2 = lib.moveWait(motor, tc_no, old_high_limit)
+            done2 = lib.moveWait(motor, tc_no, old_low_limit)
             print('%s msta=%x lvio=%d' % (tc_no, mstaE, lvio))
 
             lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
