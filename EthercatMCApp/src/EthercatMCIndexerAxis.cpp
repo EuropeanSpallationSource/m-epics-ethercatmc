@@ -694,6 +694,11 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
       statusValid = 1;
       drvlocal.hasProblem = 1;
       break;
+    case idxStatusCodeRESET:
+    case idxStatusCodeSTART:
+    case idxStatusCodeSTOP:
+      /* temporally states, no more information yet  */
+      break;
     default:
       drvlocal.hasProblem = 1;
     }
