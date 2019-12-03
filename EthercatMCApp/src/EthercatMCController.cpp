@@ -49,12 +49,12 @@ extern "C" const char *errStringFromErrId(int nErrorId)
 {
   switch(nErrorId) {
   case 0x4221:
-    return "Velo not allowed";
+    return "Velo illegal";
   case 0x4223:
-    return "Axis positioning enable";
+    return "Axis pos en";
   case 0x4450:
   case 0x4451:
-    return "Follow error";
+    return "Follow err";
   case 0x4260:
     return "Amplifier off";
   case 0x4263:
@@ -62,9 +62,9 @@ extern "C" const char *errStringFromErrId(int nErrorId)
   case 0x42A0:
     return "Consequ Err";
   case 0x4460:
-    return "Low soft limit";
+    return "Low soft lim";
   case 0x4461:
-    return "High soft limit";
+    return "High softlim";
   case 0x4462:
     return "Min position";
   case 0x4463:
