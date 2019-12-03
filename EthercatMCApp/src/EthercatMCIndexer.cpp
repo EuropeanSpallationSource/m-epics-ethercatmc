@@ -456,10 +456,11 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
     }
     asynPrint(pasynUserController_, traceMask,
               "%sindexerParamWrite(%d) paramIndex=%s (%u) value=%f "
-              "lenInPlcPara=%u counter=%u status=%s (%d)\n",
+              "lenInPlcPara=%u cmdSubParamIndex=0x%04x "
+              "counter=%u status=%s (%d)\n",
               modNamEMC, axisNo,
               plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-              value, lenInPlcPara, counter,
+              value, lenInPlcPara, cmdSubParamIndex, counter,
               EthercatMCstrStatus(status), (int)status);
     /* This is good, return */
     if (cmdSubParamIndex == cmdAcked) return asynSuccess;
@@ -469,7 +470,23 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
     case PARAM_IF_CMD_DOREAD:
       status = asynDisabled;
     case PARAM_IF_CMD_DOWRITE:
+      break;
     case PARAM_IF_CMD_BUSY:
+      {
+        /* Calling the parameter interface on a function
+           may return busy. That is OK */
+        switch (paramIndex) {
+        case PARAM_IDX_FUN_REFERENCE:
+        case PARAM_IDX_FUN_SET_POSITION:
+        case PARAM_IDX_FUN_MOVE_VELOCITY:
+          if ((cmdSubParamIndex & PARAM_IF_IDX_MASK) == paramIndex) {
+            return asynSuccess;
+          }
+          break;
+        default:
+          ;
+        }
+      }
       break;
     case PARAM_IF_CMD_DONE:
       /* This is an error. (collision ?) */
