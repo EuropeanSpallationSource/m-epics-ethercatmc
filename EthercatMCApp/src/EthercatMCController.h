@@ -216,7 +216,8 @@ public:
                               unsigned paramIndex,
                               unsigned lenInPlcPara,
                               double *value);
-  asynStatus indexerParamWrite(unsigned paramIfOffset,
+  asynStatus indexerParamWrite(int axisNo,
+                               unsigned paramIfOffset,
                                unsigned paramIndex,
                                unsigned lenInPlcPara,
                                double value);

@@ -396,7 +396,7 @@ asynStatus EthercatMCController::indexerParamRead(int axisNo,
   return asynError;
 }
 
-asynStatus EthercatMCController::indexerParamWrite(unsigned paramIfOffset,
+asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfOffset,
                                                    unsigned paramIndex,
                                                    unsigned lenInPlcPara,
                                                    double value)
@@ -422,30 +422,45 @@ asynStatus EthercatMCController::indexerParamWrite(unsigned paramIfOffset,
     status = setPlcMemoryInteger(paramIfOffset + 2, (int)value, lenInPlcPara);
   else
     status = setPlcMemoryDouble(paramIfOffset + 2, value, lenInPlcPara);
-  if (status) traceMask |= ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER;
-  asynPrint(pasynUserController_, traceMask,
-            "%sparamIfOffset=%u paramIndex=%u value=%f lenInPlcPara=%u status=%s (%d)\n",
-            modNamEMC, paramIfOffset, paramIndex, value, lenInPlcPara,
-            EthercatMCstrStatus(status), (int)status);
-  if (status) return status;
+
+  if (status){
+    asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+              "%sindexerParamWrite(%d) paramIfOffset=%u paramIndex=%u "
+              "value=%f lenInPlcPara=%u status=%s (%d)\n",
+              modNamEMC, axisNo, paramIfOffset, paramIndex,
+              value, lenInPlcPara,
+              EthercatMCstrStatus(status), (int)status);
+    return status;
+  }
 
   status = setPlcMemoryInteger(paramIfOffset, cmd, lenInPlcCmd);
-  if (status) traceMask |= ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER;
-  asynPrint(pasynUserController_, traceMask,
-            "%sstatus=%s (%d)\n",
-            modNamEMC,
-            EthercatMCstrStatus(status), (int)status);
-  if (status) return status;
+  if (status) {
+    asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+              "%sstatus=%s (%d)\n",
+              modNamEMC,
+              EthercatMCstrStatus(status), (int)status);
+    return status;
+  }
   while (counter < 5) {
     unsigned cmdSubParamIndex = 0;
     status = getPlcMemoryUint(paramIfOffset, &cmdSubParamIndex, 2);
-    if (status) traceMask |= ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER;
+    if (status) {
+      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+                "%ssindexerParamWrite(%d) paramIndex=%s (%u) value=%f "
+                "lenInPlcpara=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
+                modNamEMC, axisNo,
+                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                value, lenInPlcPara, cmdSubParamIndex, counter,
+                EthercatMCstrStatus(status), (int)status);
+      return status;
+    }
     asynPrint(pasynUserController_, traceMask,
-              "%sparamIndex=%s (%u) lenInPlcPara=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
-              modNamEMC, plcParamIndexTxtFromParamIndex(paramIndex),
-              paramIndex, lenInPlcPara, cmdSubParamIndex, counter,
+              "%sindexerParamWrite(%d) paramIndex=%s (%u) value=%f "
+              "lenInPlcPara=%u counter=%u status=%s (%d)\n",
+              modNamEMC, axisNo,
+              plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+              value, lenInPlcPara, counter,
               EthercatMCstrStatus(status), (int)status);
-    if (status) return status;
     /* This is good, return */
     if (cmdSubParamIndex == cmdAcked) return asynSuccess;
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {

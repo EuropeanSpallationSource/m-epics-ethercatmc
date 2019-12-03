@@ -255,7 +255,7 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
     double oldValue;
     pC_->getDoubleParam(axisNo_, pC_->EthercatMCVel_RB_, &oldValue);
     if (maxVelocity != oldValue) {
-      status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+      status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_SPEED_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       maxVelocity);
@@ -273,7 +273,7 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
     double oldValue;
     pC_->getDoubleParam(axisNo_, pC_->EthercatMCAcc_RB_, &oldValue);
     if (acceleration != oldValue) {
-      status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+      status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_ACCEL_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       acceleration);
@@ -347,7 +347,7 @@ asynStatus EthercatMCIndexerAxis::home(double minVelocity, double maxVelocity,
   (void)maxVelocity;
   (void)acceleration;
   (void)forwards;
-  status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+  status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                   PARAM_IDX_FUN_REFERENCE,
                                   drvlocal.lenInPlcPara,
                                   0.0);
@@ -373,7 +373,7 @@ asynStatus EthercatMCIndexerAxis::moveVelocity(double minVelocity,
     double oldValue;
     pC_->getDoubleParam(axisNo_, pC_->EthercatMCAcc_RB_, &oldValue);
     if (acceleration != oldValue) {
-      status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+      status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_ACCEL_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       acceleration);
@@ -387,7 +387,7 @@ asynStatus EthercatMCIndexerAxis::moveVelocity(double minVelocity,
       setDoubleParam(pC_->EthercatMCAcc_RB_, acceleration);
     }
   }
-  status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+  status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                   PARAM_IDX_FUN_MOVE_VELOCITY,
                                   drvlocal.lenInPlcPara,
                                   maxVelocity);
@@ -402,7 +402,7 @@ asynStatus EthercatMCIndexerAxis::setPosition(double value)
 {
   asynStatus status = asynError;
   if (drvlocal.paramIfOffset) {
-    status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+    status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     PARAM_IDX_FUN_SET_POSITION,
                                     drvlocal.lenInPlcPara,
                                     value);
@@ -784,7 +784,7 @@ asynStatus EthercatMCIndexerAxis::setClosedLoop(bool closedLoop)
     setIntegerParam(pC_->motorStatusPowerOn_, value);
   }
   if (drvlocal.paramIfOffset) {
-    status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+    status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     PARAM_IDX_OPMODE_AUTO_UINT,
                                     drvlocal.lenInPlcPara,
                                     value);
@@ -829,7 +829,7 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
               modNamEMC, axisNo_, value);
     if (!value) {
       static const double fABSMAX = 3.0e+38;
-      status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+      status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_USR_MAX_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       fABSMAX);
@@ -842,7 +842,7 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
               modNamEMC, axisNo_, value);
     if (!value) {
       static const double fABSMIN = -3.0e+38;
-      status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+      status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_USR_MIN_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       fABSMIN);
@@ -861,7 +861,7 @@ asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
   if (function == pC_->EthercatMCCfgDHLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d EthercatMCCfgDHLM_)=%g\n", modNamEMC, axisNo_, value);
-    status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+    status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     PARAM_IDX_USR_MAX_FLOAT,
                                     drvlocal.lenInPlcPara,
                                     value);
@@ -871,7 +871,7 @@ asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
   } else if (function == pC_->EthercatMCCfgDLLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d EthercatMCCfgDLLM_)=%g\n", modNamEMC, axisNo_, value);
-    status = pC_->indexerParamWrite(drvlocal.paramIfOffset,
+    status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     PARAM_IDX_USR_MIN_FLOAT,
                                     drvlocal.lenInPlcPara,
                                     value);
