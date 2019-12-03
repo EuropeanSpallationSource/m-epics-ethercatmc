@@ -281,6 +281,15 @@ $(pv_value)</tooltip>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
+      <rule name="JOGR-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0==1">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M).JVEL</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -344,6 +353,15 @@ $(pv_value)</tooltip>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
+      <rule name="JOGF-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0==1">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M).JVEL</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
