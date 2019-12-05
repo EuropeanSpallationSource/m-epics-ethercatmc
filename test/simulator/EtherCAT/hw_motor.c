@@ -950,9 +950,8 @@ int moveVelocity(int axis_no,
 
   if (motor_axis[axis_no].logFile) {
     fprintf(motor_axis[axis_no].logFile,
-            "move velocity axis_no=%d direction=%d max_velocity=%g "
+            "move velocity direction=%d max_velocity=%g "
             "acceleration=%g motorPosNow=%g\n",
-            axis_no,
             direction,
             max_velocity,
             acceleration,

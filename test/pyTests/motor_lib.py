@@ -652,7 +652,7 @@ class motor_lib(object):
         expFile=open(expFileName, 'w')
 
         # The jogging command
-        line1 = "move velocity axis_no=1 direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
+        line1 = "move velocity direction=%d max_velocity=%g acceleration=%g motorPosNow=%g" % \
                 (myDirection, self.myJVEL, self.myJAR, motorStartPos)
         deltaForth = self.myBDST * frac
         # The record tells us to go "delta * frac". Once we have travelled, we are too far
