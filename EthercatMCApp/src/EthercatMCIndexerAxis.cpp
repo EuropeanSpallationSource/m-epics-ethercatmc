@@ -944,7 +944,7 @@ asynStatus EthercatMCIndexerAxis::setStringParamDbgStrToMcu(const char *value)
             sizeof(netDevice0518interface.control));
   /* TODO:  obey the handshake,  bit 15 must be low */
   /* TODO2: update the simulator to send the "OK" and read it here */
-  return pC_->setPlcMemoryBytes(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
+  return pC_->setPlcMemoryViaADS(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
                                  (char*)&netDevice0518interface,
                                  pC_->ctrlLocal.specialDbgStrToMcuDeviceLength);
 }

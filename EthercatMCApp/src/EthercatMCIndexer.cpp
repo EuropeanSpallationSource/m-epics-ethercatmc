@@ -146,17 +146,6 @@ asynStatus EthercatMCController::getPlcMemoryBytes(unsigned indexOffset,
   return getPlcMemoryViaADS(indexOffset, value, len);
 }
 
-asynStatus EthercatMCController::setPlcMemoryBytes(unsigned indexOffset,
-                                                   const char *value,
-                                                   size_t len)
-{
-  asynPrint(pasynUserController_,
-            ASYN_TRACE_INFO,
-            "%ssetPlcMemoryBytes indexOffset=%d 0x%x\n",
-            modNamEMC, indexOffset, indexOffset);
-  return setPlcMemoryViaADS(indexOffset, value, len);
-}
-
 asynStatus EthercatMCController::setPlcMemoryInteger(unsigned indexOffset,
                                                      int value,
                                                      size_t lenInPlc)

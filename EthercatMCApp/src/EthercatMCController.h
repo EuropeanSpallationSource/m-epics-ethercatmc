@@ -199,8 +199,6 @@ public:
   asynStatus writeReadACK(int traceMask);
   asynStatus getPlcMemoryUint(unsigned indexOffset,
                               unsigned *value, size_t lenInPlc);
-  asynStatus setPlcMemoryBytes(unsigned indexOffset,
-                               const char *value, size_t len);
   asynStatus getPlcMemoryBytes(unsigned indexOffset,
                                char *value, size_t len);
   asynStatus setPlcMemoryInteger(unsigned indexOffset,
