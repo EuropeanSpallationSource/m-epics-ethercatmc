@@ -666,7 +666,7 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
     if ((paramCtrl != drvlocal.old_paramCtrl) ||
         (paramValue != drvlocal.old_paramValue)) {
       unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
-      if (paramIndex < 128) {
+      if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
         /* Only read real parameters, not functions */
         asynPrint(pC_->pasynUserController_,
                   pollReadBackInBackGround ? ASYN_TRACE_FLOW : ASYN_TRACE_INFO,

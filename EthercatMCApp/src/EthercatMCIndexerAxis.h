@@ -20,6 +20,9 @@
 #define PARAM_IF_CMD_READONLY                      0xC000
 #define PARAM_IF_CMD_RETRY_LATER                   0xE000
 
+/* Some parameters are functions */
+#define PARAM_IF_IDX_FIRST_FUNCTION                128
+
 extern "C" {
   int EthercatMCCreateIndexerAxis(const char *EthercatMCName, int axisNo,
                                   int axisFlags, const char *axisOptionsStr);

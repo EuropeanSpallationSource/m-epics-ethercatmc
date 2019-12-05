@@ -676,9 +676,9 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
       unsigned bitIsSet = parameters & (1 << bitIdx) ? 1 : 0;
       if (bitIsSet) {
         double fValue = 0.0;
-        if ((paramIndex < 128) ||
+        if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
 	    (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
-          /* paramIndex >= 128 are functions.
+          /* paramIndex >= PARAM_IF_IDX_FIRST_FUNCTION (128) are functions.
              Don't read them.
              tell driver that the function exist
 	     But read 142, which becomes JVEL */
