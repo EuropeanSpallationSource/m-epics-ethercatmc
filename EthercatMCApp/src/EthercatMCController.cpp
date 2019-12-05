@@ -658,6 +658,8 @@ void EthercatMCController::handleStatusChange(asynStatus status)
         pAxis->setIntegerParam(motorStatusCommsError_, 1);
         pAxis->callParamCallbacks();
       }
+      free(ctrlLocal.pIndexerProcessImage);
+      ctrlLocal.pIndexerProcessImage = NULL;
     } else {
       /* Disconnected -> Connected */
       setMCUErrMsg("MCU Cconnected");
@@ -687,6 +689,25 @@ asynStatus EthercatMCController::poll(void)
           callParamCallbacks(i);
           i++;
         }
+      }
+    } else {
+      if (ctrlLocal.pIndexerProcessImage &&
+          ctrlLocal.lastDeviceEndOffset) {
+        size_t indexOffset = ctrlLocal.firstDeviceStartOffset;
+        size_t len = ctrlLocal.lastDeviceEndOffset - indexOffset;
+        int traceMask = ASYN_TRACEIO_DRIVER;
+        memset(ctrlLocal.pIndexerProcessImage, 0,
+               ctrlLocal.lastDeviceEndOffset);
+        status = getPlcMemoryViaADS(indexOffset,
+                                    &ctrlLocal.pIndexerProcessImage[indexOffset],
+                                    len);
+        if (status) traceMask |= ASYN_TRACE_ERROR;
+
+        asynPrint(pasynUserController_, ASYN_TRACEIO_DRIVER,
+                  "%spoll() indexOffset=%u len=%u status=%s (%d)\n",
+                  modNamEMC, (unsigned)indexOffset, (unsigned)len,
+                  EthercatMCstrStatus(status), (int)status);
+        return status;
       }
     }
   } else {

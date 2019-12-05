@@ -539,9 +539,9 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
         uint8_t   paramValue[4];
       } readback;
       uint16_t statusReasonAux16;
-      status = pC_->getPlcMemoryViaADS(drvlocal.iOffset,
-                                       &readback,
-                                       sizeof(readback));
+      status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                                 &readback,
+                                                 sizeof(readback));
       if (status) {
         return status;
       }
@@ -573,9 +573,9 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
         uint8_t   paramCtrl[2];
         uint8_t   paramValue[8];
       } readback;
-      status = pC_->getPlcMemoryViaADS(drvlocal.iOffset,
-                                       &readback,
-                                       sizeof(readback));
+      status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                                 &readback,
+                                                 sizeof(readback));
       if (status) {
         return status;
       }

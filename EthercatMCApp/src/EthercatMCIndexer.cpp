@@ -517,6 +517,22 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
   return asynDisabled;
 }
 
+asynStatus
+EthercatMCController::getPlcMemoryFromProcessImage(unsigned indexOffset,
+                                                   void *data,
+                                                   size_t lenInPlc)
+{
+  if (ctrlLocal.pIndexerProcessImage &&
+      ctrlLocal.lastDeviceEndOffset) {
+    memcpy(data,
+           &ctrlLocal.pIndexerProcessImage[indexOffset],
+           lenInPlc);
+    return asynSuccess;
+  }
+  /* no process image, get values */
+  return getPlcMemoryViaADS(indexOffset, data,  lenInPlc);
+}
+
 void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
                                                   unsigned paramIndex,
                                                   double fValue)
@@ -917,6 +933,16 @@ asynStatus EthercatMCController::initialPollIndexer(void)
                 modNamEMC,
                 ctrlLocal.firstDeviceStartOffset,
                 ctrlLocal.lastDeviceEndOffset);
+      /* Create memory to keep the processimage for all devices
+         We include the non-used bytes at the beginning,
+         including the nytes used by the indexer (and waste some bytes)
+         to make it easier to understand the adressing using offset */
+
+      /* In case of re-connect free the old one */
+      free(ctrlLocal.pIndexerProcessImage);
+      /* create a new one, with the right size */
+      ctrlLocal.pIndexerProcessImage = (uint8_t*)calloc(1, ctrlLocal.lastDeviceEndOffset);
+
       break; /* End of list ?? */
     }
     /* indexer has devNum == 0, it is not a device */

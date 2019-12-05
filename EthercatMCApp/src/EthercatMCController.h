@@ -222,7 +222,10 @@ public:
                                unsigned lenInPlcPara,
                                double value);
 
+  asynStatus getPlcMemoryFromProcessImage(unsigned indexOffset,
+                                          void *data, size_t lenInPlc);
   struct {
+    uint8_t      *pIndexerProcessImage;
     asynStatus   oldStatus;
     unsigned int cntADSstatus;
     unsigned int local_no_ASYN_;
