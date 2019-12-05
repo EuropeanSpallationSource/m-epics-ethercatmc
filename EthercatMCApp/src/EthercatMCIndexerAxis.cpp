@@ -187,7 +187,7 @@ void EthercatMCIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
                                                            unsigned iTypCode)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s (%d) devNum=%u iTypCode=0x%x, iOffset=%u\n",
+            "%sOffsetTypeCode(%d) devNum=%u iTypCode=0x%x, iOffset=%u\n",
             modNamEMC, axisNo_, devNum, iTypCode, iOffset);
   drvlocal.devNum = devNum;
   drvlocal.iTypCode = iTypCode;
