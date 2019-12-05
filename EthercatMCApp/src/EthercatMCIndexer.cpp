@@ -138,14 +138,6 @@ asynStatus EthercatMCController::getPlcMemoryUint(unsigned indexOffset,
   return asynError;
 }
 
-asynStatus EthercatMCController::getPlcMemoryBytes(unsigned indexOffset,
-                                                   char *value,
-                                                   size_t len)
-{
-  memset(value, 0, len);
-  return getPlcMemoryViaADS(indexOffset, value, len);
-}
-
 asynStatus EthercatMCController::setPlcMemoryInteger(unsigned indexOffset,
                                                      int value,
                                                      size_t lenInPlc)
@@ -760,7 +752,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexer(devNum, infoType16 + auxBitIdx);
         if (status) return status;
-        status = getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+        status = getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                                     auxBitName,
                                     sizeof(auxBitName));
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
@@ -879,25 +871,25 @@ asynStatus EthercatMCController::initialPollIndexer(void)
     }
     status = readDeviceIndexer(devNum, infoType4);
     if (!status) {
-      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.desc,
                          sizeof(descVersAuthors.desc));
     }
     status = readDeviceIndexer(devNum, infoType5);
     if (!status) {
-      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.vers,
                          sizeof(descVersAuthors.vers));
     }
     status = readDeviceIndexer(devNum, infoType6);
     if (!status) {
-      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.author1,
                          sizeof(descVersAuthors.author1));
     }
     status = readDeviceIndexer(devNum, infoType7);
     if (!status) {
-      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.author2,
                          sizeof(descVersAuthors.author2));
     }
