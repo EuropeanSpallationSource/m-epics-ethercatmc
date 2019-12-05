@@ -365,9 +365,15 @@ asynStatus EthercatMCIndexerAxis::moveVelocity(double minVelocity,
                                                double maxVelocity,
                                                double acceleration)
 {
+  unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status;
   (void)minVelocity;
   (void)acceleration;
+
+  asynPrint(pC_->pasynUserController_, traceMask,
+            "%smoveVelocity (%d) minVelocity=%f maxVelocity=%f"
+            " acceleration=%f\n", modNamEMC, axisNo_,
+            minVelocity, maxVelocity, acceleration);
 
   if (acceleration > 0.0) {
     double oldValue;
@@ -659,15 +665,19 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
     }
     if ((paramCtrl != drvlocal.old_paramCtrl) ||
         (paramValue != drvlocal.old_paramValue)) {
-      asynPrint(pC_->pasynUserController_,
-                pollReadBackInBackGround ? ASYN_TRACE_FLOW : ASYN_TRACE_INFO,
-                "%spoll(%d) paramCtrl=%x paramValue=%f\n",
-                modNamEMC, axisNo_,
-                paramCtrl, paramValue);
-      if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
-        pC_->parameterFloatReadBack(axisNo_,
-                                    paramCtrl & PARAM_IF_IDX_MASK,
-                                    paramValue);
+      unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+      if (paramIndex < 128) {
+        /* Only read real parameters, not functions */
+        asynPrint(pC_->pasynUserController_,
+                  pollReadBackInBackGround ? ASYN_TRACE_FLOW : ASYN_TRACE_INFO,
+                  "%spoll(%d) paramCtrl=%x paramValue=%f\n",
+                  modNamEMC, axisNo_,
+                  paramCtrl, paramValue);
+        if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
+          pC_->parameterFloatReadBack(axisNo_,
+                                      paramIndex,
+                                      paramValue);
+        }
       }
       drvlocal.old_paramCtrl = paramCtrl;
       drvlocal.old_paramValue = paramValue;
