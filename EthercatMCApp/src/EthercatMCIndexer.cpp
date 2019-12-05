@@ -822,6 +822,9 @@ asynStatus EthercatMCController::initialPollIndexer(void)
   if (status) goto endPollIndexer;
 
   ctrlLocal.indexerOffset = 4;
+  ctrlLocal.firstDeviceStartOffset = (unsigned)-1;
+  ctrlLocal.lastDeviceEndOffset = 0;
+
   status = getPlcMemoryUint(ctrlLocal.indexerOffset,
                             &ctrlLocal.indexerOffset, 2);
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
@@ -894,9 +897,9 @@ asynStatus EthercatMCController::initialPollIndexer(void)
                          sizeof(descVersAuthors.author2));
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sindexerDevice OffsBytes=%u %20s "
+              "%sindexerDevice(%u) OffsBytes=%u %20s "
               "TypCode=0x%x SizeBytes=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
-              modNamEMC, iOffsBytes, descVersAuthors.desc,
+              modNamEMC, devNum, iOffsBytes, descVersAuthors.desc,
               iTypCode, iSizeBytes, iUnit,
               plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
               plcUnitTxtFromUnitCode(iUnit & 0xFF),
@@ -904,12 +907,28 @@ asynStatus EthercatMCController::initialPollIndexer(void)
 
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%sdescVersAuthors(%d)  vers=%s author1=%s author2=%s\n",
-              modNamEMC, axisNo,
+              modNamEMC, devNum,
               descVersAuthors.vers,
               descVersAuthors.author1,
               descVersAuthors.author2);
     if (!iTypCode && !iSizeBytes && !iOffsBytes) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%sfirstDeviceStartOffset=%u lastDeviceEndOffset=%u\n",
+                modNamEMC,
+                ctrlLocal.firstDeviceStartOffset,
+                ctrlLocal.lastDeviceEndOffset);
       break; /* End of list ?? */
+    }
+    /* indexer has devNum == 0, it is not a device */
+    if (devNum) {
+      unsigned endOffset = iOffsBytes + iSizeBytes;
+      /* find the lowest and highest offset for all devices */
+      if (iOffsBytes < ctrlLocal.firstDeviceStartOffset) {
+        ctrlLocal.firstDeviceStartOffset = iOffsBytes;
+      }
+      if (endOffset > ctrlLocal.lastDeviceEndOffset) {
+        ctrlLocal.lastDeviceEndOffset = endOffset;
+      }
     }
     switch (iTypCode) {
     case 0x5008:

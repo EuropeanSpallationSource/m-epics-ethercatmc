@@ -229,6 +229,8 @@ public:
     unsigned int hasConfigError;
     unsigned int initialPollDone;
     unsigned int indexerOffset;
+    unsigned int firstDeviceStartOffset;
+    unsigned int lastDeviceEndOffset;
     unsigned int specialDbgStrToMcuDeviceLength;
     unsigned int specialDbgStrToMcuDeviceOffset;
     AmsNetidAndPortType remote;
