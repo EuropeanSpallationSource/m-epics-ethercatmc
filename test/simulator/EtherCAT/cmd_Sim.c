@@ -206,6 +206,13 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("OK");
     return;
   }
+  /* moveRelative=8.0 */
+  nvals = sscanf(myarg_1, "moveRelative=%lf", &fValue);
+  if (nvals == 1) {
+    (void)moveRelative(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
 
   /* if we come here, we do not understand the command */
   CMD_BUF_PRINTF_RETURN_OR_DIE("%s/%s:%d illegal line=%s myarg_1=%s",

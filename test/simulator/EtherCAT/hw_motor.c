@@ -83,6 +83,8 @@ typedef struct
   int bManualSimulatorMode;
   int amplifierLockedToBeOff;
   int defRampUpAfterStart;
+  double nxtMoveAcceleration;
+  double nxtMoveVelocity;
 } motor_axis_type;
 
 
@@ -204,6 +206,52 @@ static void init_axis(int axis_no)
                 sizeof(motor_init_values));
 }
 
+
+double getNxtMoveAcceleration(int axis_no)
+{
+  double value = 0.0;
+  if (((axis_no) >= 0) && ((axis_no) < MAX_AXES)) {
+    value = motor_axis[axis_no].nxtMoveAcceleration;
+  }
+  fprintf(stdlog,
+          "%s/%s:%d axis_no=%d value=%f\n",
+          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
+  return value;
+}
+
+void setNxtMoveAcceleration(int axis_no, double value)
+{
+  fprintf(stdlog,
+          "%s/%s:%d axis_no=%d value=%g\n",
+          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
+  if (((axis_no) <= 0) || ((axis_no) >=MAX_AXES)) {
+    return;
+  }
+  motor_axis[axis_no].nxtMoveAcceleration = value;
+}
+
+double getNxtMoveVelocity(int axis_no)
+{
+  double value = 0.0;
+  if (((axis_no) >= 0) && ((axis_no) < MAX_AXES)) {
+    value = motor_axis[axis_no].nxtMoveVelocity;
+  }
+  fprintf(stdlog,
+          "%s/%s:%d axis_no=%d value=%f\n",
+          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
+  return value;
+}
+
+void setNxtMoveVelocity(int axis_no, double value)
+{
+  fprintf(stdlog,
+          "%s/%s:%d axis_no=%d value=%g\n",
+          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
+  if (((axis_no) <= 0) || ((axis_no) >=MAX_AXES)) {
+    return;
+  }
+  motor_axis[axis_no].nxtMoveVelocity = value;
+}
 
 
 void setMotorParkingPosition(int axis_no, double value)
@@ -848,6 +896,20 @@ int movePosition(int axis_no,
   return 0;
 }
 
+int moveRelative(int axis_no,
+                 double position)
+{
+  int relative = 1;
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  fprintf(stdlog,
+          "moveRelative axis_no=%d position=%g\n",
+          axis_no, position);
+  return movePosition(axis_no,
+                      position,
+                      relative,
+                      motor_axis[axis_no].nxtMoveVelocity,
+                      motor_axis[axis_no].nxtMoveAcceleration);
+}
 
 int moveHomeProc(int axis_no,
                  int direction,

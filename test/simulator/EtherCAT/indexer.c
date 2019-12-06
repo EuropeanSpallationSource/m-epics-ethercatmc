@@ -325,8 +325,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 typedef struct
 {
   double fHysteresis;
-  double fVelocity;
-  double fAcceleration;
 } cmd_Motor_cmd_type;
 
 
@@ -506,8 +504,8 @@ static void init_axis(int axis_no)
       cmd_Motor_cmd[axis_no].fHysteresis = 2.0;
     else
       cmd_Motor_cmd[axis_no].fHysteresis = 0.1;
-    cmd_Motor_cmd[axis_no].fVelocity = 2 + axis_no / 10.0;
-    cmd_Motor_cmd[axis_no].fAcceleration = 1 + axis_no / 10.0;
+    setNxtMoveVelocity(axis_no, 2 + axis_no / 10.0);
+    setNxtMoveAcceleration(axis_no, 1 + axis_no / 10.0);
     /* Simulated limit switches, take from indexer table */
     {
       int tmp_axis_no = 1;
@@ -581,8 +579,8 @@ indexerMotorStatusRead5008(unsigned motor_axis_no,
     movePosition(motor_axis_no,
                  NETTODOUBLE(pIndexerDevice5008interface->targetValue),
                  0, /* int relative, */
-                 cmd_Motor_cmd[motor_axis_no].fVelocity,
-                 cmd_Motor_cmd[motor_axis_no].fAcceleration);
+                 getNxtMoveVelocity(motor_axis_no),
+                 getNxtMoveAcceleration(motor_axis_no));
     break;
   case idxStatusCodeSTOP:
     motorStop(motor_axis_no);
@@ -646,8 +644,8 @@ indexerMotorStatusRead5010(unsigned motor_axis_no,
     movePosition(motor_axis_no,
                  NETTODOUBLE(pIndexerDevice5010interface->targetValue),
                  0, /* int relative, */
-                 cmd_Motor_cmd[motor_axis_no].fVelocity,
-                 cmd_Motor_cmd[motor_axis_no].fAcceleration);
+                 getNxtMoveVelocity(motor_axis_no),
+                 getNxtMoveAcceleration(motor_axis_no));
     LOGINFO3("%s/%s:%d motor_axis_no=%u idxStatusCodeSTART isMotorMoving=%d\n",
              __FILE__, __FUNCTION__, __LINE__,
              motor_axis_no,
@@ -753,14 +751,14 @@ indexerMotorParamRead(unsigned motor_axis_no,
     *fRet = cmd_Motor_cmd[motor_axis_no].fHysteresis;
     return ret;
   case PARAM_IDX_SPEED_FLOAT32:
-    *fRet = cmd_Motor_cmd[motor_axis_no].fVelocity;
+    *fRet = getNxtMoveVelocity(motor_axis_no);
     return ret;
   case PARAM_IDX_ACCEL_FLOAT32:
-    *fRet = cmd_Motor_cmd[motor_axis_no].fAcceleration;
+    *fRet = getNxtMoveAcceleration(motor_axis_no);
     return ret;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
     /* Use half of the velocity as "JVEL" */
-    *fRet = cmd_Motor_cmd[motor_axis_no].fVelocity / 2.0;
+    *fRet = getNxtMoveVelocity(motor_axis_no) / 2.0;
     return ret;
   default:
     break;
@@ -807,10 +805,10 @@ indexerMotorParamWrite(unsigned motor_axis_no,
     setLowSoftLimitPos(motor_axis_no, fValue);
     return ret;
   case PARAM_IDX_SPEED_FLOAT32:
-    cmd_Motor_cmd[motor_axis_no].fVelocity = fValue;
+    setNxtMoveVelocity(motor_axis_no, fValue);
     return ret;
   case PARAM_IDX_ACCEL_FLOAT32:
-    cmd_Motor_cmd[motor_axis_no].fAcceleration = fValue;
+    setNxtMoveAcceleration(motor_axis_no, fValue);
     return ret;
     break;
   default:
@@ -884,12 +882,12 @@ indexerMotorParamInterface(unsigned motor_axis_no,
         int direction = fValue >= 0.0;
         double fVelocity = fabs(fValue);
         if (!fVelocity) {
-          fVelocity = cmd_Motor_cmd[motor_axis_no].fVelocity;
+          fVelocity = getNxtMoveVelocity(motor_axis_no);
         }
         moveVelocity(motor_axis_no,
                      direction,
                      fVelocity,
-                     cmd_Motor_cmd[motor_axis_no].fAcceleration);
+                     getNxtMoveAcceleration(motor_axis_no));
         ret = PARAM_IF_CMD_DONE | paramIndex;
       }
       break;
