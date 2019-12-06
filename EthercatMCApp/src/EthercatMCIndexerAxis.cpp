@@ -685,7 +685,9 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
                   modNamEMC, axisNo_,
                   paramCtrl, paramValue);
         if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
+          int initial = 0;
           pC_->parameterFloatReadBack(axisNo_,
+                                      initial,
                                       paramIndex,
                                       paramValue);
         }

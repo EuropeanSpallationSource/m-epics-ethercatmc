@@ -540,6 +540,7 @@ EthercatMCController::getPlcMemoryFromProcessImage(unsigned indexOffset,
 }
 
 void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
+                                                  int initial,
                                                   unsigned paramIndex,
                                                   double fValue)
 {
@@ -590,14 +591,14 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
     pAxis->setDoubleParam(EthercatMCVelToHom_, fValue);
     break;
   case PARAM_IDX_SPEED_FLOAT:
-    pAxis->setDoubleParam(EthercatMCCfgVELO_, fValue);
+    if (initial) pAxis->setDoubleParam(EthercatMCCfgVELO_, fValue);
     pAxis->setDoubleParam(EthercatMCVel_RB_, fValue);
 #ifdef motorDefVelocityROString
     pAxis->setDoubleParam(motorDefVelocityRO_, fValue);
 #endif
     break;
   case PARAM_IDX_ACCEL_FLOAT:
-    pAxis->setDoubleParam(EthercatMCCfgACCS_, fValue);
+    if (initial) pAxis->setDoubleParam(EthercatMCCfgACCS_, fValue);
     pAxis->setDoubleParam(EthercatMCAcc_RB_, fValue);
 #ifdef motorDefJogAccROString
     pAxis->setDoubleParam(motorDefJogAccRO_, fValue);
@@ -631,7 +632,7 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
     pAxis->setIntegerParam(EthercatMCHomProc_RB_, 15);
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
-    pAxis->setDoubleParam(EthercatMCCfgJVEL_, fabs(fValue));
+    if (initial) pAxis->setDoubleParam(EthercatMCCfgJVEL_, fabs(fValue));
     break;
   }
 }
@@ -701,6 +702,7 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
       unsigned bitIsSet = parameters & (1 << bitIdx) ? 1 : 0;
       if (bitIsSet) {
         double fValue = 0.0;
+        int initial = 1;
         if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
 	    (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
           /* paramIndex >= PARAM_IF_IDX_FIRST_FUNCTION (128) are functions.
@@ -738,7 +740,7 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex);
         }
-        parameterFloatReadBack(axisNo, paramIndex, fValue);
+        parameterFloatReadBack(axisNo, initial, paramIndex, fValue);
       }
     }
   }

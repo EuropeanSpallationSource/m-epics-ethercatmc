@@ -180,6 +180,7 @@ public:
   /* Indexer */
   asynStatus readDeviceIndexer(unsigned devNum, unsigned infoType);
   void parameterFloatReadBack(unsigned axisNo,
+                              int initial,
                               unsigned paramIndex,
                               double fValue);
   asynStatus indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
