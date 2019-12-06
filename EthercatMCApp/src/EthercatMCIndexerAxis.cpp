@@ -287,7 +287,16 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
       setDoubleParam(pC_->EthercatMCAcc_RB_, acceleration);
     }
   }
-  if (relative){
+  if (relative && pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset) {
+    /* Talking to the simulatar. test case 141 needs a "real"
+       moveRelative to be commanded to the controller. */
+    char buf[40];
+    memset(buf, 0, sizeof(buf));
+    snprintf(buf, sizeof(buf) -1,
+             "Sim.this.moveRelative=%f",
+             position);
+    return setStringParamDbgStrToMcu(buf);
+  } else if (relative){
     double actPosition;
     pC_->getDoubleParam(axisNo_, pC_->motorPosition_, &actPosition);
     position = position - actPosition;
@@ -903,12 +912,13 @@ asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
 
 asynStatus EthercatMCIndexerAxis::setStringParamDbgStrToMcu(const char *value)
 {
+  asynStatus status;
   const char * const Main_this_str = "Main.this.";
   const char * const Sim_this_str = "Sim.this.";
   /* The special device structure. */
   struct {
     /* 2 bytes control, 46 payload */
-    uint8_t   control[2];
+    uint8_t   busyLen[2];
     uint8_t   value[46];
   } netDevice0518interface;
   int valueLen;
@@ -950,9 +960,14 @@ asynStatus EthercatMCIndexerAxis::setStringParamDbgStrToMcu(const char *value)
               valueLen, value);
     return asynError;
   }
-  uintToNet(valueLen, &netDevice0518interface.control,
-            sizeof(netDevice0518interface.control));
-  /* TODO:  obey the handshake,  bit 15 must be low */
+  uintToNet(valueLen, &netDevice0518interface.busyLen,
+            sizeof(netDevice0518interface.busyLen));
+  /* obey the handshake */
+  status = pC_->indexerWaitSpecialDeviceIdle(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset);
+  if (status) {
+    return status;
+  }
+
   /* TODO2: update the simulator to send the "OK" and read it here */
   return pC_->setPlcMemoryViaADS(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
                                  (char*)&netDevice0518interface,
