@@ -206,6 +206,7 @@ public:
   asynStatus setPlcMemoryDouble(unsigned indexOffset,
                                 double value, size_t lenInPlc);
 
+  asynStatus indexerWaitSpecialDeviceIdle(unsigned indexOffset);
   asynStatus indexerParamWaitNotBusy(unsigned indexOffset);
   asynStatus indexerParamRead(int axisNo,
                               unsigned paramIfOffset,

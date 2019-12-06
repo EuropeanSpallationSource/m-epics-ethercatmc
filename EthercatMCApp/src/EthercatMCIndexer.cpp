@@ -236,6 +236,31 @@ asynStatus EthercatMCController::readDeviceIndexer(unsigned devNum,
 
 }
 
+asynStatus EthercatMCController::indexerWaitSpecialDeviceIdle(unsigned indexOffset)
+{
+  unsigned traceMask = ASYN_TRACE_FLOW;
+  asynStatus status;
+  unsigned   ctrlLen = 0;
+  unsigned   counter = 0;
+
+  while (counter < 5) {
+    status = getPlcMemoryUint(indexOffset, &ctrlLen, 2);
+    asynPrint(pasynUserController_,
+              status ? traceMask | ASYN_TRACE_INFO : traceMask,
+              "%sindexerWaitSpecialDeviceIdle ctrlLen=0x%04x status=%s (%d)\n",
+              modNamEMC, ctrlLen,
+              EthercatMCstrStatus(status), (int)status);
+    if (status) return status;
+    if (!ctrlLen) return asynSuccess;
+    counter++;
+    epicsThreadSleep(.1 * (counter<<1));
+  }
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%sindexOffset=%u ctrlLen=0x%04x counter=%d\n",
+            modNamEMC, indexOffset, ctrlLen, counter);
+  return asynDisabled;
+}
+
 asynStatus EthercatMCController::indexerParamWaitNotBusy(unsigned indexOffset)
 {
   unsigned traceMask = ASYN_TRACE_FLOW;
