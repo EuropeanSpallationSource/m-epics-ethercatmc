@@ -652,6 +652,8 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
       return asynError;
     }
     setDoubleParam(pC_->motorPosition_, actPosition);
+    setDoubleParam(pC_->motorEncoderPosition_, actPosition);
+
     drvlocal.hasProblem = 0;
     setIntegerParam(pC_->EthercatMCStatusCode_, idxStatusCode);
     if ((statusReasonAux != drvlocal.old_statusReasonAux) ||
