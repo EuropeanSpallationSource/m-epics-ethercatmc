@@ -8,7 +8,11 @@ import time
 from motor_lib import motor_lib
 lib = motor_lib()
 import capv_lib
+import inspect
 ###
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 #How we move: Absolute (without encoder) or relative (with encode via UEIP)
@@ -22,6 +26,8 @@ withFRAC = 1.5
 def motorInitTC(tself, motor, tc_no, frac, encRel):
     capv_lib.capvput(motor + '.FRAC', frac)
     capv_lib.capvput(motor + '.UEIP', encRel)
+    msta = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
+    print('%s:%d motorInitTC msta=%s' % (tc_no, lineno(), lib.getMSTAtext(msta)))
 
 
 def setMotorStartPos(tself, motor, tc_no, startpos):
@@ -51,7 +57,7 @@ def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos
         assert(0)
     #
     capv_lib.capvput(motor + '.' + myJOGX, 1)
-    time.sleep(3)
+    time.sleep(1)
     lib.setValueOnSimulator(motor, tc_no, "fActPosition", motorEndPos)
     capv_lib.capvput(motor + '.' + myJOGX, 0)
     resW = lib.waitForMipZero(motor, tc_no, 12)
@@ -72,7 +78,10 @@ class Test(unittest.TestCase):
     myPOShig = lib.myPOShig
 
     def test_TC_14100(self):
-        lib.motorInitAllForBDST(self.motor, 14100)
+        motor = self.motor
+        tc_no = "TC-14100"
+        lib.initializeMotorRecordSimulatorAxis(motor, tc_no)
+        lib.motorInitAllForBDST(self.motor, tc_no)
 
     # JOG forward & backlash compensation, absolute
     def test_TC_14111(self):
