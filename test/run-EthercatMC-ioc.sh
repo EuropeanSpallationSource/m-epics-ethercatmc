@@ -85,7 +85,7 @@ if test "$MOTORPORT" = 48898; then
     #echo LOCALIP=$LOCALIP
     echo >&2         $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "<REMOTEAMSNETID> <LOCALAMSNETID>"
     for LOCALIP in $LOCALIPS; do
-      echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "  5.40.216.206.1.1     $LOCALIP.1.1"
+      echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "  $MOTORIP.1.1     $LOCALIP.1.1"
     done
     exit 1
   fi
