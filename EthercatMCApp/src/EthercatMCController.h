@@ -194,6 +194,10 @@ public:
                             double   fAbsMin,
                             double   fAbsMax,
                             unsigned iOffset);
+  asynStatus updateCfgValue(int axisNo_, int function,
+                            double newValue, const char *name);
+  asynStatus updateCfgValue(int axisNo_, int function,
+                            int newValue, const char *name);
   int getFeatures(void);
   asynStatus initialPollIndexer(void);
   asynStatus writeReadControllerPrint(int traceMask);

@@ -162,12 +162,12 @@ EthercatMCAxis::EthercatMCAxis(EthercatMCController *pC, int axisNo,
         double powerOffDelay;
         pThisOption += strlen(powerOffDelay_str);
         powerOffDelay = atof(pThisOption);
-        updateCfgValue(pC_->motorPowerOffDelay_, powerOffDelay, "powerOffDelay");
+        pC_->updateCfgValue(axisNo, pC_->motorPowerOffDelay_, powerOffDelay, "powerOffDelay");
       } else if (!strncmp(pThisOption, powerOnDelay_str, strlen(powerOnDelay_str))) {
         double powerOnDelay;
         pThisOption += strlen(powerOnDelay_str);
         powerOnDelay = atof(pThisOption);
-        updateCfgValue(pC_->motorPowerOnDelay_, powerOnDelay, "powerOnDelay");
+        pC_->updateCfgValue(axisNo, pC_->motorPowerOnDelay_, powerOnDelay, "powerOnDelay");
       }
       pThisOption = pNextOption;
     }
@@ -209,52 +209,6 @@ extern "C" int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
   new EthercatMCAxis(pC, axisNo, axisFlags, axisOptionsStr);
   pC->unlock();
   return asynSuccess;
-}
-
-asynStatus EthercatMCAxis::updateCfgValue(int function,
-                                          double newValue,
-                                          const char *name)
-{
-  double oldValue;
-  asynStatus status = pC_->getDoubleParam(axisNo_, function, &oldValue);
-  if (status) {
-    /* First time that we write the value after IOC restart
-       ECMC configures everything from the iocshell, no need to
-       do a print here */
-    if (!(pC_->features_ & FEATURE_BITS_ECMC)) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%supdateCfgValue(%d) %s=%f\n",
-                modNamEMC, axisNo_, name, newValue);
-    }
-  } else if (newValue != oldValue) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%supdateCfgValue(%d) old%s=%f new%s=%f\n",
-              modNamEMC, axisNo_, name, oldValue, name, newValue);
-  }
-  return pC_->setDoubleParam(axisNo_, function, newValue);
-}
-
-asynStatus EthercatMCAxis::updateCfgValue(int function,
-                                          int newValue,
-                                          const char *name)
-{
-  int oldValue;
-  asynStatus status = pC_->getIntegerParam(axisNo_, function, &oldValue);
-  if (status) {
-    /* First time that we write the value after IOC restart
-       ECMC configures everything from the iocshell, no need to
-       do a print here */
-    if (!((pC_->features_ & FEATURE_BITS_ECMC))) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%supdateCfgValue(%d) %s=%d\n",
-                modNamEMC, axisNo_, name, newValue);
-    }
-  } else if (newValue != oldValue) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%supdateCfgValue(%d) old%s=%d new%s=%d\n",
-              modNamEMC, axisNo_, name, oldValue, name, newValue);
-  }
-  return pC_->setIntegerParam(axisNo_, function, newValue);
 }
 
 asynStatus EthercatMCAxis::readBackSoftLimits(void)
@@ -351,8 +305,8 @@ asynStatus EthercatMCAxis::readScaling(int axisID)
               "%snvals=%d\n", modNamEMC, nvals);
     return asynError;
   }
-  updateCfgValue(pC_->EthercatMCCfgSREV_RB_, srev, "srev");
-  updateCfgValue(pC_->EthercatMCCfgUREV_RB_, urev, "urev");
+  pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgSREV_RB_, srev, "srev");
+  pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgUREV_RB_, urev, "urev");
   return asynSuccess;
 }
 
@@ -389,17 +343,17 @@ asynStatus EthercatMCAxis::readMonitoring(int axisID)
               modNamEMC, axisNo_, nvals, pC_->outString_, pC_->inString_);
     return asynError;
   }
-  updateCfgValue(pC_->EthercatMCCfgSPDB_RB_, rdbd, "spbd");
-  updateCfgValue(pC_->EthercatMCCfgRDBD_RB_, rdbd, "rdbd");
-  updateCfgValue(pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim , "rdbd_time");
-  updateCfgValue(pC_->EthercatMCCfgRDBD_En_RB_, rdbd_en, "rdbd_en");
+  pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgSPDB_RB_, rdbd, "spbd");
+  pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgRDBD_RB_, rdbd, "rdbd");
+  pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgRDBD_Tim_RB_, rdbd_tim , "rdbd_time");
+  pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgRDBD_En_RB_, rdbd_en, "rdbd_en");
 
   drvlocal.illegalInTargetWindow = (!rdbd_en || !rdbd);
 
   if (nvals == 6) {
-    updateCfgValue(pC_->EthercatMCCfgPOSLAG_RB_, poslag, "poslag");
-    updateCfgValue(pC_->EthercatMCCfgPOSLAG_Tim_RB_, poslag_tim, "poslag_tim");
-    updateCfgValue(pC_->EthercatMCCfgPOSLAG_En_RB_, poslag_en, "poslag_en");
+    pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgPOSLAG_RB_, poslag, "poslag");
+    pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgPOSLAG_Tim_RB_, poslag_tim, "poslag_tim");
+    pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgPOSLAG_En_RB_, poslag_en, "poslag_en");
   }
   return asynSuccess;
 }
@@ -435,16 +389,16 @@ asynStatus EthercatMCAxis::readBackVelocities(int axisID)
             "%svelo=%f vmax=%f jvel=%f accs=%f\n",
             modNamEMC, velo, vmax, jvel, accs);
   if (velo > 0.0) {
-    updateCfgValue(pC_->EthercatMCCfgVELO_, velo / scaleFactor, "velo");
+    pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgVELO_, velo / scaleFactor, "velo");
   }
   if (vmax > 0.0) {
-    updateCfgValue(pC_->EthercatMCCfgVMAX_, vmax / scaleFactor, "vmax");
+    pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgVMAX_, vmax / scaleFactor, "vmax");
   }
   if (jvel > 0.0) {
-    updateCfgValue(pC_->EthercatMCCfgJVEL_, jvel / scaleFactor, "jvel");
+    pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgJVEL_, jvel / scaleFactor, "jvel");
   }
   if (accs > 0.0) {
-    updateCfgValue(pC_->EthercatMCCfgACCS_, accs / scaleFactor, "accs");
+    pC_->updateCfgValue(axisNo_, pC_->EthercatMCCfgACCS_, accs / scaleFactor, "accs");
   }
   return asynSuccess;
 }

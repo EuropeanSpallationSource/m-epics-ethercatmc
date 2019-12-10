@@ -721,6 +721,51 @@ asynStatus EthercatMCController::poll(void)
   return status;
 }
 
+asynStatus EthercatMCController::updateCfgValue(int axisNo_, int function,
+                                                double newValue, const char *name)
+{
+  double oldValue;
+  asynStatus status = getDoubleParam(axisNo_, function, &oldValue);
+  if (status) {
+    /* First time that we write the value after IOC restart
+       ECMC configures everything from the iocshell, no need to
+       do a print here */
+    if (!(features_ & FEATURE_BITS_ECMC)) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%supdateCfgValue(%d) %s=%f\n",
+                modNamEMC, axisNo_, name, newValue);
+    }
+  } else if (newValue != oldValue) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%supdateCfgValue(%d) old%s=%f new%s=%f\n",
+              modNamEMC, axisNo_, name, oldValue, name, newValue);
+  }
+  return setDoubleParam(axisNo_, function, newValue);
+}
+
+asynStatus EthercatMCController::updateCfgValue(int axisNo_, int function,
+                                                int newValue, const char *name)
+{
+  int oldValue;
+  asynStatus status = getIntegerParam(axisNo_, function, &oldValue);
+  if (status) {
+    /* First time that we write the value after IOC restart
+       ECMC configures everything from the iocshell, no need to
+       do a print here */
+    if (!((features_ & FEATURE_BITS_ECMC))) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%supdateCfgValue(%d) %s=%d\n",
+                modNamEMC, axisNo_, name, newValue);
+    }
+  } else if (newValue != oldValue) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%supdateCfgValue(%d) old%s=%d new%s=%d\n",
+              modNamEMC, axisNo_, name, oldValue, name, newValue);
+  }
+  return setIntegerParam(axisNo_, function, newValue);
+}
+
+
 int EthercatMCController::getFeatures(void)
 {
   /* The features we know about */
