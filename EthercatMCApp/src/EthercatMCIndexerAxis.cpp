@@ -210,6 +210,16 @@ void EthercatMCIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
   drvlocal.auxBitsNotHomedMask = auxBitsNotHomedMask;
 }
 
+void EthercatMCIndexerAxis::AddPollNowParam(uint8_t paramIdx)
+{
+  size_t pollNowIdx;
+  const size_t pollNowIdxMax = sizeof(drvlocal.pollNowParams)/sizeof(drvlocal.pollNowParams[0]) - 1;
+  for (pollNowIdx = 0; pollNowIdx < pollNowIdxMax; pollNowIdx++) {
+    if (!drvlocal.pollNowParams[pollNowIdx]) {
+      drvlocal.pollNowParams[pollNowIdx] = paramIdx;
+    }
+  }
+}
 
 /** Reports on status of the axis
  * \param[in] fp The file pointer on which report information will be written
@@ -762,26 +772,27 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
     setIntegerParam(pC_->motorStatusPowerOn_, powerIsOn);
 
     /* Read back the parameters one by one */
-    if (pollReadBackInBackGround &&
-        !nowMoving && (paramCtrl & PARAM_IF_ACK_MASK)) {
+    if (pollReadBackInBackGround && (paramCtrl & PARAM_IF_ACK_MASK)) {
       drvlocal.pollNowIdx++;
-      if (drvlocal.pollNowIdx >=
-          sizeof(pollNowParams)/sizeof(pollNowParams[0])) {
+      if (!drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
+        /* The list is 0 terminated */
         drvlocal.pollNowIdx = 0;
       }
-      switch (drvlocal.iTypCode) {
-      case 0x5008:
-      case 0x500c:
-      case 0x5010:
-        {
-          uint16_t newParamCtrl;
-          newParamCtrl = PARAM_IF_CMD_DOREAD + pollNowParams[drvlocal.pollNowIdx];
-          pC_->setPlcMemoryInteger(drvlocal.paramIfOffset,
-                                   newParamCtrl, sizeof(newParamCtrl));
+      if (drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
+        switch (drvlocal.iTypCode) {
+        case 0x5008:
+        case 0x500c:
+        case 0x5010:
+          {
+            uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD ;
+            newParamCtrl += drvlocal.pollNowParams[drvlocal.pollNowIdx];
+            pC_->setPlcMemoryInteger(drvlocal.paramIfOffset,
+                                     newParamCtrl, sizeof(newParamCtrl));
+          }
+          break;
+        default:
+          ;
         }
-        break;
-      default:
-        ;
       }
     }
     drvlocal.old_statusReasonAux = statusReasonAux;

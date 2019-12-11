@@ -26,13 +26,6 @@
 extern "C" {
   int EthercatMCCreateIndexerAxis(const char *EthercatMCName, int axisNo,
                                   int axisFlags, const char *axisOptionsStr);
-  static const uint16_t pollNowParams[4] = {
-    PARAM_IDX_SPEED_FLOAT,
-    PARAM_IDX_ACCEL_FLOAT,
-    PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT,
-    PARAM_IDX_HYTERESIS_FLOAT
-  };
-
 };
 
 class epicsShareClass EthercatMCIndexerAxis : public asynMotorAxis
@@ -52,6 +45,7 @@ public:
   asynStatus stop(double acceleration);
   void setIndexerDevNumOffsetTypeCode(unsigned devNum, unsigned iOffset, unsigned iTypCode);
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
+  void AddPollNowParam(uint8_t paramIdx);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
   asynStatus poll(bool *moving);
   asynStatus resetAxis(void);
@@ -84,7 +78,8 @@ private:
     unsigned int hasProblem :1;
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     unsigned adsPort;
-  } drvlocal;
+    uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
+    } drvlocal;
 
 #ifndef motorMessageTextString
   void updateMsgTxtFromDriver(const char *value);
