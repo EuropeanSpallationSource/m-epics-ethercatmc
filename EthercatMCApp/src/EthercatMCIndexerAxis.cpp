@@ -680,7 +680,7 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
       if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
         /* Only read real parameters, not functions */
         asynPrint(pC_->pasynUserController_,
-                  pollReadBackInBackGround ? ASYN_TRACE_FLOW : ASYN_TRACE_INFO,
+                  ASYN_TRACE_FLOW,
                   "%spoll(%d) paramCtrl=%x paramValue=%f\n",
                   modNamEMC, axisNo_,
                   paramCtrl, paramValue);
