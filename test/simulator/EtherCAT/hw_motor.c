@@ -285,6 +285,12 @@ void setMotorReverseERES(int axis_no, double value)
   motor_axis[axis_no].ReverseERES = value;
 }
 
+double getHomePos(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].HomeSwitchPos;
+}
+
 
 void setHomePos(int axis_no, double value)
 {

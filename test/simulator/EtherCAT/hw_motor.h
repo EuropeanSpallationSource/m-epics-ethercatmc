@@ -37,6 +37,7 @@ double getNxtMoveVelocity(int axis_no);
 void   setNxtMoveVelocity(int axis_no, double value);
 /* Where does the motor wake up after power-on */
 void setMotorParkingPosition(int axis_no, double value);
+double getHomePos(int axis_no);
 void setHomePos(int axis_no, double value);
 void setMaxHomeVelocityAbs(int axis_no, double value);
 void setMotorReverseERES(int axis_no, double value);
