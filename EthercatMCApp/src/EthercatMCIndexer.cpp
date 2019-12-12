@@ -722,13 +722,13 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
 
             return status;
           }
-          asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sparameters(%d) paramIdx=%s (%u) fValue=%f\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex, fValue);
         } else {
-          asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sparameters(%d) paramIdxFunction=%s (%u)\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex),
