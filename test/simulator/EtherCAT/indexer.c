@@ -302,7 +302,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        0, 0,
        PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32, 0,
        0, PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
-       0, 0,
+       PARAM_AVAIL_64_71_HOME_POSITION_FLOAT32, 0,
        0, 0,
        0, 0,
        0, 0,
@@ -755,6 +755,9 @@ indexerMotorParamRead(unsigned motor_axis_no,
     return ret;
   case PARAM_IDX_ACCEL_FLOAT32:
     *fRet = getNxtMoveAcceleration(motor_axis_no);
+    return ret;
+  case PARAM_IDX_HOME_POSITION_FLOAT32:
+    *fRet = getHomePos(motor_axis_no);
     return ret;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
     /* Use half of the velocity as "JVEL" */
