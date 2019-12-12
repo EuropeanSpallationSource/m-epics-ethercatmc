@@ -213,9 +213,11 @@ double getNxtMoveAcceleration(int axis_no)
   if (((axis_no) >= 0) && ((axis_no) < MAX_AXES)) {
     value = motor_axis[axis_no].nxtMoveAcceleration;
   }
+#if 0
   fprintf(stdlog,
           "%s/%s:%d axis_no=%d value=%f\n",
           __FILE__, __FUNCTION__, __LINE__, axis_no, value);
+#endif
   return value;
 }
 
@@ -236,9 +238,11 @@ double getNxtMoveVelocity(int axis_no)
   if (((axis_no) >= 0) && ((axis_no) < MAX_AXES)) {
     value = motor_axis[axis_no].nxtMoveVelocity;
   }
+#if 0
   fprintf(stdlog,
           "%s/%s:%d axis_no=%d value=%f\n",
           __FILE__, __FUNCTION__, __LINE__, axis_no, value);
+#endif
   return value;
 }
 
