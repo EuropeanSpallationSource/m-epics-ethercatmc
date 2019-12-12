@@ -585,7 +585,7 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
     updateCfgValue(axisNo, EthercatMCCfgRDBD_En_RB_, 1, "rdbd_en");
     break;
   case PARAM_IDX_REFSPEED_FLOAT:
-    pAxis->setDoubleParam(EthercatMCVelToHom_, fValue);
+    updateCfgValue(axisNo, EthercatMCVelToHom_, fValue, "hvel");
     break;
   case PARAM_IDX_SPEED_FLOAT:
     if (initial) updateCfgValue(axisNo, EthercatMCCfgVELO_, fValue, "velo");
@@ -611,7 +611,7 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
     }
     break;
   case PARAM_IDX_HOME_POSITION_FLOAT:
-    pAxis->setDoubleParam(EthercatMCHomPos_, fValue);
+    updateCfgValue(axisNo, EthercatMCHomPos_RB_, fValue, "homPosRB");
     break;
   case PARAM_IDX_FUN_REFERENCE:
 #ifdef  motorNotHomedProblemString
