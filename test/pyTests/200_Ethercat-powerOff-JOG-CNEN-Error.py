@@ -45,10 +45,8 @@ class Test(unittest.TestCase):
         capv_lib.capvput(motor + '.CNEN', 0)
         lib.waitForPowerOff(motor, tc_no, 8.0)
         capv_lib.capvput(motor + '.JOGF', 1)
-        # dummy wait
-        ret_0 = lib.waitForStart(motor, tc_no, 2.0)
 
-        ret_1 = lib.waitForStop(motor, tc_no, 10.0)
+        ret_1 = lib.jogDirection(motor, tc_no, 1)
         msta_1 = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
         bError_2   = capv_lib.capvget(motor + '-Err', use_monitor=False)
         nErrorId_2 = capv_lib.capvget(motor + '-ErrId', use_monitor=False)
