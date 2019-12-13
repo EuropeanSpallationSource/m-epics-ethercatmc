@@ -14,6 +14,28 @@ def lineno():
 
 polltime = 0.1
 
+def setAndReadBackParam(self, motor, tc_no, pvSuffix, paramInSimu):
+    velRB = capv_lib.capvget(motor + pvSuffix)
+    newVel = velRB + 1.0
+    lib.setValueOnSimulator(motor, tc_no, paramInSimu, newVel)
+    maxTime = 20 / polltime
+    testPassed = False
+    while maxTime > 0:
+        newVelRB = capv_lib.capvget(motor + pvSuffix)
+        print('%s:%d newVel=%f newVelRB=%f' % (tc_no, lineno(), newVel, newVelRB))
+
+        if newVelRB == newVel:
+            testPassed = True
+            maxTime = 0
+        else:
+            time.sleep(polltime)
+            maxTime = maxTime - polltime
+
+    # restore the original value
+    lib.setValueOnSimulator(motor, tc_no, paramInSimu, velRB)
+    assert(testPassed)
+
+
 class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
     capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
@@ -22,22 +44,4 @@ class Test(unittest.TestCase):
     def test_TC_1501(self):
         motor = self.motor
         tc_no = "TC-1501"
-        velRB = capv_lib.capvget(motor + '-Vel-RB')
-        newVel = velRB + 1.0
-        lib.setValueOnSimulator(motor, tc_no, "fVelocity", newVel)
-        maxTime = 20 / polltime
-        testPassed = False
-        while maxTime > 0:
-            newVelRB = capv_lib.capvget(motor + '-Vel-RB')
-            print('%s:%d newVel=%f newVelRB=%f' % (tc_no, lineno(), newVel, newVelRB))
-
-            if newVelRB == newVel:
-                testPassed = True
-                maxTime = 0
-            else:
-                time.sleep(polltime)
-                maxTime = maxTime - polltime
-
-        # restore the original value
-        lib.setValueOnSimulator(motor, tc_no, "fVelocity", velRB)
-        assert(testPassed)
+        setAndReadBackParam(self, motor, tc_no, '-Vel-RB', 'fVelocity')
