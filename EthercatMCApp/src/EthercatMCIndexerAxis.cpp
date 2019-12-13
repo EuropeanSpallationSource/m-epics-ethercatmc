@@ -210,13 +210,19 @@ void EthercatMCIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
   drvlocal.auxBitsNotHomedMask = auxBitsNotHomedMask;
 }
 
-void EthercatMCIndexerAxis::AddPollNowParam(uint8_t paramIdx)
+void EthercatMCIndexerAxis::addPollNowParam(uint8_t paramIndex)
 {
   size_t pollNowIdx;
   const size_t pollNowIdxMax = sizeof(drvlocal.pollNowParams)/sizeof(drvlocal.pollNowParams[0]) - 1;
   for (pollNowIdx = 0; pollNowIdx < pollNowIdxMax; pollNowIdx++) {
     if (!drvlocal.pollNowParams[pollNowIdx]) {
-      drvlocal.pollNowParams[pollNowIdx] = paramIdx;
+      drvlocal.pollNowParams[pollNowIdx] = paramIndex;
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%saddPollNowParam(%d) paramIndex=%s (%d) at pollNowIdx=%u\n",
+                modNamEMC, axisNo_,
+                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                (unsigned)pollNowIdx);
+      return;
     }
   }
 }
@@ -532,7 +538,7 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
     idxStatusCodeType idxStatusCode;
     unsigned idxReasonBits = 0;
     unsigned idxAuxBits = 0;
-    int pollReadBackInBackGround = 0;
+    int pollReadBackInBackGround = 1;
     if (drvlocal.dirty.initialPollNeeded) {
       if (drvlocal.iOffset) {
         status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
@@ -684,27 +690,6 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
       drvlocal.old_statusReasonAux = statusReasonAux;
       drvlocal.old_idxAuxBits      = idxAuxBits;
     }
-    if ((paramCtrl != drvlocal.old_paramCtrl) ||
-        (paramValue != drvlocal.old_paramValue)) {
-      unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
-      if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
-        /* Only read real parameters, not functions */
-        asynPrint(pC_->pasynUserController_,
-                  ASYN_TRACE_FLOW,
-                  "%spoll(%d) paramCtrl=%x paramValue=%f\n",
-                  modNamEMC, axisNo_,
-                  paramCtrl, paramValue);
-        if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
-          int initial = 0;
-          pC_->parameterFloatReadBack(axisNo_,
-                                      initial,
-                                      paramIndex,
-                                      paramValue);
-        }
-      }
-      drvlocal.old_paramCtrl = paramCtrl;
-      drvlocal.old_paramValue = paramValue;
-    }
     switch (idxStatusCode) {
       /* After RESET, START, STOP the bits are not valid */
     case idxStatusCodeIDLE:
@@ -771,6 +756,30 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem);
     setIntegerParam(pC_->motorStatusPowerOn_, powerIsOn);
 
+
+    if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
+      unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+      asynPrint(pC_->pasynUserController_,
+                ASYN_TRACE_FLOW,
+                "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
+                modNamEMC, axisNo_,
+                plcParamIndexTxtFromParamIndex(paramIndex),
+                paramCtrl, paramValue);
+      if ((paramCtrl != drvlocal.old_paramCtrl) ||
+          (paramValue != drvlocal.old_paramValue)) {
+        if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
+          /* Only read real parameters, not functions */
+          int initial = 0;
+          pC_->parameterFloatReadBack(axisNo_,
+                                      initial,
+                                      paramIndex,
+                                      paramValue);
+        }
+      }
+      drvlocal.old_paramCtrl = paramCtrl;
+      drvlocal.old_paramValue = paramValue;
+    }
+
     /* Read back the parameters one by one */
     if (pollReadBackInBackGround && (paramCtrl & PARAM_IF_ACK_MASK)) {
       drvlocal.pollNowIdx++;
@@ -779,20 +788,16 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
         drvlocal.pollNowIdx = 0;
       }
       if (drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
-        switch (drvlocal.iTypCode) {
-        case 0x5008:
-        case 0x500c:
-        case 0x5010:
-          {
-            uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD ;
-            newParamCtrl += drvlocal.pollNowParams[drvlocal.pollNowIdx];
-            pC_->setPlcMemoryInteger(drvlocal.paramIfOffset,
-                                     newParamCtrl, sizeof(newParamCtrl));
-          }
-          break;
-        default:
-          ;
-        }
+        uint16_t paramIndex = drvlocal.pollNowParams[drvlocal.pollNowIdx];
+        uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD + paramIndex;
+        asynPrint(pC_->pasynUserController_,
+                  ASYN_TRACE_FLOW,
+                  "%spollNext(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
+                  modNamEMC, axisNo_,
+                  plcParamIndexTxtFromParamIndex(paramIndex),
+                  paramCtrl, paramValue);
+        pC_->setPlcMemoryInteger(drvlocal.paramIfOffset,
+                                 newParamCtrl, sizeof(newParamCtrl));
       }
     }
     drvlocal.old_statusReasonAux = statusReasonAux;

@@ -45,7 +45,7 @@ public:
   asynStatus stop(double acceleration);
   void setIndexerDevNumOffsetTypeCode(unsigned devNum, unsigned iOffset, unsigned iTypCode);
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
-  void AddPollNowParam(uint8_t paramIdx);
+  void addPollNowParam(uint8_t paramIndex);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
   asynStatus poll(bool *moving);
   asynStatus resetAxis(void);

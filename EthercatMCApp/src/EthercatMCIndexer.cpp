@@ -719,7 +719,6 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                  if it fails, that is OK */
               return asynSuccess;
             }
-
             return status;
           }
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
@@ -733,6 +732,9 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex);
+        }
+        if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
+          pAxis->addPollNowParam(paramIndex);
         }
         parameterFloatReadBack(axisNo, initial, paramIndex, fValue);
       }
