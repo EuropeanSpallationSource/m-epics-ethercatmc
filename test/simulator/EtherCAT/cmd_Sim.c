@@ -185,6 +185,21 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("OK");
     return;
   }
+  /* fAcceleration=10.1*/
+  nvals = sscanf(myarg_1, "fAcceleration=%lf", &fValue);
+  if (nvals == 1) {
+    setNxtMoveAcceleration(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+  /* fVelocity=10.1*/
+  nvals = sscanf(myarg_1, "fVelocity=%lf", &fValue);
+  if (nvals == 1) {
+    setNxtMoveVelocity(motor_axis_no, fValue);
+    cmd_buf_printf("OK");
+    return;
+  }
+
   /* setMRES_23=0 */
   nvals = sscanf(myarg_1, "setMRES_23=%lf", &fValue);
   if (nvals == 1) {
