@@ -45,46 +45,46 @@ class Test(unittest.TestCase):
     per10_UserPosition  = round((9 * llm + 1 * hlm) / 10)
     per90_UserPosition  = round((1 * llm + 9 * hlm) / 10)
 
-    def test_TC_1200(self):
+    def test_TC_1400(self):
         motor = self.motor
-        tc_no = "TC-1200"
+        tc_no = "TC-1400"
         if not (self.msta & lib.MSTA_BIT_HOMED):
             self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
 
-    def test_TC_1201(self):
+    def test_TC_1401(self):
         motor = self.motor
-        tc_no = "TC-1201"
+        tc_no = "TC-1401"
         motorPositionTC(self, motor, tc_no, self.llm, self.velo)
 
 
-    def test_TC_1202(self):
+    def test_TC_1402(self):
         motor = self.motor
-        tc_no = "TC-1202"
+        tc_no = "TC-1402"
         motorPositionTC(self, motor, tc_no, self.per10_UserPosition, self.velo)
 
 
-    def test_TC_1203(self):
+    def test_TC_1403(self):
         motor = self.motor
-        tc_no = "TC-1203"
+        tc_no = "TC-1403"
         motorPositionTC(self, motor, tc_no, self.per90_UserPosition, self.velo)
 
 
-    def test_TC_1204(self):
+    def test_TC_1404(self):
         motor = self.motor
-        tc_no = "TC-1204"
+        tc_no = "TC-1404"
         motorPositionTC(self, motor, tc_no, self.hlm, self.velo)
 
-    def test_TC_1205(self):
+    def test_TC_1405(self):
         motor = self.motor
-        tc_no = "TC-1205"
+        tc_no = "TC-1405"
         motorPositionTC(self, motor, tc_no, self.per90_UserPosition, self.vmax)
 
-    def test_TC_1206(self):
+    def test_TC_1406(self):
         motor = self.motor
-        tc_no = "TC-1206"
+        tc_no = "TC-1406"
         motorPositionTC(self, motor, tc_no, self.per10_UserPosition, self.vmax)
 
-    def test_TC_1207(self):
+    def test_TC_1407(self):
         motor = self.motor
-        tc_no = "TC-1207"
+        tc_no = "TC-1407"
         motorPositionTC(self, motor, tc_no, self.llm, self.vmax)
