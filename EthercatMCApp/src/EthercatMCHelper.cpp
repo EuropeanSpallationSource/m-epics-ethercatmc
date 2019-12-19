@@ -549,13 +549,14 @@ asynStatus EthercatMCAxis::readConfigFile(void)
 
     char *mypwd = getcwd(cwdbuf, sizeof(cwdbuf));
     snprintf(errbuf, sizeof(errbuf)-1,
-             "E: readConfigFile: %s\n%s/%s",
-             strerror(saved_errno),
-             mypwd ? mypwd : "",
-             drvlocal.cfgfileStr);
+	     "E: readConfigFile: %s",
+	     strerror(saved_errno));
     updateMsgTxtFromDriver(errbuf);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s(%d)%s\n", modNamEMC, axisNo_, errbuf);
+	     "E: readConfigFile: %s %s/%s",
+	     strerror(saved_errno),
+	     mypwd ? mypwd : "",
+	     drvlocal.cfgfileStr);
     return asynError;
   }
   while (ret && !status && !errorTxt) {
@@ -591,18 +592,19 @@ asynStatus EthercatMCAxis::readConfigFile(void)
     if (status || errorTxt) {
       char errbuf[256];
       errbuf[sizeof(errbuf)-1] = 0;
+
+      snprintf(errbuf, sizeof(errbuf)-1,
+	       "E: readConfigFile: line_no=%d",
+	       line_no);
       if (status) {
-        snprintf(errbuf, sizeof(errbuf)-1,
+	asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                  "E: %s:%d out=%s\nin=%s",
                  drvlocal.cfgfileStr, line_no, pC_->outString_, pC_->inString_);
       } else {
-        snprintf(errbuf, sizeof(errbuf)-1,
+	asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                  "E: %s:%d \"%s\"\n%s",
                  drvlocal.cfgfileStr, line_no, rdbuf, errorTxt);
       }
-
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%sreadConfigFile %s\n", modNamEMC, errbuf);
       updateMsgTxtFromDriver(errbuf);
     }
   } /* while */
