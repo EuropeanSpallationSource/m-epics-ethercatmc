@@ -933,8 +933,8 @@ asynStatus EthercatMCAxis::enableAmplifier(int on)
   /* if we come here, it went wrong */
   if (!drvlocal.cmdErrorMessage[0]) {
     snprintf(drvlocal.cmdErrorMessage, sizeof(drvlocal.cmdErrorMessage)-1,
-             "E: enableAmplifier(%d) failed. out=%s in=%s\n",
-             axisNo_, pC_->outString_, pC_->inString_);
+             "E: enableAmplifier(%d) failed\n",
+             axisNo_);
     /* The poller co-ordinates the writing into the parameter library */
   }
 enableAmplifierPollAndReturn:
