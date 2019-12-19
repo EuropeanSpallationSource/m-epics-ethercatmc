@@ -20,6 +20,7 @@ IPAC=$IPAC_PATH
 SNCSEQ=$SUPPORT/seq
 ASYN=$SUPPORT/asyn
 MODBUS=$SUPPORT/modbus
+MOTOR=$SUPPORT/motor
 EPICS_BASE=$SUPPORT/epics-base
 EOF
 
@@ -175,3 +176,16 @@ if [ ! -e "$SUPPORT/modbus/built" ]; then
 else
     echo "Using cached modbus"
 fi
+
+# motor
+if [ ! -e "$SUPPORT/motor/built" ]; then
+    echo "Build motor"
+    install -d $SUPPORT/motor
+    git clone --depth 10 --branch $MOTOR https://github.com/EuropeanSpallationSource/motor.git $SUPPORT/motor
+    cp $RELEASE_PATH $SUPPORT/motor/configure/RELEASE
+    make -C "$SUPPORT/motor" -j2
+    touch $SUPPORT/motor/built
+else
+    echo "Using cached motor"
+fi
+
