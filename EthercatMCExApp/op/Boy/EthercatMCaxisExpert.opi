@@ -2305,8 +2305,12 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-EncAct</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
-    <rules />
     <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <rules>
       <rule name="EncAct-Visible" prop_id="visible" out_exp="false">
         <exp bool_exp="pv0==17">
           <value>false</value>
@@ -2316,10 +2320,7 @@ $(pv_value)</tooltip>
         </exp>
         <pv trig="true">$(P)$(R)EncAct.STAT</pv>
       </rule>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
+    </rules>
     <scripts />
     <show_units>true</show_units>
     <text>######</text>
