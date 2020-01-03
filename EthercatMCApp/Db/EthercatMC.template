@@ -90,6 +90,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-EncAct")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "0")
+    field(EGU,  "Steps")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct")
     field(SCAN, "I/O Intr")
 }

@@ -2329,10 +2329,10 @@ $(pv_value)</tooltip>
     <vertical_alignment>1</vertical_alignment>
     <visible>true</visible>
     <widget_type>Text Update</widget_type>
-    <width>64</width>
+    <width>96</width>
     <wrap_words>false</wrap_words>
     <wuid>5b2ab968:16f6a92ad5d:-7c3c</wuid>
-    <x>404</x>
+    <x>369</x>
     <y>352</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0.0">
