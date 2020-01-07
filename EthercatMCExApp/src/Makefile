@@ -71,12 +71,9 @@ EthercatMC_DBD  += ads.dbd
 endif
 
 ifdef BASE_7_0
-EthercatMC_LIBS += pvAccess
-EthercatMC_LIBS += pvAccessCA
-EthercatMC_LIBS += pvData
-EthercatMC_LIBS += pvDatabase
-EthercatMC_LIBS += pvAccessIOC
 EthercatMC_LIBS += qsrv
+EthercatMC_LIBS += pvDatabase
+EthercatMC_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 endif
 
 EthercatMC_LIBS += EthercatMcSupport
