@@ -1,25 +1,32 @@
 #!/bin/sh
 set -e -x
 
-SUPPORT=$HOME/.cache/support
-
-install -d $SUPPORT
+# different base / modules versions are placed into different directories
+# base, asyn, motor are needed
+SUPPORT=$HOME/.cache/SUPPORT_${STATIC}_BASE${BASE}_ASYN${ASYN}_MOTOR${MOTOR}
 
 # Conditionally build IPAC
 if [ -n "$IPAC" ]; then
-    IPAC_PATH=$SUPPORT/ipac
-else
-    IPAC_PATH=
+    SUPPORT=$SUPPORT_IPAC${IPAC}
 fi
+
+# Conditionally build MODBUS
+if [ -n "$MODBUS" ]; then
+    SUPPORT=$SUPPORT_MODBUS${MODBUS}
+fi
+
+# Conditionally build SEQ
+if [ -n "$SEQ" ]; then
+    SUPPORT=$SUPPORT_SEQ${SEQ}
+fi
+
+install -d $SUPPORT
 
 RELEASE_PATH=$TRAVIS_BUILD_DIR/configure/RELEASE
 EPICS_BASE=$SUPPORT/epics-base
 
 cat << EOF > $RELEASE_PATH
-IPAC=$IPAC_PATH
-SNCSEQ=$SUPPORT/seq
 ASYN=$SUPPORT/asyn
-MODBUS=$SUPPORT/modbus
 MOTOR=$SUPPORT/motor
 EPICS_BASE=$SUPPORT/epics-base
 EOF
@@ -30,7 +37,7 @@ sed -i -e '/MSI/d' configure/CONFIG_SITE
 if [ ! -e "$EPICS_BASE/built" ] 
 then
 
-    git clone --depth 10 --branch $BASE https://github.com/epics-base/epics-base.git $EPICS_BASE
+    git clone --recursive --depth 10 --branch $BASE https://github.com/epics-base/epics-base.git $EPICS_BASE
 
     EPICS_HOST_ARCH=`sh $EPICS_BASE/startup/EpicsHostArch`
 
@@ -123,6 +130,7 @@ fi
 
 # IPAC
 if [ -n "$IPAC" ]; then
+    echo IPAC=$SUPPORT/ipac >> $RELEASE_PATH
     if [ ! -e "$SUPPORT/ipac/built" ]; then
         echo "Build ipac"
         install -d $SUPPORT/ipac
@@ -141,17 +149,19 @@ fi
 
 
 # sequencer
-if [ ! -e "$SUPPORT/seq/built" ]; then
-    echo "Build sequencer"
-    install -d $SUPPORT/seq
-    curl -L "http://www-csr.bessy.de/control/SoftDist/sequencer/releases/seq-${SEQ}.tar.gz" | tar -C $SUPPORT/seq -xvz --strip-components=1
-    cp $RELEASE_PATH $SUPPORT/seq/configure/RELEASE
-    make -C $SUPPORT/seq
-    touch $SUPPORT/seq/built
-else
-    echo "Using cached seq"
+if [ -n "$SEQ" ]; then
+    echo SNCSEQ=$SUPPORT/seq >> $RELEASE_PATH
+    if [ ! -e "$SUPPORT/seq/built" ]; then
+        echo "Build sequencer"
+        install -d $SUPPORT/seq
+        curl -L "http://www-csr.bessy.de/control/SoftDist/sequencer/releases/seq-${SEQ}.tar.gz" | tar -C $SUPPORT/seq -xvz --strip-components=1
+        cp $RELEASE_PATH $SUPPORT/seq/configure/RELEASE
+        make -C $SUPPORT/seq
+        touch $SUPPORT/seq/built
+    else
+        echo "Using cached seq"
+    fi
 fi
-
 
 # asyn
 if [ ! -e "$SUPPORT/asyn/built" ]; then
@@ -166,15 +176,18 @@ else
 fi
 
 # modbus
-if [ ! -e "$SUPPORT/modbus/built" ]; then
-    echo "Build modbus"
-    install -d $SUPPORT/modbus
-    git clone --depth 10 --branch $MODBUS https://github.com/epics-modules/modbus.git $SUPPORT/modbus
-    cp $RELEASE_PATH $SUPPORT/modbus/configure/RELEASE
-    make -C "$SUPPORT/modbus" -j2
-    touch $SUPPORT/modbus/built
-else
-    echo "Using cached modbus"
+if [ -n "$MODBUS" ]; then
+    echo MODBUS=$SUPPORT/modbus >> $RELEASE_PATH
+    if [ ! -e "$SUPPORT/modbus/built" ]; then
+        echo "Build modbus"
+        install -d $SUPPORT/modbus
+        git clone --depth 10 --branch $MODBUS https://github.com/epics-modules/modbus.git $SUPPORT/modbus
+        cp $RELEASE_PATH $SUPPORT/modbus/configure/RELEASE
+        make -C "$SUPPORT/modbus" -j2
+        touch $SUPPORT/modbus/built
+    else
+        echo "Using cached modbus"
+    fi
 fi
 
 # motor

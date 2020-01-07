@@ -808,7 +808,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
 asynStatus EthercatMCController::initialPollIndexer(void)
 {
   asynStatus status;
-  uint32_t iTmpVer = 0xC0DEAFFE;
+  unsigned iTmpVer = 0xC0DEAFFE;
   double version = 0.0;
   struct {
     char desc[34];

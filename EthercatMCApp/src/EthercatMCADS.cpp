@@ -61,26 +61,26 @@ static int deftracelevel = ASYN_TRACE_DEBUG;
 #define EthercatMCamsdump(pasynUser, tracelevel, help_txt, ams_headdr_p)\
 {\
   const AmsHdrType *amsHdr_p = (const AmsHdrType *)(ams_headdr_p);\
-  uint32_t amsTcpHdr_len = amsHdr_p->amsTcpHdr.net_len[0] +\
+  unsigned amsTcpHdr_len = amsHdr_p->amsTcpHdr.net_len[0] +\
     (amsHdr_p->amsTcpHdr.net_len[1] << 8) +\
     (amsHdr_p->amsTcpHdr.net_len[2] << 16) +\
     (amsHdr_p->amsTcpHdr.net_len[3] <<24);\
-    uint32_t ams_lenght = amsHdr_p->net_len[0] +\
+    unsigned ams_lenght = amsHdr_p->net_len[0] +\
       (amsHdr_p->net_len[1] << 8) +\
       (amsHdr_p->net_len[2] << 16) +\
       (amsHdr_p->net_len[3] << 24);\
-    uint32_t ams_errorCode = amsHdr_p->net_errCode[0] +\
+    unsigned ams_errorCode = amsHdr_p->net_errCode[0] +\
       (amsHdr_p->net_errCode[1] << 8) +\
       (amsHdr_p->net_errCode[2] << 16) +\
       (amsHdr_p->net_errCode[3] << 24);\
-    uint32_t ams_invokeID = amsHdr_p->net_invokeID[0] +\
+    unsigned ams_invokeID = amsHdr_p->net_invokeID[0] +\
       (amsHdr_p->net_invokeID[1] << 8) +\
       (amsHdr_p->net_invokeID[2] << 16) +\
       (amsHdr_p->net_invokeID[3] << 24);\
   asynPrint(pasynUser, tracelevel,\
             "%samsTcpHdr_len=%u ams target=%d.%d.%d.%d.%d.%d:%d "  \
             "source=%d.%d.%d.%d.%d.%d:%d\n",                       \
-            help_txt, amsTcpHdr_len,                               \
+            help_txt, (unsigned)amsTcpHdr_len,                               \
             amsHdr_p->target.netID[0], amsHdr_p->target.netID[1],\
             amsHdr_p->target.netID[2], amsHdr_p->target.netID[3],\
             amsHdr_p->target.netID[4], amsHdr_p->target.netID[5],\
@@ -330,7 +330,7 @@ EthercatMCController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
               "%s IN part 2 inlen-part_1_len=%lu toread=0x%x %u nread=%lu status=%d\n",
               modNamEMC,
               (unsigned long)inlen - (unsigned long)part_1_len,
-              toread, toread,
+              (unsigned)toread, (unsigned)toread,
               (unsigned long)nread,
               status);
     EthercatMChexdump(pasynUser, tracelevel, "IN part 2",
@@ -419,7 +419,7 @@ asynStatus EthercatMCController::writeWriteReadAds(asynUser *pasynUser,
     if (amsTcpHdr_len  != (nread - sizeof(ams_rep_hdr_p->amsTcpHdr))) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "%s nread=%u amsTcpHdr_len=%u\n", modNamEMC,
-                (unsigned)nread, amsTcpHdr_len);
+                (unsigned)nread, (unsigned)amsTcpHdr_len);
       status = asynError;
     }
     if (!status) {
@@ -427,7 +427,7 @@ asynStatus EthercatMCController::writeWriteReadAds(asynUser *pasynUser,
       if (ads_rep_len != (nread - sizeof(AmsHdrType))) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%s warning ?? nread=%u ads_rep_len=%u\n", modNamEMC,
-                  (unsigned)nread, ads_rep_len);
+                  (unsigned)nread, (unsigned)ads_rep_len);
         //status = asynError;
       }
     }
@@ -437,7 +437,7 @@ asynStatus EthercatMCController::writeWriteReadAds(asynUser *pasynUser,
       if (ams_errorCode) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%s nread=%u ams_errorCode=0x%x\n", modNamEMC,
-                  (unsigned)nread, ams_errorCode);
+                  (unsigned)nread, (unsigned)ams_errorCode);
         status = asynError;
       }
     }
@@ -446,7 +446,7 @@ asynStatus EthercatMCController::writeWriteReadAds(asynUser *pasynUser,
       if (invokeID != rep_invokeID) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%s invokeID=0x%x rep_invokeID=0x%x\n", modNamEMC,
-                  invokeID, rep_invokeID);
+                  (unsigned)invokeID, (unsigned)rep_invokeID);
         status = asynError;
       }
     }
@@ -495,13 +495,13 @@ asynStatus EthercatMCController::getPlcMemoryViaADS(unsigned indexOffset,
                                     sizeof(ADS_Read_rep_p->response.net_len));
     if (ads_result) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%sads_result=0x%x\n", modNamEMC, ads_result);
+                "%sads_result=0x%x\n", modNamEMC, (unsigned)ads_result);
       status = asynError;
     }
     if (ads_length != lenInPlc) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%slenInPlc=%lu ads_length=%u\n", modNamEMC,
-                  (unsigned long)lenInPlc,ads_length);
+                  (unsigned long)lenInPlc,(unsigned)ads_length);
         status = asynError;
     }
     if (!status) {
@@ -563,7 +563,7 @@ asynStatus EthercatMCController::setPlcMemoryViaADS(unsigned indexOffset,
     uint32_t ads_result = NETTOUINT(ADS_Write_rep.response.net_res);
     if (ads_result) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%sads_result=0x%x\n", modNamEMC, ads_result);
+                "%sads_result=0x%x\n", modNamEMC, (unsigned)ads_result);
       status = asynError;
     }
   }
@@ -620,7 +620,7 @@ asynStatus EthercatMCController::getSymbolInfoViaADS(const char *symbolName,
     uint32_t ads_length = NETTOUINT(adsReadWriteRep_p->response.net_len);
     if (ads_result) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%sERROR ads_result=0x%x\n", modNamEMC, ads_result);
+                "%sERROR ads_result=0x%x\n", modNamEMC, (unsigned)ads_result);
       status = asynError;
     }
     if (!status) {
@@ -633,7 +633,7 @@ asynStatus EthercatMCController::getSymbolInfoViaADS(const char *symbolName,
       src_ptr += sizeof(AdsReadWriteRepType);
       asynPrint(pasynUser, tracelevel,
                 "%s ads_result=0x%x ads_length=0x%x\n",
-                modNamEMC, ads_result, ads_length);
+                modNamEMC, (unsigned)ads_result, (unsigned)ads_length);
       EthercatMChexdump(pasynUser, tracelevel, "IN ADS",
                         src_ptr, ads_length);
       memcpy(data, src_ptr, ads_length);

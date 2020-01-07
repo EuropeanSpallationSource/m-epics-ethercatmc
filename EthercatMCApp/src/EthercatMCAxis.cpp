@@ -407,7 +407,7 @@ asynStatus EthercatMCAxis::readBackEncoders(int axisID)
 {
   /* https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsdevicenc2/index.html&id= */
   asynStatus status;
-  uint32_t numEncoders = 0;
+  unsigned numEncoders = 0;
   int nvals;
 
   snprintf(pC_->outString_, sizeof(pC_->outString_),
@@ -1055,38 +1055,37 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
     snprintf(pC_->outString_, sizeof(pC_->outString_),
              "%sMain.M%d.stAxisStatusV2?", drvlocal.adsport_str, axisNo_);
     comStatus = pC_->writeReadOnErrorDisconnect();
-    if (!strncasecmp(pC_->inString_,  Main_dot_str, Main_dot_len)) {
-      nvals = sscanf(&pC_->inString_[Main_dot_len],
-                     "M%d.stAxisStatusV2="
-                     "%lf,%lf,%lf,%lf,%lf,%lf,%lf,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
-                     &motor_axis_no,
-                     &pst_axis_status->fPosition,
-                     &pst_axis_status->fActPosition,
-                     &pst_axis_status->encoderRaw,          /* Send as uint64; parsed as double ! */
-                     &notUsed.velocitySetpoint,
-                     &pst_axis_status->fActVelocity,
-                     &pst_axis_status->fAcceleration,
-                     &notUsed.fDecceleration,
-                     &notUsed.cycleCounter,
-                     &notUsed.EtherCATtime_low32,
-                     &notUsed.EtherCATtime_high32,
-                     &pst_axis_status->bEnable,
-                     &pst_axis_status->bEnabled,
-                     &pst_axis_status->bExecute,
-                     &notUsed.command,
-                     &notUsed.cmdData,
-                     &pst_axis_status->bLimitBwd,
-                     &pst_axis_status->bLimitFwd,
-                     &pst_axis_status->bHomeSensor,
-                     &pst_axis_status->bError,
-                     &pst_axis_status->nErrorId,
-                     &notUsed.reset,
-                     &pst_axis_status->bHomed,
-                     &pst_axis_status->bBusy,
-                     &pst_axis_status->atTarget,
-                     &notUsed.moving,
-                     &notUsed.stall);
-    }
+    if (comStatus) return comStatus;
+    nvals = sscanf(&pC_->inString_[Main_dot_len],
+                   "M%d.stAxisStatusV2="
+                   "%lf,%lf,%lf,%lf,%lf,%lf,%lf,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",
+                   &motor_axis_no,
+                   &pst_axis_status->fPosition,
+                   &pst_axis_status->fActPosition,
+                   &pst_axis_status->encoderRaw,          /* Send as uint64; parsed as double ! */
+                   &notUsed.velocitySetpoint,
+                   &pst_axis_status->fActVelocity,
+                   &pst_axis_status->fAcceleration,
+                   &notUsed.fDecceleration,
+                   &notUsed.cycleCounter,
+                   &notUsed.EtherCATtime_low32,
+                   &notUsed.EtherCATtime_high32,
+                   &pst_axis_status->bEnable,
+                   &pst_axis_status->bEnabled,
+                   &pst_axis_status->bExecute,
+                   &notUsed.command,
+                   &notUsed.cmdData,
+                   &pst_axis_status->bLimitBwd,
+                   &pst_axis_status->bLimitFwd,
+                   &pst_axis_status->bHomeSensor,
+                   &pst_axis_status->bError,
+                   &pst_axis_status->nErrorId,
+                   &notUsed.reset,
+                   &pst_axis_status->bHomed,
+                   &pst_axis_status->bBusy,
+                   &pst_axis_status->atTarget,
+                   &notUsed.moving,
+                   &notUsed.stall);
     if (nvals == 27) {
       pst_axis_status->mvnNRdyNex = pst_axis_status->bBusy || !pst_axis_status->atTarget;
     }
@@ -1096,36 +1095,34 @@ asynStatus EthercatMCAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
              "%sMain.M%d.stAxisStatus?", drvlocal.adsport_str, axisNo_);
     comStatus = pC_->writeReadOnErrorDisconnect();
     if (comStatus) return comStatus;
-    if (!strncasecmp(pC_->inString_,  Main_dot_str, Main_dot_len)) {
-      nvals = sscanf(&pC_->inString_[Main_dot_len],
-                     "M%d.stAxisStatus="
-                     "%d,%d,%d,%u,%u,%lf,%lf,%lf,%lf,%d,"
-                     "%d,%d,%d,%lf,%d,%d,%d,%u,%lf,%lf,%lf,%d,%d",
-                     &motor_axis_no,
-                     &pst_axis_status->bEnable,        /*  1 */
-                     &pst_axis_status->bReset,         /*  2 */
-                     &pst_axis_status->bExecute,       /*  3 */
-                     &pst_axis_status->nCommand,       /*  4 */
-                     &pst_axis_status->nCmdData,       /*  5 */
-                     &pst_axis_status->fVelocity,      /*  6 */
-                     &pst_axis_status->fPosition,      /*  7 */
-                     &pst_axis_status->fAcceleration,  /*  8 */
-                     &pst_axis_status->fDecceleration, /*  9 */
-                     &pst_axis_status->bJogFwd,        /* 10 */
-                     &pst_axis_status->bJogBwd,        /* 11 */
-                     &pst_axis_status->bLimitFwd,      /* 12 */
-                     &pst_axis_status->bLimitBwd,      /* 13 */
-                     &pst_axis_status->fOverride,      /* 14 */
-                     &pst_axis_status->bHomeSensor,    /* 15 */
-                     &pst_axis_status->bEnabled,       /* 16 */
-                     &pst_axis_status->bError,         /* 17 */
-                     &pst_axis_status->nErrorId,       /* 18 */
-                     &pst_axis_status->fActVelocity,   /* 19 */
-                     &pst_axis_status->fActPosition,   /* 20 */
-                     &pst_axis_status->fActDiff,       /* 21 */
-                     &pst_axis_status->bHomed,         /* 22 */
-                     &pst_axis_status->bBusy           /* 23 */);
-    }
+    nvals = sscanf(&pC_->inString_[Main_dot_len],
+                   "M%d.stAxisStatus="
+                   "%d,%d,%d,%u,%u,%lf,%lf,%lf,%lf,%d,"
+                   "%d,%d,%d,%lf,%d,%d,%d,%u,%lf,%lf,%lf,%d,%d",
+                   &motor_axis_no,
+                   &pst_axis_status->bEnable,        /*  1 */
+                   &pst_axis_status->bReset,         /*  2 */
+                   &pst_axis_status->bExecute,       /*  3 */
+                   &pst_axis_status->nCommand,       /*  4 */
+                   &pst_axis_status->nCmdData,       /*  5 */
+                   &pst_axis_status->fVelocity,      /*  6 */
+                   &pst_axis_status->fPosition,      /*  7 */
+                   &pst_axis_status->fAcceleration,  /*  8 */
+                   &pst_axis_status->fDecceleration, /*  9 */
+                   &pst_axis_status->bJogFwd,        /* 10 */
+                   &pst_axis_status->bJogBwd,        /* 11 */
+                   &pst_axis_status->bLimitFwd,      /* 12 */
+                   &pst_axis_status->bLimitBwd,      /* 13 */
+                   &pst_axis_status->fOverride,      /* 14 */
+                   &pst_axis_status->bHomeSensor,    /* 15 */
+                   &pst_axis_status->bEnabled,       /* 16 */
+                   &pst_axis_status->bError,         /* 17 */
+                   &pst_axis_status->nErrorId,       /* 18 */
+                   &pst_axis_status->fActVelocity,   /* 19 */
+                   &pst_axis_status->fActPosition,   /* 20 */
+                   &pst_axis_status->fActDiff,       /* 21 */
+                   &pst_axis_status->bHomed,         /* 22 */
+                   &pst_axis_status->bBusy           /* 23 */);
     if (nvals != 24) {
       goto pollAllWrongnvals;
     }

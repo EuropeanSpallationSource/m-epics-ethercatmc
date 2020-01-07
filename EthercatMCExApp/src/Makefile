@@ -72,6 +72,8 @@ endif
 
 ifdef BASE_7_0
 EthercatMC_LIBS += pvAccess
+EthercatMC_LIBS += pvAccessCA
+EthercatMC_LIBS += pvData
 EthercatMC_LIBS += pvDatabase
 EthercatMC_LIBS += pvAccessIOC
 EthercatMC_LIBS += qsrv
