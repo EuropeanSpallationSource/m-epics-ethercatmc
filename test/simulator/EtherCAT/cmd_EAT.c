@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <math.h>
 #include "ads_defines.h"
 #include "sock-util.h"
 #include "logerr_info.h"
@@ -20,8 +21,6 @@ typedef struct
   int    bReset;
   double fPosition;
   double fHomePosition;
-  double fVelocity;
-  double fAcceleration;
   double fDeceleration;
   double homeVeloTowardsHomeSensor;
   double homeVeloFromHomeSensor;
@@ -626,7 +625,7 @@ static int motorHandleOneGetArg(const char *myarg_1, int motor_axis_no)
   }
   /* fAcceleration? */
   if (0 == strcmp(myarg_1, "fAcceleration?")) {
-    cmd_buf_printf("%g", cmd_Motor_cmd[motor_axis_no].fAcceleration);
+    cmd_buf_printf("%g", getNxtMoveAcceleration(motor_axis_no));
     return 0;
   }
   /* fActPosition? */
@@ -698,14 +697,14 @@ static int motorHandleOneSetArg(const char *myarg_1, int motor_axis_no)
   /* fVelocity=20 */
   nvals = sscanf(myarg_1, "fVelocity=%lf", &fValue);
   if (nvals == 1) {
-    cmd_Motor_cmd[motor_axis_no].fVelocity = fValue;
+    setNxtMoveVelocity(motor_axis_no, fValue);
     cmd_buf_printf("OK");
     return 0;
   }
   /* fAcceleration=1000 */
   nvals = sscanf(myarg_1, "fAcceleration=%lf", &fValue);
   if (nvals == 1) {
-    cmd_Motor_cmd[motor_axis_no].fAcceleration = fValue;
+    setNxtMoveAcceleration(motor_axis_no, fValue);
     cmd_buf_printf("OK");
     return 0;
   }
@@ -743,12 +742,14 @@ static int motorHandleOneSetArg(const char *myarg_1, int motor_axis_no)
       cmd_buf_printf("OK");
       return 0;
     } else if (iValue == 1) {
-      if (cmd_Motor_cmd[motor_axis_no].fVelocity >
-          cmd_Motor_cmd[motor_axis_no].maximumVelocity) {
+      double velocity = getNxtMoveVelocity(motor_axis_no);
+      double acceleration = getNxtMoveAcceleration(motor_axis_no);
+
+      if (acceleration > cmd_Motor_cmd[motor_axis_no].maximumVelocity) {
         fprintf(stdlog, "%s/%s:%d axis_no=%d velocity=%g maximumVelocity=%g\n",
                 __FILE__, __FUNCTION__, __LINE__,
                 motor_axis_no,
-                cmd_Motor_cmd[motor_axis_no].fVelocity,
+                velocity,
                 cmd_Motor_cmd[motor_axis_no].maximumVelocity);
         set_nErrorId(motor_axis_no, 0x4221);
         cmd_buf_printf("OK");
@@ -763,15 +764,11 @@ static int motorHandleOneSetArg(const char *myarg_1, int motor_axis_no)
       switch (cmd_Motor_cmd[motor_axis_no].nCommand) {
         case 1:
         {
-          int direction = 1;
-          if (cmd_Motor_cmd[motor_axis_no].fVelocity < 0) {
-            direction = 0;
-            cmd_Motor_cmd[motor_axis_no].fVelocity = -cmd_Motor_cmd[motor_axis_no].fVelocity;
-          }
+          int direction = velocity >= 0 ? 1 : 0;
           (void)moveVelocity(motor_axis_no,
                              direction,
-                             cmd_Motor_cmd[motor_axis_no].fVelocity,
-                             cmd_Motor_cmd[motor_axis_no].fAcceleration);
+                             fabs(velocity),
+                             acceleration);
           cmd_buf_printf("OK");
         }
         break;
@@ -779,16 +776,16 @@ static int motorHandleOneSetArg(const char *myarg_1, int motor_axis_no)
           (void)movePosition(motor_axis_no,
                              cmd_Motor_cmd[motor_axis_no].fPosition,
                              1, /* int relative, */
-                             cmd_Motor_cmd[motor_axis_no].fVelocity,
-                             cmd_Motor_cmd[motor_axis_no].fAcceleration);
+                             velocity,
+                             acceleration);
           cmd_buf_printf("OK");
           break;
         case 3:
           (void)movePosition(motor_axis_no,
                              cmd_Motor_cmd[motor_axis_no].fPosition,
                              0, /* int relative, */
-                             cmd_Motor_cmd[motor_axis_no].fVelocity,
-                             cmd_Motor_cmd[motor_axis_no].fAcceleration);
+                             velocity,
+                             acceleration);
           cmd_buf_printf("OK");
           break;
         case 10:
@@ -800,7 +797,7 @@ static int motorHandleOneSetArg(const char *myarg_1, int motor_axis_no)
                                cmd_Motor_cmd[motor_axis_no].nCmdData,
                                cmd_Motor_cmd[motor_axis_no].fHomePosition,
                                cmd_Motor_cmd[motor_axis_no].homeVeloTowardsHomeSensor,
-                               cmd_Motor_cmd[motor_axis_no].fAcceleration);
+                               acceleration);
             cmd_buf_printf("OK");
           } else {
             cmd_buf_printf("Error : %d %g %g",
@@ -841,8 +838,8 @@ static int motorHandleOneSetArg(const char *myarg_1, int motor_axis_no)
       (void)movePosition(motor_axis_no,
                          cmd_Motor_cmd[motor_axis_no].fPosition,
                          0, /* int relative, */
-                         cmd_Motor_cmd[motor_axis_no].fVelocity,
-                         cmd_Motor_cmd[motor_axis_no].fAcceleration);
+                         getNxtMoveVelocity(motor_axis_no),
+                         getNxtMoveAcceleration(motor_axis_no));
       cmd_buf_printf("OK");
       return 0;
     }
@@ -1026,7 +1023,7 @@ static void motorHandleOneArg(const char *myarg_1)
     cmd_Motor_status[motor_axis_no].bHomeSensor = getAxisHome(motor_axis_no);
     cmd_Motor_status[motor_axis_no].bError = get_bError(motor_axis_no);
     cmd_Motor_status[motor_axis_no].nErrorId = get_nErrorId(motor_axis_no);
-    cmd_Motor_status[motor_axis_no].fVelocity = cmd_Motor_cmd[motor_axis_no].fVelocity;
+    cmd_Motor_status[motor_axis_no].fVelocity = getNxtMoveVelocity(motor_axis_no);
     cmd_Motor_status[motor_axis_no].fActVelocity = getMotorVelocity(motor_axis_no);
     cmd_Motor_status[motor_axis_no].bHomed = getAxisHomed(motor_axis_no);
     cmd_Motor_status[motor_axis_no].bBusy = isMotorMoving(motor_axis_no);
@@ -1042,7 +1039,7 @@ static void motorHandleOneArg(const char *myarg_1)
                    cmd_Motor_cmd[motor_axis_no].nCmdData,          /*  5 */
                    cmd_Motor_status[motor_axis_no].fVelocity,      /*  6 */
                    cmd_Motor_status[motor_axis_no].fPosition,      /*  7 */
-                   cmd_Motor_cmd[motor_axis_no].fAcceleration,     /*  8 */
+                   getNxtMoveAcceleration(motor_axis_no),          /*  8 */
                    cmd_Motor_cmd[motor_axis_no].fDeceleration,     /*  9 */
                    bJogFwd,        /* 10 */
                    bJogBwd,        /* 11 */

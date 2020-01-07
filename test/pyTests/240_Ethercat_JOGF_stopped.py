@@ -18,7 +18,6 @@ import capv_lib
 class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
     capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
-    lib.initializeMotorRecordSimulatorAxis(motor, '240')
     saved_DLY  = capv_lib.capvget(motor + '.DLY')
     msta             = int(capv_lib.capvget(motor + '.MSTA'))
 
@@ -33,7 +32,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-241"
 
         if not (self.msta & lib.MSTA_BIT_HOMED):
-            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis has been homed)')
+            self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
 
     # Jog, wait for start, stop behind MR
     def test_TC_242(self):

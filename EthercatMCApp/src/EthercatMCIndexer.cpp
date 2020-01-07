@@ -87,6 +87,38 @@ extern "C" {
   }
 };
 
+
+extern "C" {
+  const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex)
+ {
+   switch(paramIndex) {
+   case PARAM_IDX_OPMODE_AUTO_UINT:        return "OPMODE_AUTO";
+   case PARAM_IDX_MICROSTEPS_UINT:         return "MICROSTEPS";
+   case PARAM_IDX_ABS_MIN_FLOAT:           return "ABS_MIN";
+   case PARAM_IDX_ABS_MAX_FLOAT:           return "ABS_MAX";
+   case PARAM_IDX_USR_MIN_FLOAT:           return "USR_MIN";
+   case PARAM_IDX_USR_MAX_FLOAT:           return "USR_MAX";
+   case PARAM_IDX_WRN_MIN_FLOAT:           return "WRN_MIN";
+   case PARAM_IDX_WRN_MAX_FLOAT:           return "WRN_MAX";
+   case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT: return "FOLLOWING_ERR_WIN";
+   case PARAM_IDX_HYTERESIS_FLOAT:         return "HYTERESIS";
+   case PARAM_IDX_REFSPEED_FLOAT:          return "REFSPEED";
+   case PARAM_IDX_VBAS_FLOAT:              return "VBAS";
+   case PARAM_IDX_SPEED_FLOAT:             return "SPEED";
+   case PARAM_IDX_ACCEL_FLOAT:             return "ACCEL";
+   case PARAM_IDX_IDLE_CURRENT_FLOAT:      return "IDLE_CURRENT";
+   case PARAM_IDX_MOVE_CURRENT_FLOAT:      return "MOVE_CURRENT";
+   case PARAM_IDX_MICROSTEPS_FLOAT:        return "MICROSTEPS";
+   case PARAM_IDX_STEPS_PER_UNIT_FLOAT:    return "STEPS_PER_UNIT";
+   case PARAM_IDX_HOME_POSITION_FLOAT:     return "HOME_POSITION";
+   case PARAM_IDX_FUN_REFERENCE:           return "REFERENCE";
+   case PARAM_IDX_FUN_SET_POSITION:        return "SET_POSITION";
+   case PARAM_IDX_FUN_MOVE_VELOCITY:       return "MOVE_VELOCITY";
+   default: return "";
+   }
+ }
+};
+
 static const double fABSMIN = -3.0e+38;
 static const double fABSMAX =  3.0e+38;
 
@@ -104,25 +136,6 @@ asynStatus EthercatMCController::getPlcMemoryUint(unsigned indexOffset,
     return status;
   }
   return asynError;
-}
-
-asynStatus EthercatMCController::getPlcMemoryBytes(unsigned indexOffset,
-                                                   char *value,
-                                                   size_t len)
-{
-  memset(value, 0, len);
-  return getPlcMemoryViaADS(indexOffset, value, len);
-}
-
-asynStatus EthercatMCController::setPlcMemoryBytes(unsigned indexOffset,
-                                                   const char *value,
-                                                   size_t len)
-{
-  asynPrint(pasynUserController_,
-            ASYN_TRACE_INFO,
-            "%ssetPlcMemoryBytes indexOffset=%d 0x%x\n",
-            modNamEMC, indexOffset, indexOffset);
-  return setPlcMemoryViaADS(indexOffset, value, len);
 }
 
 asynStatus EthercatMCController::setPlcMemoryInteger(unsigned indexOffset,
@@ -221,6 +234,31 @@ asynStatus EthercatMCController::readDeviceIndexer(unsigned devNum,
             EthercatMCstrStatus(status), (int)status);
   return status;
 
+}
+
+asynStatus EthercatMCController::indexerWaitSpecialDeviceIdle(unsigned indexOffset)
+{
+  unsigned traceMask = ASYN_TRACE_FLOW;
+  asynStatus status;
+  unsigned   ctrlLen = 0;
+  unsigned   counter = 0;
+
+  while (counter < 5) {
+    status = getPlcMemoryUint(indexOffset, &ctrlLen, 2);
+    asynPrint(pasynUserController_,
+              status ? traceMask | ASYN_TRACE_INFO : traceMask,
+              "%sindexerWaitSpecialDeviceIdle ctrlLen=0x%04x status=%s (%d)\n",
+              modNamEMC, ctrlLen,
+              EthercatMCstrStatus(status), (int)status);
+    if (status) return status;
+    if (!ctrlLen) return asynSuccess;
+    counter++;
+    epicsThreadSleep(.1 * (counter<<1));
+  }
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%sindexOffset=%u ctrlLen=0x%04x counter=%d\n",
+            modNamEMC, indexOffset, ctrlLen, counter);
+  return asynDisabled;
 }
 
 asynStatus EthercatMCController::indexerParamWaitNotBusy(unsigned indexOffset)
@@ -364,7 +402,7 @@ asynStatus EthercatMCController::indexerParamRead(int axisNo,
   return asynError;
 }
 
-asynStatus EthercatMCController::indexerParamWrite(unsigned paramIfOffset,
+asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfOffset,
                                                    unsigned paramIndex,
                                                    unsigned lenInPlcPara,
                                                    double value)
@@ -390,30 +428,46 @@ asynStatus EthercatMCController::indexerParamWrite(unsigned paramIfOffset,
     status = setPlcMemoryInteger(paramIfOffset + 2, (int)value, lenInPlcPara);
   else
     status = setPlcMemoryDouble(paramIfOffset + 2, value, lenInPlcPara);
-  if (status) traceMask |= ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER;
-  asynPrint(pasynUserController_, traceMask,
-            "%sparamIfOffset=%u paramIndex=%u value=%f lenInPlcPara=%u status=%s (%d)\n",
-            modNamEMC, paramIfOffset, paramIndex, value, lenInPlcPara,
-            EthercatMCstrStatus(status), (int)status);
-  if (status) return status;
+
+  if (status){
+    asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+              "%sindexerParamWrite(%d) paramIfOffset=%u paramIndex=%u "
+              "value=%f lenInPlcPara=%u status=%s (%d)\n",
+              modNamEMC, axisNo, paramIfOffset, paramIndex,
+              value, lenInPlcPara,
+              EthercatMCstrStatus(status), (int)status);
+    return status;
+  }
 
   status = setPlcMemoryInteger(paramIfOffset, cmd, lenInPlcCmd);
-  if (status) traceMask |= ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER;
-  asynPrint(pasynUserController_, traceMask,
-            "%sstatus=%s (%d)\n",
-            modNamEMC,
-            EthercatMCstrStatus(status), (int)status);
-  if (status) return status;
+  if (status) {
+    asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+              "%sstatus=%s (%d)\n",
+              modNamEMC,
+              EthercatMCstrStatus(status), (int)status);
+    return status;
+  }
   while (counter < 5) {
     unsigned cmdSubParamIndex = 0;
     status = getPlcMemoryUint(paramIfOffset, &cmdSubParamIndex, 2);
-    if (status) traceMask |= ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER;
+    if (status) {
+      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+                "%ssindexerParamWrite(%d) paramIndex=%s (%u) value=%f "
+                "lenInPlcpara=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
+                modNamEMC, axisNo,
+                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                value, lenInPlcPara, cmdSubParamIndex, counter,
+                EthercatMCstrStatus(status), (int)status);
+      return status;
+    }
     asynPrint(pasynUserController_, traceMask,
-              "%sparamIndex=%u lenInPlcPara=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
-              modNamEMC,
-              paramIndex, lenInPlcPara, cmdSubParamIndex, counter,
+              "%sindexerParamWrite(%d) paramIndex=%s (%u) value=%f "
+              "lenInPlcPara=%u cmdSubParamIndex=0x%04x "
+              "counter=%u status=%s (%d)\n",
+              modNamEMC, axisNo,
+              plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+              value, lenInPlcPara, cmdSubParamIndex, counter,
               EthercatMCstrStatus(status), (int)status);
-    if (status) return status;
     /* This is good, return */
     if (cmdSubParamIndex == cmdAcked) return asynSuccess;
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
@@ -422,7 +476,23 @@ asynStatus EthercatMCController::indexerParamWrite(unsigned paramIfOffset,
     case PARAM_IF_CMD_DOREAD:
       status = asynDisabled;
     case PARAM_IF_CMD_DOWRITE:
+      break;
     case PARAM_IF_CMD_BUSY:
+      {
+        /* Calling the parameter interface on a function
+           may return busy. That is OK */
+        switch (paramIndex) {
+        case PARAM_IDX_FUN_REFERENCE:
+        case PARAM_IDX_FUN_SET_POSITION:
+        case PARAM_IDX_FUN_MOVE_VELOCITY:
+          if ((cmdSubParamIndex & PARAM_IF_IDX_MASK) == paramIndex) {
+            return asynSuccess;
+          }
+          break;
+        default:
+          ;
+        }
+      }
       break;
     case PARAM_IF_CMD_DONE:
       /* This is an error. (collision ?) */
@@ -453,7 +523,24 @@ asynStatus EthercatMCController::indexerParamWrite(unsigned paramIfOffset,
   return asynDisabled;
 }
 
+asynStatus
+EthercatMCController::getPlcMemoryFromProcessImage(unsigned indexOffset,
+                                                   void *data,
+                                                   size_t lenInPlc)
+{
+  if (ctrlLocal.pIndexerProcessImage &&
+      ctrlLocal.lastDeviceEndOffset) {
+    memcpy(data,
+           &ctrlLocal.pIndexerProcessImage[indexOffset],
+           lenInPlc);
+    return asynSuccess;
+  }
+  /* no process image, get values */
+  return getPlcMemoryViaADS(indexOffset, data,  lenInPlc);
+}
+
 void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
+                                                  int initial,
                                                   unsigned paramIndex,
                                                   double fValue)
 {
@@ -461,76 +548,70 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
   const static double fullsrev = 200;    /* (default) Full steps/revolution */
 
   switch(paramIndex) {
-  case PARAM_IDX_OPMODE_AUTO_UINT32:
+  case PARAM_IDX_OPMODE_AUTO_UINT:
     /* CNEN for EPICS */
     pAxis->setIntegerParam(motorStatusGainSupport_, 1);
     break;
-  case PARAM_IDX_MICROSTEPS_FLOAT32:
-    pAxis->setDoubleParam(EthercatMCCfgSREV_RB_, fullsrev * fValue);
+  case PARAM_IDX_MICROSTEPS_FLOAT:
+    updateCfgValue(axisNo, EthercatMCCfgSREV_RB_, fullsrev * fValue, "srev");
     break;
-  case PARAM_IDX_USR_MIN_FLOAT32:
-    setIntegerParam(axisNo,EthercatMCCfgDLLM_En_, fValue > fABSMIN ? 1 : 0);
-    setDoubleParam(axisNo, EthercatMCCfgDLLM_,    fValue);
+  case PARAM_IDX_USR_MIN_FLOAT:
+    updateCfgValue(axisNo,EthercatMCCfgDLLM_En_, fValue > fABSMIN ? 1 : 0, "dllm_en");
+    updateCfgValue(axisNo, EthercatMCCfgDLLM_,    fValue, "dllm");
     udateMotorLimitsRO(axisNo);
     break;
-  case PARAM_IDX_ABS_MIN_FLOAT32:
-    setDoubleParam(axisNo,  EthercatMCCfgPMIN_RB_, fValue);
+  case PARAM_IDX_ABS_MIN_FLOAT:
+    updateCfgValue(axisNo, EthercatMCCfgPMIN_RB_, fValue, "posmin");
     break;
-  case PARAM_IDX_ABS_MAX_FLOAT32:
-    setDoubleParam(axisNo,  EthercatMCCfgPMAX_RB_, fValue);
+  case PARAM_IDX_ABS_MAX_FLOAT:
+    updateCfgValue(axisNo, EthercatMCCfgPMAX_RB_, fValue, "posmax");
     break;
-  case PARAM_IDX_USR_MAX_FLOAT32:
-    setIntegerParam(axisNo, EthercatMCCfgDHLM_En_, fValue < fABSMAX ? 1 : 0);
-    setDoubleParam(axisNo,  EthercatMCCfgDHLM_, fValue);
+  case PARAM_IDX_USR_MAX_FLOAT:
+    updateCfgValue(axisNo, EthercatMCCfgDHLM_En_, fValue < fABSMAX ? 1 : 0, "dhlm_en");
+    updateCfgValue(axisNo, EthercatMCCfgDHLM_, fValue, "dhlm");
     udateMotorLimitsRO(axisNo);
     break;
-  case PARAM_IDX_WRN_MIN_FLOAT32:
+  case PARAM_IDX_WRN_MIN_FLOAT:
     break;
-  case PARAM_IDX_WRN_MAX_FLOAT32:
+  case PARAM_IDX_WRN_MAX_FLOAT:
     break;
-  case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT32:
-    pAxis->setDoubleParam(EthercatMCCfgPOSLAG_RB_, fValue);
-    setIntegerParam(axisNo, EthercatMCCfgPOSLAG_En_RB_, 1);
+  case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
+    updateCfgValue(axisNo, EthercatMCCfgPOSLAG_RB_, fValue, "poslag");
+    updateCfgValue(axisNo, EthercatMCCfgPOSLAG_En_RB_, 1, "poslag_en");
     break;
-  case PARAM_IDX_HYTERESIS_FLOAT32:
-    pAxis->setDoubleParam(EthercatMCCfgSPDB_RB_, fValue);
-    pAxis->setDoubleParam(EthercatMCCfgRDBD_RB_, fValue);
-    setIntegerParam(axisNo, EthercatMCCfgRDBD_En_RB_, 1);
-#ifdef motorRDBDROString
-    pAxis->setDoubleParam(motorRDBDRO_, fValue);
-#endif
+  case PARAM_IDX_HYTERESIS_FLOAT:
+    updateCfgValue(axisNo, EthercatMCCfgSPDB_RB_, fValue, "spdb");
+    updateCfgValue(axisNo, EthercatMCCfgRDBD_RB_, fValue, "rdbd");
+    updateCfgValue(axisNo, EthercatMCCfgRDBD_En_RB_, 1, "rdbd_en");
     break;
-  case PARAM_IDX_REFSPEED_FLOAT32:
-    pAxis->setDoubleParam(EthercatMCVelToHom_, fValue);
+  case PARAM_IDX_REFSPEED_FLOAT:
+    updateCfgValue(axisNo, EthercatMCVelToHom_, fValue, "hvel");
     break;
-  case PARAM_IDX_SPEED_FLOAT32:
-    pAxis->setDoubleParam(EthercatMCCfgVELO_, fValue);
-    pAxis->setDoubleParam(EthercatMCVel_RB_, fValue);
+  case PARAM_IDX_SPEED_FLOAT:
+    if (initial) updateCfgValue(axisNo, EthercatMCCfgVELO_, fValue, "veloCFG");
+    updateCfgValue(axisNo, EthercatMCVel_RB_, fValue, "veloRB");
 #ifdef motorDefVelocityROString
     pAxis->setDoubleParam(motorDefVelocityRO_, fValue);
 #endif
     break;
-  case PARAM_IDX_ACCEL_FLOAT32:
-    pAxis->setDoubleParam(EthercatMCCfgACCS_, fValue);
-    pAxis->setDoubleParam(EthercatMCAcc_RB_, fValue);
-#ifdef motorDefJogAccROString
-    pAxis->setDoubleParam(motorDefJogAccRO_, fValue);
-#endif
+  case PARAM_IDX_ACCEL_FLOAT:
+    if (initial) updateCfgValue(axisNo, EthercatMCCfgACCS_, fValue, "accsRB");
+    updateCfgValue(axisNo, EthercatMCAcc_RB_, fValue, "accsRB");
     break;
-  case PARAM_IDX_IDLE_CURRENT_FLOAT32:
+  case PARAM_IDX_IDLE_CURRENT_FLOAT:
     break;
-  case PARAM_IDX_MOVE_CURRENT_FLOAT32:
+  case PARAM_IDX_MOVE_CURRENT_FLOAT:
     break;
-  case PARAM_IDX_MICROSTEPS_UINT32:
+  case PARAM_IDX_MICROSTEPS_UINT:
     break;
-  case PARAM_IDX_STEPS_PER_UNIT_FLOAT32:
+  case PARAM_IDX_STEPS_PER_UNIT_FLOAT:
     {
       double urev = fabs(fullsrev / fValue);
-      pAxis->setDoubleParam(EthercatMCCfgUREV_RB_, urev);
+      updateCfgValue(axisNo, EthercatMCCfgUREV_RB_, urev, "urev");
     }
     break;
-  case PARAM_IDX_HOME_POSITION_FLOAT32:
-    pAxis->setDoubleParam(EthercatMCHomPos_, fValue);
+  case PARAM_IDX_HOME_POSITION_FLOAT:
+    updateCfgValue(axisNo, EthercatMCHomPos_RB_, fValue, "homPosRB");
     break;
   case PARAM_IDX_FUN_REFERENCE:
 #ifdef  motorNotHomedProblemString
@@ -544,13 +625,16 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
 #endif
     pAxis->setIntegerParam(EthercatMCHomProc_RB_, 15);
     break;
+  case PARAM_IDX_FUN_MOVE_VELOCITY:
+    if (initial) updateCfgValue(axisNo, EthercatMCCfgJVEL_, fabs(fValue), "jvel");
+    break;
   }
 }
 
 asynStatus
 EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                                                 unsigned devNum,
-                                                unsigned iOffset,
+                                                unsigned iOffsBytes,
                                                 unsigned lenInPlcPara)
 {
   unsigned axisNo = pAxis->axisNo_;
@@ -593,10 +677,10 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
     unsigned paramIfOffset;
     switch (lenInPlcPara) {
     case 4:
-      paramIfOffset = iOffset + 10;
+      paramIfOffset = iOffsBytes + 10;
       break;
     case 8:
-      paramIfOffset = iOffset + 22;
+      paramIfOffset = iOffsBytes + 22;
       break;
     default:
       asynPrint(pasynUserController_,
@@ -612,10 +696,13 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
       unsigned bitIsSet = parameters & (1 << bitIdx) ? 1 : 0;
       if (bitIsSet) {
         double fValue = 0.0;
-        if (paramIndex < 128) {
-          /* paramIndex >= 128 are functions.
+        int initial = 1;
+        if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
+	    (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
+          /* paramIndex >= PARAM_IF_IDX_FIRST_FUNCTION (128) are functions.
              Don't read them.
-             tell driver that the function exist */
+             tell driver that the function exist
+	     But read 142, which becomes JVEL */
           status = indexerParamRead(axisNo,
                                     paramIfOffset,
                                     paramIndex,
@@ -627,17 +714,29 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                       "%sindexerReadAxisParameters paramIndex=%u lenInPlcPara=%u status=%s (%d)\n",
                       modNamEMC, paramIndex, lenInPlcPara,
                       EthercatMCstrStatus(status), (int)status);
+            if ((paramIndex >= 128) && (status == asynDisabled)) {
+              /* Read back of functions as parameters is not defined in PILS
+                 if it fails, that is OK */
+              return asynSuccess;
+            }
             return status;
           }
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdx=%u fValue=%f\n",
-                    modNamEMC, axisNo, paramIndex, fValue);
+                    "%sparameters(%d) paramIdx=%s (%u) fValue=%f\n",
+                    modNamEMC, axisNo,
+                    plcParamIndexTxtFromParamIndex(paramIndex),
+                    paramIndex, fValue);
         } else {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdxFunction=%u\n",
-                    modNamEMC, axisNo, paramIndex);
+                    "%sparameters(%d) paramIdxFunction=%s (%u)\n",
+                    modNamEMC, axisNo,
+                    plcParamIndexTxtFromParamIndex(paramIndex),
+                    paramIndex);
         }
-        parameterFloatReadBack(axisNo, paramIndex, fValue);
+        if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
+          pAxis->addPollNowParam(paramIndex);
+        }
+        parameterFloatReadBack(axisNo, initial, paramIndex, fValue);
       }
     }
   }
@@ -650,7 +749,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
                                      unsigned iAllFlags,
                                      double   fAbsMin,
                                      double   fAbsMax,
-                                     unsigned iOffset)
+                                     unsigned iOffsBytes)
 {
   asynStatus status = asynSuccess;
   unsigned axisNo = pAxis->axisNo_;
@@ -676,7 +775,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexer(devNum, infoType16 + auxBitIdx);
         if (status) return status;
-        status = getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+        status = getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                                     auxBitName,
                                     sizeof(auxBitName));
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
@@ -743,6 +842,9 @@ asynStatus EthercatMCController::initialPollIndexer(void)
   if (status) goto endPollIndexer;
 
   ctrlLocal.indexerOffset = 4;
+  ctrlLocal.firstDeviceStartOffset = (unsigned)-1;
+  ctrlLocal.lastDeviceEndOffset = 0;
+
   status = getPlcMemoryUint(ctrlLocal.indexerOffset,
                             &ctrlLocal.indexerOffset, 2);
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
@@ -751,8 +853,8 @@ asynStatus EthercatMCController::initialPollIndexer(void)
 
   for (devNum = 0; devNum < 100; devNum++) {
     unsigned iTypCode = -1;
-    unsigned iSize = -1;
-    unsigned iOffset = -1;
+    unsigned iSizeBytes = -1;
+    unsigned iOffsBytes = -1;
     unsigned iUnit = -1;
     unsigned iAllFlags = -1;
     double fAbsMin = 0;
@@ -779,8 +881,8 @@ asynStatus EthercatMCController::initialPollIndexer(void)
                                   &infoType0_data, sizeof(infoType0_data));
       if (!status) {
         iTypCode  = infoType0_data.typCode_0 + (infoType0_data.typCode_1 << 8);
-        iSize     = infoType0_data.size_0 + (infoType0_data.size_1 << 8);
-        iOffset   = infoType0_data.offset_0 + (infoType0_data.offset_1 << 8);
+        iSizeBytes= infoType0_data.size_0 + (infoType0_data.size_1 << 8);
+        iOffsBytes= infoType0_data.offset_0 + (infoType0_data.offset_1 << 8);
         iUnit     = infoType0_data.unit_0 + (infoType0_data.unit_1 << 8);
         iAllFlags = infoType0_data.flags_0 + (infoType0_data.flags_1 << 8) +
           (infoType0_data.flags_2 << 16) + (infoType0_data.flags_3 << 24);
@@ -792,41 +894,71 @@ asynStatus EthercatMCController::initialPollIndexer(void)
     }
     status = readDeviceIndexer(devNum, infoType4);
     if (!status) {
-      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.desc,
                          sizeof(descVersAuthors.desc));
     }
     status = readDeviceIndexer(devNum, infoType5);
     if (!status) {
-      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.vers,
                          sizeof(descVersAuthors.vers));
     }
     status = readDeviceIndexer(devNum, infoType6);
     if (!status) {
-      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.author1,
                          sizeof(descVersAuthors.author1));
     }
     status = readDeviceIndexer(devNum, infoType7);
     if (!status) {
-      getPlcMemoryBytes(ctrlLocal.indexerOffset + 1*2,
+      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
                          descVersAuthors.author2,
                          sizeof(descVersAuthors.author2));
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sindexerDevice Offset=%u %20s "
-              "TypCode=0x%x Size=%u UnitCode=0x%x AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
-              modNamEMC, iOffset, descVersAuthors.desc,
-              iTypCode, iSize, iUnit, iAllFlags, fAbsMin, fAbsMax);
+              "%sindexerDevice(%u) OffsBytes=%u %20s "
+              "TypCode=0x%x SizeBytes=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
+              modNamEMC, devNum, iOffsBytes, descVersAuthors.desc,
+              iTypCode, iSizeBytes, iUnit,
+              plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
+              plcUnitTxtFromUnitCode(iUnit & 0xFF),
+              iAllFlags, fAbsMin, fAbsMax);
+
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%sdescVersAuthors(%d)  vers=%s author1=%s author2=%s\n",
-              modNamEMC, axisNo,
+              modNamEMC, devNum,
               descVersAuthors.vers,
               descVersAuthors.author1,
               descVersAuthors.author2);
-    if (!iTypCode && !iSize && !iOffset) {
+    if (!iTypCode && !iSizeBytes && !iOffsBytes) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%sfirstDeviceStartOffset=%u lastDeviceEndOffset=%u\n",
+                modNamEMC,
+                ctrlLocal.firstDeviceStartOffset,
+                ctrlLocal.lastDeviceEndOffset);
+      /* Create memory to keep the processimage for all devices
+         We include the non-used bytes at the beginning,
+         including the nytes used by the indexer (and waste some bytes)
+         to make it easier to understand the adressing using offset */
+
+      /* In case of re-connect free the old one */
+      free(ctrlLocal.pIndexerProcessImage);
+      /* create a new one, with the right size */
+      ctrlLocal.pIndexerProcessImage = (uint8_t*)calloc(1, ctrlLocal.lastDeviceEndOffset);
+
       break; /* End of list ?? */
+    }
+    /* indexer has devNum == 0, it is not a device */
+    if (devNum) {
+      unsigned endOffset = iOffsBytes + iSizeBytes;
+      /* find the lowest and highest offset for all devices */
+      if (iOffsBytes < ctrlLocal.firstDeviceStartOffset) {
+        ctrlLocal.firstDeviceStartOffset = iOffsBytes;
+      }
+      if (endOffset > ctrlLocal.lastDeviceEndOffset) {
+        ctrlLocal.lastDeviceEndOffset = endOffset;
+      }
     }
     switch (iTypCode) {
     case 0x5008:
@@ -847,14 +979,14 @@ asynStatus EthercatMCController::initialPollIndexer(void)
                                 iAllFlags,
                                 fAbsMin,
                                 fAbsMax,
-                                iOffset);
+                                iOffsBytes);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sTypeCode(%d) iTypCode=%x pAxis=%p status=%s (%d)\n",
                   modNamEMC, axisNo, iTypCode, pAxis,
                   EthercatMCstrStatus(status), (int)status);
         if (status) goto endPollIndexer;
 
-        pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffset, iTypCode);
+        pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffsBytes, iTypCode);
         setStringParam(axisNo,  EthercatMCCfgDESC_RB_, descVersAuthors.desc);
         snprintf(unitCodeTxt, sizeof(unitCodeTxt), "%s%s",
                  plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
@@ -869,7 +1001,7 @@ asynStatus EthercatMCController::initialPollIndexer(void)
        * 0x18 == 24dec words -> 48 bytes -> 2byte CTRL + 46 payload */
       if (!strcmp(descVersAuthors.desc, "DbgStrToMcu"))
       {
-        ctrlLocal.specialDbgStrToMcuDeviceOffset = iOffset;
+        ctrlLocal.specialDbgStrToMcuDeviceOffset = iOffsBytes;
         /* Length of the data area in words is "low byte" */
         ctrlLocal.specialDbgStrToMcuDeviceLength = 2 * (iTypCode & 0xFF);
       }

@@ -1137,16 +1137,6 @@ $(pv_value)</tooltip>
         <description>$(M1) (Expert)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M1)</M>
-          <R>$(R1)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M1) (Indexer)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
         <path>motorx_setup.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
@@ -2379,16 +2369,6 @@ $(pv_value)</tooltip>
         <description>$(M2) (Expert)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M2)</M>
-          <R>$(R2)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M2) (Indexer)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
         <path>motorx_setup.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
@@ -3619,16 +3599,6 @@ $(pv_value)</tooltip>
         </macros>
         <replace>0</replace>
         <description>$(M3) (Expert)</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisIndexer.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <M>$(M3)</M>
-          <R>$(R3)</R>
-        </macros>
-        <replace>0</replace>
-        <description>$(M3) (Indexer)</description>
       </action>
       <action type="OPEN_DISPLAY">
         <path>motorx_setup.opi</path>

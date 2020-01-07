@@ -161,8 +161,6 @@ private:
   asynStatus readConfigLine(const char *line, const char **errorTxt_p);
   asynStatus readConfigFile(void);
   asynStatus readBackAllConfig(int axisID);
-  asynStatus updateCfgValue(int function, int    newValue, const char *name);
-  asynStatus updateCfgValue(int function, double newValue, const char *name);
   asynStatus readBackSoftLimits(void);
   asynStatus readBackHoming(void);
   asynStatus readScaling(int axisID);

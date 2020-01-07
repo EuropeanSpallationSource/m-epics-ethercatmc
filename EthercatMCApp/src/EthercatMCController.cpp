@@ -49,12 +49,12 @@ extern "C" const char *errStringFromErrId(int nErrorId)
 {
   switch(nErrorId) {
   case 0x4221:
-    return "Velo not allowed";
+    return "Velo illegal";
   case 0x4223:
-    return "Axis positioning enable";
+    return "Axis pos en";
   case 0x4450:
   case 0x4451:
-    return "Follow error";
+    return "Follow err";
   case 0x4260:
     return "Amplifier off";
   case 0x4263:
@@ -62,9 +62,9 @@ extern "C" const char *errStringFromErrId(int nErrorId)
   case 0x42A0:
     return "Consequ Err";
   case 0x4460:
-    return "Low soft limit";
+    return "Low soft lim";
   case 0x4461:
-    return "High soft limit";
+    return "High softlim";
   case 0x4462:
     return "Min position";
   case 0x4463:
@@ -168,8 +168,6 @@ EthercatMCController::EthercatMCController(const char *portName,
   createParam(EthercatMCaux7_String,         asynParamOctet,       &EthercatMCaux7_);
   createParam(EthercatMCreason24_String,     asynParamOctet,       &EthercatMCreason24_);
   createParam(EthercatMCreason25_String,     asynParamOctet,       &EthercatMCreason25_);
-  createParam(EthercatMCreason26_String,     asynParamOctet,       &EthercatMCreason26_);
-  createParam(EthercatMCreason27_String,     asynParamOctet,       &EthercatMCreason27_);
   createParam(EthercatMCCfgVELO_String,      asynParamFloat64,     &EthercatMCCfgVELO_);
   createParam(EthercatMCCfgVMAX_String,      asynParamFloat64,     &EthercatMCCfgVMAX_);
   createParam(EthercatMCCfgJVEL_String,      asynParamFloat64,     &EthercatMCCfgJVEL_);
@@ -660,6 +658,8 @@ void EthercatMCController::handleStatusChange(asynStatus status)
         pAxis->setIntegerParam(motorStatusCommsError_, 1);
         pAxis->callParamCallbacks();
       }
+      free(ctrlLocal.pIndexerProcessImage);
+      ctrlLocal.pIndexerProcessImage = NULL;
     } else {
       /* Disconnected -> Connected */
       setMCUErrMsg("MCU Cconnected");
@@ -690,6 +690,25 @@ asynStatus EthercatMCController::poll(void)
           i++;
         }
       }
+    } else {
+      if (ctrlLocal.pIndexerProcessImage &&
+          ctrlLocal.lastDeviceEndOffset) {
+        size_t indexOffset = ctrlLocal.firstDeviceStartOffset;
+        size_t len = ctrlLocal.lastDeviceEndOffset - indexOffset;
+        int traceMask = ASYN_TRACEIO_DRIVER;
+        memset(ctrlLocal.pIndexerProcessImage, 0,
+               ctrlLocal.lastDeviceEndOffset);
+        status = getPlcMemoryViaADS(indexOffset,
+                                    &ctrlLocal.pIndexerProcessImage[indexOffset],
+                                    len);
+        if (status) traceMask |= ASYN_TRACE_ERROR;
+
+        asynPrint(pasynUserController_, ASYN_TRACEIO_DRIVER,
+                  "%spoll() indexOffset=%u len=%u status=%s (%d)\n",
+                  modNamEMC, (unsigned)indexOffset, (unsigned)len,
+                  EthercatMCstrStatus(status), (int)status);
+        return status;
+      }
     }
   } else {
     if (!(features_ & reportedFeatureBits)) {
@@ -701,6 +720,51 @@ asynStatus EthercatMCController::poll(void)
   }
   return status;
 }
+
+asynStatus EthercatMCController::updateCfgValue(int axisNo_, int function,
+                                                double newValue, const char *name)
+{
+  double oldValue;
+  asynStatus status = getDoubleParam(axisNo_, function, &oldValue);
+  if (status) {
+    /* First time that we write the value after IOC restart
+       ECMC configures everything from the iocshell, no need to
+       do a print here */
+    if (!(features_ & FEATURE_BITS_ECMC)) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%supdateCfgValue(%d) %s=%f\n",
+                modNamEMC, axisNo_, name, newValue);
+    }
+  } else if (newValue != oldValue) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%supdateCfgValue(%d) old%s=%f new%s=%f\n",
+              modNamEMC, axisNo_, name, oldValue, name, newValue);
+  }
+  return setDoubleParam(axisNo_, function, newValue);
+}
+
+asynStatus EthercatMCController::updateCfgValue(int axisNo_, int function,
+                                                int newValue, const char *name)
+{
+  int oldValue;
+  asynStatus status = getIntegerParam(axisNo_, function, &oldValue);
+  if (status) {
+    /* First time that we write the value after IOC restart
+       ECMC configures everything from the iocshell, no need to
+       do a print here */
+    if (!((features_ & FEATURE_BITS_ECMC))) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%supdateCfgValue(%d) %s=%d\n",
+                modNamEMC, axisNo_, name, newValue);
+    }
+  } else if (newValue != oldValue) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%supdateCfgValue(%d) old%s=%d new%s=%d\n",
+              modNamEMC, axisNo_, name, oldValue, name, newValue);
+  }
+  return setIntegerParam(axisNo_, function, newValue);
+}
+
 
 int EthercatMCController::getFeatures(void)
 {

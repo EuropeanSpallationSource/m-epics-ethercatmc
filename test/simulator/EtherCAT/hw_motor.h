@@ -31,9 +31,13 @@ static void init_axis(int);
 void hw_motor_init(int axis_no,
                    const struct motor_init_values *pMotor_init_values,
                    size_t motor_init_len);
-
+double getNxtMoveAcceleration(int axis_no);
+void   setNxtMoveAcceleration(int axis_no, double value);
+double getNxtMoveVelocity(int axis_no);
+void   setNxtMoveVelocity(int axis_no, double value);
 /* Where does the motor wake up after power-on */
 void setMotorParkingPosition(int axis_no, double value);
+double getHomePos(int axis_no);
 void setHomePos(int axis_no, double value);
 void setMaxHomeVelocityAbs(int axis_no, double value);
 void setMotorReverseERES(int axis_no, double value);
@@ -145,20 +149,16 @@ int moveAbsolute(int axis_no,
                  double acceleration);
 
 /*
- *  moveRelative: Move to absolute position
+ *  moveRelative: Move to relative position
  *  limit switches shoud be obeyed (I think)
  *
- *  direction:    either <0 or >=0
- *  max_velocity: >0 velocity after acceleration has been done
- *  acceleration: time in seconds to reach max_velocity
+ *  postitin      relative position
  *
  *  return value: 0 == OK,
  *                error codes and error handling needs to be defined
  */
 int moveRelative(int axis_no,
-                 double offset,
-                 double max_velocity,
-                 double acceleration);
+                 double position);
 
 
 /*

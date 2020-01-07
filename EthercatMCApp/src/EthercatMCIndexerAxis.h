@@ -20,16 +20,12 @@
 #define PARAM_IF_CMD_READONLY                      0xC000
 #define PARAM_IF_CMD_RETRY_LATER                   0xE000
 
+/* Some parameters are functions */
+#define PARAM_IF_IDX_FIRST_FUNCTION                128
+
 extern "C" {
   int EthercatMCCreateIndexerAxis(const char *EthercatMCName, int axisNo,
                                   int axisFlags, const char *axisOptionsStr);
-  static const uint16_t pollNowParams[4] = {
-    PARAM_IDX_SPEED_FLOAT32,
-    PARAM_IDX_ACCEL_FLOAT32,
-    PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT32,
-    PARAM_IDX_HYTERESIS_FLOAT32
-  };
-
 };
 
 class epicsShareClass EthercatMCIndexerAxis : public asynMotorAxis
@@ -49,6 +45,7 @@ public:
   asynStatus stop(double acceleration);
   void setIndexerDevNumOffsetTypeCode(unsigned devNum, unsigned iOffset, unsigned iTypCode);
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
+  void addPollNowParam(uint8_t paramIndex);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
   asynStatus poll(bool *moving);
   asynStatus resetAxis(void);
@@ -81,7 +78,8 @@ private:
     unsigned int hasProblem :1;
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     unsigned adsPort;
-  } drvlocal;
+    uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
+    } drvlocal;
 
 #ifndef motorMessageTextString
   void updateMsgTxtFromDriver(const char *value);

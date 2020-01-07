@@ -35,12 +35,22 @@ echo MOTORCFG=$MOTORCFG
 (
   cd startup &&
   if ! test -f st.${MOTORCFG}.iocsh; then
-    CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g")
+    CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g" | sort)
     #echo CMDS=$CMDS
     test -n "$1" && echo >&2 "not found st.${1}.iocsh"
     echo >&2 "try one of these:"
     for cmd in $CMDS; do
-      echo >&2 $0 " $cmd" " <ip>[:port]"
+      case $cmd in
+        *sim-indexer)
+          echo >&2 $0 " $cmd" " 127.0.0.1:48898"
+          ;;
+        *-indexer)
+          echo >&2 $0 " $cmd" " <ip>:48898"
+          ;;
+        *)
+          echo >&2 $0 " $cmd" " <ip>[:port]"
+          ;;
+      esac
     done
     exit 1
   fi
@@ -75,7 +85,7 @@ if test "$MOTORPORT" = 48898; then
     #echo LOCALIP=$LOCALIP
     echo >&2         $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "<REMOTEAMSNETID> <LOCALAMSNETID>"
     for LOCALIP in $LOCALIPS; do
-      echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "  5.40.216.206.1.1     $LOCALIP.1.1"
+      echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "  $MOTORIP.1.1     $LOCALIP.1.1"
     done
     exit 1
   fi
@@ -146,7 +156,7 @@ export LOCALAMSNETID REMOTEAMSNETID
         fi
       ;;
     e3)
-      ( cd ../.. && make devinstall)
+      #( cd ../.. && make devinstall)
       ;;
     *)
       echo >&2 invalid1 EPICS_EEE_E3 $EPICS_EEE_E3
@@ -160,7 +170,7 @@ export LOCALAMSNETID REMOTEAMSNETID
           stcmddst=./st.iocsh.EEE.$EPICS_HOST_ARCH &&
           # We need to patch the cmd files to adjust "<"
           # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-          for src in  ../../iocsh/*iocsh ../../test/startup/*cfg ../../test/startup/*cmd; do
+          for src in  ../../iocsh/*iocsh ../../test/startup/*cfg ../../test/startup/*iocsh; do
               dst=${src##*/}
               echo cp PWD=$PWD src=$src dst=$dst
               cp "$src" "$dst"
@@ -188,7 +198,7 @@ export LOCALAMSNETID REMOTEAMSNETID
           # classic EPICS, non EEE
           # We need to patch the cmd files to adjust dbLoadRecords
           # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-          for src in ../../test/startup/*cmd  ../../iocsh/*iocsh; do
+          for src in ../../test/startup/*iocsh  ../../iocsh/*iocsh; do
               dst=${src##*/}
               echo sed PWD=$PWD src=$src dst=$dst
               sed <"$src" >"$dst" \
@@ -233,7 +243,7 @@ EOF
           stcmddst=./st.iocsh.EEE.$EPICS_HOST_ARCH &&
           # We need to patch the cmd files to adjust "<"
           # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
-          for src in  ../../iocsh/*iocsh ../../test/startup/*cfg ../../test/startup/*cmd; do
+          for src in  ../../iocsh/*iocsh ../../test/startup/*cfg ../../test/startup/*iocsh; do
               dst=${src##*/}
               echo cp PWD=$PWD src=$src dst=$dst
               cp "$src" "$dst"
@@ -241,7 +251,7 @@ EOF
           rm -f $stcmddst &&
           sed  <st.${MOTORCFG}.iocsh  \
               -e "s/require motor,USER/require motor,develop/" \
-              -e "s/require EthercatMC,USER/require EthercatMC,develop/" \
+              -e "s/require EthercatMC,USER/require EthercatMC,3.0.2/" \
               -e "s%require asyn%#require assyn%" \
               -e "s/^cd /#cd /" \
               -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \

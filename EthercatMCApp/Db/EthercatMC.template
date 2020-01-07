@@ -90,6 +90,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-EncAct")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "0")
+    field(EGU,  "Steps")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct")
     field(SCAN, "I/O Intr")
 }
@@ -325,6 +326,112 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-HomPos-RB") {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos-RB")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbi,"$(PREFIX)$(MOTOR_NAME)-StatusCode") {
+    field(DESC,"StatusCode")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))StatusCode")
+    field(SCAN, "I/O Intr")
+    field(ZRVL,  "0")
+    field(ONVL,  "1")
+    field(TWVL,  "2")
+    field(THVL,  "3")
+    field(FRVL,  "4")
+    field(FVVL,  "5")
+    field(SXVL,  "6")
+    field(SVVL,  "7")
+    field(EIVL,  "8")
+    field(NIVL,  "9")
+    field(TEVL, "10")
+    field(ELVL, "11")
+    field(TVVL, "12")
+    field(TTVL, "13")
+    field(FTVL, "14")
+    field(FFVL, "15")
+
+    field(ZRST, "RESET")
+    field(ONST, "IDLE")
+    field(TWST, "DISABLED")
+    field(THST, "WARN")
+    field(FRST, "ERR-4")
+    field(FVST, "START")
+    field(SXST, "BUSY")
+    field(SVST, "STOP")
+    field(EIST, "ERROR")
+    field(NIST, "ERR-9")
+    field(TEST, "ERR-A")
+    field(ELST, "ERR-B")
+    field(TVST, "ERR-C")
+    field(TTST, "ERR-D")
+    field(FTST, "ERR-E")
+    field(FFST, "ERR-F")
+}
+
+record(longin,"$(PREFIX)$(MOTOR_NAME)-CNEN-Vis") {
+    field(DESC, "CNEN-Visible")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STATUS_GAIN_SUPPORT")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(PREFIX)$(MOTOR_NAME)-StatusBits")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "StatusBits")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))StatusBits")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-AuxBit0") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBit0")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-AuxBit1") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBit1")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-AuxBit2") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBit2")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-AuxBit3") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBit3")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-AuxBit4") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBit4")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-AuxBit5") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBit5")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-AuxBit6") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBit6")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-AuxBit7") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBit7")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-ReasonBit24") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ReasonBit24")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(PREFIX)$(MOTOR_NAME)-ReasonBit25") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ReasonBit25")
     field(SCAN, "I/O Intr")
 }
 
