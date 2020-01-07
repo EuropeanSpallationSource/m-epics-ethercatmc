@@ -22,5 +22,5 @@ env:
  - BASE=3.14    STATIC=static                     ASYN=R4-35 MOTOR=v7.0.1-ESS
  - BASE=R3.15.6 STATIC=static                     ASYN=R4-35 MOTOR=v7.0.1-ESS
  - BASE=7.0     STATIC=static                     ASYN=R4-35 MOTOR=v7.0.1-ESS
-install: ./.ci/travis-prepare.sh
+install: ./.ci-ethercatmc/travis-prepare.sh
 script: make
