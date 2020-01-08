@@ -88,8 +88,6 @@ install: checkwhitespace mdbin $(BIN)/simMotor$(EXE)
 
 checkwhitespace:
 	./checkws.sh
-	./today.sh today.h
-	./version.sh version.h
 
 mdbin:
 	mkdir -p $(BIN)
