@@ -1,5 +1,5 @@
 #!/bin/sh
 (
-  cd simulator/EtherCAT/ &&
+  cd simulator/ &&
   ./startSimulator.sh "$@"
 )
