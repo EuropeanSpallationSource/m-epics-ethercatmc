@@ -804,7 +804,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>Axis1</M>
@@ -862,7 +862,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>Axis2</M>

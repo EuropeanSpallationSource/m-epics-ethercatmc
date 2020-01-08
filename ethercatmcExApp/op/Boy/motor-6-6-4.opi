@@ -606,7 +606,7 @@ $(pv_value)</tooltip>
     <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
@@ -616,7 +616,7 @@ $(pv_value)</tooltip>
         <description>$(M1) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
@@ -1767,7 +1767,7 @@ $(pv_value)</tooltip>
     <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
@@ -1777,7 +1777,7 @@ $(pv_value)</tooltip>
         <description>$(M2) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
@@ -2928,7 +2928,7 @@ $(pv_value)</tooltip>
     <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>
@@ -2938,7 +2938,7 @@ $(pv_value)</tooltip>
         <description>$(M3) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>
@@ -4089,7 +4089,7 @@ $(pv_value)</tooltip>
     <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M4)</M>
@@ -4099,7 +4099,7 @@ $(pv_value)</tooltip>
         <description>$(M4) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M4)</M>
@@ -5250,7 +5250,7 @@ $(pv_value)</tooltip>
     <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
@@ -5260,7 +5260,7 @@ $(pv_value)</tooltip>
         <description>$(M5) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
@@ -6411,7 +6411,7 @@ $(pv_value)</tooltip>
     <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
@@ -6421,7 +6421,7 @@ $(pv_value)</tooltip>
         <description>$(M6) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
@@ -7572,7 +7572,7 @@ $(pv_value)</tooltip>
     <y>378</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M7)</M>
@@ -7582,7 +7582,7 @@ $(pv_value)</tooltip>
         <description>$(M7) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M7)</M>
@@ -8733,7 +8733,7 @@ $(pv_value)</tooltip>
     <y>378</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M8)</M>
@@ -8743,7 +8743,7 @@ $(pv_value)</tooltip>
         <description>$(M8) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M8)</M>
@@ -9894,7 +9894,7 @@ $(pv_value)</tooltip>
     <y>378</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M9)</M>
@@ -9904,7 +9904,7 @@ $(pv_value)</tooltip>
         <description>$(M9) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M9)</M>
@@ -11055,7 +11055,7 @@ $(pv_value)</tooltip>
     <y>378</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M10)</M>
@@ -11065,7 +11065,7 @@ $(pv_value)</tooltip>
         <description>$(M10) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M10)</M>
@@ -12216,7 +12216,7 @@ $(pv_value)</tooltip>
     <y>378</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M11)</M>
@@ -12226,7 +12226,7 @@ $(pv_value)</tooltip>
         <description>$(M11) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M11)</M>
@@ -13377,7 +13377,7 @@ $(pv_value)</tooltip>
     <y>378</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M12)</M>
@@ -13387,7 +13387,7 @@ $(pv_value)</tooltip>
         <description>$(M12) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M12)</M>
@@ -14538,7 +14538,7 @@ $(pv_value)</tooltip>
     <y>582</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M13)</M>
@@ -14548,7 +14548,7 @@ $(pv_value)</tooltip>
         <description>$(M13) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M13)</M>
@@ -15699,7 +15699,7 @@ $(pv_value)</tooltip>
     <y>582</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M14)</M>
@@ -15709,7 +15709,7 @@ $(pv_value)</tooltip>
         <description>$(M14) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M14)</M>
@@ -16860,7 +16860,7 @@ $(pv_value)</tooltip>
     <y>582</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M15)</M>
@@ -16870,7 +16870,7 @@ $(pv_value)</tooltip>
         <description>$(M15) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M15)</M>
@@ -18021,7 +18021,7 @@ $(pv_value)</tooltip>
     <y>582</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxis.opi</path>
+        <path>ethercatmcaxis.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M16)</M>
@@ -18031,7 +18031,7 @@ $(pv_value)</tooltip>
         <description>$(M16) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M16)</M>

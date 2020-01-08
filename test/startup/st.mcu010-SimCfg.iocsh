@@ -1,4 +1,4 @@
-require EthercatMC,USER
+require ethercatmc,USER
 
 epicsEnvSet("ECM_NUMAXES",   "6")
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
@@ -18,17 +18,17 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 # For real terminals the adresses must be adapted
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1;HomPos=-54;cfgFile=./mcu010-SoftSlit-1.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
 
-< EthercatMCController.iocsh
-< EthercatMCAxis.iocsh
-< EthercatMCAxisdebug.iocsh
+< ethercatmcController.iocsh
+< ethercatmcAxis.iocsh
+< ethercatmcAxisdebug.iocsh
 
 epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=2;HomPos=59;cfgFile=./mcu010-SoftSlit-2.cfg;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2")
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=Upper=Left)")
-< EthercatMCAxis.iocsh
-< EthercatMCAxisdebug.iocsh
+< ethercatmcAxis.iocsh
+< ethercatmcAxisdebug.iocsh
 
 ## Logical axes and slit
 epicsEnvSet("P",             "$(PREFIX)")

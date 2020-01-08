@@ -1,6 +1,6 @@
-# EthercatMC
+# ethercatmc
 
-EPICS module: EthercatMC
+EPICS module: ethercatmc
 
 This is a model 3 driver for EtherCAT based motion controllers.
 It needs a patched version of the motorRecord:
@@ -23,15 +23,15 @@ Why do we need a patched version?
 Open a terminal window and execute the following commands:
 
 ```
-cd <local-repository>/EthercatMC/test
-./run-EthercatMC-simulator.sh
+cd <local-repository>/ethercatmc/test
+./run-ethercatmc-simulator.sh
 ```
 
 Open another terminal window and execute the following commands:
 
 ```
-cd <local-repository>/EthercatMC/test
-./run-EthercatMC-ioc.sh SolAxis-SimCfgDbg
+cd <local-repository>/ethercatmc/test
+./run-ethercatmc-ioc.sh SolAxis-SimCfgDbg
 ```
 
 Pressing RETURN then executing `dbl` will show the list of available PVs.

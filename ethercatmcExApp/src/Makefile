@@ -8,76 +8,76 @@ include $(TOP)/configure/CONFIG
 #=============================
 # build an ioc application
 
-PROD_IOC = EthercatMC
+PROD_IOC = ethercatmc
 
 # <name>.dbd will be created from <name>Include.dbd
-DBD += EthercatMC.dbd
-EthercatMC_DBD += base.dbd
-EthercatMC_DBD += asyn.dbd
-EthercatMC_DBD += drvAsynIPPort.dbd
+DBD += ethercatmc.dbd
+ethercatmc_DBD += base.dbd
+ethercatmc_DBD += asyn.dbd
+ethercatmc_DBD += drvAsynIPPort.dbd
 
 ifneq (,$(findstring /,$(ADS)))
-  EthercatMC_DBD  +=  ads.dbd
-  EthercatMC_LIBS += ads
+  ethercatmc_DBD  +=  ads.dbd
+  ethercatmc_LIBS += ads
 endif
 ifneq (,$(findstring /,$(AXIS)))
-  EthercatMC_DBD += axisSupport.dbd
-  EthercatMC_LIBS += axis
+  ethercatmc_DBD += axisSupport.dbd
+  ethercatmc_LIBS += axis
   USR_CPPFLAGS += -DAXISNOTMOTOR=1
 endif
 ifneq (,$(findstring /,$(CALC)))
-  EthercatMC_DBD += calcSupport.dbd
-  EthercatMC_LIBS += calc
+  ethercatmc_DBD += calcSupport.dbd
+  ethercatmc_LIBS += calc
 endif
 ifneq (,$(findstring /,$(MOTOR)))
-  EthercatMC_DBD += motorSupport.dbd
-  EthercatMC_DBD += devSoftMotor.dbd
+  ethercatmc_DBD += motorSupport.dbd
+  ethercatmc_DBD += devSoftMotor.dbd
   USR_CPPFLAGS += -DMOTORNOTAXIS=1
-  EthercatMC_LIBS += motor
-  EthercatMC_LIBS += softMotor
+  ethercatmc_LIBS += motor
+  ethercatmc_LIBS += softMotor
 endif
 
 ifdef BASE_7_0
- EthercatMC_DBD += PVAServerRegister.dbd
- EthercatMC_DBD += PVACommonRegister.dbd
- EthercatMC_DBD += softIocPVA.dbd
- EthercatMC_DBD += registerChannelProviderLocal.dbd
+ ethercatmc_DBD += PVAServerRegister.dbd
+ ethercatmc_DBD += PVACommonRegister.dbd
+ ethercatmc_DBD += softIocPVA.dbd
+ ethercatmc_DBD += registerChannelProviderLocal.dbd
 endif
 
-EthercatMC_DBD += EthercatMcSupport.dbd
+ethercatmc_DBD += ethercatmcSupport.dbd
 
 # <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
-EthercatMC_SRCS += EthercatMC_registerRecordDeviceDriver.cpp
-EthercatMC_SRCS_DEFAULT += EthercatMCMain.cpp
+ethercatmc_SRCS += ethercatmc_registerRecordDeviceDriver.cpp
+ethercatmc_SRCS_DEFAULT += ethercatmcMain.cpp
 
 #add a definition for each support application used by this application
-EthercatMC_LIBS += asyn
+ethercatmc_LIBS += asyn
 
 ifneq (,$(findstring /,$(AXIS)))
-EthercatMC_LIBS += axis
+ethercatmc_LIBS += axis
 endif
 ifneq (,$(findstring /,$(CALC)))
-EthercatMC_LIBS += calc
+ethercatmc_LIBS += calc
 
 endif
 ifneq (,$(findstring /,$(MOTOR)))
-EthercatMC_LIBS += motor
-EthercatMC_LIBS += softMotor
+ethercatmc_LIBS += motor
+ethercatmc_LIBS += softMotor
 endif
 
 ifneq (,$(findstring /,$(TWINCATADS)))
-EthercatMC_LIBS += ads
-EthercatMC_DBD  += ads.dbd
+ethercatmc_LIBS += ads
+ethercatmc_DBD  += ads.dbd
 endif
 
 ifdef BASE_7_0
-EthercatMC_LIBS += qsrv
-EthercatMC_LIBS += pvDatabase
-EthercatMC_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+ethercatmc_LIBS += qsrv
+ethercatmc_LIBS += pvDatabase
+ethercatmc_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 endif
 
-EthercatMC_LIBS += EthercatMcSupport
-EthercatMC_LIBS += $(EPICS_BASE_IOC_LIBS)
+ethercatmc_LIBS += ethercatmcSupport
+ethercatmc_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================
 

@@ -1,5 +1,5 @@
 /*
-FILENAME...   EthercatMCAxis.h
+FILENAME...   ethercatmcAxis.h
 */
 
 #ifndef ETHERCATMCAXIS_H
@@ -14,13 +14,13 @@ FILENAME...   EthercatMCAxis.h
 extern const char *modNamEMC;
 
 extern "C" {
-  int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
+  int ethercatmcCreateAxis(const char *ethercatmcName, int axisNo,
                       int axisFlags, const char *axisOptionsStr);
   asynStatus writeReadOnErrorDisconnect_C(asynUser *pasynUser,
                                           const char *outdata, size_t outlen,
                                           char *indata, size_t inlen);
   asynStatus checkACK(const char *outdata, size_t outlen, const char *indata);
-  double EthercatMCgetNowTimeSecs(void);
+  double ethercatmcgetNowTimeSecs(void);
 }
 
 typedef struct {
@@ -57,11 +57,11 @@ typedef struct {
   int motorDiffPostion;     /* Not in struct. Calculated in poll() */
 } st_axis_status_type;
 
-class epicsShareClass EthercatMCAxis : public asynMotorAxis
+class epicsShareClass ethercatmcAxis : public asynMotorAxis
 {
 public:
   /* These are the methods we override from the base class */
-  EthercatMCAxis(class EthercatMCController *pC, int axisNo,
+  ethercatmcAxis(class ethercatmcController *pC, int axisNo,
             int axisFlags, const char *axisOptionsStr);
   void report(FILE *fp, int level);
   asynStatus mov2(double posEGU, int nCommand, double maxVeloEGU, double accEGU);
@@ -104,7 +104,7 @@ private:
     pollNowReadBackVelocities
   } eeAxisPollNowType;
 
-  EthercatMCController *pC_;          /**< Pointer to the asynMotorController to which this axis belongs.
+  ethercatmcController *pC_;          /**< Pointer to the asynMotorController to which this axis belongs.
                                    *   Abbreviated because it is used very frequently */
   struct {
     st_axis_status_type old_st_axis_status;
@@ -231,7 +231,7 @@ private:
   void updateMsgTxtFromDriver(const char *value);
 #endif
 
-  friend class EthercatMCController;
+  friend class ethercatmcController;
 };
 
 #endif

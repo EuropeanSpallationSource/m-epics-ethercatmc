@@ -15,14 +15,14 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
-DB += EthercatMC.template
-DB += EthercatMCdebug.template
-DB += EthercatMChome.template
-DB += EthercatMCindexer.template
-DB += EthercatMCreadback.template
-DB += EthercatMCslit_soft.template
-DB += EthercatMCslit_hard.template
-DB += EthercatMCslitAvoidCollSoftlimits.template
+DB += ethercatmc.template
+DB += ethercatmcdebug.template
+DB += ethercatmchome.template
+DB += ethercatmcindexer.template
+DB += ethercatmcreadback.template
+DB += ethercatmcslit_soft.template
+DB += ethercatmcslit_hard.template
+DB += ethercatmcslitAvoidCollSoftlimits.template
 
 
 

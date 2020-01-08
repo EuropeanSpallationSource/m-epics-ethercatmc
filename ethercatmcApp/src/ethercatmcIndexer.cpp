@@ -1,5 +1,5 @@
 /*
-  FILENAME... EthercatMCIndexer.cpp
+  FILENAME... ethercatmcIndexer.cpp
 */
 
 #include <stdio.h>
@@ -9,8 +9,8 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include "EthercatMCController.h"
-#include "EthercatMCIndexerAxis.h"
+#include "ethercatmcController.h"
+#include "ethercatmcIndexerAxis.h"
 
 #include <epicsThread.h>
 
@@ -122,7 +122,7 @@ extern "C" {
 static const double fABSMIN = -3.0e+38;
 static const double fABSMAX =  3.0e+38;
 
-asynStatus EthercatMCController::getPlcMemoryUint(unsigned indexOffset,
+asynStatus ethercatmcController::getPlcMemoryUint(unsigned indexOffset,
                                                   unsigned *value,
                                                   size_t lenInPlc)
 {
@@ -138,7 +138,7 @@ asynStatus EthercatMCController::getPlcMemoryUint(unsigned indexOffset,
   return asynError;
 }
 
-asynStatus EthercatMCController::setPlcMemoryInteger(unsigned indexOffset,
+asynStatus ethercatmcController::setPlcMemoryInteger(unsigned indexOffset,
                                                      int value,
                                                      size_t lenInPlc)
 {
@@ -152,7 +152,7 @@ asynStatus EthercatMCController::setPlcMemoryInteger(unsigned indexOffset,
 }
 
 
-asynStatus EthercatMCController::getPlcMemoryDouble(unsigned indexOffset,
+asynStatus ethercatmcController::getPlcMemoryDouble(unsigned indexOffset,
                                                     double *value,
                                                     size_t lenInPlc)
 {
@@ -168,7 +168,7 @@ asynStatus EthercatMCController::getPlcMemoryDouble(unsigned indexOffset,
   return asynError;
 }
 
-asynStatus EthercatMCController::setPlcMemoryDouble(unsigned indexOffset,
+asynStatus ethercatmcController::setPlcMemoryDouble(unsigned indexOffset,
                                                     double value,
                                                     size_t lenInPlc)
 {
@@ -181,7 +181,7 @@ asynStatus EthercatMCController::setPlcMemoryDouble(unsigned indexOffset,
 }
 
 
-asynStatus EthercatMCController::readDeviceIndexer(unsigned devNum,
+asynStatus ethercatmcController::readDeviceIndexer(unsigned devNum,
                                                    unsigned infoType)
 {
   asynStatus status;
@@ -194,7 +194,7 @@ asynStatus EthercatMCController::readDeviceIndexer(unsigned devNum,
               ASYN_TRACE_INFO,
               "%sreadDeviceIndexer devNum=%u infoType=%u status=%s (%d)\n",
               modNamEMC,devNum, infoType,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     return status;
   }
 
@@ -209,7 +209,7 @@ asynStatus EthercatMCController::readDeviceIndexer(unsigned devNum,
               ASYN_TRACE_INFO,
               "%sreadDeviceIndexer status=%s (%d)\n",
               modNamEMC,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     return status;
   }
   while (counter < 5) {
@@ -219,7 +219,7 @@ asynStatus EthercatMCController::readDeviceIndexer(unsigned devNum,
                 ASYN_TRACE_INFO,
                 "%sreadDeviceIndexer status=%s (%d)\n",
                 modNamEMC,
-                EthercatMCstrStatus(status), (int)status);
+                ethercatmcstrStatus(status), (int)status);
       return status;
     }
     if (value == valueAcked) return asynSuccess;
@@ -231,12 +231,12 @@ asynStatus EthercatMCController::readDeviceIndexer(unsigned devNum,
             ASYN_TRACE_INFO,
             "%sreadDeviceIndexer devNum=0x%x infoType=0x%x counter=%u value=0x%x status=%s (%d)\n",
             modNamEMC, devNum, infoType, counter, value,
-            EthercatMCstrStatus(status), (int)status);
+            ethercatmcstrStatus(status), (int)status);
   return status;
 
 }
 
-asynStatus EthercatMCController::indexerWaitSpecialDeviceIdle(unsigned indexOffset)
+asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffset)
 {
   unsigned traceMask = ASYN_TRACE_FLOW;
   asynStatus status;
@@ -249,7 +249,7 @@ asynStatus EthercatMCController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
               status ? traceMask | ASYN_TRACE_INFO : traceMask,
               "%sindexerWaitSpecialDeviceIdle ctrlLen=0x%04x status=%s (%d)\n",
               modNamEMC, ctrlLen,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     if (status) return status;
     if (!ctrlLen) return asynSuccess;
     counter++;
@@ -261,7 +261,7 @@ asynStatus EthercatMCController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
   return asynDisabled;
 }
 
-asynStatus EthercatMCController::indexerParamWaitNotBusy(unsigned indexOffset)
+asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
 {
   unsigned traceMask = ASYN_TRACE_FLOW;
   asynStatus status;
@@ -274,7 +274,7 @@ asynStatus EthercatMCController::indexerParamWaitNotBusy(unsigned indexOffset)
               status ? traceMask | ASYN_TRACE_INFO : traceMask,
               "%scmdSubParamIndex=0x%04x status=%s (%d)\n",
               modNamEMC, cmdSubParamIndex,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     if (status) return status;
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
     case PARAM_IF_CMD_INVALID:
@@ -301,7 +301,7 @@ asynStatus EthercatMCController::indexerParamWaitNotBusy(unsigned indexOffset)
 }
 
 
-asynStatus EthercatMCController::indexerParamRead(int axisNo,
+asynStatus ethercatmcController::indexerParamRead(int axisNo,
                                                   unsigned paramIfOffset,
                                                   unsigned paramIndex,
                                                   unsigned lenInPlcPara,
@@ -334,7 +334,7 @@ asynStatus EthercatMCController::indexerParamRead(int axisNo,
     asynPrint(pasynUserController_, traceMask | (status ? ASYN_TRACE_ERROR : 0),
 	      "%sstatus=%s (%d)\n",
 	      modNamEMC,
-	      EthercatMCstrStatus(status), (int)status);
+	      ethercatmcstrStatus(status), (int)status);
     if (status) return status;
     while (counter < 5) {
       unsigned cmdSubParamIndex = 0;
@@ -350,7 +350,7 @@ asynStatus EthercatMCController::indexerParamRead(int axisNo,
 	asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
 		  "%sstatus=%s (%d)\n",
 		  modNamEMC,
-		  EthercatMCstrStatus(status), (int)status);
+		  ethercatmcstrStatus(status), (int)status);
 	return status;
       }
       cmdSubParamIndex = netToUint(&paramIf.paramCtrl,
@@ -392,7 +392,7 @@ asynStatus EthercatMCController::indexerParamRead(int axisNo,
 		  "%s (%d) paramIfOffset=%u paramIndex=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
 		  modNamEMC, axisNo, paramIfOffset, paramIndex, cmdSubParamIndex,
 		  counter,
-		  EthercatMCstrStatus(status), (int)status);
+		  ethercatmcstrStatus(status), (int)status);
       }
       epicsThreadSleep(.1 * (counter<<1));
       counter++;
@@ -402,7 +402,7 @@ asynStatus EthercatMCController::indexerParamRead(int axisNo,
   return asynError;
 }
 
-asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfOffset,
+asynStatus ethercatmcController::indexerParamWrite(int axisNo, unsigned paramIfOffset,
                                                    unsigned paramIndex,
                                                    unsigned lenInPlcPara,
                                                    double value)
@@ -435,7 +435,7 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
               "value=%f lenInPlcPara=%u status=%s (%d)\n",
               modNamEMC, axisNo, paramIfOffset, paramIndex,
               value, lenInPlcPara,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     return status;
   }
 
@@ -444,7 +444,7 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
     asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
               "%sstatus=%s (%d)\n",
               modNamEMC,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     return status;
   }
   while (counter < 5) {
@@ -457,7 +457,7 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
                 modNamEMC, axisNo,
                 plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
                 value, lenInPlcPara, cmdSubParamIndex, counter,
-                EthercatMCstrStatus(status), (int)status);
+                ethercatmcstrStatus(status), (int)status);
       return status;
     }
     asynPrint(pasynUserController_, traceMask,
@@ -467,7 +467,7 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
               modNamEMC, axisNo,
               plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
               value, lenInPlcPara, cmdSubParamIndex, counter,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     /* This is good, return */
     if (cmdSubParamIndex == cmdAcked) return asynSuccess;
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
@@ -510,7 +510,7 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
                 "%scmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
                 modNamEMC, cmdSubParamIndex,
                 counter,
-                EthercatMCstrStatus(status), (int)status);
+                ethercatmcstrStatus(status), (int)status);
       return status;
     }
     epicsThreadSleep(.1 * (counter<<1));
@@ -524,7 +524,7 @@ asynStatus EthercatMCController::indexerParamWrite(int axisNo, unsigned paramIfO
 }
 
 asynStatus
-EthercatMCController::getPlcMemoryFromProcessImage(unsigned indexOffset,
+ethercatmcController::getPlcMemoryFromProcessImage(unsigned indexOffset,
                                                    void *data,
                                                    size_t lenInPlc)
 {
@@ -539,7 +539,7 @@ EthercatMCController::getPlcMemoryFromProcessImage(unsigned indexOffset,
   return getPlcMemoryViaADS(indexOffset, data,  lenInPlc);
 }
 
-void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
+void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
                                                   int initial,
                                                   unsigned paramIndex,
                                                   double fValue)
@@ -553,22 +553,22 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
     pAxis->setIntegerParam(motorStatusGainSupport_, 1);
     break;
   case PARAM_IDX_MICROSTEPS_FLOAT:
-    updateCfgValue(axisNo, EthercatMCCfgSREV_RB_, fullsrev * fValue, "srev");
+    updateCfgValue(axisNo, ethercatmcCfgSREV_RB_, fullsrev * fValue, "srev");
     break;
   case PARAM_IDX_USR_MIN_FLOAT:
-    updateCfgValue(axisNo,EthercatMCCfgDLLM_En_, fValue > fABSMIN ? 1 : 0, "dllm_en");
-    updateCfgValue(axisNo, EthercatMCCfgDLLM_,    fValue, "dllm");
+    updateCfgValue(axisNo,ethercatmcCfgDLLM_En_, fValue > fABSMIN ? 1 : 0, "dllm_en");
+    updateCfgValue(axisNo, ethercatmcCfgDLLM_,    fValue, "dllm");
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_ABS_MIN_FLOAT:
-    updateCfgValue(axisNo, EthercatMCCfgPMIN_RB_, fValue, "posmin");
+    updateCfgValue(axisNo, ethercatmcCfgPMIN_RB_, fValue, "posmin");
     break;
   case PARAM_IDX_ABS_MAX_FLOAT:
-    updateCfgValue(axisNo, EthercatMCCfgPMAX_RB_, fValue, "posmax");
+    updateCfgValue(axisNo, ethercatmcCfgPMAX_RB_, fValue, "posmax");
     break;
   case PARAM_IDX_USR_MAX_FLOAT:
-    updateCfgValue(axisNo, EthercatMCCfgDHLM_En_, fValue < fABSMAX ? 1 : 0, "dhlm_en");
-    updateCfgValue(axisNo, EthercatMCCfgDHLM_, fValue, "dhlm");
+    updateCfgValue(axisNo, ethercatmcCfgDHLM_En_, fValue < fABSMAX ? 1 : 0, "dhlm_en");
+    updateCfgValue(axisNo, ethercatmcCfgDHLM_, fValue, "dhlm");
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_WRN_MIN_FLOAT:
@@ -576,27 +576,27 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
   case PARAM_IDX_WRN_MAX_FLOAT:
     break;
   case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
-    updateCfgValue(axisNo, EthercatMCCfgPOSLAG_RB_, fValue, "poslag");
-    updateCfgValue(axisNo, EthercatMCCfgPOSLAG_En_RB_, 1, "poslag_en");
+    updateCfgValue(axisNo, ethercatmcCfgPOSLAG_RB_, fValue, "poslag");
+    updateCfgValue(axisNo, ethercatmcCfgPOSLAG_En_RB_, 1, "poslag_en");
     break;
   case PARAM_IDX_HYTERESIS_FLOAT:
-    updateCfgValue(axisNo, EthercatMCCfgSPDB_RB_, fValue, "spdb");
-    updateCfgValue(axisNo, EthercatMCCfgRDBD_RB_, fValue, "rdbd");
-    updateCfgValue(axisNo, EthercatMCCfgRDBD_En_RB_, 1, "rdbd_en");
+    updateCfgValue(axisNo, ethercatmcCfgSPDB_RB_, fValue, "spdb");
+    updateCfgValue(axisNo, ethercatmcCfgRDBD_RB_, fValue, "rdbd");
+    updateCfgValue(axisNo, ethercatmcCfgRDBD_En_RB_, 1, "rdbd_en");
     break;
   case PARAM_IDX_REFSPEED_FLOAT:
-    updateCfgValue(axisNo, EthercatMCVelToHom_, fValue, "hvel");
+    updateCfgValue(axisNo, ethercatmcVelToHom_, fValue, "hvel");
     break;
   case PARAM_IDX_SPEED_FLOAT:
-    if (initial) updateCfgValue(axisNo, EthercatMCCfgVELO_, fValue, "veloCFG");
-    updateCfgValue(axisNo, EthercatMCVel_RB_, fValue, "veloRB");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgVELO_, fValue, "veloCFG");
+    updateCfgValue(axisNo, ethercatmcVel_RB_, fValue, "veloRB");
 #ifdef motorDefVelocityROString
     pAxis->setDoubleParam(motorDefVelocityRO_, fValue);
 #endif
     break;
   case PARAM_IDX_ACCEL_FLOAT:
-    if (initial) updateCfgValue(axisNo, EthercatMCCfgACCS_, fValue, "accsRB");
-    updateCfgValue(axisNo, EthercatMCAcc_RB_, fValue, "accsRB");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgACCS_, fValue, "accsRB");
+    updateCfgValue(axisNo, ethercatmcAcc_RB_, fValue, "accsRB");
     break;
   case PARAM_IDX_IDLE_CURRENT_FLOAT:
     break;
@@ -607,32 +607,32 @@ void EthercatMCController::parameterFloatReadBack(unsigned axisNo,
   case PARAM_IDX_STEPS_PER_UNIT_FLOAT:
     {
       double urev = fabs(fullsrev / fValue);
-      updateCfgValue(axisNo, EthercatMCCfgUREV_RB_, urev, "urev");
+      updateCfgValue(axisNo, ethercatmcCfgUREV_RB_, urev, "urev");
     }
     break;
   case PARAM_IDX_HOME_POSITION_FLOAT:
-    updateCfgValue(axisNo, EthercatMCHomPos_RB_, fValue, "homPosRB");
+    updateCfgValue(axisNo, ethercatmcHomPos_RB_, fValue, "homPosRB");
     break;
   case PARAM_IDX_FUN_REFERENCE:
 #ifdef  motorNotHomedProblemString
     pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-    pAxis->setIntegerParam(EthercatMCHomProc_RB_, 14);
+    pAxis->setIntegerParam(ethercatmcHomProc_RB_, 14);
     break;
   case PARAM_IDX_FUN_SET_POSITION:
 #ifdef  motorNotHomedProblemString
     pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-    pAxis->setIntegerParam(EthercatMCHomProc_RB_, 15);
+    pAxis->setIntegerParam(ethercatmcHomProc_RB_, 15);
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
-    if (initial) updateCfgValue(axisNo, EthercatMCCfgJVEL_, fabs(fValue), "jvel");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_, fabs(fValue), "jvel");
     break;
   }
 }
 
 asynStatus
-EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
+ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                                                 unsigned devNum,
                                                 unsigned iOffsBytes,
                                                 unsigned lenInPlcPara)
@@ -648,7 +648,7 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
               ASYN_TRACE_INFO,
               "%sindexerReadAxisParameters status=%s (%d)\n",
               modNamEMC,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     return status;
   }
   for (dataIdx = 0; dataIdx <= 16; dataIdx++) {
@@ -662,7 +662,7 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                 ASYN_TRACE_INFO,
                 "%sindexerReadAxisParameters (%d) status=%s (%d)\n",
                 modNamEMC, axisNo,
-                EthercatMCstrStatus(status), (int)status);
+                ethercatmcstrStatus(status), (int)status);
       return status;
     }
     /* dataIdx == 0 has ACK + infoType/devNum
@@ -713,7 +713,7 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
                       ASYN_TRACE_INFO,
                       "%sindexerReadAxisParameters paramIndex=%u lenInPlcPara=%u status=%s (%d)\n",
                       modNamEMC, paramIndex, lenInPlcPara,
-                      EthercatMCstrStatus(status), (int)status);
+                      ethercatmcstrStatus(status), (int)status);
             if ((paramIndex >= 128) && (status == asynDisabled)) {
               /* Read back of functions as parameters is not defined in PILS
                  if it fails, that is OK */
@@ -744,7 +744,7 @@ EthercatMCController::indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
 }
 
 asynStatus
-EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
+ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
                                      unsigned devNum,
                                      unsigned iAllFlags,
                                      double   fAbsMin,
@@ -755,14 +755,14 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
   unsigned axisNo = pAxis->axisNo_;
 
 #if 0
-  pAxis->setStringParam(EthercatMCaux7_,  "Aux 7");
-  pAxis->setStringParam(EthercatMCaux6_,  "Aux 6");
-  pAxis->setStringParam(EthercatMCaux5_,  "Aux 5");
-  pAxis->setStringParam(EthercatMCaux4_,  "Aux 4");
-  pAxis->setStringParam(EthercatMCaux3_,  "Aux 3");
-  pAxis->setStringParam(EthercatMCaux2_,  "Aux 2");
-  pAxis->setStringParam(EthercatMCaux1_,  "Aux 1");
-  pAxis->setStringParam(EthercatMCaux0_,  "Aux 0");
+  pAxis->setStringParam(ethercatmcaux7_,  "Aux 7");
+  pAxis->setStringParam(ethercatmcaux6_,  "Aux 6");
+  pAxis->setStringParam(ethercatmcaux5_,  "Aux 5");
+  pAxis->setStringParam(ethercatmcaux4_,  "Aux 4");
+  pAxis->setStringParam(ethercatmcaux3_,  "Aux 3");
+  pAxis->setStringParam(ethercatmcaux2_,  "Aux 2");
+  pAxis->setStringParam(ethercatmcaux1_,  "Aux 1");
+  pAxis->setStringParam(ethercatmcaux0_,  "Aux 0");
 #endif
   /* AUX bits */
   {
@@ -771,7 +771,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
       if ((iAllFlags >> auxBitIdx) & 1) {
         char auxBitName[34];
         unsigned infoType16 = 16;
-        int functionNo = EthercatMCaux0_ + auxBitIdx;
+        int functionNo = ethercatmcaux0_ + auxBitIdx;
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexer(devNum, infoType16 + auxBitIdx);
         if (status) return status;
@@ -782,7 +782,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
                   "%sauxBitName[%d] auxBitName(%02u)=%s\n",
                   modNamEMC, axisNo, auxBitIdx, auxBitName);
         if (status) return status;
-        if ((functionNo >= 0) && (functionNo <= EthercatMCaux7_)) {
+        if ((functionNo >= 0) && (functionNo <= ethercatmcaux7_)) {
           pAxis->setStringParam(functionNo, auxBitName);
         }
         if (!strcmp("notHomed", auxBitName)) {
@@ -792,8 +792,8 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
     }
   }
   /* Limits */
-  setDoubleParam(axisNo, EthercatMCCfgPMAX_RB_, fAbsMax);
-  setDoubleParam(axisNo, EthercatMCCfgPMIN_RB_, fAbsMin);
+  setDoubleParam(axisNo, ethercatmcCfgPMAX_RB_, fAbsMax);
+  setDoubleParam(axisNo, ethercatmcCfgPMIN_RB_, fAbsMin);
 
 #ifdef motorHighLimitROString
   udateMotorLimitsRO(axisNo,
@@ -805,7 +805,7 @@ EthercatMCController::newIndexerAxis(EthercatMCIndexerAxis *pAxis,
   return status;
 }
 
-asynStatus EthercatMCController::initialPollIndexer(void)
+asynStatus ethercatmcController::initialPollIndexer(void)
 {
   asynStatus status;
   unsigned iTmpVer = 0xC0DEAFFE;
@@ -966,11 +966,11 @@ asynStatus EthercatMCController::initialPollIndexer(void)
     case 0x5010:
       {
         char unitCodeTxt[40];
-        EthercatMCIndexerAxis *pAxis;
+        ethercatmcIndexerAxis *pAxis;
         axisNo++;
-        pAxis = static_cast<EthercatMCIndexerAxis*>(asynMotorController::getAxis(axisNo));
+        pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
         if (!pAxis) {
-          pAxis = new EthercatMCIndexerAxis(this, axisNo, 0, NULL);
+          pAxis = new ethercatmcIndexerAxis(this, axisNo, 0, NULL);
         }
         /* Now we have an axis */
 
@@ -983,15 +983,15 @@ asynStatus EthercatMCController::initialPollIndexer(void)
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sTypeCode(%d) iTypCode=%x pAxis=%p status=%s (%d)\n",
                   modNamEMC, axisNo, iTypCode, pAxis,
-                  EthercatMCstrStatus(status), (int)status);
+                  ethercatmcstrStatus(status), (int)status);
         if (status) goto endPollIndexer;
 
         pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffsBytes, iTypCode);
-        setStringParam(axisNo,  EthercatMCCfgDESC_RB_, descVersAuthors.desc);
+        setStringParam(axisNo,  ethercatmcCfgDESC_RB_, descVersAuthors.desc);
         snprintf(unitCodeTxt, sizeof(unitCodeTxt), "%s%s",
                  plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
                  plcUnitTxtFromUnitCode(iUnit & 0xFF));
-        setStringParam(axisNo,  EthercatMCCfgEGU_RB_, unitCodeTxt);
+        setStringParam(axisNo,  ethercatmcCfgEGU_RB_, unitCodeTxt);
       }
       break;
     case 0x0518:

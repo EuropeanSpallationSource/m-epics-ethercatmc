@@ -37,7 +37,7 @@ asynOctetSetInputEos("$(ASYN_PORT)", -1, ";\n")
 
 #adsAsynPortDriverConfigure("$(ASYN_PORT)","$(IPADDR)","$(REMOTEAMSNETID)","$(ADSPORT)" ,1000,0,0,50,100,1000,0)
 
-EthercatMCCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "200", "1000", "$(ECC_OPTIONS)")
+ethercatmcCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "200", "1000", "$(ECC_OPTIONS)")
 
 #/* traceMask definitions*/
 #define ASYN_TRACE_ERROR     0x0001

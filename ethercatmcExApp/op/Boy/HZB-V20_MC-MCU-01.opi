@@ -3195,7 +3195,7 @@ $(pv_value)</tooltip>
     <y>160</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
@@ -4004,7 +4004,7 @@ $(pv_value)</tooltip>
     <y>160</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
@@ -4762,7 +4762,7 @@ $(pv_value)</tooltip>
     <y>160</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(MXP1)</M>
@@ -5571,7 +5571,7 @@ $(pv_value)</tooltip>
     <y>160</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(MXN1)</M>
@@ -9526,7 +9526,7 @@ $(pv_value)</tooltip>
     <y>364</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
@@ -10335,7 +10335,7 @@ $(pv_value)</tooltip>
     <y>364</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
@@ -11093,7 +11093,7 @@ $(pv_value)</tooltip>
     <y>364</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(MXP2)</M>
@@ -11902,7 +11902,7 @@ $(pv_value)</tooltip>
     <y>364</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(MXN2)</M>
@@ -15857,7 +15857,7 @@ $(pv_value)</tooltip>
     <y>568</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M9)</M>
@@ -16666,7 +16666,7 @@ $(pv_value)</tooltip>
     <y>568</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M10)</M>
@@ -17424,7 +17424,7 @@ $(pv_value)</tooltip>
     <y>568</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M11)</M>
@@ -18233,7 +18233,7 @@ $(pv_value)</tooltip>
     <y>568</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>EthercatMCaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M12)</M>

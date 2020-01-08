@@ -1,5 +1,5 @@
 /*
-  FILENAME... EthercatMCHelper.cpp
+  FILENAME... ethercatmcHelper.cpp
 */
 
 #include <stdio.h>
@@ -11,24 +11,24 @@
 
 #include <epicsThread.h>
 
-#include "EthercatMCAxis.h"
-#include "EthercatMCController.h"
+#include "ethercatmcAxis.h"
+#include "ethercatmcController.h"
 
 #ifndef ASYN_TRACE_INFO
 #define ASYN_TRACE_INFO      0x0040
 #endif
 
-asynStatus EthercatMCAxis::writeReadControllerPrint(int traceMask)
+asynStatus ethercatmcAxis::writeReadControllerPrint(int traceMask)
 {
   asynStatus status = pC_->writeReadOnErrorDisconnect();
   asynPrint(pC_->pasynUserController_, traceMask,
             "%sout=%s in=%s status=%s (%d)\n",
             modNamEMC, pC_->outString_, pC_->inString_,
-            EthercatMCstrStatus(status), (int)status);
+            ethercatmcstrStatus(status), (int)status);
   return status;
 }
 
-asynStatus EthercatMCAxis::writeReadControllerPrint(void)
+asynStatus ethercatmcAxis::writeReadControllerPrint(void)
 {
   return writeReadControllerPrint(ASYN_TRACE_INFO);
 }
@@ -39,7 +39,7 @@ asynStatus EthercatMCAxis::writeReadControllerPrint(void)
  * \param[in] value the (integer) variable to be updated
  *
  */
-asynStatus EthercatMCAxis::setValueOnAxis(const char* var, int value)
+asynStatus ethercatmcAxis::setValueOnAxis(const char* var, int value)
 {
   snprintf(pC_->outString_, sizeof(pC_->outString_),
            "%sMain.M%d.%s=%d",
@@ -54,7 +54,7 @@ asynStatus EthercatMCAxis::setValueOnAxis(const char* var, int value)
  * \param[in] value the (integer) variable to be updated
  * \param[in] number of retries
  */
-asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbvar,
+asynStatus ethercatmcAxis::setValueOnAxisVerify(const char *var, const char *rbvar,
                                                 int value, unsigned int retryCount)
 {
   asynStatus status = asynSuccess;
@@ -69,7 +69,7 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetValueOnAxisVerify(%d) out=%s in=%s status=%s (%d)\n",
               modNamEMC, axisNo_,pC_->outString_, pC_->inString_,
-              EthercatMCstrStatus(status), (int)status);
+              ethercatmcstrStatus(status), (int)status);
     if (status) {
       return status;
     } else {
@@ -107,7 +107,7 @@ asynStatus EthercatMCAxis::setValueOnAxisVerify(const char *var, const char *rbv
  * \param[in] value the (floating point) variable to be updated
  *
  */
-asynStatus EthercatMCAxis::setValueOnAxis(const char* var, double value)
+asynStatus ethercatmcAxis::setValueOnAxis(const char* var, double value)
 {
   snprintf(pC_->outString_, sizeof(pC_->outString_),
            "%sMain.M%d.%s=%g",
@@ -121,7 +121,7 @@ asynStatus EthercatMCAxis::setValueOnAxis(const char* var, double value)
  * \param[in] value the (floating point) variable to be updated
  *
  */
-asynStatus EthercatMCAxis::setValuesOnAxis(const char* var1, double value1,
+asynStatus ethercatmcAxis::setValuesOnAxis(const char* var1, double value1,
                                            const char* var2, double value2)
 {
   snprintf(pC_->outString_, sizeof(pC_->outString_),
@@ -132,7 +132,7 @@ asynStatus EthercatMCAxis::setValuesOnAxis(const char* var1, double value1,
 }
 
 
-int EthercatMCAxis::getMotionAxisID(void)
+int ethercatmcAxis::getMotionAxisID(void)
 {
   int ret = drvlocal.dirty.nMotionAxisID;
   if (ret == -1) {
@@ -174,7 +174,7 @@ int EthercatMCAxis::getMotionAxisID(void)
   return ret;
 }
 
-asynStatus EthercatMCAxis::setSAFValueOnAxis(unsigned indexGroup,
+asynStatus ethercatmcAxis::setSAFValueOnAxis(unsigned indexGroup,
                                              unsigned indexOffset,
                                              int value)
 {
@@ -185,7 +185,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxis(unsigned indexGroup,
   return pC_->writeReadACK(ASYN_TRACE_INFO);
 }
 
-asynStatus EthercatMCAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
+asynStatus ethercatmcAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
                                                    unsigned indexOffset,
                                                    int value,
                                                    unsigned int retryCount)
@@ -205,7 +205,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
   return status;
 }
 
-asynStatus EthercatMCAxis::setSAFValueOnAxis(unsigned indexGroup,
+asynStatus ethercatmcAxis::setSAFValueOnAxis(unsigned indexGroup,
                                              unsigned indexOffset,
                                              double value)
 {
@@ -216,7 +216,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxis(unsigned indexGroup,
   return pC_->writeReadACK(ASYN_TRACE_INFO);
 }
 
-asynStatus EthercatMCAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
+asynStatus ethercatmcAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
                                                    unsigned indexOffset,
                                                    double value,
                                                    unsigned int retryCount)
@@ -236,7 +236,7 @@ asynStatus EthercatMCAxis::setSAFValueOnAxisVerify(unsigned indexGroup,
   return status;
 }
 
-asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
+asynStatus ethercatmcAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
                                                     unsigned indexOffset,
                                                     const char *name,
                                                     int *value)
@@ -265,7 +265,7 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
   return asynSuccess;
 }
 
-asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
+asynStatus ethercatmcAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
                                                     unsigned indexOffset,
                                                     const char *name,
                                                     double *value)
@@ -300,7 +300,7 @@ asynStatus EthercatMCAxis::getSAFValueFromAxisPrint(unsigned indexGroup,
  * \param[in] pointer to the integer result
  *
  */
-asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
+asynStatus ethercatmcAxis::getValueFromAxis(const char* var, int *value)
 {
   asynStatus status;
   int res;
@@ -334,7 +334,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
             "%sout=%s in=%s status=%s (%d) iValue=%d\n",
             modNamEMC,
             pC_->outString_, pC_->inString_,
-            EthercatMCstrStatus(status), (int)status, res);
+            ethercatmcstrStatus(status), (int)status, res);
 
   *value = res;
   return asynSuccess;
@@ -345,7 +345,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, int *value)
  * \param[in] pointer to the integer result
  *
  */
-asynStatus EthercatMCAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
+asynStatus ethercatmcAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
                                                      unsigned iIndexOffset,
                                                      const char *iname,
                                                      int *iValue,
@@ -388,7 +388,7 @@ asynStatus EthercatMCAxis::getSAFValuesFromAxisPrint(unsigned iIndexGroup,
  * \param[in] pointer to the double result
  *
  */
-asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
+asynStatus ethercatmcAxis::getValueFromAxis(const char* var, double *value)
 {
   asynStatus status;
   int nvals;
@@ -415,7 +415,7 @@ asynStatus EthercatMCAxis::getValueFromAxis(const char* var, double *value)
  * \param[in] pointer to the string result
  *
  */
-asynStatus EthercatMCAxis::getStringFromAxis(const char *var, char *value, size_t maxlen)
+asynStatus ethercatmcAxis::getStringFromAxis(const char *var, char *value, size_t maxlen)
 {
   asynStatus status;
   value[0] = '\0'; /* Always have a valid string */
@@ -428,7 +428,7 @@ asynStatus EthercatMCAxis::getStringFromAxis(const char *var, char *value, size_
   return asynSuccess;
 }
 
-asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value)
+asynStatus ethercatmcAxis::getValueFromController(const char* var, double *value)
 {
   asynStatus status;
   int nvals;
@@ -449,7 +449,7 @@ asynStatus EthercatMCAxis::getValueFromController(const char* var, double *value
 }
 
 
-asynStatus EthercatMCAxis::readConfigLine(const char *line, const char **errorTxt_p)
+asynStatus ethercatmcAxis::readConfigLine(const char *line, const char **errorTxt_p)
 {
   const char *setRaw_str = "setRaw "; /* Raw is Raw */
   const char *setValue_str = "setValue "; /* prefixed with ADSPORT */
@@ -529,7 +529,7 @@ asynStatus EthercatMCAxis::readConfigLine(const char *line, const char **errorTx
 }
 
 
-asynStatus EthercatMCAxis::readConfigFile(void)
+asynStatus ethercatmcAxis::readConfigFile(void)
 {
   const char *simOnly_str = "simOnly ";
   FILE *fp;

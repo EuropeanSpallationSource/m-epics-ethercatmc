@@ -1,5 +1,5 @@
 /*
-FILENAME...   EthercatMCController.h
+FILENAME...   ethercatmcController.h
 */
 
 #ifndef ETHERCATMCCONTROLLER_H
@@ -7,8 +7,8 @@ FILENAME...   EthercatMCController.h
 
 #include "asynMotorController.h"
 #include "asynMotorAxis.h"
-#include "EthercatMCAxis.h"
-#include "EthercatMCADSdefs.h"
+#include "ethercatmcAxis.h"
+#include "ethercatmcADSdefs.h"
 
 #ifndef motorRecResolutionString
 #define CREATE_MOTOR_REC_RESOLUTION
@@ -17,58 +17,58 @@ FILENAME...   EthercatMCController.h
 #define motorRecResolutionString        "MOTOR_REC_RESOLUTION"
 #endif
 
-#define EthercatMCErrString                  "MCUErr"
-#define EthercatMCErrIdString                "ErrId"
-#define EthercatMCStatusCodeString           "StatusCode"
-#define EthercatMCStatusBitsString           "StatusBits"
-#define EthercatMCaux0_String                "AuxBit0"
-#define EthercatMCaux1_String                "AuxBit1"
-#define EthercatMCaux2_String                "AuxBit2"
-#define EthercatMCaux3_String                "AuxBit3"
-#define EthercatMCaux4_String                "AuxBit4"
-#define EthercatMCaux5_String                "AuxBit5"
-#define EthercatMCaux6_String                "AuxBit6"
-#define EthercatMCaux7_String                "AuxBit7"
-#define EthercatMCreason24_String             "ReasonBit24"
-#define EthercatMCreason25_String             "ReasonBit25"
-#define EthercatMCHomProc_RBString           "HomProc-RB"
-#define EthercatMCHomPos_RBString            "HomPos-RB"
-#define EthercatMCHomProcString              "HomProc"
-#define EthercatMCHomPosString               "HomPos"
-#define EthercatMCVelToHomString             "VelToHom"
-#define EthercatMCVelFrmHomString            "VelFrmHom"
-#define EthercatMCAccHomString               "AccHom"
-#define EthercatMCEnc_ActString              "EncAct"
-#define EthercatMCErrRstString               "ErrRst"
-#define EthercatMCVelActString               "VelAct"
-#define EthercatMCVel_RBString               "Vel-RB"
-#define EthercatMCAcc_RBString               "Acc-RB"
-#define EthercatMCCfgVELO_String             "CfgVELO"
-#define EthercatMCCfgVMAX_String             "CfgVMAX"
-#define EthercatMCCfgJVEL_String             "CfgJVEL"
-#define EthercatMCCfgACCS_String             "CfgACCS"
-#define EthercatMCCfgDHLMString              "CfgDHLM"
-#define EthercatMCCfgDLLMString              "CfgDLLM"
-#define EthercatMCCfgDHLM_EnString           "CfgDHLM-En"
-#define EthercatMCCfgDLLM_EnString           "CfgDLLM-En"
-#define EthercatMCCfgSREV_RBString           "CfgSREV-RB"
-#define EthercatMCCfgUREV_RBString           "CfgUREV-RB"
-#define EthercatMCCfgPMIN_RBString           "CfgPMIN-RB"
-#define EthercatMCCfgPMAX_RBString           "CfgPMAX-RB"
-#define EthercatMCCfgSPDB_RBString           "CfgSPDB-RB"
-#define EthercatMCCfgRDBD_RBString           "CfgRDBD-RB"
-#define EthercatMCCfgRDBD_Tim_RBString       "CfgRDBD-Tim-RB"
-#define EthercatMCCfgRDBD_En_RBString        "CfgRDBD-En-RB"
-#define EthercatMCCfgPOSLAG_RBString         "CfgPOSLAG-RB"
-#define EthercatMCCfgPOSLAG_Tim_RBString     "CfgPOSLAG-Tim-RB"
-#define EthercatMCCfgPOSLAG_En_RBString      "CfgPOSLAG-En-RB"
-#define EthercatMCCfgDESC_RBString           "CfgDESC-RB"
-#define EthercatMCCfgEGU_RBString            "CfgEGU-RB"
+#define ethercatmcErrString                  "MCUErr"
+#define ethercatmcErrIdString                "ErrId"
+#define ethercatmcStatusCodeString           "StatusCode"
+#define ethercatmcStatusBitsString           "StatusBits"
+#define ethercatmcaux0_String                "AuxBit0"
+#define ethercatmcaux1_String                "AuxBit1"
+#define ethercatmcaux2_String                "AuxBit2"
+#define ethercatmcaux3_String                "AuxBit3"
+#define ethercatmcaux4_String                "AuxBit4"
+#define ethercatmcaux5_String                "AuxBit5"
+#define ethercatmcaux6_String                "AuxBit6"
+#define ethercatmcaux7_String                "AuxBit7"
+#define ethercatmcreason24_String            "ReasonBit24"
+#define ethercatmcreason25_String            "ReasonBit25"
+#define ethercatmcHomProc_RBString           "HomProc-RB"
+#define ethercatmcHomPos_RBString            "HomPos-RB"
+#define ethercatmcHomProcString              "HomProc"
+#define ethercatmcHomPosString               "HomPos"
+#define ethercatmcVelToHomString             "VelToHom"
+#define ethercatmcVelFrmHomString            "VelFrmHom"
+#define ethercatmcAccHomString               "AccHom"
+#define ethercatmcEnc_ActString              "EncAct"
+#define ethercatmcErrRstString               "ErrRst"
+#define ethercatmcVelActString               "VelAct"
+#define ethercatmcVel_RBString               "Vel-RB"
+#define ethercatmcAcc_RBString               "Acc-RB"
+#define ethercatmcCfgVELO_String             "CfgVELO"
+#define ethercatmcCfgVMAX_String             "CfgVMAX"
+#define ethercatmcCfgJVEL_String             "CfgJVEL"
+#define ethercatmcCfgACCS_String             "CfgACCS"
+#define ethercatmcCfgDHLMString              "CfgDHLM"
+#define ethercatmcCfgDLLMString              "CfgDLLM"
+#define ethercatmcCfgDHLM_EnString           "CfgDHLM-En"
+#define ethercatmcCfgDLLM_EnString           "CfgDLLM-En"
+#define ethercatmcCfgSREV_RBString           "CfgSREV-RB"
+#define ethercatmcCfgUREV_RBString           "CfgUREV-RB"
+#define ethercatmcCfgPMIN_RBString           "CfgPMIN-RB"
+#define ethercatmcCfgPMAX_RBString           "CfgPMAX-RB"
+#define ethercatmcCfgSPDB_RBString           "CfgSPDB-RB"
+#define ethercatmcCfgRDBD_RBString           "CfgRDBD-RB"
+#define ethercatmcCfgRDBD_Tim_RBString       "CfgRDBD-Tim-RB"
+#define ethercatmcCfgRDBD_En_RBString        "CfgRDBD-En-RB"
+#define ethercatmcCfgPOSLAG_RBString         "CfgPOSLAG-RB"
+#define ethercatmcCfgPOSLAG_Tim_RBString     "CfgPOSLAG-Tim-RB"
+#define ethercatmcCfgPOSLAG_En_RBString      "CfgPOSLAG-En-RB"
+#define ethercatmcCfgDESC_RBString           "CfgDESC-RB"
+#define ethercatmcCfgEGU_RBString            "CfgEGU-RB"
 
 
-#define EthercatMCMCUErrMsgString            "MCUErrMsg"
-#define EthercatMCDbgStrToMcuString          "StrToMCU"
-#define EthercatMCDbgStrToLogString          "StrToLOG"
+#define ethercatmcMCUErrMsgString            "MCUErrMsg"
+#define ethercatmcDbgStrToMcuString          "StrToMCU"
+#define ethercatmcDbgStrToLogString          "StrToLOG"
 
 #define HOMPROC_MANUAL_SETPOS    15
 
@@ -79,10 +79,10 @@ extern "C" {
   double     netToDouble(const void *data, size_t lenInPlc);
   void       doubleToNet(const double value, void *data, size_t lenInPlc);
   void       uintToNet(const unsigned value, void *data, size_t lenInPlc);
-  int EthercatMCCreateAxis(const char *EthercatMCName, int axisNo,
+  int ethercatmcCreateAxis(const char *ethercatmcName, int axisNo,
                            int axisFlags, const char *axisOptionsStr);
 
-  asynStatus EthercatMCADSgetPlcMemoryUint(asynUser *pasynUser,
+  asynStatus ethercatmcADSgetPlcMemoryUint(asynUser *pasynUser,
                                            unsigned indexOffset,
                                            unsigned *value,
                                            size_t lenInPlc);
@@ -93,7 +93,7 @@ extern "C" {
   asynStatus checkACK(const char *outdata, size_t outlen, const char *indata);
   const char *plcUnitTxtFromUnitCode(unsigned unitCode);
   const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex);
-  const char *EthercatMCstrStatus(asynStatus status);
+  const char *ethercatmcstrStatus(asynStatus status);
   const char *errStringFromErrId(int nErrorId);
 }
 #define NETTOUINT(n)       netToUint((const void*)&n, sizeof(n))
@@ -101,9 +101,9 @@ extern "C" {
 #define UINTTONET(val,n)   uintToNet((val), (&n), sizeof(n))
 #define DOUBLETONET(val,n) doubleToNet((val), (&n), sizeof(n))
 
-class EthercatMCIndexerAxis;
+class ethercatmcIndexerAxis;
 
-class epicsShareClass EthercatMCController : public asynMotorController {
+class epicsShareClass ethercatmcController : public asynMotorController {
 public:
 #define PARAM_IDX_OPMODE_AUTO_UINT            1
 #define PARAM_IDX_MICROSTEPS_UINT             2
@@ -138,7 +138,7 @@ public:
 #define FEATURE_BITS_ECMC             (1<<5)
 #define FEATURE_BITS_SIM              (1<<6)
 
-  EthercatMCController(const char *portName, const char *EthercatMCPortName,
+  ethercatmcController(const char *portName, const char *ethercatmcPortName,
                        int numAxes, double movingPollPeriod,
                        double idlePollPeriod,
                        const char *optionStr);
@@ -147,8 +147,8 @@ public:
   asynStatus setMCUErrMsg(const char *value);
   asynStatus configController(int needOk, const char *value);
   asynStatus writeReadOnErrorDisconnect(void);
-  EthercatMCAxis* getAxis(asynUser *pasynUser);
-  EthercatMCAxis* getAxis(int axisNo);
+  ethercatmcAxis* getAxis(asynUser *pasynUser);
+  ethercatmcAxis* getAxis(int axisNo);
   int features_;
 
   protected:
@@ -183,12 +183,12 @@ public:
                               int initial,
                               unsigned paramIndex,
                               double fValue);
-  asynStatus indexerReadAxisParameters(EthercatMCIndexerAxis *pAxis,
+  asynStatus indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                                        unsigned devNum,
                                        unsigned iOffset,
                                        unsigned lenInPlcPara);
   asynStatus poll(void);
-  asynStatus newIndexerAxis(EthercatMCIndexerAxis *pAxis,
+  asynStatus newIndexerAxis(ethercatmcIndexerAxis *pAxis,
                             unsigned devNum,
                             unsigned iAllFlags,
                             double   fAbsMin,
@@ -253,29 +253,29 @@ public:
 
 
   /* First parameter */
-  int EthercatMCErr_;
-  int EthercatMCStatusCode_;
-  int EthercatMCStatusBits_;
-  int EthercatMCaux0_;
-  int EthercatMCaux1_;
-  int EthercatMCaux2_;
-  int EthercatMCaux3_;
-  int EthercatMCaux4_;
-  int EthercatMCaux5_;
-  int EthercatMCaux6_;
-  int EthercatMCaux7_;
-  int EthercatMCreason24_;
-  int EthercatMCreason25_;
-  int EthercatMCreason26_;
-  int EthercatMCreason27_;
-  int EthercatMCHomProc_RB_;
-  int EthercatMCHomPos_RB_;
-  int EthercatMCHomProc_;
-  int EthercatMCHomPos_;
-  int EthercatMCVelToHom_;
-  int EthercatMCVelFrmHom_;
-  int EthercatMCAccHom_;
-  int EthercatMCEncAct_;
+  int ethercatmcErr_;
+  int ethercatmcStatusCode_;
+  int ethercatmcStatusBits_;
+  int ethercatmcaux0_;
+  int ethercatmcaux1_;
+  int ethercatmcaux2_;
+  int ethercatmcaux3_;
+  int ethercatmcaux4_;
+  int ethercatmcaux5_;
+  int ethercatmcaux6_;
+  int ethercatmcaux7_;
+  int ethercatmcreason24_;
+  int ethercatmcreason25_;
+  int ethercatmcreason26_;
+  int ethercatmcreason27_;
+  int ethercatmcHomProc_RB_;
+  int ethercatmcHomPos_RB_;
+  int ethercatmcHomProc_;
+  int ethercatmcHomPos_;
+  int ethercatmcVelToHom_;
+  int ethercatmcVelFrmHom_;
+  int ethercatmcAccHom_;
+  int ethercatmcEncAct_;
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
   int motorRecResolution_;
@@ -284,44 +284,44 @@ public:
 #endif
 
   /* Add parameters here */
-  int EthercatMCErrRst_;
-  int EthercatMCMCUErrMsg_;
-  int EthercatMCDbgStrToMcu_;
-  int EthercatMCDbgStrToLog_;
-  int EthercatMCVelAct_;
-  int EthercatMCVel_RB_;
-  int EthercatMCAcc_RB_;
-  int EthercatMCCfgVELO_;
-  int EthercatMCCfgVMAX_;
-  int EthercatMCCfgJVEL_;
-  int EthercatMCCfgACCS_;
-  int EthercatMCCfgSREV_RB_;
-  int EthercatMCCfgUREV_RB_;
-  int EthercatMCCfgPMIN_RB_;
-  int EthercatMCCfgPMAX_RB_;
-  int EthercatMCCfgSPDB_RB_;
-  int EthercatMCCfgRDBD_RB_;
-  int EthercatMCCfgRDBD_Tim_RB_;
-  int EthercatMCCfgRDBD_En_RB_;
-  int EthercatMCCfgPOSLAG_RB_;
-  int EthercatMCCfgPOSLAG_Tim_RB_;
-  int EthercatMCCfgPOSLAG_En_RB_;
-  int EthercatMCCfgDHLM_;
-  int EthercatMCCfgDLLM_;
-  int EthercatMCCfgDHLM_En_;
-  int EthercatMCCfgDLLM_En_;
-  int EthercatMCCfgDESC_RB_;
-  int EthercatMCCfgEGU_RB_;
+  int ethercatmcErrRst_;
+  int ethercatmcMCUErrMsg_;
+  int ethercatmcDbgStrToMcu_;
+  int ethercatmcDbgStrToLog_;
+  int ethercatmcVelAct_;
+  int ethercatmcVel_RB_;
+  int ethercatmcAcc_RB_;
+  int ethercatmcCfgVELO_;
+  int ethercatmcCfgVMAX_;
+  int ethercatmcCfgJVEL_;
+  int ethercatmcCfgACCS_;
+  int ethercatmcCfgSREV_RB_;
+  int ethercatmcCfgUREV_RB_;
+  int ethercatmcCfgPMIN_RB_;
+  int ethercatmcCfgPMAX_RB_;
+  int ethercatmcCfgSPDB_RB_;
+  int ethercatmcCfgRDBD_RB_;
+  int ethercatmcCfgRDBD_Tim_RB_;
+  int ethercatmcCfgRDBD_En_RB_;
+  int ethercatmcCfgPOSLAG_RB_;
+  int ethercatmcCfgPOSLAG_Tim_RB_;
+  int ethercatmcCfgPOSLAG_En_RB_;
+  int ethercatmcCfgDHLM_;
+  int ethercatmcCfgDLLM_;
+  int ethercatmcCfgDHLM_En_;
+  int ethercatmcCfgDLLM_En_;
+  int ethercatmcCfgDESC_RB_;
+  int ethercatmcCfgEGU_RB_;
 
-  int EthercatMCErrId_;
+  int ethercatmcErrId_;
   /* Last parameter */
 
-  #define FIRST_VIRTUAL_PARAM EthercatMCErr_
-  #define LAST_VIRTUAL_PARAM EthercatMCErrId_
+  #define FIRST_VIRTUAL_PARAM ethercatmcErr_
+  #define LAST_VIRTUAL_PARAM ethercatmcErrId_
   #define NUM_VIRTUAL_MOTOR_PARAMS ((int) (&LAST_VIRTUAL_PARAM - &FIRST_VIRTUAL_PARAM + 1))
 
-  friend class EthercatMCAxis;
-  friend class EthercatMCIndexerAxis;
+  friend class ethercatmcAxis;
+  friend class ethercatmcIndexerAxis;
 };
 
 #endif

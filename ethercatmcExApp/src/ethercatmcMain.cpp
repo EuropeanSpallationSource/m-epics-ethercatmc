@@ -1,4 +1,4 @@
-/* EthercatMCMain.cpp */
+/* ethercatmcMain.cpp */
 
 #include <stddef.h>
 #include <stdlib.h>

@@ -24,15 +24,15 @@
 #define PARAM_IF_IDX_FIRST_FUNCTION                128
 
 extern "C" {
-  int EthercatMCCreateIndexerAxis(const char *EthercatMCName, int axisNo,
+  int ethercatmcCreateIndexerAxis(const char *ethercatmcName, int axisNo,
                                   int axisFlags, const char *axisOptionsStr);
 };
 
-class epicsShareClass EthercatMCIndexerAxis : public asynMotorAxis
+class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis
 {
 public:
   /* These are the methods we override from the base class */
-  EthercatMCIndexerAxis(class EthercatMCController *pC, int axisNo,
+  ethercatmcIndexerAxis(class ethercatmcController *pC, int axisNo,
                                int axisFlags, const char *axisOptionsStr);
   void report(FILE *fp, int level);
   asynStatus move(double position, int relative, double min_velocity, double max_velocity, double acceleration);
@@ -56,7 +56,7 @@ public:
   asynStatus setStringParam(int function, const char *value);
 
 private:
-  EthercatMCController *pC_;
+  ethercatmcController *pC_;
 
   struct {
     const char *externalEncoderStr;
@@ -85,7 +85,7 @@ private:
   void updateMsgTxtFromDriver(const char *value);
 #endif
 
-  friend class EthercatMCController;
+  friend class ethercatmcController;
 };
 
 #endif

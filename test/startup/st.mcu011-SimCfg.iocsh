@@ -1,4 +1,4 @@
-require EthercatMC,USER
+require ethercatmc,USER
 
 epicsEnvSet("ECM_NUMAXES",   "4")
 epicsEnvSet("MOTOR_PORT",    "MCU1")
@@ -10,7 +10,7 @@ epicsEnvSet("ASYN_PORT",     "MC_CPU1")
 epicsEnvSet("PREFIX",        "IOC:")
 epicsEnvSet("EGU",           "mm")
 epicsEnvSet("PREC",          "3")
-< EthercatMCController.iocsh
+< ethercatmcController.iocsh
 
 epicsEnvSet("SLIT",          "MC-SltH-01:")
 
@@ -20,7 +20,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SLIT)xn")
 #epicsEnvSet("R",             "$(SLIT)m1-")
 epicsEnvSet("AXIS_NO",       "1")
 epicsEnvSet("DESC",          "H_NEG")
-< EthercatMCAxis.iocsh
+< ethercatmcAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "HomProc=0;cfgFile=./mcu011-sim-2.cfg")
 epicsEnvSet("MOTOR_NAME",    "$(SLIT)xp")
@@ -28,7 +28,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SLIT)xp")
 #epicsEnvSet("R",             "$(SLIT)m2-")
 epicsEnvSet("AXIS_NO",       "2")
 epicsEnvSet("DESC",          "H_POS")
-< EthercatMCAxis.iocsh
+< ethercatmcAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "$(SLIT)Center")
@@ -36,7 +36,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SLIT)Center")
 #epicsEnvSet("R",             "$(SLIT)m3-")
 epicsEnvSet("AXIS_NO",       "3")
 epicsEnvSet("DESC",          "H_CENTER")
-< EthercatMCAxis.iocsh
+< ethercatmcAxis.iocsh
 
 epicsEnvSet("AXISCONFIG",    "HomProc=0")
 epicsEnvSet("MOTOR_NAME",    "$(SLIT)Gap")
@@ -44,11 +44,11 @@ epicsEnvSet("MOTOR_NAME",    "$(SLIT)Gap")
 #epicsEnvSet("R",             "$(SLIT)m4-")
 epicsEnvSet("AXIS_NO",       "4")
 epicsEnvSet("DESC",          "H_GAP")
-< EthercatMCAxis.iocsh
+< ethercatmcAxis.iocsh
 
 ## Logical axes and slit
 epicsEnvSet("mXp",           "$(SLIT)xp")
 epicsEnvSet("mXn",           "$(SLIT)xn")
 ## Soft limits for the Slit
-< EthercatMCslitAvoidCollSoftlimits.iocsh
+< ethercatmcslitAvoidCollSoftlimits.iocsh
 #########################

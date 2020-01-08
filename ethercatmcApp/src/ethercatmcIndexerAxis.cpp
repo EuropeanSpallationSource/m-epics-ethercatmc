@@ -1,5 +1,5 @@
 /*
-  FILENAME... EthercatMCIndexerAxis.cpp
+  FILENAME... ethercatmcIndexerAxis.cpp
 */
 
 #include <stdio.h>
@@ -12,8 +12,8 @@
 #include <epicsThread.h>
 
 #include "motor.h"
-#include "EthercatMCController.h"
-#include "EthercatMCIndexerAxis.h"
+#include "ethercatmcController.h"
+#include "ethercatmcIndexerAxis.h"
 
 #ifndef ASYN_TRACE_INFO
 #define ASYN_TRACE_INFO      0x0040
@@ -68,18 +68,18 @@ extern "C" const char *idxStatusCodeTypeToStr(idxStatusCodeType idxStatusCode)
 
 
 //
-// These are the EthercatMCIndexerAxis methods
+// These are the ethercatmcIndexerAxis methods
 //
 
-/** Creates a new EthercatMCIndexerAxis object.
- * \param[in] pC Pointer to the EthercatMCController to which this axis belongs.
+/** Creates a new ethercatmcIndexerAxis object.
+ * \param[in] pC Pointer to the ethercatmcController to which this axis belongs.
  * \param[in] axisNo Index number of this axis, range 1 to pC->numAxes_.
  * (0 is not used)
  *
  *
  * Initializes register numbers, etc.
  */
-EthercatMCIndexerAxis::EthercatMCIndexerAxis(EthercatMCController *pC,
+ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
                                              int axisNo,
                                              int axisFlags,
                                              const char *axisOptionsStr)
@@ -112,8 +112,8 @@ EthercatMCIndexerAxis::EthercatMCIndexerAxis(EthercatMCController *pC,
 #ifdef motorShowPowerOffString
   setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
-  setStringParam(pC_->EthercatMCreason25_, "Dynamic problem, timeout");
-  setStringParam(pC_->EthercatMCreason24_, "Static problem, inhibit");
+  setStringParam(pC_->ethercatmcreason25_, "Dynamic problem, timeout");
+  setStringParam(pC_->ethercatmcreason24_, "Static problem, inhibit");
 
   /* Set the module name to "" if we have FILE/LINE enabled by asyn */
   if (pasynTrace->getTraceInfoMask(pC_->pasynUserController_) &
@@ -155,19 +155,19 @@ EthercatMCIndexerAxis::EthercatMCIndexerAxis(EthercatMCController *pC,
   }
 }
 
-extern "C" int EthercatMCCreateIndexerAxis(const char *EthercatMCName,
+extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
                                            int axisNo,
                                            int axisFlags,
                                            const char *axisOptionsStr)
 {
-  EthercatMCController *pC;
+  ethercatmcController *pC;
   /* parameters not used */
   (void)axisFlags;
   (void)axisOptionsStr;
 
-  pC = (EthercatMCController*) findAsynPortDriver(EthercatMCName);
+  pC = (ethercatmcController*) findAsynPortDriver(ethercatmcName);
   if (!pC) {
-    printf("Error port %s not found\n", EthercatMCName);
+    printf("Error port %s not found\n", ethercatmcName);
     return asynError;
   }
   /* The indexer may have created an axis himself, when polling the controller.
@@ -176,13 +176,13 @@ extern "C" int EthercatMCCreateIndexerAxis(const char *EthercatMCName,
      create one here to have the records showing "Communication Error" */
   pC->lock();
   if (!pC->getAxis(axisNo)) {
-    new EthercatMCIndexerAxis(pC, axisNo, axisFlags, axisOptionsStr);
+    new ethercatmcIndexerAxis(pC, axisNo, axisFlags, axisOptionsStr);
   }
   pC->unlock();
   return asynSuccess;
 }
 
-void EthercatMCIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
+void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
                                                            unsigned iOffset,
                                                            unsigned iTypCode)
 {
@@ -205,12 +205,12 @@ void EthercatMCIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
   }
 }
 
-void EthercatMCIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
+void ethercatmcIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
 {
   drvlocal.auxBitsNotHomedMask = auxBitsNotHomedMask;
 }
 
-void EthercatMCIndexerAxis::addPollNowParam(uint8_t paramIndex)
+void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex)
 {
   size_t pollNowIdx;
   const size_t pollNowIdxMax = sizeof(drvlocal.pollNowParams)/sizeof(drvlocal.pollNowParams[0]) - 1;
@@ -233,7 +233,7 @@ void EthercatMCIndexerAxis::addPollNowParam(uint8_t paramIndex)
  *
  * After printing device-specific information calls asynMotorAxis::report()
  */
-void EthercatMCIndexerAxis::report(FILE *fp, int level)
+void ethercatmcIndexerAxis::report(FILE *fp, int level)
 {
   if (level > 0) {
     fprintf(fp, "  axis %d\n", axisNo_);
@@ -254,7 +254,7 @@ void EthercatMCIndexerAxis::report(FILE *fp, int level)
  * \param[in] acceleration,  steps/sec/sec
  *
  */
-asynStatus EthercatMCIndexerAxis::move(double position, int relative,
+asynStatus ethercatmcIndexerAxis::move(double position, int relative,
                                        double minVelocity, double maxVelocity,
                                        double acceleration)
 {
@@ -264,12 +264,12 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
   asynPrint(pC_->pasynUserController_, traceMask,
             "%smove (%d) position=%f relative=%d minVelocity=%f maxVelocity=%f"
             " acceleration=%f\n",
-            "EthercatMCIndexerAxis", axisNo_,
+            "ethercatmcIndexerAxis", axisNo_,
             position, relative, minVelocity, maxVelocity, acceleration);
 
   if (maxVelocity > 0.0) {
     double oldValue;
-    pC_->getDoubleParam(axisNo_, pC_->EthercatMCVel_RB_, &oldValue);
+    pC_->getDoubleParam(axisNo_, pC_->ethercatmcVel_RB_, &oldValue);
     if (maxVelocity != oldValue) {
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_SPEED_FLOAT,
@@ -278,16 +278,16 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
       if (status) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
                   "%smove (%d) status=%s (%d)\n",
-                  "EthercatMCIndexerAxis", axisNo_,
-                  EthercatMCstrStatus(status), (int)status);
+                  "ethercatmcIndexerAxis", axisNo_,
+                  ethercatmcstrStatus(status), (int)status);
         return status;
       }
-      setDoubleParam(pC_->EthercatMCVel_RB_, maxVelocity);
+      setDoubleParam(pC_->ethercatmcVel_RB_, maxVelocity);
     }
   }
   if (acceleration > 0.0) {
     double oldValue;
-    pC_->getDoubleParam(axisNo_, pC_->EthercatMCAcc_RB_, &oldValue);
+    pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
     if (acceleration != oldValue) {
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_ACCEL_FLOAT,
@@ -296,11 +296,11 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
       if (status) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
                   "%smove (%d) status=%s (%d)\n",
-                  "EthercatMCIndexerAxis", axisNo_,
-                  EthercatMCstrStatus(status), (int)status);
+                  "ethercatmcIndexerAxis", axisNo_,
+                  ethercatmcstrStatus(status), (int)status);
         return status;
       }
-      setDoubleParam(pC_->EthercatMCAcc_RB_, acceleration);
+      setDoubleParam(pC_->ethercatmcAcc_RB_, acceleration);
     }
   }
   if (relative && pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset) {
@@ -364,7 +364,7 @@ asynStatus EthercatMCIndexerAxis::move(double position, int relative,
  * \param[in] forwards (0=backwards, otherwise forwards)
  *
  */
-asynStatus EthercatMCIndexerAxis::home(double minVelocity, double maxVelocity,
+asynStatus ethercatmcIndexerAxis::home(double minVelocity, double maxVelocity,
                                        double acceleration, int forwards)
 {
   asynStatus status;
@@ -386,7 +386,7 @@ asynStatus EthercatMCIndexerAxis::home(double minVelocity, double maxVelocity,
  * \param[in] acceleration, seconds to maximum velocity
  *
  */
-asynStatus EthercatMCIndexerAxis::moveVelocity(double minVelocity,
+asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
                                                double maxVelocity,
                                                double acceleration)
 {
@@ -402,7 +402,7 @@ asynStatus EthercatMCIndexerAxis::moveVelocity(double minVelocity,
 
   if (acceleration > 0.0) {
     double oldValue;
-    pC_->getDoubleParam(axisNo_, pC_->EthercatMCAcc_RB_, &oldValue);
+    pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
     if (acceleration != oldValue) {
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_ACCEL_FLOAT,
@@ -411,11 +411,11 @@ asynStatus EthercatMCIndexerAxis::moveVelocity(double minVelocity,
       if (status) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
                   "%smoveVelocity (%d) status=%s (%d)\n",
-                  "EthercatMCIndexerAxis", axisNo_,
-                  EthercatMCstrStatus(status), (int)status);
+                  "ethercatmcIndexerAxis", axisNo_,
+                  ethercatmcstrStatus(status), (int)status);
         return status;
       }
-      setDoubleParam(pC_->EthercatMCAcc_RB_, acceleration);
+      setDoubleParam(pC_->ethercatmcAcc_RB_, acceleration);
     }
   }
   status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
@@ -429,7 +429,7 @@ asynStatus EthercatMCIndexerAxis::moveVelocity(double minVelocity,
 /**
  * See asynMotorAxis::setPosition
  */
-asynStatus EthercatMCIndexerAxis::setPosition(double value)
+asynStatus ethercatmcIndexerAxis::setPosition(double value)
 {
   asynStatus status = asynError;
   if (drvlocal.paramIfOffset) {
@@ -441,7 +441,7 @@ asynStatus EthercatMCIndexerAxis::setPosition(double value)
   return status;
 }
 
-asynStatus EthercatMCIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
+asynStatus ethercatmcIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%swriteCmdRegisster(%d) idxStatusCode=0x%x\n",
@@ -479,7 +479,7 @@ asynStatus EthercatMCIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
 /** Stop the axis
  *
  */
-asynStatus EthercatMCIndexerAxis::stopAxisInternal(const char *function_name,
+asynStatus ethercatmcIndexerAxis::stopAxisInternal(const char *function_name,
                                                    double acceleration)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -492,13 +492,13 @@ asynStatus EthercatMCIndexerAxis::stopAxisInternal(const char *function_name,
 /** Stop the axis, called by motor Record
  *
  */
-asynStatus EthercatMCIndexerAxis::stop(double acceleration )
+asynStatus ethercatmcIndexerAxis::stop(double acceleration )
 {
   //drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   return stopAxisInternal(__FUNCTION__, acceleration);
 }
 
-asynStatus EthercatMCIndexerAxis::setIntegerParamLog(int function,
+asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,
                                                      int newValue,
                                                      const char *name)
 {
@@ -520,7 +520,7 @@ asynStatus EthercatMCIndexerAxis::setIntegerParamLog(int function,
  * and then calls callParamCallbacks() at the end.
  * \param[out] moving A flag that is set indicating that the axis is moving
  * (true) or done (false). */
-asynStatus EthercatMCIndexerAxis::poll(bool *moving)
+asynStatus ethercatmcIndexerAxis::poll(bool *moving)
 {
   asynStatus status = asynSuccess;
   if (drvlocal.iTypCode || drvlocal.adsPort) {
@@ -623,7 +623,7 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
       /* Specific for 5010 */
       errorID = netToUint(&readback.errorID,
                           sizeof(readback.errorID));
-      setIntegerParam(pC_->EthercatMCErrId_, errorID);
+      setIntegerParam(pC_->ethercatmcErrId_, errorID);
 
       idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
       idxReasonBits = (statusReasonAux >> 24) & 0x0F;
@@ -643,7 +643,7 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
                   ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%sout=%s in=%s return=%s (%d)\n",
                   modNamEMC, pC_->outString_, pC_->inString_,
-                  EthercatMCstrStatus(status), (int)status);
+                  ethercatmcstrStatus(status), (int)status);
         return asynError;
       }
       nvals = sscanf(pC_->inString_, "%u;%lf;%lf",
@@ -671,7 +671,7 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
     setDoubleParam(pC_->motorEncoderPosition_, actPosition);
 
     drvlocal.hasProblem = 0;
-    setIntegerParam(pC_->EthercatMCStatusCode_, idxStatusCode);
+    setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
     if ((statusReasonAux != drvlocal.old_statusReasonAux) ||
         (idxAuxBits      != drvlocal.old_idxAuxBits)) {
       if (errorID) {
@@ -727,8 +727,8 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
       setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
       setIntegerParam(pC_->motorStatusMoving_, nowMoving);
       setIntegerParam(pC_->motorStatusDone_, !nowMoving);
-      setIntegerParam(pC_->EthercatMCStatusBits_, statusReasonAux);
-      setIntegerParam(pC_->EthercatMCErr_, hasError);
+      setIntegerParam(pC_->ethercatmcStatusBits_, statusReasonAux);
+      setIntegerParam(pC_->ethercatmcErr_, hasError);
       if (drvlocal.auxBitsNotHomedMask) {
         int homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
         setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
@@ -752,7 +752,7 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
       updateMsgTxtFromDriver(msgTxtFromDriver);
     }
     *moving = nowMoving;
-    setIntegerParam(pC_->EthercatMCStatusCode_, idxStatusCode);
+    setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem);
     setIntegerParam(pC_->motorStatusPowerOn_, powerIsOn);
 
@@ -808,14 +808,14 @@ asynStatus EthercatMCIndexerAxis::poll(bool *moving)
 }
 
 
-asynStatus EthercatMCIndexerAxis::resetAxis(void)
+asynStatus ethercatmcIndexerAxis::resetAxis(void)
 {
   return writeCmdRegisster(idxStatusCodeRESET);
 }
 
 /** Set the motor closed loop status
  * \param[in] closedLoop true = close loop, false = open looop. */
-asynStatus EthercatMCIndexerAxis::setClosedLoop(bool closedLoop)
+asynStatus ethercatmcIndexerAxis::setClosedLoop(bool closedLoop)
 {
   double value = closedLoop ? 0.0 : 1.0; /* 1.0 means disable */
   asynStatus status = asynError;
@@ -837,7 +837,7 @@ asynStatus EthercatMCIndexerAxis::setClosedLoop(bool closedLoop)
 }
 
 
-asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
+asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
 {
   asynStatus status = asynSuccess;
   if (function == pC_->motorUpdateStatus_) {
@@ -855,8 +855,8 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
       memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
       drvlocal.dirty.initialPollNeeded = 1;
     }
-#ifdef EthercatMCErrRstString
-  } else if (function == pC_->EthercatMCErrRst_) {
+#ifdef ethercatmcErrRstString
+  } else if (function == pC_->ethercatmcErrRst_) {
     if (value) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%ssetIntegerParam(%d ErrRst_)=%d\n",
@@ -867,9 +867,9 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
 #endif
-  } else if (function == pC_->EthercatMCCfgDHLM_En_) {
+  } else if (function == pC_->ethercatmcCfgDHLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetIntegerParam(%d EthercatMCCfgDHLM_En)=%d\n",
+              "%ssetIntegerParam(%d ethercatmcCfgDHLM_En)=%d\n",
               modNamEMC, axisNo_, value);
     if (!value) {
       static const double fABSMAX = 3.0e+38;
@@ -880,9 +880,9 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
       pC_->udateMotorLimitsRO(axisNo_);
     }
     return status;
-  } else if (function == pC_->EthercatMCCfgDLLM_En_) {
+  } else if (function == pC_->ethercatmcCfgDLLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetIntegerParam(%d EthercatMCCfgDLLM_En)=%d\n",
+              "%ssetIntegerParam(%d ethercatmcCfgDLLM_En)=%d\n",
               modNamEMC, axisNo_, value);
     if (!value) {
       static const double fABSMIN = -3.0e+38;
@@ -899,12 +899,12 @@ asynStatus EthercatMCIndexerAxis::setIntegerParam(int function, int value)
   return status;
 }
 
-asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
+asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
 {
   asynStatus status;
-  if (function == pC_->EthercatMCCfgDHLM_) {
+  if (function == pC_->ethercatmcCfgDHLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d EthercatMCCfgDHLM_)=%g\n", modNamEMC, axisNo_, value);
+              "%ssetDoubleParam(%d ethercatmcCfgDHLM_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     PARAM_IDX_USR_MAX_FLOAT,
                                     drvlocal.lenInPlcPara,
@@ -912,9 +912,9 @@ asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
     asynMotorAxis::setDoubleParam(function, value);
     pC_->udateMotorLimitsRO(axisNo_);
     return status;
-  } else if (function == pC_->EthercatMCCfgDLLM_) {
+  } else if (function == pC_->ethercatmcCfgDLLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d EthercatMCCfgDLLM_)=%g\n", modNamEMC, axisNo_, value);
+              "%ssetDoubleParam(%d ethercatmcCfgDLLM_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     PARAM_IDX_USR_MIN_FLOAT,
                                     drvlocal.lenInPlcPara,
@@ -930,7 +930,7 @@ asynStatus EthercatMCIndexerAxis::setDoubleParam(int function, double value)
 
 }
 
-asynStatus EthercatMCIndexerAxis::setStringParamDbgStrToMcu(const char *value)
+asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
 {
   asynStatus status;
   const char * const Main_this_str = "Main.this.";
@@ -970,13 +970,13 @@ asynStatus EthercatMCIndexerAxis::setStringParamDbgStrToMcu(const char *value)
     /* If we come here, the command was not understood */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
               "%ssetStringParamDbgStrToMcu (%d) illegal value=\"%s\"\n",
-              "EthercatMCIndexerAxis", axisNo_, value);
+              "ethercatmcIndexerAxis", axisNo_, value);
     return asynError;
   }
   if (valueLen < 0 || (unsigned)valueLen >= sizeof(netDevice0518interface.value)) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
               "%ssetStringParamDbgStrToMcu (%d) valueLen=%d value=\"%s\"\n",
-              "EthercatMCIndexerAxis", axisNo_,
+              "ethercatmcIndexerAxis", axisNo_,
               valueLen, value);
     return asynError;
   }
@@ -994,13 +994,13 @@ asynStatus EthercatMCIndexerAxis::setStringParamDbgStrToMcu(const char *value)
                                  pC_->ctrlLocal.specialDbgStrToMcuDeviceLength);
 }
 
-asynStatus EthercatMCIndexerAxis::setStringParam(int function, const char *value)
+asynStatus ethercatmcIndexerAxis::setStringParam(int function, const char *value)
 {
-  if (function == pC_->EthercatMCDbgStrToLog_) {
+  if (function == pC_->ethercatmcDbgStrToLog_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetStringParamDbgStrToLog(%d)=\"%s\"\n",
               modNamEMC, axisNo_, value);
-  } else if (function == pC_->EthercatMCDbgStrToMcu_) {
+  } else if (function == pC_->ethercatmcDbgStrToMcu_) {
     return setStringParamDbgStrToMcu(value);
   }
   /* Call base class method */
@@ -1008,12 +1008,12 @@ asynStatus EthercatMCIndexerAxis::setStringParam(int function, const char *value
 }
 
 #ifndef motorMessageTextString
-void EthercatMCIndexerAxis::updateMsgTxtFromDriver(const char *value)
+void ethercatmcIndexerAxis::updateMsgTxtFromDriver(const char *value)
 {
   if (value && value[0]) {
-    setStringParam(pC_->EthercatMCMCUErrMsg_,value);
+    setStringParam(pC_->ethercatmcMCUErrMsg_,value);
   } else {
-    setStringParam(pC_->EthercatMCMCUErrMsg_, "");
+    setStringParam(pC_->ethercatmcMCUErrMsg_, "");
   }
 }
 #endif

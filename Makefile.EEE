@@ -4,7 +4,7 @@ EXCLUDE_ARCHS += eldk
 
 include ${EPICS_ENV_PATH}/module.Makefile
 
-PROJECT=EthercatMC
+PROJECT=ethercatmc
 
 AUTO_DEPENDENCIES = NO
 USR_DEPENDENCIES += motor,7.0.1-ESS
@@ -13,24 +13,24 @@ USR_DEPENDENCIES += calc,3.6.1
 
 
 SOURCES = \
-  EthercatMCApp/src/EthercatMCADS.cpp \
-  EthercatMCApp/src/EthercatMCAxis.cpp \
-  EthercatMCApp/src/EthercatMCController.cpp \
-  EthercatMCApp/src/EthercatMCHelper.cpp \
-  EthercatMCApp/src/EthercatMCIndexer.cpp \
-  EthercatMCApp/src/EthercatMCIndexerAxis.cpp \
+  ethercatmcApp/src/ethercatmcADS.cpp \
+  ethercatmcApp/src/ethercatmcAxis.cpp \
+  ethercatmcApp/src/ethercatmcController.cpp \
+  ethercatmcApp/src/ethercatmcHelper.cpp \
+  ethercatmcApp/src/ethercatmcIndexer.cpp \
+  ethercatmcApp/src/ethercatmcIndexerAxis.cpp \
 
 
 
 TEMPLATES = \
-  EthercatMCApp/Db/EthercatMC.template \
-  EthercatMCApp/Db/EthercatMCdebug.template \
-  EthercatMCApp/Db/EthercatMChome.template \
-  EthercatMCApp/Db/EthercatMCindexer.template \
-  EthercatMCApp/Db/EthercatMCreadback.template \
-  EthercatMCApp/Db/EthercatMCslit_soft.template \
-  EthercatMCApp/Db/EthercatMCslit_hard.template \
-  EthercatMCslitAvoidCollSoftlimits.template \
+  ethercatmcApp/Db/ethercatmc.template \
+  ethercatmcApp/Db/ethercatmcdebug.template \
+  ethercatmcApp/Db/ethercatmchome.template \
+  ethercatmcApp/Db/ethercatmcindexer.template \
+  ethercatmcApp/Db/ethercatmcreadback.template \
+  ethercatmcApp/Db/ethercatmcslit_soft.template \
+  ethercatmcApp/Db/ethercatmcslit_hard.template \
+  ethercatmcslitAvoidCollSoftlimits.template \
 
 
 #MISCS = \
