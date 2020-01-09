@@ -77,7 +77,6 @@ private:
     unsigned old_paramCtrl;
     unsigned int hasProblem :1;
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
-    unsigned adsPort;
     uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
     } drvlocal;
 

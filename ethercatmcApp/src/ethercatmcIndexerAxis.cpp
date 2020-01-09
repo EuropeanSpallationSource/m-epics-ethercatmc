@@ -120,38 +120,8 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
       ASYN_TRACEINFO_SOURCE) {
     modNamEMC = "";
   }
-
   if (axisOptionsStr && axisOptionsStr[0]) {
-    const char * const adsPort_str  = "adsPort=";
-
-    char *pOptions = strdup(axisOptionsStr);
-    char *pThisOption = pOptions;
-    char *pNextOption = pOptions;
-
-    while (pNextOption && pNextOption[0]) {
-      pNextOption = strchr(pNextOption, ';');
-      if (pNextOption) {
-        *pNextOption = '\0'; /* Terminate */
-        pNextOption++;       /* Jump to (possible) next */
-      }
-      asynPrint(pC_->pasynUserController_,
-                ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%spThisOption=\"%s\"\n",
-                modNamEMC, pThisOption);
-
-      if (!strncmp(pThisOption, adsPort_str, strlen(adsPort_str))) {
-        pThisOption += strlen(adsPort_str);
-        int adsPort = atoi(pThisOption);
-        if (adsPort > 0) {
-          /* Save adsport_str for the poller */
-          snprintf(drvlocal.adsport_str, sizeof(drvlocal.adsport_str),
-                   "ADSPORT=%d/", adsPort);
-          drvlocal.adsPort = (unsigned)adsPort;
-        }
-      }
-      pThisOption = pNextOption;
-    }
-    free(pOptions);
+    printf("Error options not supported %s not found\n", axisOptionsStr);
   }
 }
 
@@ -337,23 +307,11 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
     uintToNet(cmdReason, &posCmd.cmdReason, sizeof(posCmd.cmdReason));
     return pC_->setPlcMemoryViaADS(drvlocal.iOffset + drvlocal.lenInPlcPara,
                                    &posCmd, sizeof(posCmd));
-  } else if (drvlocal.adsPort) {
-    unsigned cmdReason = idxStatusCodeSTART  << (12 + 16);
-    snprintf(pC_->outString_, sizeof(pC_->outString_),
-             "%sGvl_App.axes_comm[%d].fTargetValue=%f;"
-             "%sGvl_App.axes_comm[%d].wStatusWord=%u",
-             drvlocal.adsport_str, axisNo_, position,
-             drvlocal.adsport_str, axisNo_, cmdReason);
-#ifndef motorWaitPollsBeforeReadyString
-    drvlocal.waitNumPollsBeforeReady += WAITNUMPOLLSBEFOREREADY;
-#endif
-    return pC_->writeReadACK(ASYN_TRACE_INFO);
-  } else {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-	      "%smove(%d) iTypCode=0x%x\n",
-	      modNamEMC, axisNo_, drvlocal.iTypCode);
-    return asynError;
   }
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%smove(%d) iTypCode=0x%x\n",
+            modNamEMC, axisNo_, drvlocal.iTypCode);
+  return asynError;
 }
 
 
@@ -462,18 +420,11 @@ asynStatus ethercatmcIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
     uintToNet(cmdReason, &posCmd.cmdReason, sizeof(posCmd.cmdReason));
     return pC_->setPlcMemoryViaADS(drvlocal.iOffset + (2 * drvlocal.lenInPlcPara),
                                    &posCmd, sizeof(posCmd));
-  } else if (drvlocal.adsPort) {
-    unsigned cmdReason = idxStatusCode << (12 + 16);
-    snprintf(pC_->outString_, sizeof(pC_->outString_),
-             "%sGvl_App.axes_comm[%d].wStatusWord=%u",
-             drvlocal.adsport_str, axisNo_, cmdReason);
-    return pC_->writeReadACK(ASYN_TRACE_INFO);
-  } else {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-	      "%swriteCmdRegisster(%d) iTypCode=0x%x\n",
-	      modNamEMC, axisNo_, drvlocal.iTypCode);
-    return asynError;
   }
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%swriteCmdRegisster(%d) iTypCode=0x%x\n",
+            modNamEMC, axisNo_, drvlocal.iTypCode);
+  return asynError;
 }
 
 /** Stop the axis
@@ -523,7 +474,7 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,
 asynStatus ethercatmcIndexerAxis::poll(bool *moving)
 {
   asynStatus status = asynSuccess;
-  if (drvlocal.iTypCode || drvlocal.adsPort) {
+  if (drvlocal.iTypCode) {
     unsigned traceMask = ASYN_TRACE_INFO;
     const char *msgTxtFromDriver = NULL;
     double targetPosition = 0.0;
@@ -628,39 +579,6 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
       idxReasonBits = (statusReasonAux >> 24) & 0x0F;
       idxAuxBits    =  statusReasonAux  & 0x0FFFFFF;
-    } else if (drvlocal.adsPort) {
-      int nvals = 0;
-      snprintf(pC_->outString_, sizeof(pC_->outString_),
-               "%sGvl_App.axes_comm[%d].wStatusWord?;"
-               "%sGvl_App.axes_comm[%d].fTargetValue?;"
-               "%sGvl_App.axes_comm[%d].fActualValue?",
-               drvlocal.adsport_str, axisNo_,
-               drvlocal.adsport_str, axisNo_,
-               drvlocal.adsport_str, axisNo_);
-      status = pC_->writeReadOnErrorDisconnect();
-      if (status) {
-        asynPrint(pC_->pasynUserController_,
-                  ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%sout=%s in=%s return=%s (%d)\n",
-                  modNamEMC, pC_->outString_, pC_->inString_,
-                  ethercatmcstrStatus(status), (int)status);
-        return asynError;
-      }
-      nvals = sscanf(pC_->inString_, "%u;%lf;%lf",
-                     &statusReasonAux, &targetPosition, &actPosition);
-      if (nvals != 3) {
-        /* rubbish on the line */
-        asynPrint(pC_->pasynUserController_,
-                  ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%spoll(%d) nvals=%d out=%s in=%s \n",
-                  modNamEMC, axisNo_, nvals, pC_->outString_, pC_->inString_);
-        return asynError;
-      }
-      idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
-      idxReasonBits = (statusReasonAux >> 24) & 0x0F;
-      idxAuxBits    =  statusReasonAux  & 0x0FFFFFF;
-      paramCtrl = 0; /* We don't have paramCtrl implemented yet */
-      errorID = 0;   /* We don't have errorID implemented yet */
     } else {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%spoll(%d) iTypCode=0x%x\n",
