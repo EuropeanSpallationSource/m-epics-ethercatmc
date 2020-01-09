@@ -6,7 +6,7 @@ DIRS += configure ethercatmcApp
 ethercatmcApp_DEPEND_DIRS   = configure
 
 DIRS += ethercatmcExApp
-EthercatMCExApp_DEPEND_DIRS = ethercatmcApp
+ethercatmcExApp_DEPEND_DIRS = configure ethercatmcApp
 
 include $(TOP)/configure/RULES_TOP
 
