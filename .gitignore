@@ -15,4 +15,4 @@ include/
 iocBoot/
 lib/
 O.*
-test/nose_tests/virtualpython3*/
+test/pyTests/virtualpython3*/
