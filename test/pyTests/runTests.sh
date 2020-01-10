@@ -79,13 +79,17 @@ if ! which conda >/dev/null 2>&1; then
     #echo >&2 wget $URL failed
     #exit 1
   #}
-  checkAndInstallSystemPackage conda anaconda || {
-    # conda installation failed, fall back to virtualenv
-    checkAndInstallSystemPackage virtualenv python-virtualenv || {
-      echo >2 "could not install virtualenv"
-      exit 1
+  # conda is preferred over virtualenv
+  # But: if we have virtualenv, use it
+  if ! which virtualenv; then
+    checkAndInstallSystemPackage conda anaconda || {
+      # conda installation failed, fall back to virtualenv
+      checkAndInstallSystemPackage virtualenv python-virtualenv || {
+        echo >2 "could not install virtualenv"
+        exit 1
+      }
     }
-  }
+  fi
 fi
 
 
