@@ -1,0 +1,4 @@
+# CI settings for the ESS Motor Record
+
+MOTOR_REPOOWNER=EuropeanSpallationSource
+MOTOR=ess-master
