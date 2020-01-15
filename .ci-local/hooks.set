@@ -1,3 +1,0 @@
-ASYN_HOOK=.ci-local/fix_RELEASE.sh
-CALC_HOOK=.ci-local/fix_RELEASE.sh
-MOTOR_HOOK=.ci-local/fix_RELEASE.sh
