@@ -1,7 +1,6 @@
 MODULES=asyn calc motor
 
 include motor
-include hooks
 
 ASYN=R4-38
 CALC=R3-7-3
