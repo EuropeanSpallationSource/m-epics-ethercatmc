@@ -69,6 +69,10 @@ jobs:
 # Different compilers: gcc and clang
 
   - env: BASE=7.0 SET=latest
+    script:
+    - test/install-pytest-pyepics-p4p.sh
+    - test/test-pytest-pyepics-p4p.sh
+    - make -C test test-ioc-with-sim
 
   - env: BASE=7.0 SET=latest
     compiler: clang

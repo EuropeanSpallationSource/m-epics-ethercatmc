@@ -24,8 +24,26 @@ fi
 export EPICS_EEE_E3
 echo EPICS_EEE_E3=$EPICS_EEE_E3
 
-if test -z "$EPICS_BASE";then
-  echo >&2 "EPICS_BASE" is not set
+if test -z "$EPICS_HOST_ARCH"; then
+  RELEASELOCAL=../configure/RELEASE.local
+  if test -r "$RELEASELOCAL"; then
+    # Code stolen from .ci/travis/prepare.sh
+    eval $(grep "EPICS_BASE=" $RELEASELOCAL)
+    export EPICS_BASE
+    echo "EPICS_BASE=$EPICS_BASE"
+    if test -z "$EPICS_BASE"; then
+      echo >&2 "EPICS_BASE" is not set
+      exit 1
+    fi
+    [ -z "$EPICS_HOST_ARCH" -a -f $EPICS_BASE/src/tools/EpicsHostArch.pl ] && EPICS_HOST_ARCH=$(perl $EPICS_BASE/src/tools/EpicsHostArch.pl)
+    [ -z "$EPICS_HOST_ARCH" -a -f $EPICS_BASE/startup/EpicsHostArch.pl ] && EPICS_HOST_ARCH=$(perl $EPICS_BASE/startup/EpicsHostArch.pl)
+    export EPICS_HOST_ARCH
+    echo "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
+  fi
+fi
+
+if test -z "$EPICS_HOST_ARCH"; then
+  echo >&2 "EPICS_HOST_ARCH" is not set
   exit 1
 fi
 
