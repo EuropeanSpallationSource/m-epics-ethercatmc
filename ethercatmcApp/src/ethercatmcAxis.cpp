@@ -437,6 +437,13 @@ asynStatus ethercatmcAxis::initialPoll(void)
   if (!drvlocal.dirty.initialPollNeeded)
     return asynSuccess;
 
+  status = pC_->poll();
+  if (status) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%spc->poll(%d) status=%d\n",
+              modNamEMC, axisNo_, status);
+    return status;
+  }
   status = initialPollInternal();
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%sinitialPoll(%d) status=%d\n",

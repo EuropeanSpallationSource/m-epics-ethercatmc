@@ -131,6 +131,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   memset(&ctrlLocal, 0, sizeof(ctrlLocal));
   ctrlLocal.oldStatus = asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
+  features_ = 0;
 #ifndef motorMessageTextString
   createParam("MOTOR_MESSAGE_TEXT",          asynParamOctet,       &ethercatmcMCUErrMsg_);
 #else
@@ -711,7 +712,7 @@ asynStatus ethercatmcController::poll(void)
     }
   } else {
     if (!(features_ & reportedFeatureBits)) {
-      int reportedFeatures = 0;
+      int reportedFeatures;
       status = getFeatures(&reportedFeatures);
       if (!status) {
         features_ |= reportedFeatures;
@@ -767,7 +768,7 @@ asynStatus ethercatmcController::updateCfgValue(int axisNo_, int function,
 }
 
 
-asynStatus ethercatmcController::getFeatures(int *pFeatures)
+asynStatus ethercatmcController::getFeatures(int *pRet)
 {
   /* The features we know about */
   const char * const sim_str = "sim";
@@ -777,7 +778,7 @@ asynStatus ethercatmcController::getFeatures(int *pFeatures)
   const char * const ads_str = "ads";
   static const unsigned adsports[] = {851, 852, 853};
   unsigned adsport_idx;
-  *pFeatures = 0;
+  *pRet = 0;
   int ret = 0;
   for (adsport_idx = 0;
        adsport_idx < sizeof(adsports)/sizeof(adsports[0]);
@@ -796,9 +797,9 @@ asynStatus ethercatmcController::getFeatures(int *pFeatures)
               ethercatmcstrStatus(status), (int)status);
     if (!status) {
       /* loop through the features */
-      char *pFeatures = strdup(inString_);
-      char *pThisFeature = pFeatures;
-      char *pNextFeature = pFeatures;
+      char *pAllFeatures = strdup(inString_);
+      char *pThisFeature = pAllFeatures;
+      char *pNextFeature = pAllFeatures;
 
       while (pNextFeature && pNextFeature[0]) {
         pNextFeature = strchr(pNextFeature, ';');
@@ -819,14 +820,14 @@ asynStatus ethercatmcController::getFeatures(int *pFeatures)
         }
         pThisFeature = pNextFeature;
       }
-      free(pFeatures);
+      free(pAllFeatures);
       if (ret) {
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sout=%s in=%s ret=0x%x\n",
                   modNamEMC, outString_, inString_,
                   ret);
         /* Found something useful on this adsport */
-        *pFeatures = ret;
+        *pRet = ret;
         return asynSuccess;
       }
     }

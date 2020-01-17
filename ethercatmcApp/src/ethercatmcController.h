@@ -198,7 +198,7 @@ public:
                             double newValue, const char *name);
   asynStatus updateCfgValue(int axisNo_, int function,
                             int newValue, const char *name);
-  asynStatus getFeatures(int *pFeatures);
+  asynStatus getFeatures(int *pRet);
   asynStatus initialPollIndexer(void);
   asynStatus writeReadControllerPrint(int traceMask);
   asynStatus writeReadACK(int traceMask);
