@@ -131,7 +131,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   memset(&ctrlLocal, 0, sizeof(ctrlLocal));
   ctrlLocal.oldStatus = asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
-  features_ = 0;
 #ifndef motorMessageTextString
   createParam("MOTOR_MESSAGE_TEXT",          asynParamOctet,       &ethercatmcMCUErrMsg_);
 #else
@@ -712,10 +711,12 @@ asynStatus ethercatmcController::poll(void)
     }
   } else {
     if (!(features_ & reportedFeatureBits)) {
-      features_ = getFeatures();
-    }
-    if (features_ & reportedFeatureBits) {
-      ctrlLocal.initialPollDone = 1;
+      int reportedFeatures = 0;
+      status = getFeatures(&reportedFeatures);
+      if (!status) {
+        features_ |= reportedFeatures;
+        ctrlLocal.initialPollDone = 1;
+      }
     }
   }
   return status;
@@ -766,7 +767,7 @@ asynStatus ethercatmcController::updateCfgValue(int axisNo_, int function,
 }
 
 
-int ethercatmcController::getFeatures(void)
+asynStatus ethercatmcController::getFeatures(int *pFeatures)
 {
   /* The features we know about */
   const char * const sim_str = "sim";
@@ -776,6 +777,7 @@ int ethercatmcController::getFeatures(void)
   const char * const ads_str = "ads";
   static const unsigned adsports[] = {851, 852, 853};
   unsigned adsport_idx;
+  *pFeatures = 0;
   int ret = 0;
   for (adsport_idx = 0;
        adsport_idx < sizeof(adsports)/sizeof(adsports[0]);
@@ -820,15 +822,16 @@ int ethercatmcController::getFeatures(void)
       free(pFeatures);
       if (ret) {
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%sout=%s in=%s ret=%d\n",
+                  "%sout=%s in=%s ret=0x%x\n",
                   modNamEMC, outString_, inString_,
                   ret);
         /* Found something useful on this adsport */
-        return ret;
+        *pFeatures = ret;
+        return asynSuccess;
       }
     }
   }
-  return 0;
+  return asynError;
 }
 
 
