@@ -281,8 +281,9 @@ asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
     case PARAM_IF_CMD_DONE:
     case PARAM_IF_CMD_ERR_NO_IDX:
     case PARAM_IF_CMD_READONLY:
-    case PARAM_IF_CMD_RETRY_LATER:
       return asynSuccess;
+    case PARAM_IF_CMD_RETRY_LATER:
+      break;  /* continue looping */
     case PARAM_IF_CMD_BUSY:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%sBUSY\n",
@@ -385,7 +386,7 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
       case PARAM_IF_CMD_READONLY:
         status = asynDisabled;
       case PARAM_IF_CMD_RETRY_LATER:
-        status = asynDisabled;
+        break;  /* continue looping */
       }
       if (status && (counter > 1)) {
 	asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
@@ -502,7 +503,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo, unsigned paramIfO
     case PARAM_IF_CMD_READONLY:
       status = asynDisabled;
     case PARAM_IF_CMD_RETRY_LATER:
-      status = asynDisabled;
+      break;  /* continue looping */
     }
     if (status) {
       traceMask |= ASYN_TRACE_INFO;
