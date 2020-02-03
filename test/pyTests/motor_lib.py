@@ -221,7 +221,13 @@ class motor_lib(object):
         rbv = capv_lib.capvget(motor + '.RBV', use_monitor=False)
         accl = capv_lib.capvget(motor + '.ACCL', use_monitor=False)
         delta = math.fabs(destination - rbv)
-        timeout = delta / velocity + 2 * accl + 2.0
+        # timeout depends on the  accleration ramp
+        timeout = 2 * accl + 2.0
+        # if we have a velocity, use it
+        if velocity != 0.0:
+            timeout += delta / velocity
+        else:
+            timeout += 60.0
         return timeout
 
     def waitForStart(self, motor, tc_no, wait_for_start):
