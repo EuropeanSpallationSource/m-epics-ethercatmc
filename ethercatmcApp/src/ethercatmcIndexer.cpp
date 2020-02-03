@@ -18,6 +18,22 @@
 #define ASYN_TRACE_INFO      0x0040
 #endif
 
+
+/* Sleep time and max counter for communication*/
+static double sleepTime = 0.1; /* 100 msec */
+#define MAX_COUNTER 5
+
+/*
+ * Calculation of sleep time when the PLC answers/answers with "interface busy"
+ * or retry later
+ */
+extern "C" {
+  double calcSleep(int counter)
+  {
+    return sleepTime * (counter<<1);
+  }
+};
+
 extern "C" {
   const char *plcUnitTxtFromUnitCode(unsigned unitCode)
   {
@@ -212,7 +228,7 @@ asynStatus ethercatmcController::readDeviceIndexer(unsigned devNum,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
-  while (counter < 5) {
+  while (counter < MAX_COUNTER) {
     status = getPlcMemoryUint(ctrlLocal.indexerOffset, &value, 2);
     if (status) {
       asynPrint(pasynUserController_,
@@ -224,7 +240,7 @@ asynStatus ethercatmcController::readDeviceIndexer(unsigned devNum,
     }
     if (value == valueAcked) return asynSuccess;
     counter++;
-    epicsThreadSleep(.1 * (counter<<1));
+    epicsThreadSleep(calcSleep(counter));
   }
   status = asynDisabled;
   asynPrint(pasynUserController_,
@@ -243,7 +259,7 @@ asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
   unsigned   ctrlLen = 0;
   unsigned   counter = 0;
 
-  while (counter < 5) {
+  while (counter < MAX_COUNTER) {
     status = getPlcMemoryUint(indexOffset, &ctrlLen, 2);
     asynPrint(pasynUserController_,
               status ? traceMask | ASYN_TRACE_INFO : traceMask,
@@ -253,7 +269,7 @@ asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
     if (status) return status;
     if (!ctrlLen) return asynSuccess;
     counter++;
-    epicsThreadSleep(.1 * (counter<<1));
+    epicsThreadSleep(calcSleep(counter));
   }
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
             "%sindexOffset=%u ctrlLen=0x%04x counter=%d\n",
@@ -268,7 +284,7 @@ asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
   unsigned   cmdSubParamIndex = 0;
   unsigned   counter = 0;
 
-  while (counter < 5) {
+  while (counter < MAX_COUNTER) {
     status = getPlcMemoryUint(indexOffset, &cmdSubParamIndex, 2);
     asynPrint(pasynUserController_,
               status ? traceMask | ASYN_TRACE_INFO : traceMask,
@@ -293,7 +309,7 @@ asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
       ; /* Read, write continue looping */
     }
     counter++;
-    epicsThreadSleep(.1 * (counter<<1));
+    epicsThreadSleep(calcSleep(counter));
   }
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
             "%sindexOffset=%u cmdSubParamIndex=0x%04x counter=%d\n",
@@ -337,7 +353,7 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
 	      modNamEMC,
 	      ethercatmcstrStatus(status), (int)status);
     if (status) return status;
-    while (counter < 5) {
+    while (counter < MAX_COUNTER) {
       unsigned cmdSubParamIndex = 0;
       double fValue;
       struct {
@@ -395,7 +411,7 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
 		  counter,
 		  ethercatmcstrStatus(status), (int)status);
       }
-      epicsThreadSleep(.1 * (counter<<1));
+      epicsThreadSleep(calcSleep(counter));
       counter++;
     }
     return asynDisabled;
@@ -448,7 +464,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo, unsigned paramIfO
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
-  while (counter < 5) {
+  while (counter < MAX_COUNTER) {
     unsigned cmdSubParamIndex = 0;
     status = getPlcMemoryUint(paramIfOffset, &cmdSubParamIndex, 2);
     if (status) {
@@ -514,7 +530,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo, unsigned paramIfO
                 ethercatmcstrStatus(status), (int)status);
       return status;
     }
-    epicsThreadSleep(.1 * (counter<<1));
+    epicsThreadSleep(calcSleep(counter));
     counter++;
   }
   asynPrint(pasynUserController_,
