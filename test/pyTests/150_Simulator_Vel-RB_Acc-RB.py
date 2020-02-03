@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 import unittest
+import math
 import os
 import sys
 import time
@@ -19,9 +20,9 @@ def setAndReadBackParam(self, motor, tc_no, pvSuffix, paramInSimu):
     valRB = capv_lib.capvget(pvname)
     newVal = valRB + 1
     lib.setValueOnSimulator(motor, tc_no, paramInSimu, newVal)
-    maxTime = 20 / polltime
+    maxTime = 30 # 30 seconds maximum to poll all parameters
     testPassed = False
-    maxDelta = newVal / 50.0 # 2 % error tolerance margin
+    maxDelta = math.fabs(newVal) / 50.0 # 2 % error tolerance margin
     while maxTime > 0:
         newValRB = capv_lib.capvget(pvname)
         print('%s:%d %s newVal=%f newValRB=%f' % (tc_no, lineno(), pvname, newVal, newValRB))
