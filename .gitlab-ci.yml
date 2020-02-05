@@ -11,5 +11,5 @@ build:
 variables:
   GIT_SUBMODULE_STRATEGY: "recursive"
   SETUP_PATH: ".ci-local:.ci"
-  BASE: "7.0"
+  BASE: "R3.15.7"
   SET: "latest"
