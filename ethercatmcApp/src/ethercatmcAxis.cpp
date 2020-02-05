@@ -403,33 +403,6 @@ asynStatus ethercatmcAxis::readBackVelocities(int axisID)
   return asynSuccess;
 }
 
-asynStatus ethercatmcAxis::readBackEncoders(int axisID)
-{
-  /* https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsdevicenc2/index.html&id= */
-  asynStatus status;
-  unsigned numEncoders = 0;
-  int nvals;
-
-  snprintf(pC_->outString_, sizeof(pC_->outString_),
-           "ADSPORT=501/.ADR.16#%X,16#%X,8,19?;",
-           0x4000 + axisID, 0x57
-           );
-  status = pC_->writeReadOnErrorDisconnect();
-  if (status) return status;
-  nvals = sscanf(pC_->inString_, "%u",
-                 &numEncoders);
-  if (nvals != 1) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%snvals=%d command=\"%s\" response=\"%s\"\n",
-              modNamEMC, nvals, pC_->outString_, pC_->inString_);
-    return asynError;
-  }
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%sreadBackEncoders(%d) numEncoders=%u\n",
-            modNamEMC, axisNo_, numEncoders);
-  return asynSuccess;
-}
-
 asynStatus ethercatmcAxis::initialPoll(void)
 {
   asynStatus status;
@@ -470,9 +443,6 @@ asynStatus ethercatmcAxis::readBackAllConfig(int axisID)
   if (status == asynSuccess) status = readMonitoring(axisID);
   if (status == asynSuccess) status = readBackSoftLimits();
   if (status == asynSuccess) status = readBackVelocities(axisID);
-  if (!(pC_->features_ & FEATURE_BITS_ECMC)) {
-    if (status == asynSuccess) status = readBackEncoders(axisID);
-  }
   return status;
 }
 

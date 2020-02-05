@@ -166,7 +166,6 @@ private:
   asynStatus readScaling(int axisID);
   asynStatus readMonitoring(int axisID);
   asynStatus readBackVelocities(int axisID);
-  asynStatus readBackEncoders(int axisID);
   asynStatus initialPoll(void);
   asynStatus initialPollInternal(void);
   asynStatus setValueOnAxis(const char* var, int value);
