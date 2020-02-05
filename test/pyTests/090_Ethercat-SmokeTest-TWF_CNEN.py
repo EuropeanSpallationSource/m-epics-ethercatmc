@@ -190,7 +190,7 @@ def tweakToLimit(self, motor, tc_no, direction):
 class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")
 
-    old_Enable = capv_lib.capvget(motor + '.CNEN')
+    old_Enable = int(capv_lib.capvget(motor + '.CNEN'))
     TweakValue = capv_lib.capvget(motor + '.TWV')
 
     # TWF/TWR
