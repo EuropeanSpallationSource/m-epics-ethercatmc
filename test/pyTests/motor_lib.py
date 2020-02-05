@@ -212,8 +212,8 @@ class motor_lib(object):
 
     def calcAlmostEqual(self, motor, tc_no, expected, actual, maxdelta):
         delta = math.fabs(expected - actual)
-        inrange = delta < maxdelta
-        print('%s: assertAlmostEqual expected=%f actual=%f delta=%f maxdelta=%f inrange=%d' % (
+        inrange = delta <= maxdelta
+        print('%s: calcAlmostEqual expected=%f actual=%f delta=%f maxdelta=%f inrange=%d' % (
             tc_no, expected, actual, delta, maxdelta, inrange))
         return inrange
 
