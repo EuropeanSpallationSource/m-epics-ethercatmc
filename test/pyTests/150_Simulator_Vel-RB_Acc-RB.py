@@ -22,7 +22,7 @@ def setAndReadBackParam(self, motor, tc_no, pvSuffix, paramInSimu):
     lib.setValueOnSimulator(motor, tc_no, paramInSimu, newVal)
     maxTime = 30 # 30 seconds maximum to poll all parameters
     testPassed = False
-    maxDelta = math.fabs(newVal) / 50.0 # 2 % error tolerance margin
+    maxDelta = math.fabs(newVal) * 0.02 # 2 % error tolerance margin
     while maxTime > 0:
         newValRB = capv_lib.capvget(pvname)
         print('%s:%d %s newVal=%f newValRB=%f' % (tc_no, lineno(), pvname, newVal, newValRB))
