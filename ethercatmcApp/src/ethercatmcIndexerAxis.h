@@ -61,6 +61,7 @@ private:
   struct {
     const char *externalEncoderStr;
     struct {
+      int          old_hasError;
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialPollNeeded :1;
     }  dirty;

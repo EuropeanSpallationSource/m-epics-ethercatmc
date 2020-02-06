@@ -667,7 +667,10 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
         }
         msgTxtFromDriver = sErrorMessage;
       }
-      updateMsgTxtFromDriver(msgTxtFromDriver);
+      if (drvlocal.dirty.old_hasError != hasError) {
+        updateMsgTxtFromDriver(msgTxtFromDriver);
+        drvlocal.dirty.old_hasError = hasError;
+      }
     }
     *moving = nowMoving;
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
