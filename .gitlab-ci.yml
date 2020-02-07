@@ -1,5 +1,9 @@
 image: ubuntu:xenial
 
+cache:
+  paths:
+    - $HOME/.cache
+
 build:
   stage: build
   script:
