@@ -8,7 +8,7 @@ build:
   stage: build
   script:
     - apt-get update
-    - apt-get install -y libreadline6-dev libncurses5-dev perl clang g++ g++-mingw-w64-i686 g++-mingw-w64-x86-64 qemu-system-x86 make
+    - apt-get install -y libreadline6-dev libncurses5-dev perl clang g++ g++-mingw-w64-i686 g++-mingw-w64-x86-64 qemu-system-x86 make git
     - ./.ci/gitlab/prepare.sh
     - ./.ci/gitlab/build.sh
 
