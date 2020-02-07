@@ -19,4 +19,4 @@ variables:
   CI_COMPILER: gcc
   VV: "1"
   BASE: "7.0"
-  SET: latest
+  SET: motor
