@@ -17,3 +17,5 @@ variables:
   SETUP_PATH: ".ci-local:.ci"
   CI_COMPILER: gcc-5.4.0
   VV: "1"
+  BASE: "7.0"
+  SET: latest
