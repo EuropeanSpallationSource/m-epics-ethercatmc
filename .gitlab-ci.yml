@@ -16,3 +16,4 @@ variables:
   GIT_SUBMODULE_STRATEGY: "recursive"
   SETUP_PATH: ".ci-local:.ci"
   CI_COMPILER: gcc-5.4.0
+  VV: "1"
