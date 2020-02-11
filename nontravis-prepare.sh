@@ -4,8 +4,20 @@
 # Make it possible to test a travis run locally,
 # before pushing the branch
 
-SETUP_PATH=.ci-local:.ci
-export SETUP_PATH
+#Setting environment variables, may be overwritten by
+# e.g. .travis.yml
+if [ x$SETUP_PATH = x ]
+then
+  export SETUP_PATH=.ci-local:.ci
+fi
+if [ x$SET = x ]
+then
+  export SET=latest
+fi
+if [ x$BASE = x ]
+then
+  export BASE=7.0
+fi
 
 if [ "$BASH_VERSINFO" -lt 4 ]
 then
