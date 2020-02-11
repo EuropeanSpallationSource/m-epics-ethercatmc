@@ -667,7 +667,10 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
         }
         msgTxtFromDriver = sErrorMessage;
       }
-      updateMsgTxtFromDriver(msgTxtFromDriver);
+      if (drvlocal.dirty.old_hasError != hasError) {
+        updateMsgTxtFromDriver(msgTxtFromDriver);
+        drvlocal.dirty.old_hasError = hasError;
+      }
     }
     *moving = nowMoving;
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
@@ -795,8 +798,9 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
                                       PARAM_IDX_USR_MAX_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       fABSMAX);
-      pC_->udateMotorLimitsRO(axisNo_);
     }
+    pC_->setIntegerParam(axisNo_, function, value);
+    pC_->udateMotorLimitsRO(axisNo_);
     return status;
   } else if (function == pC_->ethercatmcCfgDLLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -808,8 +812,9 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
                                       PARAM_IDX_USR_MIN_FLOAT,
                                       drvlocal.lenInPlcPara,
                                       fABSMIN);
-      pC_->udateMotorLimitsRO(axisNo_);
     }
+    pC_->setIntegerParam(axisNo_, function, value);
+    pC_->udateMotorLimitsRO(axisNo_);
     return status;
   }
   //Call base class method
@@ -837,7 +842,7 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
                                     PARAM_IDX_USR_MIN_FLOAT,
                                     drvlocal.lenInPlcPara,
                                     value);
-    asynMotorAxis::setDoubleParam(function, value);
+    pC_->setDoubleParam(axisNo_, function, value);
     pC_->udateMotorLimitsRO(axisNo_);
     return status;
   }

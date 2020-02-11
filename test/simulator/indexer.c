@@ -831,7 +831,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
   unsigned paramIndex = uValue & PARAM_IF_CMD_MASKPARAM_IF_IDX_MASK;
   uint16_t ret = (uint16_t)uValue;
   if (!(paramCommand & PARAM_IF_CMD_MASKPARAM_DONE)) {
-    LOGINFO3("%s/%s:%d motor_axis_no=%u paramIndex=%u offset=%u uValue=0x%x lenInPlcPara=%u\n",
+    LOGINFO6("%s/%s:%d motor_axis_no=%u paramIndex=%u offset=%u uValue=0x%x lenInPlcPara=%u\n",
              __FILE__, __FUNCTION__, __LINE__,
              motor_axis_no, paramIndex, offset, uValue, lenInPlcPara);
   }

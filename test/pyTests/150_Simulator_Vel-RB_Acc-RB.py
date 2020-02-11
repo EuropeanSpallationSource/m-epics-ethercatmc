@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 import unittest
+import math
 import os
 import sys
 import time
@@ -15,16 +16,18 @@ def lineno():
 polltime = 0.1
 
 def setAndReadBackParam(self, motor, tc_no, pvSuffix, paramInSimu):
-    valRB = capv_lib.capvget(motor + pvSuffix)
+    pvname = motor + pvSuffix
+    valRB = capv_lib.capvget(pvname)
     newVal = valRB + 1
     lib.setValueOnSimulator(motor, tc_no, paramInSimu, newVal)
-    maxTime = 20 / polltime
+    maxTime = 30 # 30 seconds maximum to poll all parameters
     testPassed = False
+    maxDelta = math.fabs(newVal) * 0.02 # 2 % error tolerance margin
     while maxTime > 0:
-        newValRB = capv_lib.capvget(motor + pvSuffix)
-        print('%s:%d newVal=%f newValRB=%f' % (tc_no, lineno(), newVal, newValRB))
+        newValRB = capv_lib.capvget(pvname)
+        print('%s:%d %s newVal=%f newValRB=%f' % (tc_no, lineno(), pvname, newVal, newValRB))
 
-        if newValRB == newVal:
+        if lib.calcAlmostEqual(motor, tc_no, newVal, newValRB, maxDelta):
             testPassed = True
             maxTime = 0
         else:
