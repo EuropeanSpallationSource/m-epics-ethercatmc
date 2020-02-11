@@ -45,6 +45,7 @@ public:
   asynStatus stop(double acceleration);
   void setIndexerDevNumOffsetTypeCode(unsigned devNum, unsigned iOffset, unsigned iTypCode);
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
+  void setAuxBitsEnabledMask(unsigned auxBitsEnabledMask);
   void setErrorIdOffset(unsigned iOffset);
   void addPollNowParam(uint8_t paramIndex);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
@@ -74,6 +75,7 @@ private:
     unsigned lenInPlcPara;
     unsigned paramIfOffset;
     unsigned auxBitsNotHomedMask;
+    unsigned auxBitsEnabledMask;
     unsigned errorIdOffset;
     unsigned old_statusReasonAux;
     unsigned old_idxAuxBits;

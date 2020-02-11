@@ -180,6 +180,11 @@ void ethercatmcIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
   drvlocal.auxBitsNotHomedMask = auxBitsNotHomedMask;
 }
 
+void ethercatmcIndexerAxis::setAuxBitsEnabledMask(unsigned auxBitsEnabledMask)
+{
+  drvlocal.auxBitsEnabledMask = auxBitsEnabledMask;
+}
+
 void ethercatmcIndexerAxis::setErrorIdOffset(unsigned iOffset)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -672,6 +677,9 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
         if (!homed) {
           drvlocal.hasProblem = 1;
         }
+      }
+      if (drvlocal.auxBitsEnabledMask) {
+        powerIsOn = idxAuxBits & drvlocal.auxBitsEnabledMask ? 1 : 0;
       }
       if (hasError) {
         char sErrorMessage[40];

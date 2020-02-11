@@ -805,6 +805,9 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
         if (!strcmp("notHomed", auxBitName)) {
           pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
         }
+        else if (!strcmp("enabled", auxBitName)) {
+          pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
+        }
       }
     }
   }
