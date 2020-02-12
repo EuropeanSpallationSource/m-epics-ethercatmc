@@ -11,6 +11,9 @@ build:
     - apt-get update
     - apt-get install -y libreadline6-dev libncurses5-dev perl clang g++ g++-mingw-w64-i686 g++-mingw-w64-x86-64 qemu-system-x86 make git
     - ./.compile-epics.sh
+    - test/install-pytest-pyepics-p4p.sh
+    - test/test-pytest-pyepics-p4p.sh
+    - make -C test test-ioc-with-sim
 
 variables:
   GIT_SUBMODULE_STRATEGY: "recursive"
