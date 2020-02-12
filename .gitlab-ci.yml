@@ -9,7 +9,7 @@ build:
   script:
     - mkdir -p /root/.cache
     - apt-get update
-    - apt-get install -y libreadline6-dev libncurses5-dev perl clang g++ g++-mingw-w64-i686 g++-mingw-w64-x86-64 qemu-system-x86 make git
+    - apt-get install -y libreadline6-dev libncurses5-dev perl clang g++ g++-mingw-w64-i686 g++-mingw-w64-x86-64 qemu-system-x86 make git sudo
     - ./.compile-epics.sh
     - test/install-pytest-pyepics-p4p.sh
     - test/test-pytest-pyepics-p4p.sh
