@@ -805,6 +805,9 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
         if (!strcmp("notHomed", auxBitName)) {
           pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
         }
+        else if (!strcmp("enabled", auxBitName)) {
+          pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
+        }
       }
     }
   }
@@ -978,6 +981,21 @@ asynStatus ethercatmcController::initialPollIndexer(void)
       }
     }
     switch (iTypCode) {
+    case 0x1202:
+      {
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%sindexerDevice(%u) axisNo=%u OffsBytes=%u descVersAuthors.desc=\"%s\"\n",
+                  modNamEMC, devNum, axisNo, iOffsBytes, descVersAuthors.desc);
+
+        if (!strcmp(descVersAuthors.desc, "errorID")) {
+          ethercatmcIndexerAxis *pAxis;
+          pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
+          if (pAxis) {
+            pAxis->setErrorIdOffset(iOffsBytes);
+          }
+        }
+      }
+      break;
     case 0x5008:
     case 0x500C:
     case 0x5010:
