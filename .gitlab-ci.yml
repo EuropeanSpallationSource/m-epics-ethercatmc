@@ -20,5 +20,5 @@ variables:
   GIT_SUBMODULE_STRATEGY: "recursive"
   SETUP_PATH: ".ci-local:.ci"
   CI_COMPILER: gcc
-  BASE: "7.0"
+  BASE: "3.16"
   SET: latest
