@@ -68,11 +68,11 @@ IOC_NC_PORT=5001
 
 # start simulator
 ./run-ethercatmc-simulator.sh &
-sleep 3
+sleep 5
 
 # start ioc
 nc -l  ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh  SolAxis-SimCfgDbg &
-sleep 3
+sleep 10
 
 # run test cases
 /bin/sh -e -x ./run-ethercatmc-tests.sh IOC:m1
