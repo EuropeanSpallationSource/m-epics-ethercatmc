@@ -9,12 +9,12 @@ dist: xenial
 
 cache:
   directories:
-  - $HOME/EPICS/.traviscache
+  - $HOME/.traviscache/EPICS
 
 env:
   global:
     - SETUP_PATH=.ci-local:.ci
-
+    - CACHEDIR=$HOME/.traviscache/EPICS
 addons:
   apt:
     packages:
