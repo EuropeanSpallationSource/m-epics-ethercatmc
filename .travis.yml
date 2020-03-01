@@ -9,7 +9,7 @@ dist: xenial
 
 cache:
   directories:
-  - $HOME/.cache
+  - $HOME/EPICS/.traviscache
 
 env:
   global:
