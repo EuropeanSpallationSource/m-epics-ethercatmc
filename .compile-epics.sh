@@ -19,6 +19,11 @@ then
   export BASE=7.0
 fi
 
+if [ x$CACHEDIR = x ]
+then
+  export CACHEDIR=$HOME/.traviscache/EPICS
+fi
+
 if [ "$BASH_VERSINFO" -lt 4 ]
 then
 	if test -x /opt/local/bin/port; then
