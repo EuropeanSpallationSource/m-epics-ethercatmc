@@ -686,11 +686,11 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
         const char *errIdString = errStringFromErrId(errorID);
         memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
         if (errIdString[0]) {
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %x",
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %X",
                    errIdString, errorID);
         }  else {
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: TwinCAT Err %x", errorID);
+                   "E: TwinCAT Err %X", errorID);
         }
         msgTxtFromDriver = sErrorMessage;
       }
