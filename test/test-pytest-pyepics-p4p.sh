@@ -11,7 +11,7 @@ checkPythonPackage()
 printVersionIfPossible()
 {
   PROGRAM=$1
-  if type "$PROGRAM"; then
+  if type "$PROGRAM" >/dev/null 2>&1; then
     "$PROGRAM" --version || :
   fi
 }
