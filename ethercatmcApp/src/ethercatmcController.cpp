@@ -61,6 +61,8 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "Is still proc";
   case 0x42A0:
     return "Consequ Err";
+  case 0x42EF:
+    return "Locked Stop";
   case 0x4460:
     return "Low soft lim";
   case 0x4461:
