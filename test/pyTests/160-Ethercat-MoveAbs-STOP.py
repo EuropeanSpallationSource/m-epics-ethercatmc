@@ -50,6 +50,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-1603"
 
         msta = int(capv_lib.capvget(motor + '.MSTA'))
+        nErrorId = capv_lib.capvget(motor + '-ErrId')
         for i in range(1,10):
             if not (msta & lib.MSTA_BIT_PROBLEM):
                 res = capv_lib.capvput(motor + '-MoveAbs', self.per10_UserPosition + i*10)
@@ -64,4 +65,5 @@ class Test(unittest.TestCase):
         if (msta & lib.MSTA_BIT_PROBLEM):
             capv_lib.capvput(motor + '-ErrRst', 1)
 
+        self.assertEqual(0, nErrorId,  'nErrorId must be 0')
         self.assertEqual(0, msta & lib.MSTA_BIT_PROBLEM,  'Problem bit must not be set')
