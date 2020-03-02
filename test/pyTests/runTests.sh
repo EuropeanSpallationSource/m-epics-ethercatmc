@@ -15,17 +15,17 @@
 # run specif test on a motor PV a couple of times
 # ./runTests.sh IOC:m1 100_Record-HOMF.py 4
 
-if ! type pytest; then
+# First of all, check for whitespace damage (TAB, trailing WS
+../checkws.sh || {
+  echo >&2   ../checkws.sh failed
+  exit 1
+}
+
+if ! type pytest >/dev/null 2>&1 ; then
   # more things to do, either conda or virtualenv is our friend
   if test -e $HOME/.bash_profile; then
      . $HOME/.bash_profile
   fi
-
-  # First of all, check for whitespace damage (TAB, trailing WS
-  ../checkws.sh || {
-    echo >&2   ../checkws.sh failed
-    exit 1
-  }
 
   # Those values should work as default
   # They may be overwrtitten further down
