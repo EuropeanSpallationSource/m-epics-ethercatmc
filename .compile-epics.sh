@@ -21,7 +21,7 @@ fi
 
 if [ x$CACHEDIR = x ]
 then
-  export CACHEDIR=$HOME/.traviscache/EPICS
+  export CACHEDIR=$HOME/.cache/travis/EPICS
 fi
 
 if [ "$BASH_VERSINFO" -lt 4 ]

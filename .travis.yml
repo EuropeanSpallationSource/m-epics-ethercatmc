@@ -14,7 +14,7 @@ cache:
 env:
   global:
     - SETUP_PATH=.ci-local:.ci
-    - CACHEDIR=$HOME/.traviscache/EPICS
+    - CACHEDIR=$HOME/.cache/travis/EPICS
 addons:
   apt:
     packages:
