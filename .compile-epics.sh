@@ -24,6 +24,11 @@ then
   export CACHEDIR=$HOME/.cache/travis/EPICS
 fi
 
+if [ x$MOTOR_RECURSIVE = x ]
+then
+  export MOTOR_RECURSIVE=NO
+fi
+
 if [ "$BASH_VERSINFO" -lt 4 ]
 then
   if test -x /opt/local/bin/port; then
