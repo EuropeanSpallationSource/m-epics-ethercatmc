@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
     llm  = capv_lib.capvget(motor + '.LLM')
     jvel = capv_lib.capvget(motor + '.JVEL')
 
-    margin = 1.0
+    margin = 1.1
     # motorRecord stops jogging 1 second before reaching HLM
     jog_start_pos    = hlm - jvel - margin
 
@@ -36,11 +36,11 @@ class Test(unittest.TestCase):
             self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
 
 
-    # per90 UserPosition
+    # close-toHLM
     def test_TC_1212(self):
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
-            tc_no = "TC-1212-90-percent-UserPosition"
+            tc_no = "TC-1212-close-toHLM-UserPosition"
             print('%s' % tc_no)
             done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
@@ -70,11 +70,11 @@ class Test(unittest.TestCase):
             self.assertEqual(1, resW,                         'DLY JOGF should have MIP = 0')
             self.assertEqual(1, lvio,                         'DLY JOGF should have LVIO set')
 
-    # per90 UserPosition
+    # close-toHLM
     def test_TC_1214(self):
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
-            tc_no = "TC-1214-90-percent-UserPosition"
+            tc_no = "TC-1214-close-toHLM-UserPosition"
             print('%s' % tc_no)
             done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
@@ -137,11 +137,11 @@ class Test(unittest.TestCase):
             self.assertEqual(1, lvio,                         'ndly2 should have LVIO set')
 
 
-    # per90 UserPosition
+    # close-toHLM UserPosition
     def test_TC_1217(self):
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
-            tc_no = "TC-1216-90-percent-UserPosition"
+            tc_no = "TC-1216-close-toHLM-UserPosition"
             print('%s' % tc_no)
             done = lib.moveWait(motor, tc_no, self.jog_start_pos)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)

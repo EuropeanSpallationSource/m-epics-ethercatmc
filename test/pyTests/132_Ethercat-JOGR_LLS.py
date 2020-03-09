@@ -17,7 +17,7 @@ class Test(unittest.TestCase):
     llm = capv_lib.capvget(motor + '.LLM')
     jvel = capv_lib.capvget(motor + '.JVEL')
 
-    margin = 1.0
+    margin = 1.1
     # motorRecord stops jogging 1 second before reaching HLM
     jog_start_pos    = llm + jvel + margin
 
