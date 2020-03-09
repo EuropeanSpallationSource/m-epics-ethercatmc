@@ -74,6 +74,7 @@ jobs:
     - test/install-pytest-pyepics-p4p.sh
     - test/test-pytest-pyepics-p4p.sh
     - make -C test test-ioc-with-sim
+    - make -C test test-ioc-with-sim-indexer
 
   - env: BASE=7.0 SET=latest
     compiler: clang

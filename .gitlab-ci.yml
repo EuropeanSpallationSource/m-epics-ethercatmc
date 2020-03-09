@@ -15,6 +15,7 @@ build:
     - test/install-pytest-pyepics-p4p.sh
     - test/test-pytest-pyepics-p4p.sh
     - make -C test test-ioc-with-sim
+    - make -C test test-ioc-with-sim-indexer
 
 variables:
   GIT_SUBMODULE_STRATEGY: "recursive"
