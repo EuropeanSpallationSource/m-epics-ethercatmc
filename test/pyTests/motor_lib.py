@@ -528,6 +528,9 @@ class motor_lib(object):
         print('%s: DbgStrToMCU motor=%s var=%s value=%s outStr=%s' % \
               (tc_no, motor, var, value, outStr))
         if not motor.startswith('pva://'):
+            lenOutStr = len(outStr)
+            if (lenOutStr >= 40):
+                print('%s: setValueOnSimulator motor=%s lenOutStr=%d outStr=%s' % (tc_no, motor, lenOutStr, outStr))
             assert(len(outStr) < 40)
         capv_lib.capvput(motor + '-DbgStrToMCU', outStr, wait=True)
         err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
