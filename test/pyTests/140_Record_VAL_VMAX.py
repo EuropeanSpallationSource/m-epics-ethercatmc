@@ -18,15 +18,14 @@ def motorPositionTC(self, motor, tc_no, destination, velocity):
         if velocity != self.velo:
             capv_lib.capvput(motor + '.VELO', velocity)
 
-        timeout = lib.calcTimeOut(motor, destination, velocity)
-        res = lib.move(motor, destination, timeout)
+        done = lib.moveWait(motor, tc_no, destination)
         if velocity != self.velo:
             capv_lib.capvput(motor + '.VELO', self.velo)
 
         UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
         print('%s postion=%f destination=%f' % (
             tc_no, UserPosition, destination))
-        self.assertEqual(res, globals.SUCCESS, 'move returned SUCCESS')
+        self.assertEqual(1, done, 'moveWait should return done')
         res2 = lib.postMoveCheck(motor)
         self.assertEqual(res2, globals.SUCCESS, 'postMoveCheck returned SUCCESS')
 

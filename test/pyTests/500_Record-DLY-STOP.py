@@ -23,12 +23,8 @@ class Test(unittest.TestCase):
         saved_LLM = capv_lib.capvget(motor + '.LLM')
 
         destination =  (1 * saved_HLM + 9 * saved_LLM) / 10
-
-        capv_lib.capvput(motor + '.VAL', destination, wait=True)
-        rbv = capv_lib.capvget(motor + '.RBV')
-        inpos = lib.calcAlmostEqual(motor, tc_no, destination, rbv, 2)
-        print('%s destination=%f RBV=%f inpos=%d' % (tc_no, destination, rbv, inpos))
-        assert inpos
+        done = lib.moveWait(motor, tc_no, destination)
+        self.assertEqual(1, done, 'moveWait should return done')
 
     # 10% dialPosition + X
     def test_TC_502(self):

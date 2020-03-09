@@ -28,9 +28,9 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, motor, tc_no, vbas, velo, accl, accs,
         capv_lib.capvput(motor + '.ACCL', accl)
     if accs > -1 :
         capv_lib.capvput(motor + '.ACCS', accs)
-    # Move the motor 2 mm (hardcoded)
-    destination = 2.0 + capv_lib.capvget(motor + '.VAL')
-    res = lib.move(motor, destination, 60)
+    # Move the motor 2 mm (hardcoded) + RDBD
+    destination = 2.0 + capv_lib.capvget(motor + '.VAL') + 2 * capv_lib.capvget(motor + '.RDBD')
+    done = lib.moveWait(motor, tc_no, destination)
     resAccEGU = getAccEGUfromMCU(self, motor, tc_no)
     print('%s: check_accEGU_ACCS_ACCL_VELO %s vbas=%f velo=%f accl=%f accs=%f expAccEGU=%f resAccEGU=%f' % \
            (tc_no, motor, vbas, velo, accl, accs, expAccEGU, resAccEGU))
@@ -41,7 +41,8 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, motor, tc_no, vbas, velo, accl, accs,
     expAccl = actVelo / actAccs
     print('%s expAccl=%f expAccs=%f actVelo=%f actAccl=%f actAccs=%f' % (tc_no, expAccl, expAccs, actVelo,actAccl, actAccs))
     assert lib.calcAlmostEqual(self.motor, tc_no, expAccEGU, resAccEGU, 0.1)
-    self.assertEqual(res, globals.SUCCESS, 'move returned SUCCESS')
+    self.assertEqual(1, done, 'moveWait should return done')
+
     # Check if VELO, ACCL and ACCS are aligned
     assert lib.calcAlmostEqual(self.motor, tc_no, expAccl, actAccl, 0.1)
     assert lib.calcAlmostEqual(self.motor, tc_no, expAccs, actAccs, 0.1)
@@ -74,8 +75,9 @@ class Test(unittest.TestCase):
         print('%s' % tc_no)
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
-            ret = lib.move(self.motor, self.per10_UserPosition, 60)
-            assert (ret == 0)
+            done = lib.moveWait(motor,tc_no, self.per10_UserPosition)
+            print('%s done=%s destination=%f' % (tc_no, done, self.per10_UserPosition))
+            self.assertEqual(1, done, 'moveWait should return done')
 
     def test_TC_41311(self):
         tc_no = "TC-41311"

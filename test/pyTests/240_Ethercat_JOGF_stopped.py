@@ -27,23 +27,24 @@ class Test(unittest.TestCase):
     per90_UserPosition  = round((1 * llm + 9 * hlm) / 10)
 
     # Assert that motor is homed
-    def test_TC_241(self):
+    def test_TC_2401(self):
         motor = self.motor
-        tc_no = "TC-241"
+        tc_no = "2401"
 
         if not (self.msta & lib.MSTA_BIT_HOMED):
             self.assertNotEqual(0, self.msta & lib.MSTA_BIT_HOMED, 'MSTA.homed (Axis is not homed)')
 
     # Jog, wait for start, stop behind MR
-    def test_TC_242(self):
+    def test_TC_2402(self):
         motor = self.motor
-        tc_no = "TC-242-JOGF_stopped"
+        tc_no = "2402-JOGF_stopped"
         print('%s' % tc_no)
 
         if (self.msta & lib.MSTA_BIT_HOMED):
+            capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + tc_no[0:20])
             capv_lib.capvput(motor + '.DLY', 0)
             destination = self.per10_UserPosition
-            res1 = lib.move(motor, destination, 60)
+            done = lib.moveWait(motor, tc_no, destination)
             UserPosition = capv_lib.capvget(motor + '.RBV', use_monitor=False)
             print('%s postion=%f per10_UserPosition=%f' % (
                 tc_no, UserPosition, self.per90_UserPosition))
@@ -66,6 +67,7 @@ class Test(unittest.TestCase):
 
 
             capv_lib.capvput(motor + '.DLY', self.saved_DLY)
+            capv_lib.capvput(motor + '-DbgStrToLOG', "End " + tc_no[0:20])
 
-            self.assertEqual(res1, globals.SUCCESS, 'move returned SUCCESS')
+            self.assertEqual(1, done, 'moveWait should return done')
             self.assertEqual(res4, globals.SUCCESS, 'VAL synched with RBV')

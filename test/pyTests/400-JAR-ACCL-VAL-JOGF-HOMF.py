@@ -46,8 +46,9 @@ class Test(unittest.TestCase):
         print('%s' % tc_no)
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
-            ret = lib.move(self.motor, self.per10_UserPosition, 60)
-            assert (ret == 0)
+            done = lib.moveWait(motor, tc_no, self.per10_UserPosition)
+            self.assertEqual(1, done, 'moveWait should return done')
+
 
     # 20% dialPosition
     def test_TC_403(self):
@@ -59,13 +60,14 @@ class Test(unittest.TestCase):
             saved_VELO = float(capv_lib.capvget(motor + '.VELO'))
             used_ACCL = saved_ACCL + 1.0 # Make sure we have an acceleration != 0
             capv_lib.capvput(motor + '.ACCL', used_ACCL)
-            ret = lib.move(self.motor, self.per20_UserPosition, 60)
+            done = lib.moveWait(motor, tc_no, self.per20_UserPosition)
             resacc = self.getAcceleration(motor, tc_no)
             expacc = saved_VELO / used_ACCL
             capv_lib.capvput(motor + '.ACCL', saved_ACCL)
             print('%s ACCL=%f expacc=%f resacc=%f' % (tc_no,used_ACCL,expacc,resacc))
             assert lib.calcAlmostEqual(self.motor, tc_no, expacc, resacc, 2)
-            assert (ret == 0)
+            self.assertEqual(1, done, 'moveWait should return done')
+
 
 
     # JOGR
@@ -74,6 +76,7 @@ class Test(unittest.TestCase):
         print('%s' % tc_no)
         motor = self.motor
         if (self.msta & lib.MSTA_BIT_HOMED):
+            capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + tc_no)
             accl = float(capv_lib.capvget(motor + '.ACCL'))
             jvel = float(capv_lib.capvget(motor + '.JVEL'))
             saved_JAR = float(capv_lib.capvget(motor + '.JAR'))
@@ -82,8 +85,13 @@ class Test(unittest.TestCase):
             capv_lib.capvput(motor + '.JOGR', 1, wait=True)
             resacc = self.getAcceleration(motor, tc_no)
             expacc = used_JAR
+            capv_lib.capvput(motor + '.JOGR', 0)
+            # Wait depending on JVEL (and positions)
+            time_to_wait = (self.per20_UserPosition - self.llm) / jvel + 2 * accl + 1.0
+            lib.waitForStop(motor, tc_no, time_to_wait)
             capv_lib.capvput(motor + '.JAR', saved_JAR)
             print('%s JAR=%f expacc=%f resacc=%f' % (tc_no,used_JAR,expacc,resacc))
 
+            capv_lib.capvput(motor + '-DbgStrToLOG', "End " + tc_no)
             assert lib.calcAlmostEqual(self.motor, tc_no, expacc, resacc, 2)
 

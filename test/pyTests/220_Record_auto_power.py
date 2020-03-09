@@ -32,7 +32,8 @@ def do_220_autopower(self, motor, tc_no, autopower):
     capv_lib.capvput(motor + '-PwrOnDly', PwrOnDly, wait=True, timeout=globals.TIMEOUT)
     capv_lib.capvput(motor + '-PwrOffDly', PwrOffDly, wait=True, timeout=globals.TIMEOUT)
     print('%s Enable move to LLM +10' % tc_no)
-    res1 = lib.move(motor, self.saved_LLM + 10 + 2*autopower, globals.TIMEOUT)
+    destination = self.saved_LLM + 10 + 2*autopower
+    done = lib.moveWait(motor, tc_no, destination)
 
     #Make sure drive is still enabled
     power1 = capv_lib.capvget(motor + '.CNEN', use_monitor=False)
@@ -43,7 +44,9 @@ def do_220_autopower(self, motor, tc_no, autopower):
     power2 = capv_lib.capvget(motor + '.CNEN', use_monitor=False)
     print('%s Wait 8s and check drive is now disabled power2=%d' % (tc_no, power2))
     restorePwrSettings(self, motor, tc_no, self.saved_PwrAuto, self.saved_PwrOnDly, self.saved_PwrOffDly)
-    assert(res1 == 0)
+    lib.setCNENandWait(motor, tc_no, self.saved_CNEN)
+
+    self.assertEqual(1, done, 'moveWait should return done')
     assert(power1 == 1)
     assert(power2 == 0)
 
@@ -60,27 +63,34 @@ class Test(unittest.TestCase):
 
     def test_TC_2200(self):
         motor = self.motor
-        tc_no = "TC-2201-Enable_goto_LLM"
+        tc_no = "2201-Enable_goto_LLM"
 
         #Enable power
+        capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + tc_no[0:20])
         print('%s Enable drive and move to LLM' % tc_no)
         capv_lib.capvput(motor + '-PwrAuto', 2,         wait=True, timeout=globals.TIMEOUT)
         capv_lib.capvput(motor + '-PwrOnDly', PwrOnDly, wait=True, timeout=globals.TIMEOUT)
         lib.setCNENandWait(motor, tc_no, 1)
-        res = lib.move(motor, self.saved_LLM, globals.TIMEOUT)
+        destination = self.saved_LLM
+        done = lib.moveWait(motor, tc_no, destination)
         restorePwrSettings(self, motor, tc_no, self.saved_PwrAuto, self.saved_PwrOnDly, self.saved_PwrOffDly)
-        assert(res == 0)
+        capv_lib.capvput(motor + '-DbgStrToLOG', "End   " + tc_no[0:20])
+        self.assertEqual(1, done, 'moveWait should return done')
 
 
     def test_TC_2201(self):
         motor = self.motor
-        tc_no = "TC-2201-Auto_power_mode_1"
+        tc_no = "2201-Auto_pwr_1"
         print('%s autopower ' % tc_no)
+        capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + tc_no[0:20])
         do_220_autopower(self, motor, tc_no, 1)
+        capv_lib.capvput(motor + '-DbgStrToLOG', "End   " + tc_no[0:20])
 
     def test_TC_2202(self):
         motor = self.motor
-        tc_no = "TC-2202-Auto_power_mode_2"
+        tc_no = "2202-Auto_pwr_2"
+        capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + tc_no[0:20])
         print('%s autopower ' % tc_no)
         do_220_autopower(self, motor, tc_no, 2)
         lib.setCNENandWait(motor, tc_no, self.saved_CNEN)
+        capv_lib.capvput(motor + '-DbgStrToLOG', "End   " + tc_no[0:20])
