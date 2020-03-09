@@ -21,6 +21,88 @@
   exit 1
 }
 
+##############################################################################
+# functions
+#
+#
+checkAndInstallSystemPackage()
+{
+  while test $# -gt 1; do
+    PACKAGENAME=$1
+    shift
+    if which yum >/dev/null 2>&1; then
+      sudo yum install $PACKAGENAME && return 0
+    fi
+    if which apt-get >/dev/null 2>&1; then
+      sudo apt-get install -y $PACKAGENAME && return 0
+    fi
+    if which port >/dev/null 2>&1; then
+      sudo port install $PACKAGENAME && return 0
+    fi
+  done
+  echo >&1 install $PACKAGENAME failed
+  return 1
+}
+
+########################################
+checkAndInstallPythonPackage()
+{
+  IMPORTNAME=$1
+
+  if ! python -c "import $IMPORTNAME" >/dev/null 2>&1; then
+    while test $# -gt 1; do
+      shift
+      PACKAGEINSTALL=$1
+      echo failed: $PYTHON -c "import $IMPORTNAME"
+      $PACKAGEINSTALL && return 0
+    done
+    echo >&1  $PACKAGEINSTALL failed
+    exit 1
+  fi
+}
+########################################
+
+MYVIRTUALENV=virtualenv
+if which virtualenv-3.7 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.7
+fi
+export MYVIRTUALENV
+
+########################################
+#
+# conda or virtualenv
+#
+if ! which conda >/dev/null 2>&1; then
+  # This is Mac OS
+  #URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+  #wget $URL || {
+    #echo >&2 wget $URL failed
+    #exit 1
+  #}
+  # conda is preferred over virtualenv
+  # But: if we have virtualenv, use it
+  if ! which $MYVIRTUALENV; then
+    checkAndInstallSystemPackage conda anaconda || {
+      # conda installation failed, fall back to virtualenv
+      checkAndInstallSystemPackage py37-virtualenv virtualenv python-virtualenv || {
+        echo >2 "could not install virtualenv"
+        exit 1
+      }
+    }
+  fi
+fi
+
+########################################
+if ! which $MYVIRTUALENV; then
+  if which conda >/dev/null 2>&1; then
+    conda activate pyepicsPytestPVApy || {
+      echo >&2 conda activate pyepicsPytestPVApy failed
+      conda create -n  pyepicsPytestPVApy
+      exit 1
+    }
+  fi
+fi
+########################################
 if ! type pytest >/dev/null 2>&1 ; then
   # more things to do, either conda or virtualenv is our friend
   if test -e $HOME/.bash_profile; then
@@ -32,83 +114,9 @@ if ! type pytest >/dev/null 2>&1 ; then
   PYTEST=pytest
   PYTHON=python3
 
-  ##############################################################################
-  # functions
-  #
-  #
-  checkAndInstallSystemPackage()
-  {
-    BINARYNAME=$1
-    PACKAGENAME=$2
-    if ! which $BINARYNAME; then
-      if which yum >/dev/null 2>&1; then
-        sudo yum install $PACKAGENAME || {
-          echo >&2 failed: sudo yum install $PACKAGENAME
-          return 1
-        }
-      fi
-      if which apt-get >/dev/null 2>&1; then
-        sudo apt-get install $PACKAGENAME || {
-          echo >&2 failed: sudo apt-get install $PACKAGENAME
-          return 1
-        }
-      fi
-      return 1
-    fi
-  }
-
-  ########################################
-  checkAndInstallPythonPackage()
-  {
-    IMPORTNAME=$1
-
-    if ! python -c "import $IMPORTNAME" >/dev/null 2>&1; then
-      while test $# -gt 1; do
-        shift
-        PACKAGEINSTALL=$1
-        echo failed: $PYTHON -c "import $IMPORTNAME"
-        $PACKAGEINSTALL && return 0
-      done
-      echo >&1  $PACKAGEINSTALL failed
-      exit 1
-    fi
-  }
-  ##############################################################################
-  if ! which conda >/dev/null 2>&1; then
-    # This is Mac OS
-    #URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-    #wget $URL || {
-      #echo >&2 wget $URL failed
-      #exit 1
-    #}
-    # conda is preferred over virtualenv
-    # But: if we have virtualenv, use it
-    if ! which virtualenv; then
-      checkAndInstallSystemPackage conda anaconda || {
-        # conda installation failed, fall back to virtualenv
-        checkAndInstallSystemPackage virtualenv python-virtualenv || {
-          echo >2 "could not install virtualenv"
-          exit 1
-        }
-      }
-    fi
-  fi
-
 
   ##############################################################################
-  if which conda >/dev/null 2>&1; then
-    conda activate pyepicsPytestPVApy || {
-      echo >&2 conda activate pyepicsPytestPVApy failed
-      conda create -n  pyepicsPytestPVApy
-      exit 1
-    }
-    checkAndInstallPythonPackage pytest "conda install -c conda-forge pyTest"
-    checkAndInstallPythonPackage epics  "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
-  else
-    if ! type virtualenv >/dev/null 2>&1; then
-      echo >&2 virtualenv not found.
-      exit 1
-    fi
+  if type $MYVIRTUALENV >/dev/null 2>&1; then
     if which python3.7 >/dev/null 2>&1; then
       PYTHON=python3.7
     elif which python36 >/dev/null 2>&1; then
@@ -131,25 +139,27 @@ if ! type pytest >/dev/null 2>&1 ; then
     if test -r $VIRTUALENVDIR/bin/activate; then
       .  $VIRTUALENVDIR/bin/activate
     else
-      virtualenv --python=$PYTHON $VIRTUALENVDIR || {
-        echo >&2 virtualenv failed
+      $MYVIRTUALENV --python=$PYTHON $VIRTUALENVDIR || {
+        echo >&2 $MYVIRTUALENV failed
         exit 1
       }
     fi
     if test -r $VIRTUALENVDIR/bin/activate; then
       .  $VIRTUALENVDIR/bin/activate
     fi
-    checkAndInstallPythonPackage epics "pip3 install pyepics" "pip install pyepics" &&
-      checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST" || {
-        echo >&2 Installation problem:
-        echo >&2 pip not found
-        echo >&2 easy_install not found
-        exit 1
-      }
+  elif which conda >/dev/null 2>&1; then
+    checkAndInstallPythonPackage pytest "conda install -c conda-forge pyTest"
+    checkAndInstallPythonPackage epics  "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
   fi
+  checkAndInstallPythonPackage epics "pip3 install pyepics" "pip install pyepics" &&
+    checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST" || {
+      echo >&2 Installation problem:
+      echo >&2 pip not found
+      echo >&2 easy_install not found
+      exit 1
+      }
 
   checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
-
 
   # See if we have a local EPICS installation
   uname_s=$(uname -s 2>/dev/null || echo unknown)
