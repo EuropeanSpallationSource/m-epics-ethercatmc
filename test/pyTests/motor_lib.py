@@ -372,6 +372,12 @@ class motor_lib(object):
         and check final position is within RDBD.
         """
 
+        msta = int(capv_lib.capvget(motor + ".MSTA"))
+        mip  = int(capv_lib.capvget(motor + ".MIP"))
+        print (motor + " START(move) pos=" + str(position)
+               + " timeout=" + str(timeout)
+               + " msta=" + self.getMSTAtext(msta)
+               + " mip=" + self.getMIPtext(mip))
         try:
             capv_lib.capvput(motor, position, wait=True, timeout=timeout)
         except:
@@ -394,10 +400,13 @@ class motor_lib(object):
             success = False
         else:
             print("Final_pos inside deadband.")
-        print((motor + " pos=" + str(position) +
-               " timeout=" + str(timeout) +
-               " final_pos=" + str(final_pos) +
-               " deadband=" + str(deadband)))
+        msta = int(capv_lib.capvget(motor + ".MSTA"))
+        mip  = int(capv_lib.capvget(motor + ".MIP"))
+        print (motor + " END(move) pos=" + str(position)
+               + " final_pos=" + str(final_pos)
+               + " deadband=" + str(deadband)
+               + " msta=" + self.getMSTAtext(msta)
+               + " mip=" + self.getMIPtext(mip))
 
         if (success):
             return self.postMoveCheck(motor)
@@ -531,7 +540,7 @@ class motor_lib(object):
             lenOutStr = len(outStr)
             if (lenOutStr >= 40):
                 print('%s: setValueOnSimulator motor=%s lenOutStr=%d outStr=%s' % (tc_no, motor, lenOutStr, outStr))
-            assert(len(outStr) < 40)
+                assert(len(outStr) < 40)
         capv_lib.capvput(motor + '-DbgStrToMCU', outStr, wait=True)
         err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
         print('%s: DbgStrToMCU motor=%s var=%s value=%s err=%d' % \
