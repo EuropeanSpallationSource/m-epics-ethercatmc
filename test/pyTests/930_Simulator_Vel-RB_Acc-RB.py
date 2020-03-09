@@ -18,7 +18,8 @@ polltime = 0.1
 def setAndReadBackParam(self, motor, tc_no, pvSuffix, paramInSimu):
     pvname = motor + pvSuffix
     valRB = capv_lib.capvget(pvname)
-    newVal = valRB + 1
+    newVal = round(valRB + 1, 2)
+    print('%s:%d %s valRB=%f newVal=%f' % (tc_no, lineno(), pvname, valRB, newVal))
     lib.setValueOnSimulator(motor, tc_no, paramInSimu, newVal)
     maxTime = 30 # 30 seconds maximum to poll all parameters
     testPassed = False
@@ -35,7 +36,9 @@ def setAndReadBackParam(self, motor, tc_no, pvSuffix, paramInSimu):
             maxTime = maxTime - polltime
 
     # restore the original value
-    lib.setValueOnSimulator(motor, tc_no, paramInSimu, valRB)
+    # Avoid overlong strings (and therefore not working with channel access)
+    # like "Sim.this.fAcceleration=2.0999999046325684"
+    lib.setValueOnSimulator(motor, tc_no, paramInSimu, round(valRB,2))
     assert(testPassed)
 
 
@@ -44,39 +47,39 @@ class Test(unittest.TestCase):
     capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
 
     # Set and readback Vel
-    def test_TC_1501(self):
+    def test_TC_9301(self):
         motor = self.motor
-        tc_no = "TC-1501"
+        tc_no = "TC-9301"
         setAndReadBackParam(self, motor, tc_no, '-Vel-RB', 'fVelocity')
 
    # Set and readback Acc
-    def test_TC_1502(self):
+    def test_TC_9302(self):
         motor = self.motor
-        tc_no = "TC-1502"
+        tc_no = "TC-9302"
         setAndReadBackParam(self, motor, tc_no, '-Acc-RB', 'fAcceleration')
 
     # Set and readback high soft limit value
-    def test_TC_1503(self):
+    def test_TC_9303(self):
         motor = self.motor
-        tc_no = "TC-1503"
+        tc_no = "TC-9303"
         setAndReadBackParam(self, motor, tc_no, '-CfgDHLM-RB', 'fHighSoftLimitPos')
 
     ## Set and readback high soft limit enable
     # Cant run those, PILS has no enable bit
-    #def test_TC_1504(self):
+    #def test_TC_9304(self):
     #    motor = self.motor
-    #    tc_no = "TC-1504"
+    #    tc_no = "TC-9304"
     #    setAndReadBackParam(self, motor, tc_no, '-CfgDHLM-En-RB', 'bEnableHighSoftLimit')
 
     # Set and readback low soft limit value
-    def test_TC_1505(self):
+    def test_TC_9305(self):
         motor = self.motor
-        tc_no = "TC-1505"
+        tc_no = "TC-9305"
         setAndReadBackParam(self, motor, tc_no, '-CfgDLLM-RB', 'fLowSoftLimitPos')
 
     ## Set and readback low soft limit enable
     # Cant run those, PILS has no enable bit
-    #def test_TC_1506(self):
+    #def test_TC_9306(self):
     #    motor = self.motor
-    #    tc_no = "TC-1506"
+    #    tc_no = "TC-9306"
     #    setAndReadBackParam(self, motor, tc_no, '-CfgDLLM-En-RB', 'bEnableLowSoftLimit')
