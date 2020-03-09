@@ -414,7 +414,6 @@ class motor_lib(object):
             distance = math.fabs(capv_lib.capvget(motor + '.RBV') - destination)
             timeout += distance / velocity
 
-        capv_lib.capvput(motor + '.VAL', destination)
         success_or_failed = self.move(motor, destination, timeout)
         if (success_or_failed == self.globals.FAIL):
             return False
