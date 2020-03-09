@@ -38,9 +38,9 @@ class Test(unittest.TestCase):
     saved_PwrAuto = capv_lib.capvget(motor + '-PwrAuto')
 
     # Jog, wait for start, power off, check error, reset error
-    def test_TC_212(self):
+    def test_TC_9402(self):
         motor = self.motor
-        tc_no = "TC-212-EnabledFailed"
+        tc_no = "TC-9402-EnabledFailed"
 
         capv_lib.capvput(motor + '.CNEN', 0, wait=True)
         setValueOnSimulator(self, motor, tc_no, "bAmplifierLockedToBeOff",
