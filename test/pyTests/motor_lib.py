@@ -788,7 +788,7 @@ class motor_lib(object):
 
     def setCNENandWait(self, motor, tc_no, cnen):
         wait_for_power_changed = 6.0
-        capv_lib.capvput(motor + '-DbgStrToLOG', "CNEN= " + tc_no[0:20]);
+        capv_lib.capvput(motor + '-DbgStrToLOG', "CNEN=" + str(cnen) + " " +tc_no[0:20]);
         capv_lib.capvput(motor + '.CNEN', cnen)
         while wait_for_power_changed > 0:
             msta = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
