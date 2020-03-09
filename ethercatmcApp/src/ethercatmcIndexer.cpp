@@ -668,7 +668,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
-  for (dataIdx = 0; dataIdx <= 16; dataIdx++) {
+  for (dataIdx = 0; dataIdx < 16; dataIdx++) {
     unsigned parameters;
     int traceMask = 0;
     parameters = -1;
