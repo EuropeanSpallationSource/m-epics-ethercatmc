@@ -822,7 +822,7 @@ asynStatus ethercatmcAxis::enableAmplifier(int on)
   {
     int autoPower;
     pC_->getIntegerParam(axisNo_, pC_->motorPowerAutoOnOff_, &autoPower);
-    if (autoPower) {
+    if (autoPower == POWERAUTOONOFFMODE2) {
       /* The record/driver will check for enabled - don't do that here */
       enableEnabledReadback = "bEnable";
     }
