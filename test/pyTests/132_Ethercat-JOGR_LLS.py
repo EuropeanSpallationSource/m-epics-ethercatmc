@@ -44,6 +44,7 @@ class Test(unittest.TestCase):
             print('%s' % tc_no)
             old_high_limit = capv_lib.capvget(motor + '.HLM')
             old_low_limit = capv_lib.capvget(motor + '.LLM')
+            rdbd  = capv_lib.capvget(motor + '.RDBD')
             capv_lib.capvput(motor + '.STOP', 1)
             #Go away from limit switch
             done = lib.moveWait(motor, tc_no, self.jog_start_pos)
@@ -59,7 +60,7 @@ class Test(unittest.TestCase):
             lvio = int(capv_lib.capvget(motor + '.LVIO'))
             mstaE = int(capv_lib.capvget(motor + '.MSTA'))
             #Go away from limit switch
-            done2 = lib.moveWait(motor, tc_no, old_low_limit)
+            done2 = lib.moveWait(motor, tc_no, old_low_limit + rdbd)
             print('%s msta=%x lvio=%d' % (tc_no, mstaE, lvio))
 
             lib.setSoftLimitsOn(motor, old_low_limit, old_high_limit)
