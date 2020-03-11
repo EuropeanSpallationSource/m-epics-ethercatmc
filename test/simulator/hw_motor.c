@@ -1189,17 +1189,21 @@ int openLogFile(int axis_no, const char *filename)
   return 0;
 }
 
-void closeLogFile(int axis_no)
+int closeLogFile(int axis_no)
 {
-  fprintf(stdlog, "LLLL %s/%s:%d axis_no=%d\n",
-            __FILE__, __FUNCTION__, __LINE__,
-          axis_no);
-
-  AXIS_CHECK_RETURN(axis_no);
+  int res = 1;
+  AXIS_CHECK_RETURN_ERROR(axis_no);
   if (motor_axis[axis_no].logFile) {
-    fclose(motor_axis[axis_no].logFile);
+    fprintf(motor_axis[axis_no].logFile,
+            "%s\n", "EOF");
+    res = fclose(motor_axis[axis_no].logFile);
     motor_axis[axis_no].logFile = NULL;
   }
+  fprintf(stdlog, "LLLL %s/%s:%d axis_no=%d res=%d\n",
+            __FILE__, __FUNCTION__, __LINE__,
+          axis_no, res);
+
+  return res;
 }
 
 int getManualSimulatorMode(int axis_no)

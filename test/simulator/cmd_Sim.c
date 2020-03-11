@@ -68,8 +68,13 @@ static void motorHandleOneArg(const char *myarg_1)
   }
   /* dbgCloseLogFile */
   if (!strncmp(myarg_1, dbgCloseLogFile_str, strlen(dbgCloseLogFile_str))) {
-    closeLogFile(motor_axis_no);
-    cmd_buf_printf("OK");
+    int ret;
+    ret = closeLogFile(motor_axis_no);
+    if (!ret)
+      cmd_buf_printf("OK");
+    else
+      cmd_buf_printf("Error %s(%d)",
+                     strerror(ret), ret);
     return;
   }
 
