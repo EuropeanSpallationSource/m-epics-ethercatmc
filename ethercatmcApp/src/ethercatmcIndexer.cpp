@@ -848,6 +848,17 @@ asynStatus ethercatmcController::initialPollIndexer(void)
   if (!ctrlLocal.adsport) {
     ctrlLocal.adsport = 851;
   }
+  {
+    /* Demo only */
+    const char *symbolName = "Main.sVersion";
+    uint32_t MainsVersionHandle = 0;
+    status = getSymbolHandleByNameViaADS(symbolName, &MainsVersionHandle);
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+	      "%sMainsVersionHandle=0x%x status=%s (%d)\n",
+	      modNamEMC, MainsVersionHandle,
+	      ethercatmcstrStatus(status), (int)status);
+  }
+
   status = getPlcMemoryUint(0, &iTmpVer, sizeof(iTmpVer));
   if (status) return status;
 
