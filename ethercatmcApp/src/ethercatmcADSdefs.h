@@ -96,19 +96,21 @@ typedef struct {
   } response;
 } AdsWriteRepType;
 
+typedef struct {
+  uint8_t entryLen[4];
+  uint8_t indexGroup[4];
+  uint8_t indexOffset[4];
+  uint8_t size[4];
+  uint8_t dataType[4];
+  uint8_t flags[4];
+  uint8_t nameLength[2];
+  uint8_t typeLength[2];
+  uint8_t commentLength[2];
+  char    buffer[768]; //256*3, 256 is string size in TwinCAT then 768 is max
+} AdsSymbolInfoType;
 
 typedef struct {
   AdsReadWriteRepType adsReadWriteRep;
-  struct {
-    uint8_t entryLen[4];
-    uint8_t indexGroup[4];
-    uint8_t indexOffset[4];
-    uint8_t size[4];
-    uint8_t dataType[4];
-    uint8_t flags[4];
-    uint8_t nameLength[2];
-    uint8_t typeLength[2];
-    uint8_t commentLength[2];
-  } symbol_info;
+  AdsSymbolInfoType   symbol_info;
 } AdsGetSymbolInfoByNameRepType;
 #endif
