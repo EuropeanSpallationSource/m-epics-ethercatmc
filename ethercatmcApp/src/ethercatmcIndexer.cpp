@@ -851,6 +851,7 @@ asynStatus ethercatmcController::initialPollIndexer(void)
   if (!ctrlLocal.adsport) {
     ctrlLocal.adsport = 851;
   }
+#if 0
   {
     /* Demo only */
     const char *symbolName = "Main.sVersion";
@@ -881,7 +882,7 @@ asynStatus ethercatmcController::initialPollIndexer(void)
               NETTOUINT(adsSymbolInfo.commentLength),
               ethercatmcstrStatus(status), (int)status);
   }
-
+#endif
   status = getPlcMemoryUint(0, &iTmpVer, sizeof(iTmpVer));
   if (status) return status;
 
