@@ -398,16 +398,18 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
         /* This is an error. (collision ?) */
         status = asynDisabled;
       case PARAM_IF_CMD_ERR_NO_IDX:
-        status = asynDisabled;
+        return asynDisabled;
       case PARAM_IF_CMD_READONLY:
-        status = asynDisabled;
+        return asynDisabled;
       case PARAM_IF_CMD_RETRY_LATER:
         break;  /* continue looping */
       }
       if (status && (counter > 1)) {
         asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-                  "%s (%d) paramIfOffset=%u paramIndex=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
-                  modNamEMC, axisNo, paramIfOffset, paramIndex, cmdSubParamIndex,
+                  "%s (%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
+                  "cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
+                  modNamEMC, axisNo, paramIfOffset,
+                  plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, cmdSubParamIndex,
                   counter,
                   ethercatmcstrStatus(status), (int)status);
       }
@@ -728,8 +730,9 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
           if (status) {
             asynPrint(pasynUserController_,
                       ASYN_TRACE_INFO,
-                      "%sindexerReadAxisParameters paramIndex=%u lenInPlcPara=%u status=%s (%d)\n",
-                      modNamEMC, paramIndex, lenInPlcPara,
+                      "%sindexerReadAxisParameters paramIdx=%s (%u) lenInPlcPara=%u status=%s (%d)\n",
+                      modNamEMC, plcParamIndexTxtFromParamIndex(paramIndex),
+                      paramIndex, lenInPlcPara,
                       ethercatmcstrStatus(status), (int)status);
             if ((paramIndex >= 128) && (status == asynDisabled)) {
               /* Read back of functions as parameters is not defined in PILS
@@ -745,7 +748,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                     paramIndex, fValue);
         } else {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdxFunction=%s (%u)\n",
+                    "%sparameters(%d) paramIdx=%s (%u)\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex);
@@ -854,9 +857,9 @@ asynStatus ethercatmcController::initialPollIndexer(void)
     uint32_t MainsVersionHandle = 0;
     status = getSymbolHandleByNameViaADS(symbolName, &MainsVersionHandle);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-	      "%sMainsVersionHandle=0x%x status=%s (%d)\n",
-	      modNamEMC, MainsVersionHandle,
-	      ethercatmcstrStatus(status), (int)status);
+              "%sMainsVersionHandle=0x%x status=%s (%d)\n",
+              modNamEMC, MainsVersionHandle,
+              ethercatmcstrStatus(status), (int)status);
   }
 
   status = getPlcMemoryUint(0, &iTmpVer, sizeof(iTmpVer));
