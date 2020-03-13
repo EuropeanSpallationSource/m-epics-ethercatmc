@@ -857,8 +857,28 @@ asynStatus ethercatmcController::initialPollIndexer(void)
     uint32_t MainsVersionHandle = 0;
     status = getSymbolHandleByNameViaADS(symbolName, &MainsVersionHandle);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sMainsVersionHandle=0x%x status=%s (%d)\n",
-              modNamEMC, MainsVersionHandle,
+              "%s(%s) MainsVersionHandle=0x%x status=%s (%d)\n",
+              modNamEMC, symbolName, MainsVersionHandle,
+              ethercatmcstrStatus(status), (int)status);
+  }
+  {
+    /* Demo only */
+    const char *symbolName = "Main.sVersion";
+    AdsSymbolInfoType adsSymbolInfo;
+    //uint8_t symbolInfo[1024];
+    status = getSymbolInfoViaADS(symbolName, &adsSymbolInfo, sizeof(adsSymbolInfo));
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s(%s) indexGroup=0x%x indexOffset=0x%x size=%u dataType=%u flags=0x%x nameLength=%u typeLength=%u commentLength=%u "
+              "status=%s (%d)\n",
+              modNamEMC, symbolName,
+              NETTOUINT(adsSymbolInfo.indexGroup),
+              NETTOUINT(adsSymbolInfo.indexOffset),
+              NETTOUINT(adsSymbolInfo.size),
+              NETTOUINT(adsSymbolInfo.dataType),
+              NETTOUINT(adsSymbolInfo.flags),
+              NETTOUINT(adsSymbolInfo.nameLength),
+              NETTOUINT(adsSymbolInfo.typeLength),
+              NETTOUINT(adsSymbolInfo.commentLength),
               ethercatmcstrStatus(status), (int)status);
   }
 
