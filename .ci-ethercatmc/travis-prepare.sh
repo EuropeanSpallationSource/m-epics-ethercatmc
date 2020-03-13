@@ -34,7 +34,7 @@ EOF
 # use default selection for MSI
 sed -i -e '/MSI/d' configure/CONFIG_SITE
 
-if [ ! -e "$EPICS_BASE/built" ] 
+if [ ! -e "$EPICS_BASE/built" ]
 then
 
     git clone --recursive --depth 10 --branch $BASE https://github.com/epics-base/epics-base.git $EPICS_BASE

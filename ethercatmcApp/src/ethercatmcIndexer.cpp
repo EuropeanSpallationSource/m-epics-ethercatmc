@@ -349,41 +349,41 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
 
     status = setPlcMemoryInteger(paramIfOffset, cmd, lenInPlcCmd);
     asynPrint(pasynUserController_, traceMask | (status ? ASYN_TRACE_ERROR : 0),
-	      "%sstatus=%s (%d)\n",
-	      modNamEMC,
-	      ethercatmcstrStatus(status), (int)status);
+              "%sstatus=%s (%d)\n",
+              modNamEMC,
+              ethercatmcstrStatus(status), (int)status);
     if (status) return status;
     while (counter < MAX_COUNTER) {
       unsigned cmdSubParamIndex = 0;
       double fValue;
       struct {
-	uint8_t   paramCtrl[2];
-	uint8_t   paramValue[8];
+        uint8_t   paramCtrl[2];
+        uint8_t   paramValue[8];
       } paramIf;
       status = getPlcMemoryViaADS(paramIfOffset,
-				  &paramIf,
+                                  &paramIf,
                                   sizeof(paramIf.paramCtrl) + lenInPlcPara);
       if (status) {
-	asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-		  "%sstatus=%s (%d)\n",
-		  modNamEMC,
-		  ethercatmcstrStatus(status), (int)status);
-	return status;
+        asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+                  "%sstatus=%s (%d)\n",
+                  modNamEMC,
+                  ethercatmcstrStatus(status), (int)status);
+        return status;
       }
       cmdSubParamIndex = netToUint(&paramIf.paramCtrl,
                                    sizeof(paramIf.paramCtrl));
       if (paramIndex < 30) {
         /* parameters below 30 are unsigned integers in the PLC
            Read them as integers from PLC, and parse into a double */
-	fValue           = (double)netToUint(&paramIf.paramValue,
+        fValue           = (double)netToUint(&paramIf.paramValue,
                                              lenInPlcPara);
       } else {
-	fValue           = netToDouble(&paramIf.paramValue,lenInPlcPara);
+        fValue           = netToDouble(&paramIf.paramValue,lenInPlcPara);
       }
       if (cmdSubParamIndex == cmdAcked) {
-	/* This is good, return */
-	*value = fValue;
-	return asynSuccess;
+        /* This is good, return */
+        *value = fValue;
+        return asynSuccess;
       }
 
       switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
@@ -405,11 +405,11 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
         break;  /* continue looping */
       }
       if (status && (counter > 1)) {
-	asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-		  "%s (%d) paramIfOffset=%u paramIndex=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
-		  modNamEMC, axisNo, paramIfOffset, paramIndex, cmdSubParamIndex,
-		  counter,
-		  ethercatmcstrStatus(status), (int)status);
+        asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+                  "%s (%d) paramIfOffset=%u paramIndex=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
+                  modNamEMC, axisNo, paramIfOffset, paramIndex, cmdSubParamIndex,
+                  counter,
+                  ethercatmcstrStatus(status), (int)status);
       }
       epicsThreadSleep(calcSleep(counter));
       counter++;
@@ -715,11 +715,11 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
         double fValue = 0.0;
         int initial = 1;
         if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
-	    (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
+            (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
           /* paramIndex >= PARAM_IF_IDX_FIRST_FUNCTION (128) are functions.
              Don't read them.
              tell driver that the function exist
-	     But read 142, which becomes JVEL */
+             But read 142, which becomes JVEL */
           status = indexerParamRead(axisNo,
                                     paramIfOffset,
                                     paramIndex,

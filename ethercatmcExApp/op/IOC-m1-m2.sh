@@ -5,7 +5,7 @@ MEDM=medm
 if ! type $MEDM; then
     FILE=../../../../extensions/src/medm/medm/O.$EPICS_HOST_ARCH/medm
     if test -x $FILE; then
-	MEDM=$FILE
+        MEDM=$FILE
     fi
 fi
 export MEDM

@@ -23,7 +23,7 @@ epicsEnvSet("NUMAXES", "$(ECM_NUMAXES=8)")
 # Default ADS port
 epicsEnvSet("ADSPORT", "$(ECM_ADSPORT=852)")
 
-# Default OPTIONS 
+# Default OPTIONS
 epicsEnvSet("ECC_OPTIONS", "$(ECM_OPTIONS=;)")
 
 
