@@ -575,7 +575,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
                                                      void *data,
                                                      size_t lenInPlc)
 {
-  int tracelevel = deftracelevel | ASYN_TRACE_INFO;
+  int tracelevel = deftracelevel;
   asynUser *pasynUser = pasynUserController_;
   unsigned indexGroup = 0xF009;
   unsigned indexOffset = 0;
@@ -592,6 +592,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
 
   memset(ads_read_write_req_p, 0, write_buf_len);
   memset(p_read_buf, 0, read_buf_len);
+  memset(data, 0, lenInPlc);
   invokeID++;
 
   UINTTONET(indexGroup,    ads_read_write_req_p->net_idxGrp);
@@ -604,7 +605,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
     uint8_t *dst_ptr = (uint8_t*)ads_read_write_req_p;
     dst_ptr += sizeof(AdsReadWriteReqType);
     memcpy(dst_ptr, symbolName, symbolNameLen);
-    ethercatmchexdump(pasynUser, tracelevel, "LOOKS",
+    ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
                       symbolName, symbolNameLen);
   }
   status = writeWriteReadAds(pasynUser,
@@ -678,7 +679,7 @@ ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
     uint8_t *dst_ptr = (uint8_t*)ads_read_write_req_p;
     dst_ptr += sizeof(AdsReadWriteReqType);
     memcpy(dst_ptr, symbolName, symbolNameLen);
-    ethercatmchexdump(pasynUser, tracelevel, "LOOKS",
+    ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
                       symbolName, symbolNameLen);
   }
   status = writeWriteReadAds(pasynUser,
