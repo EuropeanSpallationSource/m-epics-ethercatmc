@@ -349,41 +349,41 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
 
     status = setPlcMemoryInteger(paramIfOffset, cmd, lenInPlcCmd);
     asynPrint(pasynUserController_, traceMask | (status ? ASYN_TRACE_ERROR : 0),
-	      "%sstatus=%s (%d)\n",
-	      modNamEMC,
-	      ethercatmcstrStatus(status), (int)status);
+              "%sstatus=%s (%d)\n",
+              modNamEMC,
+              ethercatmcstrStatus(status), (int)status);
     if (status) return status;
     while (counter < MAX_COUNTER) {
       unsigned cmdSubParamIndex = 0;
       double fValue;
       struct {
-	uint8_t   paramCtrl[2];
-	uint8_t   paramValue[8];
+        uint8_t   paramCtrl[2];
+        uint8_t   paramValue[8];
       } paramIf;
       status = getPlcMemoryViaADS(paramIfOffset,
-				  &paramIf,
+                                  &paramIf,
                                   sizeof(paramIf.paramCtrl) + lenInPlcPara);
       if (status) {
-	asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-		  "%sstatus=%s (%d)\n",
-		  modNamEMC,
-		  ethercatmcstrStatus(status), (int)status);
-	return status;
+        asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+                  "%sstatus=%s (%d)\n",
+                  modNamEMC,
+                  ethercatmcstrStatus(status), (int)status);
+        return status;
       }
       cmdSubParamIndex = netToUint(&paramIf.paramCtrl,
                                    sizeof(paramIf.paramCtrl));
       if (paramIndex < 30) {
         /* parameters below 30 are unsigned integers in the PLC
            Read them as integers from PLC, and parse into a double */
-	fValue           = (double)netToUint(&paramIf.paramValue,
+        fValue           = (double)netToUint(&paramIf.paramValue,
                                              lenInPlcPara);
       } else {
-	fValue           = netToDouble(&paramIf.paramValue,lenInPlcPara);
+        fValue           = netToDouble(&paramIf.paramValue,lenInPlcPara);
       }
       if (cmdSubParamIndex == cmdAcked) {
-	/* This is good, return */
-	*value = fValue;
-	return asynSuccess;
+        /* This is good, return */
+        *value = fValue;
+        return asynSuccess;
       }
 
       switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
@@ -398,18 +398,20 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
         /* This is an error. (collision ?) */
         status = asynDisabled;
       case PARAM_IF_CMD_ERR_NO_IDX:
-        status = asynDisabled;
+        return asynDisabled;
       case PARAM_IF_CMD_READONLY:
-        status = asynDisabled;
+        return asynDisabled;
       case PARAM_IF_CMD_RETRY_LATER:
         break;  /* continue looping */
       }
       if (status && (counter > 1)) {
-	asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-		  "%s (%d) paramIfOffset=%u paramIndex=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
-		  modNamEMC, axisNo, paramIfOffset, paramIndex, cmdSubParamIndex,
-		  counter,
-		  ethercatmcstrStatus(status), (int)status);
+        asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+                  "%s (%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
+                  "cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
+                  modNamEMC, axisNo, paramIfOffset,
+                  plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, cmdSubParamIndex,
+                  counter,
+                  ethercatmcstrStatus(status), (int)status);
       }
       epicsThreadSleep(calcSleep(counter));
       counter++;
@@ -715,11 +717,11 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
         double fValue = 0.0;
         int initial = 1;
         if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
-	    (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
+            (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
           /* paramIndex >= PARAM_IF_IDX_FIRST_FUNCTION (128) are functions.
              Don't read them.
              tell driver that the function exist
-	     But read 142, which becomes JVEL */
+             But read 142, which becomes JVEL */
           status = indexerParamRead(axisNo,
                                     paramIfOffset,
                                     paramIndex,
@@ -728,8 +730,9 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
           if (status) {
             asynPrint(pasynUserController_,
                       ASYN_TRACE_INFO,
-                      "%sindexerReadAxisParameters paramIndex=%u lenInPlcPara=%u status=%s (%d)\n",
-                      modNamEMC, paramIndex, lenInPlcPara,
+                      "%sindexerReadAxisParameters paramIdx=%s (%u) lenInPlcPara=%u status=%s (%d)\n",
+                      modNamEMC, plcParamIndexTxtFromParamIndex(paramIndex),
+                      paramIndex, lenInPlcPara,
                       ethercatmcstrStatus(status), (int)status);
             if ((paramIndex >= 128) && (status == asynDisabled)) {
               /* Read back of functions as parameters is not defined in PILS
@@ -745,7 +748,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                     paramIndex, fValue);
         } else {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdxFunction=%s (%u)\n",
+                    "%sparameters(%d) paramIdx=%s (%u)\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex);
@@ -848,6 +851,38 @@ asynStatus ethercatmcController::initialPollIndexer(void)
   if (!ctrlLocal.adsport) {
     ctrlLocal.adsport = 851;
   }
+#if 0
+  {
+    /* Demo only */
+    const char *symbolName = "Main.sVersion";
+    uint32_t MainsVersionHandle = 0;
+    status = getSymbolHandleByNameViaADS(symbolName, &MainsVersionHandle);
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s(%s) MainsVersionHandle=0x%x status=%s (%d)\n",
+              modNamEMC, symbolName, MainsVersionHandle,
+              ethercatmcstrStatus(status), (int)status);
+  }
+  {
+    /* Demo only */
+    const char *symbolName = "Main.sVersion";
+    AdsSymbolInfoType adsSymbolInfo;
+    //uint8_t symbolInfo[1024];
+    status = getSymbolInfoViaADS(symbolName, &adsSymbolInfo, sizeof(adsSymbolInfo));
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s(%s) indexGroup=0x%x indexOffset=0x%x size=%u dataType=%u flags=0x%x nameLength=%u typeLength=%u commentLength=%u "
+              "status=%s (%d)\n",
+              modNamEMC, symbolName,
+              NETTOUINT(adsSymbolInfo.indexGroup),
+              NETTOUINT(adsSymbolInfo.indexOffset),
+              NETTOUINT(adsSymbolInfo.size),
+              NETTOUINT(adsSymbolInfo.dataType),
+              NETTOUINT(adsSymbolInfo.flags),
+              NETTOUINT(adsSymbolInfo.nameLength),
+              NETTOUINT(adsSymbolInfo.typeLength),
+              NETTOUINT(adsSymbolInfo.commentLength),
+              ethercatmcstrStatus(status), (int)status);
+  }
+#endif
   status = getPlcMemoryUint(0, &iTmpVer, sizeof(iTmpVer));
   if (status) return status;
 

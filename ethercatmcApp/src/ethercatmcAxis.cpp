@@ -98,8 +98,8 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
     /* The non-ESS motor needs a dummy "stepm-size" to compensate for MRES */
     const char * const stepSize_str = "stepSize=";
 #endif
-    const char * const homProc_str 	   = "HomProc=";
-    const char * const homPos_str  	   = "HomPos=";
+    const char * const homProc_str         = "HomProc=";
+    const char * const homPos_str          = "HomPos=";
     const char * const adsPort_str         = "adsPort=";
     const char * const axisFlags_str       = "axisFlags=";
     const char * const powerAutoOnOff_str  = "powerAutoOnOff=";
@@ -146,7 +146,7 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
         }
       } else if (!strncmp(pThisOption, powerAutoOnOff_str, strlen(powerAutoOnOff_str))) {
         pThisOption += strlen(powerAutoOnOff_str);
-	powerAutoOnOff = atoi(pThisOption);
+        powerAutoOnOff = atoi(pThisOption);
       } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
         pThisOption += strlen(homProc_str);
         int homProc = atoi(pThisOption);

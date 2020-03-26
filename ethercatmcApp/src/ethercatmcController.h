@@ -176,6 +176,8 @@ public:
   asynStatus getSymbolInfoViaADS(const char *symbolName,
                                  void *data,
                                  size_t lenInPlc);
+  asynStatus getSymbolHandleByNameViaADS(const char *symbolName,
+                                         uint32_t *handle);
 
   /* Indexer */
   asynStatus readDeviceIndexer(unsigned devNum, unsigned infoType);

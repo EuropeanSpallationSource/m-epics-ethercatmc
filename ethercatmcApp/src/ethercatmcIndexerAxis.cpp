@@ -306,8 +306,8 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
       uint8_t  posRaw[4];
       uint8_t  cmdReason[2];
     } posCmd;
-    doubleToNet(position, &posCmd.posRaw, sizeof(posCmd.posRaw));
-    uintToNet(cmdReason, &posCmd.cmdReason, sizeof(posCmd.cmdReason));
+    DOUBLETONET(position, posCmd.posRaw);
+    UINTTONET(cmdReason, posCmd.cmdReason);
     return pC_->setPlcMemoryViaADS(drvlocal.iOffset + drvlocal.lenInPlcPara,
                                    &posCmd, sizeof(posCmd));
   } else if (drvlocal.iTypCode == 0x5010) {
@@ -316,8 +316,8 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
       uint8_t  posRaw[8];
       uint8_t  cmdReason[4];
     } posCmd;
-    doubleToNet(position, &posCmd.posRaw, sizeof(posCmd.posRaw));
-    uintToNet(cmdReason, &posCmd.cmdReason, sizeof(posCmd.cmdReason));
+    DOUBLETONET(position, posCmd.posRaw);
+    UINTTONET(cmdReason, posCmd.cmdReason);
     return pC_->setPlcMemoryViaADS(drvlocal.iOffset + drvlocal.lenInPlcPara,
                                    &posCmd, sizeof(posCmd));
   }
@@ -422,7 +422,7 @@ asynStatus ethercatmcIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
     struct {
       uint8_t  cmdReason[2];
     } posCmd;
-    uintToNet(cmdReason, &posCmd.cmdReason, sizeof(posCmd.cmdReason));
+    UINTTONET(cmdReason, posCmd.cmdReason);
     return pC_->setPlcMemoryViaADS(drvlocal.iOffset + (2 * drvlocal.lenInPlcPara),
                                    &posCmd, sizeof(posCmd));
   } else if (drvlocal.iTypCode == 0x5010) {
@@ -430,7 +430,7 @@ asynStatus ethercatmcIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
     struct {
       uint8_t  cmdReason[4];
     } posCmd;
-    uintToNet(cmdReason, &posCmd.cmdReason, sizeof(posCmd.cmdReason));
+    UINTTONET(cmdReason, posCmd.cmdReason);
     return pC_->setPlcMemoryViaADS(drvlocal.iOffset + (2 * drvlocal.lenInPlcPara),
                                    &posCmd, sizeof(posCmd));
   }
@@ -503,21 +503,12 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     unsigned idxReasonBits = 0;
     unsigned idxAuxBits = 0;
     int pollReadBackInBackGround = 1;
+    if (!drvlocal.iOffset) return asynSuccess;
+
     if (drvlocal.dirty.initialPollNeeded) {
-      if (drvlocal.iOffset) {
-        status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
-                                                drvlocal.iOffset,
-                                                drvlocal.lenInPlcPara);
-      } else {
-        snprintf(pC_->outString_, sizeof(pC_->outString_),
-                 "%sGvl_App.axes_comm[%d].wStatusWord?;"
-                 "%sGvl_App.axes_comm[%d].fTargetValue?;"
-                 "%sGvl_App.axes_comm[%d].fActualValue?",
-                 drvlocal.adsport_str, axisNo_,
-                 drvlocal.adsport_str, axisNo_,
-                 drvlocal.adsport_str, axisNo_);
-        status = pC_->writeReadOnErrorDisconnect();
-      }
+      status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
+                                              drvlocal.iOffset,
+                                              drvlocal.lenInPlcPara);
       if (!status) {
         drvlocal.dirty.initialPollNeeded = 0;
         setIntegerParam(pC_->motorStatusCommsError_, 0);
@@ -942,8 +933,8 @@ asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
               valueLen, value);
     return asynError;
   }
-  uintToNet(valueLen, &netDevice0518interface.busyLen,
-            sizeof(netDevice0518interface.busyLen));
+  UINTTONET(valueLen, netDevice0518interface.busyLen);
+
   /* obey the handshake */
   status = pC_->indexerWaitSpecialDeviceIdle(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset);
   if (status) {

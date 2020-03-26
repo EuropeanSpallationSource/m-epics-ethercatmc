@@ -76,8 +76,22 @@ sleep 10
 
 # run test cases
 /bin/sh -e -x ./run-ethercatmc-tests.sh IOC:m1
-status=$?
+status_m1=$?
+
+# run more test cases
+/bin/sh -e -x ./run-ethercatmc-tests.sh IOC:m3
+status_m3=$?
 
 killExitIocSimulator
 
-exit $status
+echo status_m1=$status_m1 status_m3=$status_m3
+
+
+if test $status_m1 -ne 0; then
+  exit 11
+fi
+if test $status_m3 -ne 0; then
+  exit 13
+fi
+
+exit 0

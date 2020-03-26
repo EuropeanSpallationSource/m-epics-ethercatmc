@@ -575,7 +575,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
                                                      void *data,
                                                      size_t lenInPlc)
 {
-  int tracelevel = deftracelevel | ASYN_TRACE_INFO;
+  int tracelevel = deftracelevel;
   asynUser *pasynUser = pasynUserController_;
   unsigned indexGroup = 0xF009;
   unsigned indexOffset = 0;
@@ -592,6 +592,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
 
   memset(ads_read_write_req_p, 0, write_buf_len);
   memset(p_read_buf, 0, read_buf_len);
+  memset(data, 0, lenInPlc);
   invokeID++;
 
   UINTTONET(indexGroup,    ads_read_write_req_p->net_idxGrp);
@@ -604,7 +605,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
     uint8_t *dst_ptr = (uint8_t*)ads_read_write_req_p;
     dst_ptr += sizeof(AdsReadWriteReqType);
     memcpy(dst_ptr, symbolName, symbolNameLen);
-    ethercatmchexdump(pasynUser, tracelevel, "LOOKS",
+    ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
                       symbolName, symbolNameLen);
   }
   status = writeWriteReadAds(pasynUser,
@@ -637,6 +638,84 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
       ethercatmchexdump(pasynUser, tracelevel, "IN ADS",
                         src_ptr, ads_length);
       memcpy(data, src_ptr, ads_length);
+    }
+  }
+  free(ads_read_write_req_p);
+  free(p_read_buf);
+  return status;
+}
+
+asynStatus
+ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
+                                                  uint32_t *handle)
+{
+  int tracelevel = deftracelevel;
+  asynUser *pasynUser = pasynUserController_;
+  unsigned indexGroup = 0xF003;
+  unsigned indexOffset = 0;
+  size_t lenInPlc = sizeof(uint32_t);
+  size_t symbolNameLen = strlen(symbolName);
+
+  size_t write_buf_len = sizeof(AdsReadWriteReqType) + symbolNameLen;
+  size_t read_buf_len  = sizeof(AdsReadWriteRepType) + lenInPlc;
+  void *p_read_buf = malloc(read_buf_len);
+  AdsReadWriteReqType *ads_read_write_req_p =
+    (AdsReadWriteReqType*)malloc(write_buf_len);
+
+  asynStatus status;
+  size_t nread = 0;
+
+  memset(ads_read_write_req_p, 0, write_buf_len);
+  memset(p_read_buf, 0, read_buf_len);
+  invokeID++;
+
+  UINTTONET(indexGroup,    ads_read_write_req_p->net_idxGrp);
+  UINTTONET(indexOffset,   ads_read_write_req_p->net_idxOff);
+  UINTTONET(lenInPlc,      ads_read_write_req_p->net_rd_len);
+  UINTTONET(symbolNameLen, ads_read_write_req_p->net_wr_len);
+
+  /* copy the symbol name */
+  {
+    uint8_t *dst_ptr = (uint8_t*)ads_read_write_req_p;
+    dst_ptr += sizeof(AdsReadWriteReqType);
+    memcpy(dst_ptr, symbolName, symbolNameLen);
+    ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
+                      symbolName, symbolNameLen);
+  }
+  status = writeWriteReadAds(pasynUser,
+                             (AmsHdrType *)ads_read_write_req_p,
+                             write_buf_len,
+                             invokeID, ADS_READ_WRITE,
+                             (char*)p_read_buf, read_buf_len,
+                             &nread);
+  if (!status)
+  {
+    AdsReadWriteRepType *adsReadWriteRep_p = (AdsReadWriteRepType*) p_read_buf;
+    uint32_t ads_result = NETTOUINT(adsReadWriteRep_p->response.net_res);
+    uint32_t ads_length = NETTOUINT(adsReadWriteRep_p->response.net_len);
+    if (ads_result) {
+      asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "%sERROR ads_result=0x%x\n", modNamEMC, (unsigned)ads_result);
+      status = asynError;
+    }
+    if (!status) {
+      AdsGetSymbolInfoByNameRepType *adsGgetSymbolInfoByName_rep_p;
+      adsGgetSymbolInfoByName_rep_p = (AdsGetSymbolInfoByNameRepType *)p_read_buf;
+      (void)adsGgetSymbolInfoByName_rep_p;
+    }
+    if (!status) {
+      uint8_t *src_ptr = (uint8_t*) p_read_buf;
+      src_ptr += sizeof(AdsReadWriteRepType);
+      asynPrint(pasynUser, tracelevel,
+                "%s ads_result=0x%x ads_length=0x%x\n",
+                modNamEMC, (unsigned)ads_result, (unsigned)ads_length);
+      ethercatmchexdump(pasynUser, tracelevel, "IN ADS",
+                        src_ptr, ads_length);
+      if (ads_length == lenInPlc) {
+        *handle = netToUint(src_ptr, lenInPlc);
+      } else {
+        status = asynError;
+      }
     }
   }
   free(ads_read_write_req_p);

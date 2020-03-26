@@ -663,6 +663,8 @@ class motor_lib(object):
 
                 expFile.write('%s\n%s\n' % (line1, line2))
                 cnt += 1
+        expFile.write('EOF\n')
+        expFile.close()
 
     def writeExpFileJOG_BDST(self, motor, tc_no, dbgFileName, expFileName, myDirection, frac, encRel, motorStartPos, motorEndPos):
         # Create a "expected" file
@@ -691,7 +693,7 @@ class motor_lib(object):
             line3 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % \
                 (motorEndPos, self.myBVEL, self.myBAR, motorEndPos - self.myBDST)
 
-        expFile.write('%s\n%s\n%s\n' % (line1, line2, line3))
+        expFile.write('%s\n%s\n%s\nEOF\n' % (line1, line2, line3))
         expFile.close()
 
 

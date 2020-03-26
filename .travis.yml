@@ -71,6 +71,7 @@ jobs:
 
   - env: BASE=7.0 SET=latest
     script:
+    - ./checkws.sh
     - test/install-pytest-pyepics-p4p.sh
     - test/test-pytest-pyepics-p4p.sh
     - make -C test test-ioc-with-sim

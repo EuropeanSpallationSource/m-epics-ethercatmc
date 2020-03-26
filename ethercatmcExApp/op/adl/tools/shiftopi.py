@@ -67,7 +67,7 @@ def shiftXorY(options, line):
     matchW  = re.compile('^([ \t]*width=)([0-9]+)(.*)$')
     matchH  = re.compile('^([ \t]*height=)([0-9]+)(.*)$')
     matchM  = re.compile('(.*\([MR])([0-9]+)(\).*)')
-    matchPoint  = re.compile('(^[ \t]*\()([0-9]+)(,)([0-9]+)(\)[ \t]*$)')    
+    matchPoint  = re.compile('(^[ \t]*\()([0-9]+)(,)([0-9]+)(\)[ \t]*$)')
 
     isMatchX = matchX.match(line)
     isMatchM = matchM.match(line)
@@ -92,7 +92,7 @@ def shiftXorY(options, line):
         if comma[-1] == '\n':
             comma = comma[0:-1]
         line = pfx + str(xPos) + comma  + str(yPos) + sfx
-    
+
     if isMatchY != None:
         pfx  = matchY.sub(r'\1', line)
         yPos = int(matchY.sub(r'\2', line))

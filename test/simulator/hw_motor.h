@@ -218,7 +218,7 @@ void getAxisDebugInfoData(int axis_no, char *buf, size_t maxlen);
  *  Debug logfile.
  */
 int openLogFile(int axis_no, const char *filename);
-void closeLogFile(int axis_no);
+int closeLogFile(int axis_no);
 
 /*
  * Make it possible to disable the simulator
