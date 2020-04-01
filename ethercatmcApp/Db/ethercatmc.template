@@ -70,6 +70,16 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-VelAct")
     field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(PREFIX)$(MOTOR_NAME)-PosAct")
+{
+    field(DESC, "actual Pos MCU timestamped")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_ENCODER_POSITION")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}
+
 record(ai, "$(PREFIX)$(MOTOR_NAME)-Vel-RB")
 {
     field(DTYP, "asynFloat64")
@@ -432,6 +442,22 @@ record(stringin, "$(PREFIX)$(MOTOR_NAME)-ReasonBit24") {
 record(stringin, "$(PREFIX)$(MOTOR_NAME)-ReasonBit25") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ReasonBit25")
+    field(SCAN, "I/O Intr")
+}
+
+# Time on the MCU: Distributed Clock, WIN
+record(longin, "$(PREFIX)DCtimeSec")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "StatusBits")
+    field(INP,  "@asyn($(MOTOR_PORT),0)DCtimeSec")
+    field(SCAN, "I/O Intr")
+}
+record(longin, "$(PREFIX)DCtimeNSec")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "StatusBits")
+    field(INP,  "@asyn($(MOTOR_PORT),0)DCtimeNSec")
     field(SCAN, "I/O Intr")
 }
 

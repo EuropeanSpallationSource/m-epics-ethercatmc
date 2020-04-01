@@ -69,6 +69,8 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcMCUErrMsgString            "MCUErrMsg"
 #define ethercatmcDbgStrToMcuString          "StrToMCU"
 #define ethercatmcDbgStrToLogString          "StrToLOG"
+#define ethercatmcDCtimeSecString            "DCtimeSec"
+#define ethercatmcDCtimeNSecString           "DCtimeNSec"
 
 #define HOMPROC_MANUAL_SETPOS    15
 
@@ -241,6 +243,8 @@ public:
     unsigned int lastDeviceEndOffset;
     unsigned int specialDbgStrToMcuDeviceLength;
     unsigned int specialDbgStrToMcuDeviceOffset;
+    unsigned int DCtimeSecDeviceOffset;
+    unsigned int DCtimeNSecDeviceOffset;
     AmsNetidAndPortType remote;
     AmsNetidAndPortType local;
     unsigned adsport;
@@ -294,6 +298,8 @@ public:
   int ethercatmcVelAct_;
   int ethercatmcVel_RB_;
   int ethercatmcAcc_RB_;
+  int ethercatmcDCtimeSec_;
+  int ethercatmcDCtimeNSec_;
   int ethercatmcCfgVELO_;
   int ethercatmcCfgVMAX_;
   int ethercatmcCfgJVEL_;

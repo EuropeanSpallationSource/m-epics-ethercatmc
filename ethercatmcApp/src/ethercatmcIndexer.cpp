@@ -1028,6 +1028,10 @@ asynStatus ethercatmcController::initialPollIndexer(void)
           if (pAxis) {
             pAxis->setErrorIdOffset(iOffsBytes);
           }
+        } else if (!strcmp(descVersAuthors.desc, "DCtimeSec")) {
+          ctrlLocal.DCtimeSecDeviceOffset = iOffsBytes;
+        } else if (!strcmp(descVersAuthors.desc, "DCtimeNSec")) {
+          ctrlLocal.DCtimeNSecDeviceOffset = iOffsBytes;
         }
       }
       break;
@@ -1090,6 +1094,7 @@ asynStatus ethercatmcController::initialPollIndexer(void)
 
 asynStatus ethercatmcController::pollIndexer(void)
 {
+  int callBacksNeeded = 0;
   if (ctrlLocal.pIndexerProcessImage &&
       ctrlLocal.lastDeviceEndOffset) {
     size_t indexOffset = ctrlLocal.firstDeviceStartOffset;
@@ -1107,6 +1112,27 @@ asynStatus ethercatmcController::pollIndexer(void)
               modNamEMC, (unsigned)indexOffset, (unsigned)len,
               ethercatmcstrStatus(status), (int)status);
     if (status) return status;
+    if (ctrlLocal.DCtimeSecDeviceOffset && ctrlLocal.DCtimeNSecDeviceOffset) {
+      epicsTimeStamp timeStamp;
+      uint32_t sec;
+      uint32_t nSec;
+      unsigned offsetSec = ctrlLocal.DCtimeSecDeviceOffset;
+      unsigned offsetNsec = ctrlLocal.DCtimeNSecDeviceOffset;
+      sec = netToUint(&ctrlLocal.pIndexerProcessImage[offsetSec], sizeof(sec));
+      nSec = netToUint(&ctrlLocal.pIndexerProcessImage[offsetNsec], sizeof(nSec));
+      timeStamp.secPastEpoch = sec;
+      timeStamp.nsec = nSec;
+      asynPrint(pasynUserController_, ASYN_TRACE_FLOW, //ASYN_TRACE_INFO,
+                "%spollIndexer DCtime=%09u.%09u\n",
+                modNamEMC, sec, nSec);
+      setTimeStamp(&timeStamp);
+      callBacksNeeded = 1;
+    }
+
+    if (callBacksNeeded) {
+      callParamCallbacks();
+    }
+    return status;
   }
   return asynDisabled;
 }
