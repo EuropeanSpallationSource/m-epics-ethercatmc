@@ -327,12 +327,12 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
       tracelevel |= ASYN_TRACE_ERROR;
     }
     asynPrint(pasynUser, tracelevel,
-              "%s IN part 2 inlen-part_1_len=%lu toread=0x%x %u nread=%lu status=%d\n",
+              "%s IN part 2 inlen-part_1_len=%lu toread=0x%x %u nread=%lu status=%s (%d)\n",
               modNamEMC,
               (unsigned long)inlen - (unsigned long)part_1_len,
               (unsigned)toread, (unsigned)toread,
               (unsigned long)nread,
-              status);
+              ethercatmcstrStatus(status), status);
     ethercatmchexdump(pasynUser, tracelevel, "IN part 2",
                       indata, nread);
     if (errorProblem) {
@@ -435,6 +435,28 @@ asynStatus ethercatmcController::writeWriteReadAds(asynUser *pasynUser,
       uint32_t ams_errorCode = NETTOUINT(ams_rep_hdr_p->net_errCode);
 
       if (ams_errorCode) {
+        int tracelevel = ASYN_TRACE_ERROR;
+        const char *outdata = (const char *)ams_req_hdr_p;
+        #define ERR_TARGETPORTNOTFOUND 6
+        #define ERR_TARGETMACHINENOTFOUND 7
+        switch (ams_errorCode) {
+        case ERR_TARGETPORTNOTFOUND:
+        case ERR_TARGETMACHINENOTFOUND:
+          asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                    "%s Error: MACHINE/PORT not found ams_errorCode=0x%x\n", modNamEMC,
+                    (unsigned)ams_errorCode);
+          return asynDisabled;
+        default:
+          ;
+        }
+        ethercatmchexdump(pasynUser, tracelevel, "OUT",
+                          outdata, outlen);
+        ethercatmcamsdump(pasynUser, tracelevel, "OUT", ams_req_hdr_p);
+
+        ethercatmchexdump(pasynUser, tracelevel, "IN",
+                          indata, nread);
+        ethercatmcamsdump(pasynUser, tracelevel, "IN", indata);
+
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%s nread=%u ams_errorCode=0x%x\n", modNamEMC,
                   (unsigned)nread, (unsigned)ams_errorCode);
@@ -484,8 +506,9 @@ asynStatus ethercatmcController::getPlcMemoryViaADS(unsigned indexOffset,
                              (char*)p_read_buf, read_buf_len,
                              &nread);
   asynPrint(pasynUser, tracelevel,
-            "%s RDMEM indexOffset=%u lenInPlc=%u status=%d\n",
-            modNamEMC, indexOffset, (unsigned)lenInPlc, (int)status);
+            "%s RDMEM indexOffset=%u lenInPlc=%u status=%s (%d)\n",
+            modNamEMC, indexOffset, (unsigned)lenInPlc,
+            ethercatmcstrStatus(status), (int)status);
   if (!status)
   {
     AdsReadRepType *ADS_Read_rep_p = (AdsReadRepType*) p_read_buf;
