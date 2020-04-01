@@ -1032,6 +1032,10 @@ asynStatus ethercatmcController::initialPollIndexer(void)
           ctrlLocal.DCtimeSecDeviceOffset = iOffsBytes;
         } else if (!strcmp(descVersAuthors.desc, "DCtimeNSec")) {
           ctrlLocal.DCtimeNSecDeviceOffset = iOffsBytes;
+        } else if (!strcmp(descVersAuthors.desc, "DCclockL")) {
+          ctrlLocal.DCclockLdeviceOffset = iOffsBytes;
+        } else if (!strcmp(descVersAuthors.desc, "DCclockH")) {
+          ctrlLocal.DCclockHdeviceOffset = iOffsBytes;
         }
       }
       break;
@@ -1092,6 +1096,22 @@ asynStatus ethercatmcController::initialPollIndexer(void)
 
 }
 
+extern "C" void DCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
+{
+#define NSEC_PER_SEC      1000000000
+#define POSIX_TIME_AT_DCCLOCK_EPOCH 946684800
+  /*
+   * convert from DC clock Time to Epics time 2000 Jan 1 to 1990 Jan 1
+   * (POSIX_TIME_AT_EPICS_EPOCH defined in epicsTime.h)
+  */
+  uint64_t nSecEpicsEpoch;
+  nSecEpicsEpoch = dcNsec - ((uint64_t)POSIX_TIME_AT_EPICS_EPOCH - POSIX_TIME_AT_DCCLOCK_EPOCH) * NSEC_PER_SEC;
+  ts->secPastEpoch = (uint32_t)(nSecEpicsEpoch / NSEC_PER_SEC);
+  ts->nsec =         (uint32_t)(nSecEpicsEpoch % NSEC_PER_SEC);
+}
+
+
+
 asynStatus ethercatmcController::pollIndexer(void)
 {
   int callBacksNeeded = 0;
@@ -1128,6 +1148,25 @@ asynStatus ethercatmcController::pollIndexer(void)
       setTimeStamp(&timeStamp);
       callBacksNeeded = 1;
     }
+    if (ctrlLocal.DCclockLdeviceOffset && ctrlLocal.DCclockHdeviceOffset) {
+      epicsTimeStamp timeStamp;
+      uint32_t tempL;
+      uint32_t tempH;
+      uint64_t nSec;
+      unsigned offsetL = ctrlLocal.DCclockLdeviceOffset;
+      unsigned offsetH = ctrlLocal.DCclockHdeviceOffset;
+      tempL = netToUint(&ctrlLocal.pIndexerProcessImage[offsetL], sizeof(tempL));
+      tempH = netToUint(&ctrlLocal.pIndexerProcessImage[offsetH], sizeof(tempH));
+      nSec = tempH;
+      nSec = nSec << 32;
+      nSec = nSec + tempL;
+      DCtimeToEpicsTimeStamp(nSec, &timeStamp);
+      asynPrint(pasynUserController_, ASYN_TRACE_FLOW, // | ASYN_TRACE_INFO,
+                "%spollIndexer nSec=%" PRIu64 " sec.nSec=%09u.%09u\n",
+                modNamEMC, nSec, timeStamp.secPastEpoch, timeStamp.nsec);
+      setTimeStamp(&timeStamp);
+      callBacksNeeded = 1;
+    }
 
     if (callBacksNeeded) {
       callParamCallbacks();
@@ -1136,3 +1175,4 @@ asynStatus ethercatmcController::pollIndexer(void)
   }
   return asynDisabled;
 }
+

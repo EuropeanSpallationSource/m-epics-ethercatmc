@@ -245,6 +245,8 @@ public:
     unsigned int specialDbgStrToMcuDeviceOffset;
     unsigned int DCtimeSecDeviceOffset;
     unsigned int DCtimeNSecDeviceOffset;
+    unsigned int DCclockLdeviceOffset;
+    unsigned int DCclockHdeviceOffset;
     AmsNetidAndPortType remote;
     AmsNetidAndPortType local;
     unsigned adsport;
