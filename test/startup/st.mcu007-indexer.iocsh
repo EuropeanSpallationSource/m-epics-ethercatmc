@@ -2,7 +2,7 @@ require EthercatMC,USER
 
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=192.168.88.57)")
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-MCAG:MC-MCU-07:)")
@@ -11,7 +11,7 @@ epicsEnvSet("SM_NOAXES",     "3")
 epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=REMOTEAMSNETIDXX;amsNetIdLocal=LOCALAMSNETIDXX"
 
-< EthercatMCController.iocsh
+< ethercatmcController.iocsh
 
 
 #
@@ -22,5 +22,5 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
-< EthercatMCIndexerAxis.iocsh
-< EthercatMCAxisdebug.iocsh
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
