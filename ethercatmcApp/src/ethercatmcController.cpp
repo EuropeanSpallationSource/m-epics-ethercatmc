@@ -693,24 +693,7 @@ asynStatus ethercatmcController::poll(void)
         }
       }
     } else {
-      if (ctrlLocal.pIndexerProcessImage &&
-          ctrlLocal.lastDeviceEndOffset) {
-        size_t indexOffset = ctrlLocal.firstDeviceStartOffset;
-        size_t len = ctrlLocal.lastDeviceEndOffset - indexOffset;
-        int traceMask = ASYN_TRACEIO_DRIVER;
-        memset(ctrlLocal.pIndexerProcessImage, 0,
-               ctrlLocal.lastDeviceEndOffset);
-        status = getPlcMemoryViaADS(indexOffset,
-                                    &ctrlLocal.pIndexerProcessImage[indexOffset],
-                                    len);
-        if (status) traceMask |= ASYN_TRACE_ERROR;
-
-        asynPrint(pasynUserController_, ASYN_TRACEIO_DRIVER,
-                  "%spoll() indexOffset=%u len=%u status=%s (%d)\n",
-                  modNamEMC, (unsigned)indexOffset, (unsigned)len,
-                  ethercatmcstrStatus(status), (int)status);
-        return status;
-      }
+      return pollIndexer();
     }
   } else {
     if (!(features_ & reportedFeatureBits)) {

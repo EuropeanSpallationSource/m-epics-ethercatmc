@@ -202,6 +202,7 @@ public:
                             int newValue, const char *name);
   asynStatus getFeatures(int *pRet);
   asynStatus initialPollIndexer(void);
+  asynStatus pollIndexer(void);
   asynStatus writeReadControllerPrint(int traceMask);
   asynStatus writeReadACK(int traceMask);
   asynStatus getPlcMemoryUint(unsigned indexOffset,

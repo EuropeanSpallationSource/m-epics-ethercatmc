@@ -1087,3 +1087,26 @@ asynStatus ethercatmcController::initialPollIndexer(void)
   return status;
 
 }
+
+asynStatus ethercatmcController::pollIndexer(void)
+{
+  if (ctrlLocal.pIndexerProcessImage &&
+      ctrlLocal.lastDeviceEndOffset) {
+    size_t indexOffset = ctrlLocal.firstDeviceStartOffset;
+    size_t len = ctrlLocal.lastDeviceEndOffset - indexOffset;
+    asynStatus status;
+    int traceMask = ASYN_TRACEIO_DRIVER;
+    memset(ctrlLocal.pIndexerProcessImage, 0,
+           ctrlLocal.lastDeviceEndOffset);
+    status = getPlcMemoryViaADS(indexOffset,
+                                &ctrlLocal.pIndexerProcessImage[indexOffset],
+                                len);
+    if (status) traceMask |= ASYN_TRACE_ERROR;
+    asynPrint(pasynUserController_, traceMask,
+              "%spoll() indexOffset=%u len=%u status=%s (%d)\n",
+              modNamEMC, (unsigned)indexOffset, (unsigned)len,
+              ethercatmcstrStatus(status), (int)status);
+    if (status) return status;
+  }
+  return asynDisabled;
+}
