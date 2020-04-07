@@ -203,50 +203,11 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
 {
   int tracelevel = deftracelevel;
   int errorProblem = 0;
-  char old_InputEos[10];
-  int old_InputEosLen = 0;
-  char old_OutputEos[10];
-  int old_OutputEosLen = 0;
   int eomReason;
   size_t nwrite = 0;
   size_t nread;
   uint32_t part_1_len = sizeof(AmsTcpHdrType);
   asynStatus status;
-  status = pasynOctetSyncIO->getInputEos(pasynUser,
-                                         &old_InputEos[0],
-                                         (int)sizeof(old_InputEos),
-                                         &old_InputEosLen);
-  if (status) {
-    asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%sstatus=%s (%d)\n", modNamEMC,
-              ethercatmcstrStatus(status), (int)status);
-    goto restore_Eos;
-  }
-  status = pasynOctetSyncIO->getOutputEos(pasynUser,
-                                          &old_OutputEos[0],
-                                          (int)sizeof(old_OutputEos),
-                                          &old_OutputEosLen);
-  if (status) {
-    asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%sstatus=%s (%d)\n", modNamEMC,
-              ethercatmcstrStatus(status), (int)status);
-    goto restore_Eos;
-  }
-  status = pasynOctetSyncIO->setInputEos(pasynUser, "", 0);
-  if (status) {
-    asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%sstatus=%s (%d)\n", modNamEMC,
-              ethercatmcstrStatus(status), (int)status);
-    goto restore_Eos;
-  }
-  status = pasynOctetSyncIO->setOutputEos(pasynUser, "", 0);
-  if (status) {
-    asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%sstatus=%s (%d)\n",
-              modNamEMC,
-              ethercatmcstrStatus(status), (int)status);
-    goto restore_Eos;
-  }
   status = pasynOctetSyncIO->write(pasynUser, outdata, outlen,
                                    DEFAULT_CONTROLLER_TIMEOUT,
                                    &nwrite);
@@ -361,26 +322,6 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
     }
   }
   handleStatusChange(status);
-
-restore_Eos:
-  {
-    asynStatus cmdStatus;
-    cmdStatus = pasynOctetSyncIO->setInputEos(pasynUser,
-                                              old_InputEos, old_InputEosLen);
-    if (cmdStatus) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%scmdStatus=%s (%d)\n", modNamEMC,
-                ethercatmcstrStatus(cmdStatus), (int)cmdStatus);
-    }
-    cmdStatus = pasynOctetSyncIO->setOutputEos(pasynUser,
-                                               old_OutputEos,
-                                               old_OutputEosLen);
-    if (cmdStatus) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%scmdStatus=%s (%d)\n", modNamEMC,
-                ethercatmcstrStatus(cmdStatus), (int)cmdStatus);
-    }
-  }
   return status;
 }
 

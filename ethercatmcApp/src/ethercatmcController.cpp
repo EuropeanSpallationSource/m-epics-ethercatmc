@@ -298,6 +298,23 @@ ethercatmcController::ethercatmcController(const char *portName,
             "%s optionStr=\"%s\"\n",
             modulName, optionStr ? optionStr : "NULL");
 
+  if (!(ctrlLocal.useADSbinary)) {
+    /* Set the EOS */
+    asynUser *pasynUser = pasynUserController_;
+    const char *pMyEos = ";\n";
+    status = pasynOctetSyncIO->setInputEos(pasynUser, pMyEos, strlen(pMyEos));
+    if (status) {
+      asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "%sstatus=%s (%d)\n", modNamEMC,
+                ethercatmcstrStatus(status), (int)status);
+    }
+    status = pasynOctetSyncIO->setOutputEos(pasynUser, pMyEos, strlen(pMyEos));
+    if (status) {
+      asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                "%sstatus=%s (%d)\n", modNamEMC,
+                ethercatmcstrStatus(status), (int)status);
+    }
+  }
   startPoller(movingPollPeriod, idlePollPeriod, 2);
 }
 

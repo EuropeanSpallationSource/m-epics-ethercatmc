@@ -206,7 +206,6 @@ echo REMOTEAMSNETID=$REMOTEAMSNETID
       sed <"$src" >"$dst" \
           -e "s%dbLoadRecords(\"%dbLoadRecords(\"./$DBMOTOR/%" \
           -e "s%drvAsynIPPortConfigure%#%" \
-          -e "s%asynOctetSet.*putEos%#%" \
           -e "s%^# *adsAsynPortDriverConfigure%adsAsynPortDriverConfigure%"
     done &&
     rm -f $stcmddst &&

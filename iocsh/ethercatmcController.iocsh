@@ -29,11 +29,9 @@ epicsEnvSet("ECC_OPTIONS", "$(ECM_OPTIONS=;)")
 
 ## One of the 2 needs to be done, either drvAsynIPPortConfigure+Eos
 ## Or
-## adsAsynPortDriverConfigure (without Eos.
+## adsAsynPortDriverConfigure
 ## Note that ./run-ADS-ioc.sh will patch this file as needed
 drvAsynIPPortConfigure("$(ASYN_PORT)","$(IPADDR):$(IPPORT)",0,0,0)
-asynOctetSetOutputEos("$(ASYN_PORT)", -1, ";\n")
-asynOctetSetInputEos("$(ASYN_PORT)", -1, ";\n")
 
 #adsAsynPortDriverConfigure("$(ASYN_PORT)","$(IPADDR)","$(REMOTEAMSNETID)","$(ADSPORT)" ,1000,0,0,50,100,1000,0)
 
