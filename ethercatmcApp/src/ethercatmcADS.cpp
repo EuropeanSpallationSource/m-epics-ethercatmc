@@ -237,35 +237,39 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
                     indata, nread);
   if (nread != part_1_len) {
     if (ctrlLocal.cntADSstatus < MAXCNTADSSTATUS) {
-      /* Do not spam the log */
-      ethercatmcamsdump(pasynUser, tracelevel | ASYN_TRACE_INFO,
-                        "OUT ", outdata);
-      if (nread) {
-        ethercatmcamsdump(pasynUser, tracelevel, "IN ", indata);
-        ethercatmchexdump(pasynUser, tracelevel, "IN ",
-                          indata, nread);
-      }
-      if (status == asynTimeout) {
-        asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%sIN  nread=%lu timeout=%f status=%s (%d)\n",
-                  modNamEMC,
-                  (unsigned long)*pnread,
-                  DEFAULT_CONTROLLER_TIMEOUT,
-                  ethercatmcstrStatus(status), status);
-      } else {
-        asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%sIN  nread=%lu eomReason=%x (%s%s%s) err=%s status=%s (%d)\n",
-                  modNamEMC,
-                  (unsigned long)*pnread,
-                  eomReason,
-                  eomReason & ASYN_EOM_CNT ? "CNT" : "",
-                  eomReason & ASYN_EOM_EOS ? "EOS" : "",
-                  eomReason & ASYN_EOM_END ? "END" : "",
-                  pasynUser->errorMessage,
-                  ethercatmcstrStatus(status), status);
-      }
+      /* Temporally raise the tracelevel.
+         But do it just a couple of times to not spam the log */
+      tracelevel |= ASYN_TRACE_INFO;
       ctrlLocal.cntADSstatus++;
     }
+  }
+  ethercatmcamsdump(pasynUser, tracelevel,
+                    "OUT ", outdata);
+  if (nread) {
+    ethercatmcamsdump(pasynUser, tracelevel, "IN ", indata);
+    ethercatmchexdump(pasynUser, tracelevel, "IN ",
+                      indata, nread);
+  }
+  if (status == asynTimeout) {
+    asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%sIN  nread=%lu timeout=%f status=%s (%d)\n",
+              modNamEMC,
+              (unsigned long)nread,
+              DEFAULT_CONTROLLER_TIMEOUT,
+              ethercatmcstrStatus(status), status);
+  } else {
+    asynPrint(pasynUser, tracelevel,
+              "%sIN  nread=%lu eomReason=%x (%s%s%s) err=%s status=%s (%d)\n",
+              modNamEMC,
+              (unsigned long)nread,
+              eomReason,
+              eomReason & ASYN_EOM_CNT ? "CNT" : "",
+              eomReason & ASYN_EOM_EOS ? "EOS" : "",
+              eomReason & ASYN_EOM_END ? "END" : "",
+              pasynUser->errorMessage,
+              ethercatmcstrStatus(status), status);
+  }
+  if (nread != part_1_len) {
     disconnect_C(pasynUser);
   }
   if (!status) {
@@ -288,11 +292,11 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
       tracelevel |= ASYN_TRACE_ERROR;
     }
     asynPrint(pasynUser, tracelevel,
-              "%s IN part 2 inlen-part_1_len=%lu toread=0x%x %u nread=%lu status=%s (%d)\n",
+              "%s IN part 2 inlen-part_1_len=%lu toread=0x%x %u nread=%lu eomReason=0x%x status=%s (%d)\n",
               modNamEMC,
               (unsigned long)inlen - (unsigned long)part_1_len,
               (unsigned)toread, (unsigned)toread,
-              (unsigned long)nread,
+              (unsigned long)nread, eomReason,
               ethercatmcstrStatus(status), status);
     ethercatmchexdump(pasynUser, tracelevel, "IN part 2",
                       indata, nread);
