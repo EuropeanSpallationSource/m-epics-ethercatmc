@@ -813,7 +813,7 @@ bool ethercatmcAxis::pollPowerIsOn(void)
 asynStatus ethercatmcAxis::enableAmplifier(int on)
 {
   asynStatus status = asynSuccess;
-  unsigned counter = 10;
+  unsigned counter = 30;
   bool moving;
   int ret;
   const char *enableEnabledReadback = "bEnabled";
