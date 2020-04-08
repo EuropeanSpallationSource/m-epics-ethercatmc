@@ -82,7 +82,9 @@ class Test(unittest.TestCase):
             saved_JAR = float(capv_lib.capvget(motor + '.JAR'))
             used_JAR = jvel / (accl + 2.0)
             capv_lib.capvput(motor + '.JAR', used_JAR)
-            capv_lib.capvput(motor + '.JOGR', 1, wait=True)
+            capv_lib.capvput(motor + '.JOGR', 1)
+            ret2 = lib.waitForStart(motor, tc_no, 2.0)
+
             resacc = self.getAcceleration(motor, tc_no)
             expacc = used_JAR
             capv_lib.capvput(motor + '.JOGR', 0)
