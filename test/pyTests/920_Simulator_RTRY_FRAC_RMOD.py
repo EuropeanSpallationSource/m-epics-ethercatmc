@@ -86,7 +86,7 @@ def positionAndBacklash(tself, motor, tc_no, rmod, encRel, motorStartPos, motorE
     lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
     #time.sleep(2)
     lib.setValueOnSimulator(motor, tc_no, "bManualSimulatorMode", 0)
-    lib.cmpUnlinkExpectedActualFile(dbgFileName, expFileName, actFileName)
+    lib.cmpUnlinkExpectedActualFile(tc_no, expFileName, actFileName)
 
 
 

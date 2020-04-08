@@ -67,7 +67,7 @@ def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos
     lib.writeExpFileJOG_BDST(motor, tc_no, dbgFileName, expFileName, myDirection, frac, encRel, motorStartPos, motorEndPos)
     time_to_wait = 100
     lib.waitForStop(motor, tc_no, time_to_wait)
-    lib.cmpUnlinkExpectedActualFile(None, expFileName, actFileName)
+    lib.cmpUnlinkExpectedActualFile(tc_no, expFileName, actFileName)
 
 class Test(unittest.TestCase):
     motor = os.getenv("TESTEDMOTORAXIS")

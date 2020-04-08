@@ -69,6 +69,9 @@ class motor_lib(object):
     # Note: Make sure to use different values to hae a good
     # test coverage
 
+    myMRES =  1.0
+    myDIR  =    0
+    myOFF  =  0.0
     myVELO = 10.0   # positioning velocity
     myACCL =  1.0   # Time to VELO, seconds
     myAR   = myVELO / myACCL # acceleration, mm/sec^2
@@ -558,6 +561,9 @@ class motor_lib(object):
         capv_lib.capvput(motor + '-ErrRst', 1)
         # Prepare parameters for jogging and backlash
         self.setSoftLimitsOff(motor)
+        capv_lib.capvput(motor + '.MRES', self.myMRES)
+        capv_lib.capvput(motor + '.DIR',  self.myDIR)
+        capv_lib.capvput(motor + '.OFF',  self.myOFF)
         capv_lib.capvput(motor + '.VELO', self.myVELO)
         capv_lib.capvput(motor + '.ACCL', self.myACCL)
 
@@ -698,9 +704,20 @@ class motor_lib(object):
 
 
 
-    def cmpUnlinkExpectedActualFile(self, dbgFileName, expFileName, actFileName):
+    def cmpUnlinkExpectedActualFile(self, tc_no, expFileName, actFileName):
         # compare actual and expFile
-        sameContent= filecmp.cmp(expFileName, actFileName, shallow=False)
+        wait_for_found = 5
+        while wait_for_found > 0:
+            try:
+                sameContent= filecmp.cmp(expFileName, actFileName, shallow=False)
+                wait_for_found = 0
+            except Exception as e:
+                print('%s: cmpUnlinkExpectedActualFile expFileName=%s actFileName=%s wait_for_found=%f' % (
+                    tc_no, expFileName, actFileName, wait_for_found))
+                print(str(e))
+                time.sleep(0.5)
+            wait_for_found -= polltime
+
         if not sameContent:
             file = open(expFileName, 'r')
             for line in file:
@@ -715,7 +732,7 @@ class motor_lib(object):
                 print(("%s: %s" % (actFileName, str(line))))
             file.close();
             assert(sameContent)
-        elif dbgFileName == None:
+        else:
             unlinkOK = True
             try:
                 os.unlink(expFileName)
