@@ -337,7 +337,9 @@ asynStatus ethercatmcController::writeWriteReadAds(asynUser *pasynUser,
                                                    void *indata, size_t inlen,
                                                    size_t *pnread)
 {
+  int tracelevel = deftracelevel;
   asynStatus status;
+  asynStatus lockStatus;
   uint32_t ams_payload_len = outlen - sizeof(ams_req_hdr_p->amsTcpHdr);
   uint32_t ads_len = outlen - sizeof(*ams_req_hdr_p);
   *pnread = 0;
@@ -352,11 +354,24 @@ asynStatus ethercatmcController::writeWriteReadAds(asynUser *pasynUser,
   ams_req_hdr_p->stateFlags_low = 0x4; /* Command */
   UINTTONET(ads_len, ams_req_hdr_p->net_len);
   UINTTONET(invokeID, ams_req_hdr_p->net_invokeID);
+  asynPrint(pasynUser, tracelevel,
+            "%swriteWriteReadAds/queueLockPort\n",
+            modNamEMC);
+  lockStatus = pasynManager->queueLockPort(pasynUser);
+  asynPrint(pasynUser, tracelevel,
+            "%swriteWriteReadAds/queueLockPort lockStatus=%s (%d)\n",
+            modNamEMC, ethercatmcstrStatus(lockStatus), (int)lockStatus);
+
   status = writeReadBinaryOnErrorDisconnect(pasynUser,
                                             (const char *)ams_req_hdr_p,
                                             outlen,
                                             (char *)indata, inlen,
                                             pnread);
+  lockStatus = pasynManager->queueUnlockPort(pasynUser);
+  asynPrint(pasynUser, tracelevel,
+            "%swriteWriteReadAds/unlockPort lockStatus=%s (%d)\n",
+            modNamEMC, ethercatmcstrStatus(lockStatus), (int)lockStatus);
+
   if (!status) {
     size_t nread = *pnread;
     AmsHdrType *ams_rep_hdr_p = (AmsHdrType*)indata;
