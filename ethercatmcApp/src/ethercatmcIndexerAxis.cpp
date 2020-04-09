@@ -606,7 +606,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     drvlocal.hasProblem = 0;
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
     if ((statusReasonAux != drvlocal.old_statusReasonAux) ||
-        (idxAuxBits      != drvlocal.old_idxAuxBits)) {
+        (idxAuxBits      != drvlocal.old_idxAuxBits) ||
+        (idxStatusCode   != drvlocal.old_idxStatusCode)) {
       if (errorID) {
         asynPrint(pC_->pasynUserController_, traceMask,
                   "%spoll(%d) actPos=%f targetPos=%f statusReasonAux=0x%x (%s) errorID=0x%x\n",
@@ -622,6 +623,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       }
       drvlocal.old_statusReasonAux = statusReasonAux;
       drvlocal.old_idxAuxBits      = idxAuxBits;
+      drvlocal.old_idxStatusCode   = idxStatusCode;
     }
     switch (idxStatusCode) {
       /* After RESET, START, STOP the bits are not valid */
