@@ -491,13 +491,14 @@ class motor_lib(object):
 
         return self.globals.SUCCESS
 
-    def verifyField(self, pv, field, reference):
+    def verifyField(self, pv, field, expected):
         """
-        Verify that field == reference.
+        Verify that field == expected.
         """
         full_pv = pv + "." + field
-        if (capv_lib.capvget(full_pv) != reference):
-            msg = "ERROR: " + full_pv + " not equal to " + str(reference)
+        actual = capv_lib.capvget(full_pv)
+        if (actual != expected):
+            msg = "ERROR: " + full_pv + " actual=" + str(actual) +" expected=" + str(expected)
             raise Exception(__name__ + msg)
 
         return self.globals.SUCCESS
