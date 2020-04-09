@@ -27,6 +27,7 @@ def restorePwrSettings(self, motor, tc_no, pwrAuto, pwrOnDly, pwrOffDly):
     capv_lib.capvput(motor + '-PwrOffDly', pwrOffDly)
 
 def do_220_autopower(self, motor, tc_no, autopower):
+    capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + tc_no[0:20])
     lib.setCNENandWait(motor, tc_no, 0)
     capv_lib.capvput(motor + '-PwrAuto', autopower, wait=True, timeout=globals.TIMEOUT)
     capv_lib.capvput(motor + '-PwrOnDly', PwrOnDly, wait=True, timeout=globals.TIMEOUT)
@@ -46,9 +47,18 @@ def do_220_autopower(self, motor, tc_no, autopower):
     restorePwrSettings(self, motor, tc_no, self.saved_PwrAuto, self.saved_PwrOnDly, self.saved_PwrOffDly)
     lib.setCNENandWait(motor, tc_no, self.saved_CNEN)
 
-    self.assertEqual(1, done, 'moveWait should return done')
-    assert(power1 == 1)
-    assert(power2 == 0)
+
+    print('%s done=%s power1=%d power2=%d' % (tc_no, done, power1, power2))
+    if ((done == 1) and (power1 == 1) and (power2 == 0)):
+        testPassed = True
+    else:
+        testPassed = False
+
+    if testPassed:
+        capv_lib.capvput(self.motor + '-DbgStrToLOG', "Passed " + str(tc_no))
+    else:
+        capv_lib.capvput(self.motor + '-DbgStrToLOG', "Failed " + str(tc_no))
+    assert (testPassed)
 
 
 
@@ -82,15 +92,11 @@ class Test(unittest.TestCase):
         motor = self.motor
         tc_no = "2201-Auto_pwr_1"
         print('%s autopower ' % tc_no)
-        capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + tc_no[0:20])
         do_220_autopower(self, motor, tc_no, 1)
-        capv_lib.capvput(motor + '-DbgStrToLOG', "End   " + tc_no[0:20])
 
     def test_TC_2202(self):
         motor = self.motor
         tc_no = "2202-Auto_pwr_2"
-        capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + tc_no[0:20])
         print('%s autopower ' % tc_no)
         do_220_autopower(self, motor, tc_no, 2)
         lib.setCNENandWait(motor, tc_no, self.saved_CNEN)
-        capv_lib.capvput(motor + '-DbgStrToLOG', "End   " + tc_no[0:20])
