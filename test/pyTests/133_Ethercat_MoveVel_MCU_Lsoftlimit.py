@@ -78,7 +78,7 @@ class Test(unittest.TestCase):
             miss = int(capv_lib.capvget(motor + '.MISS'))
 
             if (msta & lib.MSTA_BIT_PROBLEM):
-                capv_lib.capvput(motor + '-ErrRst', 1)
+                lib.resetAxis(motor, tc_no)
 
             self.assertEqual(0, msta & lib.MSTA_BIT_MINUS_LS, 'DLY Minus hard limit not reached MoveVel')
             self.assertEqual(0, msta & lib.MSTA_BIT_PLUS_LS,  'DLY Plus hard limit not reached MoveVel')
@@ -135,7 +135,7 @@ class Test(unittest.TestCase):
             success = lib.verifyPosition(motor, rbv)
 
             if (msta & lib.MSTA_BIT_PROBLEM):
-                capv_lib.capvput(motor + '-ErrRst', 1)
+                lib.resetAxis(motor, tc_no)
 
             self.assertEqual(success, globals.SUCCESS, 'verifyPosition returned SUCCESS')
             self.assertEqual(0, msta & lib.MSTA_BIT_MINUS_LS, 'DLY Minus hard limit not reached Moveabs')

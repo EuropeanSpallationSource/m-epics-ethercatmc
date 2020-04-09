@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         time.sleep(4.0)
         mstaErr = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
         print('%s Error mstaErr=%s' % (tc_no, lib.getMSTAtext(mstaErr)))
-        capv_lib.capvput(motor + '-ErrRst',1)
+        lib.resetAxis(motor, tc_no)
 
         setValueOnSimulator(self, motor, tc_no, "bAmplifierLockedToBeOff", 0)
 

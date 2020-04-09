@@ -70,23 +70,6 @@ def waitForStart(self, motor, tc_no, wait_for, direction, oldRBV):
         wait_for -= polltime
     return False
 
-def resetAxis(motor, tc_no):
-    wait_for_ErrRst = 5
-    err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
-    print('%s:%d resetAxis err=%d' % (tc_no, lineno(), err))
-    #if not err:
-    #    return True
-
-    capv_lib.capvput(motor + '-ErrRst', 1)
-    while wait_for_ErrRst > 0:
-        wait_for_ErrRst -= polltime
-        err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
-        print('%s:%d wait_for_ErrRst=%f err=%d' % (tc_no, lineno(), wait_for_ErrRst, err))
-        if not err:
-            return True
-        time.sleep(polltime)
-        wait_for_ErrRst -= polltime
-    return False
 
 def waitForStop(self, motor, tc_no, wait_for_stop, direction, oldRBV, TweakValue):
     while wait_for_stop > 0:
@@ -109,7 +92,7 @@ def tweakToLimit(self, motor, tc_no, direction):
 
     # If we reached the limit switch, we are fine and
     # can reset the error
-    resetAxis(motor, tc_no)
+    lib.resetAxis(motor, tc_no)
     print('%s:%d CNEN=1' % (tc_no, lineno()))
     lib.setCNENandWait(motor, tc_no, 1)
     # Step through the range in 20 steps or so
@@ -179,7 +162,7 @@ def tweakToLimit(self, motor, tc_no, direction):
         newPos = rbv + deltaToMove
     # If we reached the limit switch, we are fine and
     # can reset the error
-    resetAxis(motor, tc_no)
+    lib.resetAxis(motor, tc_no)
     print('%s:%d CNEN=%d' % (tc_no, lineno(), self.old_Enable))
     lib.setCNENandWait(motor, tc_no, self.old_Enable)
 
@@ -198,7 +181,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-091-Tweak"
         print('%s' % tc_no)
         motor = self.motor
-        resetAxis(motor, tc_no)
+        lib.resetAxis(motor, tc_no)
         print('%s:%d .CNEN=1' % (tc_no, lineno()))
         lib.setCNENandWait(motor, tc_no, 1)
 
@@ -259,7 +242,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-094-Reset-Axis"
         print('%s' % tc_no)
         motor = self.motor
-        resetAxis(motor, tc_no)
+        lib.resetAxis(motor, tc_no)
         print('%s:%d CNEN=%d' % (tc_no, lineno(), self.old_Enable))
         lib.setCNENandWait(motor, tc_no, self.old_Enable)
         #assert False

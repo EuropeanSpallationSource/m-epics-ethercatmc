@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         nErrorId_2 = capv_lib.capvget(motor + '-ErrId', use_monitor=False)
         print('%s Error bError_2=%d nErrorId_2=%d' % (tc_no, bError_2, nErrorId_2))
 
-        capv_lib.capvput(motor + '-ErrRst',1)
+        lib.resetAxis(motor, tc_no)
 
         msta_3 = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
         bError_3   = capv_lib.capvget(motor + '-Err', use_monitor=False)

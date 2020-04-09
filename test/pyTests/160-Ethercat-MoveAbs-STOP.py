@@ -63,7 +63,7 @@ class Test(unittest.TestCase):
                     tc_no, i, nErrorId, lib.getMSTAtext(msta)))
 
         if (msta & lib.MSTA_BIT_PROBLEM):
-            capv_lib.capvput(motor + '-ErrRst', 1)
+            lib.resetAxis(motor, tc_no)
 
         self.assertEqual(0, nErrorId,  'nErrorId must be 0')
         self.assertEqual(0, msta & lib.MSTA_BIT_PROBLEM,  'Problem bit must not be set')

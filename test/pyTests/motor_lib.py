@@ -829,3 +829,19 @@ class motor_lib(object):
             time.sleep(polltime)
             wait_for_power_changed -= polltime
         return False
+
+    def resetAxis(self, motor, tc_no):
+        wait_for_ErrRst = 5
+        err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
+        print('%s resetAxis err=%d' % (tc_no, err))
+
+        capv_lib.capvput(motor + '-ErrRst', 1)
+        while wait_for_ErrRst > 0:
+            wait_for_ErrRst -= polltime
+            err = int(capv_lib.capvget(motor + '-Err', use_monitor=False))
+            print('%s wait_for_ErrRst=%f err=0x%x' % (tc_no, wait_for_ErrRst, err))
+            if not err:
+                return True
+            time.sleep(polltime)
+            wait_for_ErrRst -= polltime
+        return False
