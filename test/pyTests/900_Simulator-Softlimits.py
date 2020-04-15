@@ -164,9 +164,9 @@ class Test(unittest.TestCase):
             #drvUseEGU = capv_lib.capvget(motor + '-DrvUseEGU-RB')
 
     def test_TC_90000(self):
-        tc_no = 90010
+        tc_no = 90000
         capv_lib.capvput(self.motor + '-DbgStrToLOG', "Start " + str(tc_no))
-        lib.motorInitAllForBDST(self.motor, 90000)
+        lib.motorInitAllForBDST(self.motor, tc_no)
         capv_lib.capvput(self.motor + '-DbgStrToLOG', "End " + str(tc_no))
 
     def test_TC_90010(self):
