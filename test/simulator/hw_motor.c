@@ -594,15 +594,24 @@ static int hard_limits_clip(int axis_no, double velocity)
         velocity < 0 &&
         motor_axis[axis_no].MotorPosNow < motor_axis[axis_no].lowHardLimitPos) {
       fprintf(stdlog,
-              "%s/%s:%d axis_no=%d CLIP LLS motorPosNow=%g lowHardLimitPos=%g enabledLowSoftLimitPos=%d lowSoftLimitPos=%g\n",
+              "%s/%s:%d axis_no=%d CLIP LLS motorPosNow=%g velocity=%g jvel=%g velo=%g hvel=%g HomeVelocity=%g HomePos=%g lowHardLimitPos=%g enabledLowSoftLimitPos=%d lowSoftLimitPos=%g\n",
               __FILE__, __FUNCTION__, __LINE__,
               axis_no,
               motor_axis[axis_no].MotorPosNow,
+              velocity,
+              motor_axis[axis_no].moving.velo.JogVelocity,
+              motor_axis[axis_no].moving.velo.PosVelocity,
+              motor_axis[axis_no].moving.velo.HomeVelocity,
+              motor_axis[axis_no].HomePos,
+              motor_axis[axis_no].moving.velo.HomeVelocity,
               motor_axis[axis_no].lowHardLimitPos,
               motor_axis[axis_no].enabledLowSoftLimitPos,
               motor_axis[axis_no].lowSoftLimitPos);
       motor_axis[axis_no].MotorPosNow = motor_axis[axis_no].lowHardLimitPos;
       clipped = 1;
+      if (motor_axis[axis_no].moving.velo.HomeVelocity) {
+        setAxisHomed(axis_no, 1);
+      }
     }
   }
   if (clipped) {
@@ -792,7 +801,7 @@ void setMotorPos(int axis_no, double value)
   fprintf(stdlog, "%s/%s:%d axis_no=%d value=%g\n",
           __FILE__, __FUNCTION__, __LINE__,
           axis_no, value);
-  motor_axis[axis_no].homed = 1;
+  setAxisHomed(axis_no, 1);
   /* simulate EncoderPos */
   motor_axis[axis_no].MotorPosNow = value;
   motor_axis[axis_no].EncoderPos = getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
@@ -960,7 +969,7 @@ int moveHomeProc(int axis_no,
   if (nCmdData == 15) {
     motor_axis[axis_no].MotorPosNow = position;
     motor_axis[axis_no].moving.velo.HomeVelocity = 0;
-    motor_axis[axis_no].homed = 1;
+    setAxisHomed(axis_no, 1);
     return 0;
   }
 
@@ -977,7 +986,7 @@ int moveHomeProc(int axis_no,
           velocity,
           acceleration);
   StopInternal(axis_no);
-  motor_axis[axis_no].homed = 0; /* Not homed any more */
+  setAxisHomed(axis_no, 0);  /* Not homed any more */
   gettimeofday(&motor_axis[axis_no].lastPollTime, NULL);
 
   if (position > motor_axis[axis_no].MotorPosNow) {
@@ -988,7 +997,7 @@ int moveHomeProc(int axis_no,
     motor_axis[axis_no].moving.rampUpAfterStart = motor_axis[axis_no].defRampUpAfterStart;
   } else {
     motor_axis[axis_no].moving.velo.HomeVelocity = 0;
-    motor_axis[axis_no].homed = 1; /* homed again */
+    setAxisHomed(axis_no, 1);  /* homed again */
   }
 
   return 0;

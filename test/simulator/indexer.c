@@ -19,10 +19,17 @@
 /* The lenght of the indexer data, the longest is
    probably netInfoType4_type with 34 byte */
 #define WORDS_SIZE_INDEXER_DATA       17
+#define HAS_0518
+#ifdef HAS_0518
 #define TYPECODE_SPECIALDEVICE_0518 0x0518
+#endif
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
 #define TYPECODE_PARAMDEVICE_5008 0x5008
+
+#define HAS_5010
+#ifdef HAS_5010
 #define TYPECODE_PARAMDEVICE_5010 0x5010
+#endif
 #define WORDS_SPECIALDEVICE_0518    0x18
 #define WORDS_DISCRETEINPUT_1202     0x2
 #define WORDS_PARAMDEVICE_5008       0x8
@@ -43,13 +50,27 @@
 
 /*
    Devices for the indexer:
-   the indexer itself + 1 special
+   the indexer itself + 1 special 0518
    + 2 motors 5008
    + 2 1202 for the 5008 motors
-   + 2 discrete inputs 1202 + 2 motors 5010
+   + 2 motors 5010
 */
+#define NUM_INDEXER_5008_1202 5
 
-#define  NUM_DEVICES        8
+#ifdef HAS_0518
+#define  NUM_0518           1
+#else
+#define  NUM_0518           0
+#endif
+
+#ifdef HAS_5010
+#define  NUM_5010           2
+#else
+#define  NUM_5010           0
+#endif
+
+#define  NUM_DEVICES        (NUM_INDEXER_5008_1202 + NUM_0518 + NUM_5010)
+
 
 typedef enum {
   idxStatusCodeRESET    = 0,
@@ -161,6 +182,10 @@ typedef struct {
 } netInfoType1_type;
 
 typedef struct {
+  uint8_t   unitcode[2];
+} netInfoType3_type;
+
+typedef struct {
   char name[33]; /* leave one byte for trailing '\0' */
   char ascii_null;
 } netInfoType4_type;
@@ -234,6 +259,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_0518
     /* special device */
     { TYPECODE_SPECIALDEVICE_0518, 2*WORDS_SPECIALDEVICE_0518,
       UNITCODE_NONE, AXISNO_NONE,
@@ -244,6 +270,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#endif
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_MM, 1,
       {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
@@ -280,9 +307,9 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 248..255 */ 0
       },
       "SimAxis1",
-      { "", "", "", "", "", "", "", "",
+      { "notHomed", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "notHomed"},
+        "", "", "", "", "", "", "", ""},
       5.0, 175.0
     },
     /* device for errorID */
@@ -312,9 +339,9 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        0, 0,
        0, 0},
       "RotAxis2",
-      { "", "", "", "", "", "", "", "",
+      { "notHomed", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "notHomed"},
+        "", "", "", "", "", "", "", ""},
       -181.0, +181.0
     },
     /* device for errorID */
@@ -327,6 +354,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_5010
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 3,
       {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
@@ -391,6 +419,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", "notHomed"},
       0, +163.0
     }
+#endif
   };
 
 
@@ -410,10 +439,13 @@ static union {
     union {
       netInfoType0_type  infoType0;
       netInfoType1_type  infoType1;
+      netInfoType3_type  infoType3;
       netInfoType4_type  infoType4;
       netInfoType15_type infoType15;
     } indexer;
+#ifdef HAS_0518
     netDevice0518interface_type special0518; /* 42 bytes for ASCII to the simulator */
+#endif
     /* Remember that motor[0] is defined, but never used */
     netDevice5008_1202_Interface_type motors5008_1202[NUM_MOTORS5008];
     netDevice5010interface_type motors5010[NUM_MOTORS5010];
@@ -670,9 +702,26 @@ indexerMotorStatusRead5008(unsigned motor_axis_no,
   {
     unsigned auxBitIdx = 0;
     for (auxBitIdx = 0; auxBitIdx < 7; auxBitIdx++) {
-      if (!strcmp("homing",
-                  (const char*)&indexerDeviceAbsStraction[motor_axis_no].auxName[auxBitIdx])) {
+      const char *auxBitName = (const char*)&indexerDeviceAbsStraction[motor_axis_no].auxName[auxBitIdx];
+
+      if (!strcmp("homing", auxBitName)) {
         if (isMotorHoming(motor_axis_no)) {
+          statusReasonAux |= 1 << auxBitIdx;
+        }
+      } else if (!strcmp("homed", auxBitName)) {
+        int bValue = getAxisHomed(motor_axis_no);
+        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u homed=%d\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 motor_axis_no, auxBitIdx, bValue);
+        if (bValue) {
+          statusReasonAux |= 1 << auxBitIdx;
+        }
+      } else if (!strcmp("notHomed", auxBitName)) {
+        int bValue = getAxisHomed(motor_axis_no);
+        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u homed=%d\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 motor_axis_no, auxBitIdx, bValue);
+        if (!bValue) {
           statusReasonAux |= 1 << auxBitIdx;
         }
       }
@@ -695,6 +744,7 @@ indexerMotorStatusRead5008(unsigned motor_axis_no,
   UINTTONET(ret, pIndexerDevice5008interface->statusReasonAux16);
 }
 
+#ifdef HAS_5010
 static void
 indexerMotorStatusRead5010(unsigned motor_axis_no,
                            netDevice5010interface_type *pIndexerDevice5010interface)
@@ -787,7 +837,7 @@ indexerMotorStatusRead5010(unsigned motor_axis_no,
   UINTTONET(statusReasonAux32,
             pIndexerDevice5010interface->statusReasonAux32);
 }
-
+#endif
 
 /* Reads a parameter.
    All return values are returned as double,
@@ -1069,6 +1119,13 @@ static int indexerHandleIndexerCmd(unsigned offset,
               netData.memoryStruct.indexer.infoType1.size);
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
+#if 0
+  case 3:
+    UINTTONET(indexerDeviceAbsStraction[devNum].unitCode,
+              netData.memoryStruct.indexer.infoType3.unitcode);
+    netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
+    return 0;
+#endif
   case 4:
     /* get values from device table */
     strncpy(&netData.memoryStruct.indexer.infoType4.name[0],
@@ -1100,7 +1157,11 @@ static int indexerHandleIndexerCmd(unsigned offset,
       netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
       return 0;
     }
-    return __LINE__;
+    RETURN_ERROR_OR_DIE(__LINE__,
+                        "%s/%s:%d invalid infoType. infoType=%d",
+                        __FILE__, __FUNCTION__, __LINE__,
+                        infoType);
+    exit(2);
   }
   return __LINE__;
 }
@@ -1297,6 +1358,7 @@ void indexerHandlePLCcycle(void)
         indexerMotorParamInterface(axisNo, offset, lenInPlcPara);
       }
       break;
+#ifdef HAS_5010
     case TYPECODE_PARAMDEVICE_5010:
       {
         double fRet;
@@ -1325,6 +1387,7 @@ void indexerHandlePLCcycle(void)
         indexerMotorParamInterface(axisNo, offset, lenInPlcPara);
       }
       break;
+#endif
     case TYPECODE_INDEXER:
       {
         uint16_t indexer_ack = NETTOUINT(netData.memoryStruct.indexer_ack);
@@ -1338,6 +1401,7 @@ void indexerHandlePLCcycle(void)
         }
       }
       break;
+#ifdef HAS_0518
     case TYPECODE_SPECIALDEVICE_0518:
       {
         uint16_t ctrl_word = NETTOUINT(netData.memoryStruct.special0518.control);
@@ -1380,6 +1444,7 @@ void indexerHandlePLCcycle(void)
         }
       }
       break;
+#endif
     default:
       break;
     }

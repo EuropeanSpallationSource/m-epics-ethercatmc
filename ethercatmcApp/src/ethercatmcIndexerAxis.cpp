@@ -177,11 +177,17 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
 
 void ethercatmcIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
 {
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) auxBitsNotHomedMask=0x%x\n",
+            modNamEMC, axisNo_, auxBitsNotHomedMask);
   drvlocal.auxBitsNotHomedMask = auxBitsNotHomedMask;
 }
 
 void ethercatmcIndexerAxis::setAuxBitsEnabledMask(unsigned auxBitsEnabledMask)
 {
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) setAuxBitsEnabledMask=0x%x\n",
+            modNamEMC, axisNo_, auxBitsEnabledMask);
   drvlocal.auxBitsEnabledMask = auxBitsEnabledMask;
 }
 
