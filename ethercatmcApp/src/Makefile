@@ -38,6 +38,10 @@ ethercatmcSupport_LIBS += motor
 ethercatmcSupport_LIBS += softMotor
 endif
 
+ifneq (,$(findstring /,$(STREAM)))
+ethercatmcSupport_LIBS += stream
+endif
+
 
 ethercatmcSupport_LIBS += $(EPICS_BASE_IOC_LIBS)
 

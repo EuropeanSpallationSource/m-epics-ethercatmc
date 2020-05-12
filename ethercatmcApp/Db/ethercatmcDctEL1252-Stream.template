@@ -1,0 +1,10 @@
+##
+## Monitor motion controller variables
+##
+
+record(stringin, "$(PREFIX)sDctEL1252") {
+   field(DTYP,   "stream")
+   field(DESC,   "UTC time of edge 1HZ pulse")
+   field(INP,    "@sDctEL1252.proto getUTCtime() $(PORT)")
+   field(SCAN,   ".2 second")
+}

@@ -1036,6 +1036,10 @@ asynStatus ethercatmcController::initialPollIndexer(void)
           ctrlLocal.DCclockLdeviceOffset = iOffsBytes;
         } else if (!strcmp(descVersAuthors.desc, "DCclockH")) {
           ctrlLocal.DCclockHdeviceOffset = iOffsBytes;
+        } else if (!strcmp(descVersAuthors.desc, "DCtEL1252L")) {
+          ctrlLocal.DCtEL1252LdeviceOffset = iOffsBytes;
+        } else if (!strcmp(descVersAuthors.desc, "DCtEL1252H")) {
+          ctrlLocal.DCtEL1252HdeviceOffset = iOffsBytes;
         }
       }
       break;
@@ -1162,9 +1166,32 @@ asynStatus ethercatmcController::pollIndexer(void)
       nSec = nSec + tempL;
       DCtimeToEpicsTimeStamp(nSec, &timeStamp);
       asynPrint(pasynUserController_, ASYN_TRACE_FLOW, // | ASYN_TRACE_INFO,
-                "%spollIndexer nSec=%" PRIu64 " sec.nSec=%09u.%09u\n",
-                modNamEMC, nSec, timeStamp.secPastEpoch, timeStamp.nsec);
+                "%spollIndexer DCclock   nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+                modNamEMC, nSec,
+                timeStamp.secPastEpoch, timeStamp.nsec);
       setTimeStamp(&timeStamp);
+      callBacksNeeded = 1;
+    }
+    if (ctrlLocal.DCtEL1252LdeviceOffset && ctrlLocal.DCtEL1252HdeviceOffset) {
+      epicsTimeStamp timeStamp;
+      uint32_t tempL;
+      uint32_t tempH;
+      uint64_t nSec;
+      unsigned offsetL = ctrlLocal.DCtEL1252LdeviceOffset;
+      unsigned offsetH = ctrlLocal.DCtEL1252HdeviceOffset;
+      tempL = netToUint(&ctrlLocal.pIndexerProcessImage[offsetL], sizeof(tempL));
+      tempH = netToUint(&ctrlLocal.pIndexerProcessImage[offsetH], sizeof(tempH));
+      nSec = tempH;
+      nSec = nSec << 32;
+      nSec = nSec + tempL;
+      DCtimeToEpicsTimeStamp(nSec, &timeStamp);
+      asynPrint(pasynUserController_, ASYN_TRACE_FLOW, // | ASYN_TRACE_INFO,
+                "%spollIndexer DCtEL125 nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+                modNamEMC, nSec,
+                timeStamp.secPastEpoch, timeStamp.nsec);
+      setIntegerParam(ethercatmcDCtEL1252Sec_,  timeStamp.secPastEpoch);
+      setIntegerParam(ethercatmcDCtEL1252NSec_, timeStamp.nsec);
+
       callBacksNeeded = 1;
     }
 

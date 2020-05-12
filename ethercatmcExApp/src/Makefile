@@ -37,6 +37,11 @@ ifneq (,$(findstring /,$(MOTOR)))
   ethercatmc_LIBS += softMotor
 endif
 
+ifneq (,$(findstring /,$(STREAM)))
+  ethercatmc_DBD += stream.dbd
+  ethercatmc_LIBS += stream
+endif
+
 ifdef BASE_7_0
  ethercatmc_DBD += PVAServerRegister.dbd
  ethercatmc_DBD += PVACommonRegister.dbd

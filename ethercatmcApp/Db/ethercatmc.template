@@ -449,14 +449,14 @@ record(stringin, "$(PREFIX)$(MOTOR_NAME)-ReasonBit25") {
 record(longin, "$(PREFIX)DCtimeSec")
 {
     field(DTYP, "asynInt32")
-    field(DESC, "StatusBits")
+    field(DESC, "DCtimeSec")
     field(INP,  "@asyn($(MOTOR_PORT),0)DCtimeSec")
     field(SCAN, "I/O Intr")
 }
 record(longin, "$(PREFIX)DCtimeNSec")
 {
     field(DTYP, "asynInt32")
-    field(DESC, "StatusBits")
+    field(DESC, "DCtimeNSec")
     field(INP,  "@asyn($(MOTOR_PORT),0)DCtimeNSec")
     field(SCAN, "I/O Intr")
 }

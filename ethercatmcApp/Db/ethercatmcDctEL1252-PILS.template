@@ -1,0 +1,18 @@
+record(longin, "$(PREFIX)DCtEL1252Sec")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "Raising edge of 1 Hz pulse")
+    field(EGU,  "seconds")
+    field(INP,  "@asyn($(MOTOR_PORT),0)DCtEL1252Sec")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}
+record(longin, "$(PREFIX)DCtEL1252NSec")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "Raising edge of 1 Hz pulse")
+    field(EGU,  "nanoSeconds")
+    field(INP,  "@asyn($(MOTOR_PORT),0)DCtEL1252NSec")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}
