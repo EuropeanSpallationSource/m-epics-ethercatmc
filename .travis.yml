@@ -6,9 +6,6 @@
 language: cpp
 compiler: gcc
 dist: xenial
-language: python
-python:
-  - "3.6"  
 
 cache:
   directories:
@@ -73,6 +70,9 @@ jobs:
 # Different compilers: gcc and clang
 
   - env: BASE=7.0 SET=latest
+    language: python
+    python:
+        "3.6"  
     script:
     - ./checkws.sh
     - test/install-pytest-pyepics-p4p.sh
