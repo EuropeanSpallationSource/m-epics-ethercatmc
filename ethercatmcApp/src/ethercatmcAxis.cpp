@@ -747,13 +747,33 @@ asynStatus ethercatmcAxis::setPosition(double value)
   int nCommand = NCOMMANDHOME;
   int homProc = 0;
   double homPos = value;
+  double motorPosition = 0.0;
+  double motorEncoderPosition = 0.0;
+  int isSim = pC_->features_ & FEATURE_BITS_SIM ? 1 : 0;
+
+  asynStatus statusM = pC_->getDoubleParam(axisNo_,
+                                           pC_->motorPosition_,
+                                           &motorPosition);
+  asynStatus statusE = pC_->getDoubleParam(axisNo_,
+                                           pC_->motorEncoderPosition_,
+                                           &motorEncoderPosition);
 
   status = pC_->getIntegerParam(axisNo_,
                                 pC_->ethercatmcHomProc_,
                                 &homProc);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%ssetPosition(%d  homProc=%d position=%g egu=%g\n",
-            modNamEMC, axisNo_,  homProc, value, value * drvlocal.scaleFactor );
+            "%ssetPosition(%d) homProc=%d posRaw=%g posEgu=%g motorPos=%f encoderPos=%f statM=%d statE=%d isSim=%d\n",
+            modNamEMC, axisNo_,  homProc, value, value * drvlocal.scaleFactor,
+            motorPosition, motorEncoderPosition, (int)statusM, (int)statusE,
+            isSim);
+  /*
+   * The motor Record does a LOAD_POS (= setPosition() when MRES is changed
+   * Changing MRES is only used in some test cases, so pretend that it worked,
+   * on the simulator, but don't do anything.
+   */
+
+  if (isSim)
+    return asynSuccess;
 
   if (homProc != HOMPROC_MANUAL_SETPOS)
     return asynError;
