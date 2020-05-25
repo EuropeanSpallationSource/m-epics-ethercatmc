@@ -75,11 +75,11 @@ nc -l  ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh sim-indexer 127.0.
 sleep 10
 
 # run test cases
-/bin/sh -e -x ./run-simulator-tests.sh IOC:m1
+/bin/sh -e -x ./run-simulator-tests.sh pva://IOC:m1
 status_m1=$?
 
 # run more test cases
-/bin/sh -e -x ./run-simulator-tests.sh IOC:m3
+/bin/sh -e -x ./run-simulator-tests.sh pva://IOC:m3
 status_m3=$?
 
 killExitIocSimulator

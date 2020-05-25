@@ -42,7 +42,7 @@ fi
 # hard-coded values
 # Disadvantage: We can only run one instance on the same machine
 # Advantage:    We can kill old instances, because the port number is known
-PVNAME=IOC:m1
+PVNAME=ca://IOC:m1
 SIM_NC_PORT=5000
 IOC_NC_PORT=5001
 
@@ -75,7 +75,7 @@ nc -l  ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh  SolAxis-SimCfgDbg
 sleep 10
 
 # run test cases
-/bin/sh -e -x ./run-ethercatmc-tests.sh IOC:m1
+/bin/sh -e -x ./run-ethercatmc-tests.sh $PVNAME
 status=$?
 
 killExitIocSimulator

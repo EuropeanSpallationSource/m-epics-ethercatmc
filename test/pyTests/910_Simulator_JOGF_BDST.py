@@ -1,116 +1,152 @@
-#!/usr/bin/env python
-#
-
 import unittest
 import os
 import sys
+from AxisMr import AxisMr
+from AxisCom import AxisCom
+
 import time
-from motor_lib import motor_lib
-lib = motor_lib()
-import capv_lib
+import math
 import inspect
+
 ###
+
 
 def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 
-#How we move: Absolute (without encoder) or relative (with encode via UEIP)
+# How we move: Absolute (without encoder) or relative (with encode via UEIP)
 use_abs = 0
 use_rel = 1
 
-noFRAC   = 1.0
+noFRAC = 1.0
 withFRAC = 1.5
 
 
-def motorInitTC(tself, motor, tc_no, frac, encRel):
-    capv_lib.capvput(motor + '.FRAC', frac)
-    capv_lib.capvput(motor + '.UEIP', encRel)
-    msta = int(capv_lib.capvget(motor + '.MSTA', use_monitor=False))
-    print('%s:%d motorInitTC msta=%s' % (tc_no, lineno(), lib.getMSTAtext(msta)))
+def motorInitTC(self, tc_no, frac, encRel):
+    self.axisCom.put(".FRAC", frac)
+    self.axisCom.put(".UEIP", encRel)
+    msta = int(self.axisCom.get(".MSTA", use_monitor=False))
+    print(
+        "%s:%d motorInitTC msta=%s" % (tc_no, lineno(), self.axisMr.getMSTAtext(msta))
+    )
 
 
-def setMotorStartPos(tself, motor, tc_no, startpos):
-    lib.setValueOnSimulator(motor, tc_no, "fActPosition", startpos)
+def setMotorStartPos(self, tc_no, startpos):
+    self.axisMr.setValueOnSimulator(tc_no, "fActPosition", startpos)
     # Run a status update and a sync
-    lib.doSTUPandSYNC(motor, tc_no)
+    self.axisMr.doSTUPandSYNC(tc_no)
 
 
-def jogAndBacklash(tself, motor, tc_no, frac, encRel, motorStartPos, motorEndPos, myJOGX):
-    # expected and actual
-    if motor.startswith('pva://'):
-        mot = motor[6:]
+def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
+    # TODO
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+    if self.url_string.startswith("pva://"):
+        mot = self.url_string[6:]
+    elif self.url_string.startswith("ca://"):
+        mot = self.url_string[5:]
     else:
-        mot = motor
-    fileName = "/tmp/" + mot.replace(':', '-') + "-" + str(tc_no)
+        mot = self.url_string
+    fileName = "/tmp/" + mot.replace(":", "-") + "-" + str(tc_no)
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
 
-    motorInitTC(tself, motor, tc_no, frac, encRel)
-    setMotorStartPos(tself, motor, tc_no, motorStartPos)
-    lib.setValueOnSimulator(motor, tc_no, "log", actFileName)
-    if myJOGX == 'JOGF':
+    motorInitTC(self, tc_no, frac, encRel)
+    setMotorStartPos(self, tc_no, StartPos)
+    self.axisMr.setValueOnSimulator(tc_no, "log", actFileName)
+    if myJOGX == "JOGF":
         myDirection = 1
-    elif myJOGX == 'JOGR':
+    elif myJOGX == "JOGR":
         myDirection = 0
     else:
-        assert(0)
-    #
-    capv_lib.capvput(motor + '.' + myJOGX, 1)
+        assert 0
+    field_name = "." + myJOGX
+    # Add the dot between the motorRecord name and the field
+    self.axisCom.put(field_name, 1)
     time.sleep(1)
-    lib.setValueOnSimulator(motor, tc_no, "fActPosition", motorEndPos)
-    capv_lib.capvput(motor + '.' + myJOGX, 0)
-    resW = lib.waitForMipZero(motor, tc_no, 12)
-    lib.setValueOnSimulator(motor, tc_no, "dbgCloseLogFile", "1")
+    self.axisMr.setValueOnSimulator(tc_no, "fActPosition", EndPos)
+    self.axisCom.put(field_name, 0)
+    resW = self.axisMr.waitForMipZero(tc_no, 12)
+    self.axisMr.setValueOnSimulator(tc_no, "dbgCloseLogFile", "1")
 
-    dbgFileName = None
-    lib.writeExpFileJOG_BDST(motor, tc_no, dbgFileName, expFileName, myDirection, frac, encRel, motorStartPos, motorEndPos)
+    self.axisMr.writeExpFileJOG_BDST(
+        tc_no, expFileName, myDirection, frac, encRel, StartPos, EndPos,
+    )
     time_to_wait = 100
-    lib.waitForStop(motor, tc_no, time_to_wait)
-    lib.cmpUnlinkExpectedActualFile(tc_no, expFileName, actFileName)
+    self.axisMr.waitForStop(tc_no, time_to_wait)
+    testPassed = self.axisMr.cmpUnlinkExpectedActualFile(
+        tc_no, expFileName, actFileName
+    )
+    if testPassed:
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+    else:
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+    assert testPassed
+
 
 class Test(unittest.TestCase):
-    motor = os.getenv("TESTEDMOTORAXIS")
-    capv_lib.capvput(motor + '-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
+    url_string = os.getenv("TESTEDMOTORAXIS")
+    print("url_string=%s" % (url_string))
 
-    myPOSlow = lib.myPOSlow
-    myPOSmid = lib.myPOSmid
-    myPOShig = lib.myPOShig
+    axisCom = AxisCom(url_string, log_debug=False)
+    axisMr = AxisMr(axisCom)
+
+    axisCom.put("-DbgStrToLOG", "Start " + os.path.basename(__file__)[0:20])
+
+    myPOSlow = axisMr.myPOSlow
+    myPOSmid = axisMr.myPOSmid
+    myPOShig = axisMr.myPOShig
 
     def test_TC_91000(self):
-        motor = self.motor
         tc_no = "TC-91000"
-        lib.initializeMotorRecordSimulatorAxis(motor, tc_no)
-        lib.motorInitAllForBDST(self.motor, tc_no)
+        self.axisMr.initializeMotorRecordSimulatorAxis(tc_no)
+        self.axisMr.motorInitAllForBDST(tc_no)
 
     # JOG forward & backlash compensation, absolute
     def test_TC_91011(self):
-        jogAndBacklash(self, self.motor, 91011, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, 'JOGF')
+        jogAndBacklash(
+            self, 91011, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGF",
+        )
 
-    # JOG forward & backlash compensation, relative
-    def test_TC_91012(self):
-        jogAndBacklash(self, self.motor, 91012, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGF')
 
-    # JOG backward & backlash compensation, absolute
-    def test_TC_91021(self):
-        jogAndBacklash(self, self.motor, 91021, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, 'JOGR')
-
-    # JOG backward & backlash compensation, relative
-    def test_TC_91022(self):
-        jogAndBacklash(self, self.motor, 91022, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGR')
-
-    # JOG forward & backlash compensation, absolute
-    def test_TC_91031(self):
-        jogAndBacklash(self, self.motor, 91031, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, 'JOGF')
-
-    # JOG forward & backlash compensation, relative
-    def test_TC_91032(self):
-        jogAndBacklash(self, self.motor, 91032, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGF')
-
-    # JOG backward & backlash compensation, absolute
-    def test_TC_91041(self):
-        jogAndBacklash(self, self.motor, 91041, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, 'JOGR')
-
-    # JOG backward & backlash compensation, relative
-    def test_TC_91042(self):
-        jogAndBacklash(self, self.motor, 91042, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, 'JOGR')
+#    # JOG forward & backlash compensation, relative
+#    def test_TC_91012(self):
+#        jogAndBacklash(
+#            self, 91012, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGF",
+#        )
+#
+#    # JOG backward & backlash compensation, absolute
+#    def test_TC_91021(self):
+#        jogAndBacklash(
+#            self, 91021, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGR",
+#        )
+#
+#    # JOG backward & backlash compensation, relative
+#    def test_TC_91022(self):
+#        jogAndBacklash(
+#            self, 91022, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGR",
+#        )
+#
+#    # JOG forward & backlash compensation, absolute
+#    def test_TC_91031(self):
+#        jogAndBacklash(
+#            self, 91031, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGF",
+#        )
+#
+#    # JOG forward & backlash compensation, relative
+#    def test_TC_91032(self):
+#        jogAndBacklash(
+#            self, 91032, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGF",
+#        )
+#
+#    # JOG backward & backlash compensation, absolute
+#    def test_TC_91041(self):
+#        jogAndBacklash(
+#            self, 91041, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGR",
+#        )
+#
+#    # JOG backward & backlash compensation, relative
+#    def test_TC_91042(self):
+#        jogAndBacklash(
+#            self, 91042, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGR",
+#        )
