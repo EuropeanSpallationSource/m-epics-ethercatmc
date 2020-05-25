@@ -24,6 +24,6 @@ printVersionIfPossible pip3
 printVersionIfPossible pytest
 
 
-checkPythonPackage pytest &&
+type pytest &&
 checkPythonPackage epics &&
 checkPythonPackage p4p
