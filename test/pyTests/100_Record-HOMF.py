@@ -15,7 +15,7 @@ from AxisCom import AxisCom
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
         axisCom = self.axisCom
         axisMr = self.axisMr
         tc_no = "TC-100"
-        print("%s Home the motor" % tc_no)
+        print(f"{tc_no} Home the motor")
 
         # Get values to be able calculate a timeout
         range_postion = axisCom.get(".HLM") - axisCom.get(".LLM")

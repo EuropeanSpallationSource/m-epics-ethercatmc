@@ -204,7 +204,7 @@ class Test(unittest.TestCase):
     drvUseEGU_RB = None
     drvUseEGU = 0
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)

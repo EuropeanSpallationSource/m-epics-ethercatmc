@@ -12,7 +12,7 @@ from AxisCom import AxisCom
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
 
     msta = int(axisCom.get(".MSTA"))
 
-    print("llm=%f hlm=%f jog_start_pos=%f" % (llm, hlm, jog_start_pos))
+    print(f"llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
 
     # Assert that motor is homed
     def test_TC_1311(self):
@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
     def test_TC_1312(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1312-10-percent-UserPosition"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -59,7 +59,7 @@ class Test(unittest.TestCase):
     def test_TC_1313(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1313-low-soft-limit JOGR"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             self.axisCom.put(".DLY", 1.0)
             done = self.axisMr.jogDirection(tc_no, 0)
             lvio = int(self.axisCom.get(".LVIO"))
@@ -88,7 +88,7 @@ class Test(unittest.TestCase):
     def test_TC_1314(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1314-10-percent-UserPosition"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -100,7 +100,7 @@ class Test(unittest.TestCase):
     def test_TC_1315(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1315-low-soft-limit JOGR"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             self.axisCom.put(".DLY", 0.0)
             done = self.axisMr.jogDirection(tc_no, 0)
             lvio = int(self.axisCom.get(".LVIO"))
@@ -132,7 +132,7 @@ class Test(unittest.TestCase):
     def test_TC_1316(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1313-low-soft-limit JOGR"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             self.axisCom.put(".DLY", 0.0)
             mip1 = int(self.axisCom.get(".MIP"))
             done = self.axisMr.jogDirection(tc_no, 0)
@@ -145,7 +145,7 @@ class Test(unittest.TestCase):
             jogr = int(self.axisCom.get(".JOGR"))
 
             self.axisCom.put(".DLY", self.saved_DLY)
-            print("%s mip1=%x mip2=%x" % (tc_no, mip1, mip2))
+            print(f"{tc_no} mip1={mip1:x} mip2={mip2:x}")
 
             self.assertEqual(True, done, "done should be True after jogDirection")
             self.assertEqual(
@@ -174,7 +174,7 @@ class Test(unittest.TestCase):
     def test_TC_1317(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1314-10-percent-UserPosition"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -187,7 +187,7 @@ class Test(unittest.TestCase):
     def test_TC_1318(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1315-low-soft-limit JOGF DIR"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             saved_DIR = self.axisCom.get(".DIR")
             saved_FOFF = self.axisCom.get(".FOFF")
             self.axisCom.put(".FOFF", 1)

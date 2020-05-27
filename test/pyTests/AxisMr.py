@@ -22,7 +22,7 @@ motorRMOD_I = 3  # "In-Position"
 polltime = 0.2
 
 
-class AxisMr(object):
+class AxisMr:
     def __init__(self, axisCom, url_string=None):
         self.axisCom = axisCom
         self.url_string = url_string
@@ -517,7 +517,7 @@ class AxisMr(object):
                             motorStartPos,
                         )
                     )
-                expFile.write("%s\n" % (line1))
+                expFile.write(f"{line1}\n")
                 cnt += 1
         else:
             # As we don't move the motor (it is simulated, we both times start at motorStartPos
@@ -565,7 +565,7 @@ class AxisMr(object):
                         % (motorEndPos, self.myBVEL, self.myBAR, motorStartPos)
                     )
 
-                expFile.write("%s\n%s\n" % (line1, line2))
+                expFile.write(f"{line1}\n{line2}\n")
                 cnt += 1
         expFile.write("EOF\n")
         expFile.close()
@@ -609,7 +609,7 @@ class AxisMr(object):
                 % (motorEndPos, self.myBVEL, self.myBAR, motorEndPos - self.myBDST)
             )
 
-        expFile.write("%s\n%s\n%s\nEOF\n" % (line1, line2, line3))
+        expFile.write(f"{line1}\n{line2}\n{line3}\nEOF\n")
         expFile.close()
 
     def cmpUnlinkExpectedActualFile(self, tc_no, expFileName, actFileName):
@@ -630,17 +630,17 @@ class AxisMr(object):
             wait_for_found -= polltime
 
         if not sameContent:
-            file = open(expFileName, "r")
+            file = open(expFileName)
             for line in file:
                 if line[-1] == "\n":
                     line = line[0:-1]
-                print(("%s: %s" % (expFileName, str(line))))
+                print(f"{expFileName}: {str(line)}")
             file.close()
-            file = open(actFileName, "r")
+            file = open(actFileName)
             for line in file:
                 if line[-1] == "\n":
                     line = line[0:-1]
-                print(("%s: %s" % (actFileName, str(line))))
+                print(f"{actFileName}: {str(line)}")
             file.close()
             return sameContent
         else:
@@ -670,7 +670,7 @@ class AxisMr(object):
 
             llm = self.axisCom.get(".LLM", use_monitor=False)
             hlm = self.axisCom.get(".HLM", use_monitor=False)
-            print("%s: setSoftLimitsOff llm=%f hlm=%f" % (self.url_string, llm, hlm))
+            print(f"{self.url_string}: setSoftLimitsOff llm={llm:f} hlm={hlm:f}")
             if llm == 0.0 and hlm == 0.0:
                 return
             time.sleep(polltime)
@@ -700,17 +700,17 @@ class AxisMr(object):
         stup = self.axisCom.get(".STUP", use_monitor=False)
         while stup != 0:
             stup = self.axisCom.get(".STUP", use_monitor=False)
-            print("%s .STUP=%s" % (tc_no, stup))
+            print(f"{tc_no} .STUP={stup}")
             time.sleep(polltime)
 
         self.axisCom.put(".STUP", 1)
         self.axisCom.put(".SYNC", 1)
         rbv = self.axisCom.get(".RBV", use_monitor=False)
-        print("%s .RBV=%f .STUP=%s" % (tc_no, rbv, stup))
+        print(f"{tc_no} .RBV={rbv:f} .STUP={stup}")
         while stup != 0:
             stup = self.axisCom.get(".STUP", use_monitor=False)
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            print("%s .RBV=%f .STUP=%s" % (tc_no, rbv, stup))
+            print(f"{tc_no} .RBV={rbv:f} .STUP={stup}")
             time.sleep(polltime)
 
     def setCNENandWait(self, tc_no, cnen):
@@ -742,7 +742,7 @@ class AxisMr(object):
         while wait_for_ErrRst > 0:
             wait_for_ErrRst -= polltime
             err = int(self.axisCom.get("-Err", use_monitor=False))
-            print("%s wait_for_ErrRst=%f err=0x%x" % (tc_no, wait_for_ErrRst, err))
+            print(f"{tc_no} wait_for_ErrRst={wait_for_ErrRst:f} err=0x{err:x}")
             if not err:
                 return True
             time.sleep(polltime)

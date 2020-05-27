@@ -26,7 +26,7 @@ def do_220_autopower(self, tc_no, autopower):
     self.axisCom.put("-PwrAuto", autopower)
     self.axisCom.put("-PwrOnDly", PwrOnDly)
     self.axisCom.put("-PwrOffDly", PwrOffDly)
-    print("%s Enable move to LLM +10" % tc_no)
+    print(f"{tc_no} Enable move to LLM +10")
     destination = self.saved_LLM + 10 + 2 * autopower
     done = self.axisMr.moveWait(tc_no, destination)
 
@@ -57,7 +57,7 @@ def do_220_autopower(self, tc_no, autopower):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -75,7 +75,7 @@ class Test(unittest.TestCase):
 
         # Enable power
         self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20])
-        print("%s Enable drive and move to LLM" % tc_no)
+        print(f"{tc_no} Enable drive and move to LLM")
         self.axisCom.put("-PwrAuto", 2)
         self.axisCom.put("-PwrOnDly", PwrOnDly)
         self.axisMr.setCNENandWait(tc_no, 1)
@@ -89,11 +89,11 @@ class Test(unittest.TestCase):
 
     def test_TC_2201(self):
         tc_no = "2201-Auto_pwr_1"
-        print("%s autopower " % tc_no)
+        print(f"{tc_no} autopower ")
         do_220_autopower(self, tc_no, 1)
 
     def test_TC_2202(self):
         tc_no = "2202-Auto_pwr_2"
-        print("%s autopower " % tc_no)
+        print(f"{tc_no} autopower ")
         do_220_autopower(self, tc_no, 2)
         self.axisMr.setCNENandWait(tc_no, self.saved_CNEN)

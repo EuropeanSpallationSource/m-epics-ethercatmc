@@ -33,7 +33,7 @@ def setValueOnSimulator(self, tc_no, var, value):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
         self.axisCom.put(".CNEN", 1, wait=True)
         time.sleep(4.0)
         mstaErr = int(self.axisCom.get(".MSTA", use_monitor=False))
-        print("%s Error mstaErr=%s" % (tc_no, self.axisMr.getMSTAtext(mstaErr)))
+        print(f"{tc_no} Error mstaErr={self.axisMr.getMSTAtext(mstaErr)}")
         self.axisMr.resetAxis(tc_no)
 
         setValueOnSimulator(self, tc_no, "bAmplifierLockedToBeOff", 0)

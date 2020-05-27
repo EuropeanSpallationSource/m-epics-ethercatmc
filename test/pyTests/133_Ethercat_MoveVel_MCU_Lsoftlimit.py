@@ -12,7 +12,7 @@ from AxisCom import AxisCom
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
 
     msta = int(axisCom.get(".MSTA"))
 
-    print("llm=%f hlm=%f jog_start_pos=%f" % (llm, hlm, jog_start_pos))
+    print(f"llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
 
     # Assert that motor is homed
     def test_TC_1331(self):
@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
     def test_TC_1332(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1332-10-percent-UserPosition"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -58,7 +58,7 @@ class Test(unittest.TestCase):
     def test_TC_1333(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1333-low-soft-limit-MoveVel"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
 
             jar = self.axisCom.get(".JAR")
             self.axisCom.put("-ACCS", jar)
@@ -68,8 +68,7 @@ class Test(unittest.TestCase):
             jvel = self.axisCom.get(".JVEL")
             timeout = self.axisMr.calcTimeOut(destination, jvel)
             print(
-                "%s rbv=%f destination=%f timeout=%f"
-                % (tc_no, rbv, destination, timeout)
+                f"{tc_no} rbv={rbv:f} destination={destination:f} timeout={timeout:f}"
             )
             res = self.axisCom.put("-MoveVel", 0 - jvel)
             # TODO: The -MoveVel PV is not always there ?
@@ -105,7 +104,7 @@ class Test(unittest.TestCase):
     def test_TC_1334(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1234-10-percent-UserPosition"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -118,7 +117,7 @@ class Test(unittest.TestCase):
     def test_TC_1335(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1235-low-soft-limit Moveabs"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             drvUseEGU = self.axisCom.get("-DrvUseEGU-RB")
             if drvUseEGU == 1:
                 mres = 1.0
@@ -135,8 +134,7 @@ class Test(unittest.TestCase):
             destination = self.llm - 1
             timeout = self.axisMr.calcTimeOut(destination, jvel)
             print(
-                "%s: rbv=%f destination=%f timeout=%f"
-                % (tc_no, rbv, destination, timeout)
+                f"{tc_no}: rbv={rbv:f} destination={destination:f} timeout={timeout:f}"
             )
 
             res = self.axisCom.put("-MoveAbs", (destination) / mres)

@@ -15,7 +15,7 @@ polltime = 0.2
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
     # 10% UserPosition
     def test_TC_2001(self):
         tc_no = "TC-2001-10-percent-dialPosition"
-        print("%s" % tc_no)
+        print(f"{tc_no}")
         self.axisCom.put(".CNEN", 1)
         self.axisMr.waitForPowerOn(tc_no, 8.0)
         destination = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
@@ -85,7 +85,7 @@ class Test(unittest.TestCase):
         # Run all the asserts after we have restored the original state
         self.assertEqual(True, ret_1, "waitForStop return True")
 
-        print("%s Error msta_1=%s" % (tc_no, self.axisMr.getMSTAtext(msta_1)))
+        print(f"{tc_no} Error msta_1={self.axisMr.getMSTAtext(msta_1)}")
         self.assertNotEqual(
             0,
             msta_1 & self.axisMr.MSTA_BIT_PROBLEM,

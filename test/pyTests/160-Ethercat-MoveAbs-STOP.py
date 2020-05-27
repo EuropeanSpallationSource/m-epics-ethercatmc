@@ -14,7 +14,7 @@ import time
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
 
     msta = int(axisCom.get(".MSTA"))
 
-    print("llm=%f hlm=%f" % (llm, hlm))
+    print(f"llm={llm:f} hlm={hlm:f}")
 
     # Assert that motor is homed
     def test_TC_1601(self):
@@ -42,7 +42,7 @@ class Test(unittest.TestCase):
     def test_TC_1602(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1602-10-percent-UserPosition"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             done = self.axisMr.moveWait(tc_no, self.per10_UserPosition)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(

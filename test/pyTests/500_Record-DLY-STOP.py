@@ -13,7 +13,7 @@ import time
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
     # 10% dialPosition
     def test_TC_501(self):
         tc_no = "TC_501-10-percent-dialPosition"
-        print("%s" % tc_no)
+        print(f"{tc_no}")
         saved_HLM = self.axisCom.get(".HLM")
         saved_LLM = self.axisCom.get(".LLM")
 
@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
     # 10% dialPosition + X
     def test_TC_502(self):
         tc_no = "TC_502-10-percent-plus-1"
-        print("%s" % tc_no)
+        print(f"{tc_no}")
         rbv = self.axisCom.get(".RBV")
         saved_DLY = self.axisCom.get(".DLY")
         saved_VELO = self.axisCom.get(".VELO")

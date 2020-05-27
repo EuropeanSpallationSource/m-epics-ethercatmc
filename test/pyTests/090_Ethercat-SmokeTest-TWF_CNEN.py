@@ -42,7 +42,6 @@ def checkForEmergenyStop(self, tc_no, wait, direction, oldRBV, TweakValue):
         lls = 1
     if msta & self.axisMr.MSTA_BIT_PLUS_LS:
         hls = 1
-
     print(
         "%s:%d wait=%f dmov=%d movn=%d direction=%d lls=%d hls=%d OOR=%d oldRBV=%f rbv=%f"
         % (
@@ -203,7 +202,7 @@ def tweakToLimit(self, tc_no, direction):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom, url_string=url_string)
@@ -213,7 +212,7 @@ class Test(unittest.TestCase):
     # TWF/TWR
     def test_TC_091(self):
         tc_no = "TC-091-Tweak"
-        print("%s" % tc_no)
+        print(f"{tc_no}")
         self.axisMr.resetAxis(tc_no)
         print("%s:%d .CNEN=1" % (tc_no, lineno()))
         self.axisMr.setCNENandWait(tc_no, 1)
@@ -263,19 +262,19 @@ class Test(unittest.TestCase):
 
     def test_TC_092(self):
         tc_no = "TC-092-Tweak-to-HLS"
-        print("%s" % tc_no)
+        print(f"{tc_no}")
         direction = 1
         tweakToLimit(self, tc_no, direction)
 
     def test_TC_093(self):
         tc_no = "TC-093-Tweak-to-LLS"
-        print("%s" % tc_no)
+        print(f"{tc_no}")
         direction = -1
         tweakToLimit(self, tc_no, direction)
 
     def test_TC_094(self):
         tc_no = "TC-094-Reset-Axis"
-        print("%s" % tc_no)
+        print(f"{tc_no}")
         self.axisMr.resetAxis(tc_no)
         print("%s:%d CNEN=%d" % (tc_no, lineno(), self.old_Enable))
         self.axisMr.setCNENandWait(tc_no, self.old_Enable)

@@ -101,7 +101,7 @@ def positionAndBacklash(self, tc_no, rmod, encRel, motorStartPos, motorEndPos):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)

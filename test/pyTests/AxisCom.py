@@ -18,7 +18,7 @@ def help_and_exit(self, url_string, problem_string):
     sys.exit(1)
 
 
-class AxisCom(object):
+class AxisCom:
     def __init__(self, url_string, axisNum=1, log_debug=True):
         self.pvpfx = None  # PV prefix, like IOC:m1
         self.ctxt = None  # P4P context, if any

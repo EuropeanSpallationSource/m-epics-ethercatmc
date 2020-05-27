@@ -12,7 +12,7 @@ from AxisCom import AxisCom
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
     velo = axisCom.get(".VELO")
     accl = axisCom.get(".ACCL")
 
-    print("llm=%f hlm=%f jog_start_pos=%f" % (llm, hlm, jog_start_pos))
+    print(f"llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
 
     # Assert if motor is homed
     def test_TC_1321(self):
@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
     def test_TC_1322(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1322-low-limit-switch"
-            print("%s" % tc_no)
+            print(f"{tc_no}")
             old_high_limit = self.axisCom.get(".HLM")
             old_low_limit = self.axisCom.get(".LLM")
             rdbd = self.axisCom.get(".RDBD")

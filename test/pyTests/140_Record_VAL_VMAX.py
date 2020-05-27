@@ -21,7 +21,7 @@ def motorPositionTC(self, tc_no, destination, velocity):
             self.axisCom.put(".VELO", self.velo)
 
         UserPosition = self.axisCom.get(".RBV", use_monitor=False)
-        print("%s postion=%f destination=%f" % (tc_no, UserPosition, destination))
+        print(f"{tc_no} postion={UserPosition:f} destination={destination:f}")
         self.assertEqual(1, done, "moveWait should return done")
         # TODO!!
         # res2 = self.axisMr.postMoveCheck()
@@ -30,7 +30,7 @@ def motorPositionTC(self, tc_no, destination, velocity):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)

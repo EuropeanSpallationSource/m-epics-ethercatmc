@@ -21,7 +21,7 @@ from AxisCom import AxisCom
 class Test(unittest.TestCase):
 
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
 
@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-01001"
         rbv = None
         enabled = None
-        print("%s Test RBV/CNEN url_string=%s" % (tc_no, url_string))
+        print(f"{tc_no} Test RBV/CNEN url_string={url_string}")
         rbv = axisCom.get(".RBV")
         enabled = axisCom.get(".CNEN")
 
@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         enabled = None
         veloPut = None
         enabledPut = None
-        print("%s Test VELO/CNEN put url_string=%s" % (tc_no, url_string))
+        print(f"{tc_no} Test VELO/CNEN put url_string={url_string}")
         had_ex = False
         try:
             velo = axisCom.get(".VELO")
@@ -78,7 +78,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-01003"
         floatGetEx = None
         floatPutEx = None
-        print("%s Test FLOAT/actual non existing url_string=%s" % (tc_no, url_string))
+        print(f"{tc_no} Test FLOAT/actual non existing url_string={url_string}")
         value = 0.0
         try:
             floatGet = axisCom.get(".RBV")
@@ -88,10 +88,7 @@ class Test(unittest.TestCase):
             floatPut = axisCom.put(".RBV", value)
         except Exception as ex:
             floatPutEx = ex
-        print(
-            "%s/%s floatGetEx=%s floatPutEx=%s"
-            % (tc_no, url_string, floatGetEx, floatPutEx)
-        )
+        print(f"{tc_no}/{url_string} floatGetEx={floatGetEx} floatPutEx={floatPutEx}")
         self.assertEqual(None, floatGetEx, "floatGetEx must be None")
         self.assertNotEqual(None, floatPutEx, "floatPutEx must not be None")
 
@@ -105,7 +102,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-01004"
         floatGetEx = None
         floatPutEx = None
-        print("%s Test FLOAT/actual non existing url_string=%s" % (tc_no, url_string))
+        print(f"{tc_no} Test FLOAT/actual non existing url_string={url_string}")
         value = 0.0
         try:
             floatGet = axisCom.get(".fNONE")
@@ -115,9 +112,6 @@ class Test(unittest.TestCase):
             floatPut = axisCom.put(".fNONE", value)
         except Exception as ex:
             floatPutEx = ex
-        print(
-            "%s/%s floatGetEx=%s floatPutEx=%s"
-            % (tc_no, url_string, floatGetEx, floatPutEx)
-        )
+        print(f"{tc_no}/{url_string} floatGetEx={floatGetEx} floatPutEx={floatPutEx}")
         self.assertNotEqual(None, floatGetEx, "floatGetEx must not be None")
         self.assertNotEqual(None, floatPutEx, "floatPutEx must not be None")

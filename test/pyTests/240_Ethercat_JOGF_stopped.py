@@ -13,7 +13,7 @@ import time
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print("url_string=%s" % (url_string))
+    print(f"url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -40,7 +40,7 @@ class Test(unittest.TestCase):
     # Jog, wait for start, stop behind MR
     def test_TC_2402(self):
         tc_no = "2402-JOGF_stopped"
-        print("%s" % tc_no)
+        print(f"{tc_no}")
 
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20])
