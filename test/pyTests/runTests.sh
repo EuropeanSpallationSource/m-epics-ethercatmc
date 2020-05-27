@@ -73,14 +73,6 @@ export MYVIRTUALENV
 # conda or virtualenv
 #
 if ! which conda >/dev/null 2>&1; then
-  # This is Mac OS
-  #URL=https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-  #wget $URL || {
-    #echo >&2 wget $URL failed
-    #exit 1
-  #}
-  # conda is preferred over virtualenv
-  # But: if we have virtualenv, use it
   if ! which $MYVIRTUALENV; then
     checkAndInstallSystemPackage conda anaconda || {
       # conda installation failed, fall back to virtualenv
@@ -95,11 +87,15 @@ fi
 ########################################
 if ! which $MYVIRTUALENV; then
   if which conda >/dev/null 2>&1; then
-    conda activate pyepicsPytestPVApy || {
-      echo >&2 conda activate pyepicsPytestPVApy failed
-      conda create -n  pyepicsPytestPVApy
-      exit 1
-    }
+    if test -n "$CONDA_PYTHON_EXE" && test -x "$CONDA_PYTHON_EXE"; then
+      echo "We use existing $CONDA_PYTHON_EXE"
+    else
+      conda activate pyepicsPytestPVApy || {
+        echo >&2 conda activate pyepicsPytestPVApy failed
+        conda create -n  pyepicsPytestPVApy
+        exit 1
+      }
+    fi
   fi
 fi
 ########################################
