@@ -8,7 +8,7 @@ fi
   exit 1
 }
 (
-  cd pyTests/ &&
+  cd pytests36/ &&
     PV="$1"
     shift
     TESTS=$(ls -1  *Record*.py *Ethercat*.py | sort -n)

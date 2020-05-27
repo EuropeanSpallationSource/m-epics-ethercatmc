@@ -5,7 +5,7 @@ if test -z "$1" ; then
 fi
 ./checkws.sh &&
 (
-  cd pyTests/ &&
+  cd pytests36/ &&
     PV="$1"
   shift
     for f in $( echo *Record*.py); do
