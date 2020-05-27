@@ -9,15 +9,15 @@ uname_m=$(uname -m 2>/dev/null || echo unknown)
 
 INSTALLED_EPICS=../../../../.epics.$(hostname).$uname_s.$uname_m
 
-if test "$EPICS_DRIVER_PATH" ; then
+if test -r $INSTALLED_EPICS; then
+  echo INSTALLED_EPICS=$INSTALLED_EPICS
+ . $INSTALLED_EPICS
+elif test "$EPICS_DRIVER_PATH" ; then
   EPICS_EEE_E3=e3
 elif test "$EPICS_ENV_PATH" &&
     test "$EPICS_MODULES_PATH" &&
     test "$EPICS_BASES_PATH"; then
   EPICS_EEE_E3=y
-elif test -r $INSTALLED_EPICS; then
-  echo INSTALLED_EPICS=$INSTALLED_EPICS
- . $INSTALLED_EPICS
 else
   echo not found: INSTALLED_EPICS=$INSTALLED_EPICS
 fi
