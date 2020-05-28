@@ -65,7 +65,7 @@ class Test(unittest.TestCase):
             mstaE = int(self.axisCom.get(".MSTA"))
             # Go away from limit switch
             done2 = self.axisMr.moveWait(tc_no, old_low_limit + rdbd)
-            print("%s msta=%x lvio=%d" % (tc_no, mstaE, lvio))
+            print(f"{tc_no} msta={mstaE:x} lvio={int(lvio)}")
 
             self.axisMr.setSoftLimitsOn(old_low_limit, old_high_limit)
 

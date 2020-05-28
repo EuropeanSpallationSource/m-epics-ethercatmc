@@ -32,17 +32,17 @@ def do_220_autopower(self, tc_no, autopower):
 
     # Make sure drive is still enabled
     power1 = self.axisCom.get(".CNEN", use_monitor=False)
-    print("%s Check drive is still enabled power1=%d" % (tc_no, power1))
+    print(f"{tc_no} Check drive is still enabled power1={int(power1)}")
 
     time.sleep(PwrOnDly + PwrOffDly + 2.0)
     power2 = self.axisCom.get(".CNEN", use_monitor=False)
-    print("%s Wait 8s and check drive is now disabled power2=%d" % (tc_no, power2))
+    print(f"{tc_no} Wait 8s and check drive is now disabled power2={int(power2)}")
     restorePwrSettings(
         self, tc_no, self.saved_PwrAuto, self.saved_PwrOnDly, self.saved_PwrOffDly,
     )
     self.axisMr.setCNENandWait(tc_no, self.saved_CNEN)
 
-    print("%s done=%s power1=%d power2=%d" % (tc_no, done, power1, power2))
+    print(f"{tc_no} done={done} power1={int(power1)} power2={int(power2)}")
     if (done == 1) and (power1 == 1) and (power2 == 0):
         testPassed = True
     else:

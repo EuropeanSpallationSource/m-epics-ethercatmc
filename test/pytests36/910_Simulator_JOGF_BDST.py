@@ -27,9 +27,7 @@ def motorInitTC(self, tc_no, frac, encRel):
     self.axisCom.put(".FRAC", frac)
     self.axisCom.put(".UEIP", encRel)
     msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-    print(
-        "%s:%d motorInitTC msta=%s" % (tc_no, lineno(), self.axisMr.getMSTAtext(msta))
-    )
+    print(f"{tc_no}:{int(lineno())} motorInitTC msta={self.axisMr.getMSTAtext(msta)}")
 
 
 def setMotorStartPos(self, tc_no, startpos):

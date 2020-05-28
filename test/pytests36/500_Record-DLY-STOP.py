@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         self.axisCom.put(".SPMG", 3)
         time.sleep(4.0)
         dmov = self.axisCom.get(".DMOV")
-        print("%s: movn1=%d dmov=%d" % (tc_no, movn1, dmov))
+        print(f"{tc_no}: movn1={int(movn1)} dmov={int(dmov)}")
         self.axisCom.put(".DLY", saved_DLY)
         self.axisCom.put(".VELO", saved_VELO)
         self.axisCom.put(".ACCL", saved_ACCL)

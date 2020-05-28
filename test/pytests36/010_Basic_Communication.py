@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
         rbv = axisCom.get(".RBV")
         enabled = axisCom.get(".CNEN")
 
-        print("%s/%s rbv=%s enabled=%d" % (tc_no, url_string, rbv, enabled))
+        print(f"{tc_no}/{url_string} rbv={rbv} enabled={int(enabled)}")
 
         self.assertNotEqual(None, rbv, "rbv must not be None")
         self.assertNotEqual(None, enabled, "enabled must not be None")

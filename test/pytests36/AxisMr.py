@@ -327,8 +327,7 @@ class AxisMr:
             powerOn = msta & self.MSTA_BIT_AMPON
 
             print(
-                "%s: wait_for_powerOn=%f powerOn=%d"
-                % (tc_no, wait_for_powerOn, powerOn)
+                f"{tc_no}: wait_for_powerOn={wait_for_powerOn:f} powerOn={int(powerOn)}"
             )
             if powerOn:
                 return True
@@ -381,7 +380,7 @@ class AxisMr:
             self.axisCom.put(".JOGF", 0)
         else:
             self.axisCom.put(".JOGR", 0)
-        print("%s: jogDirection done=%d" % (tc_no, done))
+        print(f"{tc_no}: jogDirection done={int(done)}")
         return done
 
     #    def movePosition(self, tc_no, destination, velocity, acceleration):
@@ -736,7 +735,7 @@ class AxisMr:
     def resetAxis(self, tc_no):
         wait_for_ErrRst = 5
         err = int(self.axisCom.get("-Err", use_monitor=False))
-        print("%s resetAxis err=%d" % (tc_no, err))
+        print(f"{tc_no} resetAxis err={int(err)}")
 
         self.axisCom.put("-ErrRst", 1)
         while wait_for_ErrRst > 0:

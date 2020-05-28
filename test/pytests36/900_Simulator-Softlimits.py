@@ -104,7 +104,7 @@ def InitLimitsNoC(self, tc_no):
 
         resH = self.axisMr.calcAlmostEqual(tc_no, myDHLM, actDHLM, maxDelta)
         resL = self.axisMr.calcAlmostEqual(tc_no, myDLLM, actDLLM, maxDelta)
-        print("%s:%d resH=%s resL=%s" % (tc_no, lineno(), resH, resL))
+        print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
             return True
         else:
@@ -135,7 +135,7 @@ def InitLimitsWithC(self, tc_no):
 
         resH = self.axisMr.calcAlmostEqual(tc_no, myDHLM, actDHLM, maxDelta)
         resL = self.axisMr.calcAlmostEqual(tc_no, myDLLM, actDLLM, maxDelta)
-        print("%s:%d resH=%s resL=%s" % (tc_no, lineno(), resH, resL))
+        print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
             return True
         else:
@@ -157,12 +157,11 @@ def readBackParamVerify(self, tc_no, field_name, expVal):
     while maxTime > 0:
         actVal = self.axisCom.get(field_name)
         print(
-            "%s:%d %s expVal=%f actVal=%f"
-            % (tc_no, lineno(), field_name, expVal, actVal)
+            f"{tc_no}:{int(lineno())} {field_name} expVal={expVal:f} actVal={actVal:f}"
         )
 
         res = self.axisMr.calcAlmostEqual(tc_no, expVal, actVal, maxDelta)
-        print("%s:%d res=%s" % (tc_no, lineno(), res))
+        print(f"{tc_no}:{int(lineno())} res={res}")
         if (res == True) or (res != 0):
             return True
         else:
@@ -379,7 +378,7 @@ class Test(unittest.TestCase):
         encRel = 0
         self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
 
-        print("%s vers=%g hasROlimit=%d" % (tc_no, self.vers, self.hasROlimit))
+        print(f"{tc_no} vers={self.vers:g} hasROlimit={int(self.hasROlimit)}")
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
 
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)

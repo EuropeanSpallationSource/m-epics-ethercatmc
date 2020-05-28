@@ -47,7 +47,7 @@ class Test(unittest.TestCase):
         msta_1 = int(self.axisCom.get(".MSTA", use_monitor=False))
         bError_2 = self.axisCom.get("-Err", use_monitor=False)
         nErrorId_2 = self.axisCom.get("-ErrId", use_monitor=False)
-        print("%s Error bError_2=%d nErrorId_2=%d" % (tc_no, bError_2, nErrorId_2))
+        print(f"{tc_no} Error bError_2={int(bError_2)} nErrorId_2={int(nErrorId_2)}")
 
         self.axisMr.resetAxis(tc_no)
 
@@ -66,7 +66,7 @@ class Test(unittest.TestCase):
         bError = bError_3
         while msta & self.axisMr.MSTA_BIT_MOVING or bError != 0 or nErrorId != 0:
             time.sleep(polltime)
-            print("%s sleep counter = %d" % (tc_no, counter))
+            print(f"{tc_no} sleep counter = {int(counter)}")
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             bError = self.axisCom.get("-Err", use_monitor=False)
             nErrorId = self.axisCom.get("-ErrId", use_monitor=False)

@@ -59,7 +59,7 @@ def checkForEmergenyStop(self, tc_no, wait, direction, oldRBV, TweakValue):
         )
     )
     if (hls and (direction > 0)) or (lls and (direction <= 0)) or outOfRange != 0:
-        print("%s:%d  STOP=1 CNEN=0 Emergency stop" % (tc_no, lineno()))
+        print(f"{tc_no}:{int(lineno())}  STOP=1 CNEN=0 Emergency stop")
         self.axisCom.put(".STOP", 1)
         self.axisCom.put(".CNEN", 0)
 
@@ -105,7 +105,7 @@ def tweakToLimit(self, tc_no, direction):
     # If we reached the limit switch, we are fine and
     # can reset the error
     self.axisMr.resetAxis(tc_no)
-    print("%s:%d CNEN=1" % (tc_no, lineno()))
+    print(f"{tc_no}:{int(lineno())} CNEN=1")
     self.axisMr.setCNENandWait(tc_no, 1)
     # Step through the range in 20 steps or so
     deltaToMove = (old_high_limit - old_low_limit) / 20
@@ -164,7 +164,7 @@ def tweakToLimit(self, tc_no, direction):
             )
             if not inPosition:
                 stopTheLoop = 1
-                print("%s:%d STOP=1 CNEN=0 Emergeny stop" % (tc_no, lineno()))
+                print(f"{tc_no}:{int(lineno())} STOP=1 CNEN=0 Emergeny stop")
                 self.axisCom.put(".STOP", 1)
                 self.axisCom.put(".CNEN", 0)
         else:
@@ -179,7 +179,9 @@ def tweakToLimit(self, tc_no, direction):
             % (tc_no, lineno(), count, maxTweaks, stopTheLoop, inPosition)
         )
 
-    print("%s:%d direction=%d hls=%d lls=%d" % (tc_no, lineno(), direction, hls, lls))
+    print(
+        f"{tc_no}:{int(lineno())} direction={int(direction)} hls={int(hls)} lls={int(lls)}"
+    )
     # Put back the limits for the next run
     self.axisMr.setSoftLimitsOn(old_low_limit, old_high_limit)
 
@@ -193,7 +195,7 @@ def tweakToLimit(self, tc_no, direction):
     # If we reached the limit switch, we are fine and
     # can reset the error
     self.axisMr.resetAxis(tc_no)
-    print("%s:%d CNEN=%d" % (tc_no, lineno(), self.old_Enable))
+    print(f"{tc_no}:{int(lineno())} CNEN={int(self.old_Enable)}")
     self.axisMr.setCNENandWait(tc_no, self.old_Enable)
 
     # Move away from the limit switch
@@ -214,7 +216,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-091-Tweak"
         print(f"{tc_no}")
         self.axisMr.resetAxis(tc_no)
-        print("%s:%d .CNEN=1" % (tc_no, lineno()))
+        print(f"{tc_no}:{int(lineno())} .CNEN=1")
         self.axisMr.setCNENandWait(tc_no, 1)
 
         oldRBV = self.axisCom.get(".RBV")
@@ -243,13 +245,13 @@ class Test(unittest.TestCase):
         ret2 = waitForStop(self, tc_no, 10.0, direction, oldRBV, self.TweakValue)
         msta = int(self.axisCom.get(".MSTA"))
 
-        print("%s STOP=1 start=%d stop=%d" % (tc_no, ret1, ret2))
+        print(f"{tc_no} STOP=1 start={int(ret1)} stop={int(ret2)}")
         self.axisCom.put(".STOP", 1)
 
         self.axisCom.put(".LLM", old_low_limit)
         self.axisCom.put(".HLM", old_high_limit)
         ReadBackValue = self.axisCom.get(".RBV", use_monitor=False)
-        print("%s destination=%d postion=%f" % (tc_no, destination, ReadBackValue))
+        print(f"{tc_no} destination={int(destination)} postion={ReadBackValue:f}")
         # self.assertEqual(True, ret1, 'waitForStart return True')
         self.assertEqual(True, ret2, "waitForStop return True")
         maxdelta = self.TweakValue * 2
@@ -276,6 +278,6 @@ class Test(unittest.TestCase):
         tc_no = "TC-094-Reset-Axis"
         print(f"{tc_no}")
         self.axisMr.resetAxis(tc_no)
-        print("%s:%d CNEN=%d" % (tc_no, lineno(), self.old_Enable))
+        print(f"{tc_no}:{int(lineno())} CNEN={int(self.old_Enable)}")
         self.axisMr.setCNENandWait(tc_no, self.old_Enable)
         # assert False
