@@ -247,11 +247,10 @@ asynStatus ethercatmcAxis::readBackSoftLimits(void)
             enabledHigh, fValueHigh, enabledLow, fValueLow);
   /* ethercatmcCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX(axisNo_..)  here */
-  pC_->setIntegerParam(axisNo_, pC_->ethercatmcCfgDHLM_En_, enabledHigh);
-  pC_->setDoubleParam(axisNo_, pC_->ethercatmcCfgDHLM_, fValueHigh);
-  pC_->setIntegerParam(axisNo_, pC_->ethercatmcCfgDLLM_En_, enabledLow);
-  pC_->setDoubleParam(axisNo_, pC_->ethercatmcCfgDLLM_, fValueLow);
-
+  pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgDHLM_En_, enabledHigh, "dhlm_en");
+  pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgDHLM_, fValueHigh, "dhlm");
+  pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgDLLM_En_, enabledLow, "dllm_en");
+  pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgDLLM_, fValueLow, "dllm");
   if (scaleFactor) {
     pC_->udateMotorLimitsRO(axisNo_, enabledHigh && enabledLow,
                             fValueHigh / scaleFactor, fValueLow / scaleFactor);
