@@ -114,13 +114,6 @@ def InitLimitsNoROlimits(self, tc_no):
 
 
 def InitLimitsWithROlimits(self, tc_no):
-    self.axisCom.put("-CfgDLLM-En", 0, wait=True)
-    self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-    self.axisCom.put("-CfgDHLM", myCfgDHLM)
-    self.axisCom.put("-CfgDLLM", myCfgDLLM)
-    self.axisCom.put("-CfgDLLM-En", 1, wait=True)
-    self.axisCom.put("-CfgDHLM-En", 1, wait=True)
-
     # Depending on the value of MRES, and its sign (!)
     # we need to calculate the expected values for DHLM/DLLM
     # in the record may be swapped (e.g CfgDLLM -> DHLM)
@@ -148,9 +141,15 @@ def InitLimitsWithROlimits(self, tc_no):
         print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
             return
-        else:
-            time.sleep(polltime)
-            maxTime = maxTime - polltime
+        self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+        self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+        self.axisCom.put("-CfgDHLM", myCfgDHLM)
+        self.axisCom.put("-CfgDLLM", myCfgDLLM)
+        self.axisCom.put("-CfgDLLM-En", 1, wait=True)
+        self.axisCom.put("-CfgDHLM-En", 1, wait=True)
+        time.sleep(polltime)
+        maxTime = maxTime - polltime
+
     raise Exception(debug_text)
     assert False
 
