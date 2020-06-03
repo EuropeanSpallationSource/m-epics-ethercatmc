@@ -81,7 +81,7 @@ def InitVeloAcc(self, tc_no, encRel):
     ret3 = self.axisMr.waitForStop(tc_no, 2.0)
 
 
-def InitLimitsNoC(self, tc_no):
+def InitLimitsNoROlimits(self, tc_no):
     self.axisCom.put("-CfgDLLM", myCfgDLLM)
     self.axisCom.put("-CfgDHLM", myCfgDHLM)
     self.axisCom.put("-CfgDLLM-En", 0, wait=True)
@@ -94,8 +94,8 @@ def InitLimitsNoC(self, tc_no):
         self.axisCom.put(".DHLM", myDHLM)
         self.axisCom.put(".DLLM", myDLLM)
 
-        actDHLM = self.axisCom.get(".DHLM", myDHLM)
-        actDLLM = self.axisCom.get(".DLLM", myDLLM)
+        actDHLM = self.axisCom.get(".DHLM")
+        actDLLM = self.axisCom.get(".DLLM")
 
         print(
             "%s:%d expDHLM=%f actDHLM=%f expDLLM=%f actDLLM=%f"
@@ -113,13 +113,25 @@ def InitLimitsNoC(self, tc_no):
     return False
 
 
-def InitLimitsWithC(self, tc_no):
+def InitLimitsWithROlimits(self, tc_no):
     self.axisCom.put("-CfgDLLM-En", 0, wait=True)
     self.axisCom.put("-CfgDHLM-En", 0, wait=True)
     self.axisCom.put("-CfgDHLM", myCfgDHLM)
     self.axisCom.put("-CfgDLLM", myCfgDLLM)
     self.axisCom.put("-CfgDLLM-En", 1, wait=True)
     self.axisCom.put("-CfgDHLM-En", 1, wait=True)
+
+    # Depending on the value of MRES, and its sign (!)
+    # we need to calculate the expected values for DHLM/DLLM
+    # in the record may be swapped (e.g CfgDLLM -> DHLM)
+    mres = self.axisCom.get(".MRES")
+    if mres < 0:
+        # Swap High and low
+        expDHLM = myCfgDLLM * mres
+        expDLLM = myCfgDHLM * mres
+    else:
+        expDHLM = myCfgDHLM * mres
+        expDLLM = myCfgDLLM * mres
 
     ## XXX self.axisCom.put("-DbgStrToLOG", "initLim " + str(tc_no)[0:20])
     maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
@@ -128,20 +140,19 @@ def InitLimitsWithC(self, tc_no):
         actDHLM = self.axisCom.get(".DHLM", myDHLM)
         actDLLM = self.axisCom.get(".DLLM", myDLLM)
 
-        print(
-            "%s:%d expDHLM=%f actDHLM=%f expDLLM=%f actDLLM=%f"
-            % (tc_no, lineno(), myDHLM, actDHLM, myDLLM, actDLLM)
-        )
+        debug_text = f"{tc_no}:{lineno()} expDHLM={expDHLM} actDHLM={actDHLM} expDLLM={expDLLM} actDLLM={actDLLM} mres={mres}"
+        print(debug_text)
 
-        resH = self.axisMr.calcAlmostEqual(tc_no, myDHLM, actDHLM, maxDelta)
-        resL = self.axisMr.calcAlmostEqual(tc_no, myDLLM, actDLLM, maxDelta)
+        resH = self.axisMr.calcAlmostEqual(tc_no, expDHLM, actDHLM, maxDelta)
+        resL = self.axisMr.calcAlmostEqual(tc_no, expDLLM, actDLLM, maxDelta)
         print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
-            return True
+            return
         else:
             time.sleep(polltime)
             maxTime = maxTime - polltime
-    return False
+    raise Exception(debug_text)
+    assert False
 
 
 def setMresDirOff(self, tc_no, mres, dir, off):
@@ -239,7 +250,7 @@ class Test(unittest.TestCase):
         dir = 0
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
-        InitLimitsNoC(self, tc_no)
+        InitLimitsNoROlimits(self, tc_no)
         if testPassed:
             self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
         else:
@@ -278,7 +289,7 @@ class Test(unittest.TestCase):
         dir = 0
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
-        InitLimitsNoC(self, tc_no)
+        InitLimitsNoROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
     def test_TC_90021(self):
@@ -313,7 +324,7 @@ class Test(unittest.TestCase):
         dir = 1
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
-        InitLimitsNoC(self, tc_no)
+        InitLimitsNoROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
     def test_TC_90031(self):
@@ -348,7 +359,7 @@ class Test(unittest.TestCase):
         dir = 1
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
-        InitLimitsNoC(self, tc_no)
+        InitLimitsNoROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
     def test_TC_90041(self):
@@ -387,7 +398,7 @@ class Test(unittest.TestCase):
         dir = 0
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
-        InitLimitsWithC(self, tc_no)
+        InitLimitsWithROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
     def test_TC_90051(self):
@@ -426,7 +437,7 @@ class Test(unittest.TestCase):
         dir = 0
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
-        InitLimitsWithC(self, tc_no)
+        InitLimitsWithROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
     def test_TC_90061(self):
@@ -465,7 +476,7 @@ class Test(unittest.TestCase):
         dir = 1
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
-        InitLimitsWithC(self, tc_no)
+        InitLimitsWithROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
     def test_TC_90071(self):
@@ -504,7 +515,7 @@ class Test(unittest.TestCase):
         dir = 1
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
-        InitLimitsWithC(self, tc_no)
+        InitLimitsWithROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
     def test_TC_90081(self):
