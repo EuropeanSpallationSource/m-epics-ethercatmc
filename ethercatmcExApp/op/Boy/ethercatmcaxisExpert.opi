@@ -862,7 +862,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>0</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).LLM</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -1204,7 +1204,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>0</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).HLM</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3252,7 +3252,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>3</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).ACCS</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3361,7 +3361,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>3</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).VELO</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3461,7 +3461,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>3</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(M).ACCL</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3575,7 +3575,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>1</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(R)Acc-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
@@ -3826,7 +3826,7 @@ $(pv_value)</tooltip>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
     <precision>1</precision>
-    <precision_from_pv>false</precision_from_pv>
+    <precision_from_pv>true</precision_from_pv>
     <pv_name>$(P)$(R)VelAct</pv_name>
     <pv_value />
     <read_only>false</read_only>
