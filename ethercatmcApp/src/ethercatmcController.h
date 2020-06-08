@@ -47,6 +47,10 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcCfgVMAX_String             "CfgVMAX"
 #define ethercatmcCfgJVEL_String             "CfgJVEL"
 #define ethercatmcCfgACCS_String             "CfgACCS"
+#define ethercatmcCfgDHLMRBString            "CfgDHLM-RB"
+#define ethercatmcCfgDLLMRBString            "CfgDLLM-RB"
+#define ethercatmcCfgDHLM_EnRBString         "CfgDHLM-En-RB"
+#define ethercatmcCfgDLLM_EnRBString         "CfgDLLM-En-RB"
 #define ethercatmcCfgDHLMString              "CfgDHLM"
 #define ethercatmcCfgDLLMString              "CfgDLLM"
 #define ethercatmcCfgDHLM_EnString           "CfgDHLM-En"
@@ -323,6 +327,10 @@ public:
   int ethercatmcCfgPOSLAG_RB_;
   int ethercatmcCfgPOSLAG_Tim_RB_;
   int ethercatmcCfgPOSLAG_En_RB_;
+  int ethercatmcCfgDHLM_RB_;
+  int ethercatmcCfgDLLM_RB_;
+  int ethercatmcCfgDHLM_En_RB_;
+  int ethercatmcCfgDLLM_En_RB_;
   int ethercatmcCfgDHLM_;
   int ethercatmcCfgDLLM_;
   int ethercatmcCfgDHLM_En_;

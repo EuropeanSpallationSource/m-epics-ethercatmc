@@ -179,6 +179,10 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcCfgVMAX_String,      asynParamFloat64,     &ethercatmcCfgVMAX_);
   createParam(ethercatmcCfgJVEL_String,      asynParamFloat64,     &ethercatmcCfgJVEL_);
   createParam(ethercatmcCfgACCS_String,      asynParamFloat64,     &ethercatmcCfgACCS_);
+  createParam(ethercatmcCfgDHLMRBString,    asynParamFloat64,     &ethercatmcCfgDHLM_RB_);
+  createParam(ethercatmcCfgDLLMRBString,    asynParamFloat64,     &ethercatmcCfgDLLM_RB_);
+  createParam(ethercatmcCfgDHLM_EnRBString, asynParamInt32,       &ethercatmcCfgDHLM_En_RB_);
+  createParam(ethercatmcCfgDLLM_EnRBString, asynParamInt32,       &ethercatmcCfgDLLM_En_RB_);
   createParam(ethercatmcCfgDHLMString,       asynParamFloat64,     &ethercatmcCfgDHLM_);
   createParam(ethercatmcCfgDLLMString,       asynParamFloat64,     &ethercatmcCfgDLLM_);
   createParam(ethercatmcCfgDHLM_EnString,    asynParamInt32,       &ethercatmcCfgDHLM_En_);
@@ -600,13 +604,13 @@ void ethercatmcController::udateMotorLimitsRO(int axisNo)
 
   /* When the integer parameter is undefined, 0 is returned,
      same as not enabled */
-  getIntegerParam(axisNo, ethercatmcCfgDHLM_En_, &enabledHigh);
-  getIntegerParam(axisNo, ethercatmcCfgDLLM_En_, &enabledLow);
+  getIntegerParam(axisNo, ethercatmcCfgDHLM_En_RB_, &enabledHigh);
+  getIntegerParam(axisNo, ethercatmcCfgDLLM_En_RB_, &enabledLow);
 
   if (enabledHigh && enabledLow) {
     asynStatus status1, status2;
-    status1 = getDoubleParam(axisNo, ethercatmcCfgDHLM_, &fValueHigh);
-    status2 = getDoubleParam(axisNo, ethercatmcCfgDLLM_, &fValueLow);
+    status1 = getDoubleParam(axisNo, ethercatmcCfgDHLM_RB_, &fValueHigh);
+    status2 = getDoubleParam(axisNo, ethercatmcCfgDLLM_RB_, &fValueLow);
 
     if (status1 || status2) {
       udateMotorLimitsRO(axisNo, 0, 0.0, 0.0);
