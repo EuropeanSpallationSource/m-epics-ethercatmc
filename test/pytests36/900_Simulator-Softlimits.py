@@ -107,9 +107,9 @@ def InitLimitsNoROlimits(self, tc_no):
         print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
             return True
-        else:
-            time.sleep(polltime)
-            maxTime = maxTime - polltime
+
+        time.sleep(polltime)
+        maxTime = maxTime - polltime
     return False
 
 

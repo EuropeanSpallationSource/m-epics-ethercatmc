@@ -57,7 +57,7 @@ class Test(unittest.TestCase):
             jvel = self.axisCom.get(".JVEL")
             timeout = self.axisMr.calcTimeOut(destination, jvel) * 2
 
-            self.axisMr.setSoftLimitsOff()
+            self.axisMr.setSoftLimitsOff(tc_no)
 
             done1 = self.axisMr.jogDirection(tc_no, 1)
             # Get values, check them later

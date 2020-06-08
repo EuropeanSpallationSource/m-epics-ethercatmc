@@ -96,9 +96,11 @@ class Test(unittest.TestCase):
     myPOShig = axisMr.myPOShig
 
     def test_TC_91000(self):
-        tc_no = "TC-91000"
+        tc_no = "91000"
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
         self.axisMr.initializeMotorRecordSimulatorAxis(tc_no)
         self.axisMr.motorInitAllForBDST(tc_no)
+        self.axisCom.put("-DbgStrToLOG", "Finish " + str(tc_no))
 
     # JOG forward & backlash compensation, absolute
     def test_TC_91011(self):
@@ -106,45 +108,44 @@ class Test(unittest.TestCase):
             self, 91011, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGF",
         )
 
+    # JOG forward & backlash compensation, relative
+    def test_TC_91012(self):
+        jogAndBacklash(
+            self, 91012, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGF",
+        )
 
-#    # JOG forward & backlash compensation, relative
-#    def test_TC_91012(self):
-#        jogAndBacklash(
-#            self, 91012, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGF",
-#        )
-#
-#    # JOG backward & backlash compensation, absolute
-#    def test_TC_91021(self):
-#        jogAndBacklash(
-#            self, 91021, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGR",
-#        )
-#
-#    # JOG backward & backlash compensation, relative
-#    def test_TC_91022(self):
-#        jogAndBacklash(
-#            self, 91022, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGR",
-#        )
-#
-#    # JOG forward & backlash compensation, absolute
-#    def test_TC_91031(self):
-#        jogAndBacklash(
-#            self, 91031, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGF",
-#        )
-#
-#    # JOG forward & backlash compensation, relative
-#    def test_TC_91032(self):
-#        jogAndBacklash(
-#            self, 91032, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGF",
-#        )
-#
-#    # JOG backward & backlash compensation, absolute
-#    def test_TC_91041(self):
-#        jogAndBacklash(
-#            self, 91041, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGR",
-#        )
-#
-#    # JOG backward & backlash compensation, relative
-#    def test_TC_91042(self):
-#        jogAndBacklash(
-#            self, 91042, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGR",
-#        )
+    # JOG backward & backlash compensation, absolute
+    def test_TC_91021(self):
+        jogAndBacklash(
+            self, 91021, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGR",
+        )
+
+    # JOG backward & backlash compensation, relative
+    def test_TC_91022(self):
+        jogAndBacklash(
+            self, 91022, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGR",
+        )
+
+    # JOG forward & backlash compensation, absolute
+    def test_TC_91031(self):
+        jogAndBacklash(
+            self, 91031, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGF",
+        )
+
+    # JOG forward & backlash compensation, relative
+    def test_TC_91032(self):
+        jogAndBacklash(
+            self, 91032, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGF",
+        )
+
+    # JOG backward & backlash compensation, absolute
+    def test_TC_91041(self):
+        jogAndBacklash(
+            self, 91041, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGR",
+        )
+
+    # JOG backward & backlash compensation, relative
+    def test_TC_91042(self):
+        jogAndBacklash(
+            self, 91042, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGR",
+        )

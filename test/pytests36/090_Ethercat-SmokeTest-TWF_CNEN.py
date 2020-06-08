@@ -100,7 +100,7 @@ def tweakToLimit(self, tc_no, direction):
     old_high_limit = self.axisCom.get(".HLM", timeout=5)
     old_low_limit = self.axisCom.get(".LLM", timeout=5)
     # switch off the soft limits, save the values
-    self.axisMr.setSoftLimitsOff()
+    self.axisMr.setSoftLimitsOff(tc_no)
 
     # If we reached the limit switch, we are fine and
     # can reset the error
@@ -223,7 +223,7 @@ class Test(unittest.TestCase):
         old_high_limit = self.axisCom.get(".HLM")
         old_low_limit = self.axisCom.get(".LLM")
         # Switch off soft limits
-        self.axisMr.setSoftLimitsOff()
+        self.axisMr.setSoftLimitsOff(tc_no)
 
         msta = int(self.axisCom.get(".MSTA"))
         direction = 0

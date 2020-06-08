@@ -119,7 +119,7 @@ class AxisMr:
         if cfgDHLM == None or cfgDLLM == None or cfgDHLM <= cfgDLLM:
             cfgDHLM = 53.0
             cfgDLLM = -54.0
-            self.setSoftLimitsOff()
+            self.setSoftLimitsOff(tc_no)
             self.initializeMotorRecordOneField(tc_no, "-CfgDHLM", cfgDHLM)
             self.initializeMotorRecordOneField(tc_no, "-CfgDLLM", cfgDLLM)
             self.initializeMotorRecordOneField(tc_no, "-CfgDHLM-En", 1)
@@ -438,7 +438,7 @@ class AxisMr:
 
         self.axisCom.put("-ErrRst", 1)
         # Prepare parameters for jogging and backlash
-        self.setSoftLimitsOff()
+        self.setSoftLimitsOff(tc_no)
         self.axisCom.put(".MRES", self.myMRES)
         self.axisCom.put(".DIR", self.myDIR)
         self.axisCom.put(".OFF", self.myOFF)
@@ -647,33 +647,38 @@ class AxisMr:
             os.unlink(actFileName)
         return sameContent
 
-    def setSoftLimitsOff(self):
+    def setSoftLimitsOff(self, tc_no):
         """
         Switch off the soft limits
         """
+        actDHLM = self.axisCom.get(".DHLM", use_monitor=False)
+        actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
+        print(f"{tc_no}: setSoftLimitsOff hlm={actDHLM} llm={actDLLM}")
         # switch off the controller soft limits
-        try:
-            self.axisCom.put("-CfgDHLM-En", 0, wait=True, timeout=2)
-            self.axisCom.put("-CfgDLLM-En", 0, wait=True, timeout=2)
-        finally:
-            oldRBV = self.axisCom.get(".RBV")
+        self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+        self.axisCom.put("-CfgDLLM-En", 0, wait=True)
 
-        wait_for_done = 1.0
-        while wait_for_done > 0:
-            if oldRBV > 0:
-                self.axisCom.put(".LLM", 0.0)
-                self.axisCom.put(".HLM", 0.0)
-            else:
-                self.axisCom.put(".HLM", 0.0)
-                self.axisCom.put(".LLM", 0.0)
+        maxTime = 10  # seconds maximum to let read only parameters ripple through
+        maxDelta = 0.05  # 5 % error tolerance margin
+        while maxTime > 0:
+            self.axisCom.put(".DLLM", 0.0)
+            self.axisCom.put(".DHLM", 0.0)
 
-            llm = self.axisCom.get(".LLM", use_monitor=False)
-            hlm = self.axisCom.get(".HLM", use_monitor=False)
-            print(f"{self.url_string}: setSoftLimitsOff llm={llm:f} hlm={hlm:f}")
-            if llm == 0.0 and hlm == 0.0:
+            actDHLM = self.axisCom.get(".DHLM", use_monitor=False)
+            actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
+
+            print(f"{tc_no}: setSoftLimitsOff dhlm={actDHLM} dllm={actDLLM}")
+            resH = self.calcAlmostEqual(tc_no, 0.0, actDHLM, maxDelta)
+            resL = self.calcAlmostEqual(tc_no, 0.0, actDLLM, maxDelta)
+            debug_text = f"{tc_no}: setSoftLimitsOff actDHLM={actDHLM} actDLLM={actDLLM} resH={resH} resL={resL}"
+            print(debug_text)
+            if (resH == True) and (resL == True):
                 return
+
             time.sleep(polltime)
-            wait_for_done -= polltime
+            maxTime = maxTime - polltime
+        raise Exception(debug_text)
+        assert False
 
     def setSoftLimitsOn(self, low_limit, high_limit):
         """
@@ -696,21 +701,26 @@ class AxisMr:
             self.axisCom.put(".LLM", low_limit)
 
     def doSTUPandSYNC(self, tc_no):
+        self.waitForMipZero(tc_no, 2)
         stup = self.axisCom.get(".STUP", use_monitor=False)
         while stup != 0:
             stup = self.axisCom.get(".STUP", use_monitor=False)
-            print(f"{tc_no} .STUP={stup}")
+            print(f"{tc_no} doSTUPandSYNC .STUP={stup}")
             time.sleep(polltime)
 
         self.axisCom.put(".STUP", 1)
         self.axisCom.put(".SYNC", 1)
+        self.waitForMipZero(tc_no, 2)
         rbv = self.axisCom.get(".RBV", use_monitor=False)
-        print(f"{tc_no} .RBV={rbv:f} .STUP={stup}")
+        print(f"{tc_no} doSTUPandSYNC .RBV={rbv:f} .STUP={stup}")
         while stup != 0:
             stup = self.axisCom.get(".STUP", use_monitor=False)
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            print(f"{tc_no} .RBV={rbv:f} .STUP={stup}")
+            print(f"{tc_no} doSTUPandSYNC.RBV={rbv:f} .STUP={stup}")
             time.sleep(polltime)
+        self.waitForMipZero(tc_no, 2)
+        msta = int(self.axisCom.get(".MSTA", use_monitor=False))
+        print(f"{tc_no} doSTUPandSYNC msta={self.getMSTAtext(msta)}")
 
     def setCNENandWait(self, tc_no, cnen):
         wait_for_power_changed = 6.0
