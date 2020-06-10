@@ -199,6 +199,14 @@ void ethercatmcIndexerAxis::setErrorIdOffset(unsigned iOffset)
   drvlocal.errorIdOffset = iOffset;
 }
 
+void ethercatmcIndexerAxis::setHomProcOffset(unsigned iOffset)
+{
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) setHomProcOffset iOffset=%u\n",
+            modNamEMC, axisNo_, iOffset);
+  drvlocal.homProcOffset = iOffset;
+}
+
 void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex)
 {
   size_t pollNowIdx;
@@ -605,6 +613,18 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                 "%spoll(%d) iTypCode=0x%x\n",
                 modNamEMC, axisNo_, drvlocal.iTypCode);
       return asynError;
+    }
+    if (drvlocal.homProcOffset) {
+      uint8_t   netHomProc[4];
+      status = pC_->getPlcMemoryFromProcessImage(drvlocal.homProcOffset,
+                                                 &netHomProc,
+                                                 sizeof(netHomProc));
+      if (!status) {
+        int homProc = (int)netToUint(&netHomProc,
+                                      sizeof(netHomProc));
+        pC_->updateCfgValue(axisNo_, pC_->ethercatmcHomProc_RB_,
+                            homProc, "HomProc" );
+      }
     }
     setDoubleParam(pC_->motorPosition_, actPosition);
     setDoubleParam(pC_->motorEncoderPosition_, actPosition);

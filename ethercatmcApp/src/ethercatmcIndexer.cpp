@@ -1028,6 +1028,12 @@ asynStatus ethercatmcController::initialPollIndexer(void)
           if (pAxis) {
             pAxis->setErrorIdOffset(iOffsBytes);
           }
+        } else if (!strcmp(descVersAuthors.desc, "homeSeq")) {
+          ethercatmcIndexerAxis *pAxis;
+          pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
+          if (pAxis) {
+            pAxis->setHomProcOffset(iOffsBytes);
+          }
         } else if (!strcmp(descVersAuthors.desc, "DCtimeSec")) {
           ctrlLocal.DCtimeSecDeviceOffset = iOffsBytes;
         } else if (!strcmp(descVersAuthors.desc, "DCtimeNSec")) {
