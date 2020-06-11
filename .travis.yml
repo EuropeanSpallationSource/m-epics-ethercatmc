@@ -14,7 +14,7 @@ cache:
 env:
   global:
     - SETUP_PATH=.ci-local:.ci
-    - CACHEDIR=$HOME/.cache/travis/EPICS
+    - CACHEDIR=$HOME/.traviscache/EPICS
     - MOTOR_RECURSIVE=NO
 addons:
   apt:
