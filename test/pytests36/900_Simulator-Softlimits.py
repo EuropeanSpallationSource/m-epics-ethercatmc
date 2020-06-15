@@ -82,8 +82,8 @@ def InitVeloAcc(self, tc_no, encRel):
 
 
 def InitLimitsNoROlimits(self, tc_no):
-    self.axisCom.put("-CfgDLLM", myCfgDLLM)
-    self.axisCom.put("-CfgDHLM", myCfgDHLM)
+    self.axisMr.setValueOnSimulator(tc_no, "fHighSoftLimitPos", myCfgDHLM)
+    self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos",  myCfgDLLM)
     self.axisCom.put("-CfgDLLM-En", 0, wait=True)
     self.axisCom.put("-CfgDHLM-En", 0, wait=True)
 
@@ -143,8 +143,8 @@ def InitLimitsWithROlimits(self, tc_no):
             return
         self.axisCom.put("-CfgDLLM-En", 0, wait=True)
         self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-        self.axisCom.put("-CfgDHLM", myCfgDHLM)
-        self.axisCom.put("-CfgDLLM", myCfgDLLM)
+        self.axisMr.setValueOnSimulator(tc_no, "fHighSoftLimitPos", myCfgDHLM)
+        self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos",  myCfgDLLM)
         self.axisCom.put("-CfgDLLM-En", 1, wait=True)
         self.axisCom.put("-CfgDHLM-En", 1, wait=True)
         time.sleep(polltime)
