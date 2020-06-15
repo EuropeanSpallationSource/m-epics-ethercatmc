@@ -71,7 +71,7 @@ def waitForStart(self, tc_no, wait_for, direction, oldRBV):
     while wait_for > 0:
         wait_for -= polltime
         (lls, hls, movn, dmov, outOfRange) = checkForEmergenyStop(
-            self, tc_no + "strt", wait_for, direction, oldRBV, TweakValue
+            self, tc_no + " wait waitForStart", wait_for, direction, oldRBV, TweakValue
         )
         rbv = self.axisCom.get(".RBV")
         if movn and not dmov:
@@ -85,7 +85,12 @@ def waitForStop(self, tc_no, wait_for_stop, direction, oldRBV, TweakValue):
     while wait_for_stop > 0:
         wait_for_stop -= polltime
         (lls, hls, movn, dmov, outOfRange) = checkForEmergenyStop(
-            self, tc_no + "stop", wait_for_stop, direction, oldRBV, TweakValue
+            self,
+            tc_no + " wait waitForStop",
+            wait_for_stop,
+            direction,
+            oldRBV,
+            TweakValue,
         )
 
         if not movn and dmov:
@@ -96,6 +101,7 @@ def waitForStop(self, tc_no, wait_for_stop, direction, oldRBV, TweakValue):
 
 
 def tweakToLimit(self, tc_no, direction):
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
     assert direction
     old_high_limit = self.axisCom.get(".HLM", timeout=5)
     old_low_limit = self.axisCom.get(".LLM", timeout=5)
@@ -187,19 +193,26 @@ def tweakToLimit(self, tc_no, direction):
 
     # Check if we reached the limit switch, prepare to move away from it
     if direction > 0:
-        assert hls
+        if not hls:
+            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+            self.assertEqual(True, hls, "hls should be active")
         newPos = rbv - deltaToMove
     else:
-        assert lls
+        if not lls:
+            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+            self.assertEqual(True, lls, "lls should be active")
         newPos = rbv + deltaToMove
+
     # If we reached the limit switch, we are fine and
     # can reset the error
     self.axisMr.resetAxis(tc_no)
     print(f"{tc_no}:{int(lineno())} CNEN={int(self.old_Enable)}")
     self.axisMr.setCNENandWait(tc_no, self.old_Enable)
+    self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
 
     # Move away from the limit switch
     self.axisCom.put(".VAL", rbv)
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
 
 
 class Test(unittest.TestCase):
@@ -212,9 +225,10 @@ class Test(unittest.TestCase):
     old_Enable = int(axisCom.get(".CNEN"))
     TweakValue = axisCom.get(".TWV")
     # TWF/TWR
-    def test_TC_091(self):
-        tc_no = "TC-091-Tweak"
+    def test_TC_09001(self):
+        tc_no = "09001"
         print(f"{tc_no}")
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
         self.axisMr.resetAxis(tc_no)
         print(f"{tc_no}:{int(lineno())} .CNEN=1")
         self.axisMr.setCNENandWait(tc_no, 1)
@@ -259,23 +273,29 @@ class Test(unittest.TestCase):
             "%s destination=%f ReadBackValue=%f, maxdelta=%f"
             % (tc_no, destination, ReadBackValue, maxdelta)
         )
-        assert self.axisMr.calcAlmostEqual(tc_no, destination, ReadBackValue, maxdelta)
-        # assert False
+        passed = self.axisMr.calcAlmostEqual(
+            tc_no, destination, ReadBackValue, maxdelta
+        )
+        if passed:
+            self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        else:
+            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+        assert passed
 
-    def test_TC_092(self):
-        tc_no = "TC-092-Tweak-to-HLS"
+    def test_TC_09002(self):
+        tc_no = "09002"
         print(f"{tc_no}")
         direction = 1
         tweakToLimit(self, tc_no, direction)
 
-    def test_TC_093(self):
-        tc_no = "TC-093-Tweak-to-LLS"
+    def test_TC_09003(self):
+        tc_no = "09003"
         print(f"{tc_no}")
         direction = -1
         tweakToLimit(self, tc_no, direction)
 
-    def test_TC_094(self):
-        tc_no = "TC-094-Reset-Axis"
+    def test_TC_09004(self):
+        tc_no = "09004"
         print(f"{tc_no}")
         self.axisMr.resetAxis(tc_no)
         print(f"{tc_no}:{int(lineno())} CNEN={int(self.old_Enable)}")
