@@ -925,6 +925,15 @@ $(pv_value)</tooltip>
     <pv_value />
     <read_only>false</read_only>
     <rules>
+      <rule name="CfgPOSLAG-RB-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)CfgPOSLAG-RB.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1026,7 +1035,18 @@ $(pv_value)</tooltip>
     <on_label>ON</on_label>
     <pv_name>$(P)$(R)CfgPOSLAG-En-RB</pv_name>
     <pv_value />
-    <rules />
+    <rules>
+      <rule name="CfgPOSLAG-En-RB-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)CfgPOSLAG-En-RB.STAT</pv>
+      </rule>
+    </rules>
+
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -1122,6 +1142,15 @@ $(pv_value)</tooltip>
     <pv_value />
     <read_only>false</read_only>
     <rules>
+      <rule name="CfgPOSLAG-Tim-RB-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)CfgPOSLAG-Tim-RB.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -1255,7 +1284,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>-6d2c06df:15c1f4b8e4e:-7cd4</wuid>
     <x>94</x>
-    <y>261</y>
+    <y>257</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -1296,7 +1325,7 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <wuid>-6d2c06df:15c1f4b8e4e:-7ce0</wuid>
     <x>125</x>
-    <y>263</y>
+    <y>259</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <actions hook="false" hook_all="false" />
@@ -1335,6 +1364,15 @@ $(pv_value)</tooltip>
     <pv_value />
     <read_only>false</read_only>
     <rules>
+      <rule name="CfgRDBD-Tim-RB-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==17">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=17">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)CfgRDBD-Tim-RB.STAT</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
