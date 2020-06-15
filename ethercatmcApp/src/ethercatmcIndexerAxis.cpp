@@ -504,7 +504,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   if (drvlocal.iTypCode) {
     unsigned traceMask = ASYN_TRACE_INFO;
     const char *msgTxtFromDriver = NULL;
-    double targetPosition = 0.0;
+    //double targetPosition = 0.0;
     double actPosition = 0.0;
     double paramValue = 0.0;
     unsigned statusReasonAux, paramCtrl;
@@ -547,8 +547,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       }
       actPosition = netToDouble(&readback.actPos,
                                 sizeof(readback.actPos));
-      targetPosition = netToDouble(&readback.targtPos,
-                                   sizeof(readback.targtPos));
+      //targetPosition = netToDouble(&readback.targtPos,
+      //                             sizeof(readback.targtPos));
       statusReasonAux16 = netToUint(&readback.statReasAux,
                                     sizeof(readback.statReasAux));
       paramCtrl = netToUint(&readback.paramCtrl,
@@ -592,8 +592,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       }
       actPosition = netToDouble(&readback.actPos,
                                 sizeof(readback.actPos));
-      targetPosition = netToDouble(&readback.targtPos,
-                                   sizeof(readback.targtPos));
+      //targetPosition = netToDouble(&readback.targtPos,
+      //                             sizeof(readback.targtPos));
       statusReasonAux = netToUint(&readback.statReasAux,
                                   sizeof(readback.statReasAux));
       paramCtrl = netToUint(&readback.paramCtrl,
@@ -636,16 +636,18 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
         (idxStatusCode   != drvlocal.old_idxStatusCode)) {
       if (errorID) {
         asynPrint(pC_->pasynUserController_, traceMask,
-                  "%spoll(%d) actPos=%f targetPos=%f statusReasonAux=0x%x (%s) errorID=0x%x\n",
+                  "%spoll(%d) statusReasonAux=0x%08x (%s) errorID=0x%4x actPos=%f\n",
                   modNamEMC, axisNo_,
-                  actPosition, targetPosition, statusReasonAux,
-                  idxStatusCodeTypeToStr(idxStatusCode), errorID);
+                  statusReasonAux,
+                  idxStatusCodeTypeToStr(idxStatusCode),
+                  errorID, actPosition);
       } else {
         asynPrint(pC_->pasynUserController_, traceMask,
-                  "%spoll(%d) actPos=%f targetPos=%f statusReasonAux=0x%x (%s)\n",
+                  "%spoll(%d) statusReasonAux=0x%08x (%s) actPos=%f\n",
                   modNamEMC, axisNo_,
-                  actPosition, targetPosition, statusReasonAux,
-                  idxStatusCodeTypeToStr(idxStatusCode));
+                  statusReasonAux,
+                  idxStatusCodeTypeToStr(idxStatusCode),
+                  actPosition);
       }
       drvlocal.old_statusReasonAux = statusReasonAux;
       drvlocal.old_idxAuxBits      = idxAuxBits;
@@ -847,8 +849,6 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
                                       drvlocal.lenInPlcPara,
                                       fABSMAX);
     }
-    pC_->setIntegerParam(axisNo_, function, value);
-    pC_->udateMotorLimitsRO(axisNo_);
     return status;
   } else if (function == pC_->ethercatmcCfgDLLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -861,8 +861,6 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
                                       drvlocal.lenInPlcPara,
                                       fABSMIN);
     }
-    pC_->setIntegerParam(axisNo_, function, value);
-    pC_->udateMotorLimitsRO(axisNo_);
     return status;
   }
   //Call base class method
@@ -881,7 +879,6 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
                                     drvlocal.lenInPlcPara,
                                     value);
     asynMotorAxis::setDoubleParam(function, value);
-    pC_->udateMotorLimitsRO(axisNo_);
     return status;
   } else if (function == pC_->ethercatmcCfgDLLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -891,7 +888,6 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
                                     drvlocal.lenInPlcPara,
                                     value);
     pC_->setDoubleParam(axisNo_, function, value);
-    pC_->udateMotorLimitsRO(axisNo_);
     return status;
 #ifdef motorPowerOnDelayString
   } else if (function == pC_->motorPowerOnDelay_) {

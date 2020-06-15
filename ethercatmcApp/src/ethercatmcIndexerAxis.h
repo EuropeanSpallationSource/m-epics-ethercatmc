@@ -26,6 +26,7 @@
 extern "C" {
   int ethercatmcCreateIndexerAxis(const char *ethercatmcName, int axisNo,
                                   int axisFlags, const char *axisOptionsStr);
+  const char *paramIfCmdToString(unsigned cmdSubParamIndex);
 };
 
 class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis
