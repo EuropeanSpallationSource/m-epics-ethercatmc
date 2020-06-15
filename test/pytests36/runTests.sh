@@ -131,7 +131,7 @@ if ! type pytest >/dev/null 2>&1 ; then
       echo >&2 "No pyton 3.7, 3.6, 36 or 3.4 found"
       exit 1
     fi
-    VIRTUALENVDIR=virtual$PYTHON
+    VIRTUALENVDIR=venv$PYTHON
     if test -r $VIRTUALENVDIR/bin/activate; then
       .  $VIRTUALENVDIR/bin/activate
     else
