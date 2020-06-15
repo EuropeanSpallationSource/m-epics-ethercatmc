@@ -72,6 +72,7 @@ def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
     )
     time_to_wait = 100
     self.axisMr.waitForStop(tc_no, time_to_wait)
+    self.axisMr.waitForMipZero(tc_no, time_to_wait)
     testPassed = self.axisMr.cmpUnlinkExpectedActualFile(
         tc_no, expFileName, actFileName
     )
