@@ -51,15 +51,17 @@ class AxisCom:
         pvname = self.pvpfx + pvsuf
         fullname = self.url_scheme + pvname
         ret = None
-        if self.log_debug:
-            print(f"get fullname={fullname}")
+        # if self.log_debug:
+        #    print(f"get {fullname}")
         if self.ctxt is not None:
             ret = self.ctxt.get(pvname, timeout=timeout)
         else:
             ret = self.epics.caget(pvname, timeout=timeout)
 
         if self.log_debug:
-            print(f"get fullname={fullname} ret{ret}s type(ret)={type(ret)}")
+            print(f"get {fullname} ret={ret}")
+            # print(f"get fullname={fullname} ret={ret} type(ret)={type(ret)}")
+            # print("get ret(string)=%s" % (ret))
 
         if ret is None:
             raise Exception("get None")
@@ -72,7 +74,7 @@ class AxisCom:
         fullname = self.url_scheme + pvname
         ret = None
         if self.log_debug:
-            print(f"put fullname={fullname} value={value}")
+            print(f"put {fullname} value={value}")
         if self.ctxt is not None:
             self.ctxt.put(pvname, value, timeout=timeout)
         else:
@@ -80,5 +82,5 @@ class AxisCom:
             # This function returns 1 on success,
             # and a negative number if the timeout has been exceeded
             if caput_ret != 1:
-                print(f"put fullname={fullname} value={value} caput_ret={ret}")
+                print(f"put {fullname} value={value} caput_ret={ret}")
                 raise Exception(f"caput({pvname},{value}) returned error {caput_ret}")
