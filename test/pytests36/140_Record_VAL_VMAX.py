@@ -16,13 +16,12 @@ def motorPositionTC(self, tc_no, destination, velocity):
         if velocity != self.velo:
             self.axisCom.put(".VELO", velocity)
 
-        done = self.axisMr.moveWait(tc_no, destination)
+        self.axisMr.moveWait(tc_no, destination)
         if velocity != self.velo:
             self.axisCom.put(".VELO", self.velo)
 
         UserPosition = self.axisCom.get(".RBV", use_monitor=False)
         print(f"{tc_no} postion={UserPosition:f} destination={destination:f}")
-        self.assertEqual(1, done, "moveWait should return done")
         # TODO!!
         # res2 = self.axisMr.postMoveCheck()
         # self.assertEqual(res2, globals.SUCCESS, "postMoveCheck returned SUCCESS")

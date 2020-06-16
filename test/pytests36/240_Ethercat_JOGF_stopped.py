@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
             self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20])
             self.axisCom.put(".DLY", 0)
             destination = self.per10_UserPosition
-            done = self.axisMr.moveWait(tc_no, destination)
+            self.axisMr.moveWait(tc_no, destination)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
                 "%s postion=%f per10_UserPosition=%f"
@@ -54,11 +54,11 @@ class Test(unittest.TestCase):
             )
 
             self.axisCom.put(".JOGF", 1)
-            ret2 = self.axisMr.waitForStart(tc_no, 2.0)
+            self.axisMr.waitForStart(tc_no, 2.0)
 
             time.sleep(1)
             self.axisCom.put("-Stop", 1)
-            ret3 = self.axisMr.waitForStop(tc_no, 2.0)
+            self.axisMr.waitForStop(tc_no, 2.0)
 
             val = self.axisCom.get(".VAL")
 
@@ -67,5 +67,4 @@ class Test(unittest.TestCase):
             self.axisCom.put(".DLY", self.saved_DLY)
             self.axisCom.put("-DbgStrToLOG", "End " + tc_no[0:20])
 
-            self.assertEqual(1, done, "moveWait should return done")
             self.assertEqual(True, res4, "VAL synched with RBV")

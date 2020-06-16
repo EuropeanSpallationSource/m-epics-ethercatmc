@@ -78,12 +78,12 @@ def InitVeloAcc(self, tc_no, encRel):
     # Speed it up, by setting the position in the simulator
     self.axisMr.setValueOnSimulator(tc_no, "fActPosition", myStartposDial)
     # and wait for the movement to finish
-    ret3 = self.axisMr.waitForStop(tc_no, 2.0)
+    self.axisMr.waitForStop(tc_no, 2.0)
 
 
 def InitLimitsNoROlimits(self, tc_no):
     self.axisMr.setValueOnSimulator(tc_no, "fHighSoftLimitPos", myCfgDHLM)
-    self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos",  myCfgDLLM)
+    self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos", myCfgDLLM)
     self.axisCom.put("-CfgDLLM-En", 0, wait=True)
     self.axisCom.put("-CfgDHLM-En", 0, wait=True)
 
@@ -144,7 +144,7 @@ def InitLimitsWithROlimits(self, tc_no):
         self.axisCom.put("-CfgDLLM-En", 0, wait=True)
         self.axisCom.put("-CfgDHLM-En", 0, wait=True)
         self.axisMr.setValueOnSimulator(tc_no, "fHighSoftLimitPos", myCfgDHLM)
-        self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos",  myCfgDLLM)
+        self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos", myCfgDLLM)
         self.axisCom.put("-CfgDLLM-En", 1, wait=True)
         self.axisCom.put("-CfgDHLM-En", 1, wait=True)
         time.sleep(polltime)

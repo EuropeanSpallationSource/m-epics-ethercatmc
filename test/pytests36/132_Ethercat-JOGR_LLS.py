@@ -51,7 +51,7 @@ class Test(unittest.TestCase):
             rdbd = self.axisCom.get(".RDBD")
             self.axisCom.put(".STOP", 1)
             # Go away from limit switch
-            done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
+            self.axisMr.moveWait(tc_no, self.jog_start_pos)
             destination = self.axisCom.get(".HLM")
             rbv = self.axisCom.get(".RBV")
             jvel = self.axisCom.get(".JVEL")
@@ -59,12 +59,12 @@ class Test(unittest.TestCase):
 
             self.axisMr.setSoftLimitsOff(tc_no)
 
-            done1 = self.axisMr.jogDirection(tc_no, 0)
+            self.axisMr.jogDirection(tc_no, 0)
             # Get values, check them later
             lvio = int(self.axisCom.get(".LVIO"))
             mstaE = int(self.axisCom.get(".MSTA"))
             # Go away from limit switch
-            done2 = self.axisMr.moveWait(tc_no, old_low_limit + rdbd)
+            self.axisMr.moveWait(tc_no, old_low_limit + rdbd)
             print(f"{tc_no} msta={mstaE:x} lvio={int(lvio)}")
 
             self.axisMr.setSoftLimitsOn(old_low_limit, old_high_limit)
@@ -80,5 +80,3 @@ class Test(unittest.TestCase):
             self.assertEqual(
                 0, mstaE & self.axisMr.MSTA_BIT_PLUS_LS, "HLS should not be active"
             )
-            self.assertEqual(1, done1, "moveWait1 should return done")
-            self.assertEqual(1, done2, "moveWait2 should return done")

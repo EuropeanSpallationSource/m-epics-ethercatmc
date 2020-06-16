@@ -27,8 +27,7 @@ class Test(unittest.TestCase):
         saved_LLM = self.axisCom.get(".LLM")
 
         destination = (1 * saved_HLM + 9 * saved_LLM) / 10
-        done = self.axisMr.moveWait(tc_no, destination)
-        self.assertEqual(1, done, "moveWait should return done")
+        self.axisMr.moveWait(tc_no, destination)
 
     # 10% dialPosition + X
     def test_TC_502(self):

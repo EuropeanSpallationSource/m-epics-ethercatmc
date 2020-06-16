@@ -43,13 +43,12 @@ class Test(unittest.TestCase):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1602-10-percent-UserPosition"
             print(f"{tc_no}")
-            done = self.axisMr.moveWait(tc_no, self.per10_UserPosition)
+            self.axisMr.moveWait(tc_no, self.per10_UserPosition)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f done=%s"
-                % (tc_no, UserPosition, self.per10_UserPosition, done)
+                "%s postion=%f jog_start_pos=%f"
+                % (tc_no, UserPosition, self.per10_UserPosition)
             )
-            self.assertEqual(1, done, "moveWait should return done")
 
     # stress test; start and stop the  quickly..
     def test_TC_1603(self):

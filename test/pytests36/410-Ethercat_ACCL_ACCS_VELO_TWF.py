@@ -29,7 +29,7 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
         self.axisCom.put(".ACCS", accs)
     # Move the  2 mm (hardcoded) + RDBD
     destination = 2.0 + self.axisCom.get(".VAL") + 2 * self.axisCom.get(".RDBD")
-    done = self.axisMr.moveWait(tc_no, destination)
+    self.axisMr.moveWait(tc_no, destination)
     resAccEGU = getAccEGUfromMCU(self, tc_no)
     print(
         "%s: check_accEGU_ACCS_ACCL_VELO vbas=%f velo=%f accl=%f accs=%f expAccEGU=%f resAccEGU=%f"
@@ -45,7 +45,6 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
         % (tc_no, expAccl, expAccs, actVelo, actAccl, actAccs)
     )
     assert self.axisMr.calcAlmostEqual(tc_no, expAccEGU, resAccEGU, 0.1)
-    self.assertEqual(1, done, "moveWait should return done")
 
     # Check if VELO, ACCL and ACCS are aligned
     assert self.axisMr.calcAlmostEqual(tc_no, expAccl, actAccl, 0.1)
@@ -90,9 +89,8 @@ class Test(unittest.TestCase):
         tc_no = "TC-412-10-percent"
         print(f"{tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            done = self.axisMr.moveWait(tc_no, self.per10_UserPosition)
-            print(f"{tc_no} done={done} destination={self.per10_UserPosition:f}")
-            self.assertEqual(1, done, "moveWait should return done")
+            self.axisMr.moveWait(tc_no, self.per10_UserPosition)
+            print(f"{tc_no} destination={self.per10_UserPosition:f}")
 
     def test_TC_41311(self):
         tc_no = "TC-41311"

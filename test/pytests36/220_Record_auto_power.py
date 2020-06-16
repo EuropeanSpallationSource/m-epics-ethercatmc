@@ -28,7 +28,7 @@ def do_220_autopower(self, tc_no, autopower):
     self.axisCom.put("-PwrOffDly", PwrOffDly)
     print(f"{tc_no} Enable move to LLM +10")
     destination = self.saved_LLM + 10 + 2 * autopower
-    done = self.axisMr.moveWait(tc_no, destination)
+    self.axisMr.moveWait(tc_no, destination)
 
     # Make sure drive is still enabled
     power1 = self.axisCom.get(".CNEN", use_monitor=False)
@@ -42,8 +42,8 @@ def do_220_autopower(self, tc_no, autopower):
     )
     self.axisMr.setCNENandWait(tc_no, self.saved_CNEN)
 
-    print(f"{tc_no} done={done} power1={int(power1)} power2={int(power2)}")
-    if (done == 1) and (power1 == 1) and (power2 == 0):
+    print(f"{tc_no} power1={int(power1)} power2={int(power2)}")
+    if (power1 == 1) and (power2 == 0):
         testPassed = True
     else:
         testPassed = False
@@ -80,12 +80,11 @@ class Test(unittest.TestCase):
         self.axisCom.put("-PwrOnDly", PwrOnDly)
         self.axisMr.setCNENandWait(tc_no, 1)
         destination = self.saved_LLM
-        done = self.axisMr.moveWait(tc_no, destination)
+        self.axisMr.moveWait(tc_no, destination)
         restorePwrSettings(
             self, tc_no, self.saved_PwrAuto, self.saved_PwrOnDly, self.saved_PwrOffDly,
         )
         self.axisCom.put("-DbgStrToLOG", "End   " + tc_no[0:20])
-        self.assertEqual(1, done, "moveWait should return done")
 
     def test_TC_2201(self):
         tc_no = "2201-Auto_pwr_1"

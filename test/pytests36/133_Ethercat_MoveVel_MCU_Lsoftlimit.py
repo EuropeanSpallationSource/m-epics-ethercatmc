@@ -46,13 +46,12 @@ class Test(unittest.TestCase):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1332-10-percent-UserPosition"
             print(f"{tc_no}")
-            done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
+            self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f done=%s"
-                % (tc_no, UserPosition, self.jog_start_pos, done)
+                "%s postion=%f jog_start_pos=%f"
+                % (tc_no, UserPosition, self.jog_start_pos)
             )
-            self.assertEqual(1, done, "moveWait should return done")
 
     # Low soft limit in controller when using MoveVel
     def test_TC_1333(self):
@@ -80,7 +79,7 @@ class Test(unittest.TestCase):
             #    print('%s caput -MoveVel res=%d' % (tc_no, res))
             #    self.assertEqual(res, 1, 'caput -MoveVel returned 1')
 
-            done = self.axisMr.waitForStartAndDone(tc_no, timeout)
+            self.axisMr.waitForStartAndDone(tc_no, timeout)
 
             msta = int(self.axisCom.get(".MSTA"))
             miss = int(self.axisCom.get(".MISS"))
@@ -105,13 +104,12 @@ class Test(unittest.TestCase):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1234-10-percent-UserPosition"
             print(f"{tc_no}")
-            done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
+            self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f done=%s"
-                % (tc_no, UserPosition, self.jog_start_pos, done)
+                "%s postion=%f jog_start_pos=%f"
+                % (tc_no, UserPosition, self.jog_start_pos)
             )
-            self.assertEqual(1, done, "moveWait should return done")
 
     # Low soft limit in controller when using MoveAbs
     def test_TC_1335(self):
@@ -145,16 +143,15 @@ class Test(unittest.TestCase):
             #    print('%s caput -Moveabs res=%d' % (tc_no, res))
             #    self.assertEqual(res, 1, 'caput -Moveabs returned 1')
 
-            done = self.axisMr.waitForStartAndDone(tc_no, timeout)
+            self.axisMr.waitForStartAndDone(tc_no, timeout)
 
             msta = int(self.axisCom.get(".MSTA"))
             miss = int(self.axisCom.get(".MISS"))
-            done = self.axisMr.verifyRBVinsideRDBD(tc_no, destination)
+            self.axisMr.verifyRBVinsideRDBD(tc_no, destination)
 
             if msta & self.axisMr.MSTA_BIT_PROBLEM:
                 self.axisMr.resetAxis(tc_no)
             # TODO: Check error; errorId
-            # self.assertEqual(True, done, "verifyRBVinsideRDBD returns true Moveabs")
 
             self.assertEqual(
                 0,

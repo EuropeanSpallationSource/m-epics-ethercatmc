@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         self.axisMr.waitForPowerOff(tc_no, 8.0)
         self.axisCom.put(".JOGF", 1)
 
-        ret_1 = self.axisMr.jogDirection(tc_no, 1)
+        self.axisMr.jogDirection(tc_no, 1)
         msta_1 = int(self.axisCom.get(".MSTA", use_monitor=False))
         bError_2 = self.axisCom.get("-Err", use_monitor=False)
         nErrorId_2 = self.axisCom.get("-ErrId", use_monitor=False)
@@ -83,7 +83,6 @@ class Test(unittest.TestCase):
         self.axisCom.put("-PwrAuto", self.saved_PwrAuto)
 
         # Run all the asserts after we have restored the original state
-        self.assertEqual(True, ret_1, "waitForStop return True")
 
         print(f"{tc_no} Error msta_1={self.axisMr.getMSTAtext(msta_1)}")
         self.assertNotEqual(

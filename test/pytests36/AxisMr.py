@@ -352,16 +352,12 @@ class AxisMr:
         else:
             self.axisCom.put(".JOGR", 1)
 
-        done = self.waitForStartAndDone(
-            tc_no + " jogDirection", 30 + time_to_wait + 3.0
-        )
+        self.waitForStartAndDone(tc_no + " jogDirection", 30 + time_to_wait + 3.0)
 
         if direction > 0:
             self.axisCom.put(".JOGF", 0)
         else:
             self.axisCom.put(".JOGR", 0)
-        print(f"{tc_no}: jogDirection done={int(done)}")
-        return done
 
     #    def movePosition(self, tc_no, destination, velocity, acceleration):
     #        time_to_wait = 30
@@ -381,8 +377,7 @@ class AxisMr:
             timeout += distance / velocity
 
         self.axisCom.put(".VAL", destination)
-        done = self.waitForStartAndDone(tc_no + " movePosition", timeout)
-        return done
+        self.waitForStartAndDone(tc_no + " movePosition", timeout)
 
     def setValueOnSimulator(self, tc_no, var, value):
         var = str(var)

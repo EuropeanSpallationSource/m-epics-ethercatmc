@@ -46,8 +46,7 @@ class Test(unittest.TestCase):
         tc_no = "TC-402-10-percent"
         print(f"{tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            done = self.axisMr.moveWait(tc_no, self.per10_UserPosition)
-            self.assertEqual(1, done, "moveWait should return done")
+            self.axisMr.moveWait(tc_no, self.per10_UserPosition)
 
     # 20% dialPosition
     def test_TC_403(self):
@@ -58,13 +57,12 @@ class Test(unittest.TestCase):
             saved_VELO = float(self.axisCom.get(".VELO"))
             used_ACCL = saved_ACCL + 1.0  # Make sure we have an acceleration != 0
             self.axisCom.put(".ACCL", used_ACCL)
-            done = self.axisMr.moveWait(tc_no, self.per20_UserPosition)
+            self.axisMr.moveWait(tc_no, self.per20_UserPosition)
             resacc = self.getAcceleration(tc_no)
             expacc = saved_VELO / used_ACCL
             self.axisCom.put(".ACCL", saved_ACCL)
             print(f"{tc_no} ACCL={used_ACCL:f} expacc={expacc:f} resacc={resacc:f}")
             assert self.axisMr.calcAlmostEqual(tc_no, expacc, resacc, 2)
-            self.assertEqual(1, done, "moveWait should return done")
 
     # JOGR
     def test_TC_404(self):
@@ -78,7 +76,7 @@ class Test(unittest.TestCase):
             used_JAR = jvel / (accl + 2.0)
             self.axisCom.put(".JAR", used_JAR)
             self.axisCom.put(".JOGR", 1)
-            ret2 = self.axisMr.waitForStart(tc_no, 2.0)
+            self.axisMr.waitForStart(tc_no, 2.0)
 
             resacc = self.getAcceleration(tc_no)
             expacc = used_JAR

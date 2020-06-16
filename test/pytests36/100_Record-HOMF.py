@@ -44,10 +44,9 @@ class Test(unittest.TestCase):
             axisCom.put(".HOMR", 1)
         else:
             axisCom.put(".HOMF", 1)
-        done = axisMr.waitForStartAndDone(tc_no, time_to_wait)
+        axisMr.waitForStartAndDone(tc_no, time_to_wait)
 
         msta = int(axisCom.get(".MSTA"))
-        self.assertEqual(True, done, "done = True")
         self.assertNotEqual(
             0, msta & axisMr.MSTA_BIT_HOMED, "MSTA.homed (Axis has been homed)"
         )

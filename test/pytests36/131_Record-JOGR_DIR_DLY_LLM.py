@@ -47,13 +47,12 @@ class Test(unittest.TestCase):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1312-10-percent-UserPosition"
             print(f"{tc_no}")
-            done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
+            self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f done=%s"
-                % (tc_no, UserPosition, self.jog_start_pos, done)
+                "%s postion=%f jog_start_pos=%f"
+                % (tc_no, UserPosition, self.jog_start_pos)
             )
-            self.assertEqual(1, done, "moveWait should return done")
 
     # Low soft limit JOGR
     def test_TC_1313(self):
@@ -61,14 +60,13 @@ class Test(unittest.TestCase):
             tc_no = "TC-1313-low-soft-limit JOGR"
             print(f"{tc_no}")
             self.axisCom.put(".DLY", 1.0)
-            done = self.axisMr.jogDirection(tc_no, 0)
+            self.axisMr.jogDirection(tc_no, 0)
             lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
             miss = int(self.axisCom.get(".MISS"))
 
             self.axisCom.put(".DLY", self.saved_DLY)
-            resW = self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
-            self.assertEqual(1, done, "DLY JOGF should be done after jogDirection")
+            self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
             self.assertEqual(
                 0,
                 msta & self.axisMr.MSTA_BIT_PROBLEM,
@@ -81,7 +79,6 @@ class Test(unittest.TestCase):
                 0, msta & self.axisMr.MSTA_BIT_PLUS_LS, "DLY JOGF should not reach HLS"
             )
             self.assertEqual(0, miss, "DLY JOGF should not have MISS set")
-            self.assertEqual(1, resW, "DLY JOGF should have MIP = 0")
             self.assertEqual(1, lvio, "DLY JOGF should have LVIO set")
 
     # per10 UserPosition
@@ -89,28 +86,26 @@ class Test(unittest.TestCase):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1314-10-percent-UserPosition"
             print(f"{tc_no}")
-            done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
+            self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f done=%s"
-                % (tc_no, UserPosition, self.jog_start_pos, done)
+                "%s postion=%f jog_start_pos=%f"
+                % (tc_no, UserPosition, self.jog_start_pos)
             )
-            self.assertEqual(1, done, "moveWait should return done")
 
     def test_TC_1315(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1315-low-soft-limit JOGR"
             print(f"{tc_no}")
             self.axisCom.put(".DLY", 0.0)
-            done = self.axisMr.jogDirection(tc_no, 0)
+            self.axisMr.jogDirection(tc_no, 0)
             lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
             miss = int(self.axisCom.get(".MISS"))
 
             self.axisCom.put(".DLY", self.saved_DLY)
             self.axisCom.put(".JOGF", 0)
-            resW = self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
-            self.assertEqual(True, done, "ndly JOGF should be done after jogDirection")
+            self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
             self.assertEqual(
                 0,
                 msta & self.axisMr.MSTA_BIT_PROBLEM,
@@ -125,7 +120,6 @@ class Test(unittest.TestCase):
                 0, msta & self.axisMr.MSTA_BIT_PLUS_LS, "ndly JOGF should not reach HLS"
             )
             self.assertEqual(0, miss, "ndly JOGF should not have MISS set")
-            self.assertEqual(1, resW, "ndly JOGF should have MIP = 0")
             self.assertEqual(1, lvio, "ndly JOGF should have LVIO set")
 
     # Low soft limit JOGR
@@ -135,19 +129,17 @@ class Test(unittest.TestCase):
             print(f"{tc_no}")
             self.axisCom.put(".DLY", 0.0)
             mip1 = int(self.axisCom.get(".MIP"))
-            done = self.axisMr.jogDirection(tc_no, 0)
 
             lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
             miss = int(self.axisCom.get(".MISS"))
-            resW = self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
+            self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
             mip2 = int(self.axisCom.get(".MIP"))
             jogr = int(self.axisCom.get(".JOGR"))
 
             self.axisCom.put(".DLY", self.saved_DLY)
             print(f"{tc_no} mip1={mip1:x} mip2={mip2:x}")
 
-            self.assertEqual(True, done, "done should be True after jogDirection")
             self.assertEqual(
                 0, msta & self.axisMr.MSTA_BIT_PROBLEM, "ndly2 No MSTA.Problem JOGF"
             )
@@ -166,7 +158,6 @@ class Test(unittest.TestCase):
             self.assertEqual(
                 0, mip2 & self.axisMr.MIP_BIT_JOGF, "ndly2 MIP2.JOGF not set JOGF"
             )
-            # self.assertEqual(1, resW,                        'ndly1 JOGF not set')
             self.assertEqual(0, jogr, "ndly2 MIP1 not set JOGR")
             self.assertEqual(1, lvio, "ndly2 should have LVIO set")
 
@@ -175,13 +166,11 @@ class Test(unittest.TestCase):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1314-10-percent-UserPosition"
             print(f"{tc_no}")
-            done = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f done=%s"
-                % (tc_no, UserPosition, self.jog_start_pos, done)
+                "%s postion=%f jog_start_pos=%f"
+                % (tc_no, UserPosition, self.jog_start_pos)
             )
-            self.assertEqual(1, done, "moveWait should return done")
 
     # Low soft limit JOGF + DIR
     def test_TC_1318(self):
@@ -192,7 +181,7 @@ class Test(unittest.TestCase):
             saved_FOFF = self.axisCom.get(".FOFF")
             self.axisCom.put(".FOFF", 1)
             self.axisCom.put(".DIR", 1)
-            done = self.axisMr.jogDirection(tc_no, 1)
+            self.axisMr.jogDirection(tc_no, 1)
 
             lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
@@ -200,7 +189,6 @@ class Test(unittest.TestCase):
             self.axisCom.put(".DIR", saved_DIR)
             self.axisCom.put(".FOFF", saved_FOFF)
 
-            self.assertEqual(True, done, "done should be True after jogDirection")
             self.assertEqual(
                 0, msta & self.axisMr.MSTA_BIT_PROBLEM, "No Error MSTA.Problem JOGF DIR"
             )
