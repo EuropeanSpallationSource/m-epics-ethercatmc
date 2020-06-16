@@ -239,15 +239,13 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV")
-            print(
-                "%s: wait_for_start=%f dmov=%d movn=%d rbv=%f"
-                % (tc_no, wait_for_start, dmov, movn, rbv)
-            )
+            debug_text = f"{tc_no}: wait_for_start={wait_for_start} dmov={dmov} movn={movn} rbv={rbv}"
+            print(debug_text)
             if movn and not dmov:
-                return True
+                return
             time.sleep(polltime)
             wait_for_start -= polltime
-        return False
+        raise Exception(debug_text)
 
     def waitForStop(self, tc_no, wait_for_stop):
         while wait_for_stop > 0:
@@ -255,15 +253,13 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            print(
-                "%s: wait_for_stop=%f dmov=%d movn=%d rbv=%f"
-                % (tc_no, wait_for_stop, dmov, movn, rbv)
-            )
+            debug_text = f"{tc_no}: wait_for_stop={wait_for_stop} dmov={dmov} movn={movn} rbv={rbv}"
+            print(debug_text)
             if not movn and dmov:
-                return True
+                return
             time.sleep(polltime)
             wait_for_stop -= polltime
-        return False
+        raise Exception(debug_text)
 
     def waitForStartAndDone(self, tc_no, wait_for_done):
         wait_for_start = 2
@@ -271,16 +267,9 @@ class AxisMr:
             wait_for_start -= polltime
             dmov = int(self.axisCom.get(".DMOV"))
             movn = int(self.axisCom.get(".MOVN"))
-            print(
-                "%s: wait_for_start=%f DMOV=%d MOVN=%d DRBV=%f"
-                % (
-                    tc_no,
-                    wait_for_start,
-                    dmov,
-                    movn,
-                    self.axisCom.get(".DRBV", use_monitor=False),
-                )
-            )
+            rbv = self.axisCom.get(".RBV", use_monitor=False)
+            debug_text = f"{tc_no}: wait_for_start_and_done={wait_for_done} dmov={dmov} movn={movn} rbv={rbv}"
+            print(debug_text)
             if movn and not dmov:
                 break
             time.sleep(polltime)
@@ -290,66 +279,57 @@ class AxisMr:
         while wait_for_done > 0:
             dmov = int(self.axisCom.get(".DMOV"))
             movn = int(self.axisCom.get(".MOVN"))
-            print(
-                "%s: wait_for_done=%f dmov=%d movn=%d dpos=%f"
-                % (
-                    tc_no,
-                    wait_for_done,
-                    dmov,
-                    movn,
-                    self.axisCom.get(".DRBV", use_monitor=False),
-                )
-            )
+            rbv = self.axisCom.get(".RBV", use_monitor=False)
+            debug_text = f"{tc_no}: wait_for_done={wait_for_done} dmov={dmov} movn={movn} rbv={rbv}"
+            print(debug_text)
             if dmov and not movn:
-                return True
+                return
             time.sleep(polltime)
             wait_for_done -= polltime
-        return False
+        raise Exception(debug_text)
 
-    def waitForMipZero(self, tc_no, wait_for_MipZero):
-        while wait_for_MipZero > -10.0:  # Extra long wait
-            wait_for_MipZero -= polltime
+    def waitForMipZero(self, tc_no, wait_for_mip_zero):
+        while wait_for_mip_zero > -10.0:  # Extra long wait
+            wait_for_mip_zero -= polltime
             mip = int(self.axisCom.get(".MIP", use_monitor=False))
-            print(
-                "%s: wait_for_MipZero=%f mip=%s (%x)"
-                % (tc_no, wait_for_MipZero, self.getMIPtext(mip), mip)
-            )
+            rbv = self.axisCom.get(".RBV", use_monitor=False)
+            debug_text = f"{tc_no}: wait_for_mip_zero={wait_for_mip_zero} mip={self.getMIPtext(mip)} (0x{mip:04x}) rbv ={rbv }"
+            print(debug_text)
             if not mip:
-                return True
+                return
             time.sleep(polltime)
-            wait_for_MipZero -= polltime
-        return False
+            wait_for_mip_zero -= polltime
+        raise Exception(debug_text)
 
     def waitForPowerOn(self, tc_no, wait_for_powerOn):
         while wait_for_powerOn > 0:
             wait_for_powerOn -= polltime
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             powerOn = msta & self.MSTA_BIT_AMPON
-
-            print(
-                f"{tc_no}: wait_for_powerOn={wait_for_powerOn:f} powerOn={int(powerOn)}"
+            debug_text = (
+                f"{tc_no}: wait_for_powerOn={wait_for_powerOn} powerOn={int(powerOn)}"
             )
+            print(debug_text)
             if powerOn:
-                return True
+                return
             time.sleep(polltime)
             wait_for_powerOn -= polltime
-        return False
+        raise Exception(debug_text)
 
     def waitForPowerOff(self, tc_no, wait_for_powerOff):
         while wait_for_powerOff > 0:
             wait_for_powerOff -= polltime
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             powerOn = msta & self.MSTA_BIT_AMPON
-
-            print(
-                "%s: wait_for_powerOff=%f powerOn=%d"
-                % (tc_no, wait_for_powerOff, powerOn)
+            debug_text = (
+                f"{tc_no}: wait_for_powerOff={wait_for_powerOff} powerOn={int(powerOn)}"
             )
+            print(debug_text)
             if not powerOn:
                 return True
             time.sleep(polltime)
             wait_for_powerOff -= polltime
-        return False
+        raise Exception(debug_text)
 
     def jogDirection(self, tc_no, direction):
         jvel = self.axisCom.get(".JVEL")
