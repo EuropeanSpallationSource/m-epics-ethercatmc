@@ -64,15 +64,13 @@ def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
     time.sleep(1)
     self.axisMr.setValueOnSimulator(tc_no, "fActPosition", EndPos)
     self.axisCom.put(field_name, 0)
-    resW = self.axisMr.waitForMipZero(tc_no, 12)
+    time_to_wait = 200
+    self.axisMr.waitForMipZero(tc_no, time_to_wait)
     self.axisMr.setValueOnSimulator(tc_no, "dbgCloseLogFile", "1")
 
     self.axisMr.writeExpFileJOG_BDST(
         tc_no, expFileName, myDirection, frac, encRel, StartPos, EndPos,
     )
-    time_to_wait = 100
-    self.axisMr.waitForStop(tc_no, time_to_wait)
-    self.axisMr.waitForMipZero(tc_no, time_to_wait)
     testPassed = self.axisMr.cmpUnlinkExpectedActualFile(
         tc_no, expFileName, actFileName
     )
