@@ -553,16 +553,11 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       if (status) {
         return status;
       }
-      actPosition = netToDouble(&readback.actPos,
-                                sizeof(readback.actPos));
-      //targetPosition = netToDouble(&readback.targtPos,
-      //                             sizeof(readback.targtPos));
-      statusReasonAux16 = netToUint(&readback.statReasAux,
-                                    sizeof(readback.statReasAux));
-      paramCtrl = netToUint(&readback.paramCtrl,
-                            sizeof(readback.paramCtrl));
-      paramValue = netToDouble(&readback.paramValue,
-                               sizeof(readback.paramValue));
+      actPosition = NETTODOUBLE(readback.actPos);
+      //targetPosition = NETTODOUBLE(readback.targtPos);
+      statusReasonAux16 = NETTOUINT(readback.statReasAux);
+      paramCtrl = NETTOUINT(readback.paramCtrl);
+      paramValue = NETTODOUBLE(readback.paramValue);
       /* Specific bit positions for 5008 */
       idxStatusCode = (idxStatusCodeType)(statusReasonAux16 >> 12);
       idxReasonBits = (statusReasonAux16 >> 8) & 0x0F;
@@ -578,8 +573,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                                                    &netErrorID,
                                                    sizeof(netErrorID));
         if (!status) {
-          errorID = netToUint(&netErrorID,
-                              sizeof(netErrorID));
+          errorID = NETTOUINT(netErrorID);
           setIntegerParam(pC_->ethercatmcErrId_, errorID);
         }
       }
@@ -598,19 +592,14 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       if (status) {
         return status;
       }
-      actPosition = netToDouble(&readback.actPos,
-                                sizeof(readback.actPos));
-      //targetPosition = netToDouble(&readback.targtPos,
-      //                             sizeof(readback.targtPos));
-      statusReasonAux = netToUint(&readback.statReasAux,
-                                  sizeof(readback.statReasAux));
-      paramCtrl = netToUint(&readback.paramCtrl,
-                            sizeof(readback.paramCtrl));
-      paramValue = netToDouble(&readback.paramValue,
-                               sizeof(readback.paramValue));
+      actPosition = NETTODOUBLE(readback.actPos);
+      //targetPosition = NETTODOUBLE(readback.targtPos);
+      statusReasonAux = NETTOUINT(readback.statReasAux);
+      paramCtrl = NETTOUINT(readback.paramCtrl);
+      paramValue = NETTODOUBLE(readback.paramValue);
+
       /* Specific for 5010 */
-      errorID = netToUint(&readback.errorID,
-                          sizeof(readback.errorID));
+      errorID = NETTOUINT(readback.errorID);
       setIntegerParam(pC_->ethercatmcErrId_, errorID);
 
       idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
@@ -628,8 +617,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                                                  &netHomProc,
                                                  sizeof(netHomProc));
       if (!status) {
-        int homProc = (int)netToUint(&netHomProc,
-                                      sizeof(netHomProc));
+        int homProc = (int)NETTOUINT(netHomProc);
         pC_->updateCfgValue(axisNo_, pC_->ethercatmcHomProc_RB_,
                             homProc, "HomProc" );
       }
