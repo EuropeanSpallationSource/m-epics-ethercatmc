@@ -122,9 +122,9 @@ extern "C" {
 }
 
 extern "C" {
-  const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex)
+  const char *plcParamIndexTxtFromParamIndex(unsigned cmdSubParamIndex)
  {
-   switch(paramIndex) {
+   switch(cmdSubParamIndex & PARAM_IF_IDX_MASK) {
    case PARAM_IDX_OPMODE_AUTO_UINT:        return "OPMODE_AUTO";
    case PARAM_IDX_MICROSTEPS_UINT:         return "MICROSTEPS";
    case PARAM_IDX_ABS_MIN_FLOAT:           return "ABS_MIN";
@@ -329,8 +329,11 @@ asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
     epicsThreadSleep(calcSleep(counter));
   }
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%sindexOffset=%u cmdSubParamIndex=0x%04x counter=%d\n",
-            modNamEMC, indexOffset, cmdSubParamIndex, counter);
+            "%s(%s %s) indexOffset=%u cmdSubParamIndex=0x%04x counter=%d\n",
+            modNamEMC,
+            plcParamIndexTxtFromParamIndex(cmdSubParamIndex),
+            paramIfCmdToString(cmdSubParamIndex),
+            indexOffset, cmdSubParamIndex, counter);
   return asynDisabled;
 }
 
@@ -1000,15 +1003,15 @@ asynStatus ethercatmcController::initialPollIndexer(void)
                          sizeof(descVersAuthors.author2));
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sindexerDevice(%u) OffsBytes=%u %20s "
-              "TypCode=0x%x SizeBytes=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
-              modNamEMC, devNum, iOffsBytes, descVersAuthors.desc,
-              iTypCode, iSizeBytes, iUnit,
+              "%sindexerDevice(%u) \"%s\" TypCode=0x%x OffsBytes=%u "
+              "SizeBytes=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
+              modNamEMC, devNum, descVersAuthors.desc, iTypCode, iOffsBytes,
+              iSizeBytes, iUnit,
               plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
               plcUnitTxtFromUnitCode(iUnit & 0xFF),
               iAllFlags, fAbsMin, fAbsMax);
 
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
               "%sdescVersAuthors(%d)  vers=%s author1=%s author2=%s\n",
               modNamEMC, devNum,
               descVersAuthors.vers,
@@ -1046,10 +1049,6 @@ asynStatus ethercatmcController::initialPollIndexer(void)
     switch (iTypCode) {
     case 0x1202:
       {
-        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%sindexerDevice(%u) axisNo=%u OffsBytes=%u descVersAuthors.desc=\"%s\"\n",
-                  modNamEMC, devNum, axisNo, iOffsBytes, descVersAuthors.desc);
-
         if (!strcmp(descVersAuthors.desc, "errorID")) {
           ethercatmcIndexerAxis *pAxis;
           pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
