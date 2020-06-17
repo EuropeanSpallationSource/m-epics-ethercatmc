@@ -112,8 +112,8 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #ifdef motorShowPowerOffString
   setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
-  setStringParam(pC_->ethercatmcreason25_, "Dynamic problem, timeout");
-  setStringParam(pC_->ethercatmcreason24_, "Static problem, inhibit");
+  setStringParam(pC_->ethercatmcNamBit25_, "Dynamic problem, timeout");
+  setStringParam(pC_->ethercatmcNamBit24_, "Static problem, inhibit");
 
   /* Set the module name to "" if we have FILE/LINE enabled by asyn */
   if (pasynTrace->getTraceInfoMask(pC_->pasynUserController_) &

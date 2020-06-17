@@ -21,16 +21,16 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcErrIdString                "ErrId"
 #define ethercatmcStatusCodeString           "StatusCode"
 #define ethercatmcStatusBitsString           "StatusBits"
-#define ethercatmcaux0_String                "AuxBit0"
-#define ethercatmcaux1_String                "AuxBit1"
-#define ethercatmcaux2_String                "AuxBit2"
-#define ethercatmcaux3_String                "AuxBit3"
-#define ethercatmcaux4_String                "AuxBit4"
-#define ethercatmcaux5_String                "AuxBit5"
-#define ethercatmcaux6_String                "AuxBit6"
-#define ethercatmcaux7_String                "AuxBit7"
-#define ethercatmcreason24_String            "ReasonBit24"
-#define ethercatmcreason25_String            "ReasonBit25"
+#define ethercatmcNamAux0_String             "NamAuxBit0"
+#define ethercatmcNamAux1_String             "NamAuxBit1"
+#define ethercatmcNamAux2_String             "NamAuxBit2"
+#define ethercatmcNamAux3_String             "NamAuxBit3"
+#define ethercatmcNamAux4_String             "NamAuxBit4"
+#define ethercatmcNamAux5_String             "NamAuxBit5"
+#define ethercatmcNamAux6_String             "NamAuxBit6"
+#define ethercatmcNamAux7_String             "NamAuxBit7"
+#define ethercatmcNamBit24_String            "NamBit24"
+#define ethercatmcNamBit25_String            "NamBit25"
 #define ethercatmcHomProc_RBString           "HomProc-RB"
 #define ethercatmcHomPos_RBString            "HomPos-RB"
 #define ethercatmcHomProcString              "HomProc"
@@ -273,18 +273,16 @@ public:
   int ethercatmcErr_;
   int ethercatmcStatusCode_;
   int ethercatmcStatusBits_;
-  int ethercatmcaux0_;
-  int ethercatmcaux1_;
-  int ethercatmcaux2_;
-  int ethercatmcaux3_;
-  int ethercatmcaux4_;
-  int ethercatmcaux5_;
-  int ethercatmcaux6_;
-  int ethercatmcaux7_;
-  int ethercatmcreason24_;
-  int ethercatmcreason25_;
-  int ethercatmcreason26_;
-  int ethercatmcreason27_;
+  int ethercatmcNamAux0_;
+  int ethercatmcNamAux1_;
+  int ethercatmcNamAux2_;
+  int ethercatmcNamAux3_;
+  int ethercatmcNamAux4_;
+  int ethercatmcNamAux5_;
+  int ethercatmcNamAux6_;
+  int ethercatmcNamAux7_;
+  int ethercatmcNamBit24_;
+  int ethercatmcNamBit25_;
   int ethercatmcHomProc_RB_;
   int ethercatmcHomPos_RB_;
   int ethercatmcHomProc_;

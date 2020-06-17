@@ -4073,7 +4073,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-ReasonBit25.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamBit25.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4127,18 +4127,18 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-ReasonBit25</pv_name>
+    <pv_name>$(P)$(M)-NamBit25</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
-      <rule name="ReasonBit25-Visible" prop_id="visible" out_exp="false">
+      <rule name="NamBit25-Visible" prop_id="visible" out_exp="false">
         <exp bool_exp="pv0==17">
           <value>false</value>
         </exp>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-ReasonBit25.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamBit25.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4209,7 +4209,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-ReasonBit24.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamBit24.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4263,18 +4263,18 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-ReasonBit24</pv_name>
+    <pv_name>$(P)$(M)-NamBit24</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
-      <rule name="ReasonBit24-Visible" prop_id="visible" out_exp="false">
+      <rule name="NamBit24-Visible" prop_id="visible" out_exp="false">
         <exp bool_exp="pv0==17">
           <value>false</value>
         </exp>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-ReasonBit24.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamBit24.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4345,7 +4345,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit0.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit0.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4399,7 +4399,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-AuxBit0</pv_name>
+    <pv_name>$(P)$(M)-NamAuxBit0</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -4410,7 +4410,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit0.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit0.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4481,7 +4481,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit1.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit1.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4535,7 +4535,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-AuxBit1</pv_name>
+    <pv_name>$(P)$(M)-NamAuxBit1</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -4546,7 +4546,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit1.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit1.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4617,7 +4617,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit2.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit2.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4671,7 +4671,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-AuxBit2</pv_name>
+    <pv_name>$(P)$(M)-NamAuxBit2</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -4682,7 +4682,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit2.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit2.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4753,7 +4753,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit3.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit3.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4807,7 +4807,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-AuxBit3</pv_name>
+    <pv_name>$(P)$(M)-NamAuxBit3</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -4818,7 +4818,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit3.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit3.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4889,7 +4889,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit4.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit4.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4943,7 +4943,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-AuxBit4</pv_name>
+    <pv_name>$(P)$(M)-NamAuxBit4</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -4954,7 +4954,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit4.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit4.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5025,7 +5025,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit5.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit5.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5079,7 +5079,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-AuxBit5</pv_name>
+    <pv_name>$(P)$(M)-NamAuxBit5</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -5090,7 +5090,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit5.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit5.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5161,7 +5161,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit6.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit6.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5215,7 +5215,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-AuxBit6</pv_name>
+    <pv_name>$(P)$(M)-NamAuxBit6</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -5226,7 +5226,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit6.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit6.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5297,7 +5297,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit7.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit7.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5351,7 +5351,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-AuxBit7</pv_name>
+    <pv_name>$(P)$(M)-NamAuxBit7</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -5362,7 +5362,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-AuxBit7.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit7.STAT</pv>
       </rule>
     </rules>
     <scale_options>

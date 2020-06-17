@@ -822,7 +822,7 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
       if ((iAllFlags >> auxBitIdx) & 1) {
         char auxBitName[34];
         unsigned infoType16 = 16;
-        int functionNo = ethercatmcaux0_ + auxBitIdx;
+        int functionNo = ethercatmcNamAux0_ + auxBitIdx;
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexer(devNum, infoType16 + auxBitIdx);
         if (status) return status;
@@ -833,7 +833,7 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
                   "%sauxBitName[%d] auxBitName(%02u)=%s\n",
                   modNamEMC, axisNo, auxBitIdx, auxBitName);
         if (status) return status;
-        if ((functionNo >= 0) && (functionNo <= ethercatmcaux7_)) {
+        if ((functionNo >= 0) && (functionNo <= ethercatmcNamAux7_)) {
           pAxis->setStringParam(functionNo, auxBitName);
         }
         if (!strcmp("notHomed", auxBitName)) {
