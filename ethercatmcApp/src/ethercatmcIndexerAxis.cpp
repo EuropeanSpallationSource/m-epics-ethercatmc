@@ -266,8 +266,12 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
 
   if (maxVelocity > 0.0) {
     double oldValue;
-    pC_->getDoubleParam(axisNo_, pC_->ethercatmcVel_RB_, &oldValue);
-    if (maxVelocity != oldValue) {
+    status = pC_->getDoubleParam(axisNo_, pC_->ethercatmcVel_RB_, &oldValue);
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%smove (%d) ethercatmcVel status=%s (%d)\n",
+              "ethercatmcIndexerAxis", axisNo_,
+              ethercatmcstrStatus(status), (int)status);
+    if ((status != asynParamUndefined) && (maxVelocity != oldValue)) {
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_SPEED_FLOAT,
                                       drvlocal.lenInPlcPara,
@@ -284,8 +288,12 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
   }
   if (acceleration > 0.0) {
     double oldValue;
-    pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
-    if (acceleration != oldValue) {
+    status = pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%smove (%d) ethercatmcAcc status=%s (%d)\n",
+              "ethercatmcIndexerAxis", axisNo_,
+              ethercatmcstrStatus(status), (int)status);
+    if ((status != asynParamUndefined) && (acceleration != oldValue)) {
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_ACCEL_FLOAT,
                                       drvlocal.lenInPlcPara,
