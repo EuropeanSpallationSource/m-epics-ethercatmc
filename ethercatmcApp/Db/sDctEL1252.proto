@@ -17,6 +17,4 @@ ReplyTimeout = 1000;
 getUTCtime {
    out "ADSPORT=853/Main.sDctEL1252?;";
    in "%s";
-   # This is not supported by Streamdevice:
-   #in "%[:a-zA-Z0-9-];";
 }

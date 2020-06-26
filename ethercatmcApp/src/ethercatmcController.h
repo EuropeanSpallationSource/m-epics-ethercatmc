@@ -5,10 +5,21 @@ FILENAME...   ethercatmcController.h
 #ifndef ETHERCATMCCONTROLLER_H
 #define ETHERCATMCCONTROLLER_H
 
+#include "asynDriver.h"
 #include "asynMotorController.h"
 #include "asynMotorAxis.h"
 #include "ethercatmcAxis.h"
 #include "ethercatmcADSdefs.h"
+
+#ifndef VERSION_INT
+#  define VERSION_INT(V,R,M,P) ( ((V)<<24) | ((R)<<16) | ((M)<<8) | (P))
+#endif
+
+#define VERSION_INT_4_38            VERSION_INT(4,38,0,0)
+#define ETHERCATMC_ASYN_VERSION_INT VERSION_INT(ASYN_VERSION,ASYN_REVISION,ASYN_MODIFICATION,0)
+#if ETHERCATMC_ASYN_VERSION_INT >= VERSION_INT_4_38
+#define ETHERCATMC_ASYN_ASYNPARAMFLOAT64
+#endif
 
 #ifndef motorRecResolutionString
 #define CREATE_MOTOR_REC_RESOLUTION
@@ -18,7 +29,7 @@ FILENAME...   ethercatmcController.h
 #endif
 
 #define ethercatmcErrString                  "MCUErr"
-#define ethercatmcErrIdString                "ErrId"
+#define ethercatmcErrIdString                "errorID"
 #define ethercatmcStatusCodeString           "StatusCode"
 #define ethercatmcStatusBitsString           "StatusBits"
 #define ethercatmcNamAux0_String             "NamAuxBit0"
@@ -73,18 +84,27 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcMCUErrMsgString            "MCUErrMsg"
 #define ethercatmcDbgStrToMcuString          "StrToMCU"
 #define ethercatmcDbgStrToLogString          "StrToLOG"
-#define ethercatmcDCtimeSecString            "DCtimeSec"
-#define ethercatmcDCtimeNSecString           "DCtimeNSec"
-#define ethercatmcDCtEL1252SecString         "DCtEL1252Sec"
-#define ethercatmcDCtEL1252NSecString        "DCtEL1252NSec"
 
 #define HOMPROC_MANUAL_SETPOS    15
 
 extern const char *modNamEMC;
 
 extern "C" {
+  /* Struct to handle additional (PILS) devices.
+     Create a conversion table, to map the PILS devices
+     into the asynParameter library and vice-versa */
+  typedef struct {
+    int            axisNo;      /* 0 is the controller */
+    unsigned       indexOffset; /* offset inside the "plc memory bytes" */
+    unsigned       lenInPLC;    /* len  inside the "plc memory bytes" */
+    int            function;    /* asyn: "function" */
+    asynParamType  pilsAsynParamType; /* asynParamType.h */
+  } pilsAsynDevInfo_type;
+}
+extern "C" {
   unsigned   netToUint(const void *data, size_t lenInPlc);
   double     netToDouble(const void *data, size_t lenInPlc);
+  uint64_t   netToUint64(const void *data, size_t lenInPlc);
   void       doubleToNet(const double value, void *data, size_t lenInPlc);
   void       uintToNet(const unsigned value, void *data, size_t lenInPlc);
   int ethercatmcCreateAxis(const char *ethercatmcName, int axisNo,
@@ -237,6 +257,10 @@ public:
 
   asynStatus getPlcMemoryFromProcessImage(unsigned indexOffset,
                                           void *data, size_t lenInPlc);
+  void addPilsAsynDevInfo(int      axisNo,
+                          unsigned indexOffset,
+                          unsigned iTypCode,
+                          const char *paramName);
   struct {
     uint8_t      *pIndexerProcessImage;
     asynStatus   oldStatus;
@@ -249,12 +273,7 @@ public:
     unsigned int lastDeviceEndOffset;
     unsigned int specialDbgStrToMcuDeviceLength;
     unsigned int specialDbgStrToMcuDeviceOffset;
-    unsigned int DCtimeSecDeviceOffset;
-    unsigned int DCtimeNSecDeviceOffset;
-    unsigned int DCclockLdeviceOffset;
-    unsigned int DCclockHdeviceOffset;
-    unsigned int DCtEL1252LdeviceOffset;
-    unsigned int DCtEL1252HdeviceOffset;
+
     AmsNetidAndPortType remote;
     AmsNetidAndPortType local;
     unsigned adsport;
@@ -266,6 +285,10 @@ public:
       unsigned int bECMC            :1;
       unsigned int bADS             :1;
     } supported;
+    pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
+    unsigned numPilsAsynDevInfo;
+    int ethercatmcDCtimeSec_;
+    int ethercatmcDCtimeNSec_;
   } ctrlLocal;
 
 
@@ -306,10 +329,6 @@ public:
   int ethercatmcVelAct_;
   int ethercatmcVel_RB_;
   int ethercatmcAcc_RB_;
-  int ethercatmcDCtimeSec_;
-  int ethercatmcDCtimeNSec_;
-  int ethercatmcDCtEL1252Sec_;
-  int ethercatmcDCtEL1252NSec_;
   int ethercatmcCfgVELO_;
   int ethercatmcCfgVMAX_;
   int ethercatmcCfgJVEL_;

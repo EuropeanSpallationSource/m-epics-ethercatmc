@@ -2,6 +2,6 @@ MODULES=asyn calc motor
 
 include motor
 
-ASYN=R4-38
+ASYN=R4-33
 CALC=R3-7-3
 MOTOR=ess-master

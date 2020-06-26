@@ -108,7 +108,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-EncAct")
 record(longin, "$(PREFIX)$(MOTOR_NAME)-ErrId")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrId")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))errorId")
     field(SCAN, "I/O Intr")
 }
 
@@ -442,22 +442,6 @@ record(stringin, "$(PREFIX)$(MOTOR_NAME)-NamBit24") {
 record(stringin, "$(PREFIX)$(MOTOR_NAME)-NamBit25") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamBit25")
-    field(SCAN, "I/O Intr")
-}
-
-# Time on the MCU: Distributed Clock, WIN
-record(longin, "$(PREFIX)DCtimeSec")
-{
-    field(DTYP, "asynInt32")
-    field(DESC, "DCtimeSec")
-    field(INP,  "@asyn($(MOTOR_PORT),0)DCtimeSec")
-    field(SCAN, "I/O Intr")
-}
-record(longin, "$(PREFIX)DCtimeNSec")
-{
-    field(DTYP, "asynInt32")
-    field(DESC, "DCtimeNSec")
-    field(INP,  "@asyn($(MOTOR_PORT),0)DCtimeNSec")
     field(SCAN, "I/O Intr")
 }
 

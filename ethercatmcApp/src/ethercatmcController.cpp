@@ -141,11 +141,6 @@ ethercatmcController::ethercatmcController(const char *portName,
 #endif
   createParam(ethercatmcDbgStrToMcuString,   asynParamOctet,       &ethercatmcDbgStrToMcu_);
   createParam(ethercatmcDbgStrToLogString,   asynParamOctet,       &ethercatmcDbgStrToLog_);
-  /* Only create these parameters for the controller, axis 0 so to say */
-  createParam(0, ethercatmcDCtimeSecString,     asynParamInt32,    &ethercatmcDCtimeSec_);
-  createParam(0, ethercatmcDCtimeNSecString,    asynParamInt32,    &ethercatmcDCtimeNSec_);
-  createParam(0, ethercatmcDCtEL1252SecString,  asynParamInt32,    &ethercatmcDCtEL1252Sec_);
-  createParam(0, ethercatmcDCtEL1252NSecString, asynParamInt32,    &ethercatmcDCtEL1252NSec_);
 
   /* Per axis */
   createParam(ethercatmcErrString,           asynParamInt32,       &ethercatmcErr_);
