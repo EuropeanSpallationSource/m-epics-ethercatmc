@@ -108,7 +108,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-EncAct")
 record(longin, "$(PREFIX)$(MOTOR_NAME)-ErrId")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))errorId")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrorId")
     field(SCAN, "I/O Intr")
 }
 

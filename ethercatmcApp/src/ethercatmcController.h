@@ -29,7 +29,7 @@ FILENAME...   ethercatmcController.h
 #endif
 
 #define ethercatmcErrString                  "MCUErr"
-#define ethercatmcErrIdString                "errorID"
+#define ethercatmcErrIdString                "ErrorID"
 #define ethercatmcStatusCodeString           "StatusCode"
 #define ethercatmcStatusBitsString           "StatusBits"
 #define ethercatmcNamAux0_String             "NamAuxBit0"
