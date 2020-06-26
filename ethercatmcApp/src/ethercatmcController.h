@@ -99,6 +99,8 @@ extern "C" {
     unsigned       lenInPLC;    /* len  inside the "plc memory bytes" */
     int            function;    /* asyn: "function" */
     asynParamType  pilsAsynParamType; /* asynParamType.h */
+    int            isInput      : 1;
+    int            isOutput     : 1;
   } pilsAsynDevInfo_type;
 }
 extern "C" {
