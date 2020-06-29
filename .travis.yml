@@ -9,13 +9,14 @@ dist: xenial
 
 cache:
   directories:
-  - $HOME/.traviscache2/EPICS
+  - $HOME/.traviscache/EPICS
 
 env:
   global:
     - SETUP_PATH=.ci-local:.ci
-    - CACHEDIR=$HOME/.traviscache2/EPICS
+    - CACHEDIR=$HOME/.traviscache/EPICS
     - MOTOR_RECURSIVE=NO
+    - VV=1
 addons:
   apt:
     packages:
@@ -72,6 +73,17 @@ jobs:
 # Different compilers: gcc and clang
 
   - env: BASE=7.0 SET=latest TRAVIS_COMPILER=gcc
+    language: python
+    python:
+        "3.6"  
+    script:
+    - ./checkws.sh
+    - test/install-pytest-pyepics-p4p.sh
+    - test/test-pytest-pyepics-p4p.sh
+    - make -C test test-ioc-with-sim
+    - make -C test test-ioc-with-sim-indexer
+
+  - env: BASE=7.0 SET=ess TRAVIS_COMPILER=gcc
     language: python
     python:
         "3.6"  
