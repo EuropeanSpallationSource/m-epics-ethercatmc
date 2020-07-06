@@ -88,7 +88,9 @@ static void init_axis(int axis_no)
     double valueHigh = 186.0 * ReverseMRES;
     memset(&motor_init_values, 0, sizeof(motor_init_values));
     motor_init_values.ReverseERES = MRES/ERES;
-    motor_init_values.ParkingPos = (100 + axis_no/10.0);
+    if (axis_no < 10) {
+      motor_init_values.ParkingPos = (100 + axis_no/10.0);
+    }
     motor_init_values.MaxHomeVelocityAbs = 5 * ReverseMRES;
     motor_init_values.lowHardLimitPos = valueLow;
     motor_init_values.highHardLimitPos = valueHigh;

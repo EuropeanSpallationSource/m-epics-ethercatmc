@@ -771,10 +771,12 @@ asynStatus ethercatmcAxis::setPosition(double value)
    * on the simulator, but don't do anything.
    */
 
-  if (isSim)
+  if (isSim && (statusE == asynSuccess))
     return asynSuccess;
 
-  if (homProc != HOMPROC_MANUAL_SETPOS)
+  else if (isSim && (statusE != asynSuccess))
+    ; /* Initial load pos from motorRecord: Continue */
+  else if (homProc != HOMPROC_MANUAL_SETPOS)
     return asynError;
   if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
   if (status == asynSuccess) status = setValueOnAxis("fHomePosition", homPos);

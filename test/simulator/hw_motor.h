@@ -2,8 +2,8 @@
 #define MOTOR_H
 
 #include <errno.h>
-/* Axis 0 is not used, we use 1..8 */
-#define MAX_AXES 9
+/* Axis 0 is not used, we use 1..18 */
+#define MAX_AXES 19
 #define AXIS_CHECK_RETURN(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return;}
 #define AXIS_CHECK_RETURN_ZERO(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return 0;}
 #define AXIS_CHECK_RETURN_ERROR(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return (-1);}
