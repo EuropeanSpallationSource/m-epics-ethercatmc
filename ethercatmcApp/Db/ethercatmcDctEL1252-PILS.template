@@ -17,32 +17,3 @@ record(longin, "$(PREFIX)DCtEL1252NSec")
     field(TSE, -2)
 }
 
-record(longin, "$(PREFIX)PTPState")
-{
-    field(DTYP, "asynInt32")
-    field(DESC, "PTPState")
-    field(EGU,  "state")
-    field(INP,  "@asyn($(MOTOR_PORT),0)PTPState")
-    field(SCAN, "I/O Intr")
-    field(TSE, -2)
-}
-
-record(longin, "$(PREFIX)PTPOffset")
-{
-    field(DTYP, "asynInt32")
-    field(DESC, "PTPOffset")
-    field(EGU,  "nsec")
-    field(INP,  "@asyn($(MOTOR_PORT),0)PTPOffset")
-    field(SCAN, "I/O Intr")
-    field(TSE, -2)
-}
-
-record(longin, "$(PREFIX)PTPSyncSeqNum")
-{
-    field(DTYP, "asynInt32")
-    field(DESC, "PTPSyncSeqNum")
-    field(EGU,  "num")
-    field(INP,  "@asyn($(MOTOR_PORT),0)PTPSyncSeqNum")
-    field(SCAN, "I/O Intr")
-    field(TSE, -2)
-}

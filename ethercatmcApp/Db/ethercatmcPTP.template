@@ -1,0 +1,47 @@
+record(mbbi,  "$(PREFIX)PTPState") {
+    field(DESC, "PTP state EtherCAT bus")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(MOTOR_PORT),0)PTPState")
+    field(SCAN, "I/O Intr")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(FRVL, "4")
+    field(FVVL, "5")
+    field(SXVL, "6")
+    field(SVVL, "7")
+    field(EIVL, "8")
+    field(NIVL, "9")
+
+    field(ZRST, "NO_OPERATION")
+    field(ONST, "INITIALIZING")
+    field(TWST, "FAULTY")
+    field(THST, "DISABLED")
+    field(FRST, "LISTENING")
+    field(FVST, "PRE_MASTER")
+    field(SXST, "MASTER")
+    field(SVST, "PASSIVE")
+    field(EIST, "UNCALIBRATED")
+    field(NIST, "SLAVE")
+}
+
+record(longin, "$(PREFIX)PTPOffset")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "PTPOffset")
+    field(EGU,  "nsec")
+    field(INP,  "@asyn($(MOTOR_PORT),0)PTPOffset")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}
+
+record(longin, "$(PREFIX)PTPSyncSeqNum")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "PTPSyncSeqNum")
+    field(EGU,  "num")
+    field(INP,  "@asyn($(MOTOR_PORT),0)PTPSyncSeqNum")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}

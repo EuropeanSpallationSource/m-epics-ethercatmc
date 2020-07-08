@@ -1183,6 +1183,10 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
         ctrlLocal.ethercatmcDCtimeSec_ = function;;
       } else if (!strcmp(paramName, "DCtimeNSec")) {
         ctrlLocal.ethercatmcDCtimeNSec_ = function;;
+      } else if (!strcmp(paramName, "DCclockL")) {
+        ctrlLocal.ethercatmcDCclockL_ = function;;
+      } else if (!strcmp(paramName, "DCclockH")) {
+        ctrlLocal.ethercatmcDCclockH_ = function;;
       }
     }
     break;
@@ -1315,7 +1319,28 @@ asynStatus ethercatmcController::pollIndexer(void)
           ;
         }
       } /* for */
-      if (ctrlLocal.ethercatmcDCtimeSec_ && ctrlLocal.ethercatmcDCtimeNSec_) {
+      if (ctrlLocal.ethercatmcDCclockH_ && ctrlLocal.ethercatmcDCclockL_) {
+        epicsTimeStamp timeStamp;
+        epicsInt32 tempL;
+        epicsInt32 tempH;
+        uint64_t nSec;
+        if ((getIntegerParam(0, ctrlLocal.ethercatmcDCclockH_,
+                             &tempH) == asynSuccess) &&
+            (getIntegerParam(0, ctrlLocal.ethercatmcDCclockL_,
+                             &tempL) == asynSuccess)) {
+          nSec = (uint32_t)tempH;
+          nSec = nSec << 32;
+          nSec = nSec + (uint32_t)tempL;
+
+          DCtimeToEpicsTimeStamp(nSec, &timeStamp);
+          asynPrint(pasynUserController_, ASYN_TRACE_FLOW, // | ASYN_TRACE_INFO,
+                    "%spollIndexer DCclock   nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+                    modNamEMC, nSec,
+                    timeStamp.secPastEpoch, timeStamp.nsec);
+          setTimeStamp(&timeStamp);
+          callBacksNeeded = 1;
+        }
+      } else if (ctrlLocal.ethercatmcDCtimeSec_ && ctrlLocal.ethercatmcDCtimeNSec_) {
         epicsTimeStamp timeStamp;
         epicsInt32 sec = 0;
         epicsInt32 nSec = 0;
