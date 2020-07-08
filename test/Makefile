@@ -5,6 +5,9 @@ all: test-ioc-with-sim \
      test-ioc-with-sim-indexer \
      test-ioc-with-sim-indexer-pva \
 
+clean:
+	make -C .. clean
+
 ###########################################################
 test-ioc-with-sim:
 	./test-ioc-with-sim.sh
