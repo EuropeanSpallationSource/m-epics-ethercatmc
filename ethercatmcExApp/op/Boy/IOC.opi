@@ -862,12 +862,16 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>ethercatmcaxis.opi</path>
+        <path>motor-3.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <M>Axis2</M>
-          <R>Axis2-</R>
-          <P>IOC2:</P>
+          <P>YMIR-SE:MC-MCU-01:</P>
+          <M1>m1</M1>
+          <M2>m2</M2>
+          <M3>m3</M3>
+          <R1>m1-</R1>
+          <R2>m2-</R2>
+          <R3>m3-</R3>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -894,7 +898,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <height>31</height>
     <image></image>
-    <name>Action Button_14</name>
+    <name>Action Button_15</name>
     <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
@@ -906,14 +910,14 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC2:Axis2</text>
+    <text>YMIR-SE:MC-MCU-01</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
-    <width>103</width>
-    <wuid>61faf7d7:15c52a5e3ff:-7ec2</wuid>
+    <width>229</width>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>156</x>
     <y>216</y>
   </widget>
