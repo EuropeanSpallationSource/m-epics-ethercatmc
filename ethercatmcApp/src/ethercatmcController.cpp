@@ -841,6 +841,28 @@ asynStatus ethercatmcController::getFeatures(int *pRet)
   return asynError;
 }
 
+/** Called when asyn clients call pasynOctetSyncIO->write().
+  * Extracts the function and axis number from pasynUser.
+  * Sets the value in the parameter library.
+  * \param[in] pasynUser asynUser structure that encodes the reason and address.
+  * \param[in] value Value to write.
+  * \param[in] nChars len (but we only support strings ?!).
+  * \param[out] nActual. number of octets that had been written */
+asynStatus ethercatmcController::writeOctet(asynUser *pasynUser,
+                                            const char *value,
+                                            size_t nChars, size_t *nActual)
+{
+  asynStatus status = asynSuccess;
+  asynMotorAxis *pAxis;
+  int function = pasynUser->reason;
+
+  pAxis = getAxis(pasynUser);
+  if (!pAxis) return asynError;
+
+  status = pAxis->setStringParam(function, value);
+  if (status == asynSuccess) *nActual = strlen(value);
+  return status;
+}
 
 /** Reports on status of the driver
   * \param[in] fp The file pointer on which report information will be written

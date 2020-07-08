@@ -173,6 +173,9 @@ public:
                        double idlePollPeriod,
                        const char *optionStr);
 
+  /* Note: the motor/master version does not have it, so we need it here */
+  asynStatus writeOctet(asynUser *pasynUser, const char *value,
+                        size_t nChars, size_t *nActual);
   void report(FILE *fp, int level);
   asynStatus setMCUErrMsg(const char *value);
   asynStatus configController(int needOk, const char *value);
