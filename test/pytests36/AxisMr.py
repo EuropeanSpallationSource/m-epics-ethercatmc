@@ -213,10 +213,14 @@ class AxisMr:
 
     def calcAlmostEqual(self, tc_no, expected, actual, maxdelta):
         delta = math.fabs(expected - actual)
-        inrange = delta <= maxdelta
+        delta <= maxdelta
+        if delta <= maxdelta:
+            inrange = True
+        else:
+            inrange = False
+
         print(
-            "%s: calcAlmostEqual expected=%f actual=%f delta=%f maxdelta=%f inrange=%d"
-            % (tc_no, expected, actual, delta, maxdelta, inrange)
+            f"{tc_no}: calcAlmostEqual expected={expected} actual={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
         )
         return inrange
 
@@ -268,11 +272,12 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV"))
             movn = int(self.axisCom.get(".MOVN"))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{tc_no}: wait_for_start_and_done={wait_for_done} dmov={dmov} movn={movn} rbv={rbv}"
+            debug_text = f"{tc_no}: wait_for_start_and_done_start={wait_for_start} dmov={dmov} movn={movn} rbv={rbv}"
             print(debug_text)
-            if movn and not dmov:
-                break
-            time.sleep(polltime)
+            if movn or not dmov:
+                wait_for_start = 0
+            else:
+                time.sleep(polltime)
 
         wait_for_done = math.fabs(wait_for_done)  # negative becomes positive
         wait_for_done += 1  # One extra second for rounding
@@ -280,12 +285,12 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV"))
             movn = int(self.axisCom.get(".MOVN"))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{tc_no}: wait_for_done={wait_for_done} dmov={dmov} movn={movn} rbv={rbv}"
+            debug_text = f"{tc_no}: wait_for_start_and_done_done={wait_for_done} dmov={dmov} movn={movn} rbv={rbv}"
             print(debug_text)
             if dmov and not movn:
                 return
             time.sleep(polltime)
-            wait_for_done -= polltime
+            wait_for_done = wait_for_done - polltime
         raise Exception(debug_text)
 
     def waitForMipZero(self, tc_no, wait_for_mip_zero):
@@ -377,7 +382,7 @@ class AxisMr:
             timeout += distance / velocity
 
         self.axisCom.put(".VAL", destination)
-        self.waitForStartAndDone(tc_no + " movePosition", timeout)
+        self.waitForStartAndDone(str(tc_no) + " movePosition", timeout)
 
     def setValueOnSimulator(self, tc_no, var, value):
         var = str(var)
