@@ -540,6 +540,7 @@ asynStatus ethercatmcAxis::sendVelocityAndAccelExecute(double maxVeloEGU, double
  * \param[in] relative  Flag indicating relative move (1) or absolute move (0).
  * \param[in] maxVeloEGU The maximum velocity, often called the slew velocity. Units=EGU/sec.
  * \param[in] accEGU The acceleration value. Units=EGU/sec/sec. */
+#if MAX_CONTROLLER_STRING_SIZE > 350
 asynStatus ethercatmcAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, double accEGU)
 {
   if (accEGU) {
@@ -580,6 +581,7 @@ asynStatus ethercatmcAxis::mov2(double posEGU, int nCommand, double maxVeloEGU, 
 #endif
   return pC_->writeReadACK(ASYN_TRACE_INFO);
 }
+#endif
 
 /** Move the axis to a position, either absolute or relative
  * \param[in] position in steps
@@ -1234,8 +1236,6 @@ asynStatus ethercatmcAxis::poll(bool *moving)
   drvlocal.homed = st_axis_status.bHomed;
   setIntegerParam(pC_->motorStatusCommsError_, 0);
   setIntegerParam(pC_->motorStatusAtHome_, st_axis_status.bHomeSensor);
-  setIntegerParam(pC_->motorStatusLowLimit_, !st_axis_status.bLimitBwd);
-  setIntegerParam(pC_->motorStatusHighLimit_, !st_axis_status.bLimitFwd);
   setIntegerParam(pC_->motorStatusPowerOn_, st_axis_status.bEnabled);
   setDoubleParam(pC_->ethercatmcVelAct_, st_axis_status.fActVelocity);
   setDoubleParam(pC_->ethercatmcAcc_RB_, st_axis_status.fAcceleration);
@@ -1319,6 +1319,17 @@ asynStatus ethercatmcAxis::poll(bool *moving)
               modNamEMC, axisNo_,!st_axis_status.bLimitFwd);
     drvlocal.old_st_axis_status.bLimitFwd = st_axis_status.bLimitFwd;
   }
+#ifndef motorFlagsLSrampDownString
+  /* Ugly hack for old motor Records: hide the active limit switch while
+     still moving ("rampdown") */
+  if (st_axis_status.mvnNRdyNex) {
+    /* Remember that bLimitFwd = 1 means "limit switch not active */
+    st_axis_status.bLimitFwd = 1;
+    st_axis_status.bLimitBwd = 1;
+  }
+#endif
+  setIntegerParam(pC_->motorStatusLowLimit_, !st_axis_status.bLimitBwd);
+  setIntegerParam(pC_->motorStatusHighLimit_, !st_axis_status.bLimitFwd);
 
 #ifndef motorWaitPollsBeforeReadyString
   if (drvlocal.waitNumPollsBeforeReady) {
