@@ -1008,6 +1008,11 @@ indexerMotorParamInterface(unsigned motor_axis_no,
         double fVelocity = fabs(fValue);
         if (!fVelocity) {
           fVelocity = getNxtMoveVelocity(motor_axis_no);
+        } else {
+          /* Update Vel_RB in IOC.
+             Not sure, if this is what PILS wants,
+             but for the moment we need it for TC950 */
+          setNxtMoveVelocity(motor_axis_no, fValue);
         }
         moveVelocity(motor_axis_no,
                      direction,
