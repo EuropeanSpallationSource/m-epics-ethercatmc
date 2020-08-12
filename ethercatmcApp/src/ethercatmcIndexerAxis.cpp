@@ -191,14 +191,6 @@ void ethercatmcIndexerAxis::setAuxBitsEnabledMask(unsigned auxBitsEnabledMask)
   drvlocal.auxBitsEnabledMask = auxBitsEnabledMask;
 }
 
-void ethercatmcIndexerAxis::setErrorIdOffset(unsigned iOffset)
-{
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s(%d) setErrorIdOffset iOffset=%u\n",
-            modNamEMC, axisNo_, iOffset);
-  drvlocal.errorIdOffset = iOffset;
-}
-
 void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex)
 {
   size_t pollNowIdx;
@@ -532,7 +524,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     {
       int errorID_readByPoller;
       if (pC_->getIntegerParam(axisNo_, pC_->ethercatmcErrId_,
-                          &errorID_readByPoller) == asynSuccess) {
+                               &errorID_readByPoller) == asynSuccess) {
         /* The poller had read errorID as a device, the result
            is in the parameter library */
         errorID = (uint32_t)errorID_readByPoller;
@@ -568,16 +560,6 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       statusReasonAux = statusReasonAux16 & 0xFF;
       /* 4 reason bits */
       statusReasonAux |= (idxReasonBits << 24);
-      if (drvlocal.errorIdOffset) {
-        uint8_t   netErrorID[4];
-        status = pC_->getPlcMemoryFromProcessImage(drvlocal.errorIdOffset,
-                                                   &netErrorID,
-                                                   sizeof(netErrorID));
-        if (!status) {
-          errorID = NETTOUINT(netErrorID);
-          setIntegerParam(pC_->ethercatmcErrId_, errorID);
-        }
-      }
     } else if (drvlocal.iTypCode == 0x5010) {
       struct {
         uint8_t   actPos[8];
