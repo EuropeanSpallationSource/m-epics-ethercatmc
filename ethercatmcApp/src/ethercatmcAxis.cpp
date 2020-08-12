@@ -1534,9 +1534,6 @@ asynStatus ethercatmcAxis::setDoubleParam(int function, double value)
   } else if (function == pC_->motorMoveToHome_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d motmotorMoveToHome_=%g\n", modNamEMC, axisNo_, value);
-  } else if (function == pC_->motorResolution_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d motorResolution_=%g\n",  modNamEMC, axisNo_, value);
     /* Limits handled above */
 
 #ifdef motorPowerOnDelayString
