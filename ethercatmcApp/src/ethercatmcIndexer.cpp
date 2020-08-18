@@ -1211,6 +1211,34 @@ extern "C" void DCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
   ts->nsec =         (uint32_t)(nSecEpicsEpoch % NSEC_PER_SEC);
 }
 
+/*
+ * Find if an asyn parameter is connected to an indexer output
+ */
+pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
+                                                                    int function,
+                                                                    asynParamType pilsAsynParamType)
+{
+  static size_t maxNumPilsAsynDevInfo =
+    (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
+  unsigned numPilsAsynDevInfo;
+
+  for (numPilsAsynDevInfo = 0;
+       numPilsAsynDevInfo < maxNumPilsAsynDevInfo;
+       numPilsAsynDevInfo++) {
+    pilsAsynDevInfo_type *pPilsAsynDevInfo
+      = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
+
+    if (!pPilsAsynDevInfo->indexOffset) return NULL;
+
+    if ((axisNo == pPilsAsynDevInfo->axisNo) &&
+        (function == pPilsAsynDevInfo->function) &&
+        (pilsAsynParamType == pPilsAsynDevInfo->pilsAsynParamType) &&
+        (pPilsAsynDevInfo->isOutput))
+      return pPilsAsynDevInfo;
+  }
+  return NULL;
+}
+
 asynStatus ethercatmcController::pollIndexer(void)
 {
   int callBacksNeeded = 0;
@@ -1248,6 +1276,9 @@ asynStatus ethercatmcController::pollIndexer(void)
 
         unsigned indexOffset = pPilsAsynDevInfo->indexOffset;
         unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
+        /* Each axis has it's own parameters.
+           axisNo == 0 is no special axis, parameters
+           for "the controller", additional IO, PTP info */
         int axisNo = pPilsAsynDevInfo->axisNo;
         int function = pPilsAsynDevInfo->function;
         void *pDataInPlc = &ctrlLocal.pIndexerProcessImage[indexOffset];
@@ -1320,6 +1351,7 @@ asynStatus ethercatmcController::pollIndexer(void)
         }
       } /* for */
       if (ctrlLocal.ethercatmcDCclockH_ && ctrlLocal.ethercatmcDCclockL_) {
+        /* DC time, 64 bits, splitted into low- and high part */
         epicsTimeStamp timeStamp;
         epicsInt32 tempL;
         epicsInt32 tempH;
@@ -1341,6 +1373,7 @@ asynStatus ethercatmcController::pollIndexer(void)
           callBacksNeeded = 1;
         }
       } else if (ctrlLocal.ethercatmcDCtimeSec_ && ctrlLocal.ethercatmcDCtimeNSec_) {
+        /* "DCtimeSec", "DCtimeNSec" */
         epicsTimeStamp timeStamp;
         epicsInt32 sec = 0;
         epicsInt32 nSec = 0;

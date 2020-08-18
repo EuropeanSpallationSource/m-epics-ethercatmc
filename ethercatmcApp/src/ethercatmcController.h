@@ -266,6 +266,11 @@ public:
                           unsigned indexOffset,
                           unsigned iTypCode,
                           const char *paramName);
+
+  pilsAsynDevInfo_type *findIndexerOutputDevice(int axisNo,
+                                                int function,
+                                                asynParamType pilsAsynParamType);
+
   struct {
     uint8_t      *pIndexerProcessImage;
     asynStatus   oldStatus;
