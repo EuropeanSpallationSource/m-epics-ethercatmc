@@ -597,6 +597,18 @@ class AxisMr:
         wait_for_found = 5
         while wait_for_found > 0:
             try:
+                file = open(expFileName)
+                for line in file:
+                    if line[-1] == "\n":
+                        line = line[0:-1]
+                    print(f"{expFileName}: {str(line)}")
+                file.close()
+                file = open(actFileName)
+                for line in file:
+                    if line[-1] == "\n":
+                        line = line[0:-1]
+                    print(f"{actFileName}: {str(line)}")
+                file.close()
                 sameContent = filecmp.cmp(expFileName, actFileName, shallow=False)
                 wait_for_found = 0
             except Exception as e:
@@ -606,25 +618,14 @@ class AxisMr:
                 )
                 print(str(e))
                 time.sleep(0.5)
+
+            if sameContent:
+                os.unlink(expFileName)
+                os.unlink(actFileName)
+                return sameContent
+
             wait_for_found -= polltime
 
-        if not sameContent:
-            file = open(expFileName)
-            for line in file:
-                if line[-1] == "\n":
-                    line = line[0:-1]
-                print(f"{expFileName}: {str(line)}")
-            file.close()
-            file = open(actFileName)
-            for line in file:
-                if line[-1] == "\n":
-                    line = line[0:-1]
-                print(f"{actFileName}: {str(line)}")
-            file.close()
-            return sameContent
-        else:
-            os.unlink(expFileName)
-            os.unlink(actFileName)
         return sameContent
 
     def setSoftLimitsOff(self, tc_no):
