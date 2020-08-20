@@ -148,8 +148,22 @@ def jogTheMotorToLS(
     # self.axisMr.waitForStop(tc_no, wait_for_stop)
     mresAct = self.axisCom.get(".MRES")
     dirAct = self.axisCom.get(".DIR")
-    if (mresAct != mres) or (dirAct != dir):
+    if (mresAct != mres):
+        print(f"tc_no={tc_no} mresAct={mresAct}")
+        # The motorRecord adjusts VELO, BVEL VBAS
+        # and this is not a bug. but an old feature
+        velo = self.axisCom.get(".VELO")
+        bvel = self.axisCom.get(".BVEL")
+        vbas = self.axisCom.get(".VBAS")
+
         self.axisCom.put(".MRES", mres)
+
+        self.axisCom.put(".VELO", mres)
+        self.axisCom.put(".BVEL", bvel)
+        self.axisCom.put(".VBAS", vbas)
+
+    if (dirAct != dir):
+        print(f"tc_no={tc_no} dirAct={dirAct}")
         self.axisCom.put(".DIR", dir)
 
     time.sleep(1.0)
@@ -174,7 +188,7 @@ def jogTheMotorToLS(
     else:
         actDLLS = 0
 
-    print(f"tc_no={tc_no} mres={mres} dir={dir} drvUseEGU={drvUseEGU}")
+    print(f"tc_no={tc_no} mres={mres} dir={dir} jogX={jogX} drvUseEGU={drvUseEGU}")
     print(
         f"tc_no={tc_no} expVelRB={velRB} expAccRB={accRB} expHLS={hls} expLLS={lls} expDHLS={dhls} expDLLS={dlls}"
     )
@@ -188,8 +202,14 @@ def jogTheMotorToLS(
     okAccRB = self.axisMr.calcAlmostEqual(
         str(tc_no) + " actAccRB", accRB, actAccRB, maxdelta
     )
+    msta = int(self.axisCom.get(".MSTA"))
+    okNoProblem = True
+    if (msta & self.axisMr.MSTA_BIT_PROBLEM):
+        okNoProblem = False
+
     testPassed = (
-        okVelRB
+        okNoProblem
+        and okVelRB
         and okAccRB
         and (hls == actHLS)
         and (lls == actLLS)
@@ -261,21 +281,12 @@ def jogTheMotorWithMRES(
     self.assertNotEqual(0, jvel, str(tc_no) + "jvel must not be 0")
     self.assertNotEqual(0, jar, str(tc_no) + "jar must not be 0")
 
-    # Command to the motorRecord
-    if jogDir == 1:
-        jogX = "JOGF"
-        hls = 1
-        lls = 0
-    else:
-        self.assertEqual(0, jogDir, str(tc_no) + "jogDir must be 0 or 1")
-        jogX = "JOGR"
-        hls = 0
-        lls = 1
 
     # The motorRecord User LS (hls/lls) follow the jogging direction
     hls = jogDir
     lls = 1 - jogDir
     # The "mechanical LS" are depending on MRES and DIR
+    # See below
     dhls = hls
     dlls = lls
 
@@ -287,6 +298,18 @@ def jogTheMotorWithMRES(
         # motorRecord using EGU
         velRB = jvel * math.fabs(mres) / mres  # Keep the sign
         accRB = jar
+
+    # Command to the motorRecord
+    if jogDir == 1:
+        jogX = "JOGF"
+        hls = 1
+        lls = 0
+    else:
+        self.assertEqual(0, jogDir, str(tc_no) + "jogDir must be 0 or 1")
+        jogX = "JOGR"
+        velRB = 0 - velRB  # Change sign
+        hls = 0
+        lls = 1
 
     if mres < 0:
         dhls = 1 - dhls
@@ -330,7 +353,19 @@ def jogTheMotorWithMRES(
     )
 
 
-def jogTheMotorTestWrapper(self, tc_no, mres=0, dir=-1, jogDir=-1, jvel=0, jar=0):
+def jogTheMotorTestWrapper(self, tc_no, mres=0, dir=-1, jvel=2.0, jar=3.0):
+    jogDir = 1
+    jogTheMotorTestWrapperJogDir(
+        self, tc_no, mres=mres, dir=dir, jogDir=jogDir, jvel=jvel, jar=jar
+    )
+    tc_no = tc_no + 100
+    jogDir = 0
+    jogTheMotorTestWrapperJogDir(
+        self, tc_no, mres=mres, dir=dir, jogDir=jogDir, jvel=jvel, jar=jar
+    )
+
+
+def jogTheMotorTestWrapperJogDir(self, tc_no, mres=0, dir=-1, jogDir=-1, jvel=0, jar=0):
     # Check which motorRecord version we have
     vers = float(self.axisCom.get(".VERS"))
     if vers >= 6.94 and vers <= 7.09:
@@ -377,57 +412,59 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
-    def test_TC_95000(self):
-        tc_no = 95000
+    # Initialize
+    def test_TC_9500000(self):
+        tc_no = 9500000
         self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        #self.axisCom.put(".SPAM", 255)
         InitAllFor950(self, tc_no)
         InitLimitsNoROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
-    def test_TC_95010(self):
-        tc_no = 95010
+    # DIR = 0
+    def test_TC_9500010(self):
+        tc_no = 9500010
+        self.assertEqual(
+            0,
+            int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
+            "MSTA.Problem should be 0"
+        )
         mres = 1.0
         dir = 0
-        jogDir = 1
-        jvel = 2.0
-        jar = 3.0
+        jogTheMotorTestWrapper(self, tc_no, mres=mres, dir=dir)
 
-        jogTheMotorTestWrapper(
-            self, tc_no, mres=mres, dir=dir, jogDir=jogDir, jvel=jvel, jar=jar
+    # DIR = 1
+    def test_TC_9500020(self):
+        tc_no = 9500020
+        self.assertEqual(
+            0,
+            int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
+            "MSTA.Problem should be 0"
         )
-
-    def test_TC_95020(self):
-        tc_no = 95020
         mres = 1.0
         dir = 1
-        jogDir = 1
-        jvel = 2.0
-        jar = 3.0
 
-        jogTheMotorTestWrapper(
-            self, tc_no, mres=mres, dir=dir, jogDir=jogDir, jvel=jvel, jar=jar
-        )
+        jogTheMotorTestWrapper(self, tc_no, mres=mres, dir=dir)
 
-    def test_TC_95030(self):
-        tc_no = 95030
+    # DIR = 1, MRES = - 1.0
+    def test_TC_9500030(self):
+        tc_no = 9500030
         mres = -1.0
         dir = 1
-        jogDir = 1
-        jvel = 2.0
-        jar = 3.0
 
-        jogTheMotorTestWrapper(
-            self, tc_no, mres=mres, dir=dir, jogDir=jogDir, jvel=jvel, jar=jar
+        jogTheMotorTestWrapper(self, tc_no, mres=mres, dir=dir)
+
+    # DIR = 0, MRES = - 1.0
+    def test_TC_9500040(self):
+        tc_no = 9500040
+        self.assertEqual(
+            0,
+            int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
+            "MSTA.Problem should be 0"
         )
-
-    def test_TC_95040(self):
-        tc_no = 95040
         mres = -1.0
         dir = 0
         jogDir = 1
-        jvel = 2.0
-        jar = 3.0
 
-        jogTheMotorTestWrapper(
-            self, tc_no, mres=mres, dir=dir, jogDir=jogDir, jvel=jvel, jar=jar
-        )
+        jogTheMotorTestWrapper(self, tc_no, mres=mres, dir=dir)
+
