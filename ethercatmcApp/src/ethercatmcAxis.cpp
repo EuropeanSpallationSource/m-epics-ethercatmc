@@ -99,6 +99,7 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
     const char * const stepSize_str = "stepSize=";
 #endif
     const char * const homProc_str         = "HomProc=";
+    const char * const foffVis_str         = "FoffVis=";
     const char * const homPos_str          = "HomPos=";
     const char * const adsPort_str         = "adsPort=";
     const char * const axisFlags_str       = "axisFlags=";
@@ -151,6 +152,10 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
         pThisOption += strlen(homProc_str);
         int homProc = atoi(pThisOption);
         setIntegerParam(pC_->ethercatmcHomProc_, homProc);
+      } else if (!strncmp(pThisOption, foffVis_str, strlen(foffVis_str))) {
+        pThisOption += strlen(foffVis_str);
+        int foffVis = atoi(pThisOption);
+        setIntegerParam(pC_->ethercatmcFoffVis_, foffVis);
       } else if (!strncmp(pThisOption, homPos_str, strlen(homPos_str))) {
         pThisOption += strlen(homPos_str);
         double homPos = atof(pThisOption);
@@ -745,47 +750,34 @@ asynStatus ethercatmcAxis::moveVelocity(double minVelocity, double maxVelocity, 
 asynStatus ethercatmcAxis::setPosition(double value)
 {
   asynStatus status = asynSuccess;
-  int nCommand = NCOMMANDHOME;
-  int homProc = 0;
-  double homPos = value;
+  int foffVis = 0;
+  double valueEgu = value * drvlocal.scaleFactor;
   double motorPosition = 0.0;
-  double motorEncoderPosition = 0.0;
-  int isSim = pC_->features_ & FEATURE_BITS_SIM ? 1 : 0;
 
   asynStatus statusM = pC_->getDoubleParam(axisNo_,
                                            pC_->motorPosition_,
                                            &motorPosition);
-  asynStatus statusE = pC_->getDoubleParam(axisNo_,
-                                           pC_->motorEncoderPosition_,
-                                           &motorEncoderPosition);
-
   status = pC_->getIntegerParam(axisNo_,
-                                pC_->ethercatmcHomProc_,
-                                &homProc);
+                                pC_->ethercatmcFoffVis_,
+                                &foffVis);
+
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%ssetPosition(%d) homProc=%d posRaw=%g posEgu=%g motorPos=%f encoderPos=%f statM=%d statE=%d isSim=%d\n",
-            modNamEMC, axisNo_,  homProc, value, value * drvlocal.scaleFactor,
-            motorPosition, motorEncoderPosition, (int)statusM, (int)statusE,
-            isSim);
-  /*
-   * The motor Record does a LOAD_POS (= setPosition() when MRES is changed
-   * Changing MRES is only used in some test cases, so pretend that it worked,
-   * on the simulator, but don't do anything.
-   */
+            "%ssetPosition(%d) foffVis=%d pos=%g posEgu=%g motorPos=%f "
+            "statM=%d\n",
+            modNamEMC, axisNo_,  foffVis, value, valueEgu,
+            motorPosition, (int)statusM);
 
-  if (isSim && (statusE == asynSuccess))
-    return asynSuccess;
-
-  else if (isSim && (statusE != asynSuccess))
-    ; /* Initial load pos from motorRecord: Continue */
-  else if (homProc != HOMPROC_MANUAL_SETPOS)
-    return asynError;
-  if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-  if (status == asynSuccess) status = setValueOnAxis("fHomePosition", homPos);
-  if (status == asynSuccess) status = setValueOnAxis("nCommand", nCommand );
-  if (status == asynSuccess) status = setValueOnAxis("nCmdData", homProc);
-  if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
-
+  status = asynSuccess;
+  if (foffVis) {
+    if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
+    if (status == asynSuccess) status = setValueOnAxis("fHomePosition",
+                                                       valueEgu);
+    if (status == asynSuccess) status = setValueOnAxis("nCommand",
+                                                       NCOMMANDHOME);
+    if (status == asynSuccess) status = setValueOnAxis("nCmdData",
+                                                       HOMPROC_MANUAL_SETPOS);
+    if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
+  }
   return status;
 }
 
@@ -1458,8 +1450,10 @@ asynStatus ethercatmcAxis::setIntegerParam(int function, int value)
   } else if (function == pC_->ethercatmcHomProc_) {
     int motorNotHomedProblem = 0;
     setIntegerParam(pC_->ethercatmcHomProc_RB_, value);
-    setIntegerParam(pC_->ethercatmcFoffVis_,
-                    (value == HOMPROC_MANUAL_SETPOS));
+    if (value == HOMPROC_MANUAL_SETPOS) {
+      /* Manual setPosition is allowed now */
+      setIntegerParam(pC_->ethercatmcFoffVis_, 1);
+    }
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",
               modNamEMC, axisNo_, value, motorNotHomedProblem);
