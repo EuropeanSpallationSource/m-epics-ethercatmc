@@ -25,7 +25,9 @@ typedef struct motor_init_values
 int getAxisDone(int axis_no);
 int getAxisHome(int axis_no);
 int getAxisHomed(int axis_no);
-void setAxisHomed(int axis_no, int value);
+
+void setAxisHomed_fl(int axis_no, int value, const char *file, int line_no);
+#define setAxisHomed(a,b) setAxisHomed_fl(a,b, __FILE__, __LINE__);
 
 static void init_axis(int);
 void hw_motor_init(int axis_no,
