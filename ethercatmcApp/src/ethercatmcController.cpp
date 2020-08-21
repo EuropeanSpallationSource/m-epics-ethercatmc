@@ -151,6 +151,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcHomPosString,        asynParamFloat64,     &ethercatmcHomPos_);
   createParam(ethercatmcStatusCodeString,    asynParamInt32,       &ethercatmcStatusCode_);
   createParam(ethercatmcStatusBitsString,    asynParamInt32,       &ethercatmcStatusBits_);
+  createParam(ethercatmcFoffVisString,       asynParamInt32,       &ethercatmcFoffVis_);
   createParam(ethercatmcHomProc_RBString,    asynParamInt32,       &ethercatmcHomProc_RB_);
   createParam(ethercatmcHomPos_RBString,     asynParamFloat64,     &ethercatmcHomPos_RB_);
   createParam(ethercatmcVelToHomString,      asynParamFloat64,     &ethercatmcVelToHom_);

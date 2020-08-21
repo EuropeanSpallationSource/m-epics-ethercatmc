@@ -673,7 +673,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
 #ifdef  motorNotHomedProblemString
     pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-    pAxis->setIntegerParam(ethercatmcHomProc_RB_, 15);
+    pAxis->setIntegerParam(ethercatmcFoffVis_, 1);
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
     if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_, fabs(fValue), "jvel");

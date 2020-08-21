@@ -292,6 +292,13 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-CfgACCS-RB")
     field(SCAN, "I/O Intr")
 }
 
+record(longin,"$(PREFIX)$(MOTOR_NAME)-FoffVis") {
+    field(DESC, "FOFF-Visible")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))FoffVis")
+    field(SCAN, "I/O Intr")
+}
+
 record(mbbi,"$(PREFIX)$(MOTOR_NAME)-HomProc-RB") {
     field(DESC,"Homing procedure")
     field(DTYP, "asynInt32")

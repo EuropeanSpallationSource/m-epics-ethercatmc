@@ -2458,13 +2458,13 @@ $(pv_value)</tooltip>
     <released_action_index>0</released_action_index>
     <rules>
       <rule name="FOFF-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=15">
+        <exp bool_exp="pv0 == 0">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0==15">
+        <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)HomProc-RB</pv>
+        <pv trig="true">$(P)$(R)FoffVis</pv>
       </rule>
     </rules>
     <scale_options>

@@ -1458,6 +1458,8 @@ asynStatus ethercatmcAxis::setIntegerParam(int function, int value)
   } else if (function == pC_->ethercatmcHomProc_) {
     int motorNotHomedProblem = 0;
     setIntegerParam(pC_->ethercatmcHomProc_RB_, value);
+    setIntegerParam(pC_->ethercatmcFoffVis_,
+                    (value == HOMPROC_MANUAL_SETPOS));
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",
               modNamEMC, axisNo_, value, motorNotHomedProblem);
