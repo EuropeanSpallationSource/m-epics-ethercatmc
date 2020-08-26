@@ -129,6 +129,15 @@ def InitLimitsWithROlimits(self, tc_no):
     ## XXX self.axisCom.put("-DbgStrToLOG", "initLim " + str(tc_no)[0:20])
     maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
     maxDelta = 0.05  # 5 % error tolerance margin
+    self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+    self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+    self.axisMr.setValueOnSimulator(tc_no, "fHighSoftLimitPos", myCfgDHLM)
+    self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos", myCfgDLLM)
+    self.axisCom.put("-CfgDLLM-En", 1, wait=True)
+    self.axisCom.put("-CfgDHLM-En", 1, wait=True)
+
+    # Wait until ".DHLM" and ".DLLM" have rippled through the poller
+    # and the processing in the motorRecord
     while maxTime > 0:
         actDHLM = self.axisCom.get(".DHLM", myDHLM)
         actDLLM = self.axisCom.get(".DLLM", myDLLM)
@@ -141,12 +150,6 @@ def InitLimitsWithROlimits(self, tc_no):
         print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
             return
-        self.axisCom.put("-CfgDLLM-En", 0, wait=True)
-        self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-        self.axisMr.setValueOnSimulator(tc_no, "fHighSoftLimitPos", myCfgDHLM)
-        self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos", myCfgDLLM)
-        self.axisCom.put("-CfgDLLM-En", 1, wait=True)
-        self.axisCom.put("-CfgDHLM-En", 1, wait=True)
         time.sleep(polltime)
         maxTime = maxTime - polltime
 
@@ -544,3 +547,4 @@ class Test(unittest.TestCase):
     def test_TC_900999(self):
         if self.drvUseEGU_RB == 1:
             self.axisCom.put("-DrvUseEGU", 1)
+
