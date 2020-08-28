@@ -120,6 +120,7 @@ class AxisMr:
             cfgDHLM = 53.0
             cfgDLLM = -54.0
             self.setSoftLimitsOff(tc_no)
+            self.setValueOnSimulator(tc_no, "fActPosition", 0.0)
             self.setValueOnSimulator(tc_no, "fHighSoftLimitPos", cfgDHLM)
             self.setValueOnSimulator(tc_no, "fLowSoftLimitPos", cfgDLLM)
             self.initializeMotorRecordOneField(tc_no, "-CfgDHLM-En", 1)
