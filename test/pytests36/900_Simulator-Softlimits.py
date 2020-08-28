@@ -133,6 +133,8 @@ def InitLimitsWithROlimits(self, tc_no):
     self.axisCom.put("-CfgDHLM-En", 0, wait=True)
     self.axisMr.setValueOnSimulator(tc_no, "fHighSoftLimitPos", myCfgDHLM)
     self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos", myCfgDLLM)
+    self.axisCom.put("-CfgDHLM", myCfgDHLM)
+    self.axisCom.put("-CfgDLLM", myCfgDLLM)
     self.axisCom.put("-CfgDLLM-En", 1, wait=True)
     self.axisCom.put("-CfgDHLM-En", 1, wait=True)
 
