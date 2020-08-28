@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
 
         # Calculate the timeout, based on the driving range
         if range_postion > 0 and hvel > 0:
-            time_to_wait = 1 + 2 * range_postion / self.hvel + 2 * accl
+            time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
         else:
             time_to_wait = 180
 
