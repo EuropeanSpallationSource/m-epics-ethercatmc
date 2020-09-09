@@ -9,12 +9,14 @@
 #                     and triggers the retry-login in the motorRecord
 
 
-SIMULATOR-CA = \
+SIMULATOR-ONE-CA = \
   900_Simulator-Softlimits.log-ca\
   910_Simulator_JOGF_BDST.log-ca\
   920_Simulator_RTRY_FRAC_RMOD.log-ca\
   930_Simulator_Vel-RB_Acc-RB.log-ca\
   940_Simulator-powerOnFailed.log-ca\
+
+SIMULATOR-TWO-CA = \
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-ca\
 
 
@@ -44,7 +46,8 @@ ETHERCATMC-CA = \
 all-ca: \
   $(RECORD-CA) \
   $(ETHERCATMC-CA) \
-  $(SIMULATOR-CA) \
+  $(SIMULATOR-ONE-CA) \
+  $(SIMULATOR-TWO-CA) \
 
 
 record-ca:  $(RECORD-CA) 
@@ -53,8 +56,10 @@ record-ca:  $(RECORD-CA)
 ethercatmc-ca: $(ETHERCATMC-CA)
 
 
-simulator-ca: $(SIMULATOR-CA)
+simulator-one-ca: $(SIMULATOR-ONE-CA)
 
+
+simulator-two-ca: $(SIMULATOR-TWO-CA)
 
 
 %.log-ca : %.py

@@ -34,7 +34,7 @@ polltime = 0.1
 # Values to be used for test
 # Note: Make sure to use different values to hae a good
 # test coverage
-myVELO = 5.0  # positioning velocity
+myVELO = 20.0  # positioning velocity
 myACCL = 1.0  # Time to VELO, seconds
 
 # Different values, high use even, low uses odd
@@ -363,7 +363,7 @@ def jogTheMotorWithMRES(
     )
 
 
-def jogTheMotorTestWrapper(self, tc_no, mres=0, dir=-1, jvel=2.0, jar=3.0):
+def jogTheMotorTestWrapper(self, tc_no, mres=0, dir=-1, jvel=8.0, jar=3.0):
     jogDir = 1
     jogTheMotorTestWrapperJogDir(
         self, tc_no, mres=mres, dir=dir, jogDir=jogDir, jvel=jvel, jar=jar

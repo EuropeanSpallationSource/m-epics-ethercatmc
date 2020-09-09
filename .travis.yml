@@ -82,7 +82,8 @@ jobs:
     - test/test-pytest-pyepics-p4p.sh
     - make -k -C test/pytests36 record-ca
     - make -k -C test/pytests36 ethercatmc-ca
-    - make -k -C test/pytests36 simulator-ca
+    - make -k -C test/pytests36 simulator-one-ca
+    - make -k -C test/pytests36 simulator-two-ca
 
   - env: BASE=7.0 SET=ess TRAVIS_COMPILER=gcc
     language: python
@@ -91,10 +92,18 @@ jobs:
     script:
     - ./checkws.sh
     - test/install-pytest-pyepics-p4p.sh
-    - test/test-pytest-pyepics-p4p.sh
     - make -k -C test/pytests36 record-ca
     - make -k -C test/pytests36 ethercatmc-ca
-    - make -k -C test/pytests36 simulator-ca
+
+  - env: BASE=7.0 SET=ess TRAVIS_COMPILER=gcc
+    language: python
+    python:
+        "3.6"  
+    script:
+    - ./checkws.sh
+    - test/install-pytest-pyepics-p4p.sh
+    - make -k -C test/pytests36 simulator-one-ca
+    - make -k -C test/pytests36 simulator-two-ca
 
   - env: BASE=7.0 SET=latest
     compiler: clang
