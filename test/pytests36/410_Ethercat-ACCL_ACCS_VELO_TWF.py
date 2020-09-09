@@ -18,6 +18,8 @@ def getAccEGUfromMCU(self, tc_no):
 
 
 def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAccEGU):
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+
     # Put the values which the test case wanted
     if vbas > -1:
         self.axisCom.put(".VBAS", vbas)
@@ -44,11 +46,17 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
         "%s expAccl=%f expAccs=%f actVelo=%f actAccl=%f actAccs=%f"
         % (tc_no, expAccl, expAccs, actVelo, actAccl, actAccs)
     )
-    assert self.axisMr.calcAlmostEqual(tc_no, expAccEGU, resAccEGU, 0.1)
+    accOK = self.axisMr.calcAlmostEqual(tc_no, expAccEGU, resAccEGU, 0.1)
+    acclOK = self.axisMr.calcAlmostEqual(tc_no, expAccl, actAccl, 0.1)
+    accsOK = self.axisMr.calcAlmostEqual(tc_no, expAccs, actAccs, 0.1)
 
-    # Check if VELO, ACCL and ACCS are aligned
-    assert self.axisMr.calcAlmostEqual(tc_no, expAccl, actAccl, 0.1)
-    assert self.axisMr.calcAlmostEqual(tc_no, expAccs, actAccs, 0.1)
+    testPassed = accOK and acclOK and accsOK
+    print(f"{tc_no} accOK={accOK} acclOK={acclOK} accsOK={accsOK}")
+    if testPassed:
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+    else:
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+    assert testPassed
 
 
 class Test(unittest.TestCase):
@@ -65,79 +73,78 @@ class Test(unittest.TestCase):
     per10_UserPosition = round((9 * llm + 1 * hlm) / 10)
     per20_UserPosition = round((8 * llm + 2 * hlm) / 10)
     msta = int(axisCom.get(".MSTA"))
-    accs = axisCom.get(".ACCS")
-    homedAndPwrAndACCS = (
-        (accs != None)
-        and (msta & axisMr.MSTA_BIT_HOMED)
-        and (msta & axisMr.MSTA_BIT_AMPON)
-    )
+    vers = float(axisCom.get(".VERS"))
+    if vers >= 6.94 and vers <= 7.09:
+        hasACCSfield = True
+    else:
+        hasACCSfield = False
 
-    # Assert that motor is homed and has the ACCS field
-    def test_TC_411(self):
-        tc_no = "TC-411"
-        if not (self.homedAndPwrAndACCS):
+    # Make sure that motor is homed
+    def test_TC_4101(self):
+        tc_no = "4101"
+        if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+            self.axisMr.homeAxis(tc_no)
+            self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
-                self.msta & self.axisMr.MSTA_BIT_HOMED, 0, "Axis has been homed"
+                0,
+                self.msta & self.axisMr.MSTA_BIT_HOMED,
+                "MSTA.homed (Axis is not homed)",
             )
-            self.assertNotEqual(
-                self.msta & self.axisMr.MSTA_BIT_AMPON, 0, "Amplifier is on"
-            )
-            self.assertNotEqual(self.accs, None, "ACCS field in record")
 
     # 10% dialPosition
-    def test_TC_412(self):
-        tc_no = "TC-412-10-percent"
+    def test_TC_4102(self):
+        tc_no = "4102"
         print(f"{tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisMr.moveWait(tc_no, self.per10_UserPosition)
             print(f"{tc_no} destination={self.per10_UserPosition:f}")
 
-    def test_TC_41311(self):
-        tc_no = "TC-41311"
+    def test_TC_4103(self):
+        tc_no = "4103"
         print(f"{tc_no}")
-        if self.homedAndPwrAndACCS:
+        if self.hasACCSfield:
             #                                            vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0, 6.0, 0.2, -1, 30)
 
-    def test_TC_41312(self):
-        tc_no = "TC-41312"
+    def test_TC_4104(self):
+        tc_no = "4104"
         print(f"{tc_no}")
-        if self.homedAndPwrAndACCS:
+        if self.hasACCSfield:
             #                                           vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.2, -1, 5)
 
-    def test_TC_41313(self):
-        tc_no = "TC-41313"
+    def test_TC_4105(self):
+        tc_no = "4105"
         print(f"{tc_no}")
-        if self.homedAndPwrAndACCS:
+        if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.4, -1, 2.5)
 
-    def test_TC_41314(self):
-        tc_no = "TC-41314"
+    def test_TC_4106(self):
+        tc_no = "4106"
         print(f"{tc_no}")
-        if self.homedAndPwrAndACCS:
+        if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 4.0, 4.0, 0.5, -1, 8.0)
 
-    def test_TC_41315(self):
-        tc_no = "TC-41315"
+    def test_TC_4107(self):
+        tc_no = "4107"
         print(f"{tc_no}")
-        if self.homedAndPwrAndACCS:
+        if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, 0.5, -1, 16.0)
 
-    def test_TC_41316(self):
-        tc_no = "TC-41316"
+    def test_TC_4108(self):
+        tc_no = "4108"
         print(f"{tc_no}")
-        if self.homedAndPwrAndACCS:
+        if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, -1.0, 16.0, 16.0)
 
     # Keep ACCS and expAccEGU if velociy is changed
-    def test_TC_41317(self):
-        tc_no = "TC-41317"
+    def test_TC_4109(self):
+        tc_no = "4109"
         print(f"{tc_no}")
-        if self.homedAndPwrAndACCS:
+        if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 4.0, -1.0, -1.0, 16.0)

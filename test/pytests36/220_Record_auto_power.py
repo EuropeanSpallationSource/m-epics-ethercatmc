@@ -38,7 +38,11 @@ def do_220_autopower(self, tc_no, autopower):
     power2 = self.axisCom.get(".CNEN", use_monitor=False)
     print(f"{tc_no} Wait 8s and check drive is now disabled power2={int(power2)}")
     restorePwrSettings(
-        self, tc_no, self.saved_PwrAuto, self.saved_PwrOnDly, self.saved_PwrOffDly,
+        self,
+        tc_no,
+        self.saved_PwrAuto,
+        self.saved_PwrOnDly,
+        self.saved_PwrOffDly,
     )
     self.axisMr.setCNENandWait(tc_no, self.saved_CNEN)
 
@@ -82,7 +86,11 @@ class Test(unittest.TestCase):
         destination = self.saved_LLM
         self.axisMr.moveWait(tc_no, destination)
         restorePwrSettings(
-            self, tc_no, self.saved_PwrAuto, self.saved_PwrOnDly, self.saved_PwrOffDly,
+            self,
+            tc_no,
+            self.saved_PwrAuto,
+            self.saved_PwrOnDly,
+            self.saved_PwrOffDly,
         )
         self.axisCom.put("-DbgStrToLOG", "End   " + tc_no[0:20])
 

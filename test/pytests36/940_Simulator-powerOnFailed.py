@@ -48,7 +48,10 @@ class Test(unittest.TestCase):
 
         self.axisCom.put(".CNEN", 0, wait=True)
         setValueOnSimulator(
-            self, tc_no, "bAmplifierLockedToBeOff", AMPLIFIER_LOCKED_TO_BE_OFF_SILENT,
+            self,
+            tc_no,
+            "bAmplifierLockedToBeOff",
+            AMPLIFIER_LOCKED_TO_BE_OFF_SILENT,
         )
         self.axisCom.put("-PwrAuto", 0)
         time.sleep(1.0)

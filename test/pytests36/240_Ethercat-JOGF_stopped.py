@@ -26,11 +26,13 @@ class Test(unittest.TestCase):
     per10_UserPosition = round((9 * llm + 1 * hlm) / 10)
     per90_UserPosition = round((1 * llm + 9 * hlm) / 10)
 
-    # Assert that motor is homed
+    # Make sure that motor is homed
     def test_TC_2401(self):
         tc_no = "2401"
 
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+            self.axisMr.homeAxis(tc_no)
+            self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
                 0,
                 self.msta & self.axisMr.MSTA_BIT_HOMED,
@@ -39,7 +41,7 @@ class Test(unittest.TestCase):
 
     # Jog, wait for start, stop behind MR
     def test_TC_2402(self):
-        tc_no = "2402-JOGF_stopped"
+        tc_no = "2402"
         print(f"{tc_no}")
 
         if self.msta & self.axisMr.MSTA_BIT_HOMED:

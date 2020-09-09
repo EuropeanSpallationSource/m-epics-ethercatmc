@@ -1257,19 +1257,24 @@ int openLogFile(int axis_no, const char *filename)
 
 int closeLogFile(int axis_no)
 {
-  int res = 1;
+  const static char *EOF_str = "EOF";
+  int res1 = 0;
+  int res2 = -1;
   AXIS_CHECK_RETURN_ERROR(axis_no);
   if (motor_axis[axis_no].logFile) {
-    fprintf(motor_axis[axis_no].logFile,
-            "%s\n", "EOF");
-    res = fclose(motor_axis[axis_no].logFile);
+    res1 = fprintf(motor_axis[axis_no].logFile,
+                   "%s\n", "EOF");
+    res2 = fclose(motor_axis[axis_no].logFile);
     motor_axis[axis_no].logFile = NULL;
   }
-  fprintf(stdlog, "LLLL %s/%s:%d axis_no=%d res=%d\n",
+  fprintf(stdlog, "LLLL %s/%s:%d axis_no=%d res1=%d res2=%d\n",
             __FILE__, __FUNCTION__, __LINE__,
-          axis_no, res);
+          axis_no, res1, res2);
 
-  return res;
+  if ((res1 == (int) strlen(EOF_str)) && (res2 == 0))
+    return 0;
+  else
+    return 1;
 }
 
 int getManualSimulatorMode(int axis_no)

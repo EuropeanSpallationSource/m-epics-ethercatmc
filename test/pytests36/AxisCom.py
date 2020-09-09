@@ -45,7 +45,7 @@ class AxisCom:
         as_string=False,
         count=None,
         as_numpy=True,
-        timeout=5.0,
+        timeout=25.0,
         use_monitor=False,
     ):
         pvname = self.pvpfx + pvsuf
@@ -68,7 +68,11 @@ class AxisCom:
         return ret
 
     def put(
-        self, pvsuf, value, wait=False, timeout=5.0,
+        self,
+        pvsuf,
+        value,
+        wait=False,
+        timeout=5.0,
     ):
         pvname = self.pvpfx + pvsuf
         fullname = self.url_scheme + pvname
@@ -78,7 +82,7 @@ class AxisCom:
         if self.ctxt is not None:
             self.ctxt.put(pvname, value, timeout=timeout)
         else:
-            caput_ret = self.epics.caput(pvname, value, timeout=timeout)
+            caput_ret = self.epics.caput(pvname, value, timeout=timeout, wait=wait)
             # This function returns 1 on success,
             # and a negative number if the timeout has been exceeded
             if caput_ret != 1:

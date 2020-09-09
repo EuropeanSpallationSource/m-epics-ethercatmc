@@ -33,8 +33,10 @@ class Test(unittest.TestCase):
 
     # Assert that motor is homed
     def test_TC_1231(self):
-        tc_no = "TC-1231"
+        tc_no = "1231"
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+            self.axisMr.homeAxis(tc_no)
+            self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
                 0,
                 self.msta & self.axisMr.MSTA_BIT_HOMED,
@@ -44,7 +46,7 @@ class Test(unittest.TestCase):
     # per90 UserPosition
     def test_TC_1232(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1232-90-percent-UserPosition"
+            tc_no = "1232"
             print(f"{tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -56,7 +58,7 @@ class Test(unittest.TestCase):
     # High soft limit in controller when using MoveVel
     def test_TC_1233(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1233-high-soft-limit MoveVel"
+            tc_no = "1233"
             print(f"{tc_no}")
 
             jar = self.axisCom.get(".JAR")

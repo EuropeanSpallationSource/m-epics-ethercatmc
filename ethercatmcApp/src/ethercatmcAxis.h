@@ -53,8 +53,6 @@ typedef struct {
   int atTarget;
   /* neither V1 nor V2, but calculated here */
   int mvnNRdyNex; /* Not in struct. Calculated in poll() */
-  int motorStatusDirection; /* Not in struct. Calculated in pollAll() */
-  int motorDiffPostion;     /* Not in struct. Calculated in poll() */
 } st_axis_status_type;
 
 class epicsShareClass ethercatmcAxis : public asynMotorAxis

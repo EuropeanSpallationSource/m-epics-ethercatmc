@@ -31,10 +31,12 @@ class Test(unittest.TestCase):
         res = self.axisCom.get("-Acc-RB")
         return res
 
-    # Assert that motor is homed
-    def test_TC_401(self):
-        tc_no = "TC-401"
+    # Make sure that motor is homed
+    def test_TC_4001(self):
+        tc_no = "4001"
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+            self.axisMr.homeAxis(tc_no)
+            self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
                 0,
                 self.msta & self.axisMr.MSTA_BIT_HOMED,
@@ -42,15 +44,15 @@ class Test(unittest.TestCase):
             )
 
     # 10% dialPosition
-    def test_TC_402(self):
-        tc_no = "TC-402-10-percent"
+    def test_TC_4002(self):
+        tc_no = "4002"
         print(f"{tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisMr.moveWait(tc_no, self.per10_UserPosition)
 
     # 20% dialPosition
-    def test_TC_403(self):
-        tc_no = "TC-403-20-percent"
+    def test_TC_4003(self):
+        tc_no = "4003"
         print(f"{tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             saved_ACCL = float(self.axisCom.get(".ACCL"))
@@ -65,8 +67,8 @@ class Test(unittest.TestCase):
             assert self.axisMr.calcAlmostEqual(tc_no, expacc, resacc, 2)
 
     # JOGR
-    def test_TC_404(self):
-        tc_no = "TC-404-JOGR"
+    def test_TC_4004(self):
+        tc_no = "4004"
         print(f"{tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisCom.put("-DbgStrToLOG", "Start " + tc_no)

@@ -1160,14 +1160,6 @@ asynStatus ethercatmcAxis::pollAll(bool *moving, st_axis_status_type *pst_axis_s
   }
   if (axisNo_ != motor_axis_no) return asynError;
 
-  /* Use previous fActPosition and current fActPosition to calculate direction.*/
-  if (pst_axis_status->fActPosition > drvlocal.old_st_axis_status.fActPosition) {
-    pst_axis_status->motorDiffPostion = 1;
-    pst_axis_status->motorStatusDirection = 1;
-  } else if (pst_axis_status->fActPosition < drvlocal.old_st_axis_status.fActPosition) {
-    pst_axis_status->motorDiffPostion = 1;
-    pst_axis_status->motorStatusDirection = 0;
-  }
   return asynSuccess;
 
 
@@ -1276,13 +1268,26 @@ asynStatus ethercatmcAxis::poll(bool *moving)
   }
 
   if (drvlocal.nCommandActive != NCOMMANDHOME) {
-    setDoubleParam(pC_->motorPosition_,
-                   st_axis_status.fActPosition / drvlocal.scaleFactor);
-    setDoubleParam(pC_->motorEncoderPosition_,
-                   st_axis_status.fActPosition / drvlocal.scaleFactor);
-    drvlocal.old_st_axis_status.fActPosition = st_axis_status.fActPosition;
-    setDoubleParam(pC_->ethercatmcVel_RB_, st_axis_status.fVelocity);
+    double oldPositionValue;
+    double newPositionValue = st_axis_status.fActPosition /
+      drvlocal.scaleFactor;
+    asynStatus oldPositionStatus;
+    oldPositionStatus = pC_->getDoubleParam(axisNo_,
+                                            pC_->motorPosition_,
+                                            &oldPositionValue);
+    if (oldPositionStatus == asynSuccess) {
+      /* Use previous fActPosition and
+         current fActPosition to calculate direction.*/
+      if (newPositionValue > oldPositionValue) {
+        setIntegerParam(pC_->motorStatusDirection_, 1);
+      } else if (newPositionValue < oldPositionValue) {
+        setIntegerParam(pC_->motorStatusDirection_, 0);
+      }
+    }
+    setDoubleParam(pC_->motorPosition_, newPositionValue);
+    setDoubleParam(pC_->motorEncoderPosition_, newPositionValue);
   }
+  setDoubleParam(pC_->ethercatmcVel_RB_, st_axis_status.fVelocity);
 
   if (drvlocal.externalEncoderStr) {
     comStatus = getValueFromController(drvlocal.externalEncoderStr,
@@ -1357,7 +1362,6 @@ asynStatus ethercatmcAxis::poll(bool *moving)
                   ethercatmcgetNowTimeSecs() - timeBefore);
       }
     }
-  setIntegerParam(pC_->motorStatusDirection_, st_axis_status.motorStatusDirection);
   setIntegerParam(pC_->motorStatusMoving_, st_axis_status.mvnNRdyNex);
   setIntegerParam(pC_->motorStatusDone_, !st_axis_status.mvnNRdyNex);
 

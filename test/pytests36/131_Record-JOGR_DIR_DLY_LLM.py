@@ -32,10 +32,12 @@ class Test(unittest.TestCase):
 
     print(f"llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
 
-    # Assert that motor is homed
+    # Make sure that motor is homed
     def test_TC_1311(self):
-        tc_no = "TC-1311"
+        tc_no = "1311"
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+            self.axisMr.homeAxis(tc_no)
+            self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
                 0,
                 self.msta & self.axisMr.MSTA_BIT_HOMED,
@@ -45,7 +47,7 @@ class Test(unittest.TestCase):
     # per10 UserPosition
     def test_TC_1312(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1312-10-percent-UserPosition"
+            tc_no = "1312"
             print(f"{tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -57,7 +59,7 @@ class Test(unittest.TestCase):
     # Low soft limit JOGR
     def test_TC_1313(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1313-low-soft-limit JOGR"
+            tc_no = "1313"
             print(f"{tc_no}")
             self.axisCom.put(".DLY", 1.0)
             self.axisMr.jogDirection(tc_no, 0)
@@ -84,7 +86,7 @@ class Test(unittest.TestCase):
     # per10 UserPosition
     def test_TC_1314(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1314-10-percent-UserPosition"
+            tc_no = "1314"
             print(f"{tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -95,7 +97,7 @@ class Test(unittest.TestCase):
 
     def test_TC_1315(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1315-low-soft-limit JOGR"
+            tc_no = "1315"
             print(f"{tc_no}")
             self.axisCom.put(".DLY", 0.0)
             self.axisMr.jogDirection(tc_no, 0)
@@ -125,7 +127,7 @@ class Test(unittest.TestCase):
     # Low soft limit JOGR
     def test_TC_1316(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1313-low-soft-limit JOGR"
+            tc_no = "1316"
             print(f"{tc_no}")
             self.axisCom.put(".DLY", 0.0)
             mip1 = int(self.axisCom.get(".MIP"))
@@ -164,7 +166,7 @@ class Test(unittest.TestCase):
     # per10 UserPosition
     def test_TC_1317(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1314-10-percent-UserPosition"
+            tc_no = "1317"
             print(f"{tc_no}")
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -175,7 +177,7 @@ class Test(unittest.TestCase):
     # Low soft limit JOGF + DIR
     def test_TC_1318(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1315-low-soft-limit JOGF DIR"
+            tc_no = "1318"
             print(f"{tc_no}")
             saved_DIR = self.axisCom.get(".DIR")
             saved_FOFF = self.axisCom.get(".FOFF")

@@ -33,9 +33,17 @@ class Test(unittest.TestCase):
 
     print(f"llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
 
-    # Assert if motor is homed
+    # Make sure that motor is homed
     def test_TC_1321(self):
-        tc_no = "TC-1321"
+        tc_no = "1321"
+        if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+            self.axisMr.homeAxis(tc_no)
+            self.msta = int(self.axisCom.get(".MSTA"))
+            self.assertNotEqual(
+                0,
+                self.msta & self.axisMr.MSTA_BIT_HOMED,
+                "MSTA.homed (Axis is not homed)",
+            )
         self.assertNotEqual(
             0, self.msta & self.axisMr.MSTA_BIT_HOMED, "MSTA.homed (Axis is not homed)"
         )
@@ -44,7 +52,7 @@ class Test(unittest.TestCase):
     # low limit switch
     def test_TC_1322(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1322-low-limit-switch"
+            tc_no = "1322"
             print(f"{tc_no}")
             old_high_limit = self.axisCom.get(".HLM")
             old_low_limit = self.axisCom.get(".LLM")

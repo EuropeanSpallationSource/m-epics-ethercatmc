@@ -78,7 +78,14 @@ def positionAndBacklash(self, tc_no, rmod, encRel, motorStartPos, motorEndPos):
 
     cnt = 1 + int(self.axisCom.get(".RTRY"))
     self.axisMr.writeExpFileRMOD_X(
-        tc_no, rmod, expFile, cnt, myFRAC, encRel, motorStartPos, motorEndPos,
+        tc_no,
+        rmod,
+        expFile,
+        cnt,
+        myFRAC,
+        encRel,
+        motorStartPos,
+        motorEndPos,
     )
 
     expFile.close()
@@ -105,6 +112,7 @@ class Test(unittest.TestCase):
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
+    msta = int(axisCom.get(".MSTA"))
 
     axisCom.put("-DbgStrToLOG", "Start " + os.path.basename(__file__)[0:20])
     myPOSlow = axisMr.myPOSlow

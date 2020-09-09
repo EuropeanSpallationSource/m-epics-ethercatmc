@@ -33,8 +33,10 @@ class Test(unittest.TestCase):
 
     # Assert that motor is homed
     def test_TC_1331(self):
-        tc_no = "TC-1331"
+        tc_no = "1331"
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+            self.axisMr.homeAxis(tc_no)
+            self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
                 0,
                 self.msta & self.axisMr.MSTA_BIT_HOMED,
@@ -44,7 +46,7 @@ class Test(unittest.TestCase):
     # per10 UserPosition
     def test_TC_1332(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1332-10-percent-UserPosition"
+            tc_no = "1332"
             print(f"{tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -56,7 +58,7 @@ class Test(unittest.TestCase):
     # Low soft limit in controller when using MoveVel
     def test_TC_1333(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1333-low-soft-limit-MoveVel"
+            tc_no = "1333"
             print(f"{tc_no}")
 
             jar = self.axisCom.get(".JAR")
@@ -102,7 +104,7 @@ class Test(unittest.TestCase):
     # per10 UserPosition
     def test_TC_1334(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1234-10-percent-UserPosition"
+            tc_no = "1234"
             print(f"{tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -114,7 +116,7 @@ class Test(unittest.TestCase):
     # Low soft limit in controller when using MoveAbs
     def test_TC_1335(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1235-low-soft-limit Moveabs"
+            tc_no = "1235"
             print(f"{tc_no}")
             drvUseEGU = self.axisCom.get("-DrvUseEGU-RB")
             if drvUseEGU == 1:

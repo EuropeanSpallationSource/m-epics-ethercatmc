@@ -80,8 +80,9 @@ jobs:
     - ./checkws.sh
     - test/install-pytest-pyepics-p4p.sh
     - test/test-pytest-pyepics-p4p.sh
-    - make -C test test-ioc-with-sim
-    - make -C test test-ioc-with-sim-indexer
+    - make -k -C test/pytests36 record-ca
+    - make -k -C test/pytests36 ethercatmc-ca
+    - make -k -C test/pytests36 simulator-ca
 
   - env: BASE=7.0 SET=ess TRAVIS_COMPILER=gcc
     language: python
@@ -91,8 +92,9 @@ jobs:
     - ./checkws.sh
     - test/install-pytest-pyepics-p4p.sh
     - test/test-pytest-pyepics-p4p.sh
-    - make -C test test-ioc-with-sim
-    - make -C test test-ioc-with-sim-indexer
+    - make -k -C test/pytests36 record-ca
+    - make -k -C test/pytests36 ethercatmc-ca
+    - make -k -C test/pytests36 simulator-ca
 
   - env: BASE=7.0 SET=latest
     compiler: clang

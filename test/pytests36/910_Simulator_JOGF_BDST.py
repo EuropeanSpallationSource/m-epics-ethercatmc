@@ -26,6 +26,7 @@ withFRAC = 1.5
 def motorInitTC(self, tc_no, frac, encRel):
     self.axisCom.put(".FRAC", frac)
     self.axisCom.put(".UEIP", encRel)
+    self.axisCom.put(".RTRY", 1)
     msta = int(self.axisCom.get(".MSTA", use_monitor=False))
     print(f"{tc_no}:{int(lineno())} motorInitTC msta={self.axisMr.getMSTAtext(msta)}")
 
@@ -58,19 +59,25 @@ def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
         myDirection = 0
     else:
         assert 0
+    self.axisMr.writeExpFileJOG_BDST(
+        tc_no,
+        expFileName,
+        myDirection,
+        frac,
+        encRel,
+        StartPos,
+        EndPos,
+    )
     field_name = "." + myJOGX
     # Add the dot between the motorRecord name and the field
     self.axisCom.put(field_name, 1)
     time.sleep(1)
     self.axisMr.setValueOnSimulator(tc_no, "fActPosition", EndPos)
     self.axisCom.put(field_name, 0)
-    time_to_wait = 200
+    time_to_wait = 500
     self.axisMr.waitForMipZero(tc_no, time_to_wait)
     self.axisMr.setValueOnSimulator(tc_no, "dbgCloseLogFile", "1")
 
-    self.axisMr.writeExpFileJOG_BDST(
-        tc_no, expFileName, myDirection, frac, encRel, StartPos, EndPos,
-    )
     testPassed = self.axisMr.cmpUnlinkExpectedActualFile(
         tc_no, expFileName, actFileName
     )
@@ -99,52 +106,101 @@ class Test(unittest.TestCase):
         self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
         self.axisMr.initializeMotorRecordSimulatorAxis(tc_no)
         self.axisMr.motorInitAllForBDST(tc_no)
+        self.axisCom.put(".SPAM", 255)
         self.axisCom.put("-DbgStrToLOG", "Finish " + str(tc_no))
 
     # JOG forward & backlash compensation, absolute
     def test_TC_91011(self):
         jogAndBacklash(
-            self, 91011, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGF",
+            self,
+            91011,
+            noFRAC,
+            use_abs,
+            self.myPOSlow,
+            self.myPOSmid,
+            "JOGF",
         )
 
     # JOG forward & backlash compensation, relative
     def test_TC_91012(self):
         jogAndBacklash(
-            self, 91012, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGF",
+            self,
+            91012,
+            noFRAC,
+            use_rel,
+            self.myPOSmid,
+            self.myPOSlow,
+            "JOGF",
         )
 
     # JOG backward & backlash compensation, absolute
     def test_TC_91021(self):
         jogAndBacklash(
-            self, 91021, noFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGR",
+            self,
+            91021,
+            noFRAC,
+            use_abs,
+            self.myPOSlow,
+            self.myPOSmid,
+            "JOGR",
         )
 
     # JOG backward & backlash compensation, relative
     def test_TC_91022(self):
         jogAndBacklash(
-            self, 91022, noFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGR",
+            self,
+            91022,
+            noFRAC,
+            use_rel,
+            self.myPOSmid,
+            self.myPOSlow,
+            "JOGR",
         )
 
     # JOG forward & backlash compensation, absolute
     def test_TC_91031(self):
         jogAndBacklash(
-            self, 91031, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGF",
+            self,
+            91031,
+            withFRAC,
+            use_abs,
+            self.myPOSlow,
+            self.myPOSmid,
+            "JOGF",
         )
 
     # JOG forward & backlash compensation, relative
     def test_TC_91032(self):
         jogAndBacklash(
-            self, 91032, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGF",
+            self,
+            91032,
+            withFRAC,
+            use_rel,
+            self.myPOSmid,
+            self.myPOSlow,
+            "JOGF",
         )
 
     # JOG backward & backlash compensation, absolute
     def test_TC_91041(self):
         jogAndBacklash(
-            self, 91041, withFRAC, use_abs, self.myPOSlow, self.myPOSmid, "JOGR",
+            self,
+            91041,
+            withFRAC,
+            use_abs,
+            self.myPOSlow,
+            self.myPOSmid,
+            "JOGR",
         )
 
     # JOG backward & backlash compensation, relative
     def test_TC_91042(self):
         jogAndBacklash(
-            self, 91042, withFRAC, use_rel, self.myPOSmid, self.myPOSlow, "JOGR",
+            self,
+            91042,
+            withFRAC,
+            use_rel,
+            self.myPOSmid,
+            self.myPOSlow,
+            "JOGR",
         )

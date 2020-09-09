@@ -28,16 +28,16 @@ class Test(unittest.TestCase):
 
     # 10% UserPosition
     def test_TC_2001(self):
-        tc_no = "TC-2001-10-percent-dialPosition"
+        tc_no = "2001"
         print(f"{tc_no}")
         self.axisCom.put(".CNEN", 1)
         self.axisMr.waitForPowerOn(tc_no, 8.0)
         destination = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
-        self.axisCom.put(".VAL", destination, wait=True)
+        self.axisMr.moveWait(tc_no, destination)
 
     # Jog, wait for start, power off, check error, reset error
     def test_TC_2002(self):
-        tc_no = "TC-2002-JOG-_Enable"
+        tc_no = "2002"
         self.axisCom.put("-PwrAuto", 0)
         self.axisCom.put(".CNEN", 0)
         self.axisMr.waitForPowerOff(tc_no, 8.0)

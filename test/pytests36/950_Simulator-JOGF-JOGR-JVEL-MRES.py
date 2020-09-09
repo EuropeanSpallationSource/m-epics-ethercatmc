@@ -68,18 +68,17 @@ def InitAllFor950(self, tc_no):
 
     self.axisCom.put(".BDST", 0.0)
     self.axisMr.setValueOnSimulator(tc_no, "bAxisHomed", 1)
+    # Move the  to 0, to avoid limit switch activation
+    self.axisMr.moveWait(tc_no, myStartposDial)
+    # Speed it up, by setting the position in the simulator
+    # and wait for the movement to finish
+    self.axisMr.waitForStop(tc_no, 2.0)
     self.axisMr.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
     self.axisMr.setValueOnSimulator(tc_no, "fHighHardLimitPos", myHighHardLimitPos)
     self.axisMr.setValueOnSimulator(tc_no, "fHighSoftLimitPos", myHighHardLimitPos)
     self.axisMr.setValueOnSimulator(tc_no, "fLowHardLimitPos", myLowHardLimitPos)
     self.axisMr.setValueOnSimulator(tc_no, "fLowSoftLimitPos", myLowHardLimitPos)
-
-    # Move the  to 0, to avoid limit switch activation
-    self.axisMr.setValueOnSimulator(tc_no, "fActPosition", myStartposDial)
-    self.axisCom.put(".DVAL", myStartposDial)
-    # Speed it up, by setting the position in the simulator
-    # and wait for the movement to finish
-    self.axisMr.waitForStop(tc_no, 2.0)
+    InitLimitsNoROlimits(self, tc_no)
 
 
 def InitLimitsNoROlimits(self, tc_no):
@@ -148,7 +147,7 @@ def jogTheMotorToLS(
     # self.axisMr.waitForStop(tc_no, wait_for_stop)
     mresAct = self.axisCom.get(".MRES")
     dirAct = self.axisCom.get(".DIR")
-    if (mresAct != mres):
+    if mresAct != mres:
         print(f"tc_no={tc_no} mresAct={mresAct}")
         # The motorRecord adjusts VELO, BVEL VBAS
         # and this is not a bug. but an old feature
@@ -162,7 +161,7 @@ def jogTheMotorToLS(
         self.axisCom.put(".BVEL", bvel)
         self.axisCom.put(".VBAS", vbas)
 
-    if (dirAct != dir):
+    if dirAct != dir:
         print(f"tc_no={tc_no} dirAct={dirAct}")
         self.axisCom.put(".DIR", dir)
 
@@ -204,7 +203,7 @@ def jogTheMotorToLS(
     )
     msta = int(self.axisCom.get(".MSTA"))
     okNoProblem = True
-    if (msta & self.axisMr.MSTA_BIT_PROBLEM):
+    if msta & self.axisMr.MSTA_BIT_PROBLEM:
         okNoProblem = False
 
     testPassed = (
@@ -224,7 +223,13 @@ def jogTheMotorToLS(
 
 
 def jogTheMotorChangeJVEL(
-    self, tc_no, jogX=0, jvel=0, jar=0, velRB=0, accRB=0,
+    self,
+    tc_no,
+    jogX=0,
+    jvel=0,
+    jar=0,
+    velRB=0,
+    accRB=0,
 ):
     self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
     self.assertNotEqual(0, jogX, str(tc_no) + "jogx must not be 0")
@@ -280,7 +285,6 @@ def jogTheMotorWithMRES(
     self.assertNotEqual(-1, jogDir, str(tc_no) + "jogDir must not be -1")
     self.assertNotEqual(0, jvel, str(tc_no) + "jvel must not be 0")
     self.assertNotEqual(0, jar, str(tc_no) + "jar must not be 0")
-
 
     # The motorRecord User LS (hls/lls) follow the jogging direction
     hls = jogDir
@@ -349,7 +353,13 @@ def jogTheMotorWithMRES(
         self.assertEqual(0, jogDir, str(tc_no) + "jogDir must be 0 or 1")
         jogX2 = "JOGF"
     jogTheMotorChangeJVEL(
-        self, tc_no, jogX=jogX2, jvel=jvel2, jar=jar, velRB=velRB2, accRB=accRB2,
+        self,
+        tc_no,
+        jogX=jogX2,
+        jvel=jvel2,
+        jar=jar,
+        velRB=velRB2,
+        accRB=accRB2,
     )
 
 
@@ -416,9 +426,8 @@ class Test(unittest.TestCase):
     def test_TC_9500000(self):
         tc_no = 9500000
         self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
-        #self.axisCom.put(".SPAM", 255)
+        self.axisCom.put(".SPAM", 255)
         InitAllFor950(self, tc_no)
-        InitLimitsNoROlimits(self, tc_no)
         self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
 
     # DIR = 0
@@ -427,7 +436,7 @@ class Test(unittest.TestCase):
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
-            "MSTA.Problem should be 0"
+            "MSTA.Problem should be 0",
         )
         mres = 1.0
         dir = 0
@@ -439,7 +448,7 @@ class Test(unittest.TestCase):
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
-            "MSTA.Problem should be 0"
+            "MSTA.Problem should be 0",
         )
         mres = 1.0
         dir = 1
@@ -460,11 +469,10 @@ class Test(unittest.TestCase):
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
-            "MSTA.Problem should be 0"
+            "MSTA.Problem should be 0",
         )
         mres = -1.0
         dir = 0
         jogDir = 1
 
         jogTheMotorTestWrapper(self, tc_no, mres=mres, dir=dir)
-

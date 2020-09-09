@@ -46,23 +46,23 @@ typedef enum {
 extern "C" const char *idxStatusCodeTypeToStr(idxStatusCodeType idxStatusCode)
 {
   switch (idxStatusCode) {
-  case  idxStatusCodeRESET:    return "RESET";
-  case  idxStatusCodeIDLE:     return "IDLE ";
-  case  idxStatusCodePOWEROFF: return "PWROF";
-  case  idxStatusCodeWARN:     return "WARN ";
-  case  idxStatusCodeERR4:     return "ERR4 ";
-  case  idxStatusCodeSTART:    return "START";
-  case  idxStatusCodeBUSY:     return "BUSY ";
-  case  idxStatusCodeSTOP:     return "STOP ";
-  case  idxStatusCodeERROR:    return "ERROR";
-  case  idxStatusCodeERR9:     return "ERR9 ";
-  case  idxStatusCodeERR10:    return "ERR10";
-  case  idxStatusCodeERR11:    return "ERR11";
-  case  idxStatusCodeERR12:    return "ERR12";
-  case  idxStatusCodeERR13:    return "ERR13";
-  case  idxStatusCodeERR14:    return "ERR14";
-  case  idxStatusCodeERR15:    return "ERR15";
-  default:                     return "UKNWN";
+  case  idxStatusCodeRESET:    return "RSET";
+  case  idxStatusCodeIDLE:     return "IDLE";
+  case  idxStatusCodePOWEROFF: return "POFF";
+  case  idxStatusCodeWARN:     return "WARN";
+  case  idxStatusCodeERR4:     return "ERR4";
+  case  idxStatusCodeSTART:    return "STRT";
+  case  idxStatusCodeBUSY:     return "BUSY";
+  case  idxStatusCodeSTOP:     return "STOP";
+  case  idxStatusCodeERROR:    return "ERRO";
+  case  idxStatusCodeERR9:     return "ERR9";
+  case  idxStatusCodeERR10:    return "ERRA";
+  case  idxStatusCodeERR11:    return "ERRB";
+  case  idxStatusCodeERR12:    return "ERRC";
+  case  idxStatusCodeERR13:    return "ERRD";
+  case  idxStatusCodeERR14:    return "ERRE";
+  case  idxStatusCodeERR15:    return "ERRF";
+  default:                     return "UKWN";
   }
 }
 
@@ -421,8 +421,9 @@ asynStatus ethercatmcIndexerAxis::setPosition(double value)
 asynStatus ethercatmcIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%swriteCmdRegisster(%d) idxStatusCode=0x%x\n",
-            modNamEMC, axisNo_, idxStatusCode);
+            "%swriteCmdRegisster(%d) idxStatusCode=0x%x (%s)\n",
+            modNamEMC, axisNo_, idxStatusCode,
+            idxStatusCodeTypeToStr((idxStatusCodeType)idxStatusCode));
   if ((drvlocal.iTypCode == 0x5008) || (drvlocal.iTypCode == 0x500c)) {
     unsigned cmdReason = idxStatusCode << 12;
     struct {
