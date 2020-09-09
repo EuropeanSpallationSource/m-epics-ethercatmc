@@ -501,7 +501,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     double actPosition = 0.0;
     double paramValue = 0.0;
     unsigned statusReasonAux, paramCtrl;
-    uint32_t errorID = 0xFFFFFFFF;
+    int errorID = -1;
     bool nowMoving = false;
     int powerIsOn = 0;
     int statusValid = 0;
@@ -528,7 +528,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                                &errorID_readByPoller) == asynSuccess) {
         /* The poller had read errorID as a device, the result
            is in the parameter library */
-        errorID = (uint32_t)errorID_readByPoller;
+        errorID = errorID_readByPoller;
       }
     }
 
@@ -583,7 +583,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       paramValue = NETTODOUBLE(readback.paramValue);
 
       /* Specific for 5010 */
-      errorID = NETTOUINT(readback.errorID);
+      errorID = (int)NETTOUINT(readback.errorID);
       setIntegerParam(pC_->ethercatmcErrId_, errorID);
 
       idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
@@ -605,11 +605,12 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
         (idxStatusCode   != drvlocal.old_idxStatusCode)) {
       if (errorID) {
         asynPrint(pC_->pasynUserController_, traceMask,
-                  "%spoll(%d) statusReasonAux=0x%08x (%s) errorID=0x%4x actPos=%f\n",
+                  "%spoll(%d) statusReasonAux=0x%08x (%s) errorID=0x%4x %s actPos=%f\n",
                   modNamEMC, axisNo_,
                   statusReasonAux,
                   idxStatusCodeTypeToStr(idxStatusCode),
-                  errorID, actPosition);
+                  errorID, errStringFromErrId(errorID),
+                  actPosition);
       } else {
         asynPrint(pC_->pasynUserController_, traceMask,
                   "%spoll(%d) statusReasonAux=0x%08x (%s) actPos=%f\n",
