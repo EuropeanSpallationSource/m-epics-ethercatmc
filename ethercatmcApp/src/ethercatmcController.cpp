@@ -63,6 +63,8 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "Consequ Err";
   case 0x42EF:
     return "Locked Stop";
+  case 0x4359:
+    return "Velo unaccep";
   case 0x4460:
     return "Low soft lim";
   case 0x4461:
@@ -72,7 +74,7 @@ extern "C" const char *errStringFromErrId(int nErrorId)
   case 0x4463:
     return "Max position";
   case 0x4464:
-    return "HW fault";
+    return "Enc HW error";
   case 0x4550:
     return "Follow err pos";
   case 0x4551:
