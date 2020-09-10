@@ -26,6 +26,8 @@ class AxisMr:
     def __init__(self, axisCom, url_string=None):
         self.axisCom = axisCom
         self.url_string = url_string
+        # Dummy read to give the IOC time to start
+        msta = int(axisCom.get(".MSTA", timeout=30.0))
 
     MSTA_BIT_HOMED = 1 << (15 - 1)  # 4000
     MSTA_BIT_MINUS_LS = 1 << (14 - 1)  # 2000
