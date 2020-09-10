@@ -28,10 +28,12 @@ class Test(unittest.TestCase):
 
     print(f"llm={llm:f} hlm={hlm:f}")
 
-    # Assert that motor is homed
+    # Make sure that motor is homed
     def test_TC_1601(self):
-        tc_no = "TC-1601"
+        tc_no = "1601"
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+            self.axisMr.homeAxis(tc_no)
+            self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
                 0,
                 self.msta & self.axisMr.MSTA_BIT_HOMED,
@@ -41,7 +43,7 @@ class Test(unittest.TestCase):
     # per10 UserPosition
     def test_TC_1602(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1602-10-percent-UserPosition"
+            tc_no = "1602"
             print(f"{tc_no}")
             self.axisMr.moveWait(tc_no, self.per10_UserPosition)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -52,7 +54,7 @@ class Test(unittest.TestCase):
 
     # stress test; start and stop the  quickly..
     def test_TC_1603(self):
-        tc_no = "TC-1603"
+        tc_no = "1603"
 
         msta = int(self.axisCom.get(".MSTA"))
         nErrorId = self.axisCom.get("-ErrId")
