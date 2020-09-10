@@ -598,7 +598,10 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
   case PARAM_IDX_USR_MIN_FLOAT:
     {
       int enabled = fValue > fABSMIN ? 1 : 0;
-      updateCfgValue(axisNo,ethercatmcCfgDLLM_En_RB_, enabled, "dllm_en");
+      updateCfgValue(axisNo,ethercatmcCfgDLLM_En_RB_, enabled, "dllm_en_rb");
+      if (initial) {
+        updateCfgValue(axisNo,ethercatmcCfgDLLM_En_, enabled, "dllm_en");
+      }
       if (enabled) {
         updateCfgValue(axisNo, ethercatmcCfgDLLM_RB_,   fValue, "dllm");
       }
@@ -614,7 +617,10 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
   case PARAM_IDX_USR_MAX_FLOAT:
     {
       int enabled = fValue < fABSMAX ? 1 : 0;
-      updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, enabled, "dhlm_en");
+      updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, enabled, "dhlm_en_rb");
+      if (initial) {
+        updateCfgValue(axisNo,ethercatmcCfgDHLM_En_, enabled, "dhlm_en");
+      }
       if (enabled) {
         updateCfgValue(axisNo, ethercatmcCfgDHLM_RB_, fValue, "dhlm");
       }
