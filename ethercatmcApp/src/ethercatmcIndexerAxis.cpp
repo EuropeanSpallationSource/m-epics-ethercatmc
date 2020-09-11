@@ -505,6 +505,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     bool nowMoving = false;
     int powerIsOn = 0;
     int statusValid = 0;
+    int positionValid = 1; /* all states except RESET */
     int hasError = 0;
     idxStatusCodeType idxStatusCode;
     unsigned idxReasonBits = 0;
@@ -595,9 +596,6 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                 modNamEMC, axisNo_, drvlocal.iTypCode);
       return asynError;
     }
-    setDoubleParam(pC_->motorPosition_, actPosition);
-    setDoubleParam(pC_->motorEncoderPosition_, actPosition);
-
     drvlocal.hasProblem = 0;
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
     if ((statusReasonAux != drvlocal.old_statusReasonAux) ||
@@ -646,12 +644,20 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       drvlocal.hasProblem = 1;
       break;
     case idxStatusCodeRESET:
+      positionValid = 0;
+      setIntegerParam(pC_->motorStatusMoving_, 0);
+      setIntegerParam(pC_->motorStatusDone_, 1);
+      break;
     case idxStatusCodeSTART:
     case idxStatusCodeSTOP:
       /* temporally states, no more information yet  */
       break;
     default:
       drvlocal.hasProblem = 1;
+    }
+    if (positionValid) {
+      setDoubleParam(pC_->motorPosition_, actPosition);
+      setDoubleParam(pC_->motorEncoderPosition_, actPosition);
     }
     if (statusValid) {
       int hls = idxReasonBits & 0x8 ? 1 : 0;
