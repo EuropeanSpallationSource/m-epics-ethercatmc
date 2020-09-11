@@ -66,6 +66,7 @@ private:
       int          old_hasError;
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialPollNeeded :1;
+      unsigned idxStatusCode;
     }  dirty;
     double old_paramValue;
     unsigned pollNowIdx;
@@ -76,10 +77,8 @@ private:
     unsigned paramIfOffset;
     unsigned auxBitsNotHomedMask;
     unsigned auxBitsEnabledMask;
-    unsigned old_statusReasonAux;
-    unsigned old_idxAuxBits;
     unsigned old_paramCtrl;
-    unsigned old_idxStatusCode;
+    unsigned old_idxAuxBits;
     unsigned int hasProblem :1;
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */

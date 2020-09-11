@@ -598,12 +598,10 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     }
     drvlocal.hasProblem = 0;
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
-    if ((statusReasonAux != drvlocal.old_statusReasonAux) ||
-        (idxAuxBits      != drvlocal.old_idxAuxBits) ||
-        (idxStatusCode   != drvlocal.old_idxStatusCode)) {
+    if (idxStatusCode   != drvlocal.dirty.idxStatusCode) {
       if (errorID) {
         asynPrint(pC_->pasynUserController_, traceMask,
-                  "%spoll(%d) statusReasonAux=0x%08x (%s) errorID=0x%4x %s actPos=%f\n",
+                  "%spoll(%d) statusReasonAux=0x%08x (%s) errorID=0x%4x \"%s\" actPos=%f\n",
                   modNamEMC, axisNo_,
                   statusReasonAux,
                   idxStatusCodeTypeToStr(idxStatusCode),
@@ -617,9 +615,47 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                   idxStatusCodeTypeToStr(idxStatusCode),
                   actPosition);
       }
-      drvlocal.old_statusReasonAux = statusReasonAux;
-      drvlocal.old_idxAuxBits      = idxAuxBits;
-      drvlocal.old_idxStatusCode   = idxStatusCode;
+    }
+    if (idxAuxBits != drvlocal.old_idxAuxBits) {
+      #define MAX_AUX_BIT_SHOWN 8
+      char changedNames[MAX_AUX_BIT_SHOWN][36];
+      unsigned changed = idxAuxBits ^ drvlocal.old_idxAuxBits;
+      unsigned auxBitIdx;
+      memset(&changedNames, 0, sizeof(changedNames));
+      for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_SHOWN; auxBitIdx++) {
+        if ((changed >> auxBitIdx) & 0x01) {
+          asynStatus status;
+          int function = (int)(pC_->ethercatmcNamAux0_ + auxBitIdx);
+          /* Leave the first character for '+' or '-',
+             leave one byte for '\0' */
+          int length = (int)sizeof(changedNames[auxBitIdx]) - 2;
+          status = pC_->getStringParam(axisNo_,
+                                       function,
+                                       length,
+                                       &changedNames[auxBitIdx][1]);
+          if (status == asynSuccess) {
+            /* the name of "aux bits without a name" is never written,
+               so that we don't show it here */
+            if ((idxAuxBits >> auxBitIdx) & 0x01) {
+              changedNames[auxBitIdx][0] = '+';
+            } else {
+              changedNames[auxBitIdx][0] = '-';
+            }
+          }
+        }
+      }
+      asynPrint(pC_->pasynUserController_, traceMask,
+                "%spoll(%d) auxBits=0x%02x (%s%s%s%s%s%s%s%s) actPos=%f\n",
+                modNamEMC, axisNo_, idxAuxBits,
+                changedNames[0],
+                changedNames[1],
+                changedNames[2],
+                changedNames[3],
+                changedNames[4],
+                changedNames[5],
+                changedNames[6],
+                changedNames[7],
+                actPosition);
     }
     switch (idxStatusCode) {
       /* After RESET, START, STOP the bits are not valid */
@@ -744,8 +780,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                                  newParamCtrl, sizeof(newParamCtrl));
       }
     }
-    drvlocal.old_statusReasonAux = statusReasonAux;
-    drvlocal.old_idxAuxBits      = idxAuxBits;
+    drvlocal.old_idxAuxBits        = idxAuxBits;
+    drvlocal.dirty.idxStatusCode   = idxStatusCode;
     callParamCallbacks();
   }
   return status;
