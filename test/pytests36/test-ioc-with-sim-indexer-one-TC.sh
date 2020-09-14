@@ -66,18 +66,22 @@ echo =====
 
 # start simulator
 (cd .. && ./run-ethercatmc-simulator.sh ) &
+SIMULATOR_PID=$!
 sleep 5
 
 # start ioc
 date
 ( cd .. && nc -l  ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1 ) &
+IOC_PID=$!
 sleep 10
 date
 
 ./runTests.sh "$@"
 exitCode=$?
 
-killExitIocSimulator
+kill -9 $IOC_PID || :
+kill -9 $SIMULATOR_PID || :
+killExitIocSimulator || :
 
 echo exitCode=$exitCode
 exit $exitCode
