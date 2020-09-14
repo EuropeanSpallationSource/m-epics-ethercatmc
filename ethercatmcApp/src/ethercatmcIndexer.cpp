@@ -576,7 +576,7 @@ ethercatmcController::getPlcMemoryFromProcessImage(unsigned indexOffset,
     return asynSuccess;
   }
   /* no process image, get values */
-  return getPlcMemoryViaADS(indexOffset, data,  lenInPlc);
+  return asynDisabled;
 }
 
 void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
@@ -859,6 +859,8 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
 asynStatus ethercatmcController::initialPollIndexer(void)
 {
   asynStatus status;
+  unsigned firstDeviceStartOffset = (unsigned)-1; /* Will be decreased while we go */
+  unsigned lastDeviceEndOffset = 0;  /* will be increased while we go */
   unsigned iTmpVer = 0xC0DEAFFE;
   double version = 0.0;
   struct {
@@ -875,6 +877,12 @@ asynStatus ethercatmcController::initialPollIndexer(void)
   unsigned infoType7 = 7;
   int      axisNo = 0;
 
+  /* In case of re-connect free the old one */
+  free(ctrlLocal.pIndexerProcessImage);
+  ctrlLocal.pIndexerProcessImage = NULL;
+  ctrlLocal.indexerOffset = 4;
+  ctrlLocal.firstDeviceStartOffset = 0;
+  ctrlLocal.lastDeviceEndOffset = 0;
   memset(&descVersAuthors, 0, sizeof(descVersAuthors));
   if (!ctrlLocal.adsport) {
     ctrlLocal.adsport = 851;
@@ -925,10 +933,6 @@ asynStatus ethercatmcController::initialPollIndexer(void)
 
   if (!version) status = asynDisabled;
   if (status) goto endPollIndexer;
-
-  ctrlLocal.indexerOffset = 4;
-  ctrlLocal.firstDeviceStartOffset = (unsigned)-1;
-  ctrlLocal.lastDeviceEndOffset = 0;
 
   status = getPlcMemoryUint(ctrlLocal.indexerOffset,
                             &ctrlLocal.indexerOffset, 2);
@@ -1020,28 +1024,28 @@ asynStatus ethercatmcController::initialPollIndexer(void)
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%sfirstDeviceStartOffset=%u lastDeviceEndOffset=%u\n",
                 modNamEMC,
-                ctrlLocal.firstDeviceStartOffset,
-                ctrlLocal.lastDeviceEndOffset);
+                firstDeviceStartOffset,
+                lastDeviceEndOffset);
       /* Create memory to keep the processimage for all devices
          We include the non-used bytes at the beginning,
          including the nytes used by the indexer (and waste some bytes)
          to make it easier to understand the adressing using offset */
-
-      /* In case of re-connect free the old one */
-      free(ctrlLocal.pIndexerProcessImage);
       /* create a new one, with the right size */
+
+      ctrlLocal.firstDeviceStartOffset = firstDeviceStartOffset;
+      ctrlLocal.lastDeviceEndOffset = lastDeviceEndOffset;
       ctrlLocal.pIndexerProcessImage = (uint8_t*)calloc(1, ctrlLocal.lastDeviceEndOffset);
-      break; /* End of list ?? */
+      break; /* End of list */
     }
     /* indexer has devNum == 0, it is not a device */
     if (devNum) {
       unsigned endOffset = iOffsBytes + iSizeBytes;
       /* find the lowest and highest offset for all devices */
-      if (iOffsBytes < ctrlLocal.firstDeviceStartOffset) {
-        ctrlLocal.firstDeviceStartOffset = iOffsBytes;
+      if (iOffsBytes < firstDeviceStartOffset) {
+        firstDeviceStartOffset = iOffsBytes;
       }
-      if (endOffset > ctrlLocal.lastDeviceEndOffset) {
-        ctrlLocal.lastDeviceEndOffset = endOffset;
+      if (endOffset > lastDeviceEndOffset) {
+        lastDeviceEndOffset = endOffset;
       }
     }
     switch (iTypCode) {
