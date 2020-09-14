@@ -186,6 +186,7 @@ public:
   int features_;
 
   protected:
+  epicsMutexId      lockADSsocket_;
   void udateMotorLimitsRO(int axisNo);
   void udateMotorLimitsRO(int axisNo, int enabledHighAndLow,
                           double fValueHigh, double fValueLow);
