@@ -1287,9 +1287,9 @@ int indexerHandleADS_ADR_getMemory(unsigned adsport,
   init();
   if (offset + lenInPlc > sizeof(netData)) {
     RETURN_ERROR_OR_DIE(__LINE__,
-                        "%s/%s:%d out of range: offset=%u lenInPlc=%u",
+                        "%s/%s:%d out of range: offset=%u lenInPlc=%u (0x%x)",
                         __FILE__, __FUNCTION__, __LINE__,
-                        offset, lenInPlc);
+                        offset, lenInPlc, lenInPlc);
   }
   memcpy(buf, &netData.memoryBytes[offset], lenInPlc);
   return 0;
@@ -1303,9 +1303,9 @@ int indexerHandleADS_ADR_setMemory(unsigned adsport,
   init();
   if (offset + lenInPlc > sizeof(netData)) {
     RETURN_ERROR_OR_DIE(__LINE__,
-                        "%s/%s:%d out of range: offset=%u lenInPlc=%u",
+                        "%s/%s:%d out of range: offset=%u lenInPlc=%u (0x%x)",
                         __FILE__, __FUNCTION__, __LINE__,
-                        offset, lenInPlc);
+                        offset, lenInPlc, lenInPlc);
   }
   memcpy(&netData.memoryBytes[offset], buf, lenInPlc);
   return 0;
