@@ -18,6 +18,7 @@ extern FILE *stdlog;
 #define PRINT_STDOUT_BIT5() (debug_print_flags & (1<<5))
 #define PRINT_STDOUT_BIT6() (debug_print_flags & (1<<6))
 #define PRINT_STDOUT_BIT7() (debug_print_flags & (1<<7))
+#define PRINT_STDOUT_BIT8() (debug_print_flags & (1<<8))
 
 #define DIE_ON_ERROR_BIT0() (die_on_error_flags & 1)
 #define DIE_ON_ERROR_BIT1() (die_on_error_flags & (1<<1))
