@@ -278,6 +278,12 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
               DEFAULT_CONTROLLER_TIMEOUT,
               ethercatmcstrStatus(status), status);
   } else {
+    if (eomReason & ASYN_EOM_END) {
+      /* Remote closed the connection */
+      ethercatmchexdump(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                        "OUT ", outdata, outlen);
+    }
+
     asynPrint(pasynUser, tracelevel,
               "%sIN  nread=%lu eomReason=%x (%s%s%s) err=%s status=%s (%d)\n",
               modNamEMC,
