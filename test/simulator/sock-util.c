@@ -58,6 +58,47 @@ typedef struct client_con_type {
 /* static variables */
 static client_con_type client_cons[NUM_CLIENT_CONS];
 /*****************************************************************************/
+#define sockutilhexdump(help_txt, bufptr, buflen)\
+{\
+  const void* buf = (const void*)bufptr;\
+  int len = (int)buflen;\
+  uint8_t *data = (uint8_t *)buf;\
+  int count;\
+  unsigned pos = 0;\
+  while (len > 0) {\
+    struct {\
+      char asc_txt[8];\
+      char space[2];\
+      char hex_txt[8][3];\
+      char nul;\
+    } print_buf;\
+    memset(&print_buf, ' ', sizeof(print_buf));\
+    print_buf.nul = '\0';\
+    for (count = 0; count < 8; count++) {\
+      if (count < len) {\
+        unsigned char c = (unsigned char)data[count];\
+        if (c >= 0x20 && c < 0x7F)\
+          print_buf.asc_txt[count] = c;\
+        else\
+          print_buf.asc_txt[count] = '.';\
+        snprintf((char*)&print_buf.hex_txt[count],\
+                 sizeof(print_buf.hex_txt[count]),\
+                 "%02x", c);\
+        /* Replace NUL with ' ' after snprintf */\
+        print_buf.hex_txt[count][2] = ' ';\
+      }\
+    }\
+    fprintf(stdlog,\
+              "%s:%d %s [%02x]%s\n",\
+            __FILE__, __LINE__, help_txt, pos, (char*)&print_buf);       \
+    len -= 8;\
+    data += 8;\
+    pos += 8;\
+  }\
+}\
+
+
+/*****************************************************************************/
 void init_client_cons(void)
 {
   unsigned i;
@@ -416,6 +457,11 @@ void socket_loop_with_select(void)
                   LOGINFO(" EOF i=%d fd=%d\n", i, fd);
                 }
               } else {
+                if PRINT_STDOUT_BIT8() {
+                    sockutilhexdump("IN",
+                                    &client_cons[i].buffer[len_used],
+                                    read_res);
+                }
                 len_used = client_cons[i].len_used + read_res;
                 client_cons[i].len_used = len_used;
                 LOGINFO7("%s/%s:%d buf[0]=0x%x buf[1]=0x%x\n",
