@@ -1335,6 +1335,7 @@ void indexerHandlePLCcycle(void)
                     netData.memoryStruct.motors5008_1202[motor5008Num].dev1202.value);
         }
       }
+      break;
     case TYPECODE_PARAMDEVICE_5008:
       {
         double fRet;
