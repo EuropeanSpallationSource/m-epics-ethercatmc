@@ -658,7 +658,9 @@ static void init_axis(int axis_no)
 
 
 static void
-indexerMotorStatusRead5008(unsigned motor_axis_no,
+indexerMotorStatusRead5008(unsigned devNum,
+                           unsigned motor_axis_no,
+                           unsigned numAuxBits,
                            netDevice5008interface_type *pIndexerDevice5008interface)
 {
   unsigned ret = 0;
@@ -701,8 +703,8 @@ indexerMotorStatusRead5008(unsigned motor_axis_no,
     statusReasonAux |= 0x0400;
   {
     unsigned auxBitIdx = 0;
-    for (auxBitIdx = 0; auxBitIdx < 7; auxBitIdx++) {
-      const char *auxBitName = (const char*)&indexerDeviceAbsStraction[motor_axis_no].auxName[auxBitIdx];
+    for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
+      const char *auxBitName = (const char*)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
 
       if (!strcmp("homing", auxBitName)) {
         if (isMotorHoming(motor_axis_no)) {
@@ -746,7 +748,9 @@ indexerMotorStatusRead5008(unsigned motor_axis_no,
 
 #ifdef HAS_5010
 static void
-indexerMotorStatusRead5010(unsigned motor_axis_no,
+indexerMotorStatusRead5010(unsigned devNum,
+                           unsigned motor_axis_no,
+                           unsigned numAuxBits,
                            netDevice5010interface_type *pIndexerDevice5010interface)
 {
   unsigned statusReasonAux32;
@@ -789,8 +793,8 @@ indexerMotorStatusRead5010(unsigned motor_axis_no,
     statusReasonAux32 |= 0x04000000;
   {
     unsigned auxBitIdx = 0;
-    for (auxBitIdx = 0; auxBitIdx <= 23; auxBitIdx++) {
-      const char *auxBitName = (const char*)&indexerDeviceAbsStraction[motor_axis_no].auxName[auxBitIdx];
+    for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
+      const char *auxBitName = (const char*)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
       LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
                __FILE__, __FUNCTION__, __LINE__,
                motor_axis_no, auxBitIdx, auxBitName);
@@ -1343,6 +1347,7 @@ void indexerHandlePLCcycle(void)
         unsigned offset;
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         unsigned motor5008Num = axisNo - 1;
+        static const unsigned numAuxBits = 8;
         offset = (unsigned)((void*)&netData.memoryStruct.motors5008_1202[motor5008Num] -
                             (void*)&netData);
 
@@ -1352,7 +1357,7 @@ void indexerHandlePLCcycle(void)
                  devNum, axisNo, motor5008Num, offset, (double)fRet);
         doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
         /* status */
-        indexerMotorStatusRead5008(axisNo,
+        indexerMotorStatusRead5008(devNum, axisNo, numAuxBits,
                                    &netData.memoryStruct.motors5008_1202[motor5008Num].dev5008);
 
         /* param interface */
@@ -1372,6 +1377,7 @@ void indexerHandlePLCcycle(void)
         unsigned offset;
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         unsigned motor5010Num = axisNo - NUM_MOTORS5008 - 1;
+        static const unsigned numAuxBits = 24;
         offset = (unsigned)((void*)&netData.memoryStruct.motors5010[motor5010Num].actualValue -
                             (void*)&netData);
 
@@ -1381,7 +1387,7 @@ void indexerHandlePLCcycle(void)
                  devNum, axisNo, motor5010Num, offset, (double)fRet);
         doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
         /* status */
-        indexerMotorStatusRead5010(axisNo,
+        indexerMotorStatusRead5010(devNum, axisNo, numAuxBits,
                                    &netData.memoryStruct.motors5010[motor5010Num]);
 
         /* param interface */
