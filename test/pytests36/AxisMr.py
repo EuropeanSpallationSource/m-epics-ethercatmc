@@ -747,17 +747,15 @@ class AxisMr:
         self.axisCom.put(".CNEN", cnen)
         while wait_for_power_changed > 0:
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-            print(
-                "%s: wait_for_power_changed=%f msta=%x %s"
-                % (tc_no, wait_for_power_changed, msta, self.getMSTAtext(msta))
-            )
+            debug_text = f"{tc_no}: wait_for_power_changed={wait_for_power_changed} msta={msta:4x} {self.getMSTAtext(msta)}"
+            print(debug_text)
             if cnen and (msta & self.MSTA_BIT_AMPON):
-                return True
+                return
             if not cnen and not (msta & self.MSTA_BIT_AMPON):
-                return True
+                return
             time.sleep(polltime)
             wait_for_power_changed -= polltime
-        return False
+        raise Exception(debug_text)
 
     def resetAxis(self, tc_no):
         wait_for_ErrRst = 5
