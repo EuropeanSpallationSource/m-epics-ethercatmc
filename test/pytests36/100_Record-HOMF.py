@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
     def test_TC_100(self):
         axisCom = self.axisCom
         axisMr = self.axisMr
-        tc_no = "TC-100"
+        tc_no = "100"
         print(f"{tc_no} Home the motor")
 
         # Get values to be able calculate a timeout
@@ -33,6 +33,7 @@ class Test(unittest.TestCase):
         accl = axisCom.get(".ACCL")
         msta = int(axisCom.get(".MSTA"))
 
+        self.axisMr.setCNENandWait(tc_no, 1)
         # Calculate the timeout, based on the driving range
         if range_postion > 0 and hvel > 0:
             time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
