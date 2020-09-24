@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
         tc_no = "4001"
         self.axisCom.put("-DbgStrToLOG", "Start " + tc_no)
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.homeAxis(tc_no)
+            self.axisMr.powerOnHomeAxis(tc_no)
             self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
                 0,
@@ -67,7 +67,9 @@ class Test(unittest.TestCase):
             expacc = saved_VELO / used_ACCL
             self.axisCom.put(".ACCL", saved_ACCL)
             testPassed = self.axisMr.calcAlmostEqual(tc_no, expacc, resacc, 2)
-            print(f"{tc_no} ACCL={used_ACCL:f} expacc={expacc:f} resacc={resacc:f} testPassed=[testPassed]")
+            print(
+                f"{tc_no} ACCL={used_ACCL:f} expacc={expacc:f} resacc={resacc:f} testPassed=[testPassed]"
+            )
             if testPassed:
                 self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
             else:
@@ -75,7 +77,6 @@ class Test(unittest.TestCase):
             assert testPassed
         else:
             self.axisCom.put("-DbgStrToLOG", "End " + tc_no)
-
 
     # JOGR
     def test_TC_4004(self):
@@ -99,7 +100,9 @@ class Test(unittest.TestCase):
             self.axisMr.waitForStop(tc_no, time_to_wait)
             self.axisCom.put(".JAR", saved_JAR)
             testPassed = self.axisMr.calcAlmostEqual(tc_no, expacc, resacc, 2)
-            print(f"{tc_no} JAR={used_JAR:f} expacc={expacc:f} resacc={resacc:f} testPassed={testPassed}")
+            print(
+                f"{tc_no} JAR={used_JAR:f} expacc={expacc:f} resacc={resacc:f} testPassed={testPassed}"
+            )
             if testPassed:
                 self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
             else:
@@ -107,5 +110,3 @@ class Test(unittest.TestCase):
             assert testPassed
         else:
             self.axisCom.put("-DbgStrToLOG", "End " + tc_no)
-
-

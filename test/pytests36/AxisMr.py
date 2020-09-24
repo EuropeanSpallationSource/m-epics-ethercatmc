@@ -773,7 +773,8 @@ class AxisMr:
             wait_for_ErrRst -= polltime
         return False
 
-    def homeAxis(self, tc_no):
+    def powerOnHomeAxis(self, tc_no):
+        self.setCNENandWait(tc_no, 1)
         # Get values to be able calculate a timeout
         range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
         hvel = self.axisCom.get(".HVEL")

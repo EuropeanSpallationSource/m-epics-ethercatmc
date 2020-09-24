@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
     def test_TC_1231(self):
         tc_no = "1231"
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.homeAxis(tc_no)
+            self.axisMr.powerOnHomeAxis(tc_no)
             self.msta = int(self.axisCom.get(".MSTA"))
             self.assertNotEqual(
                 0,
