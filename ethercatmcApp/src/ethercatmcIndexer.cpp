@@ -8,6 +8,8 @@
 #include <math.h>
 #include <errno.h>
 #include <unistd.h>
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 
 #include "ethercatmcController.h"
 #include "ethercatmcIndexerAxis.h"
