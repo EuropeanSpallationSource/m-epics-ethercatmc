@@ -62,10 +62,22 @@ checkAndInstallPythonPackage()
 }
 ########################################
 
-MYVIRTUALENV=virtualenv
 if which virtualenv-3.7 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.7
+elif which pyenv-virtualenv >/dev/null 2>&1; then
+  # brew has pyenv-virtualenv
+  # and a bug, "pyenv-root" should be written as "pyenv root"
+  PYENV_ROOT="$(pyenv root)"
+  export PYENV_ROOT
+  MYVIRTUALENV="pyenv virtualenv"
+  if test -e /usr/local/opt/python@3.7/bin; then
+    PATH=/usr/local/opt/python@3.7/bin:$PATH
+    export PATH
+  fi
+elif type virtualenv; then
+  MYVIRTUALENV=virtualenv
 fi
+
 export MYVIRTUALENV
 
 ########################################
@@ -73,7 +85,7 @@ export MYVIRTUALENV
 # conda or virtualenv
 #
 if ! which conda >/dev/null 2>&1; then
-  if ! which $MYVIRTUALENV; then
+  if test -z " $MYVIRTUALENV"; then
     checkAndInstallSystemPackage conda anaconda || {
       # conda installation failed, fall back to virtualenv
       checkAndInstallSystemPackage py37-virtualenv virtualenv python-virtualenv || {
@@ -113,7 +125,9 @@ if ! type pytest >/dev/null 2>&1 ; then
 
   ##############################################################################
   if type $MYVIRTUALENV >/dev/null 2>&1; then
-    if which python3.7 >/dev/null 2>&1; then
+    if which python3.8 >/dev/null 2>&1; then
+      PYTHON=python3.8
+    elif which python3.7 >/dev/null 2>&1; then
       PYTHON=python3.7
     elif which python36 >/dev/null 2>&1; then
       PYTHON=python37
@@ -132,6 +146,9 @@ if ! type pytest >/dev/null 2>&1 ; then
       exit 1
     fi
     VIRTUALENVDIR=venv$PYTHON
+    if test -d $HOME/.pyenv/versions/$VIRTUALENVDIR/bin/ ; then
+      VIRTUALENVDIR=$HOME/.pyenv/versions/$VIRTUALENVDIR
+    fi
     if test -r $VIRTUALENVDIR/bin/activate; then
       .  $VIRTUALENVDIR/bin/activate
     else
