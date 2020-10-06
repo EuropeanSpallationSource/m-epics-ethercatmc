@@ -13,8 +13,7 @@ build:
     - apt-get install -y sudo python-pip python3-pip netcat
     - ./.compile-epics.sh
     - test/install-pytest-pyepics-p4p.sh
-    - make -C test test-ioc-with-sim
-    - make -C test test-ioc-with-sim-indexer
+    - make -k -C test all-ca
 
 variables:
   GIT_SUBMODULE_STRATEGY: "recursive"
