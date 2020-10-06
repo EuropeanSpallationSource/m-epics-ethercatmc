@@ -17,8 +17,6 @@ run_pytest ()
 }
 
 echo "$0" "$@"
-../test-pytest-pyepics-p4p.sh || :
-
 
 if test -n "$1"; then
    TESTEDMOTORAXIS=$1

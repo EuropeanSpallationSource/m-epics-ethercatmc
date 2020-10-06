@@ -79,7 +79,6 @@ jobs:
     script:
     - ./checkws.sh
     - test/install-pytest-pyepics-p4p.sh
-    - test/test-pytest-pyepics-p4p.sh
     - make -k -C test/pytests36 record-ca
     - make -k -C test/pytests36 ethercatmc-ca
     - make -k -C test/pytests36 simulator-one-ca
