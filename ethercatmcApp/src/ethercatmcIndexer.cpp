@@ -1163,6 +1163,9 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
   int function;
   /* Some parameters are alread pre-created by the Controller.cpp,
      e.g.errorId. Use those, otherwise create a parameter */
+  if (!strcmp(paramName, "homeSeq")) {
+    paramName = "HomProc-RB";
+  }
   status = findParam(paramName, &function);
   if (status == asynSuccess) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
