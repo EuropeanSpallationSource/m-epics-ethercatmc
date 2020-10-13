@@ -75,6 +75,8 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "Max position";
   case 0x4464:
     return "Enc HW error";
+  case 0x4467:
+    return "Enc inv pos";
   case 0x4550:
     return "Follow err pos";
   case 0x4551:
