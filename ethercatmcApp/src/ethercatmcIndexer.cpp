@@ -1166,7 +1166,7 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
   if (!strcmp(paramName, "homeSeq")) {
     paramName = "HomProc-RB";
   }
-  status = findParam(paramName, &function);
+  status = findParam(axisNo, paramName, &function);
   if (status == asynSuccess) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s (%u) exist function=%d\n",
@@ -1177,8 +1177,8 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
                          pilsAsynParamType,
                          &function);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s (%u) created function=%d status=%s (%d)\n",
-              modNamEMC, functionName, numPilsAsynDevInfo, function,
+              "%s%s (%u) axisNo=%d created function=%d status=%s (%d)\n",
+              modNamEMC, functionName, numPilsAsynDevInfo, axisNo, function,
               ethercatmcstrStatus(status), (int)status);
     if (status != asynSuccess) return;
   }
@@ -1194,14 +1194,17 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
   switch (iTypCode) {
   case 0x1202:
     {
-      if (!strcmp(paramName, "DCtimeSec")) {
-        ctrlLocal.ethercatmcDCtimeSec_ = function;;
-      } else if (!strcmp(paramName, "DCtimeNSec")) {
-        ctrlLocal.ethercatmcDCtimeNSec_ = function;;
-      } else if (!strcmp(paramName, "DCclockL")) {
-        ctrlLocal.ethercatmcDCclockL_ = function;;
-      } else if (!strcmp(paramName, "DCclockH")) {
-        ctrlLocal.ethercatmcDCclockH_ = function;;
+      if (!axisNo) {
+        /* not-axis-related PILS devices */
+        if (!strcmp(paramName, "DCtimeSec")) {
+          ctrlLocal.ethercatmcDCtimeSec_ = function;;
+        } else if (!strcmp(paramName, "DCtimeNSec")) {
+          ctrlLocal.ethercatmcDCtimeNSec_ = function;;
+        } else if (!strcmp(paramName, "DCclockL")) {
+          ctrlLocal.ethercatmcDCclockL_ = function;;
+        } else if (!strcmp(paramName, "DCclockH")) {
+          ctrlLocal.ethercatmcDCclockH_ = function;;
+        }
       }
     }
     break;
