@@ -1159,29 +1159,6 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
               modNamEMC, functionName, numPilsAsynDevInfo, iTypCode);
     return;
   }
-  asynStatus status;
-  int function;
-  /* Some parameters are alread pre-created by the Controller.cpp,
-     e.g.errorId. Use those, otherwise create a parameter */
-  if (!strcmp(paramName, "homeSeq")) {
-    paramName = "HomProc-RB";
-  }
-  status = findParam(axisNo, paramName, &function);
-  if (status == asynSuccess) {
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s (%u) exist function=%d\n",
-              modNamEMC, functionName, numPilsAsynDevInfo, function);
-  } else {
-    status = createParam(axisNo,
-                         paramName,
-                         myAsynParamType,
-                         &function);
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s (%u) axisNo=%d created function=%d status=%s (%d)\n",
-              modNamEMC, functionName, numPilsAsynDevInfo, axisNo, function,
-              ethercatmcstrStatus(status), (int)status);
-    if (status != asynSuccess) return;
-  }
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].axisNo = axisNo;
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].isInput     = isInput;
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].isOutput    = isOutput;
@@ -1189,6 +1166,36 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].lenInPLC = lenInPLC;
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myEPICSParamType = myAsynParamType;
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myMCUParamType = myAsynParamType;
+
+  asynStatus status;
+  int function;
+  if (!strcmp(paramName, "homeSeq")) {
+    /* Different naming conventions in MCU and EPICS */
+    paramName = "HomProc-RB";
+  } else if (!strcmp(paramName, "encoderRaw")) {
+    paramName = "EncAct";
+    /* Special handling for encoderRaw */
+    ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myEPICSParamType = asynParamFloat64;
+  }
+
+  /* Some parameters are alread pre-created by the Controller.cpp,
+     e.g.errorId. Use those, otherwise create a parameter */
+  status = findParam(/* axisNo, */paramName, &function);
+  if (status == asynSuccess) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s (%u) exist function=%d paramName=%s\n",
+              modNamEMC, functionName, numPilsAsynDevInfo, function, paramName);
+  } else {
+    status = createParam(/* axisNo, */
+                         paramName,
+                         myAsynParamType,
+                         &function);
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s (%u) axisNo=%d created function=%d paramName=%s status=%s (%d)\n",
+              modNamEMC, functionName, numPilsAsynDevInfo, axisNo, function, paramName,
+              ethercatmcstrStatus(status), (int)status);
+    if (status != asynSuccess) return;
+  }
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].function = function;
 
   /* Special handling for DC time */
@@ -1343,7 +1350,11 @@ asynStatus ethercatmcController::pollIndexer(void)
           if (pPilsAsynDevInfo->isInput)
           {
             double value, old_value;
-            value = netToDouble(pDataInPlc, lenInPLC);
+            if (pPilsAsynDevInfo->myMCUParamType == asynParamFloat64) {
+              value = netToDouble(pDataInPlc, lenInPLC);
+            } else {
+              value = (double)(epicsInt32)netToUint(pDataInPlc, lenInPLC);
+            }
             status = getDoubleParam(axisNo, function,  &old_value);
             if (status != asynSuccess || old_value != value) {
               setDoubleParam(axisNo, function,  value);
