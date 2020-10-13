@@ -99,7 +99,8 @@ extern "C" {
     unsigned       indexOffset; /* offset inside the "plc memory bytes" */
     unsigned       lenInPLC;    /* len  inside the "plc memory bytes" */
     int            function;    /* asyn: "function" */
-    asynParamType  pilsAsynParamType; /* asynParamType.h */
+    asynParamType  myEPICSParamType; /* asynParamType.h */
+    asynParamType  myMCUParamType; /* asynParamType.h */
     int            isInput      : 1;
     int            isOutput     : 1;
   } pilsAsynDevInfo_type;
@@ -271,7 +272,7 @@ public:
 
   pilsAsynDevInfo_type *findIndexerOutputDevice(int axisNo,
                                                 int function,
-                                                asynParamType pilsAsynParamType);
+                                                asynParamType myEPICSParamType);
 
   struct {
     uint8_t      *pIndexerProcessImage;

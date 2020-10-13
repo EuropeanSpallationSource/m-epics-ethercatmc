@@ -1123,7 +1123,7 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
   unsigned      lenInPLC          = 0;
   int           isInput           = 0;
   int           isOutput          = 0;
-  asynParamType pilsAsynParamType = asynParamNotDefined;
+  asynParamType myAsynParamType = asynParamNotDefined;
 
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
             "%s%s (%u) axisNo=%i indexOffset=%u iTypCode=0x%x paramName=\"%s\"\n",
@@ -1140,20 +1140,20 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
     case 0x1201:
       isInput = 1;
       lenInPLC = 2;
-      pilsAsynParamType = asynParamInt32;
+      myAsynParamType = asynParamInt32;
       break;
     case 0x1202:
       isInput = 1;
       lenInPLC = 4;
-      pilsAsynParamType = asynParamInt32;
+      myAsynParamType = asynParamInt32;
       break;
     case 0x1604:
       isOutput = 1;
       lenInPLC = 4;
-      pilsAsynParamType = asynParamInt32;
+      myAsynParamType = asynParamInt32;
       break;
   }
-  if (!lenInPLC || (pilsAsynParamType == asynParamNotDefined)) {
+  if (!lenInPLC || (myAsynParamType == asynParamNotDefined)) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s (%u) iTypCode not supported, ignored 0x%x\n",
               modNamEMC, functionName, numPilsAsynDevInfo, iTypCode);
@@ -1174,7 +1174,7 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
   } else {
     status = createParam(axisNo,
                          paramName,
-                         pilsAsynParamType,
+                         myAsynParamType,
                          &function);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s (%u) axisNo=%d created function=%d status=%s (%d)\n",
@@ -1187,7 +1187,8 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].isOutput    = isOutput;
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].indexOffset = indexOffset;
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].lenInPLC = lenInPLC;
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].pilsAsynParamType = pilsAsynParamType;
+  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myEPICSParamType = myAsynParamType;
+  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myMCUParamType = myAsynParamType;
   ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].function = function;
 
   /* Special handling for DC time */
@@ -1234,7 +1235,7 @@ extern "C" void DCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
  */
 pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
                                                                     int function,
-                                                                    asynParamType pilsAsynParamType)
+                                                                    asynParamType myEPICSParamType)
 {
   static size_t maxNumPilsAsynDevInfo =
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
@@ -1250,7 +1251,7 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
 
     if ((axisNo == pPilsAsynDevInfo->axisNo) &&
         (function == pPilsAsynDevInfo->function) &&
-        (pilsAsynParamType == pPilsAsynDevInfo->pilsAsynParamType) &&
+        (myEPICSParamType == pPilsAsynDevInfo->myEPICSParamType) &&
         (pPilsAsynDevInfo->isOutput))
       return pPilsAsynDevInfo;
   }
@@ -1300,7 +1301,7 @@ asynStatus ethercatmcController::pollIndexer(void)
         int axisNo = pPilsAsynDevInfo->axisNo;
         int function = pPilsAsynDevInfo->function;
         void *pDataInPlc = &ctrlLocal.pIndexerProcessImage[indexOffset];
-        switch (pPilsAsynDevInfo->pilsAsynParamType) {
+        switch (pPilsAsynDevInfo->myEPICSParamType) {
         case asynParamInt32:
           {
             epicsInt32 value, paramValue;
