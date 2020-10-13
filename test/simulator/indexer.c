@@ -52,10 +52,11 @@
    Devices for the indexer:
    the indexer itself + 1 special 0518
    + 2 motors 5008
-   + 2 1202 for the 5008 motors
+   + 2 1202 errorId for the 5008 motors
+   + 2 1202 encoderRaw for the 5008 motors
    + 2 motors 5010
 */
-#define NUM_INDEXER_5008_1202 5
+#define NUM_INDEXER_5008_1202 7
 
 #ifdef HAS_0518
 #define  NUM_0518           1
@@ -218,7 +219,8 @@ typedef struct {
 
 typedef struct {
   netDevice5008interface_type dev5008;
-  netDevice1202interface_type dev1202;
+  netDevice1202interface_type dev1202errorID;
+  netDevice1202interface_type dev1202encoderRaw;
 } netDevice5008_1202_Interface_type;
 
 /* struct as seen on the network = in memory
@@ -322,6 +324,16 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+    /* device for encoderRaw */
+    { TYPECODE_DISCRETEINPUT_1202, 2*WORDS_DISCRETEINPUT_1202,
+      UNITCODE_NONE, 1,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "encoderRaw",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_DEGREE, 2,
       {PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32, 0,
@@ -349,6 +361,16 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       UNITCODE_NONE, 2,
       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
       "errorID",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
+    /* device for encoderRaw */
+    { TYPECODE_DISCRETEINPUT_1202, 2*WORDS_DISCRETEINPUT_1202,
+      UNITCODE_NONE, 2,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "encoderRaw",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
@@ -1330,13 +1352,21 @@ void indexerHandlePLCcycle(void)
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
           unsigned motor5008Num = axisNo - 1;
-          unsigned errorID = get_nErrorId(axisNo);
-          LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u errorID=%u\n",
-                   __FILE__, __FUNCTION__, __LINE__,
-                   devNum, axisNo, motor5008Num, errorID);
-
-          UINTTONET(errorID,
-                    netData.memoryStruct.motors5008_1202[motor5008Num].dev1202.value);
+          if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "errorID"))) {
+            unsigned errorID = get_nErrorId(axisNo);
+            LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u errorID=%u\n",
+                     __FILE__, __FUNCTION__, __LINE__,
+                     devNum, axisNo, motor5008Num, errorID);
+            UINTTONET(errorID,
+                      netData.memoryStruct.motors5008_1202[motor5008Num].dev1202errorID.value);
+          } else if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "encoderRaw"))) {
+            int encoderRaw = (int)getEncoderPos(axisNo);
+            LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u encoderRaw=%u\n",
+                     __FILE__, __FUNCTION__, __LINE__,
+                     devNum, axisNo, motor5008Num, encoderRaw);
+            UINTTONET(encoderRaw,
+                      netData.memoryStruct.motors5008_1202[motor5008Num].dev1202encoderRaw.value);
+          }
         }
       }
       break;
