@@ -321,6 +321,9 @@ ethercatmcController::ethercatmcController(const char *portName,
                 "%sstatus=%s (%d)\n", modNamEMC,
                 ethercatmcstrStatus(status), (int)status);
     }
+  } else {
+    /*  Find additional devices/asynParams */
+    poll();
   }
   startPoller(movingPollPeriod, idlePollPeriod, 2);
 }
