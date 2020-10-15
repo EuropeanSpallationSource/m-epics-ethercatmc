@@ -38,8 +38,6 @@ drvAsynIPPortConfigure("$(ASYN_PORT)","$(IPADDR):$(IPPORT)",0,0,0)
 
 #adsAsynPortDriverConfigure("$(ASYN_PORT)","$(IPADDR)","$(REMOTEAMSNETID)","$(ADSPORT)" ,1000,0,0,50,100,1000,0)
 
-ethercatmcCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)", "$(ECC_OPTIONS)")
-
 #/* traceMask definitions*/
 #define ASYN_TRACE_ERROR     0x0001
 #define ASYN_TRACEIO_DEVICE  0x0002
@@ -65,3 +63,6 @@ asynSetTraceIOMask("$(ASYN_PORT)", -1, 2)
 #define ASYN_TRACEINFO_SOURCE 0x0004
 #define ASYN_TRACEINFO_THREAD 0x0008
 asynSetTraceInfoMask("$(ASYN_PORT)", -1, 5)
+
+ethercatmcCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)", "$(ECC_OPTIONS)")
+
