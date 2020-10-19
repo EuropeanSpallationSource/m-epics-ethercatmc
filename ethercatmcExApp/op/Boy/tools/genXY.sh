@@ -2,11 +2,18 @@
 
 # Number of motors in Y direction
 Y=1
+# Where to find the OPI files
 OPIS=..
+# Height of the title line
+TITLEH=16
+# Hight of one "motor widget"
 HIGHT=204
+# Width of one "motor widget"
 WIDTH=120
+# File name extension
 EXT=opi
-export OPIS WIDTH HIGHT
+
+export OPIS TITLEH WIDTH HIGHT
 
 
 ########################
@@ -16,7 +23,7 @@ genXY() {
   im=0
   while test $iy -lt $Y; do
     ix=0
-    y=$(($iy * $HIGHT))
+    y=$(($TITLEH + $iy * $HIGHT))
     while test $ix -lt $X; do
       x=$(($ix * $WIDTH))
       cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
@@ -38,7 +45,7 @@ genXX() {
   while test -n "$X"; do
     FILE=$FILE-$X
     ix=0
-    y=$(($iy * $HIGHT))
+    y=$(($TITLEH + $iy * $HIGHT))
     while test $ix -lt $X; do
       x=$(($ix * $WIDTH))
       cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)

@@ -453,6 +453,13 @@ record(stringin, "$(PREFIX)$(MOTOR_NAME)-NamBit25") {
     field(SCAN, "I/O Intr")
 }
 
+# The Name of the system
+record(stringin, "$(PREFIX)Name") {
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(MOTOR_PORT),0)MOTOR_MESSAGE_TEXT")
+    field(SCAN, "I/O Intr")
+}
+
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {
 }

@@ -1,5 +1,6 @@
 
 GNERATEDOPIS: \
+  ../motor-1.opi \
   ../motor-2.opi \
   ../motor-2-2.opi \
   ../motor-3.opi \
