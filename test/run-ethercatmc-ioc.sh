@@ -221,6 +221,7 @@ export LOCALAMSNETID REMOTEAMSNETID
               echo sed PWD=$PWD src=$src dst=$dst
               sed <"$src" >"$dst" \
                   -e "s%dbLoadRecords(\"%dbLoadRecords(\"./$DBMOTOR/%" \
+                  -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
                   -e "s%adsAsynPortDriverConfigure%#adsAsynPortDriverConfigure%"
           done &&
           rm -f $stcmddst &&
