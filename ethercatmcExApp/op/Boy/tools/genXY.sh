@@ -93,6 +93,7 @@ fi
 
 sed -e "s!<name>motorx</name>!<name>$FILE</name>!"  <motorx.start >$OPIS/$$ &&
   echo "Creating $OPIS/$FILE" &&
+  cat ptp.mid  >>$OPIS/$$ &&
   if test "$Y" = 1; then
     genXX "$@"
   else
