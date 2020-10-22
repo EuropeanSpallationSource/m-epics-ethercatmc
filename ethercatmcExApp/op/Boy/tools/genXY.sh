@@ -4,8 +4,6 @@
 Y=1
 # Where to find the OPI files
 OPIS=..
-# Height of the title line
-TITLEH=16
 # Hight of one "motor widget"
 HIGHT=204
 # Width of one "motor widget"
