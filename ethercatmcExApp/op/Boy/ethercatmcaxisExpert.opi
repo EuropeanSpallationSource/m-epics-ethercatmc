@@ -234,7 +234,17 @@ pv_value)</tooltip>
   </font>
   <width>100</width>
   <border_style>0</border_style>
-  <rules />
+  <rules>
+    <rule name="PTPState-Visible" prop_id="visible" out_exp="false">
+      <exp bool_exp="pv0==17">
+        <value>false</value>
+      </exp>
+      <exp bool_exp="pv0!=17">
+        <value>true</value>
+      </exp>
+      <pv trig="true">$(P)PTPState.STAT</pv>
+    </rule>
+  </rules>
   <pv_value />
   <border_width>1</border_width>
   <border_color>
@@ -285,7 +295,17 @@ $(pv_value)</tooltip>
   </font>
   <width>100</width>
   <border_style>0</border_style>
-  <rules />
+  <rules>
+  <rule name="PTPSyncSeqNum-Visible" prop_id="visible" out_exp="false">
+    <exp bool_exp="pv0==17">
+      <value>false</value>
+    </exp>
+    <exp bool_exp="pv0!=17">
+      <value>true</value>
+    </exp>
+    <pv trig="true">$(P)PTPSyncSeqNum.STAT</pv>
+  </rule>
+  </rules>
   <pv_value />
   <border_width>1</border_width>
   <border_color>
@@ -336,7 +356,17 @@ $(pv_value)</tooltip>
   </font>
   <width>100</width>
   <border_style>0</border_style>
-  <rules />
+  <rules>
+    <rule name="PTPOffset-Visible" prop_id="visible" out_exp="false">
+      <exp bool_exp="pv0==17">
+        <value>false</value>
+      </exp>
+      <exp bool_exp="pv0!=17">
+        <value>true</value>
+      </exp>
+      <pv trig="true">$(P)PTPOffset.STAT</pv>
+    </rule>
+  </rules>
   <pv_value />
   <border_width>1</border_width>
   <border_color>
