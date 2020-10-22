@@ -10,49 +10,45 @@ GNERATEDOPIS: \
   ../motor-4x3.opi \
   ../motor-4-2.opi \
 
-
-#GNERATEDOPIS: \
-#  ../motor-6-6-4.opi \
-
-
+# Depencies, when do we need to revuild a .opi file
+DEPENDENCIES_FOR_OPI = Makefile
+DEPENDENCIES_FOR_OPI += genXY.sh
+DEPENDENCIES_FOR_OPI += motorx.start
+DEPENDENCIES_FOR_OPI += motorx.mid
+DEPENDENCIES_FOR_OPI += motorx.end 
 
 #
- ../motor-2-2.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+ ../motor-2-2.opi: $(DEPENDENCIES_FOR_OPI)
 	./genXY.sh 2 2
 
-../motor-1.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+../motor-1.opi: $(DEPENDENCIES_FOR_OPI)
 	./genXY.sh 1
 
-../motor-2.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+../motor-2.opi: $(DEPENDENCIES_FOR_OPI) 
 	./genXY.sh 2
 
-../motor-3.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+../motor-3.opi: $(DEPENDENCIES_FOR_OPI)
 	./genXY.sh 3
 
 
-../motor-4.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+../motor-4.opi: $(DEPENDENCIES_FOR_OPI)
 	./genXY.sh 4
 
 
-../motor-5.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+../motor-5.opi: $(DEPENDENCIES_FOR_OPI)
 	./genXY.sh 5
 
 
-../motor-6.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+../motor-6.opi: $(DEPENDENCIES_FOR_OPI)
 	./genXY.sh 6
 
 
-../motor-4x3.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+../motor-4x3.opi: $(DEPENDENCIES_FOR_OPI)
 	./genXY.sh 4 x 3
 
 
-../motor-4-2.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
+../motor-4-2.opi: $(DEPENDENCIES_FOR_OPI)
 	./genXY.sh 4 2
-
-
-#../motor-6-6-4.opi: Makefile genXY.sh motorx.end motorx.mid motorx.start
-#	./genXY.sh 6 6 4
-
 
 
 all: $(GNERATEDOPIS)
