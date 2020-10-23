@@ -125,8 +125,13 @@ ethercatmcController::ethercatmcController(const char *portName,
                                            double idlePollPeriod,
                                            const char *optionStr)
   :  asynMotorController(portName, numAxes, NUM_VIRTUAL_MOTOR_PARAMS,
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+                         asynInt64Mask, // additional callback interface beyond those in base class
+                         asynInt64Mask, // additional callback interface beyond those in base class
+#else
                          0, // No additional interfaces beyond those in base class
                          0, // No additional callback interfaces beyond those in base class
+#endif
                          ASYN_CANBLOCK | ASYN_MULTIDEVICE,
                          1, // autoconnect
                          0, 0)  // Default priority and stack size

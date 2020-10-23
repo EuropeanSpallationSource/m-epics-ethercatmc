@@ -18,7 +18,7 @@ FILENAME...   ethercatmcController.h
 #define VERSION_INT_4_38            VERSION_INT(4,38,0,0)
 #define ETHERCATMC_ASYN_VERSION_INT VERSION_INT(ASYN_VERSION,ASYN_REVISION,ASYN_MODIFICATION,0)
 #if ETHERCATMC_ASYN_VERSION_INT >= VERSION_INT_4_38
-#define ETHERCATMC_ASYN_ASYNPARAMFLOAT64
+#define ETHERCATMC_ASYN_ASYNPARAMINT64
 #endif
 
 #ifndef motorRecResolutionString
@@ -95,6 +95,7 @@ extern "C" {
      Create a conversion table, to map the PILS devices
      into the asynParameter library and vice-versa */
   typedef struct {
+    char           *paramName;
     int            axisNo;      /* 0 is the controller */
     unsigned       indexOffset; /* offset inside the "plc memory bytes" */
     unsigned       lenInPLC;    /* len  inside the "plc memory bytes" */
@@ -103,6 +104,7 @@ extern "C" {
     asynParamType  myMCUParamType; /* asynParamType.h */
     int            isInput      : 1;
     int            isOutput     : 1;
+    int            isSystemDClock:1;
   } pilsAsynDevInfo_type;
 }
 extern "C" {
@@ -300,10 +302,6 @@ public:
     } supported;
     pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
     unsigned numPilsAsynDevInfo;
-    int ethercatmcDCtimeSec_;
-    int ethercatmcDCtimeNSec_;
-    int ethercatmcDCclockH_;
-    int ethercatmcDCclockL_;
   } ctrlLocal;
 
 

@@ -889,6 +889,21 @@ asynStatus ethercatmcController::initialPollIndexer(void)
   if (!ctrlLocal.adsport) {
     ctrlLocal.adsport = 851;
   }
+  if (ctrlLocal.numPilsAsynDevInfo)
+  {
+    size_t numPilsAsynDevInfo;
+    size_t maxNumPilsAsynDevInfo =
+      (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
+    for (numPilsAsynDevInfo = 0;
+         numPilsAsynDevInfo < maxNumPilsAsynDevInfo;
+         numPilsAsynDevInfo++) {
+      pilsAsynDevInfo_type *pPilsAsynDevInfo
+        = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
+      free(pPilsAsynDevInfo->paramName);
+    }
+    memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
+    ctrlLocal.numPilsAsynDevInfo = 0;
+  }
 #if 0
   {
     /* Demo only */
@@ -1150,75 +1165,76 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
       lenInPLC = 4;
       myAsynParamType = asynParamInt32;
       break;
+    case 0x1204:
+      isInput = 1;
+      lenInPLC = 8;
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+      myAsynParamType = asynParamInt64;
+#endif
+      if (!strcmp(paramName, "SystemDClock")) {
+        ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].isSystemDClock = 1;
+      }
+      break;
     case 0x1604:
       isOutput = 1;
       lenInPLC = 4;
       myAsynParamType = asynParamInt32;
       break;
   }
-  if (!lenInPLC || (myAsynParamType == asynParamNotDefined)) {
+  if (!lenInPLC) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s (%u) iTypCode not supported, ignored 0x%x\n",
               modNamEMC, functionName, numPilsAsynDevInfo, iTypCode);
     return;
   }
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].axisNo = axisNo;
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].isInput     = isInput;
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].isOutput    = isOutput;
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].indexOffset = indexOffset;
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].lenInPLC = lenInPLC;
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myEPICSParamType = myAsynParamType;
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myMCUParamType = myAsynParamType;
+  if (myAsynParamType != asynParamNotDefined) {
+    pilsAsynDevInfo_type *pPilsAsynDevInfo
+      = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
-  asynStatus status;
-  int function;
-  if (!strcmp(paramName, "homeSeq")) {
-    /* Different naming conventions in MCU and EPICS */
-    paramName = "HomProc-RB";
-  } else if (!strcmp(paramName, "encoderRaw")) {
-    paramName = "EncAct";
-    /* Special handling for encoderRaw */
-    ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myEPICSParamType = asynParamFloat64;
-  }
+    pPilsAsynDevInfo->paramName        = strdup(paramName);
+    pPilsAsynDevInfo->axisNo           = axisNo;
+    pPilsAsynDevInfo->isInput          = isInput;
+    pPilsAsynDevInfo->isOutput         = isOutput;
+    pPilsAsynDevInfo->indexOffset      = indexOffset;
+    pPilsAsynDevInfo->lenInPLC         = lenInPLC;
+    pPilsAsynDevInfo->myEPICSParamType = myAsynParamType;
+    pPilsAsynDevInfo->myMCUParamType   = myAsynParamType;
 
-  /* Some parameters are alread pre-created by the Controller.cpp,
-     e.g.errorId. Use those, otherwise create a parameter */
-  status = findParam(/* axisNo, */paramName, &function);
-  if (status == asynSuccess) {
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s (%u) exist function=%d paramName=%s\n",
-              modNamEMC, functionName, numPilsAsynDevInfo, function, paramName);
-  } else {
-    status = createParam(/* axisNo, */
-                         paramName,
-                         myAsynParamType,
-                         &function);
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s (%u) axisNo=%d created function=%d paramName=%s status=%s (%d)\n",
-              modNamEMC, functionName, numPilsAsynDevInfo, axisNo, function, paramName,
-              ethercatmcstrStatus(status), (int)status);
-    if (status != asynSuccess) return;
-  }
-  ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].function = function;
-
-  /* Special handling for DC time */
-  switch (iTypCode) {
-  case 0x1202:
-    {
-      if (!axisNo) {
-        /* not-axis-related PILS devices */
-        if (!strcmp(paramName, "DCtimeSec")) {
-          ctrlLocal.ethercatmcDCtimeSec_ = function;;
-        } else if (!strcmp(paramName, "DCtimeNSec")) {
-          ctrlLocal.ethercatmcDCtimeNSec_ = function;;
-        } else if (!strcmp(paramName, "DCclockL")) {
-          ctrlLocal.ethercatmcDCclockL_ = function;;
-        } else if (!strcmp(paramName, "DCclockH")) {
-          ctrlLocal.ethercatmcDCclockH_ = function;;
-        }
-      }
+    asynStatus status;
+    int function;
+    if (!strcmp(paramName, "homeSeq")) {
+      /* Different naming conventions in MCU and EPICS */
+      paramName = "HomProc-RB";
+    } else if (!strcmp(paramName, "encoderRaw")) {
+      paramName = "EncAct";
+      /* Special handling for encoderRaw */
+      ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myEPICSParamType = asynParamFloat64;
     }
-    break;
+
+    /* Some parameters are alread pre-created by the Controller.cpp,
+       e.g.errorId. Use those, otherwise create a parameter */
+    status = findParam(/* axisNo, */paramName, &function);
+    if (status == asynSuccess) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s (%u) exist function=%d paramName=%s\n",
+                modNamEMC, functionName, numPilsAsynDevInfo, function, paramName);
+    } else {
+      status = createParam(/* axisNo, */
+                           paramName,
+                           myAsynParamType,
+                           &function);
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s (%u) axisNo=%d created function=%d asynParamTyp=%d paramName=%s status=%s (%d)\n",
+                modNamEMC, functionName, numPilsAsynDevInfo, axisNo, function,
+                (int)myAsynParamType, paramName,
+                ethercatmcstrStatus(status), (int)status);
+      if (status != asynSuccess) return;
+    }
+    ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].function = function;
+  } else {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s (%u) axisNo=%d not created paramName=%s)\n",
+              modNamEMC, functionName, numPilsAsynDevInfo, axisNo, paramName);
   }
 
   /* Last action of this code: Increment the counter */
@@ -1343,7 +1359,6 @@ asynStatus ethercatmcController::pollIndexer(void)
                   setPlcMemoryInteger(indexOffset + lenInPLC,
                                       (int)paramValue,
                                       lenInPLC);
-
                 }
               }
             }
@@ -1353,19 +1368,26 @@ asynStatus ethercatmcController::pollIndexer(void)
           if (pPilsAsynDevInfo->isInput)
           {
             double value, old_value;
+            int valueValid = 1;
             if (pPilsAsynDevInfo->myMCUParamType == asynParamFloat64) {
               value = netToDouble(pDataInPlc, lenInPLC);
+            } else if (lenInPLC <= sizeof(epicsInt32)) {
+              value = (double)(epicsInt64)netToUint(pDataInPlc, lenInPLC);
+            } else if (lenInPLC == sizeof(uint64_t)) {
+              value = (double)(epicsInt64)netToUint64(pDataInPlc, lenInPLC);
             } else {
-              value = (double)(epicsInt32)netToUint(pDataInPlc, lenInPLC);
+              valueValid = 0;
             }
-            status = getDoubleParam(axisNo, function,  &old_value);
-            if (status != asynSuccess || old_value != value) {
-              setDoubleParam(axisNo, function,  value);
-              callBacksNeeded = 1;
+            if (valueValid) {
+              status = getDoubleParam(axisNo, function,  &old_value);
+              if (status != asynSuccess || old_value != value) {
+                setDoubleParam(axisNo, function,  value);
+                callBacksNeeded = 1;
+              }
             }
           }
           break;
-#ifdef ETHERCATMC_ASYN_ASYNPARAMFLOAT64
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
         case asynParamInt64:
           if (pPilsAsynDevInfo->isInput)
           {
@@ -1382,47 +1404,18 @@ asynStatus ethercatmcController::pollIndexer(void)
         default:
           ;
         }
-      } /* for */
-      if (ctrlLocal.ethercatmcDCclockH_ && ctrlLocal.ethercatmcDCclockL_) {
-        /* DC time, 64 bits, splitted into low- and high part */
-        epicsTimeStamp timeStamp;
-        epicsInt32 tempL;
-        epicsInt32 tempH;
-        uint64_t nSec;
-        if ((getIntegerParam(0, ctrlLocal.ethercatmcDCclockH_,
-                             &tempH) == asynSuccess) &&
-            (getIntegerParam(0, ctrlLocal.ethercatmcDCclockL_,
-                             &tempL) == asynSuccess)) {
-          nSec = (uint32_t)tempH;
-          nSec = nSec << 32;
-          nSec = nSec + (uint32_t)tempL;
-
-          DCtimeToEpicsTimeStamp(nSec, &timeStamp);
-          asynPrint(pasynUserController_, ASYN_TRACE_FLOW, // | ASYN_TRACE_INFO,
-                    "%spollIndexer DCclock   nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+        if (pPilsAsynDevInfo->isSystemDClock) {
+          uint64_t nSec;
+          epicsTimeStamp timeStamp;
+          nSec = netToUint64(pDataInPlc, lenInPLC);
+          asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
+                    "%spollIndexer SystemDClock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
                     modNamEMC, nSec,
                     timeStamp.secPastEpoch, timeStamp.nsec);
           setTimeStamp(&timeStamp);
           callBacksNeeded = 1;
         }
-      } else if (ctrlLocal.ethercatmcDCtimeSec_ && ctrlLocal.ethercatmcDCtimeNSec_) {
-        /* "DCtimeSec", "DCtimeNSec" */
-        epicsTimeStamp timeStamp;
-        epicsInt32 sec = 0;
-        epicsInt32 nSec = 0;
-        if ((getIntegerParam(0, ctrlLocal.ethercatmcDCtimeSec_,
-                             &sec) == asynSuccess) &&
-            (getIntegerParam(0, ctrlLocal.ethercatmcDCtimeNSec_,
-                             &sec) == asynSuccess)) {
-          timeStamp.secPastEpoch = (epicsUInt32)sec;
-          timeStamp.nsec = (epicsUInt32)nSec;
-          asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
-                    "%spollIndexer DCtime=%09u.%09u\n",
-                    modNamEMC, sec, nSec);
-          setTimeStamp(&timeStamp);
-          callBacksNeeded = 1;
-        }
-      }
+      } /* for */
     }
     if (callBacksNeeded) {
       callParamCallbacks();
