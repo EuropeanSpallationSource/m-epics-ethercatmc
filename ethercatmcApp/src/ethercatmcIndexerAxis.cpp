@@ -889,6 +889,20 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
       }
     }
     return status;
+  } else {
+    pilsAsynDevInfo_type *pPilsAsynDevInfo;
+    pPilsAsynDevInfo = pC_->findIndexerOutputDevice(axisNo_, function,
+                                                    asynParamInt32);
+    if (pPilsAsynDevInfo) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%ssetIntegerParam(%d %s offset=%u)=%d\n",
+                modNamEMC, axisNo_,
+                pPilsAsynDevInfo->paramName,
+                pPilsAsynDevInfo->outputOffset, value);
+      return pC_->setPlcMemoryInteger(pPilsAsynDevInfo->outputOffset,
+                                      value,
+                                      pPilsAsynDevInfo->lenInPLC);
+    }
   }
   //Call base class method
   status = asynMotorAxis::setIntegerParam(function, value);

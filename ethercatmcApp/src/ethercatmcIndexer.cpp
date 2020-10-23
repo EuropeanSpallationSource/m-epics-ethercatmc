@@ -1143,8 +1143,8 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
 
   unsigned      lenInPLC          = 0;
-  int           isInput           = 0;
-  int           isOutput          = 0;
+  unsigned      inputOffset       = 0;
+  unsigned      outputOffset      = 0;
   asynParamType myAsynParamType = asynParamNotDefined;
 
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
@@ -1160,18 +1160,18 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
   }
   switch (iTypCode) {
     case 0x1201:
-      isInput = 1;
       lenInPLC = 2;
+      inputOffset = indexOffset;
       myAsynParamType = asynParamInt32;
       break;
     case 0x1202:
-      isInput = 1;
       lenInPLC = 4;
+      inputOffset = indexOffset;
       myAsynParamType = asynParamInt32;
       break;
     case 0x1204:
-      isInput = 1;
       lenInPLC = 8;
+      inputOffset = indexOffset;
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
       myAsynParamType = asynParamInt64;
 #endif
@@ -1180,8 +1180,9 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
       }
       break;
     case 0x1604:
-      isOutput = 1;
       lenInPLC = 4;
+      /* 1604 has "current value, followed by target value */
+      outputOffset = outputOffset + lenInPLC;
       myAsynParamType = asynParamInt32;
       break;
   }
@@ -1197,10 +1198,9 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
 
     pPilsAsynDevInfo->paramName        = strdup(paramName);
     pPilsAsynDevInfo->axisNo           = axisNo;
-    pPilsAsynDevInfo->isInput          = isInput;
-    pPilsAsynDevInfo->isOutput         = isOutput;
-    pPilsAsynDevInfo->indexOffset      = indexOffset;
     pPilsAsynDevInfo->lenInPLC         = lenInPLC;
+    pPilsAsynDevInfo->inputOffset      = inputOffset;
+    pPilsAsynDevInfo->outputOffset     = outputOffset;
     pPilsAsynDevInfo->myEPICSParamType = myAsynParamType;
     pPilsAsynDevInfo->myMCUParamType   = myAsynParamType;
 
@@ -1277,12 +1277,14 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
     pilsAsynDevInfo_type *pPilsAsynDevInfo
       = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
-    if (!pPilsAsynDevInfo->indexOffset) return NULL;
+    if ((!pPilsAsynDevInfo->inputOffset) &&
+        (!pPilsAsynDevInfo->outputOffset))
+      return NULL;
 
     if ((axisNo == pPilsAsynDevInfo->axisNo) &&
         (function == pPilsAsynDevInfo->function) &&
         (myEPICSParamType == pPilsAsynDevInfo->myEPICSParamType) &&
-        (pPilsAsynDevInfo->isOutput))
+        (pPilsAsynDevInfo->outputOffset))
       return pPilsAsynDevInfo;
   }
   return NULL;
@@ -1321,55 +1323,32 @@ asynStatus ethercatmcController::pollIndexer(void)
         pilsAsynDevInfo_type *pPilsAsynDevInfo
           = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
-        if (!pPilsAsynDevInfo->indexOffset) break;
+        if (!pPilsAsynDevInfo->inputOffset) break;
 
-        unsigned indexOffset = pPilsAsynDevInfo->indexOffset;
+        unsigned inputOffset = pPilsAsynDevInfo->inputOffset;
         unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
         /* Each axis has it's own parameters.
            axisNo == 0 is no special axis, parameters
            for "the controller", additional IO, PTP info */
         int axisNo = pPilsAsynDevInfo->axisNo;
         int function = pPilsAsynDevInfo->function;
-        void *pDataInPlc = &ctrlLocal.pIndexerProcessImage[indexOffset];
+        void *pDataInPlc = &ctrlLocal.pIndexerProcessImage[inputOffset];
         switch (pPilsAsynDevInfo->myEPICSParamType) {
         case asynParamInt32:
           {
             epicsInt32 value, paramValue;
             value = (epicsInt32)netToUint(pDataInPlc, lenInPLC);
             status = getIntegerParam(axisNo, function, &paramValue);
-            if (pPilsAsynDevInfo->isInput) {
+            if (pPilsAsynDevInfo->inputOffset) {
               if (status != asynSuccess || paramValue != value) {
                 setIntegerParam(axisNo, function,  value);
                 callBacksNeeded = 1;
-              }
-            } else if (pPilsAsynDevInfo->isOutput) {
-              if (status == asynSuccess) {
-                /* E.g a 1604 Device has 2 words:
-                   Current Value
-                   Target Value
-                */
-                /* We are only interested to get "Target Value" the same as
-                   stored in the parameter library */
-                void *pDataInPlcTargetValue = (uint8_t*)pDataInPlc + lenInPLC;
-                epicsInt32 targetValueInPlc
-                  = (epicsInt32)netToUint(pDataInPlcTargetValue, lenInPLC);
-                if (targetValueInPlc != paramValue) {
-                  /* Write the "new" target value */
-                  asynPrint(pasynUserController_, ASYN_TRACE_INFO, //traceMask,
-                            "%spoll() new Target Value function=%d"
-                            " targetValueInPlc=%d paramValue=%d\n",
-                            modNamEMC, function,
-                            (int)targetValueInPlc, (int)paramValue);
-                  setPlcMemoryInteger(indexOffset + lenInPLC,
-                                      (int)paramValue,
-                                      lenInPLC);
-                }
               }
             }
           }
           break;
         case asynParamFloat64:
-          if (pPilsAsynDevInfo->isInput)
+          if (pPilsAsynDevInfo->inputOffset)
           {
             double value, old_value;
             int valueValid = 1;
@@ -1393,7 +1372,7 @@ asynStatus ethercatmcController::pollIndexer(void)
           break;
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
         case asynParamInt64:
-          if (pPilsAsynDevInfo->isInput)
+          if (pPilsAsynDevInfo->inputOffset)
           {
             epicsInt64 value, old_value;
             value = (epicsInt64)netToUint64(pDataInPlc, lenInPLC);

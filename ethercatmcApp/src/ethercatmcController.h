@@ -97,13 +97,12 @@ extern "C" {
   typedef struct {
     char           *paramName;
     int            axisNo;      /* 0 is the controller */
-    unsigned       indexOffset; /* offset inside the "plc memory bytes" */
+    unsigned       inputOffset; /* offset inside the "plc memory bytes" */
+    unsigned       outputOffset; /* offset inside the "plc memory bytes" */
     unsigned       lenInPLC;    /* len  inside the "plc memory bytes" */
     int            function;    /* asyn: "function" */
     asynParamType  myEPICSParamType; /* asynParamType.h */
     asynParamType  myMCUParamType; /* asynParamType.h */
-    int            isInput      : 1;
-    int            isOutput     : 1;
     int            isSystemDClock:1;
   } pilsAsynDevInfo_type;
 }
