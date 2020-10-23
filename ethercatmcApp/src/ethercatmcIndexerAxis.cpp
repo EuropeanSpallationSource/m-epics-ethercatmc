@@ -494,299 +494,301 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,
 asynStatus ethercatmcIndexerAxis::poll(bool *moving)
 {
   asynStatus status = asynSuccess;
-  if (drvlocal.iTypCode) {
-    unsigned traceMask = ASYN_TRACE_INFO;
-    const char *msgTxtFromDriver = NULL;
-    //double targetPosition = 0.0;
-    double actPosition = 0.0;
-    double paramValue = 0.0;
-    unsigned statusReasonAux, paramCtrl;
-    int errorID = -1;
-    bool nowMoving = false;
-    int powerIsOn = 0;
-    int statusValid = 0;
-    int positionValid = 1; /* all states except RESET */
-    int hasError = 0;
-    idxStatusCodeType idxStatusCode;
-    unsigned idxReasonBits = 0;
-    unsigned idxAuxBits = 0;
-    int pollReadBackInBackGround = 1;
+  unsigned traceMask = ASYN_TRACE_INFO;
+  const char *msgTxtFromDriver = NULL;
+  //double targetPosition = 0.0;
+  double actPosition = 0.0;
+  double paramValue = 0.0;
+  unsigned statusReasonAux, paramCtrl;
+  int errorID = -1;
+  bool nowMoving = false;
+  int powerIsOn = 0;
+  int statusValid = 0;
+  int positionValid = 1; /* all states except RESET */
+  int hasError = 0;
+  idxStatusCodeType idxStatusCode;
+  unsigned idxReasonBits = 0;
+  unsigned idxAuxBits = 0;
+  int pollReadBackInBackGround = 1;
 
-    /* Don't leave *moving un-initialized, if we return early */
-    *moving = false;
-    if (!drvlocal.iOffset) return asynSuccess;
+  /* Don't leave *moving un-initialized, if we return early */
+  *moving = false;
+  if (!drvlocal.iTypCode) {
+    /* No axis, (may be dummy-axis 0), return */
+    return asynSuccess;
+  }
+  if (!drvlocal.iOffset) return asynSuccess;
 
-    if (drvlocal.dirty.initialPollNeeded) {
-      status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
-                                              drvlocal.iOffset,
-                                              drvlocal.lenInPlcPara);
-      if (!status) {
-        drvlocal.dirty.initialPollNeeded = 0;
-        setIntegerParam(pC_->motorStatusCommsError_, 0);
-      }
+  if (drvlocal.dirty.initialPollNeeded) {
+    status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
+                                            drvlocal.iOffset,
+                                            drvlocal.lenInPlcPara);
+    if (!status) {
+      drvlocal.dirty.initialPollNeeded = 0;
+      setIntegerParam(pC_->motorStatusCommsError_, 0);
     }
-    pC_->getIntegerParam(axisNo_, pC_->motorStatusPowerOn_, &powerIsOn);
-    {
-      int errorID_readByPoller;
-      if (pC_->getIntegerParam(axisNo_, pC_->ethercatmcErrId_,
-                               &errorID_readByPoller) == asynSuccess) {
-        /* The poller had read errorID as a device, the result
-           is in the parameter library */
-        errorID = errorID_readByPoller;
-      }
+  }
+  pC_->getIntegerParam(axisNo_, pC_->motorStatusPowerOn_, &powerIsOn);
+  {
+    int errorID_readByPoller;
+    if (pC_->getIntegerParam(axisNo_, pC_->ethercatmcErrId_,
+                             &errorID_readByPoller) == asynSuccess) {
+      /* The poller had read errorID as a device, the result
+         is in the parameter library */
+      errorID = errorID_readByPoller;
     }
+  }
 
-    if ((drvlocal.iTypCode == 0x5008) || (drvlocal.iTypCode == 0x500c)) {
-      struct {
-        uint8_t   actPos[4];
-        uint8_t   targtPos[4];
-        uint8_t   statReasAux[2];
-        uint8_t   paramCtrl[2];
-        uint8_t   paramValue[4];
-      } readback;
-      uint16_t statusReasonAux16;
-      status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
-                                                 &readback,
-                                                 sizeof(readback));
-      if (status) {
-        return status;
-      }
-      actPosition = NETTODOUBLE(readback.actPos);
-      //targetPosition = NETTODOUBLE(readback.targtPos);
-      statusReasonAux16 = NETTOUINT(readback.statReasAux);
-      paramCtrl = NETTOUINT(readback.paramCtrl);
-      paramValue = NETTODOUBLE(readback.paramValue);
-      /* Specific bit positions for 5008 */
-      idxStatusCode = (idxStatusCodeType)(statusReasonAux16 >> 12);
-      idxReasonBits = (statusReasonAux16 >> 8) & 0x0F;
-      idxAuxBits    =  statusReasonAux16  & 0x0FF;
+  if ((drvlocal.iTypCode == 0x5008) || (drvlocal.iTypCode == 0x500c)) {
+    struct {
+      uint8_t   actPos[4];
+      uint8_t   targtPos[4];
+      uint8_t   statReasAux[2];
+      uint8_t   paramCtrl[2];
+      uint8_t   paramValue[4];
+    } readback;
+    uint16_t statusReasonAux16;
+    status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                               &readback,
+                                               sizeof(readback));
+    if (status) {
+      return status;
+    }
+    actPosition = NETTODOUBLE(readback.actPos);
+    //targetPosition = NETTODOUBLE(readback.targtPos);
+    statusReasonAux16 = NETTOUINT(readback.statReasAux);
+    paramCtrl = NETTOUINT(readback.paramCtrl);
+    paramValue = NETTODOUBLE(readback.paramValue);
+    /* Specific bit positions for 5008 */
+    idxStatusCode = (idxStatusCodeType)(statusReasonAux16 >> 12);
+    idxReasonBits = (statusReasonAux16 >> 8) & 0x0F;
+    idxAuxBits    =  statusReasonAux16  & 0x0FF;
 
-      /* 8 aux bits */
-      statusReasonAux = statusReasonAux16 & 0xFF;
-      /* 4 reason bits */
-      statusReasonAux |= (idxReasonBits << 24);
-    } else if (drvlocal.iTypCode == 0x5010) {
-      struct {
-        uint8_t   actPos[8];
-        uint8_t   targtPos[8];
-        uint8_t   statReasAux[4];
-        uint8_t   errorID[2];
-        uint8_t   paramCtrl[2];
-        uint8_t   paramValue[8];
-      } readback;
-      status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
-                                                 &readback,
-                                                 sizeof(readback));
-      if (status) {
-        return status;
-      }
-      actPosition = NETTODOUBLE(readback.actPos);
-      //targetPosition = NETTODOUBLE(readback.targtPos);
-      statusReasonAux = NETTOUINT(readback.statReasAux);
-      paramCtrl = NETTOUINT(readback.paramCtrl);
-      paramValue = NETTODOUBLE(readback.paramValue);
+    /* 8 aux bits */
+    statusReasonAux = statusReasonAux16 & 0xFF;
+    /* 4 reason bits */
+    statusReasonAux |= (idxReasonBits << 24);
+  } else if (drvlocal.iTypCode == 0x5010) {
+    struct {
+      uint8_t   actPos[8];
+      uint8_t   targtPos[8];
+      uint8_t   statReasAux[4];
+      uint8_t   errorID[2];
+      uint8_t   paramCtrl[2];
+      uint8_t   paramValue[8];
+    } readback;
+    status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                               &readback,
+                                               sizeof(readback));
+    if (status) {
+      return status;
+    }
+    actPosition = NETTODOUBLE(readback.actPos);
+    //targetPosition = NETTODOUBLE(readback.targtPos);
+    statusReasonAux = NETTOUINT(readback.statReasAux);
+    paramCtrl = NETTOUINT(readback.paramCtrl);
+    paramValue = NETTODOUBLE(readback.paramValue);
 
-      /* Specific for 5010 */
-      errorID = (int)NETTOUINT(readback.errorID);
-      setIntegerParam(pC_->ethercatmcErrId_, errorID);
+    /* Specific for 5010 */
+    errorID = (int)NETTOUINT(readback.errorID);
+    setIntegerParam(pC_->ethercatmcErrId_, errorID);
 
-      idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
-      idxReasonBits = (statusReasonAux >> 24) & 0x0F;
-      idxAuxBits    =  statusReasonAux  & 0x0FFFFFF;
+    idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
+    idxReasonBits = (statusReasonAux >> 24) & 0x0F;
+    idxAuxBits    =  statusReasonAux  & 0x0FFFFFF;
+  } else {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%spoll(%d) iTypCode=0x%x\n",
+              modNamEMC, axisNo_, drvlocal.iTypCode);
+    return asynError;
+  }
+  drvlocal.hasProblem = 0;
+  setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
+  if (idxStatusCode   != drvlocal.dirty.idxStatusCode) {
+    if (errorID) {
+      asynPrint(pC_->pasynUserController_, traceMask,
+                "%spoll(%d) statusReasonAux=0x%08x (%s) errorID=0x%4x \"%s\" actPos=%f\n",
+                modNamEMC, axisNo_,
+                statusReasonAux,
+                idxStatusCodeTypeToStr(idxStatusCode),
+                errorID, errStringFromErrId(errorID),
+                actPosition);
     } else {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%spoll(%d) iTypCode=0x%x\n",
-                modNamEMC, axisNo_, drvlocal.iTypCode);
-      return asynError;
+      asynPrint(pC_->pasynUserController_, traceMask,
+                "%spoll(%d) statusReasonAux=0x%08x (%s) actPos=%f\n",
+                modNamEMC, axisNo_,
+                statusReasonAux,
+                idxStatusCodeTypeToStr(idxStatusCode),
+                actPosition);
     }
-    drvlocal.hasProblem = 0;
-    setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
-    if (idxStatusCode   != drvlocal.dirty.idxStatusCode) {
-      if (errorID) {
-        asynPrint(pC_->pasynUserController_, traceMask,
-                  "%spoll(%d) statusReasonAux=0x%08x (%s) errorID=0x%4x \"%s\" actPos=%f\n",
-                  modNamEMC, axisNo_,
-                  statusReasonAux,
-                  idxStatusCodeTypeToStr(idxStatusCode),
-                  errorID, errStringFromErrId(errorID),
-                  actPosition);
-      } else {
-        asynPrint(pC_->pasynUserController_, traceMask,
-                  "%spoll(%d) statusReasonAux=0x%08x (%s) actPos=%f\n",
-                  modNamEMC, axisNo_,
-                  statusReasonAux,
-                  idxStatusCodeTypeToStr(idxStatusCode),
-                  actPosition);
-      }
-    }
-    if (idxAuxBits != drvlocal.old_idxAuxBits) {
-      #define MAX_AUX_BIT_SHOWN 8
-      char changedNames[MAX_AUX_BIT_SHOWN][36];
-      unsigned changed = idxAuxBits ^ drvlocal.old_idxAuxBits;
-      unsigned auxBitIdx;
-      memset(&changedNames, 0, sizeof(changedNames));
-      for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_SHOWN; auxBitIdx++) {
-        if ((changed >> auxBitIdx) & 0x01) {
-          asynStatus status;
-          int function = (int)(pC_->ethercatmcNamAux0_ + auxBitIdx);
-          /* Leave the first character for '+' or '-',
-             leave one byte for '\0' */
-          int length = (int)sizeof(changedNames[auxBitIdx]) - 2;
-          status = pC_->getStringParam(axisNo_,
-                                       function,
-                                       length,
-                                       &changedNames[auxBitIdx][1]);
-          if (status == asynSuccess) {
-            /* the name of "aux bits without a name" is never written,
-               so that we don't show it here */
-            if ((idxAuxBits >> auxBitIdx) & 0x01) {
-              changedNames[auxBitIdx][0] = '+';
-            } else {
-              changedNames[auxBitIdx][0] = '-';
-            }
+  }
+  if (idxAuxBits != drvlocal.old_idxAuxBits) {
+    #define MAX_AUX_BIT_SHOWN 8
+    char changedNames[MAX_AUX_BIT_SHOWN][36];
+    unsigned changed = idxAuxBits ^ drvlocal.old_idxAuxBits;
+    unsigned auxBitIdx;
+    memset(&changedNames, 0, sizeof(changedNames));
+    for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_SHOWN; auxBitIdx++) {
+      if ((changed >> auxBitIdx) & 0x01) {
+        asynStatus status;
+        int function = (int)(pC_->ethercatmcNamAux0_ + auxBitIdx);
+        /* Leave the first character for '+' or '-',
+           leave one byte for '\0' */
+        int length = (int)sizeof(changedNames[auxBitIdx]) - 2;
+        status = pC_->getStringParam(axisNo_,
+                                     function,
+                                     length,
+                                     &changedNames[auxBitIdx][1]);
+        if (status == asynSuccess) {
+          /* the name of "aux bits without a name" is never written,
+             so that we don't show it here */
+          if ((idxAuxBits >> auxBitIdx) & 0x01) {
+            changedNames[auxBitIdx][0] = '+';
+          } else {
+            changedNames[auxBitIdx][0] = '-';
           }
         }
       }
-      asynPrint(pC_->pasynUserController_, traceMask,
-                "%spoll(%d) auxBits=0x%02x (%s%s%s%s%s%s%s%s) actPos=%f\n",
-                modNamEMC, axisNo_, idxAuxBits,
-                changedNames[0],
-                changedNames[1],
-                changedNames[2],
-                changedNames[3],
-                changedNames[4],
-                changedNames[5],
-                changedNames[6],
-                changedNames[7],
-                actPosition);
     }
-    switch (idxStatusCode) {
-      /* After RESET, START, STOP the bits are not valid */
-    case idxStatusCodeIDLE:
-    case idxStatusCodeWARN:
-      powerIsOn = 1;
-      statusValid = 1;
-      break;
-    case idxStatusCodePOWEROFF:
-      statusValid = 1;
-      drvlocal.hasProblem = 1;
-      powerIsOn = 0;
-      break;
-    case idxStatusCodeBUSY:
-      powerIsOn = 1;
-      statusValid = 1;
-      nowMoving = true;
-      break;
-    case idxStatusCodeERROR:
-      hasError = 1;
-      statusValid = 1;
-      drvlocal.hasProblem = 1;
-      break;
-    case idxStatusCodeRESET:
-      positionValid = 0;
-      setIntegerParam(pC_->motorStatusMoving_, 0);
-      setIntegerParam(pC_->motorStatusDone_, 1);
-      break;
-    case idxStatusCodeSTART:
-    case idxStatusCodeSTOP:
-      nowMoving = true;
-      break;
-    default:
-      drvlocal.hasProblem = 1;
+    asynPrint(pC_->pasynUserController_, traceMask,
+              "%spoll(%d) auxBits=0x%02x (%s%s%s%s%s%s%s%s) actPos=%f\n",
+              modNamEMC, axisNo_, idxAuxBits,
+              changedNames[0],
+              changedNames[1],
+              changedNames[2],
+              changedNames[3],
+              changedNames[4],
+              changedNames[5],
+              changedNames[6],
+              changedNames[7],
+              actPosition);
+  }
+  switch (idxStatusCode) {
+    /* After RESET, START, STOP the bits are not valid */
+  case idxStatusCodeIDLE:
+  case idxStatusCodeWARN:
+    powerIsOn = 1;
+    statusValid = 1;
+    break;
+  case idxStatusCodePOWEROFF:
+    statusValid = 1;
+    drvlocal.hasProblem = 1;
+    powerIsOn = 0;
+    break;
+  case idxStatusCodeBUSY:
+    powerIsOn = 1;
+    statusValid = 1;
+    nowMoving = true;
+    break;
+  case idxStatusCodeERROR:
+    hasError = 1;
+    statusValid = 1;
+    drvlocal.hasProblem = 1;
+    break;
+  case idxStatusCodeRESET:
+    positionValid = 0;
+    setIntegerParam(pC_->motorStatusMoving_, 0);
+    setIntegerParam(pC_->motorStatusDone_, 1);
+    break;
+  case idxStatusCodeSTART:
+  case idxStatusCodeSTOP:
+    nowMoving = true;
+    break;
+  default:
+    drvlocal.hasProblem = 1;
+  }
+  *moving = nowMoving;
+  if (positionValid) {
+    setDoubleParam(pC_->motorPosition_, actPosition);
+    setDoubleParam(pC_->motorEncoderPosition_, actPosition);
+  }
+  if (statusValid) {
+    int hls = idxReasonBits & 0x8 ? 1 : 0;
+    int lls = idxReasonBits & 0x4 ? 1 : 0;
+    setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
+    setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
+    setIntegerParam(pC_->motorStatusMoving_, nowMoving);
+    setIntegerParam(pC_->motorStatusDone_, !nowMoving);
+    setIntegerParam(pC_->ethercatmcStatusBits_, statusReasonAux);
+    setIntegerParam(pC_->ethercatmcErr_, hasError);
+    if (drvlocal.auxBitsNotHomedMask) {
+      int homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
+      setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
+      if (!homed) {
+        drvlocal.hasProblem = 1;
+      }
     }
-    *moving = nowMoving;
-    if (positionValid) {
-      setDoubleParam(pC_->motorPosition_, actPosition);
-      setDoubleParam(pC_->motorEncoderPosition_, actPosition);
+    if (drvlocal.auxBitsEnabledMask) {
+      powerIsOn = idxAuxBits & drvlocal.auxBitsEnabledMask ? 1 : 0;
     }
-    if (statusValid) {
-      int hls = idxReasonBits & 0x8 ? 1 : 0;
-      int lls = idxReasonBits & 0x4 ? 1 : 0;
-      setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
-      setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
-      setIntegerParam(pC_->motorStatusMoving_, nowMoving);
-      setIntegerParam(pC_->motorStatusDone_, !nowMoving);
-      setIntegerParam(pC_->ethercatmcStatusBits_, statusReasonAux);
-      setIntegerParam(pC_->ethercatmcErr_, hasError);
-      if (drvlocal.auxBitsNotHomedMask) {
-        int homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
-        setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
-        if (!homed) {
-          drvlocal.hasProblem = 1;
-        }
+    if (hasError) {
+      char sErrorMessage[40];
+      const char *errIdString = errStringFromErrId(errorID);
+      memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
+      if (errIdString[0]) {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %X",
+                 errIdString, errorID);
+      }  else {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                 "E: TwinCAT Err %X", errorID);
       }
-      if (drvlocal.auxBitsEnabledMask) {
-        powerIsOn = idxAuxBits & drvlocal.auxBitsEnabledMask ? 1 : 0;
-      }
-      if (hasError) {
-        char sErrorMessage[40];
-        const char *errIdString = errStringFromErrId(errorID);
-        memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
-        if (errIdString[0]) {
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %X",
-                   errIdString, errorID);
-        }  else {
-          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                   "E: TwinCAT Err %X", errorID);
-        }
-        msgTxtFromDriver = sErrorMessage;
-      }
-      if (drvlocal.dirty.old_hasError != hasError) {
-        updateMsgTxtFromDriver(msgTxtFromDriver);
-        drvlocal.dirty.old_hasError = hasError;
-      }
-      setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
-      setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem);
-      setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
+      msgTxtFromDriver = sErrorMessage;
     }
+    if (drvlocal.dirty.old_hasError != hasError) {
+      updateMsgTxtFromDriver(msgTxtFromDriver);
+      drvlocal.dirty.old_hasError = hasError;
+    }
+    setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
+    setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem);
+    setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
+  }
 
-    if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
-      unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+  if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
+    unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+    asynPrint(pC_->pasynUserController_,
+              ASYN_TRACE_FLOW,
+              "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
+              modNamEMC, axisNo_,
+              plcParamIndexTxtFromParamIndex(paramIndex),
+              paramCtrl, paramValue);
+    if ((paramCtrl != drvlocal.old_paramCtrl) ||
+        (paramValue != drvlocal.old_paramValue)) {
+      if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
+        /* Only read real parameters, not functions */
+        int initial = 0;
+        pC_->parameterFloatReadBack(axisNo_,
+                                    initial,
+                                    paramIndex,
+                                    paramValue);
+      }
+    }
+    drvlocal.old_paramCtrl = paramCtrl;
+    drvlocal.old_paramValue = paramValue;
+  }
+
+  /* Read back the parameters one by one */
+  if (pollReadBackInBackGround && (paramCtrl & PARAM_IF_ACK_MASK)) {
+    drvlocal.pollNowIdx++;
+    if (!drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
+      /* The list is 0 terminated */
+      drvlocal.pollNowIdx = 0;
+    }
+    if (drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
+      uint16_t paramIndex = drvlocal.pollNowParams[drvlocal.pollNowIdx];
+      uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD + paramIndex;
       asynPrint(pC_->pasynUserController_,
                 ASYN_TRACE_FLOW,
-                "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
+                "%spollNext(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
                 modNamEMC, axisNo_,
                 plcParamIndexTxtFromParamIndex(paramIndex),
                 paramCtrl, paramValue);
-      if ((paramCtrl != drvlocal.old_paramCtrl) ||
-          (paramValue != drvlocal.old_paramValue)) {
-        if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
-          /* Only read real parameters, not functions */
-          int initial = 0;
-          pC_->parameterFloatReadBack(axisNo_,
-                                      initial,
-                                      paramIndex,
-                                      paramValue);
-        }
-      }
-      drvlocal.old_paramCtrl = paramCtrl;
-      drvlocal.old_paramValue = paramValue;
+      pC_->setPlcMemoryInteger(drvlocal.paramIfOffset,
+                               newParamCtrl, sizeof(newParamCtrl));
     }
-
-    /* Read back the parameters one by one */
-    if (pollReadBackInBackGround && (paramCtrl & PARAM_IF_ACK_MASK)) {
-      drvlocal.pollNowIdx++;
-      if (!drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
-        /* The list is 0 terminated */
-        drvlocal.pollNowIdx = 0;
-      }
-      if (drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
-        uint16_t paramIndex = drvlocal.pollNowParams[drvlocal.pollNowIdx];
-        uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD + paramIndex;
-        asynPrint(pC_->pasynUserController_,
-                  ASYN_TRACE_FLOW,
-                  "%spollNext(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
-                  modNamEMC, axisNo_,
-                  plcParamIndexTxtFromParamIndex(paramIndex),
-                  paramCtrl, paramValue);
-        pC_->setPlcMemoryInteger(drvlocal.paramIfOffset,
-                                 newParamCtrl, sizeof(newParamCtrl));
-      }
-    }
-    drvlocal.old_idxAuxBits        = idxAuxBits;
-    drvlocal.dirty.idxStatusCode   = idxStatusCode;
-    callParamCallbacks();
   }
+  drvlocal.old_idxAuxBits        = idxAuxBits;
+  drvlocal.dirty.idxStatusCode   = idxStatusCode;
+  callParamCallbacks();
   return status;
 }
 
