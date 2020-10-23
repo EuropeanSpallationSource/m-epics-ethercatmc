@@ -878,6 +878,11 @@ asynStatus ethercatmcController::initialPollIndexer(void)
   unsigned infoType6 = 6;
   unsigned infoType7 = 7;
   int      axisNo = 0;
+  ethercatmcIndexerAxis *pAxis;
+  pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
+  if (!pAxis) {
+    pAxis = new ethercatmcIndexerAxis(this, axisNo, 0, NULL);
+  }
 
   /* In case of re-connect free the old one */
   free(ctrlLocal.pIndexerProcessImage);
@@ -1074,7 +1079,6 @@ asynStatus ethercatmcController::initialPollIndexer(void)
     case 0x5010:
       {
         char unitCodeTxt[40];
-        ethercatmcIndexerAxis *pAxis;
         axisNo++;
         pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
         if (!pAxis) {
