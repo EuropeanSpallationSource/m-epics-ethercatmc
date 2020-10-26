@@ -24,6 +24,7 @@
 #define TYPECODE_SPECIALDEVICE_0518 0x0518
 #endif
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
+#define TYPECODE_DISCRETEOUTPUT_1604 0x1604
 #define TYPECODE_PARAMDEVICE_5008 0x5008
 
 #define HAS_5010
@@ -32,6 +33,7 @@
 #endif
 #define WORDS_SPECIALDEVICE_0518    0x18
 #define WORDS_DISCRETEINPUT_1202     0x2
+#define WORDS_DISCRETEOUTPUT_1604    0x4
 #define WORDS_PARAMDEVICE_5008       0x8
 #define WORDS_PARAMDEVICE_5010      0x10
 
@@ -50,13 +52,15 @@
 
 /*
    Devices for the indexer:
-   the indexer itself + 1 special 0518
+   + the indexer itself
+   + 1 special 0518
    + 2 motors 5008
    + 2 1202 errorId for the 5008 motors
    + 2 1202 encoderRaw for the 5008 motors
+   + 2 1604 homProc for the 5008 motors
    + 2 motors 5010
 */
-#define NUM_INDEXER_5008_1202 7
+#define NUM_INDEXER_5008_1202_1604 9
 
 #ifdef HAS_0518
 #define  NUM_0518           1
@@ -70,7 +74,7 @@
 #define  NUM_5010           0
 #endif
 
-#define  NUM_DEVICES        (NUM_INDEXER_5008_1202 + NUM_0518 + NUM_5010)
+#define  NUM_DEVICES        (NUM_INDEXER_5008_1202_1604 + NUM_0518 + NUM_5010)
 
 
 typedef enum {
@@ -206,6 +210,11 @@ typedef struct {
   uint8_t   value[4];
 } netDevice1202interface_type;
 
+typedef struct {
+  uint8_t   actualValue[4];
+  uint8_t   targetValue[4];
+} netDevice1604interface_type;
+
 /* The paramDevice structure.
    floating point values are 4 bytes long,
    the whole structure uses 16 bytes, 8 words */
@@ -221,7 +230,8 @@ typedef struct {
   netDevice5008interface_type dev5008;
   netDevice1202interface_type dev1202errorID;
   netDevice1202interface_type dev1202encoderRaw;
-} netDevice5008_1202_Interface_type;
+  netDevice1604interface_type dev1604homProc;
+} netDevice5008_1202_1604_Interface_type;
 
 /* struct as seen on the network = in memory
  * data must be stored using  uintToNet/doubleToNet
@@ -334,6 +344,16 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+    /* device for homProc */
+    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
+      UNITCODE_NONE, 1,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "homProc",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_DEGREE, 2,
       {PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32, 0,
@@ -371,6 +391,16 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       UNITCODE_NONE, 2,
       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
       "encoderRaw",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
+    /* device for homProc */
+    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
+      UNITCODE_NONE, 2,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "homProc",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
@@ -448,6 +478,9 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 typedef struct
 {
   double fHysteresis;
+  double fHomPos;
+  int   nHomProc;
+  int   nOldHomProc;
 } cmd_Motor_cmd_type;
 
 
@@ -469,7 +502,7 @@ static union {
     netDevice0518interface_type special0518; /* 42 bytes for ASCII to the simulator */
 #endif
     /* Remember that motor[0] is defined, but never used */
-    netDevice5008_1202_Interface_type motors5008_1202[NUM_MOTORS5008];
+    netDevice5008_1202_1604_Interface_type motors5008_1202_1604[NUM_MOTORS5008];
     netDevice5010interface_type motors5010[NUM_MOTORS5010];
   } memoryStruct;
 } netData;
@@ -630,6 +663,9 @@ static void init_axis(int axis_no)
       cmd_Motor_cmd[axis_no].fHysteresis = 2.0;
     else
       cmd_Motor_cmd[axis_no].fHysteresis = 0.1;
+    cmd_Motor_cmd[axis_no].nHomProc = 1;
+    cmd_Motor_cmd[axis_no].nOldHomProc = cmd_Motor_cmd[axis_no].nHomProc;
+    cmd_Motor_cmd[axis_no].fHomPos = 0.0;
     setNxtMoveVelocity(axis_no, 2 + axis_no / 10.0);
     setNxtMoveAcceleration(axis_no, 1 + axis_no / 10.0);
     /* Simulated limit switches, take from indexer table */
@@ -1021,10 +1057,20 @@ indexerMotorParamInterface(unsigned motor_axis_no,
         int direction = 0;
         double max_velocity = 2;
         double acceleration = 3;
+#if 0
         moveHome(motor_axis_no,
                  direction,
                  max_velocity,
                  acceleration);
+#else
+        moveHomeProc(motor_axis_no,
+                     direction,
+                     cmd_Motor_cmd[motor_axis_no].nHomProc,
+                     cmd_Motor_cmd[motor_axis_no].fHomPos,
+                     max_velocity,
+                     acceleration);
+
+#endif
         ret = PARAM_IF_CMD_DONE | paramIndex;
       }
       break;
@@ -1339,6 +1385,7 @@ int indexerHandleADS_ADR_setMemory(unsigned adsport,
 
 void indexerHandlePLCcycle(void)
 {
+  static int pLCcycleInitDone = 0;
   unsigned devNum = 0;
   init();
   while (devNum < NUM_DEVICES) {
@@ -1358,14 +1405,44 @@ void indexerHandlePLCcycle(void)
                      __FILE__, __FUNCTION__, __LINE__,
                      devNum, axisNo, motor5008Num, errorID);
             UINTTONET(errorID,
-                      netData.memoryStruct.motors5008_1202[motor5008Num].dev1202errorID.value);
+                      netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1202errorID.value);
           } else if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "encoderRaw"))) {
             int encoderRaw = (int)getEncoderPos(axisNo);
             LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u encoderRaw=%u\n",
                      __FILE__, __FUNCTION__, __LINE__,
                      devNum, axisNo, motor5008Num, encoderRaw);
             UINTTONET(encoderRaw,
-                      netData.memoryStruct.motors5008_1202[motor5008Num].dev1202encoderRaw.value);
+                      netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1202encoderRaw.value);
+          }
+        }
+      }
+      break;
+    case TYPECODE_DISCRETEOUTPUT_1604:
+      {
+        unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
+        if (axisNo) {
+          unsigned motor5008Num = axisNo - 1;
+          if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "homProc"))) {
+            unsigned homProc = cmd_Motor_cmd[axisNo].nHomProc;
+            if (pLCcycleInitDone) {
+              homProc = NETTOUINT(netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1604homProc.targetValue);
+              if (homProc != cmd_Motor_cmd[axisNo].nOldHomProc) {
+                LOGINFO3("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u homProc=%i oldHomeProc=%u\n",
+                         __FILE__, __FUNCTION__, __LINE__,
+                         devNum, axisNo, motor5008Num,
+                         homProc, cmd_Motor_cmd[axisNo].nOldHomProc);
+                cmd_Motor_cmd[axisNo].nHomProc = homProc;
+                cmd_Motor_cmd[axisNo].nOldHomProc = homProc;
+              } else {
+                UINTTONET(homProc,
+                          netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1604homProc.targetValue);
+              }
+            }
+            LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u homProc=%u\n",
+                     __FILE__, __FUNCTION__, __LINE__,
+                     devNum, axisNo, motor5008Num, homProc);
+            UINTTONET(homProc,
+                      netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1604homProc.actualValue);
           }
         }
       }
@@ -1378,7 +1455,7 @@ void indexerHandlePLCcycle(void)
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         unsigned motor5008Num = axisNo - 1;
         static const unsigned numAuxBits = 8;
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5008_1202[motor5008Num] -
+        offset = (unsigned)((void*)&netData.memoryStruct.motors5008_1202_1604[motor5008Num] -
                             (void*)&netData);
 
         fRet = getMotorPos((int)axisNo);
@@ -1388,10 +1465,10 @@ void indexerHandlePLCcycle(void)
         doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
         /* status */
         indexerMotorStatusRead5008(devNum, axisNo, numAuxBits,
-                                   &netData.memoryStruct.motors5008_1202[motor5008Num].dev5008);
+                                   &netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev5008);
 
         /* param interface */
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5008_1202[motor5008Num].dev5008.paramCtrl -
+        offset = (unsigned)((void*)&netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev5008.paramCtrl -
                             (void*)&netData);
         LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u paramoffset=%u\n",
                  __FILE__, __FUNCTION__, __LINE__,
@@ -1492,4 +1569,5 @@ void indexerHandlePLCcycle(void)
     }
     devNum++;
   }
+  pLCcycleInitDone = 1;
 }
