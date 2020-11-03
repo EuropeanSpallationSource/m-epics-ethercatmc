@@ -1138,14 +1138,15 @@ void ethercatmcController::addPilsAsynDevList(int           axisNo,
                                               unsigned      inputOffset,
                                               unsigned      outputOffset,
                                               asynParamType myEPICSParamType,
-                                              asynParamType myMCUParamType,
-                                              int           function)
+                                              asynParamType myMCUParamType)
 {
   const static char *const functionName = "addPilsAsynDevList";
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
   static size_t maxNumPilsAsynDevInfo =
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
 
+  asynStatus status;
+  int function = -1;
   pilsAsynDevInfo_type *pPilsAsynDevInfo
     = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
@@ -1164,6 +1165,25 @@ void ethercatmcController::addPilsAsynDevList(int           axisNo,
             outputOffset,
             (int)myEPICSParamType,
             (int)myMCUParamType);
+  /* Some parameters are alread pre-created by the Controller.cpp,
+     e.g.errorId. Use those, otherwise create a parameter */
+  status = findParam(/* axisNo, */paramName, &function);
+  if (status == asynSuccess) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s (%u) exist function=%d paramName=%s\n",
+              modNamEMC, functionName, numPilsAsynDevInfo, function, paramName);
+  } else {
+    status = createParam(/* axisNo, */
+                         paramName,
+                         myEPICSParamType,
+                         &function);
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s (%u) axisNo=%d created function=%d paramName=%s status=%s (%d)\n",
+              modNamEMC, functionName, numPilsAsynDevInfo, axisNo, function,
+              paramName,
+              ethercatmcstrStatus(status), (int)status);
+    if (status != asynSuccess) return;
+  }
 
   pPilsAsynDevInfo->axisNo           = axisNo;
   pPilsAsynDevInfo->paramName        = strdup(paramName);
@@ -1233,8 +1253,6 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   if (myAsynParamType != asynParamNotDefined) {
     asynParamType myEPICSParamType = myAsynParamType;
     asynParamType myMCUParamType  = myAsynParamType;
-    asynStatus status;
-    int function;
     if (!strcmp(paramName, "homeSeq")) {
       /* Different naming conventions in MCU and EPICS */
       paramName = "HomProc-RB";
@@ -1246,33 +1264,13 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
       paramName = "HomProc";
     }
 
-    /* Some parameters are alread pre-created by the Controller.cpp,
-       e.g.errorId. Use those, otherwise create a parameter */
-    status = findParam(/* axisNo, */paramName, &function);
-    if (status == asynSuccess) {
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s (%u) exist function=%d paramName=%s\n",
-                modNamEMC, functionName, numPilsAsynDevInfo, function, paramName);
-    } else {
-      status = createParam(/* axisNo, */
-                           paramName,
-                           myAsynParamType,
-                           &function);
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s (%u) axisNo=%d created function=%d asynParamTyp=%d paramName=%s status=%s (%d)\n",
-                modNamEMC, functionName, numPilsAsynDevInfo, axisNo, function,
-                (int)myAsynParamType, paramName,
-                ethercatmcstrStatus(status), (int)status);
-      if (status != asynSuccess) return;
-    }
     addPilsAsynDevList(axisNo,
                        paramName,
                        lenInPLC,
                        inputOffset,
                        outputOffset,
                        myEPICSParamType,
-                       myMCUParamType,
-                       function);
+                       myMCUParamType);
   } else {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s (%u) axisNo=%d not created paramName=%s)\n",

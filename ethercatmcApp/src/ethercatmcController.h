@@ -272,8 +272,7 @@ public:
                           unsigned      inputOffset,
                           unsigned      outputOffset,
                           asynParamType myEPICSParamType,
-                          asynParamType myMCUParamType,
-                          int           function);
+                          asynParamType myMCUParamType);
 
   void newPilsAsynDevice(int      axisNo,
                          unsigned indexOffset,
