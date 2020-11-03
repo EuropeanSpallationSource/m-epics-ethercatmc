@@ -266,10 +266,19 @@ public:
 
   asynStatus getPlcMemoryFromProcessImage(unsigned indexOffset,
                                           void *data, size_t lenInPlc);
-  void addPilsAsynDevInfo(int      axisNo,
-                          unsigned indexOffset,
-                          unsigned iTypCode,
-                          const char *paramName);
+  void addPilsAsynDevList(int           axisNo,
+                          const char    *paramName,
+                          unsigned      lenInPLC,
+                          unsigned      inputOffset,
+                          unsigned      outputOffset,
+                          asynParamType myEPICSParamType,
+                          asynParamType myMCUParamType,
+                          int           function);
+
+  void newPilsAsynDevice(int      axisNo,
+                         unsigned indexOffset,
+                         unsigned iTypCode,
+                         const char *paramName);
 
   pilsAsynDevInfo_type *findIndexerOutputDevice(int axisNo,
                                                 int function,

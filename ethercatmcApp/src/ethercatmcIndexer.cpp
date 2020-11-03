@@ -1119,7 +1119,7 @@ asynStatus ethercatmcController::initialPollIndexer(void)
       }
       break;
     default:
-      addPilsAsynDevInfo(axisNo, iOffsBytes, iTypCode, descVersAuthors.desc);
+      newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, descVersAuthors.desc);
     }
   }
 
@@ -1132,16 +1132,63 @@ asynStatus ethercatmcController::initialPollIndexer(void)
 
 }
 
-void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
-                                              unsigned indexOffset,
-                                              unsigned iTypCode,
-                                              const char *paramName)
+void ethercatmcController::addPilsAsynDevList(int           axisNo,
+                                              const char    *paramName,
+                                              unsigned      lenInPLC,
+                                              unsigned      inputOffset,
+                                              unsigned      outputOffset,
+                                              asynParamType myEPICSParamType,
+                                              asynParamType myMCUParamType,
+                                              int           function)
 {
-  const static char *const functionName = "addPilsAsynDevInfo";
+  const static char *const functionName = "addPilsAsynDevList";
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
   static size_t maxNumPilsAsynDevInfo =
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
 
+  pilsAsynDevInfo_type *pPilsAsynDevInfo
+    = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
+
+  if (numPilsAsynDevInfo >= maxNumPilsAsynDevInfo) {
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%s%s(%u) out of range\n",
+              modNamEMC, functionName,  numPilsAsynDevInfo);
+    return;
+  }
+  asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+            "%s%s(%u) axisNo=%d \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u EPICSParamType=%i MCUParamType=%i\n",
+            modNamEMC, functionName, numPilsAsynDevInfo, axisNo,
+            paramName,
+            lenInPLC,
+            inputOffset,
+            outputOffset,
+            (int)myEPICSParamType,
+            (int)myMCUParamType);
+
+  pPilsAsynDevInfo->axisNo           = axisNo;
+  pPilsAsynDevInfo->paramName        = strdup(paramName);
+  pPilsAsynDevInfo->lenInPLC         = lenInPLC;
+  pPilsAsynDevInfo->inputOffset      = inputOffset;
+  pPilsAsynDevInfo->outputOffset     = outputOffset;
+  pPilsAsynDevInfo->myEPICSParamType = myEPICSParamType;
+  pPilsAsynDevInfo->myMCUParamType   = myMCUParamType;
+  pPilsAsynDevInfo->function         = function;
+  if (!strcmp(paramName, "SystemDClock")) {
+    pPilsAsynDevInfo->isSystemDClock = 1;
+  }
+
+  /* Last action of this code: Increment the counter */
+  ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
+}
+
+
+void ethercatmcController::newPilsAsynDevice(int      axisNo,
+                                             unsigned indexOffset,
+                                             unsigned iTypCode,
+                                             const char *paramName)
+{
+  const static char *const functionName = "newPilsAsynDevice";
+  unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
   unsigned      lenInPLC          = 0;
   unsigned      inputOffset       = 0;
   unsigned      outputOffset      = 0;
@@ -1152,12 +1199,6 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
             modNamEMC, functionName, numPilsAsynDevInfo,
             axisNo, indexOffset, iTypCode, paramName);
 
-  if (numPilsAsynDevInfo >= maxNumPilsAsynDevInfo) {
-    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-              "%saddPilsAsynDevInfo(%u) out of range\n",
-              modNamEMC, numPilsAsynDevInfo);
-    return;
-  }
   switch (iTypCode) {
     case 0x1201:
       lenInPLC = 2;
@@ -1175,14 +1216,11 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
       myAsynParamType = asynParamInt64;
 #endif
-      if (!strcmp(paramName, "SystemDClock")) {
-        ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].isSystemDClock = 1;
-      }
       break;
     case 0x1604:
       lenInPLC = 4;
       /* 1604 has "current value, followed by target value */
-      outputOffset = outputOffset + lenInPLC;
+      outputOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamInt32;
       break;
   }
@@ -1193,17 +1231,8 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
     return;
   }
   if (myAsynParamType != asynParamNotDefined) {
-    pilsAsynDevInfo_type *pPilsAsynDevInfo
-      = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
-
-    pPilsAsynDevInfo->paramName        = strdup(paramName);
-    pPilsAsynDevInfo->axisNo           = axisNo;
-    pPilsAsynDevInfo->lenInPLC         = lenInPLC;
-    pPilsAsynDevInfo->inputOffset      = inputOffset;
-    pPilsAsynDevInfo->outputOffset     = outputOffset;
-    pPilsAsynDevInfo->myEPICSParamType = myAsynParamType;
-    pPilsAsynDevInfo->myMCUParamType   = myAsynParamType;
-
+    asynParamType myEPICSParamType = myAsynParamType;
+    asynParamType myMCUParamType  = myAsynParamType;
     asynStatus status;
     int function;
     if (!strcmp(paramName, "homeSeq")) {
@@ -1212,7 +1241,9 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
     } else if (!strcmp(paramName, "encoderRaw")) {
       paramName = "EncAct";
       /* Special handling for encoderRaw */
-      ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].myEPICSParamType = asynParamFloat64;
+      myEPICSParamType = asynParamFloat64;
+    } else if (outputOffset && (!strcmp(paramName, "homProc"))) {
+      paramName = "HomProc";
     }
 
     /* Some parameters are alread pre-created by the Controller.cpp,
@@ -1234,15 +1265,19 @@ void ethercatmcController::addPilsAsynDevInfo(int      axisNo,
                 ethercatmcstrStatus(status), (int)status);
       if (status != asynSuccess) return;
     }
-    ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo].function = function;
+    addPilsAsynDevList(axisNo,
+                       paramName,
+                       lenInPLC,
+                       inputOffset,
+                       outputOffset,
+                       myEPICSParamType,
+                       myMCUParamType,
+                       function);
   } else {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s (%u) axisNo=%d not created paramName=%s)\n",
               modNamEMC, functionName, numPilsAsynDevInfo, axisNo, paramName);
   }
-
-  /* Last action of this code: Increment the counter */
-  ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
 }
 
 extern "C" void DCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
