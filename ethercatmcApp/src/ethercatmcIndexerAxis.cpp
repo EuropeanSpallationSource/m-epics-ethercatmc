@@ -894,10 +894,13 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     pPilsAsynDevInfo = pC_->findIndexerOutputDevice(axisNo_, function,
                                                     asynParamInt32);
     if (pPilsAsynDevInfo) {
+      const char *paramName = NULL;
+      if (pC_->getParamName(axisNo_, function, &paramName)) paramName = "";
+
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%ssetIntegerParam(%d %s offset=%u)=%d\n",
                 modNamEMC, axisNo_,
-                pPilsAsynDevInfo->paramName,
+                paramName,
                 pPilsAsynDevInfo->outputOffset, value);
       return pC_->setPlcMemoryInteger(pPilsAsynDevInfo->outputOffset,
                                       value,

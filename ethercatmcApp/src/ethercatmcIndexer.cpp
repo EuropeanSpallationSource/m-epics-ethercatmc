@@ -904,7 +904,7 @@ asynStatus ethercatmcController::initialPollIndexer(void)
          numPilsAsynDevInfo++) {
       pilsAsynDevInfo_type *pPilsAsynDevInfo
         = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
-      free(pPilsAsynDevInfo->paramName);
+      /* TODO: set asynStatus */
     }
     memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
     ctrlLocal.numPilsAsynDevInfo = 0;
@@ -1186,7 +1186,6 @@ void ethercatmcController::addPilsAsynDevList(int           axisNo,
   }
 
   pPilsAsynDevInfo->axisNo           = axisNo;
-  pPilsAsynDevInfo->paramName        = strdup(paramName);
   pPilsAsynDevInfo->lenInPLC         = lenInPLC;
   pPilsAsynDevInfo->inputOffset      = inputOffset;
   pPilsAsynDevInfo->outputOffset     = outputOffset;

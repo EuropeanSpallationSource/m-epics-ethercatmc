@@ -95,7 +95,6 @@ extern "C" {
      Create a conversion table, to map the PILS devices
      into the asynParameter library and vice-versa */
   typedef struct {
-    char           *paramName;
     int            axisNo;      /* 0 is the controller */
     unsigned       inputOffset; /* offset inside the "plc memory bytes" */
     unsigned       outputOffset; /* offset inside the "plc memory bytes" */
