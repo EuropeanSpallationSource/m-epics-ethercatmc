@@ -685,6 +685,10 @@ void ethercatmcController::handleStatusChange(asynStatus status)
       /* Connected -> Disconnected */
       int i;
       ctrlLocal.initialPollDone = 0;
+      if (ctrlLocal.useADSbinary) {
+        indexerDisconnected();
+      }
+
       /* Keep bits that are specified via options,
          clear bits that are fetched from the controller */
       features_ &= ~reportedFeatureBits;
@@ -695,8 +699,6 @@ void ethercatmcController::handleStatusChange(asynStatus status)
         pAxis->setIntegerParam(motorStatusCommsError_, 1);
         pAxis->callParamCallbacks();
       }
-      free(ctrlLocal.pIndexerProcessImage);
-      ctrlLocal.pIndexerProcessImage = NULL;
     } else {
       /* Disconnected -> Connected */
       setMCUErrMsg("MCU Cconnected");
@@ -716,7 +718,7 @@ asynStatus ethercatmcController::poll(void)
 
   if (ctrlLocal.useADSbinary) {
     if (!ctrlLocal.initialPollDone) {
-      status = initialPollIndexer();
+      status = indexerInitialPoll();
       if (!status) {
         ctrlLocal.initialPollDone = 1;
       } else {
@@ -728,7 +730,7 @@ asynStatus ethercatmcController::poll(void)
         }
       }
     } else {
-      return pollIndexer();
+      return indexerPoll();
     }
   } else {
     if (!(features_ & reportedFeatureBits)) {

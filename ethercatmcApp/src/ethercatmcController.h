@@ -237,8 +237,9 @@ public:
   asynStatus updateCfgValue(int axisNo_, int function,
                             int newValue, const char *name);
   asynStatus getFeatures(int *pRet);
-  asynStatus initialPollIndexer(void);
-  asynStatus pollIndexer(void);
+  asynStatus indexerInitialPoll(void);
+  asynStatus indexerPoll(void);
+  void        indexerDisconnected(void);
   asynStatus writeReadControllerPrint(int traceMask);
   asynStatus writeReadACK(int traceMask);
   asynStatus getPlcMemoryUint(unsigned indexOffset,

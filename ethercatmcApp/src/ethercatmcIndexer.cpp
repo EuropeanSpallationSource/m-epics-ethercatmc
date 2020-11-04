@@ -858,7 +858,7 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
   return status;
 }
 
-asynStatus ethercatmcController::initialPollIndexer(void)
+asynStatus ethercatmcController::indexerInitialPoll(void)
 {
   asynStatus status;
   unsigned firstDeviceStartOffset = (unsigned)-1; /* Will be decreased while we go */
@@ -893,21 +893,6 @@ asynStatus ethercatmcController::initialPollIndexer(void)
   memset(&descVersAuthors, 0, sizeof(descVersAuthors));
   if (!ctrlLocal.adsport) {
     ctrlLocal.adsport = 851;
-  }
-  if (ctrlLocal.numPilsAsynDevInfo)
-  {
-    size_t numPilsAsynDevInfo;
-    size_t maxNumPilsAsynDevInfo =
-      (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
-    for (numPilsAsynDevInfo = 0;
-         numPilsAsynDevInfo < maxNumPilsAsynDevInfo;
-         numPilsAsynDevInfo++) {
-      pilsAsynDevInfo_type *pPilsAsynDevInfo
-        = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
-      /* TODO: set asynStatus */
-    }
-    memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
-    ctrlLocal.numPilsAsynDevInfo = 0;
   }
 #if 0
   {
@@ -1132,6 +1117,26 @@ asynStatus ethercatmcController::initialPollIndexer(void)
 
 }
 
+
+void ethercatmcController::indexerDisconnected(void)
+{
+  if (ctrlLocal.numPilsAsynDevInfo)
+  {
+    for (unsigned numPilsAsynDevInfo = 0;
+         numPilsAsynDevInfo < ctrlLocal.numPilsAsynDevInfo;
+         numPilsAsynDevInfo++) {
+      pilsAsynDevInfo_type *pPilsAsynDevInfo
+        = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
+      (void)pPilsAsynDevInfo; /* TODO: set asynStatus */
+    }
+    memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
+    ctrlLocal.numPilsAsynDevInfo = 0;
+  }
+  free(ctrlLocal.pIndexerProcessImage);
+  ctrlLocal.pIndexerProcessImage = NULL;
+}
+
+
 void ethercatmcController::addPilsAsynDevList(int           axisNo,
                                               const char    *paramName,
                                               unsigned      lenInPLC,
@@ -1308,12 +1313,8 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
                                                                     int function,
                                                                     asynParamType myEPICSParamType)
 {
-  static size_t maxNumPilsAsynDevInfo =
-    (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
-  unsigned numPilsAsynDevInfo;
-
-  for (numPilsAsynDevInfo = 0;
-       numPilsAsynDevInfo < maxNumPilsAsynDevInfo;
+  for (unsigned numPilsAsynDevInfo = 0;
+       numPilsAsynDevInfo < ctrlLocal.numPilsAsynDevInfo;
        numPilsAsynDevInfo++) {
     pilsAsynDevInfo_type *pPilsAsynDevInfo
       = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
@@ -1331,7 +1332,7 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
   return NULL;
 }
 
-asynStatus ethercatmcController::pollIndexer(void)
+asynStatus ethercatmcController::indexerPoll(void)
 {
   int callBacksNeeded = 0;
   if (ctrlLocal.pIndexerProcessImage &&
@@ -1354,12 +1355,8 @@ asynStatus ethercatmcController::pollIndexer(void)
 
     {
       /* Extract devices, which are not motors */
-      static size_t maxNumPilsAsynDevInfo =
-        (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
-      unsigned numPilsAsynDevInfo;
-
-      for (numPilsAsynDevInfo = 0;
-           numPilsAsynDevInfo < maxNumPilsAsynDevInfo;
+      for (unsigned numPilsAsynDevInfo = 0;
+           numPilsAsynDevInfo < ctrlLocal.numPilsAsynDevInfo;
            numPilsAsynDevInfo++) {
         pilsAsynDevInfo_type *pPilsAsynDevInfo
           = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
@@ -1381,7 +1378,7 @@ asynStatus ethercatmcController::pollIndexer(void)
             newValue = (epicsInt32)netToUint(pDataInPlc, lenInPLC);
             status = getIntegerParam(axisNo, function, &oldValue);
             asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                      "%spollIndexer axisNo=%d function=%d newValue=%d oldValue=%d\n",
+                      "%sindexerPoll axisNo=%d function=%d newValue=%d oldValue=%d\n",
                       modNamEMC, axisNo, function, newValue, oldValue);
             if (pPilsAsynDevInfo->inputOffset) {
               if (status != asynSuccess || oldValue != newValue) {
@@ -1436,7 +1433,7 @@ asynStatus ethercatmcController::pollIndexer(void)
           epicsTimeStamp timeStamp;
           nSec = netToUint64(pDataInPlc, lenInPLC);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                    "%spollIndexer SystemDClock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+                    "%sindexerPoll SystemDClock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
                     modNamEMC, nSec,
                     timeStamp.secPastEpoch, timeStamp.nsec);
           setTimeStamp(&timeStamp);
@@ -1451,4 +1448,3 @@ asynStatus ethercatmcController::pollIndexer(void)
   }
   return asynDisabled;
 }
-
