@@ -1121,37 +1121,6 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 }
 
 
-void ethercatmcController::indexerDisconnected(void)
-{
-  const static char *const functionName = "indexerDisconnected";
-  if (ctrlLocal.numPilsAsynDevInfo)
-  {
-    for (unsigned numPilsAsynDevInfo = 0;
-         numPilsAsynDevInfo < ctrlLocal.numPilsAsynDevInfo;
-         numPilsAsynDevInfo++) {
-      pilsAsynDevInfo_type *pPilsAsynDevInfo
-        = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s/%s XXX set AlarmStatus/Severity axisNo=%d function=%d\n",
-                modNamEMC, functionName,
-                pPilsAsynDevInfo->axisNo,
-                pPilsAsynDevInfo->function);
-      setParamAlarmStatus(pPilsAsynDevInfo->axisNo,
-                          pPilsAsynDevInfo->function,
-                          COMM_ALARM);
-      setParamAlarmSeverity(pPilsAsynDevInfo->axisNo,
-                            pPilsAsynDevInfo->function,
-                            INVALID_ALARM);
-
-    }
-    memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
-    ctrlLocal.numPilsAsynDevInfo = 0;
-  }
-  free(ctrlLocal.pIndexerProcessImage);
-  ctrlLocal.pIndexerProcessImage = NULL;
-}
-
-
 void ethercatmcController::addPilsAsynDevList(int           axisNo,
                                               const char    *paramName,
                                               unsigned      lenInPLC,
@@ -1465,3 +1434,35 @@ asynStatus ethercatmcController::indexerPoll(void)
   }
   return asynDisabled;
 }
+
+
+void ethercatmcController::indexerDisconnected(void)
+{
+  const static char *const functionName = "indexerDisconnected";
+  if (ctrlLocal.numPilsAsynDevInfo)
+  {
+    for (unsigned numPilsAsynDevInfo = 0;
+         numPilsAsynDevInfo < ctrlLocal.numPilsAsynDevInfo;
+         numPilsAsynDevInfo++) {
+      pilsAsynDevInfo_type *pPilsAsynDevInfo
+        = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s/%s XXX set AlarmStatus/Severity axisNo=%d function=%d\n",
+                modNamEMC, functionName,
+                pPilsAsynDevInfo->axisNo,
+                pPilsAsynDevInfo->function);
+      setParamAlarmStatus(pPilsAsynDevInfo->axisNo,
+                          pPilsAsynDevInfo->function,
+                          COMM_ALARM);
+      setParamAlarmSeverity(pPilsAsynDevInfo->axisNo,
+                            pPilsAsynDevInfo->function,
+                            INVALID_ALARM);
+
+    }
+    memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
+    ctrlLocal.numPilsAsynDevInfo = 0;
+  }
+  free(ctrlLocal.pIndexerProcessImage);
+  ctrlLocal.pIndexerProcessImage = NULL;
+}
+
