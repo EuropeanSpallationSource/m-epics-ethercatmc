@@ -90,7 +90,7 @@ pv_value)</tooltip>
   <gradient>false</gradient>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
-  <border_alarm_sensitive>false</border_alarm_sensitive>
+  <border_alarm_sensitive>true</border_alarm_sensitive>
   <visible>true</visible>
   <vertical_alignment>1</vertical_alignment>
   <show_units>false</show_units>
@@ -198,7 +198,7 @@ pv_value)</tooltip>
   <gradient>false</gradient>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
-  <border_alarm_sensitive>false</border_alarm_sensitive>
+  <border_alarm_sensitive>true</border_alarm_sensitive>
   <visible>true</visible>
   <vertical_alignment>1</vertical_alignment>
   <show_units>false</show_units>
@@ -259,7 +259,7 @@ $(pv_value)</tooltip>
   <x>100</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
-  <border_alarm_sensitive>false</border_alarm_sensitive>
+  <border_alarm_sensitive>true</border_alarm_sensitive>
   <visible>true</visible>
   <vertical_alignment>1</vertical_alignment>
   <show_units>true</show_units>
@@ -320,7 +320,7 @@ $(pv_value)</tooltip>
   <x>200</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
-  <border_alarm_sensitive>false</border_alarm_sensitive>
+  <border_alarm_sensitive>true</border_alarm_sensitive>
   <visible>true</visible>
   <vertical_alignment>1</vertical_alignment>
   <show_units>true</show_units>
@@ -1762,7 +1762,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
     <border_color>
       <color name="IO Border" red="0" green="0" blue="0" />
     </border_color>
