@@ -16,6 +16,9 @@
 
 #include <epicsThread.h>
 
+/* Alarm definition from EPICS Base */
+#include <alarm.h>
+
 #ifndef ASYN_TRACE_INFO
 #define ASYN_TRACE_INFO      0x0040
 #endif
@@ -1120,6 +1123,7 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 
 void ethercatmcController::indexerDisconnected(void)
 {
+  const static char *const functionName = "indexerDisconnected";
   if (ctrlLocal.numPilsAsynDevInfo)
   {
     for (unsigned numPilsAsynDevInfo = 0;
@@ -1127,7 +1131,18 @@ void ethercatmcController::indexerDisconnected(void)
          numPilsAsynDevInfo++) {
       pilsAsynDevInfo_type *pPilsAsynDevInfo
         = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
-      (void)pPilsAsynDevInfo; /* TODO: set asynStatus */
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s/%s XXX set AlarmStatus/Severity axisNo=%d function=%d\n",
+                modNamEMC, functionName,
+                pPilsAsynDevInfo->axisNo,
+                pPilsAsynDevInfo->function);
+      setParamAlarmStatus(pPilsAsynDevInfo->axisNo,
+                          pPilsAsynDevInfo->function,
+                          COMM_ALARM);
+      setParamAlarmSeverity(pPilsAsynDevInfo->axisNo,
+                            pPilsAsynDevInfo->function,
+                            INVALID_ALARM);
+
     }
     memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
     ctrlLocal.numPilsAsynDevInfo = 0;
@@ -1200,6 +1215,8 @@ void ethercatmcController::addPilsAsynDevList(int           axisNo,
   if (!strcmp(paramName, "SystemDClock")) {
     pPilsAsynDevInfo->isSystemDClock = 1;
   }
+  setParamAlarmStatus(axisNo, function,   NO_ALARM);
+  setParamAlarmSeverity(axisNo, function, NO_ALARM);
 
   /* Last action of this code: Increment the counter */
   ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
