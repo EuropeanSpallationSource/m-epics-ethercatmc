@@ -1439,6 +1439,14 @@ asynStatus ethercatmcController::indexerPoll(void)
 void ethercatmcController::indexerDisconnected(void)
 {
   const static char *const functionName = "indexerDisconnected";
+  for (int axisNo=0; axisNo<numAxes_; axisNo++) {
+    setIntegerParam(axisNo, motorStatusGainSupport_, 0);
+    setIntegerParam(axisNo, ethercatmcFoffVis_, 0);
+    // TODO: Make a list of functions, that should go into alarm state
+    // setParamAlarmStatus(axisNo,   ethercatmcStatusCode_, COMM_ALARM);
+    // setParamAlarmSeverity(axisNo, ethercatmcStatusCode_, INVALID_ALARM);
+  }
+
   if (ctrlLocal.numPilsAsynDevInfo)
   {
     for (unsigned numPilsAsynDevInfo = 0;
