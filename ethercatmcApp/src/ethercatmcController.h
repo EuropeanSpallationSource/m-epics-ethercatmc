@@ -182,6 +182,8 @@ public:
   asynStatus setMCUErrMsg(const char *value);
   asynStatus configController(int needOk, const char *value);
   asynStatus writeReadOnErrorDisconnect(void);
+  void setAlarmStatusSeverityWrapper(int axisNo, int function,
+                                     asynStatus status);
   ethercatmcAxis* getAxis(asynUser *pasynUser);
   ethercatmcAxis* getAxis(int axisNo);
   int features_;

@@ -1008,3 +1008,43 @@ static void ethercatmcControllerRegister(void)
 extern "C" {
   epicsExportRegistrar(ethercatmcControllerRegister);
 }
+
+/* Alarm definition from EPICS Base */
+#include <alarm.h>
+
+/* Code inspired by .../asyn/devEpics/asynEpicsUtils.c */
+void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
+                                                         int function,
+                                                         asynStatus status)
+{
+  const static char *const functionName = "setAlarmStatusSeverityWrapper";
+  /* alarm.h from EPICS base define these enums:
+     epicsAlarmCondition epicsAlarmSeverity
+  but we use "int" here */
+
+  int myStat = STATE_ALARM; /* Assume the worst */
+  int mySevr = INVALID_ALARM;
+  switch (status) {
+    case asynSuccess:
+      myStat = NO_ALARM;
+      mySevr = NO_ALARM;
+      break;
+    case asynTimeout:
+    case asynOverflow:
+    case asynError:
+    case asynDisabled:
+    default:
+      break; /* Not used yet */
+
+    case asynDisconnected:
+      myStat = COMM_ALARM;
+      mySevr = INVALID_ALARM;
+      break;
+  }
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s%s axisNo=%d function=%d asynStatus=%d stat=%d, sevr=%d\n",
+            modNamEMC, functionName,
+            axisNo, function, (int)status, myStat, mySevr);
+  setParamAlarmStatus(axisNo, function, myStat);
+  setParamAlarmSeverity(axisNo, function, mySevr);
+}
