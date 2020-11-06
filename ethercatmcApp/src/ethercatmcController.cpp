@@ -1017,34 +1017,55 @@ void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
                                                          int function,
                                                          asynStatus status)
 {
-  const static char *const functionName = "setAlarmStatusSeverityWrapper";
+  const static char *const functionName = "AlarmStatSevr";
   /* alarm.h from EPICS base define these enums:
      epicsAlarmCondition epicsAlarmSeverity
   but we use "int" here */
+  const char *paramName = NULL;
+  if (getParamName(axisNo, function, &paramName)) paramName = "";
 
-  int myStat = STATE_ALARM; /* Assume the worst */
-  int mySevr = INVALID_ALARM;
+  int oldStat = -1;
+  int oldSevr = -1;
+  int newStat = STATE_ALARM; /* Assume the worst */
+  int newSevr = INVALID_ALARM;
+  getParamAlarmStatus(axisNo, function, &oldStat);
+  getParamAlarmSeverity(axisNo, function, &oldSevr);
   switch (status) {
     case asynSuccess:
-      myStat = NO_ALARM;
-      mySevr = NO_ALARM;
+      newStat = NO_ALARM;
+      newSevr = NO_ALARM;
       break;
     case asynTimeout:
     case asynOverflow:
     case asynError:
     case asynDisabled:
     default:
-      break; /* Not used yet */
-
+      newStat = STATE_ALARM; /* Assume the worst */
+      newSevr = INVALID_ALARM;
+      break;
     case asynDisconnected:
-      myStat = COMM_ALARM;
-      mySevr = INVALID_ALARM;
+      newStat = COMM_ALARM;
+      newSevr = INVALID_ALARM;
       break;
   }
-  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s%s axisNo=%d function=%d asynStatus=%d stat=%d, sevr=%d\n",
-            modNamEMC, functionName,
-            axisNo, function, (int)status, myStat, mySevr);
-  setParamAlarmStatus(axisNo, function, myStat);
-  setParamAlarmSeverity(axisNo, function, mySevr);
+  if (newStat != oldStat) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s(%d) %s(%d) asynStatus=%s(%d) STAT=%s(%d)->%s(%d)\n",
+              modNamEMC, functionName,
+              axisNo, paramName, function,
+              ethercatmcstrStatus(status), (int)status,
+              epicsAlarmConditionStrings[oldStat], oldStat,
+              epicsAlarmConditionStrings[newStat], newStat);
+    setParamAlarmStatus(axisNo, function, newStat);
+  }
+  if (newSevr != oldSevr) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s(%d) %s(%d) asynStatus=%s(%d) STAT=%s(%d)->%s(%d)\n",
+              modNamEMC, functionName,
+              axisNo, paramName, function,
+              ethercatmcstrStatus(status), (int)status,
+              epicsAlarmSeverityStrings[oldSevr], oldSevr,
+              epicsAlarmSeverityStrings[newSevr], newSevr);
+    setParamAlarmSeverity(axisNo, function, newSevr);
+  }
 }
