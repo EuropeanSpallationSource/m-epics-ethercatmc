@@ -1792,13 +1792,13 @@ $(pv_value)</tooltip>
     <read_only>false</read_only>
     <rules>
       <rule name="StatusCode-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)StatusCode.STAT</pv>
+        <pv trig="true">$(P)$(R)StatusCode.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1978,7 +1978,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M).STAT</pv>
+        <pv trig="true">$(P)$(M).SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2679,13 +2679,13 @@ $(pv_value)</tooltip>
     </scale_options>
     <rules>
       <rule name="EncAct-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)EncAct.STAT</pv>
+        <pv trig="true">$(P)$(R)EncAct.SEVR</pv>
       </rule>
     </rules>
     <scripts />
@@ -4515,13 +4515,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="ReasonBitLED25-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamBit25.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamBit25.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4580,13 +4580,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="NamBit25-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamBit25.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamBit25.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4651,13 +4651,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="ReasonBitLED24-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamBit24.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamBit24.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4716,13 +4716,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="NamBit24-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamBit24.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamBit24.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4787,13 +4787,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="AuxBitLED0-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit0.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4852,13 +4852,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="AuxBit0-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit0.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4923,13 +4923,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="AuxBitLED1-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit1.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -4988,13 +4988,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="AuxBit1-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit1.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5059,13 +5059,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="AuxBitLED2-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit2.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5124,13 +5124,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="AuxBit2-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit2.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5195,13 +5195,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="AuxBitLED3-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit3.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5260,13 +5260,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="AuxBit3-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit3.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5331,13 +5331,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="AuxBitLED4-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit4.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5396,13 +5396,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="AuxBit4-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit4.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5467,13 +5467,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="AuxBitLED5LED-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit5.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5532,13 +5532,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="AuxBit5-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit5.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5603,13 +5603,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="AuxBitLED6-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit6.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit6.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5668,13 +5668,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="AuxBit6-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit6.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit6.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5739,13 +5739,13 @@ $(pv_value)</tooltip>
     <pv_value />
     <rules>
       <rule name="AuxBitLED7-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit7.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit7.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -5804,13 +5804,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <rules>
       <rule name="AuxBit7-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==17">
+        <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
-        <exp bool_exp="pv0!=17">
+        <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit7.STAT</pv>
+        <pv trig="true">$(P)$(M)-NamAuxBit7.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
