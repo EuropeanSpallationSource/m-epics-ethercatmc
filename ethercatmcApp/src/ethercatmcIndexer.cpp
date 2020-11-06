@@ -160,16 +160,18 @@ extern "C" {
 static const double fABSMIN = -3.0e+38;
 static const double fABSMAX =  3.0e+38;
 
-asynStatus ethercatmcController::getPlcMemoryUint(unsigned indexOffset,
-                                                  unsigned *value,
-                                                  size_t lenInPlc)
+asynStatus ethercatmcController::getPlcMemoryUintFL(unsigned indexOffset,
+                                                    unsigned *value,
+                                                    size_t lenInPlc,
+                                                    const char *fileName,
+                                                    int lineNo)
 {
   asynStatus status;
 
   memset(value, 0, lenInPlc);
   if (lenInPlc <= 8) {
     uint8_t raw[8];
-    status = getPlcMemoryViaADS(indexOffset, &raw, lenInPlc);
+    status = getPlcMemoryViaADSFL(indexOffset, &raw, lenInPlc, fileName, lineNo);
     *value = netToUint(&raw, lenInPlc);
     return status;
   }

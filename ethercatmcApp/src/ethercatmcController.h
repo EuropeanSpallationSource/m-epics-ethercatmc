@@ -114,10 +114,12 @@ extern "C" {
   int ethercatmcCreateAxis(const char *ethercatmcName, int axisNo,
                            int axisFlags, const char *axisOptionsStr);
 
-  asynStatus ethercatmcADSgetPlcMemoryUint(asynUser *pasynUser,
-                                           unsigned indexOffset,
-                                           unsigned *value,
-                                           size_t lenInPlc);
+  asynStatus ethercatmcADSgetPlcMemoryUintFL(asynUser *pasynUser,
+                                             unsigned indexOffset,
+                                             unsigned *value,
+                                             size_t lenInPlc,
+                                             const char *fileName,
+                                             int lineNo);
   asynStatus disconnect_C(asynUser *pasynUser);
   asynStatus writeReadOnErrorDisconnect_C(asynUser *pasynUser,
                                           const char *outdata, size_t outlen,
@@ -201,16 +203,28 @@ public:
                                               size_t *pnread);
 
   /* memory bytes via ADS */
-  asynStatus writeWriteReadAds(asynUser *pasynUser,
-                               AmsHdrType *amsHdr_p, size_t outlen,
-                               uint32_t invokeID,
-                               uint32_t ads_cmdID,
-                               void *indata, size_t inlen,
-                               size_t *pnread);
-  asynStatus getPlcMemoryViaADS(unsigned indexOffset,
-                                void *data, size_t lenInPlc);
-  asynStatus setPlcMemoryViaADS(unsigned indexOffset,
-                                const void *data, size_t lenInPlc);
+  asynStatus writeWriteReadAdsFL(asynUser *pasynUser,
+                                 AmsHdrType *amsHdr_p, size_t outlen,
+                                 uint32_t invokeID,
+                                 uint32_t ads_cmdID,
+                                 void *indata, size_t inlen,
+                                 size_t *pnread,
+                                 const char *fileName,
+                                 int lineNo);
+  asynStatus getPlcMemoryViaADSFL(unsigned indexOffset,
+                                  void *data, size_t lenInPlc,
+                                  const char *fileName,
+                                  int lineNo);
+  asynStatus setPlcMemoryViaADSFL(unsigned indexOffset,
+                                  const void *data, size_t lenInPlc,
+                                  const char *fileName,
+                                  int lineNo);
+
+  /* Re-definition */
+#define writeWriteReadAds(a,b,c,d,e,f,g,h)  writeWriteReadAdsFL(a,b,c,d,e,f,g,h,__FILE__, __LINE__)
+#define getPlcMemoryViaADS(a,b,c)           getPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
+#define setPlcMemoryViaADS(a,b,c)           setPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
+
   asynStatus getSymbolInfoViaADS(const char *symbolName,
                                  void *data,
                                  size_t lenInPlc);
@@ -244,8 +258,11 @@ public:
   void        indexerDisconnected(void);
   asynStatus writeReadControllerPrint(int traceMask);
   asynStatus writeReadACK(int traceMask);
-  asynStatus getPlcMemoryUint(unsigned indexOffset,
-                              unsigned *value, size_t lenInPlc);
+  asynStatus getPlcMemoryUintFL(unsigned indexOffset,
+                                unsigned *value, size_t lenInPlc,
+                                const char *fileName,
+                                int lineNo);
+#define getPlcMemoryUint(a,b,c)   getPlcMemoryUintFL(a,b,c,__FILE__, __LINE__)
   asynStatus setPlcMemoryInteger(unsigned indexOffset,
                                  int value, size_t lenInPlc);
   asynStatus getPlcMemoryDouble(unsigned indexOffset,
