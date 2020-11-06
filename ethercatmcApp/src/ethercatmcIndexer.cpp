@@ -821,10 +821,10 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
   {
     unsigned auxBitIdx = 0;
     for (auxBitIdx = 0; auxBitIdx <= 23; auxBitIdx++) {
+      int function = ethercatmcNamAux0_ + auxBitIdx;
       if ((iAllFlags >> auxBitIdx) & 1) {
         char auxBitName[34];
         unsigned infoType16 = 16;
-        int functionNo = ethercatmcNamAux0_ + auxBitIdx;
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexer(devNum, infoType16 + auxBitIdx);
         if (status) return status;
@@ -835,8 +835,9 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
                   "%sauxBitName[%d] auxBitName(%02u)=%s\n",
                   modNamEMC, axisNo, auxBitIdx, auxBitName);
         if (status) return status;
-        if ((functionNo >= 0) && (functionNo <= ethercatmcNamAux7_)) {
-          pAxis->setStringParam(functionNo, auxBitName);
+        if (function <= ethercatmcNamAux7_) {
+          pAxis->setStringParam(function, auxBitName);
+          setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
         }
         if (!strcmp("notHomed", auxBitName)) {
           pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
@@ -1184,8 +1185,7 @@ void ethercatmcController::addPilsAsynDevList(int           axisNo,
   if (!strcmp(paramName, "SystemDClock")) {
     pPilsAsynDevInfo->isSystemDClock = 1;
   }
-  setParamAlarmStatus(axisNo, function,   NO_ALARM);
-  setParamAlarmSeverity(axisNo, function, NO_ALARM);
+  setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
 
   /* Last action of this code: Increment the counter */
   ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
@@ -1438,13 +1438,17 @@ asynStatus ethercatmcController::indexerPoll(void)
 
 void ethercatmcController::indexerDisconnected(void)
 {
-  const static char *const functionName = "indexerDisconnected";
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s%s\n",
+            modNamEMC, "indexerDisconnected");
   for (int axisNo=0; axisNo<numAxes_; axisNo++) {
     setIntegerParam(axisNo, motorStatusGainSupport_, 0);
     setIntegerParam(axisNo, ethercatmcFoffVis_, 0);
-    // TODO: Make a list of functions, that should go into alarm state
-    // setParamAlarmStatus(axisNo,   ethercatmcStatusCode_, COMM_ALARM);
-    // setParamAlarmSeverity(axisNo, ethercatmcStatusCode_, INVALID_ALARM);
+    for (int function = ethercatmcNamAux0_;
+         function < ethercatmcNamAux7_;
+         function++) {
+      setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
+    }
   }
 
   if (ctrlLocal.numPilsAsynDevInfo)
@@ -1454,18 +1458,9 @@ void ethercatmcController::indexerDisconnected(void)
          numPilsAsynDevInfo++) {
       pilsAsynDevInfo_type *pPilsAsynDevInfo
         = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s/%s XXX set AlarmStatus/Severity axisNo=%d function=%d\n",
-                modNamEMC, functionName,
-                pPilsAsynDevInfo->axisNo,
-                pPilsAsynDevInfo->function);
-      setParamAlarmStatus(pPilsAsynDevInfo->axisNo,
-                          pPilsAsynDevInfo->function,
-                          COMM_ALARM);
-      setParamAlarmSeverity(pPilsAsynDevInfo->axisNo,
-                            pPilsAsynDevInfo->function,
-                            INVALID_ALARM);
-
+      setAlarmStatusSeverityWrapper(pPilsAsynDevInfo->axisNo,
+                                    pPilsAsynDevInfo->function,
+                                    asynDisconnected);
     }
     memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
     ctrlLocal.numPilsAsynDevInfo = 0;
