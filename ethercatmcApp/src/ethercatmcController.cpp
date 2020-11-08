@@ -677,8 +677,8 @@ void ethercatmcController::handleStatusChange(asynStatus status)
 {
   if (status != ctrlLocal.oldStatus) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%soldStatus=%s (%d) status=%s (%d)\n",
-              modNamEMC,
+              "%s%s oldStatus=%s(%d) newStatus=%s(%d)\n",
+              modNamEMC, "handleStatusChange",
               ethercatmcstrStatus(ctrlLocal.oldStatus), (int)ctrlLocal.oldStatus,
               ethercatmcstrStatus(status), (int)status);
     if (status) {
@@ -720,6 +720,7 @@ asynStatus ethercatmcController::poll(void)
     if (!ctrlLocal.initialPollDone) {
       status = indexerInitialPoll();
       if (!status) {
+        handleStatusChange(status);
         ctrlLocal.initialPollDone = 1;
       } else {
         int i = 1;

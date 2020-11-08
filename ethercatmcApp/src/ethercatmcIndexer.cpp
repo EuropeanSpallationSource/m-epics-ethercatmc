@@ -160,6 +160,66 @@ extern "C" {
 static const double fABSMIN = -3.0e+38;
 static const double fABSMAX =  3.0e+38;
 
+/* Wrapper methods: if something fails, change state */
+asynStatus
+ethercatmcController::getPlcMemoryOnErrorStateChangeFL(unsigned indexOffset,
+                                                       void *data,
+                                                       size_t lenInPlc,
+                                                       const char *fileName,
+                                                       int lineNo)
+{
+  asynStatus status;
+  status = getPlcMemoryViaADSFL(indexOffset, data, lenInPlc,
+                                fileName, lineNo);
+  if (status) {
+    asynPrint(pasynUserController_,
+              ASYN_TRACE_FLOW,
+              "%sgetPlcMemoryOnErrorStateChangeFL %s:%d status=%s (%d) oldStatus=%d\n",
+              modNamEMC, fileName, lineNo,
+              ethercatmcstrStatus(status), (int)status,
+              (int)ctrlLocal.oldStatus);
+    handleStatusChange(status);
+  }
+  return status;
+}
+
+asynStatus
+ethercatmcController::setPlcMemoryOnErrorStateChangeFL(unsigned indexOffset,
+                                                       const void *data,
+                                                       size_t lenInPlc,
+                                                       const char *fileName,
+                                                       int lineNo)
+{
+  asynStatus status;
+  status = setPlcMemoryViaADSFL(indexOffset, data, lenInPlc,
+                                fileName, lineNo);
+  if (status) {
+    asynPrint(pasynUserController_,
+              ASYN_TRACE_FLOW,
+              "%ssetPlcMemoryOnErrorStateChangeFL %s:%d status=%s (%d) oldStatus=%d\n",
+              modNamEMC, fileName, lineNo,
+              ethercatmcstrStatus(status), (int)status,
+              (int)ctrlLocal.oldStatus);
+    handleStatusChange(status);
+  }
+  return status;
+
+}
+/* end of wrappers */
+
+/* Re-define calles without FILE and LINE */
+#define getPlcMemoryOnErrorStateChange(a,b,c)  getPlcMemoryOnErrorStateChangeFL(a,b,c,__FILE__, __LINE__)
+#define setPlcMemoryOnErrorStateChange(a,b,c)  setPlcMemoryOnErrorStateChangeFL(a,b,c,__FILE__, __LINE__)
+
+/* No "direct" calls into ADS below this point */
+#undef getPlcMemoryViaADS
+#undef setPlcMemoryViaADS
+#define getPlcMemoryViaADS    #error
+#define setPlcMemoryViaADS    #error
+#define getPlcMemoryViaADSFL  #error
+#define setPlcMemoryViaADSFL  #error
+
+
 asynStatus ethercatmcController::getPlcMemoryUintFL(unsigned indexOffset,
                                                     unsigned *value,
                                                     size_t lenInPlc,
@@ -171,7 +231,7 @@ asynStatus ethercatmcController::getPlcMemoryUintFL(unsigned indexOffset,
   memset(value, 0, lenInPlc);
   if (lenInPlc <= 8) {
     uint8_t raw[8];
-    status = getPlcMemoryViaADSFL(indexOffset, &raw, lenInPlc, fileName, lineNo);
+    status = getPlcMemoryOnErrorStateChangeFL(indexOffset, &raw, lenInPlc, fileName, lineNo);
     *value = netToUint(&raw, lenInPlc);
     return status;
   }
@@ -185,7 +245,7 @@ asynStatus ethercatmcController::setPlcMemoryInteger(unsigned indexOffset,
   if (lenInPlc <= 8) {
     uint8_t raw[8];
     uintToNet(value, &raw, lenInPlc);
-    return setPlcMemoryViaADS(indexOffset, raw, lenInPlc);
+    return setPlcMemoryOnErrorStateChange(indexOffset, raw, lenInPlc);
   } else {
     return asynError;
   }
@@ -201,7 +261,7 @@ asynStatus ethercatmcController::getPlcMemoryDouble(unsigned indexOffset,
   memset(value, 0, lenInPlc);
   if (lenInPlc <= 8) {
     uint8_t raw[8];
-    status = getPlcMemoryViaADS(indexOffset, &raw, lenInPlc);
+    status = getPlcMemoryOnErrorStateChange(indexOffset, &raw, lenInPlc);
     *value = netToDouble(&raw, lenInPlc);
     return status;
   }
@@ -215,7 +275,7 @@ asynStatus ethercatmcController::setPlcMemoryDouble(unsigned indexOffset,
   if (lenInPlc <= 8) {
     uint8_t raw[8];
     doubleToNet(value, &raw, lenInPlc);
-    return setPlcMemoryViaADS(indexOffset, &raw, lenInPlc);
+    return setPlcMemoryOnErrorStateChange(indexOffset, &raw, lenInPlc);
   }
   return asynError;
 }
@@ -387,9 +447,9 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
         uint8_t   paramCtrl[2];
         uint8_t   paramValue[8];
       } paramIf;
-      status = getPlcMemoryViaADS(paramIfOffset,
-                                  &paramIf,
-                                  sizeof(paramIf.paramCtrl) + lenInPlcPara);
+      status = getPlcMemoryOnErrorStateChange(paramIfOffset,
+                                              &paramIf,
+                                              sizeof(paramIf.paramCtrl) + lenInPlcPara);
       if (status) {
         asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
                   "%sstatus=%s (%d)\n",
@@ -830,9 +890,9 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexer(devNum, infoType16 + auxBitIdx);
         if (status) return status;
-        status = getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
-                                    auxBitName,
-                                    sizeof(auxBitName));
+        status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                                auxBitName,
+                                                sizeof(auxBitName));
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sauxBitName[%d] auxBitName(%02u)=%s\n",
                   modNamEMC, axisNo, auxBitIdx, auxBitName);
@@ -979,8 +1039,8 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
         uint8_t   absMin[4];
         uint8_t   absMax[4];
       } infoType0_data;
-      status = getPlcMemoryViaADS(ctrlLocal.indexerOffset +  1*2,
-                                  &infoType0_data, sizeof(infoType0_data));
+      status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset +  1*2,
+                                              &infoType0_data, sizeof(infoType0_data));
       if (!status) {
         iTypCode  = infoType0_data.typCode_0 + (infoType0_data.typCode_1 << 8);
         iSizeBytes= infoType0_data.size_0 + (infoType0_data.size_1 << 8);
@@ -996,27 +1056,27 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
     }
     status = readDeviceIndexer(devNum, infoType4);
     if (!status) {
-      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
-                         descVersAuthors.desc,
-                         sizeof(descVersAuthors.desc));
+      getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                     descVersAuthors.desc,
+                                     sizeof(descVersAuthors.desc));
     }
     status = readDeviceIndexer(devNum, infoType5);
     if (!status) {
-      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
-                         descVersAuthors.vers,
-                         sizeof(descVersAuthors.vers));
+      getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                     descVersAuthors.vers,
+                                     sizeof(descVersAuthors.vers));
     }
     status = readDeviceIndexer(devNum, infoType6);
     if (!status) {
-      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
-                         descVersAuthors.author1,
-                         sizeof(descVersAuthors.author1));
+      getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                     descVersAuthors.author1,
+                                     sizeof(descVersAuthors.author1));
     }
     status = readDeviceIndexer(devNum, infoType7);
     if (!status) {
-      getPlcMemoryViaADS(ctrlLocal.indexerOffset + 1*2,
-                         descVersAuthors.author2,
-                         sizeof(descVersAuthors.author2));
+      getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                     descVersAuthors.author2,
+                                     sizeof(descVersAuthors.author2));
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%sindexerDevice(%u) \"%s\" TypCode=0x%x OffsBytes=%u "
@@ -1331,9 +1391,9 @@ asynStatus ethercatmcController::indexerPoll(void)
     int traceMask = ASYN_TRACEIO_DRIVER;
     memset(ctrlLocal.pIndexerProcessImage, 0,
            ctrlLocal.lastDeviceEndOffset);
-    status = getPlcMemoryViaADS(indexOffset,
-                                &ctrlLocal.pIndexerProcessImage[indexOffset],
-                                len);
+    status = getPlcMemoryOnErrorStateChange(indexOffset,
+                                            &ctrlLocal.pIndexerProcessImage[indexOffset],
+                                            len);
     if (status) traceMask |= ASYN_TRACE_ERROR;
     asynPrint(pasynUserController_, traceMask,
               "%spoll() indexOffset=%u len=%u status=%s (%d)\n",

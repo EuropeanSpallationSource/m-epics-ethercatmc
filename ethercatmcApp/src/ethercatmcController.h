@@ -225,6 +225,16 @@ public:
 #define getPlcMemoryViaADS(a,b,c)           getPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
 #define setPlcMemoryViaADS(a,b,c)           setPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
 
+  /* Wrapper  */
+  asynStatus getPlcMemoryOnErrorStateChangeFL(unsigned indexOffset,
+                                              void *data, size_t lenInPlc,
+                                              const char *fileName,
+                                              int lineNo);
+  asynStatus setPlcMemoryOnErrorStateChangeFL(unsigned indexOffset,
+                                              const void *data, size_t lenInPlc,
+                                              const char *fileName,
+                                              int lineNo);
+
   asynStatus getSymbolInfoViaADS(const char *symbolName,
                                  void *data,
                                  size_t lenInPlc);
