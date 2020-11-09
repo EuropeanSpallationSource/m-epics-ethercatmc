@@ -839,6 +839,9 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
                 "%s Communication error(%d)\n", modNamEMC, axisNo_);
       memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
       drvlocal.dirty.initialPollNeeded = 1;
+      drvlocal.devNum = 0;
+      drvlocal.iTypCode = 0;
+      drvlocal.iOffset = 0;
     }
 #ifdef motorPowerAutoOnOffString
   } else if (function == pC_->motorPowerAutoOnOff_) {
