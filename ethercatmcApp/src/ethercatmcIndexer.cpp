@@ -281,8 +281,10 @@ asynStatus ethercatmcController::setPlcMemoryDouble(unsigned indexOffset,
 }
 
 
-asynStatus ethercatmcController::readDeviceIndexer(unsigned devNum,
-                                                   unsigned infoType)
+asynStatus ethercatmcController::readDeviceIndexerFL(unsigned devNum,
+                                                     unsigned infoType,
+                                                     const char *fileName,
+                                                     int lineNo)
 {
   asynStatus status;
   unsigned value = (devNum + (infoType << 8));
@@ -292,8 +294,8 @@ asynStatus ethercatmcController::readDeviceIndexer(unsigned devNum,
     status = asynDisabled;
     asynPrint(pasynUserController_,
               ASYN_TRACE_INFO,
-              "%sreadDeviceIndexer devNum=%u infoType=%u status=%s (%d)\n",
-              modNamEMC,devNum, infoType,
+              "%s%s:%d readDeviceIndexer devNum=%u infoType=%u status=%s (%d)\n",
+              modNamEMC, fileName, lineNo, devNum, infoType,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
@@ -307,8 +309,8 @@ asynStatus ethercatmcController::readDeviceIndexer(unsigned devNum,
   if (status) {
     asynPrint(pasynUserController_,
               ASYN_TRACE_INFO,
-              "%sreadDeviceIndexer status=%s (%d)\n",
-              modNamEMC,
+              "%s%s:%d readDeviceIndexer status=%s (%d)\n",
+              modNamEMC,fileName, lineNo,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
@@ -317,8 +319,8 @@ asynStatus ethercatmcController::readDeviceIndexer(unsigned devNum,
     if (status) {
       asynPrint(pasynUserController_,
                 ASYN_TRACE_INFO,
-                "%sreadDeviceIndexer status=%s (%d)\n",
-                modNamEMC,
+                "%s%s:%d readDeviceIndexer status=%s (%d)\n",
+                modNamEMC, fileName, lineNo,
                 ethercatmcstrStatus(status), (int)status);
       return status;
     }
@@ -769,8 +771,8 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
   if (status) {
     asynPrint(pasynUserController_,
               ASYN_TRACE_INFO,
-              "%sindexerReadAxisParameters status=%s (%d)\n",
-              modNamEMC,
+              "%sindexerReadAxisParameters(%d) initialPollDon=%d status=%s (%d)\n",
+              modNamEMC, devNum, ctrlLocal.initialPollDone,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }

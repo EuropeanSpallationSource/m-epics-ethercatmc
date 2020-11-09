@@ -195,7 +195,10 @@ public:
   void udateMotorLimitsRO(int axisNo);
   void udateMotorLimitsRO(int axisNo, int enabledHighAndLow,
                           double fValueHigh, double fValueLow);
-  void handleStatusChange(asynStatus status);
+  void handleStatusChangeFL(asynStatus status,
+                            const char *fileName,
+                            int lineNo);
+#define  handleStatusChange(a) handleStatusChangeFL(a, __FILE__, __LINE__);
   asynStatus writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
                                               const char *outdata,
                                               size_t outlen,
@@ -242,7 +245,10 @@ public:
                                          uint32_t *handle);
 
   /* Indexer */
-  asynStatus readDeviceIndexer(unsigned devNum, unsigned infoType);
+  asynStatus readDeviceIndexerFL(unsigned devNum, unsigned infoType,
+                                 const char *fileName,
+                                 int lineNo);
+#define readDeviceIndexer(a,b) readDeviceIndexerFL(a,b,__FILE__, __LINE__)
   void parameterFloatReadBack(unsigned axisNo,
                               int initial,
                               unsigned paramIndex,

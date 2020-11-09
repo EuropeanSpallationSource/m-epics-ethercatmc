@@ -140,7 +140,7 @@ ethercatmcController::ethercatmcController(const char *portName,
 
   /* Controller */
   memset(&ctrlLocal, 0, sizeof(ctrlLocal));
-  ctrlLocal.oldStatus = asynDisconnected;
+  ctrlLocal.oldStatus = asynError; //asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
   features_ = 0;
   lockADSsocket_ = epicsMutexMustCreate();
@@ -673,12 +673,14 @@ void ethercatmcController::udateMotorLimitsRO(int axisNo, int enabledHighAndLow,
 
 }
 
-void ethercatmcController::handleStatusChange(asynStatus status)
+void ethercatmcController::handleStatusChangeFL(asynStatus status,
+                                                const char *fileName,
+                                                int lineNo)
 {
   if (status != ctrlLocal.oldStatus) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s oldStatus=%s(%d) newStatus=%s(%d)\n",
-              modNamEMC, "handleStatusChange",
+              "%s %s:%d %s oldStatus=%s(%d) newStatus=%s(%d)\n",
+              modNamEMC, fileName, lineNo, "handleStatusChange",
               ethercatmcstrStatus(ctrlLocal.oldStatus), (int)ctrlLocal.oldStatus,
               ethercatmcstrStatus(status), (int)status);
     if (status) {

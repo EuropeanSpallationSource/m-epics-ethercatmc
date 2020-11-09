@@ -253,6 +253,11 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
                                   indata, part_1_len,
                                   DEFAULT_CONTROLLER_TIMEOUT,
                                   &nread, &eomReason);
+  if ((status == asynTimeout) ||
+      (!status && !nread && (eomReason & ASYN_EOM_END))) {
+    errorProblem = 1;
+    tracelevel |= ASYN_TRACE_ERROR;
+  }
   ethercatmchexdump(pasynUser, tracelevel, "IN ams/tcp ",
                     indata, nread);
   if (nread != part_1_len) {
@@ -283,22 +288,29 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
       ethercatmchexdump(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                         "OUT ", outdata, outlen);
     }
-
     asynPrint(pasynUser, tracelevel,
-              "%sIN  nread=%lu eomReason=%x (%s%s%s) err=%s status=%s (%d)\n",
+              "%sIN  part_1_len=%lu read=%lu eomReason=%x (%s%s%s) err=%s errorProblem=%d status=%s (%d)\n",
               modNamEMC,
-              (unsigned long)nread,
+              (unsigned long)part_1_len,  (unsigned long)nread,
               eomReason,
               eomReason & ASYN_EOM_CNT ? "CNT" : "",
               eomReason & ASYN_EOM_EOS ? "EOS" : "",
               eomReason & ASYN_EOM_END ? "END" : "",
               pasynUser->errorMessage,
+              errorProblem,
               ethercatmcstrStatus(status), status);
   }
   if (nread != part_1_len) {
+    asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s calling disconnect_C nread=%lu part_1_len=%lu\n",
+              modNamEMC,
+              (unsigned long)*pnread,
+              (unsigned long)part_1_len);
     disconnect_C(pasynUser);
+    errorProblem = 1;
+    status = asynError;
   }
-  if (!status) {
+  if (!errorProblem && !status) {
     /* The length to read is inside the AMS/TCP header */
     const AmsHdrType *amsHdr_p = (const AmsHdrType *)indata;
     uint32_t amsTcpHdr_len = NETTOUINT(amsHdr_p->amsTcpHdr.net_len);
@@ -320,11 +332,11 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
       tracelevel |= ASYN_TRACE_ERROR;
     }
     asynPrint(pasynUser, tracelevel,
-              "%s IN part 2 inlen-part_1_len=%lu toread=0x%x %u nread=%lu eomReason=0x%x status=%s (%d)\n",
+              "%s IN part 2 inlen-part_1_len=%lu toread=0x%x %u nread=%lu eomReason=0x%x errorProblem=%d status=%s (%d)\n",
               modNamEMC,
               (unsigned long)inlen - (unsigned long)part_1_len,
               (unsigned)toread, (unsigned)toread,
-              (unsigned long)nread, eomReason,
+              (unsigned long)nread, eomReason, errorProblem,
               ethercatmcstrStatus(status), status);
     ethercatmchexdump(pasynUser, tracelevel, "IN part 2",
                       indata, nread);
@@ -348,12 +360,15 @@ ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
                   eomReason & ASYN_EOM_END ? "END" : "",
                   ethercatmcstrStatus(status), status);
         disconnect_C(pasynUser);
+        status = asynError;
       }
     } else {
       *pnread = nread + part_1_len;
     }
+  } else {
+    epicsMutexUnlock(lockADSsocket_);
   }
-  handleStatusChange(status);
+
   return status;
 }
 
@@ -500,11 +515,15 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
     uint32_t ads_length = netToUint(&ADS_Read_rep_p->response.net_len,
                                     sizeof(ADS_Read_rep_p->response.net_len));
     if (ads_result) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+      int tracelevel = ASYN_TRACEIO_DRIVER;
+      if (ctrlLocal.cntADSstatus < MAXCNTADSSTATUS) {
+        tracelevel |= ASYN_TRACE_ERROR;
+        ctrlLocal.cntADSstatus++;
+      }
+      asynPrint(pasynUser, tracelevel,
                 "%sads_result=0x%x\n", modNamEMC, (unsigned)ads_result);
       status = asynError;
-    }
-    if (ads_length != lenInPlc) {
+    } else if (ads_length != lenInPlc) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%slenInPlc=%lu ads_length=%u\n", modNamEMC,
                   (unsigned long)lenInPlc,(unsigned)ads_length);
