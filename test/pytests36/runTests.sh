@@ -183,20 +183,20 @@ if ! type pytest >/dev/null 2>&1 ; then
   . $INSTALLED_EPICS
   fi
 
-  if test -z "$PYEPICS_LIBCA"; then
-      MYLIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH/libca.so
-      if test -r "$MYLIB"; then
-        PYEPICS_LIBCA=$MYLIB
-        export PYEPICS_LIBCA
-      else
-        MYLIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH/libca.dylib
-        if test -r "$MYLIB"; then
-          PYEPICS_LIBCA=$MYLIB
-          export PYEPICS_LIBCA
-        fi
-      fi
-  fi &&
   export VIRTUALENVDIR
   export CONDA_PREFIX
 fi
+if test -z "$PYEPICS_LIBCA"; then
+  MYLIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH/libca.so
+  if test -r "$MYLIB"; then
+    PYEPICS_LIBCA=$MYLIB
+    export PYEPICS_LIBCA
+  else
+    MYLIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH/libca.dylib
+    if test -r "$MYLIB"; then
+      PYEPICS_LIBCA=$MYLIB
+      export PYEPICS_LIBCA
+    fi
+  fi
+fi &&
 ./doRunTests.sh "$@"
