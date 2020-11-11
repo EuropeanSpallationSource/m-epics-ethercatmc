@@ -1291,6 +1291,13 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
       myAsynParamType = asynParamInt64;
 #endif
       break;
+    case 0x1602:
+      lenInPLC = 2;
+      /* 1602 has "current value, followed by target value */
+      inputOffset = indexOffset;
+      outputOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamInt32;
+      break;
     case 0x1604:
       lenInPLC = 4;
       /* 1604 has "current value, followed by target value */
