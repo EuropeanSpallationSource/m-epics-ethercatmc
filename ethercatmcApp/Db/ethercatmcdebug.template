@@ -96,6 +96,7 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM") {
     field(PREC,"$(PREC)")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM")
     info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
 }
 
 record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM") {
@@ -105,6 +106,7 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM") {
     field(PREC,"$(PREC)")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM")
     info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
 }
 
 record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-En") {
@@ -113,6 +115,7 @@ record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-En") {
     field(DTYP, "asynInt32")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM-En")
     info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
 }
 
 record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En") {
@@ -120,6 +123,8 @@ record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En") {
     field(VAL,  0)
     field(DTYP, "asynInt32")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM-En")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
 }
 
 record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgVELO")
