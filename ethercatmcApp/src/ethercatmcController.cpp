@@ -181,10 +181,10 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcNamAux7_String,      asynParamOctet,       &ethercatmcNamAux7_);
   createParam(ethercatmcNamBit24_String,     asynParamOctet,       &ethercatmcNamBit24_);
   createParam(ethercatmcNamBit25_String,     asynParamOctet,       &ethercatmcNamBit25_);
-  createParam(ethercatmcCfgVELO_String,      asynParamFloat64,     &ethercatmcCfgVELO_);
-  createParam(ethercatmcCfgVMAX_String,      asynParamFloat64,     &ethercatmcCfgVMAX_);
-  createParam(ethercatmcCfgJVEL_String,      asynParamFloat64,     &ethercatmcCfgJVEL_);
-  createParam(ethercatmcCfgACCS_String,      asynParamFloat64,     &ethercatmcCfgACCS_);
+  createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &ethercatmcCfgVELO_RB_);
+  createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &ethercatmcCfgVMAX_RB_);
+  createParam(ethercatmcCfgJVEL_RBString,    asynParamFloat64,     &ethercatmcCfgJVEL_RB_);
+  createParam(ethercatmcCfgACCS_RBString,    asynParamFloat64,     &ethercatmcCfgACCS_RB_);
   createParam(ethercatmcCfgDHLMRBString,    asynParamFloat64,     &ethercatmcCfgDHLM_RB_);
   createParam(ethercatmcCfgDLLMRBString,    asynParamFloat64,     &ethercatmcCfgDLLM_RB_);
   createParam(ethercatmcCfgDHLM_EnRBString, asynParamInt32,       &ethercatmcCfgDHLM_En_RB_);
@@ -1038,6 +1038,11 @@ void ethercatmcController::setAlarmStatusSeverityAllReadbacks(asynStatus status)
   setAlarmStatusSeverityAllAxes(ethercatmcCfgPOSLAG_En_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcCfgDESC_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcCfgEGU_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgVELO_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgVMAX_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgJVEL_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgACCS_RB_, status);
+
 }
 
 void ethercatmcController::setAlarmStatusSeverityAllAxes(int function, asynStatus status)

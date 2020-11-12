@@ -404,16 +404,16 @@ asynStatus ethercatmcAxis::readBackVelocities(int axisID)
             "%svelo=%f vmax=%f jvel=%f accs=%f\n",
             modNamEMC, velo, vmax, jvel, accs);
   if (velo > 0.0) {
-    pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgVELO_, velo / scaleFactor, "velo");
+    pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgVELO_RB_, velo / scaleFactor, "velo");
   }
   if (vmax > 0.0) {
-    pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgVMAX_, vmax / scaleFactor, "vmax");
+    pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgVMAX_RB_, vmax / scaleFactor, "vmax");
   }
   if (jvel > 0.0) {
-    pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgJVEL_, jvel / scaleFactor, "jvel");
+    pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgJVEL_RB_, jvel / scaleFactor, "jvel");
   }
   if (accs > 0.0) {
-    pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgACCS_, accs / scaleFactor, "accs");
+    pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgACCS_RB_, accs / scaleFactor, "accs");
   }
   return asynSuccess;
 }
@@ -1593,26 +1593,6 @@ asynStatus ethercatmcAxis::setDoubleParam(int function, double value)
               "%ssetDoubleParam(%d ethercatmcCfgDLLM_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xD, value);
     readBackSoftLimits(0);
-    return status;
-  } else if (function == pC_->ethercatmcCfgVELO_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d ethercatmcCfgVELO_)=%f\n", modNamEMC, axisNo_, value);
-    status = setSAFValueOnAxis(0x4000, 0x9, value);
-    return status;
-  } else if (function == pC_->ethercatmcCfgVMAX_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d ethercatmcCfgVMAX_)=%f\n", modNamEMC, axisNo_, value);
-    status = setSAFValueOnAxis(0x4000, 0x27, value);
-    return status;
-  } else if (function == pC_->ethercatmcCfgJVEL_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d ethercatmcCfgJVEL_)=%f\n", modNamEMC, axisNo_, value);
-    status = setSAFValueOnAxis(0x4000, 0x8, value);
-    return status;
-  } else if (function == pC_->ethercatmcCfgACCS_) {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d ethercatmcCfgACCS_)=%f\n", modNamEMC, axisNo_, value);
-    status = setSAFValueOnAxis(0x4000, 0x101, value);
     return status;
   }
   // Call the base class method

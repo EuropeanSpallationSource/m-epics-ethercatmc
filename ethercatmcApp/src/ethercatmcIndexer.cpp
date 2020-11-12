@@ -713,14 +713,14 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     updateCfgValue(axisNo, ethercatmcVelToHom_, fValue, "hvel");
     break;
   case PARAM_IDX_SPEED_FLOAT:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgVELO_, fValue, "veloCFG");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgVELO_RB_, fValue, "veloCFG");
     updateCfgValue(axisNo, ethercatmcVel_RB_, fValue, "veloRB");
 #ifdef motorDefVelocityROString
     pAxis->setDoubleParam(motorDefVelocityRO_, fValue);
 #endif
     break;
   case PARAM_IDX_ACCEL_FLOAT:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgACCS_, fValue, "accsRB");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgACCS_RB_, fValue, "accsRB");
     updateCfgValue(axisNo, ethercatmcAcc_RB_, fValue, "accsRB");
     break;
   case PARAM_IDX_IDLE_CURRENT_FLOAT:
@@ -751,7 +751,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     pAxis->setIntegerParam(ethercatmcFoffVis_, 1);
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_, fabs(fValue), "jvel");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_RB_, fabs(fValue), "jvel");
     break;
   }
 }

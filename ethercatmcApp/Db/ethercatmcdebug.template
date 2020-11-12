@@ -127,39 +127,6 @@ record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En") {
     info(asyn:INITIAL_READBACK,"1")
 }
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgVELO")
-{
-    field(DESC, "Controller Velocity(fast)")
-    field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVELO")
-    info(asyn:READBACK,"1")
-}
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgVMAX")
-{
-    field(DESC, "Controller max Velocity")
-    field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVMAX")
-    info(asyn:READBACK,"1")
-}
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgJVEL")
-{
-    field(DESC, "Controller Velocity (slow)")
-    field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgJVEL")
-    info(asyn:READBACK,"1")
-}
-record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgACCS")
-{
-    field(DESC, "Default acceleration")
-    field(DTYP, "asynFloat64")
-    field(PREC,"$(PREC)")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgACCS")
-    info(asyn:READBACK,"1")
-}
-
 record(longout,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU") {
     field(DESC, "Record uses EGU")
     field(DTYP, "asynInt32")
