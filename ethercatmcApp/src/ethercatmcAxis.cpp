@@ -216,7 +216,7 @@ extern "C" int ethercatmcCreateAxis(const char *ethercatmcName, int axisNo,
   return asynSuccess;
 }
 
-asynStatus ethercatmcAxis::readBackSoftLimits(void)
+asynStatus ethercatmcAxis::readBackSoftLimits(int initial)
 {
   asynStatus status;
   int nvals;
@@ -256,6 +256,17 @@ asynStatus ethercatmcAxis::readBackSoftLimits(void)
   pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgDHLM_RB_, fValueHigh, "dhlm");
   pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgDLLM_En_RB_, enabledLow, "dllm_en");
   pC_->updateCfgValue(axisNo_, pC_->ethercatmcCfgDLLM_RB_, fValueLow, "dllm");
+  if (initial) {
+    /* These are output records.
+       Initialize those PVs which allow to set the softlimits
+       with the values from the controller
+       And note that these PVs are typically for debug only
+     */
+    asynMotorAxis::setIntegerParam(pC_->ethercatmcCfgDHLM_En_, enabledHigh);
+    asynMotorAxis::setDoubleParam(pC_->ethercatmcCfgDHLM_, fValueHigh);
+    asynMotorAxis::setIntegerParam(pC_->ethercatmcCfgDLLM_En_, enabledLow);
+    asynMotorAxis::setDoubleParam(pC_->ethercatmcCfgDLLM_, fValueLow);
+  }
   if (scaleFactor) {
     pC_->udateMotorLimitsRO(axisNo_, enabledHigh && enabledLow,
                             fValueHigh / scaleFactor, fValueLow / scaleFactor);
@@ -433,6 +444,7 @@ asynStatus ethercatmcAxis::initialPoll(void)
 asynStatus ethercatmcAxis::readBackAllConfig(int axisID)
 {
   asynStatus status = asynSuccess;
+  int initial = 1;
   /* for ECMC homing is configured from EPICS, do NOT do the readback */
   if (!(pC_->features_ & FEATURE_BITS_ECMC)) {
     if (!drvlocal.scaleFactor) {
@@ -445,7 +457,7 @@ asynStatus ethercatmcAxis::readBackAllConfig(int axisID)
   }
   if (status == asynSuccess) status = readScaling(axisID);
   if (status == asynSuccess) status = readMonitoring(axisID);
-  if (status == asynSuccess) status = readBackSoftLimits();
+  if (status == asynSuccess) status = readBackSoftLimits(initial);
   if (status == asynSuccess) status = readBackVelocities(axisID);
   return status;
 }
@@ -1246,7 +1258,7 @@ asynStatus ethercatmcAxis::poll(bool *moving)
           drvlocal.eeAxisPollNow = pollNowReadBackSoftLimits;
           break;
         case pollNowReadBackSoftLimits:
-          readBackSoftLimits();
+          readBackSoftLimits(0);
           drvlocal.eeAxisPollNow = pollNowReadBackVelocities;
           break;
         case pollNowReadBackVelocities:
@@ -1476,14 +1488,14 @@ asynStatus ethercatmcAxis::setIntegerParam(int function, int value)
               "%ssetIntegerParam(%d ethercatmcCfgDHLM_En)=%d\n",
               modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xC, value);
-    readBackSoftLimits();
+    readBackSoftLimits(0);
     return status;
   } else if (function == pC_->ethercatmcCfgDLLM_En_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcCfgDLLM_En)=%d\n",
               modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xB, value);
-    readBackSoftLimits();
+    readBackSoftLimits(0);
     return status;
   }
 
@@ -1574,13 +1586,13 @@ asynStatus ethercatmcAxis::setDoubleParam(int function, double value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d ethercatmcCfgDHLM_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xE, value);
-    readBackSoftLimits();
+    readBackSoftLimits(0);
     return status;
   } else if (function == pC_->ethercatmcCfgDLLM_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d ethercatmcCfgDLLM_)=%f\n", modNamEMC, axisNo_, value);
     status = setSAFValueOnAxis(indexGroup5000, 0xD, value);
-    readBackSoftLimits();
+    readBackSoftLimits(0);
     return status;
   } else if (function == pC_->ethercatmcCfgVELO_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
