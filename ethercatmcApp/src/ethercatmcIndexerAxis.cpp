@@ -112,6 +112,9 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #ifdef motorShowPowerOffString
   setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
+#ifdef motorFlagsHomeOnLsString
+  setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
+#endif
   setStringParam(pC_->ethercatmcNamBit25_, "Dynamic problem, timeout");
   setStringParam(pC_->ethercatmcNamBit24_, "Static problem, inhibit");
 
