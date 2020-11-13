@@ -1440,7 +1440,7 @@ asynStatus ethercatmcController::indexerPoll(void)
             if (status != asynSuccess || oldValue != newValue) {
               setIntegerParam(axisNo, function,  newValue);
               callBacksNeeded = 1;
-              tracelevel |= ASYN_TRACE_INFO;
+              if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
             }
             asynPrint(pasynUserController_, tracelevel,
                       "%sindexerPoll axisNo=%d function=%s(%d) newValue=%d oldValue=%d\n",
@@ -1452,7 +1452,7 @@ asynStatus ethercatmcController::indexerPoll(void)
           {
             int tracelevel = ASYN_TRACE_FLOW;
             const char *paramName = "";
-            double newValue, oldValue = 0.0;
+            double newValue = 0.0, oldValue = 0.0;
             int newValueValid = 1;
             getParamName(axisNo, function, &paramName);
             if (pPilsAsynDevInfo->myMCUParamType == asynParamFloat64) {
@@ -1469,26 +1469,33 @@ asynStatus ethercatmcController::indexerPoll(void)
               if (status != asynSuccess || oldValue != newValue) {
                 setDoubleParam(axisNo, function,  newValue);
                 callBacksNeeded = 1;
-                tracelevel |= ASYN_TRACE_INFO;
+                if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
               }
             }
             asynPrint(pasynUserController_, tracelevel,
-                      "%sindexerPoll axisNo=%d function=%s(%d) newValue=%f oldValue=%f newValueValid=%d\n",
+                      "%sindexerPoll axisNo=%d function=%s(%d) oldValue=%f newValue=%f\n",
                       modNamEMC, axisNo,
-                      paramName, function, newValue, oldValue, newValueValid);
+                      paramName, function, oldValue, newValue);
           }
           break;
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
         case asynParamInt64:
-          if (pPilsAsynDevInfo->inputOffset)
           {
+            int tracelevel = ASYN_TRACE_FLOW;
+            const char *paramName = "";
             epicsInt64 newValue, oldValue;
+            getParamName(axisNo, function, &paramName);
             newValue = (epicsInt64)netToUint64(pDataInPlc, lenInPLC);
             status = getInteger64Param(axisNo, function,  &oldValue);
             if (status != asynSuccess || oldValue != newValue) {
               setInteger64Param(axisNo, function,  newValue);
               callBacksNeeded = 1;
+              if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
             }
+            asynPrint(pasynUserController_, tracelevel,
+                      "%sindexerPoll axisNo=%d function=%s(%d)  oldValue=%" PRIi64 " newValue=%" PRIi64 "\n",
+                      modNamEMC, axisNo,
+                      paramName, function, (int64_t)oldValue, (int64_t)newValue);
           }
           break;
 #endif
