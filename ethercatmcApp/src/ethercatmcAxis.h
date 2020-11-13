@@ -159,7 +159,7 @@ private:
   asynStatus readConfigLine(const char *line, const char **errorTxt_p);
   asynStatus readConfigFile(void);
   asynStatus readBackAllConfig(int axisID);
-  asynStatus readBackSoftLimits(void);
+  asynStatus readBackSoftLimits(int initial);
   asynStatus readBackHoming(void);
   asynStatus readScaling(int axisID);
   asynStatus readMonitoring(int axisID);

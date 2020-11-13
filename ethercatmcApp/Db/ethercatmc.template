@@ -263,7 +263,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-CfgVELO-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVELO")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVELO-RB")
     field(SCAN, "I/O Intr")
 }
 
@@ -271,7 +271,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-CfgVMAX-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVMAX")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgVMAX-RB")
     field(SCAN, "I/O Intr")
 }
 
@@ -280,7 +280,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-CfgJVEL-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgJVEL")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgJVEL-RB")
     field(SCAN, "I/O Intr")
 }
 
@@ -288,7 +288,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-CfgACCS-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgACCS")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgACCS-RB")
     field(SCAN, "I/O Intr")
 }
 

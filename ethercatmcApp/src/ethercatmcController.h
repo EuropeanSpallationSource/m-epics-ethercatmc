@@ -55,10 +55,10 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVelActString               "VelAct"
 #define ethercatmcVel_RBString               "Vel-RB"
 #define ethercatmcAcc_RBString               "Acc-RB"
-#define ethercatmcCfgVELO_String             "CfgVELO"
-#define ethercatmcCfgVMAX_String             "CfgVMAX"
-#define ethercatmcCfgJVEL_String             "CfgJVEL"
-#define ethercatmcCfgACCS_String             "CfgACCS"
+#define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
+#define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
+#define ethercatmcCfgJVEL_RBString           "CfgJVEL-RB"
+#define ethercatmcCfgACCS_RBString           "CfgACCS-RB"
 #define ethercatmcCfgDHLMRBString            "CfgDHLM-RB"
 #define ethercatmcCfgDLLMRBString            "CfgDLLM-RB"
 #define ethercatmcCfgDHLM_EnRBString         "CfgDHLM-En-RB"
@@ -184,6 +184,8 @@ public:
   asynStatus setMCUErrMsg(const char *value);
   asynStatus configController(int needOk, const char *value);
   asynStatus writeReadOnErrorDisconnect(void);
+  void setAlarmStatusSeverityAllReadbacks(asynStatus status);
+  void setAlarmStatusSeverityAllAxes(int function, asynStatus status);
   void setAlarmStatusSeverityWrapper(int axisNo, int function,
                                      asynStatus status);
   ethercatmcAxis* getAxis(asynUser *pasynUser);
@@ -385,10 +387,10 @@ public:
   int ethercatmcVelAct_;
   int ethercatmcVel_RB_;
   int ethercatmcAcc_RB_;
-  int ethercatmcCfgVELO_;
-  int ethercatmcCfgVMAX_;
-  int ethercatmcCfgJVEL_;
-  int ethercatmcCfgACCS_;
+  int ethercatmcCfgVELO_RB_;
+  int ethercatmcCfgVMAX_RB_;
+  int ethercatmcCfgJVEL_RB_;
+  int ethercatmcCfgACCS_RB_;
   int ethercatmcCfgSREV_RB_;
   int ethercatmcCfgUREV_RB_;
   int ethercatmcCfgPMIN_RB_;

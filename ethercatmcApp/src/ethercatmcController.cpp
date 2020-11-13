@@ -181,10 +181,10 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcNamAux7_String,      asynParamOctet,       &ethercatmcNamAux7_);
   createParam(ethercatmcNamBit24_String,     asynParamOctet,       &ethercatmcNamBit24_);
   createParam(ethercatmcNamBit25_String,     asynParamOctet,       &ethercatmcNamBit25_);
-  createParam(ethercatmcCfgVELO_String,      asynParamFloat64,     &ethercatmcCfgVELO_);
-  createParam(ethercatmcCfgVMAX_String,      asynParamFloat64,     &ethercatmcCfgVMAX_);
-  createParam(ethercatmcCfgJVEL_String,      asynParamFloat64,     &ethercatmcCfgJVEL_);
-  createParam(ethercatmcCfgACCS_String,      asynParamFloat64,     &ethercatmcCfgACCS_);
+  createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &ethercatmcCfgVELO_RB_);
+  createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &ethercatmcCfgVMAX_RB_);
+  createParam(ethercatmcCfgJVEL_RBString,    asynParamFloat64,     &ethercatmcCfgJVEL_RB_);
+  createParam(ethercatmcCfgACCS_RBString,    asynParamFloat64,     &ethercatmcCfgACCS_RB_);
   createParam(ethercatmcCfgDHLMRBString,    asynParamFloat64,     &ethercatmcCfgDHLM_RB_);
   createParam(ethercatmcCfgDLLMRBString,    asynParamFloat64,     &ethercatmcCfgDLLM_RB_);
   createParam(ethercatmcCfgDHLM_EnRBString, asynParamInt32,       &ethercatmcCfgDHLM_En_RB_);
@@ -685,8 +685,9 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
               ethercatmcstrStatus(status), (int)status);
     if (status) {
       /* Connected -> Disconnected */
-      int i;
+      int axisNo;
       ctrlLocal.initialPollDone = 0;
+      setAlarmStatusSeverityAllReadbacks(asynDisconnected);
       if (ctrlLocal.useADSbinary) {
         indexerDisconnected();
       }
@@ -695,8 +696,8 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
          clear bits that are fetched from the controller */
       features_ &= ~reportedFeatureBits;
       setMCUErrMsg("MCU Disconnected");
-      for (i=0; i<numAxes_; i++) {
-        asynMotorAxis *pAxis=getAxis(i);
+      for (axisNo=0; axisNo<numAxes_; axisNo++) {
+        asynMotorAxis *pAxis=getAxis(axisNo);
         if (!pAxis) continue;
         pAxis->setIntegerParam(motorStatusCommsError_, 1);
         pAxis->callParamCallbacks();
@@ -767,6 +768,7 @@ asynStatus ethercatmcController::updateCfgValue(int axisNo_, int function,
               "%supdateCfgValue(%d) old%s=%f new%s=%f\n",
               modNamEMC, axisNo_, name, oldValue, name, newValue);
   }
+  setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
   return setDoubleParam(axisNo_, function, newValue);
 }
 
@@ -789,6 +791,7 @@ asynStatus ethercatmcController::updateCfgValue(int axisNo_, int function,
               "%supdateCfgValue(%d) old%s=%d new%s=%d\n",
               modNamEMC, axisNo_, name, oldValue, name, newValue);
   }
+  setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
   return setIntegerParam(axisNo_, function, newValue);
 }
 
@@ -1012,9 +1015,46 @@ extern "C" {
   epicsExportRegistrar(ethercatmcControllerRegister);
 }
 
+void ethercatmcController::setAlarmStatusSeverityAllReadbacks(asynStatus status)
+{
+  setAlarmStatusSeverityAllAxes(ethercatmcHomProc_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcHomPos_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcVel_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcAcc_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgDHLM_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgDLLM_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgDHLM_En_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgDLLM_En_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgSREV_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgUREV_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgPMIN_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgPMAX_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgSPDB_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgRDBD_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgRDBD_Tim_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgRDBD_En_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgPOSLAG_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgPOSLAG_Tim_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgPOSLAG_En_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgDESC_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgEGU_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgVELO_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgVMAX_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgJVEL_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgACCS_RB_, status);
+
+}
+
+void ethercatmcController::setAlarmStatusSeverityAllAxes(int function, asynStatus status)
+{
+  for (int axisNo=0; axisNo<numAxes_; axisNo++) {
+    setAlarmStatusSeverityWrapper(axisNo, function,  status);
+  }
+}
+
+
 /* Alarm definition from EPICS Base */
 #include <alarm.h>
-
 /* Code inspired by .../asyn/devEpics/asynEpicsUtils.c */
 void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
                                                          int function,

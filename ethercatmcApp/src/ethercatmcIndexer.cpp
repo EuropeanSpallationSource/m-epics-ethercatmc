@@ -713,14 +713,14 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     updateCfgValue(axisNo, ethercatmcVelToHom_, fValue, "hvel");
     break;
   case PARAM_IDX_SPEED_FLOAT:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgVELO_, fValue, "veloCFG");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgVELO_RB_, fValue, "veloCFG");
     updateCfgValue(axisNo, ethercatmcVel_RB_, fValue, "veloRB");
 #ifdef motorDefVelocityROString
     pAxis->setDoubleParam(motorDefVelocityRO_, fValue);
 #endif
     break;
   case PARAM_IDX_ACCEL_FLOAT:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgACCS_, fValue, "accsRB");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgACCS_RB_, fValue, "accsRB");
     updateCfgValue(axisNo, ethercatmcAcc_RB_, fValue, "accsRB");
     break;
   case PARAM_IDX_IDLE_CURRENT_FLOAT:
@@ -751,7 +751,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     pAxis->setIntegerParam(ethercatmcFoffVis_, 1);
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_, fabs(fValue), "jvel");
+    if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_RB_, fabs(fValue), "jvel");
     break;
   }
 }
@@ -913,8 +913,8 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
     }
   }
   /* Limits */
-  setDoubleParam(axisNo, ethercatmcCfgPMAX_RB_, fAbsMax);
-  setDoubleParam(axisNo, ethercatmcCfgPMIN_RB_, fAbsMin);
+  updateCfgValue(axisNo, ethercatmcCfgPMAX_RB_, fAbsMax, "CfgPMAX");
+  updateCfgValue(axisNo, ethercatmcCfgPMIN_RB_, fAbsMin, "CfgPMIN");
 
 #ifdef motorHighLimitROString
   udateMotorLimitsRO(axisNo,
@@ -1291,6 +1291,13 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
       myAsynParamType = asynParamInt64;
 #endif
       break;
+    case 0x1602:
+      lenInPLC = 2;
+      /* 1602 has "current value, followed by target value */
+      inputOffset = indexOffset;
+      outputOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamInt32;
+      break;
     case 0x1604:
       lenInPLC = 4;
       /* 1604 has "current value, followed by target value */
@@ -1424,25 +1431,30 @@ asynStatus ethercatmcController::indexerPoll(void)
         switch (pPilsAsynDevInfo->myEPICSParamType) {
         case asynParamInt32:
           {
+            int tracelevel = ASYN_TRACE_FLOW;
+            const char *paramName = "";
             epicsInt32 newValue, oldValue;
+            getParamName(axisNo, function, &paramName);
             newValue = (epicsInt32)netToUint(pDataInPlc, lenInPLC);
             status = getIntegerParam(axisNo, function, &oldValue);
-            asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                      "%sindexerPoll axisNo=%d function=%d newValue=%d oldValue=%d\n",
-                      modNamEMC, axisNo, function, newValue, oldValue);
-            if (pPilsAsynDevInfo->inputOffset) {
-              if (status != asynSuccess || oldValue != newValue) {
-                setIntegerParam(axisNo, function,  newValue);
-                callBacksNeeded = 1;
-              }
+            if (status != asynSuccess || oldValue != newValue) {
+              setIntegerParam(axisNo, function,  newValue);
+              callBacksNeeded = 1;
+              tracelevel |= ASYN_TRACE_INFO;
             }
+            asynPrint(pasynUserController_, tracelevel,
+                      "%sindexerPoll axisNo=%d function=%s(%d) newValue=%d oldValue=%d\n",
+                      modNamEMC, axisNo,
+                      paramName, function, newValue, oldValue);
           }
           break;
         case asynParamFloat64:
-          if (pPilsAsynDevInfo->inputOffset)
           {
-            double newValue, oldValue;
+            int tracelevel = ASYN_TRACE_FLOW;
+            const char *paramName = "";
+            double newValue, oldValue = 0.0;
             int newValueValid = 1;
+            getParamName(axisNo, function, &paramName);
             if (pPilsAsynDevInfo->myMCUParamType == asynParamFloat64) {
               newValue = netToDouble(pDataInPlc, lenInPLC);
             } else if (lenInPLC <= sizeof(epicsInt32)) {
@@ -1457,8 +1469,13 @@ asynStatus ethercatmcController::indexerPoll(void)
               if (status != asynSuccess || oldValue != newValue) {
                 setDoubleParam(axisNo, function,  newValue);
                 callBacksNeeded = 1;
+                tracelevel |= ASYN_TRACE_INFO;
               }
             }
+            asynPrint(pasynUserController_, tracelevel,
+                      "%sindexerPoll axisNo=%d function=%s(%d) newValue=%f oldValue=%f newValueValid=%d\n",
+                      modNamEMC, axisNo,
+                      paramName, function, newValue, oldValue, newValueValid);
           }
           break;
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
