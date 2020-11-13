@@ -1316,24 +1316,24 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
     asynParamType myEPICSParamType = myAsynParamType;
     asynParamType myMCUParamType  = myAsynParamType;
     if (!strcmp(paramName, "homeSeq")) {
-      /* Different naming conventions in MCU and EPICS */
-      paramName = "HomProc-RB";
+      if (outputOffset) {
+        addPilsAsynDevList(axisNo, "HomProc", lenInPLC,
+                           0, //inputOffset,
+                           outputOffset,
+                           myEPICSParamType,  myMCUParamType);
+        addPilsAsynDevList(axisNo, "HomProc-RB", lenInPLC,
+                           inputOffset,
+                           0, //outputOffset,
+                           myEPICSParamType, myMCUParamType);
+        return;
+      } else {
+        paramName = "HomProc-RB";
+      }
     } else if (!strcmp(paramName, "encoderRaw")) {
       paramName = "EncAct";
       /* Special handling for encoderRaw */
       myEPICSParamType = asynParamFloat64;
-    } else if (outputOffset && (!strcmp(paramName, "homProc"))) {
-      addPilsAsynDevList(axisNo, "HomProc", lenInPLC,
-                         0, //inputOffset,
-                         outputOffset,
-                         myEPICSParamType,  myMCUParamType);
-      addPilsAsynDevList(axisNo, "HomProc-RB", lenInPLC,
-                         inputOffset,
-                         0, //outputOffset,
-                         myEPICSParamType, myMCUParamType);
-      return;
     }
-
     addPilsAsynDevList(axisNo,
                        paramName,
                        lenInPLC,
@@ -1443,9 +1443,9 @@ asynStatus ethercatmcController::indexerPoll(void)
               tracelevel |= ASYN_TRACE_INFO;
             }
             asynPrint(pasynUserController_, tracelevel,
-                      "%sindexerPoll axisNo=%d function=%s(%d) newValue=%d oldValue=%d\n",
+                      "%sindexerPoll axisNo=%d function=%s(%d) oldValue=%d newValue=%d\n",
                       modNamEMC, axisNo,
-                      paramName, function, newValue, oldValue);
+                      paramName, function, oldValue, newValue);
           }
           break;
         case asynParamFloat64:
@@ -1473,9 +1473,9 @@ asynStatus ethercatmcController::indexerPoll(void)
               }
             }
             asynPrint(pasynUserController_, tracelevel,
-                      "%sindexerPoll axisNo=%d function=%s(%d) newValue=%f oldValue=%f newValueValid=%d\n",
+                      "%sindexerPoll axisNo=%d function=%s(%d) oldValue=%f newValue=%f\n",
                       modNamEMC, axisNo,
-                      paramName, function, newValue, oldValue, newValueValid);
+                      paramName, function, oldValue, newValue);
           }
           break;
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
