@@ -11,6 +11,7 @@ epicsEnvSet("SM_NOAXES",     "1")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=192.168.88.57.1.1;amsNetIdLocal=172.30.244.38.1.1"
 
 < ethercatmcController.iocsh
+< ethercatmcDctEL1252-PILS.iocsh
 
 #
 # Axis 1
@@ -22,16 +23,7 @@ epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcDctEL1252-PILS.iocsh
 
 setIdlePollPeriod("$(MOTOR_PORT)", 0.100)
 setMovingPollPeriod("$(MOTOR_PORT)", 0.100)
-
-# Since we have both PILS and StreamDevice, we need another PORT
-# Both IP port and asyn port
-epicsEnvSet("IPPORT",        "5000")
-epicsEnvSet("ASYN_PORT",     "STREAM_1")
-
-epicsEnvSet("STREAM_PROTOCOL_PATH", "./db")
-< ethercatmcDctEL1252-Stream.iocsh
 
