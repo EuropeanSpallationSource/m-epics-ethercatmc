@@ -921,7 +921,20 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
 asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
 {
   asynStatus status;
-  if (function == pC_->ethercatmcCfgDHLM_) {
+  if (function == pC_->ethercatmcHomPos_) {
+    static const unsigned paramIndex = PARAM_IDX_HOME_POSITION_FLOAT;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetDoubleParam(%d ethercatmcHomPos_)=%g\n", modNamEMC, axisNo_, value);
+    status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
+                                    paramIndex,
+                                    drvlocal.lenInPlcPara,
+                                    value);
+    if (status == asynSuccess) {
+      int initial = 0;
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+    }
+    return status;
+  } else if (function == pC_->ethercatmcCfgDHLM_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MAX_FLOAT;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d ethercatmcCfgDHLM_)=%g\n", modNamEMC, axisNo_, value);
