@@ -212,12 +212,14 @@ extern "C" void uintToNet(const unsigned value, void *data, size_t lenInPlc)
 
 
 asynStatus
-ethercatmcController::writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
-                                                       const char *outdata,
-                                                       size_t outlen,
-                                                       char *indata,
-                                                       size_t inlen,
-                                                       size_t *pnread)
+ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
+                                                         const char *outdata,
+                                                         size_t outlen,
+                                                         char *indata,
+                                                         size_t inlen,
+                                                         size_t *pnread,
+                                                         const char *fileName,
+                                                         int lineNo)
 {
   int tracelevel = deftracelevel;
   int errorProblem = 0;
@@ -397,11 +399,12 @@ asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
   ams_req_hdr_p->stateFlags_low = 0x4; /* Command */
   UINTTONET(ads_len, ams_req_hdr_p->net_len);
   UINTTONET(invokeID, ams_req_hdr_p->net_invokeID);
-  status = writeReadBinaryOnErrorDisconnect(pasynUser,
-                                            (const char *)ams_req_hdr_p,
-                                            outlen,
-                                            (char *)indata, inlen,
-                                            pnread);
+  status = writeReadBinaryOnErrorDisconnectFL(pasynUser,
+                                              (const char *)ams_req_hdr_p,
+                                              outlen,
+                                              (char *)indata, inlen,
+                                              pnread,
+                                              fileName, lineNo);
   if (!status) {
     size_t nread = *pnread;
     AmsHdrType *ams_rep_hdr_p = (AmsHdrType*)indata;
