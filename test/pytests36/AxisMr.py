@@ -333,6 +333,20 @@ class AxisMr:
             wait_for_powerOff -= polltime
         raise Exception(debug_text)
 
+    def jogDirectionTimeout(self, tc_no, direction, time_to_wait):
+        print(
+            f"{tc_no}: jogDirectionTimeout direction={direction} time_to_wait={time_to_wait}"
+        )
+        if direction > 0:
+            self.axisCom.put(".JOGF", 1)
+        else:
+            self.axisCom.put(".JOGR", 1)
+        self.waitForStartAndDone(tc_no + " jogDirection", 30 + time_to_wait + 3.0)
+        if direction > 0:
+            self.axisCom.put(".JOGF", 0)
+        else:
+            self.axisCom.put(".JOGR", 0)
+
     def jogDirection(self, tc_no, direction):
         jvel = self.axisCom.get(".JVEL")
         hlm = self.axisCom.get(".HLM")
@@ -343,23 +357,16 @@ class AxisMr:
         deltal = math.fabs(llm - rbv)
         # TODO: we could use at the DIR field, which delta to use
         # This can be done in a cleanup
-        if deltah > deltal:
+        if direction > 0:
             delta = deltah
         else:
             delta = deltal
         # TODO: add JAR to the calculation
         time_to_wait = delta / jvel + 2 * accl + 2.0
-        if direction > 0:
-            self.axisCom.put(".JOGF", 1)
-        else:
-            self.axisCom.put(".JOGR", 1)
-
-        self.waitForStartAndDone(tc_no + " jogDirection", 30 + time_to_wait + 3.0)
-
-        if direction > 0:
-            self.axisCom.put(".JOGF", 0)
-        else:
-            self.axisCom.put(".JOGR", 0)
+        print(
+            f"{tc_no}: jogDirection={direction} rbv={rbv} delta={delta} time_to_wait={time_to_wait}"
+        )
+        self.jogDirectionTimeout(tc_no, direction, time_to_wait)
 
     #    def movePosition(self, tc_no, destination, velocity, acceleration):
     #        time_to_wait = 30
@@ -435,15 +442,7 @@ class AxisMr:
         self.axisCom.put(".DLY", self.myDLY)
 
     def writeExpFileRMOD_X(
-        self,
-        tc_no,
-        rmod,
-        expFile,
-        maxcnt,
-        frac,
-        encRel,
-        motorStartPos,
-        motorEndPos,
+        self, tc_no, rmod, expFile, maxcnt, frac, encRel, motorStartPos, motorEndPos,
     ):
         cnt = 0
         if motorEndPos - motorStartPos > 0:
@@ -493,11 +492,14 @@ class AxisMr:
                         % (delta * frac, self.myBVEL, self.myBAR, motorStartPos)
                     )
                 else:
-                    line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % (
-                        motorStartPos + delta,
-                        self.myBVEL,
-                        self.myBAR,
-                        motorStartPos,
+                    line1 = (
+                        "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                        % (
+                            motorStartPos + delta,
+                            self.myBVEL,
+                            self.myBAR,
+                            motorStartPos,
+                        )
                     )
                 expFile.write(f"{line1}\n")
                 cnt += 1
@@ -553,14 +555,7 @@ class AxisMr:
         expFile.close()
 
     def writeExpFileJOG_BDST(
-        self,
-        tc_no,
-        expFileName,
-        myDirection,
-        frac,
-        encRel,
-        motorStartPos,
-        motorEndPos,
+        self, tc_no, expFileName, myDirection, frac, encRel, motorStartPos, motorEndPos,
     ):
         # Create a "expected" file
         expFile = open(expFileName, "w")
