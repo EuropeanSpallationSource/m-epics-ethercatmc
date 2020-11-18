@@ -1384,10 +1384,8 @@ asynStatus ethercatmcAxis::poll(bool *moving)
   } else if (drvlocal.old_bError != st_axis_status.bError ||
              drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
              drvlocal.dirty.sErrorMessage) {
-    char sErrorMessage[256];
     int nErrorId = st_axis_status.nErrorId;
     const char *errIdString = errStringFromErrId(nErrorId);
-    sErrorMessage[0] = '\0';
     drvlocal.sErrorMessage[0] = '\0';
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
@@ -1396,22 +1394,10 @@ asynStatus ethercatmcAxis::poll(bool *moving)
     drvlocal.old_bError = st_axis_status.bError;
     drvlocal.old_MCU_nErrorId = nErrorId;
     drvlocal.dirty.sErrorMessage = 0;
-    if (nErrorId) {
-      /* Get the ErrorMessage to have it in the log file */
-      (void)getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0],
-                              sizeof(sErrorMessage));
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%ssErrorMessage(%d)=\"%s\"\n",
-                modNamEMC, axisNo_, sErrorMessage);
-    }
     /* First choice: "well known" ErrorIds */
     if (errIdString[0]) {
       snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: %s %x",
                errIdString, nErrorId);
-    } else if ((pC_->features_ & FEATURE_BITS_ECMC) && nErrorId) {
-      /* emcmc has error messages */
-      snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: %s",
-               sErrorMessage);
     } else if (nErrorId) {
       snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: Cntrl Error %x", nErrorId);
     }
