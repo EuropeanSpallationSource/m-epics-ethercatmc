@@ -235,8 +235,8 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
   if (nwrite != outlen) {
     if (ctrlLocal.cntADSstatus < MAXCNTADSSTATUS) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%soutlen=%lu nwrite=%lu timeout=%f err=%s status=%s (%d)\n",
-                modNamEMC,
+                "%s:%d outlen=%lu nwrite=%lu timeout=%f err=%s status=%s (%d)\n",
+                fileName, lineNo,
                 (unsigned long)outlen,
                 (unsigned long)nwrite,
                 DEFAULT_CONTROLLER_TIMEOUT,
@@ -411,7 +411,8 @@ asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
     uint32_t amsTcpHdr_len = NETTOUINT(ams_rep_hdr_p->amsTcpHdr.net_len);
     if (amsTcpHdr_len  != (nread - sizeof(ams_rep_hdr_p->amsTcpHdr))) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s nread=%u amsTcpHdr_len=%u\n", modNamEMC,
+                "%s:%d nread=%u amsTcpHdr_len=%u\n",
+                fileName, lineNo,
                 (unsigned)nread, (unsigned)amsTcpHdr_len);
       status = asynError;
     }
@@ -466,7 +467,8 @@ asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
       uint32_t rep_invokeID = NETTOUINT(ams_rep_hdr_p->net_invokeID);
       if (invokeID != rep_invokeID) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%s invokeID=0x%x rep_invokeID=0x%x\n", modNamEMC,
+                  "%s:%d invokeID=0x%x rep_invokeID=0x%x\n",
+                  fileName, lineNo,
                   (unsigned)invokeID, (unsigned)rep_invokeID);
         status = asynError;
       }
@@ -507,8 +509,8 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
                                (char*)p_read_buf, read_buf_len,
                                &nread, fileName, lineNo);
   asynPrint(pasynUser, tracelevel,
-            "%s RDMEM indexOffset=%u lenInPlc=%u status=%s (%d)\n",
-            modNamEMC, indexOffset, (unsigned)lenInPlc,
+            "%s:%d RDMEM indexOffset=%u lenInPlc=%u status=%s (%d)\n",
+            fileName, lineNo, indexOffset, (unsigned)lenInPlc,
             ethercatmcstrStatus(status), (int)status);
   if (!status)
   {
@@ -528,7 +530,8 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
       status = asynError;
     } else if (ads_length != lenInPlc) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%slenInPlc=%lu ads_length=%u\n", modNamEMC,
+                  "%s:%d lenInPlc=%lu ads_length=%u\n",
+                  fileName, lineNo,
                   (unsigned long)lenInPlc,(unsigned)ads_length);
         status = asynError;
     }
@@ -572,8 +575,8 @@ asynStatus ethercatmcController::setPlcMemoryViaADSFL(unsigned indexOffset,
   UINTTONET(lenInPlc,    ads_write_req_p->net_len);
 
   asynPrint(pasynUser, tracelevel,
-            "%s WR indexOffset=%u lenInPlc=%u\n",
-            modNamEMC, indexOffset, (unsigned)lenInPlc
+            "%s:%d WR indexOffset=%u lenInPlc=%u\n",
+            fileName, lineNo, indexOffset, (unsigned)lenInPlc
             );
   /* copy the payload */
   {
@@ -593,7 +596,8 @@ asynStatus ethercatmcController::setPlcMemoryViaADSFL(unsigned indexOffset,
     uint32_t ads_result = NETTOUINT(ADS_Write_rep.response.net_res);
     if (ads_result) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%sads_result=0x%x\n", modNamEMC, (unsigned)ads_result);
+                "%s:%d ads_result=0x%x\n",
+                fileName, lineNo, (unsigned)ads_result);
       status = asynError;
     }
   }
