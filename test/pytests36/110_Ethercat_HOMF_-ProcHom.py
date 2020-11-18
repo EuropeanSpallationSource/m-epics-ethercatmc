@@ -26,6 +26,15 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
     if homProc != 0:
         old_HomProc = self.axisCom.get("-HomProc")
     if jogToLSBefore != 0:
+        msta = int(self.axisCom.get(".MSTA"))
+        if msta & self.axisMr.MSTA_BIT_HOMED and old_high_limit > old_low_limit:
+            # if we are homed, move absolute to the soft limit
+            # This is faster than jogging
+            if jogToLSBefore > 0:
+                self.axisMr.moveWait(tc_no, old_high_limit)
+            else:
+                self.axisMr.moveWait(tc_no, old_low_limit)
+
         self.axisMr.setSoftLimitsOff(tc_no)
         # soft limit range assumed to be = hard range /1.5 or so
         # It is only needed to calculate a good timeout
@@ -74,6 +83,8 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
     homed = 0
     if msta2 & self.axisMr.MSTA_BIT_HOMED:
         homed = 1
+    if homProc != 0:
+        self.pv_HomProc.put(old_HomProc, wait=True)
     #    print('%s homeTheMotor stopped=%d msta2=%s homed=%d' % \
     #        (tc_no, stopped, self.axisMr.getMSTAtext(msta2), homed))
     # self.assertEqual(True, started,                          tc_no +  "started = True")
@@ -84,8 +95,6 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
         tc_no + "MSTA.no MSTA_BIT_SLIP_STALL",
     )
     self.assertNotEqual(0, homed, tc_no + "MSTA.homed (Axis has been homed)")
-    if homProc != 0:
-        self.pv_HomProc.put(old_HomProc, wait=True)
 
 
 def homeLimBwdfromLLS(self, tc_no):
