@@ -23,8 +23,9 @@ START_FROM_HLS = 1
 def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
     old_high_limit = self.axisCom.get(".HLM")
     old_low_limit = self.axisCom.get(".LLM")
-    if homProc != 0:
-        old_HomProc = self.axisCom.get("-HomProc")
+    old_HomProc = self.axisCom.get("-HomProc")
+    old_HomPos = self.axisCom.get("-HomPos")
+
     if jogToLSBefore != 0:
         msta = int(self.axisCom.get(".MSTA"))
         if msta & self.axisMr.MSTA_BIT_HOMED and old_high_limit > old_low_limit:
@@ -49,7 +50,12 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
         self.axisMr.moveWait(tc_no, (old_high_limit + old_low_limit) / 2.0)
 
     if homProc != 0:
-        axisCom.put("-HomProc", homProc)
+        self.axisCom.put("-HomProc", homProc)
+        if homProc == 1:
+            self.axisCom.put("-HomPos", old_low_limit - 1.0)
+        elif homProc == 2:
+            self.axisCom.put("-HomPos", old_high_limit + 1.0)
+
     msta = int(self.axisCom.get(".MSTA"))
     # We can home while sitting on a limit switch
     if msta & self.axisMr.MSTA_BIT_MINUS_LS:
@@ -84,11 +90,9 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
     if msta2 & self.axisMr.MSTA_BIT_HOMED:
         homed = 1
     if homProc != 0:
-        self.pv_HomProc.put(old_HomProc, wait=True)
-    #    print('%s homeTheMotor stopped=%d msta2=%s homed=%d' % \
-    #        (tc_no, stopped, self.axisMr.getMSTAtext(msta2), homed))
-    # self.assertEqual(True, started,                          tc_no +  "started = True")
-    # self.assertEqual(True, stopped,                          tc_no +  "stopped = True")
+        self.axisCom.put("-HomProc", old_HomProc)
+        self.axisCom.put("-HomPos", old_HomPos)
+
     self.assertEqual(
         0,
         msta2 & self.axisMr.MSTA_BIT_SLIP_STALL,
@@ -187,109 +191,36 @@ class Test(unittest.TestCase):
         homeTheMotor(self, tc_no, 0, START_FROM_MID)
 
     def test_TC_11102(self):
-        tc_no = "11111"
+        tc_no = "11112"
         print(f"{tc_no} Home the motor")
         homeTheMotor(self, tc_no, 0, START_FROM_HLS)
 
+    def test_TC_11110(self):
+        tc_no = "11110"
+        print(f"{tc_no} Home the motor")
+        homeTheMotor(self, tc_no, 1, START_FROM_LLS)
 
-#    def test_TC_11112(self):
-#        tc_no = "11112"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeLimFwdfromLLS(self, tc_no)
-#
-#    def test_TC_11120(self):
-#        tc_no = "11120"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeLimFwdfromMiddle(self, tc_no)
-#
-#    def test_TC_11121(self):
-#        tc_no = "11121"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeLimFwdfromHLS(self, tc_no)
-#
-#    def test_TC_11122(self):
-#        tc_no = "11122"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeLimBwdfromHLS(self, tc_no)
-#
-#    def test_TC_11130(self):
-#        tc_no = "11130"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeSwitchfromLimFwdFromLLS(self, tc_no)
-#
-#    def test_TC_11131(self):
-#        tc_no = "11131"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeSwitchfromLimFwdFromMiddle(self, tc_no)
-#
-#    def test_TC_11132(self):
-#        tc_no = "11132"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeSwitchfromLimBwdFromLLS(self, tc_no)
-#
-#    def test_TC_11140(self):
-#        tc_no = "11140"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeSwitchfromLimBwdFromMiddle(self, tc_no)
-#
-#    def test_TC_11141(self):
-#        tc_no = "11141"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeSwitchfromLimBwdFromHLS(self, tc_no)
-#
-#    def test_TC_11142(self):
-#        tc_no = "11142"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeSwitchfromLimFwdFromHLS(self, tc_no)
-#
-##    def test_TC_11150(self):
-##        tc_no = "11150"
-##        print(f"{tc_no} Home the motor")
-##        if self.pv_HomProc != None:
-##            homeSwitchMidfromLimBwdFromMiddle(self, tc_no)
-##
-##    def test_TC_11151(self):
-##        tc_no = "11151"
-##        print(f"{tc_no} Home the motor")
-##        if self.pv_HomProc != None:
-##            homeSwitchMidfromLimBwdFromHLS(self, tc_no)
-##
-##    def test_TC_11152(self):
-##        tc_no = "11152"
-##        print(f"{tc_no} Home the motor")
-##        if self.pv_HomProc != None:
-##            homeSwitchMidfromLimFwdFromHLS(self, tc_no)
-##
-##    def test_TC_11160(self):
-##        tc_no = "11160"
-##        print(f"{tc_no} Home the motor")
-##        homeSwitchMidfromLimFwdFromLLS(self, tc_no)
-##
-##    def test_TC_11161(self):
-##        tc_no = "11161"
-##        print(f"{tc_no} Home the motor")
-##        if self.pv_HomProc != None:
-##            homeSwitchMidfromLimFwdFromMiddle(self, tc_no)
-##
-##    def test_TC_11162(self):
-##        tc_no = "11162"
-##        print(f"{tc_no} Home the motor")
-##        if self.pv_HomProc != None:
-##            homeSwitchMidfromLimBwdFromLLS(self, tc_no)
-#
-#    # Need to home with the original homing procedure
-#    def test_TC_11191(self):
-#        tc_no = "11191"
-#        print(f"{tc_no} Home the motor")
-#        if self.pv_HomProc != None:
-#            homeTheMotor(self,  tc_no, self.old_HomProc, START_FROM_MID)
+    def test_TC_11111(self):
+        tc_no = "11111"
+        print(f"{tc_no} Home the motor")
+        homeTheMotor(self, tc_no, 1, START_FROM_MID)
+
+    def test_TC_11112(self):
+        tc_no = "11112"
+        print(f"{tc_no} Home the motor")
+        homeTheMotor(self, tc_no, 1, START_FROM_HLS)
+
+    def test_TC_11120(self):
+        tc_no = "11120"
+        print(f"{tc_no} Home the motor")
+        homeTheMotor(self, tc_no, 2, START_FROM_LLS)
+
+    def test_TC_11121(self):
+        tc_no = "11121"
+        print(f"{tc_no} Home the motor")
+        homeTheMotor(self, tc_no, 2, START_FROM_MID)
+
+    def test_TC_11122(self):
+        tc_no = "11122"
+        print(f"{tc_no} Home the motor")
+        homeTheMotor(self, tc_no, 2, START_FROM_HLS)
