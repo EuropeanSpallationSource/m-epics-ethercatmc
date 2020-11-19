@@ -163,6 +163,21 @@ extern "C" {
  }
 };
 
+extern "C" {
+  int ParamIndexIsInteger(unsigned paramIndex)
+  {
+    if (paramIndex < 30) {
+      /* parameters below 30 are unsigned integers in the PLC */
+      return 1;
+    } else if (paramIndex >= 192 && paramIndex <= 200) {
+      /* Parameters 192 .. 200 are integers as well */
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+};
+
 static const double fABSMIN = -3.0e+38;
 static const double fABSMAX =  3.0e+38;
 
@@ -467,9 +482,7 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
       }
       cmdSubParamIndex = netToUint(&paramIf.paramCtrl,
                                    sizeof(paramIf.paramCtrl));
-      if (paramIndex < 30) {
-        /* parameters below 30 are unsigned integers in the PLC
-           Read them as integers from PLC, and convert into a double */
+      if (ParamIndexIsInteger(paramIndex)) {
         fValue = (double)netToUint(&paramIf.paramValue, lenInPlcPara);
       } else {
         fValue = netToDouble(&paramIf.paramValue,lenInPlcPara);
@@ -537,8 +550,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     0 CmdParamReasonIdx
     2 ParamValue
   */
-  /* Parameters 1..4 are integers, the rest is floating point */
-  if (paramIndex <= 4)
+  if (ParamIndexIsInteger(paramIndex))
     status = setPlcMemoryInteger(paramIfOffset + 2, (int)value, lenInPlcPara);
   else
     status = setPlcMemoryDouble(paramIfOffset + 2, value, lenInPlcPara);
@@ -759,6 +771,27 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
   case PARAM_IDX_FUN_MOVE_VELOCITY:
     if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_RB_, fabs(fValue), "jvel");
     break;
+  case PARAM_IDX_USR_MIN_EN_UINT:
+    updateCfgValue(axisNo, ethercatmcCfgDLLM_En_RB_, (int)fValue, "dllm_en");
+    break;
+  case PARAM_IDX_USR_MAX_EN_UINT:
+    updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, (int)fValue, "dhlm_en");
+    break;
+  case PARAM_IDX_HOMPROC_UINT:
+    break;
+
+  case PARAM_IDX_UNITS_PER_REV_FLOAT:
+    {
+      double urev = fabs(fValue);
+      updateCfgValue(axisNo, ethercatmcCfgUREV_RB_, urev, "urev");
+    }
+    break;
+  case PARAM_IDX_STEPS_PER_REV_FLOAT:
+    updateCfgValue(axisNo, ethercatmcCfgSREV_RB_, fValue, "srev");
+    break;
+  case PARAM_IDX_MAX_VELO_FLOAT:
+    updateCfgValue(axisNo, ethercatmcCfgVMAX_RB_, fValue, "vmax");
+    break;
   }
 }
 
@@ -830,7 +863,9 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
         double fValue = 0.0;
         int initial = 1;
         if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
-            (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)){
+            (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY) ||
+            (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+             paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA)) {
           /* paramIndex >= PARAM_IF_IDX_FIRST_FUNCTION (128) are functions.
              Don't read them.
              tell driver that the function exist
@@ -867,7 +902,9 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex);
         }
-        if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
+        if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) |
+            (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+             paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA)) {
           pAxis->addPollNowParam(paramIndex);
         }
         parameterFloatReadBack(axisNo, initial, paramIndex, fValue);
