@@ -152,6 +152,12 @@ extern "C" {
    case PARAM_IDX_FUN_REFERENCE:           return "REFERENCE";
    case PARAM_IDX_FUN_SET_POSITION:        return "SET_POSITION";
    case PARAM_IDX_FUN_MOVE_VELOCITY:       return "MOVE_VELOCITY";
+   case PARAM_IDX_USR_MIN_EN_UINT:         return "PARAM_IDX_USR_MIN_EN_UINT";
+   case PARAM_IDX_USR_MAX_EN_UINT:         return "PARAM_IDX_USR_MAX_EN_UINT";
+   case PARAM_IDX_HOMPROC_UINT:            return "PARAM_IDX_HOMPROC_UINT";
+   case PARAM_IDX_UNITS_PER_REV_FLOAT:     return "PARAM_IDX_UNITS_PER_REV_FLOAT";
+   case PARAM_IDX_STEPS_PER_REV_FLOAT:     return "PARAM_IDX_STEPS_PER_REV_FLOAT";
+   case PARAM_IDX_MAX_VELO_FLOAT:          return "PARAM_IDX_MAX_VELO_FLOAT";
    default: return "";
    }
  }

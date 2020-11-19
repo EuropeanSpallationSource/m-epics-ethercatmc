@@ -158,10 +158,19 @@ public:
 #define PARAM_IDX_MICROSTEPS_FLOAT           67
 #define PARAM_IDX_STEPS_PER_UNIT_FLOAT       68
 #define PARAM_IDX_HOME_POSITION_FLOAT        69
+
 #define PARAM_IDX_FUN_REFERENCE             133
 #define PARAM_IDX_FUN_SET_POSITION          137
 #define PARAM_IDX_FUN_MOVE_VELOCITY         142
 
+/* Implementation defined, integer */
+#define PARAM_IDX_USR_MIN_EN_UINT           192
+#define PARAM_IDX_USR_MAX_EN_UINT           193
+#define PARAM_IDX_HOMPROC_UINT              194
+/* Implementation defined, floating point */
+#define PARAM_IDX_UNITS_PER_REV_FLOAT       221
+#define PARAM_IDX_STEPS_PER_REV_FLOAT       222
+#define PARAM_IDX_MAX_VELO_FLOAT            223
 
 #define FEATURE_BITS_V1               (1)
 #define FEATURE_BITS_V2               (1<<1)
