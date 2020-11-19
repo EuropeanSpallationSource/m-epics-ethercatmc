@@ -501,7 +501,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   const char *msgTxtFromDriver = NULL;
   //double targetPosition = 0.0;
   double actPosition = 0.0;
-  double paramValue = 0.0;
+  double paramfValue = 0.0;
+  unsigned paramiValue = 0;
   unsigned statusReasonAux, paramCtrl;
   int errorID = -1;
   bool nowMoving = false;
@@ -561,7 +562,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     //targetPosition = NETTODOUBLE(readback.targtPos);
     statusReasonAux16 = NETTOUINT(readback.statReasAux);
     paramCtrl = NETTOUINT(readback.paramCtrl);
-    paramValue = NETTODOUBLE(readback.paramValue);
+    paramfValue = NETTODOUBLE(readback.paramValue);
+    paramiValue = NETTOUINT(readback.paramValue);
     /* Specific bit positions for 5008 */
     idxStatusCode = (idxStatusCodeType)(statusReasonAux16 >> 12);
     idxReasonBits = (statusReasonAux16 >> 8) & 0x0F;
@@ -590,7 +592,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     //targetPosition = NETTODOUBLE(readback.targtPos);
     statusReasonAux = NETTOUINT(readback.statReasAux);
     paramCtrl = NETTOUINT(readback.paramCtrl);
-    paramValue = NETTODOUBLE(readback.paramValue);
+    paramfValue = NETTODOUBLE(readback.paramValue);
+    paramiValue = NETTOUINT(readback.paramValue);
 
     /* Specific for 5010 */
     errorID = (int)NETTOUINT(readback.errorID);
@@ -748,25 +751,30 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
 
   if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
     unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+    if (paramIndexIsInteger(paramIndex)) {
+      paramfValue = (double)paramiValue;
+    }
     asynPrint(pC_->pasynUserController_,
               ASYN_TRACE_FLOW,
               "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
               modNamEMC, axisNo_,
               plcParamIndexTxtFromParamIndex(paramIndex),
-              paramCtrl, paramValue);
+              paramCtrl, paramfValue);
     if ((paramCtrl != drvlocal.old_paramCtrl) ||
-        (paramValue != drvlocal.old_paramValue)) {
-      if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
-        /* Only read real parameters, not functions */
+        (paramfValue != drvlocal.old_paramValue)) {
+      /* Only read real parameters, not functions */
+      if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
+          (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+           paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA)) {
         int initial = 0;
         pC_->parameterFloatReadBack(axisNo_,
                                     initial,
                                     paramIndex,
-                                    paramValue);
+                                    paramfValue);
       }
     }
     drvlocal.old_paramCtrl = paramCtrl;
-    drvlocal.old_paramValue = paramValue;
+    drvlocal.old_paramValue = paramfValue;
   }
 
   /* Read back the parameters one by one */
@@ -784,7 +792,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                 "%spollNext(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
                 modNamEMC, axisNo_,
                 plcParamIndexTxtFromParamIndex(paramIndex),
-                paramCtrl, paramValue);
+                paramCtrl, paramfValue);
       pC_->setPlcMemoryInteger(drvlocal.paramIfOffset,
                                newParamCtrl, sizeof(newParamCtrl));
     }

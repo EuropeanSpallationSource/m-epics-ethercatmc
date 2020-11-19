@@ -164,7 +164,7 @@ extern "C" {
 };
 
 extern "C" {
-  int ParamIndexIsInteger(unsigned paramIndex)
+  int paramIndexIsInteger(unsigned paramIndex)
   {
     if (paramIndex < 30) {
       /* parameters below 30 are unsigned integers in the PLC */
@@ -482,7 +482,7 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
       }
       cmdSubParamIndex = netToUint(&paramIf.paramCtrl,
                                    sizeof(paramIf.paramCtrl));
-      if (ParamIndexIsInteger(paramIndex)) {
+      if (paramIndexIsInteger(paramIndex)) {
         fValue = (double)netToUint(&paramIf.paramValue, lenInPlcPara);
       } else {
         fValue = netToDouble(&paramIf.paramValue,lenInPlcPara);
@@ -550,7 +550,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     0 CmdParamReasonIdx
     2 ParamValue
   */
-  if (ParamIndexIsInteger(paramIndex))
+  if (paramIndexIsInteger(paramIndex))
     status = setPlcMemoryInteger(paramIfOffset + 2, (int)value, lenInPlcPara);
   else
     status = setPlcMemoryDouble(paramIfOffset + 2, value, lenInPlcPara);
