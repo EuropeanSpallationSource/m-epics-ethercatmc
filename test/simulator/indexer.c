@@ -135,6 +135,14 @@ typedef enum {
 #define PARAM_IDX_FUN_REFERENCE               133
 #define PARAM_IDX_FUN_SET_POSITION            137
 #define PARAM_IDX_FUN_MOVE_VELOCITY           142
+/* Implementation defined, integer */
+#define PARAM_IDX_USR_MIN_EN_UINT32           192
+#define PARAM_IDX_USR_MAX_EN_UINT32           193
+#define PARAM_IDX_HOMPROC_UINT32              194
+/* Implementation defined, floating point */
+#define PARAM_IDX_UNITS_PER_REV_FLOAT32       221
+#define PARAM_IDX_STEPS_PER_REV_FLOAT32       222
+#define PARAM_IDX_MAX_VELO_FLOAT32            223
 
 /*  Which parameters are available */
 #define PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32             (1 << (1))
@@ -166,6 +174,13 @@ typedef enum {
 #define PARAM_AVAIL_136_143_FUN_SET_POSITION           (1 << (137-136))
 #define PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY          (1 << (142-136))
 
+#define PARAM_AVAIL_192_199_USR_MIN_EN                 (1 << (192-192))
+#define PARAM_AVAIL_192_199_USR_MAX_EN                 (1 << (193-192))
+#define PARAM_AVAIL_192_199_HOMPROC_EN                 (1 << (194-192))
+
+#define PARAM_AVAIL_216_223_UNITS_PER_REV              (1 << (221-216))
+#define PARAM_AVAIL_216_223_STEPS_PER_REV              (1 << (222-216))
+#define PARAM_AVAIL_216_223_MAX_VELO                   (1 << (223-216))
 
 
 /* In the memory bytes, the indexer starts at 64 */
@@ -309,10 +324,10 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 168..175 */ 0,
        /* 176..183 */ 0,
        /* 184..191 */ 0,
-       /* 192..199 */ 0,
+       /* 192..199 */ PARAM_AVAIL_192_199_USR_MIN_EN | PARAM_AVAIL_192_199_USR_MAX_EN | PARAM_AVAIL_192_199_HOMPROC_EN,
        /* 200..207 */ 0,
        /* 208..215 */ 0,
-       /* 216..223 */ 0,
+       /* 216..223 */ PARAM_AVAIL_216_223_UNITS_PER_REV | PARAM_AVAIL_216_223_STEPS_PER_REV | PARAM_AVAIL_216_223_MAX_VELO,
        /* 224..231 */ 0,
        /* 232..239 */ 0,
        /* 240..247 */ 0,
@@ -947,6 +962,24 @@ indexerMotorParamRead(unsigned motor_axis_no,
     /* Use half of the velocity as "JVEL" */
     *fRet = getNxtMoveVelocity(motor_axis_no) / 2.0;
     return ret;
+  case PARAM_IDX_USR_MIN_EN_UINT32:
+    *fRet = getEnableLowSoftLimit(motor_axis_no);
+    return ret;
+  case PARAM_IDX_USR_MAX_EN_UINT32:
+    *fRet = getEnableHighSoftLimit(motor_axis_no);
+    return ret;
+  case PARAM_IDX_HOMPROC_UINT32:
+    *fRet = cmd_Motor_cmd[motor_axis_no].nHomProc;
+    return ret;
+  case PARAM_IDX_UNITS_PER_REV_FLOAT32:
+    *fRet = getMRES_23(motor_axis_no);
+    return ret;
+  case PARAM_IDX_STEPS_PER_REV_FLOAT32:
+    *fRet = getMRES_24(motor_axis_no);
+    return ret;
+  case PARAM_IDX_MAX_VELO_FLOAT32:
+    return ret;
+
   default:
     break;
   }
@@ -1030,6 +1063,9 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     if ((ret & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
       switch(paramIndex) {
       case PARAM_IDX_OPMODE_AUTO_UINT32:
+      case PARAM_IDX_USR_MIN_EN_UINT32:
+      case PARAM_IDX_USR_MAX_EN_UINT32:
+      case PARAM_IDX_HOMPROC_UINT32:
         uintToNet((unsigned)fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
         break;
       default:
@@ -1039,7 +1075,9 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     }
   } else if (paramCommand == PARAM_IF_CMD_DOWRITE) {
     double fValue;
-    fValue =  netToDouble(&netData.memoryBytes[offset + 2], lenInPlcPara);
+    int iValue;
+    fValue = netToDouble(&netData.memoryBytes[offset + 2], lenInPlcPara);
+    iValue = netToUint(&netData.memoryBytes[offset + 2], lenInPlcPara);
     ret = PARAM_IF_CMD_ERR_NO_IDX;
     switch(paramIndex) {
     case PARAM_IDX_OPMODE_AUTO_UINT32:
@@ -1095,6 +1133,14 @@ indexerMotorParamInterface(unsigned motor_axis_no,
       break;
     case PARAM_IDX_FUN_SET_POSITION:
       setMotorPos(motor_axis_no, fValue);
+      ret = PARAM_IF_CMD_DONE | paramIndex;
+      break;
+    case PARAM_IDX_USR_MIN_EN_UINT32:
+      setEnableLowSoftLimit(motor_axis_no, iValue);
+      ret = PARAM_IF_CMD_DONE | paramIndex;
+      break;
+    case PARAM_IDX_USR_MAX_EN_UINT32:
+      setEnableHighSoftLimit(motor_axis_no, iValue);
       ret = PARAM_IF_CMD_DONE | paramIndex;
       break;
     }
