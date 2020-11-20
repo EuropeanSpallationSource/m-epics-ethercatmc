@@ -684,6 +684,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_USR_MIN_FLOAT:
     {
+#if OLDXX
       int enabled = fValue > fABSMIN ? 1 : 0;
       updateCfgValue(axisNo,ethercatmcCfgDLLM_En_RB_, enabled, "dllm_en_rb");
       if (initial) {
@@ -692,6 +693,9 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
       if (enabled) {
         updateCfgValue(axisNo, ethercatmcCfgDLLM_RB_,   fValue, "dllm");
       }
+#else
+      updateCfgValue(axisNo, ethercatmcCfgDLLM_RB_, fValue, "dLlm");
+#endif
     }
     udateMotorLimitsRO(axisNo);
     break;
@@ -703,6 +707,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_USR_MAX_FLOAT:
     {
+#if OLDXXX
       int enabled = fValue < fABSMAX ? 1 : 0;
       updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, enabled, "dhlm_en_rb");
       if (initial) {
@@ -711,6 +716,9 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
       if (enabled) {
         updateCfgValue(axisNo, ethercatmcCfgDHLM_RB_, fValue, "dhlm");
       }
+#else
+      updateCfgValue(axisNo, ethercatmcCfgDHLM_RB_, fValue, "dhlm");
+#endif
     }
     udateMotorLimitsRO(axisNo);
     break;
@@ -779,18 +787,23 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_HOMPROC_UINT:
     break;
-
   case PARAM_IDX_UNITS_PER_REV_FLOAT:
     {
-      double urev = fabs(fValue);
-      updateCfgValue(axisNo, ethercatmcCfgUREV_RB_, urev, "urev");
+      if (fValue > 0.0) {
+        double urev = fabs(fValue);
+        updateCfgValue(axisNo, ethercatmcCfgUREV_RB_, urev, "urev");
+      }
     }
     break;
   case PARAM_IDX_STEPS_PER_REV_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgSREV_RB_, fValue, "srev");
+    if (fValue > 0.0) {
+      updateCfgValue(axisNo, ethercatmcCfgSREV_RB_, fValue, "srev");
+    }
     break;
   case PARAM_IDX_MAX_VELO_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgVMAX_RB_, fValue, "vmax");
+    if (fValue > 0.0) {
+      updateCfgValue(axisNo, ethercatmcCfgVMAX_RB_, fValue, "vmax");
+    }
     break;
   }
 }
