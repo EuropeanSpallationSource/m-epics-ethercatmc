@@ -684,18 +684,8 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_USR_MIN_FLOAT:
     {
-#if OLDXX
-      int enabled = fValue > fABSMIN ? 1 : 0;
-      updateCfgValue(axisNo,ethercatmcCfgDLLM_En_RB_, enabled, "dllm_en_rb");
-      if (initial) {
-        updateCfgValue(axisNo,ethercatmcCfgDLLM_En_, enabled, "dllm_en");
-      }
-      if (enabled) {
-        updateCfgValue(axisNo, ethercatmcCfgDLLM_RB_,   fValue, "dllm");
-      }
-#else
-      updateCfgValue(axisNo, ethercatmcCfgDLLM_RB_, fValue, "dLlm");
-#endif
+      updateCfgValue(axisNo, ethercatmcCfgDLLM_RB_,   fValue, "dllm");
+      if (initial) updateCfgValue(axisNo, ethercatmcCfgDLLM_,   fValue, "CfgDllm");
     }
     udateMotorLimitsRO(axisNo);
     break;
@@ -707,18 +697,8 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_USR_MAX_FLOAT:
     {
-#if OLDXXX
-      int enabled = fValue < fABSMAX ? 1 : 0;
-      updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, enabled, "dhlm_en_rb");
-      if (initial) {
-        updateCfgValue(axisNo,ethercatmcCfgDHLM_En_, enabled, "dhlm_en");
-      }
-      if (enabled) {
-        updateCfgValue(axisNo, ethercatmcCfgDHLM_RB_, fValue, "dhlm");
-      }
-#else
       updateCfgValue(axisNo, ethercatmcCfgDHLM_RB_, fValue, "dhlm");
-#endif
+      if (initial) updateCfgValue(axisNo, ethercatmcCfgDHLM_,   fValue, "CfgDhlm");
     }
     udateMotorLimitsRO(axisNo);
     break;
@@ -781,9 +761,11 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_USR_MIN_EN_UINT:
     updateCfgValue(axisNo, ethercatmcCfgDLLM_En_RB_, (int)fValue, "dllm_en");
+    udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_USR_MAX_EN_UINT:
     updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, (int)fValue, "dhlm_en");
+    udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_HOMPROC_UINT:
     break;

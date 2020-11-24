@@ -879,19 +879,9 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
               "%ssetIntegerParam(%d ethercatmcCfgDHLM_En)=%d  status=%s(%d)\n",
               modNamEMC, axisNo_, value,
               ethercatmcstrStatus(status), (int)status);
-    if (status == asynDisabled) {
-      if (!value) {
-        static const unsigned paramIndex = PARAM_IDX_USR_MAX_FLOAT;
-        static const double fABSMAX = 3.0e+38;
-        status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
-                                        paramIndex,
-                                        drvlocal.lenInPlcPara,
-                                        fABSMAX);
-        if (status == asynSuccess) {
-          int initial = 0;
-          pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, fABSMAX);
-        }
-      }
+    if (status == asynSuccess) {
+      int initial = 0;
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
     }
     return status;
   } else if (function == pC_->ethercatmcCfgDLLM_En_) {
@@ -904,19 +894,9 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
               "%ssetIntegerParam(%d ethercatmcCfgDLLM_En)=%d status=%s(%d)\n",
               modNamEMC, axisNo_, value,
               ethercatmcstrStatus(status), (int)status);
-    if (status == asynDisabled) {
-      if (!value) {
-        static const unsigned paramIndex = PARAM_IDX_USR_MIN_FLOAT;
-        static const double fABSMIN = -3.0e+38;
-        status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
-                                        paramIndex,
-                                        drvlocal.lenInPlcPara,
-                                        fABSMIN);
-        if (status == asynSuccess) {
-          int initial = 0;
-          pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, fABSMIN);
-        }
-      }
+    if (status == asynSuccess) {
+      int initial = 0;
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
     }
     return status;
   } else {
