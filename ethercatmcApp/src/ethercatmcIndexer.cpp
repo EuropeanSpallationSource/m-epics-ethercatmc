@@ -885,11 +885,19 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
             }
             return status;
           }
-          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdx=%s (%u) fValue=%f\n",
-                    modNamEMC, axisNo,
-                    plcParamIndexTxtFromParamIndex(paramIndex),
-                    paramIndex, fValue);
+          if (paramIndexIsInteger(paramIndex)) {
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%sparameters(%d) paramIdx=%s (%u) iValue=%i\n",
+                      modNamEMC, axisNo,
+                      plcParamIndexTxtFromParamIndex(paramIndex),
+                      paramIndex, (int)fValue);
+          } else {
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%sparameters(%d) paramIdx=%s (%u) fValue=%f\n",
+                      modNamEMC, axisNo,
+                      plcParamIndexTxtFromParamIndex(paramIndex),
+                      paramIndex, fValue);
+          }
         } else {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sparameters(%d) paramIdx=%s (%u)\n",
