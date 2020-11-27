@@ -56,11 +56,16 @@ record(longout,"$(PREFIX)$(MOTOR_NAME)-DIR_") {
     field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_DIRECTION")
 }
 
-record(longin, "$(PREFIX)$(MOTOR_NAME)-Err")
+record(bi, "$(PREFIX)$(MOTOR_NAME)-Err")
 {
+    field(DESC, "$(MOTOR_NAME) Error from TwinCAT")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MCUErr")
     field(SCAN, "I/O Intr")
+    field(ZNAM, "OK")
+    field(ONAM, "ERROR")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
 }
 
 record(ai, "$(PREFIX)$(MOTOR_NAME)-VelAct")
@@ -108,6 +113,7 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-EncAct")
 
 record(longin, "$(PREFIX)$(MOTOR_NAME)-ErrId")
 {
+    field(DESC, "$(MOTOR_NAME) Error ID TwinCAT")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrorId")
     field(SCAN, "I/O Intr")
