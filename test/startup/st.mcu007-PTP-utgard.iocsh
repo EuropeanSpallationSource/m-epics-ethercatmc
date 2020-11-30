@@ -24,6 +24,8 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
-setIdlePollPeriod("$(MOTOR_PORT)", 0.100)
-setMovingPollPeriod("$(MOTOR_PORT)", 0.100)
+#setIdlePollPeriod("$(MOTOR_PORT)", 0.100)
+#setMovingPollPeriod("$(MOTOR_PORT)", 0.100)
 
+setIdlePollPeriod("$(MOTOR_PORT)", 0.500)
+setMovingPollPeriod("$(MOTOR_PORT)", 0.500)
