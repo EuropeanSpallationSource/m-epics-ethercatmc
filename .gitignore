@@ -14,6 +14,7 @@ html/
 include/
 iocBoot/
 lib/
+logs/
 O.*
 test/pytests36/venvpython3*/
 test/pytests36/*.*log*
