@@ -768,6 +768,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_HOMPROC_UINT:
+    updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homproc");
     break;
   case PARAM_IDX_UNITS_PER_REV_FLOAT:
     {
