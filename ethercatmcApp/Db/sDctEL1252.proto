@@ -15,6 +15,16 @@ ReplyTimeout = 1000;
 # The input String will have the trailing ';'
 # 2020-05-08-11:57:40.076012907;
 getUTCtime {
-   out "ADSPORT=853/Main.sDctEL1252?;";
+   out "ADSPORT=852/GVL_APP.sDctEL1252?;";
    in "%s";
 }
+
+
+##
+#getUTCtime {
+#   out "ADSPORT=851/Main.sDctEL1252?;";
+#   in "%s";
+#}
+
+
+

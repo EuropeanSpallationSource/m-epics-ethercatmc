@@ -29,3 +29,15 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 
 setIdlePollPeriod("$(MOTOR_PORT)", 0.500)
 setMovingPollPeriod("$(MOTOR_PORT)", 0.500)
+
+
+#####################################################
+# Other debug stuff via streamdevice
+# Since we have both PILS and StreamDevice, we need another PORT
+# Both IP port and asyn port
+epicsEnvSet("IPPORT",        "5000")
+epicsEnvSet("ASYN_PORT",     "STREAM_1")
+
+epicsEnvSet("STREAM_PROTOCOL_PATH", "./db")
+< ethercatmcDctEL1252-Stream.iocsh
+
