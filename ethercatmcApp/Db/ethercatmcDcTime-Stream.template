@@ -1,0 +1,11 @@
+##
+## Monitor motion controller variables
+##
+
+record(stringin, "$(PREFIX)sCurDcTaskTime") {
+   field(DTYP,   "stream")
+   field(DESC,   "DC time")
+   field(INP,    "@ethercatmcDcTime-Stream.proto getsCurDcTaskTime() $(PORT)")
+   field(SCAN,   "1 second")
+}
+
