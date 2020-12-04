@@ -2,9 +2,16 @@
 ## Monitor motion controller variables
 ##
 
-record(stringin, "$(PREFIX)sDctEL1252") {
+record(stringin, "$(PREFIX)sDctEL1252P") {
    field(DTYP,   "stream")
-   field(DESC,   "UTC time of edge 1HZ pulse")
-   field(INP,    "@sDctEL1252.proto getUTCtime() $(PORT)")
+   field(DESC,   "DC time of pos edge 1HZ pulse")
+   field(INP,    "@ethercatmcDctEL1252-Stream.proto getsDctEL1252P() $(PORT)")
+   field(SCAN,   ".1 second")
+}
+
+record(stringin, "$(PREFIX)sDctEL1252N") {
+   field(DTYP,   "stream")
+   field(DESC,   "DC time of neg edge 1HZ pulse")
+   field(INP,    "@ethercatmcDctEL1252-Stream.proto getsDctEL1252N $(PORT)")
    field(SCAN,   ".1 second")
 }

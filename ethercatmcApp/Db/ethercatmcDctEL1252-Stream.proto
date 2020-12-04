@@ -14,8 +14,13 @@ ReplyTimeout = 1000;
 ###################################################
 # The input String will have the trailing ';'
 # 2020-05-08-11:57:40.076012907;
-getUTCtime {
-   out "ADSPORT=852/GVL_APP.sDctEL1252?;";
+getsDctEL1252P {
+   out "ADSPORT=852/GVL_APP.sDctEL1252P?;";
+   in "%s";
+}
+
+getsDctEL1252N {
+   out "ADSPORT=852/GVL_APP.sDctEL1252N?;";
    in "%s";
 }
 

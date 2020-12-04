@@ -1,4 +1,4 @@
-record(int64in, "$(PREFIX)DClockEL1252")
+record(int64in, "$(PREFIX)DClockEL1252P")
 {
     field(DTYP, "asynInt64")
     field(DESC, "Raising edge of 1 Hz pulse")

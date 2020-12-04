@@ -15,7 +15,7 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
-DB += sDctEL1252.proto
+DB += ethercatmcDctEL1252-Stream.proto
 DB += UTCtime.proto
 DB += ethercatmc.template
 DB += ethercatmcPTP.template
