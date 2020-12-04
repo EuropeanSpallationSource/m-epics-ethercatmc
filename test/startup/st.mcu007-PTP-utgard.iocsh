@@ -40,4 +40,4 @@ epicsEnvSet("ASYN_PORT",     "STREAM_1")
 
 epicsEnvSet("STREAM_PROTOCOL_PATH", "./db")
 < ethercatmcDctEL1252-Stream.iocsh
-
+< ethercatmcDcTime-Stream.iocsh
