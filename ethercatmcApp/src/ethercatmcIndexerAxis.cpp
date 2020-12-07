@@ -1035,8 +1035,11 @@ asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
   } else {
     /* If we come here, the command was not understood */
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
-              "%ssetStringParamDbgStrToMcu (%d) illegal value=\"%s\"\n",
-              "ethercatmcIndexerAxis", axisNo_, value);
+              "%ssetStringParamDbgStrToMcu (%d) illegal value=\"%s\"\n"
+              "allowed: \"%s\" or \"%s\"\n",
+              "ethercatmcIndexerAxis", axisNo_, value,
+              Main_this_str,
+              Sim_this_str);
     return asynError;
   }
   if (valueLen < 0 || (unsigned)valueLen >= sizeof(netDevice0518interface.value)) {
