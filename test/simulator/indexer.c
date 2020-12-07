@@ -57,10 +57,9 @@
    + 2 motors 5008
    + 2 1202 errorId for the 5008 motors
    + 2 1202 encoderRaw for the 5008 motors
-   + 2 1604 homProc for the 5008 motors
    + 2 motors 5010
 */
-#define NUM_INDEXER_5008_1202_1604 9
+#define NUM_INDEXER_5008_1202 7
 
 #ifdef HAS_0518
 #define  NUM_0518           1
@@ -73,8 +72,13 @@
 #else
 #define  NUM_5010           0
 #endif
+#ifdef HAS_1604HOMPROC
+#define  NUM_1604_HOMPROC   2
+#else
+#define  NUM_1604_HOMPROC   0
+#endif
 
-#define  NUM_DEVICES        (NUM_INDEXER_5008_1202_1604 + NUM_0518 + NUM_5010)
+#define  NUM_DEVICES        (NUM_INDEXER_5008_1202 + NUM_1604_HOMPROC + NUM_0518 + NUM_5010)
 
 
 typedef enum {
@@ -245,7 +249,9 @@ typedef struct {
   netDevice5008interface_type dev5008;
   netDevice1202interface_type dev1202errorID;
   netDevice1202interface_type dev1202encoderRaw;
+#ifdef HAS_1604HOMPROC
   netDevice1604interface_type dev1604homProc;
+#endif
 } netDevice5008_1202_1604_Interface_type;
 
 /* struct as seen on the network = in memory
@@ -359,6 +365,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_1604HOMPROC
     /* device for homProc */
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
       UNITCODE_NONE, 1,
@@ -369,6 +376,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#endif
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_DEGREE, 2,
       {PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32, 0,
@@ -411,6 +419,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_1604HOMPROC
     /* device for homProc */
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
       UNITCODE_NONE, 2,
@@ -421,6 +430,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#endif
 #ifdef HAS_5010
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 3,
@@ -1468,6 +1478,9 @@ void indexerHandlePLCcycle(void)
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
           unsigned motor5008Num = axisNo - 1;
+          (void)motor5008Num;
+          (void)pLCcycleInitDone;
+#ifdef HAS_1604HOMPROC
           if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "homProc"))) {
             unsigned homProc = cmd_Motor_cmd[axisNo].nHomProc;
             if (pLCcycleInitDone) {
@@ -1490,6 +1503,7 @@ void indexerHandlePLCcycle(void)
             UINTTONET(homProc,
                       netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1604homProc.actualValue);
           }
+#endif
         }
       }
       break;
