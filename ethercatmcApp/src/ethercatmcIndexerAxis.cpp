@@ -705,6 +705,20 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   }
   *moving = nowMoving;
   if (positionValid) {
+    double oldPositionValue;
+    asynStatus oldPositionStatus;
+    oldPositionStatus = pC_->getDoubleParam(axisNo_,
+                                            pC_->motorPosition_,
+                                            &oldPositionValue);
+    if (oldPositionStatus == asynSuccess) {
+      /* Use previous fActPosition and
+         current fActPosition to calculate direction.*/
+      if (actPosition > oldPositionValue) {
+        setIntegerParam(pC_->motorStatusDirection_, 1);
+      } else if (actPosition < oldPositionValue) {
+        setIntegerParam(pC_->motorStatusDirection_, 0);
+      }
+    }
     setDoubleParam(pC_->motorPosition_, actPosition);
     setDoubleParam(pC_->motorEncoderPosition_, actPosition);
   }
