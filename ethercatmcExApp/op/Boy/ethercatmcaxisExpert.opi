@@ -380,7 +380,7 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
   <x>300</x>
 </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
+<widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -837,7 +837,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-CNEN-Vis</pv>
+        <pv trig="true">$(P)$(M)-CnenVis</pv>
       </rule>
     </rules>
     <scale_options>

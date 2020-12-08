@@ -393,7 +393,7 @@ record(mbbi,"$(PREFIX)$(MOTOR_NAME)-StatusCode") {
     field(FFST, "ERR-F")
 }
 
-record(longin,"$(PREFIX)$(MOTOR_NAME)-CNEN-Vis") {
+record(longin,"$(PREFIX)$(MOTOR_NAME)-CnenVis") {
     field(DESC, "CNEN-Visible")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STATUS_GAIN_SUPPORT")
