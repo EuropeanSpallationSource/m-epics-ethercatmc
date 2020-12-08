@@ -27,7 +27,9 @@ def setAndReadBackParam(self, tc_no, field_name, paramInSimu):
     valRB = self.axisCom.get(field_name)
     newVal = round(valRB + 1, 2)
 
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{lineno()} field_name={field_name} valRB={valRB} newVal={newVal}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{lineno()} field_name={field_name} valRB={valRB} newVal={newVal}"
+    )
 
     self.axisMr.setValueOnSimulator(tc_no, paramInSimu, newVal)
     maxTime = 30  # 30 seconds maximum to poll all parameters
@@ -56,7 +58,9 @@ def setAndReadBackParam(self, tc_no, field_name, paramInSimu):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)

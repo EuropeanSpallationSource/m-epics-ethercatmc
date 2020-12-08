@@ -29,17 +29,23 @@ def do_220_autopower(self, tc_no, autopower):
     self.axisCom.put("-PwrAuto", autopower)
     self.axisCom.put("-PwrOnDly", PwrOnDly)
     self.axisCom.put("-PwrOffDly", PwrOffDly)
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Enable move to LLM +10")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Enable move to LLM +10"
+    )
     destination = self.saved_LLM + 10 + 2 * autopower
     self.axisMr.moveWait(tc_no, destination)
 
     # Make sure drive is still enabled
     power1 = self.axisCom.get(".CNEN", use_monitor=False)
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Check drive is still enabled power1={int(power1)}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Check drive is still enabled power1={int(power1)}"
+    )
 
     time.sleep(PwrOnDly + PwrOffDly + 2.0)
     power2 = self.axisCom.get(".CNEN", use_monitor=False)
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Wait 8s and check drive is now disabled power2={int(power2)}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Wait 8s and check drive is now disabled power2={int(power2)}"
+    )
     restorePwrSettings(
         self,
         tc_no,
@@ -49,7 +55,9 @@ def do_220_autopower(self, tc_no, autopower):
     )
     self.axisMr.setCNENandWait(tc_no, self.saved_CNEN)
 
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} power1={int(power1)} power2={int(power2)}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} power1={int(power1)} power2={int(power2)}"
+    )
     if (power1 == 1) and (power2 == 0):
         testPassed = True
     else:
@@ -64,7 +72,9 @@ def do_220_autopower(self, tc_no, autopower):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -82,7 +92,9 @@ class Test(unittest.TestCase):
 
         # Enable power
         self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20])
-        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Enable drive and move to LLM")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Enable drive and move to LLM"
+        )
         self.axisCom.put("-PwrAuto", 2)
         self.axisCom.put("-PwrOnDly", PwrOnDly)
         self.axisMr.setCNENandWait(tc_no, 1)
@@ -99,11 +111,15 @@ class Test(unittest.TestCase):
 
     def test_TC_2201(self):
         tc_no = "2201-Auto_pwr_1"
-        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} autopower ")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} autopower "
+        )
         do_220_autopower(self, tc_no, 1)
 
     def test_TC_2202(self):
         tc_no = "2202-Auto_pwr_2"
-        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} autopower ")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} autopower "
+        )
         do_220_autopower(self, tc_no, 2)
         self.axisMr.setCNENandWait(tc_no, self.saved_CNEN)

@@ -14,7 +14,9 @@ filnam = "410xx.py"
 
 
 def getAccEGUfromMCU(self, tc_no):
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: getAccEGUfromMCU")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: getAccEGUfromMCU"
+    )
     res = self.axisCom.get("-Acc-RB")
     return res
 
@@ -53,7 +55,9 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
     accsOK = self.axisMr.calcAlmostEqual(tc_no, expAccs, actAccs, 0.1)
 
     testPassed = accOK and acclOK and accsOK
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} accOK={accOK} acclOK={acclOK} accsOK={accsOK}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} accOK={accOK} acclOK={acclOK} accsOK={accsOK}"
+    )
     if testPassed:
         self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
     else:
@@ -63,7 +67,9 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -99,7 +105,9 @@ class Test(unittest.TestCase):
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisMr.moveWait(tc_no, self.per10_UserPosition)
-            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} destination={self.per10_UserPosition:f}")
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} destination={self.per10_UserPosition:f}"
+            )
 
     def test_TC_4103(self):
         tc_no = "4103"

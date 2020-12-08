@@ -18,7 +18,9 @@ filnam = "100xx.py"
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -28,7 +30,9 @@ class Test(unittest.TestCase):
         axisCom = self.axisCom
         axisMr = self.axisMr
         tc_no = "100"
-        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+        )
 
         # Get values to be able calculate a timeout
         range_postion = axisCom.get(".HLM") - axisCom.get(".LLM")

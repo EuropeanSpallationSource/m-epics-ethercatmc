@@ -15,7 +15,9 @@ filnam = "122xx.py"
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -34,7 +36,9 @@ class Test(unittest.TestCase):
     velo = axisCom.get(".VELO")
     accl = axisCom.get(".ACCL")
 
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}"
+    )
 
     # Make sure that motor is homed
     def test_TC_1221(self):
@@ -72,7 +76,9 @@ class Test(unittest.TestCase):
             mstaE = int(self.axisCom.get(".MSTA"))
             # Go away from limit switch
             self.axisMr.moveWait(tc_no, old_high_limit - rdbd)
-            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}")
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}"
+            )
 
             self.axisMr.setSoftLimitsOn(old_low_limit, old_high_limit)
 

@@ -18,7 +18,9 @@ polltime = 0.2
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -50,7 +52,9 @@ class Test(unittest.TestCase):
         msta_1 = int(self.axisCom.get(".MSTA", use_monitor=False))
         bError_2 = self.axisCom.get("-Err", use_monitor=False)
         nErrorId_2 = self.axisCom.get("-ErrId", use_monitor=False)
-        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Error bError_2={int(bError_2)} nErrorId_2={int(nErrorId_2)}")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Error bError_2={int(bError_2)} nErrorId_2={int(nErrorId_2)}"
+        )
 
         self.axisMr.resetAxis(tc_no)
 
@@ -69,7 +73,9 @@ class Test(unittest.TestCase):
         bError = bError_3
         while msta & self.axisMr.MSTA_BIT_MOVING or bError != 0 or nErrorId != 0:
             time.sleep(polltime)
-            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} sleep counter = {int(counter)}")
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} sleep counter = {int(counter)}"
+            )
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             bError = self.axisCom.get("-Err", use_monitor=False)
             nErrorId = self.axisCom.get("-ErrId", use_monitor=False)
@@ -87,7 +93,9 @@ class Test(unittest.TestCase):
 
         # Run all the asserts after we have restored the original state
 
-        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Error msta_1={self.axisMr.getMSTAtext(msta_1)}")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Error msta_1={self.axisMr.getMSTAtext(msta_1)}"
+        )
         self.assertNotEqual(
             0,
             msta_1 & self.axisMr.MSTA_BIT_PROBLEM,

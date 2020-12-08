@@ -15,7 +15,9 @@ filnam = "123xx.py"
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
@@ -32,7 +34,9 @@ class Test(unittest.TestCase):
 
     msta = int(axisCom.get(".MSTA"))
 
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}"
+    )
 
     # Assert that motor is homed
     def test_TC_1231(self):
@@ -120,7 +124,9 @@ class Test(unittest.TestCase):
     def test_TC_1235(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1235-high-soft-limit-Moveabs"
-            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: Start")
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: Start"
+            )
             drvUseEGU = self.axisCom.get("-DrvUseEGU-RB")
             if drvUseEGU == 1:
                 mres = 1.0
