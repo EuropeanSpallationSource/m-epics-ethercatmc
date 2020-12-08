@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import unittest
 import os
 import sys
@@ -8,6 +9,8 @@ from AxisCom import AxisCom
 
 import time
 
+filnam = "200xx.py"
+
 ###
 
 polltime = 0.2
@@ -15,7 +18,7 @@ polltime = 0.2
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -29,7 +32,7 @@ class Test(unittest.TestCase):
     # 10% UserPosition
     def test_TC_2001(self):
         tc_no = "2001"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         self.axisCom.put(".CNEN", 1)
         self.axisMr.waitForPowerOn(tc_no, 8.0)
         destination = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
@@ -47,7 +50,7 @@ class Test(unittest.TestCase):
         msta_1 = int(self.axisCom.get(".MSTA", use_monitor=False))
         bError_2 = self.axisCom.get("-Err", use_monitor=False)
         nErrorId_2 = self.axisCom.get("-ErrId", use_monitor=False)
-        print(f"{tc_no} Error bError_2={int(bError_2)} nErrorId_2={int(nErrorId_2)}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Error bError_2={int(bError_2)} nErrorId_2={int(nErrorId_2)}")
 
         self.axisMr.resetAxis(tc_no)
 
@@ -66,7 +69,7 @@ class Test(unittest.TestCase):
         bError = bError_3
         while msta & self.axisMr.MSTA_BIT_MOVING or bError != 0 or nErrorId != 0:
             time.sleep(polltime)
-            print(f"{tc_no} sleep counter = {int(counter)}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} sleep counter = {int(counter)}")
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             bError = self.axisCom.get("-Err", use_monitor=False)
             nErrorId = self.axisCom.get("-ErrId", use_monitor=False)
@@ -84,7 +87,7 @@ class Test(unittest.TestCase):
 
         # Run all the asserts after we have restored the original state
 
-        print(f"{tc_no} Error msta_1={self.axisMr.getMSTAtext(msta_1)}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Error msta_1={self.axisMr.getMSTAtext(msta_1)}")
         self.assertNotEqual(
             0,
             msta_1 & self.axisMr.MSTA_BIT_PROBLEM,

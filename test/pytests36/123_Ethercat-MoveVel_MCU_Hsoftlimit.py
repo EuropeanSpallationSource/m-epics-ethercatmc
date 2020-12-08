@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 #
 
+import datetime
 import unittest
 import os
 import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
+filnam = "123xx.py"
+
 ###
 
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
@@ -29,7 +32,7 @@ class Test(unittest.TestCase):
 
     msta = int(axisCom.get(".MSTA"))
 
-    print(f"llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
 
     # Assert that motor is homed
     def test_TC_1231(self):
@@ -47,7 +50,7 @@ class Test(unittest.TestCase):
     def test_TC_1232(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1232"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -59,7 +62,7 @@ class Test(unittest.TestCase):
     def test_TC_1233(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1233"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
 
             jar = self.axisCom.get(".JAR")
             self.axisCom.put("-ACCS", jar)
@@ -105,7 +108,7 @@ class Test(unittest.TestCase):
     def test_TC_1234(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1234-90-percent-UserPosition"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -117,7 +120,7 @@ class Test(unittest.TestCase):
     def test_TC_1235(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "TC-1235-high-soft-limit-Moveabs"
-            print(f"{tc_no}: Start")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: Start")
             drvUseEGU = self.axisCom.get("-DrvUseEGU-RB")
             if drvUseEGU == 1:
                 mres = 1.0

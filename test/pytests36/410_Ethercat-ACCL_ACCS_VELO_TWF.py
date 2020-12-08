@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import unittest
 import os
 import sys
@@ -8,11 +9,12 @@ from AxisCom import AxisCom
 
 import time
 
+filnam = "410xx.py"
 ###
 
 
 def getAccEGUfromMCU(self, tc_no):
-    print(f"{tc_no}: getAccEGUfromMCU")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: getAccEGUfromMCU")
     res = self.axisCom.get("-Acc-RB")
     return res
 
@@ -51,7 +53,7 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
     accsOK = self.axisMr.calcAlmostEqual(tc_no, expAccs, actAccs, 0.1)
 
     testPassed = accOK and acclOK and accsOK
-    print(f"{tc_no} accOK={accOK} acclOK={acclOK} accsOK={accsOK}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} accOK={accOK} acclOK={acclOK} accsOK={accsOK}")
     if testPassed:
         self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
     else:
@@ -61,7 +63,7 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -94,49 +96,49 @@ class Test(unittest.TestCase):
     # 10% dialPosition
     def test_TC_4102(self):
         tc_no = "4102"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisMr.moveWait(tc_no, self.per10_UserPosition)
-            print(f"{tc_no} destination={self.per10_UserPosition:f}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} destination={self.per10_UserPosition:f}")
 
     def test_TC_4103(self):
         tc_no = "4103"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                            vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0, 6.0, 0.2, -1, 30)
 
     def test_TC_4104(self):
         tc_no = "4104"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                           vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.2, -1, 5)
 
     def test_TC_4105(self):
         tc_no = "4105"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.4, -1, 2.5)
 
     def test_TC_4106(self):
         tc_no = "4106"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 4.0, 4.0, 0.5, -1, 8.0)
 
     def test_TC_4107(self):
         tc_no = "4107"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, 0.5, -1, 16.0)
 
     def test_TC_4108(self):
         tc_no = "4108"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, -1.0, 16.0, 16.0)
@@ -144,7 +146,7 @@ class Test(unittest.TestCase):
     # Keep ACCS and expAccEGU if velociy is changed
     def test_TC_4109(self):
         tc_no = "4109"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 4.0, -1.0, -1.0, 16.0)

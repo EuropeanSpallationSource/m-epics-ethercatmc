@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #
 
+import datetime
+import unittest
 import math
 import os
 import sys
-import unittest
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
@@ -12,6 +13,7 @@ import time
 import math
 import inspect
 
+filnam = "950xx.py"
 ###
 
 #
@@ -102,7 +104,7 @@ def InitLimitsNoROlimits(self, tc_no):
 
         resH = self.axisMr.calcAlmostEqual(tc_no, myDHLM, actDHLM, maxDelta)
         resL = self.axisMr.calcAlmostEqual(tc_no, myDLLM, actDLLM, maxDelta)
-        print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
             return True
 
@@ -148,7 +150,7 @@ def jogTheMotorToLS(
     mresAct = self.axisCom.get(".MRES")
     dirAct = self.axisCom.get(".DIR")
     if mresAct != mres:
-        print(f"tc_no={tc_no} mresAct={mresAct}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} mresAct={mresAct}")
         # The motorRecord adjusts VELO, BVEL VBAS
         # and this is not a bug. but an old feature
         velo = self.axisCom.get(".VELO")
@@ -162,7 +164,7 @@ def jogTheMotorToLS(
         self.axisCom.put(".VBAS", vbas)
 
     if dirAct != dir:
-        print(f"tc_no={tc_no} dirAct={dirAct}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} dirAct={dirAct}")
         self.axisCom.put(".DIR", dir)
 
     time.sleep(1.0)
@@ -187,7 +189,7 @@ def jogTheMotorToLS(
     else:
         actDLLS = 0
 
-    print(f"tc_no={tc_no} mres={mres} dir={dir} jogX={jogX} drvUseEGU={drvUseEGU}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} mres={mres} dir={dir} jogX={jogX} drvUseEGU={drvUseEGU}")
     print(
         f"tc_no={tc_no} expVelRB={velRB} expAccRB={accRB} expHLS={hls} expLLS={lls} expDHLS={dhls} expDLLS={dlls}"
     )
@@ -263,8 +265,8 @@ def jogTheMotorChangeJVEL(
         else:
             time.sleep(polltime)
             maxTime = maxTime - polltime
-    print(f"tc_no={tc_no} expVelRB={velRB} expAccRB={accRB}")
-    print(f"tc_no={tc_no} actVelRB={actVelRB} actAccRB={actAccRB}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} expVelRB={velRB} expAccRB={accRB}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} actVelRB={actVelRB} actAccRB={actAccRB}")
     self.axisCom.put("." + jogX, 0)
     self.axisCom.put(".STOP", 1)
     wait_for_stop = 5
@@ -417,7 +419,7 @@ class Test(unittest.TestCase):
     drvUseEGU_RB = None
     drvUseEGU = 0
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)

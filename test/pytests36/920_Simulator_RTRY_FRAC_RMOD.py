@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+#
+
+import datetime
 import unittest
 import os
 import sys
@@ -8,6 +12,7 @@ import time
 import math
 import inspect
 
+filnam = "920xx.py"
 ###
 
 
@@ -108,7 +113,7 @@ def positionAndBacklash(self, tc_no, rmod, encRel, motorStartPos, motorEndPos):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)

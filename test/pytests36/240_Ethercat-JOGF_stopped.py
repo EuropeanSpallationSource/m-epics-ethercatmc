@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import unittest
 import os
 import sys
@@ -8,12 +9,13 @@ from AxisCom import AxisCom
 
 import time
 
+filnam = "240xx.py"
 ###
 
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -42,7 +44,7 @@ class Test(unittest.TestCase):
     # Jog, wait for start, stop behind MR
     def test_TC_2402(self):
         tc_no = "2402"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
 
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20])

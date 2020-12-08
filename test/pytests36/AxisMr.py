@@ -4,6 +4,7 @@
 
 """
 
+import datetime
 import sys
 import math
 import time
@@ -11,6 +12,7 @@ import os
 import filecmp
 
 from AxisCom import AxisCom
+filnam = "AxisMr"
 
 
 motorRMOD_D = 0  # "Default"
@@ -26,8 +28,17 @@ class AxisMr:
     def __init__(self, axisCom, url_string=None):
         self.axisCom = axisCom
         self.url_string = url_string
-        # Dummy read to give the IOC time to start
-        msta = int(axisCom.get(".MSTA", timeout=30.0))
+        wait_for = 30
+        while wait_for > 0:
+            # Dummy read to give the IOC time to start
+            try:
+                msta = int(axisCom.get(".MSTA", timeout=2.0))
+                wait_for = -1
+            except:
+                wait_for -= 1
+        if wait_for == 0:
+            raise Exception("wait_for = 0 get None")
+
 
     MSTA_BIT_HOMED = 1 << (15 - 1)  # 4000
     MSTA_BIT_MINUS_LS = 1 << (14 - 1)  # 2000
@@ -633,13 +644,13 @@ class AxisMr:
                 for line in file:
                     if line[-1] == "\n":
                         line = line[0:-1]
-                    print(f"{expFileName}: {str(line)}")
+                    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {expFileName}: {str(line)}")
                 file.close()
                 file = open(actFileName)
                 for line in file:
                     if line[-1] == "\n":
                         line = line[0:-1]
-                    print(f"{actFileName}: {str(line)}")
+                    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {actFileName}: {str(line)}")
                 file.close()
                 sameContent = filecmp.cmp(expFileName, actFileName, shallow=False)
             except Exception as e:
@@ -665,7 +676,7 @@ class AxisMr:
         """
         actDHLM = self.axisCom.get(".DHLM", use_monitor=False)
         actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
-        print(f"{tc_no}: setSoftLimitsOff hlm={actDHLM} llm={actDLLM}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff hlm={actDHLM} llm={actDLLM}")
         # switch off the controller soft limits
         self.axisCom.put("-CfgDHLM-En", 0, wait=True)
         self.axisCom.put("-CfgDLLM-En", 0, wait=True)
@@ -679,7 +690,7 @@ class AxisMr:
             actDHLM = self.axisCom.get(".DHLM", use_monitor=False)
             actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
 
-            print(f"{tc_no}: setSoftLimitsOff dhlm={actDHLM} dllm={actDLLM}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff dhlm={actDHLM} dllm={actDLLM}")
             resH = self.calcAlmostEqual(tc_no, 0.0, actDHLM, maxDelta)
             resL = self.calcAlmostEqual(tc_no, 0.0, actDLLM, maxDelta)
             debug_text = f"{tc_no}: setSoftLimitsOff actDHLM={actDHLM} actDLLM={actDLLM} resH={resH} resL={resL}"
@@ -717,22 +728,22 @@ class AxisMr:
         stup = self.axisCom.get(".STUP", use_monitor=False)
         while stup != 0:
             stup = self.axisCom.get(".STUP", use_monitor=False)
-            print(f"{tc_no} doSTUPandSYNC .STUP={stup}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC .STUP={stup}")
             time.sleep(polltime)
 
         self.axisCom.put(".STUP", 1)
         self.axisCom.put(".SYNC", 1)
         self.waitForMipZero(tc_no, 2)
         rbv = self.axisCom.get(".RBV", use_monitor=False)
-        print(f"{tc_no} doSTUPandSYNC .RBV={rbv:f} .STUP={stup}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC .RBV={rbv:f} .STUP={stup}")
         while stup != 0:
             stup = self.axisCom.get(".STUP", use_monitor=False)
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            print(f"{tc_no} doSTUPandSYNC.RBV={rbv:f} .STUP={stup}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC.RBV={rbv:f} .STUP={stup}")
             time.sleep(polltime)
         self.waitForMipZero(tc_no, 2)
         msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-        print(f"{tc_no} doSTUPandSYNC msta={self.getMSTAtext(msta)}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC msta={self.getMSTAtext(msta)}")
 
     def setCNENandWait(self, tc_no, cnen):
         wait_for_power_changed = 6.0
@@ -755,13 +766,13 @@ class AxisMr:
     def resetAxis(self, tc_no):
         wait_for_ErrRst = 5
         err = int(self.axisCom.get("-Err", use_monitor=False))
-        print(f"{tc_no} resetAxis err={int(err)}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} resetAxis err={int(err)}")
 
         self.axisCom.put("-ErrRst", 1)
         while wait_for_ErrRst > 0:
             wait_for_ErrRst -= polltime
             err = int(self.axisCom.get("-Err", use_monitor=False))
-            print(f"{tc_no} wait_for_ErrRst={wait_for_ErrRst:f} err=0x{err:x}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wait_for_ErrRst={wait_for_ErrRst:f} err=0x{err:x}")
             if not err:
                 return True
             time.sleep(polltime)

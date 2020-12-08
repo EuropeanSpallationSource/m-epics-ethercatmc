@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 
+import datetime
 import unittest
 import os
 import sys
@@ -11,6 +12,7 @@ import time
 import math
 import inspect
 
+filnam = "900xx.py"
 ###
 
 
@@ -104,7 +106,7 @@ def InitLimitsNoROlimits(self, tc_no):
 
         resH = self.axisMr.calcAlmostEqual(tc_no, myDHLM, actDHLM, maxDelta)
         resL = self.axisMr.calcAlmostEqual(tc_no, myDLLM, actDLLM, maxDelta)
-        print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
             return True
 
@@ -149,7 +151,7 @@ def InitLimitsWithROlimits(self, tc_no):
 
         resH = self.axisMr.calcAlmostEqual(tc_no, expDHLM, actDHLM, maxDelta)
         resL = self.axisMr.calcAlmostEqual(tc_no, expDLLM, actDLLM, maxDelta)
-        print(f"{tc_no}:{int(lineno())} resH={resH} resL={resL}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} resH={resH} resL={resL}")
         if (resH == True) and (resL == True):
             return
         time.sleep(polltime)
@@ -176,7 +178,7 @@ def readBackParamVerify(self, tc_no, field_name, expVal):
         )
 
         res = self.axisMr.calcAlmostEqual(tc_no, expVal, actVal, maxDelta)
-        print(f"{tc_no}:{int(lineno())} res={res}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} res={res}")
         if (res == True) or (res != 0):
             return True
         else:
@@ -227,7 +229,7 @@ class Test(unittest.TestCase):
     drvUseEGU_RB = None
     drvUseEGU = 0
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
@@ -402,7 +404,7 @@ class Test(unittest.TestCase):
         encRel = 0
         self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
 
-        print(f"{tc_no} vers={self.vers:g} hasROlimit={int(self.hasROlimit)}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} vers={self.vers:g} hasROlimit={int(self.hasROlimit)}")
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
 
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)

@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 #
 
+import datetime
 import unittest
 import os
 import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
+filnam = "121xx.py"
 ###
 
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -30,7 +32,7 @@ class Test(unittest.TestCase):
 
     msta = int(axisCom.get(".MSTA"))
 
-    print(f"llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}")
 
     # Make sure that motor is homed
     def test_TC_1211(self):
@@ -48,7 +50,7 @@ class Test(unittest.TestCase):
     def test_TC_1212(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1212"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -60,7 +62,7 @@ class Test(unittest.TestCase):
     def test_TC_1213(self):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1213"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 1.0)
             self.axisMr.jogDirection(tc_no, 1)
             lvio = int(self.axisCom.get(".LVIO"))
@@ -89,7 +91,7 @@ class Test(unittest.TestCase):
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1214"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -102,7 +104,7 @@ class Test(unittest.TestCase):
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1215"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 0.0)
             self.axisMr.jogDirection(tc_no, 1)
             lvio = int(self.axisCom.get(".LVIO"))
@@ -134,7 +136,7 @@ class Test(unittest.TestCase):
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1216"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 0.0)
             mip1 = int(self.axisCom.get(".MIP"))
             self.axisMr.jogDirection(tc_no, 1)
@@ -147,7 +149,7 @@ class Test(unittest.TestCase):
             jogf = int(self.axisCom.get(".JOGF"))
 
             self.axisCom.put(".DLY", self.saved_DLY)
-            print(f"{tc_no} mip1={mip1:x} mip2={mip2:x}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} mip1={mip1:x} mip2={mip2:x}")
 
             self.assertEqual(
                 0, msta & self.axisMr.MSTA_BIT_PROBLEM, "ndly2 No MSTA.Problem JOGF"
@@ -176,7 +178,7 @@ class Test(unittest.TestCase):
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1217"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
@@ -190,7 +192,7 @@ class Test(unittest.TestCase):
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             tc_no = "1218"
-            print(f"{tc_no}")
+            print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             saved_DIR = self.axisCom.get(".DIR")
             saved_FOFF = self.axisCom.get(".FOFF")
             self.axisCom.put(".FOFF", 1)

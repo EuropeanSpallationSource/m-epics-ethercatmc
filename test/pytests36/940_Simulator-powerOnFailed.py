@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+#
+
+import datetime
 import unittest
 import os
 import sys
@@ -7,6 +11,8 @@ from AxisCom import AxisCom
 import time
 import math
 import inspect
+
+filnam = "940xx.py"
 
 ###
 
