@@ -748,13 +748,13 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
 #ifdef  motorNotHomedProblemString
     pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-    pAxis->setIntegerParam(ethercatmcHomeVis_, 1);
+    updateCfgValue(axisNo, ethercatmcHomeVis_, 1, "homeVis");
     break;
   case PARAM_IDX_FUN_SET_POSITION:
 #ifdef  motorNotHomedProblemString
     pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-    pAxis->setIntegerParam(ethercatmcFoffVis_, 1);
+    updateCfgValue(axisNo, ethercatmcFoffVis_, 1, "foffVis");
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
     if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_RB_, fabs(fValue), "jvel");
