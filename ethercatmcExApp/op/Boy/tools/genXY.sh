@@ -53,8 +53,12 @@ genXX() {
       ix=$(($ix + 1))
     done
     iy=$(($iy + 1))
-    X=$1
-    shift
+    if test $# -gt 0; then
+      X=$1
+      shift
+    else
+      X=
+    fi
   done
   FILE=$FILE.$EXT
 }
