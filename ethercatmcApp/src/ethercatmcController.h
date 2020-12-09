@@ -43,6 +43,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcNamBit24_String            "NamBit24"
 #define ethercatmcNamBit25_String            "NamBit25"
 #define ethercatmcFoffVisString              "FoffVis"
+#define ethercatmcHomeVisString              "HomeVis"
 #define ethercatmcHomProc_RBString           "HomProc-RB"
 #define ethercatmcHomPos_RBString            "HomPos-RB"
 #define ethercatmcHomProcString              "HomProc"
@@ -376,6 +377,7 @@ public:
   int ethercatmcNamBit24_;
   int ethercatmcNamBit25_;
   int ethercatmcFoffVis_;
+  int ethercatmcHomeVis_;
   int ethercatmcHomProc_RB_;
   int ethercatmcHomPos_RB_;
   int ethercatmcHomProc_;

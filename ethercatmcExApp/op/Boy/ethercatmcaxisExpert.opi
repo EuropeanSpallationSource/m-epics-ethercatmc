@@ -422,14 +422,14 @@ $(pv_value)</tooltip>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
-      <rule name="HOMF-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="((pv0 &lt; 1) || (pv0 &gt; 14))">
+      <rule name="HOMR-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
           <value>false</value>
         </exp>
-        <exp bool_exp="((pv0 &gt; 0) &amp;&amp; (pv0 &lt; 15))">
+        <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)HomProc-RB</pv>
+        <pv trig="true">$(P)$(R)HomeVis</pv>
       </rule>
     </rules>
     <scale_options>
@@ -558,13 +558,13 @@ $(pv_value)</tooltip>
     <released_action_index>0</released_action_index>
     <rules>
       <rule name="HOMR-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="((pv0 &lt; 1) || (pv0 &gt; 14))">
+        <exp bool_exp="pv0 == 0">
           <value>false</value>
         </exp>
-        <exp bool_exp="((pv0 &gt; 0) &amp;&amp; (pv0 &lt; 15))">
+        <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)HomProc-RB</pv>
+        <pv trig="true">$(P)$(R)HomeVis</pv>
       </rule>
     </rules>
     <scale_options>

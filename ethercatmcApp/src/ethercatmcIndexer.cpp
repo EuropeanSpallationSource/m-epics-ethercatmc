@@ -748,7 +748,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
 #ifdef  motorNotHomedProblemString
     pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-    pAxis->setIntegerParam(ethercatmcHomProc_RB_, 14);
+    pAxis->setIntegerParam(ethercatmcHomeVis_, 1);
     break;
   case PARAM_IDX_FUN_SET_POSITION:
 #ifdef  motorNotHomedProblemString
@@ -1579,7 +1579,6 @@ void ethercatmcController::indexerDisconnected(void)
             modNamEMC, "indexerDisconnected");
   for (int axisNo=0; axisNo<numAxes_; axisNo++) {
     setIntegerParam(axisNo, motorStatusGainSupport_, 0);
-    setIntegerParam(axisNo, ethercatmcFoffVis_, 0);
     for (int function = ethercatmcNamAux0_;
          function < ethercatmcNamAux7_;
          function++) {

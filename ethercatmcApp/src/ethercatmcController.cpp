@@ -162,6 +162,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcStatusCodeString,    asynParamInt32,       &ethercatmcStatusCode_);
   createParam(ethercatmcStatusBitsString,    asynParamInt32,       &ethercatmcStatusBits_);
   createParam(ethercatmcFoffVisString,       asynParamInt32,       &ethercatmcFoffVis_);
+  createParam(ethercatmcHomeVisString,       asynParamInt32,       &ethercatmcHomeVis_);
   createParam(ethercatmcHomProc_RBString,    asynParamInt32,       &ethercatmcHomProc_RB_);
   createParam(ethercatmcHomPos_RBString,     asynParamFloat64,     &ethercatmcHomPos_RB_);
   createParam(ethercatmcVelToHomString,      asynParamFloat64,     &ethercatmcVelToHom_);
@@ -700,6 +701,8 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
         asynMotorAxis *pAxis=getAxis(axisNo);
         if (!pAxis) continue;
         pAxis->setIntegerParam(motorStatusCommsError_, 1);
+        setIntegerParam(axisNo, ethercatmcFoffVis_, 0);
+        setIntegerParam(axisNo, ethercatmcHomeVis_, 0);
         pAxis->callParamCallbacks();
       }
     } else {
