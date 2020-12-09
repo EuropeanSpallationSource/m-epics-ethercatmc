@@ -142,7 +142,7 @@ typedef enum {
 /* Implementation defined, integer */
 #define PARAM_IDX_USR_MIN_EN_UINT32           192
 #define PARAM_IDX_USR_MAX_EN_UINT32           193
-#define PARAM_IDX_HOMPROC_UINT32              194
+#define PARAM_IDX_HOME_PROC_UINT32            194
 /* Implementation defined, floating point */
 #define PARAM_IDX_UNITS_PER_REV_FLOAT32       221
 #define PARAM_IDX_STEPS_PER_REV_FLOAT32       222
@@ -180,7 +180,7 @@ typedef enum {
 
 #define PARAM_AVAIL_192_199_USR_MIN_EN                 (1 << (192-192))
 #define PARAM_AVAIL_192_199_USR_MAX_EN                 (1 << (193-192))
-#define PARAM_AVAIL_192_199_HOMPROC                    (1 << (194-192))
+#define PARAM_AVAIL_192_199_HOME_PROC                  (1 << (194-192))
 
 #define PARAM_AVAIL_216_223_UNITS_PER_REV              (1 << (221-216))
 #define PARAM_AVAIL_216_223_STEPS_PER_REV              (1 << (222-216))
@@ -323,14 +323,14 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 112..119 */ 0,
        /* 120..127 */ 0,
        /* 128..135 */ PARAM_AVAIL_128_135_FUN_REFERENCE,
-       /* 136..143 */ PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
+       /* 136..143 */ PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
        /* 144..151 */ 0,
        /* 152..159 */ 0,
        /* 160..167 */ 0,
        /* 168..175 */ 0,
        /* 176..183 */ 0,
        /* 184..191 */ 0,
-       /* 192..199 */ PARAM_AVAIL_192_199_USR_MIN_EN | PARAM_AVAIL_192_199_USR_MAX_EN | PARAM_AVAIL_192_199_HOMPROC,
+       /* 192..199 */ PARAM_AVAIL_192_199_USR_MIN_EN | PARAM_AVAIL_192_199_USR_MAX_EN | PARAM_AVAIL_192_199_HOME_PROC,
        /* 200..207 */ 0,
        /* 208..215 */ 0,
        /* 216..223 */ PARAM_AVAIL_216_223_UNITS_PER_REV | PARAM_AVAIL_216_223_STEPS_PER_REV | PARAM_AVAIL_216_223_MAX_VELO,
@@ -396,14 +396,14 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 112..119 */ 0,
        /* 120..127 */ 0,
        /* 128..135 */ 0,
-       /* 136..143 */ 0,
+       /* 136..143 */ PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
        /* 144..151 */ 0,
        /* 152..159 */ 0,
        /* 160..167 */ 0,
        /* 168..175 */ 0,
        /* 176..183 */ 0,
        /* 184..191 */ 0,
-       /* 192..199 */ 0,
+       /* 192..199 */ PARAM_AVAIL_192_199_USR_MIN_EN | PARAM_AVAIL_192_199_USR_MAX_EN,
        /* 200..207 */ 0,
        /* 208..215 */ 0,
        /* 216..223 */ 0,
@@ -477,7 +477,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 168..175 */ 0,
        /* 176..183 */ 0,
        /* 184..191 */ 0,
-       /* 192..199 */ 0,
+       /* 192..199 */ PARAM_AVAIL_192_199_HOME_PROC,
        /* 200..207 */ 0,
        /* 208..215 */ 0,
        /* 216..223 */ 0,
@@ -511,7 +511,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 112..119 */ 0,
        /* 120..127 */ 0,
        /* 128..135 */ 0,
-       /* 136..143 */ PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
+       /* 136..143 */ PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
        /* 144..151 */ 0,
        /* 152..159 */ 0,
        /* 160..167 */ 0,
@@ -725,6 +725,8 @@ static void init_axis(int axis_no)
       cmd_Motor_cmd[axis_no].fHysteresis = 2.0;
     else
       cmd_Motor_cmd[axis_no].fHysteresis = 0.1;
+    if (axis_no == 4)
+      setAxisHomed(axis_no, 1);
     cmd_Motor_cmd[axis_no].nHomProc = 1;
     cmd_Motor_cmd[axis_no].nOldHomProc = cmd_Motor_cmd[axis_no].nHomProc;
     cmd_Motor_cmd[axis_no].fHomPos = 0.0;
@@ -1015,7 +1017,7 @@ indexerMotorParamRead(unsigned motor_axis_no,
   case PARAM_IDX_USR_MAX_EN_UINT32:
     *fRet = getEnableHighSoftLimit(motor_axis_no);
     return ret;
-  case PARAM_IDX_HOMPROC_UINT32:
+  case PARAM_IDX_HOME_PROC_UINT32:
     *fRet = cmd_Motor_cmd[motor_axis_no].nHomProc;
     return ret;
   case PARAM_IDX_UNITS_PER_REV_FLOAT32:
@@ -1112,7 +1114,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
       case PARAM_IDX_OPMODE_AUTO_UINT32:
       case PARAM_IDX_USR_MIN_EN_UINT32:
       case PARAM_IDX_USR_MAX_EN_UINT32:
-      case PARAM_IDX_HOMPROC_UINT32:
+      case PARAM_IDX_HOME_PROC_UINT32:
         uintToNet((unsigned)fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
         break;
       default:
