@@ -708,7 +708,7 @@ static void init_axis(int axis_no)
     memset(&motor_init_values, 0, sizeof(motor_init_values));
     motor_init_values.ReverseERES = MRES/ERES;
     motor_init_values.ParkingPos = (10 + axis_no/10.0);
-    motor_init_values.MaxHomeVelocityAbs = 5 * ReverseMRES;
+    motor_init_values.MaxHomeVelocityAbs = 10 * ReverseMRES;
     motor_init_values.lowHardLimitPos = valueLow;
     motor_init_values.highHardLimitPos = valueHigh;
     motor_init_values.hWlowPos = valueLow;
@@ -728,6 +728,7 @@ static void init_axis(int axis_no)
     setHomePos(axis_no, 0.1);
     setNxtMoveVelocity(axis_no, 50 + axis_no / 10.0);
     setNxtMoveAcceleration(axis_no, 1 + axis_no / 10.0);
+    setMaxHomeVelocityAbs(axis_no, 10);
     /* Simulated limit switches, take from indexer table */
     {
       int tmp_axis_no = 1;
@@ -1142,7 +1143,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     case PARAM_IDX_FUN_REFERENCE:
       {
         int direction = 0;
-        double max_velocity = 2;
+        double max_velocity = 10;
         double acceleration = 3;
 #if 0
         moveHome(motor_axis_no,
@@ -1252,7 +1253,7 @@ static int indexerHandleIndexerCmd(unsigned offset,
         if (strlen(indexerDeviceAbsStraction[devNum].auxName[auxIdx])) {
           flags |= (1 << auxIdx);
         }
-        LOGINFO3("%s/%s:%d devNum=%u auxIdx=%u flagsLow=0x%x\n",
+        LOGINFO6("%s/%s:%d devNum=%u auxIdx=%u flagsLow=0x%x\n",
                  __FILE__, __FUNCTION__, __LINE__,
                  devNum, auxIdx, flags);
       }
