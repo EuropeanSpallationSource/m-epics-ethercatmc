@@ -3785,6 +3785,15 @@ $(pv_value)</tooltip>
     <pv_value />
     <read_only>false</read_only>
     <rules>
+      <rule name="HomProc-RB-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)HomProc-RB.SEVR</pv>
+      </rule>
     </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
