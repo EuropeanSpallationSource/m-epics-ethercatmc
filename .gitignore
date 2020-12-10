@@ -17,6 +17,7 @@ iocBoot/
 lib/
 logs/
 O.*
+test/logs
 test/pytests36/venvpython3*/
 test/pytests36/*.*log*
 test/pytests36/*.*log*.failed
