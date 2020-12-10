@@ -53,7 +53,22 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
         self.axisMr.moveWait(tc_no, (old_high_limit + old_low_limit) / 2.0)
 
     if homProc != 0:
-        self.axisCom.put("-HomProc", homProc)
+        self.axisCom.put("-HomProc", homProc, wait=True)
+        maxcnt = 5
+        cnt = 1
+        polltime = 0.2
+        while cnt < maxcnt:
+            homProcRB = int(self.axisCom.get("-HomProc-RB", use_monitor=False))
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} homProc={homProc} homProcRB={homProcRB} cnt={cnt}"
+            )
+            if homProc != homProcRB:
+                time.sleep(polltime)
+                cnt += cnt
+            else:
+                cnt = maxcnt
+        self.assertEqual(homProc, homProcRB, tc_no + " homProcRB must be homProc")
+
         if homProc == 1:
             self.axisCom.put("-HomPos", old_low_limit - 1.0)
         elif homProc == 2:
@@ -112,7 +127,12 @@ class Test(unittest.TestCase):
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
-    HomeVis = axisCom.get("-HomeVis")
+    HomeVis = int(axisCom.get("-HomeVis"))
+    homProc = int(axisCom.get("-HomProc"))
+    homProcRB = int(axisCom.get("-HomProc-RB"))
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} HomeVis={HomeVis} homProc={homProc} homProcRB={homProcRB}"
+    )
 
     def test_TC_11100(self):
         tc_no = "11100"
