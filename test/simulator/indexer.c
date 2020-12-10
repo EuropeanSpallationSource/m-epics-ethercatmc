@@ -540,7 +540,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 typedef struct
 {
   double fHysteresis;
-  double fHomPos;
   int   nHomProc;
   int   nOldHomProc;
 } cmd_Motor_cmd_type;
@@ -708,7 +707,7 @@ static void init_axis(int axis_no)
     double valueHigh = 186.0 * ReverseMRES;
     memset(&motor_init_values, 0, sizeof(motor_init_values));
     motor_init_values.ReverseERES = MRES/ERES;
-    motor_init_values.ParkingPos = (100 + axis_no/10.0);
+    motor_init_values.ParkingPos = (10 + axis_no/10.0);
     motor_init_values.MaxHomeVelocityAbs = 5 * ReverseMRES;
     motor_init_values.lowHardLimitPos = valueLow;
     motor_init_values.highHardLimitPos = valueHigh;
@@ -721,16 +720,13 @@ static void init_axis(int axis_no)
 
     setMRES_23(axis_no, UREV);
     setMRES_24(axis_no, SREV);
-    if (axis_no == 1)
-      cmd_Motor_cmd[axis_no].fHysteresis = 2.0;
-    else
-      cmd_Motor_cmd[axis_no].fHysteresis = 0.1;
+    cmd_Motor_cmd[axis_no].fHysteresis = 0.1;
     if (axis_no == 4)
       setAxisHomed(axis_no, 1);
     cmd_Motor_cmd[axis_no].nHomProc = 1;
     cmd_Motor_cmd[axis_no].nOldHomProc = cmd_Motor_cmd[axis_no].nHomProc;
-    cmd_Motor_cmd[axis_no].fHomPos = 0.0;
-    setNxtMoveVelocity(axis_no, 2 + axis_no / 10.0);
+    setHomePos(axis_no, 0.1);
+    setNxtMoveVelocity(axis_no, 50 + axis_no / 10.0);
     setNxtMoveAcceleration(axis_no, 1 + axis_no / 10.0);
     /* Simulated limit switches, take from indexer table */
     {
@@ -1067,6 +1063,9 @@ indexerMotorParamWrite(unsigned motor_axis_no,
       }
       return ret;
     }
+  case PARAM_IDX_HOME_POSITION_FLOAT32:
+    setHomePos(motor_axis_no, fValue);
+    return ret;
   case PARAM_IDX_USR_MAX_FLOAT32:
     setHighSoftLimitPos(motor_axis_no, fValue);
     return ret;
@@ -1133,6 +1132,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
       /* Comes as an uint via the wire */
       fValue =  (double)netToUint(&netData.memoryBytes[offset + 2], lenInPlcPara);
       /* fall through */
+    case PARAM_IDX_HOME_POSITION_FLOAT32:
     case PARAM_IDX_USR_MAX_FLOAT32:
     case PARAM_IDX_USR_MIN_FLOAT32:
     case PARAM_IDX_SPEED_FLOAT32:
@@ -1153,7 +1153,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
         moveHomeProc(motor_axis_no,
                      direction,
                      cmd_Motor_cmd[motor_axis_no].nHomProc,
-                     cmd_Motor_cmd[motor_axis_no].fHomPos,
+                     getHomePos(motor_axis_no),
                      max_velocity,
                      acceleration);
 
@@ -1190,6 +1190,10 @@ indexerMotorParamInterface(unsigned motor_axis_no,
       break;
     case PARAM_IDX_USR_MAX_EN_UINT32:
       setEnableHighSoftLimit(motor_axis_no, iValue);
+      ret = PARAM_IF_CMD_DONE | paramIndex;
+      break;
+    case PARAM_IDX_HOME_PROC_UINT32:
+      cmd_Motor_cmd[motor_axis_no].nHomProc = iValue;
       ret = PARAM_IF_CMD_DONE | paramIndex;
       break;
     }
