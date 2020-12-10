@@ -63,7 +63,7 @@ class AxisCom:
         if self.ctxt is not None:
             ret = self.ctxt.get(pvname, timeout=timeout)
         else:
-            ret = self.epics.caget(pvname, timeout=timeout)
+            ret = self.epics.caget(pvname, timeout=timeout, use_monitor=use_monitor)
 
         if self.log_debug:
             print(
