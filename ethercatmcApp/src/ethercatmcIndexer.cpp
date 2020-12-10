@@ -743,6 +743,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_HOME_POSITION_FLOAT:
     updateCfgValue(axisNo, ethercatmcHomPos_RB_, fValue, "homPosRB");
+    if (initial) updateCfgValue(axisNo, ethercatmcHomPos_,   fValue, "hompos");
     break;
   case PARAM_IDX_FUN_REFERENCE:
 #ifdef  motorNotHomedProblemString
@@ -768,7 +769,8 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_HOMPROC_UINT:
-    updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homproc");
+    updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
+    if (initial) updateCfgValue(axisNo, ethercatmcHomProc_, (int)fValue, "homproc");
     break;
   case PARAM_IDX_UNITS_PER_REV_FLOAT:
     {

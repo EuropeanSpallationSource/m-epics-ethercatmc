@@ -873,6 +873,22 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modNamEMC, axisNo_, value);
 #endif
+  } else if (function == pC_->ethercatmcHomProc_) {
+    static const unsigned paramIndex = PARAM_IDX_HOMPROC_UINT;
+    status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
+                                    paramIndex,
+                                    drvlocal.lenInPlcPara,
+                                    value);
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetIntegerParam(%d ethercatmcHomProc)=%d  status=%s(%d)\n",
+              modNamEMC, axisNo_, value,
+              ethercatmcstrStatus(status), (int)status);
+    if (status == asynSuccess) {
+      int initial = 0;
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      return asynSuccess;
+    }
+    return asynError;
   } else if (function == pC_->ethercatmcErrRst_) {
     if (value) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -896,8 +912,9 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      return asynSuccess;
     }
-    return status;
+    return asynError;
   } else if (function == pC_->ethercatmcCfgDLLM_En_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MIN_EN_UINT;
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
@@ -911,8 +928,9 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      return asynSuccess;
     }
-    return status;
+    return asynError;
   } else {
     pilsAsynDevInfo_type *pPilsAsynDevInfo;
     pPilsAsynDevInfo = pC_->findIndexerOutputDevice(axisNo_, function,
@@ -926,9 +944,13 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
                 modNamEMC, axisNo_,
                 paramName,
                 pPilsAsynDevInfo->outputOffset, value);
-      return pC_->setPlcMemoryInteger(pPilsAsynDevInfo->outputOffset,
-                                      value,
-                                      pPilsAsynDevInfo->lenInPLC);
+      status = pC_->setPlcMemoryInteger(pPilsAsynDevInfo->outputOffset,
+                                        value,
+                                        pPilsAsynDevInfo->lenInPLC);
+      if (status == asynSuccess) {
+        return asynSuccess;
+      }
+      return asynError;
     }
   }
   //Call base class method
@@ -950,8 +972,9 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      return asynSuccess;
     }
-    return status;
+    return asynError;
   } else if (function == pC_->ethercatmcCfgDHLM_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MAX_FLOAT;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -963,8 +986,9 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      return asynSuccess;
     }
-    return status;
+    return asynError;
   } else if (function == pC_->ethercatmcCfgDLLM_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MIN_FLOAT;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -976,8 +1000,9 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      return asynSuccess;
     }
-    return status;
+    return asynError;
 #ifdef motorPowerOnDelayString
   } else if (function == pC_->motorPowerOnDelay_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
