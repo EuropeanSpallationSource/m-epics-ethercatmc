@@ -1485,7 +1485,7 @@ asynStatus ethercatmcController::indexerPoll(void)
             const char *paramName = "";
             epicsInt32 newValue, oldValue;
             getParamName(axisNo, function, &paramName);
-            newValue = (epicsInt32)netToUint(pDataInPlc, lenInPLC);
+            newValue = (epicsInt32)netToSint(pDataInPlc, lenInPLC);
             status = getIntegerParam(axisNo, function, &oldValue);
             if (status != asynSuccess || oldValue != newValue) {
               setIntegerParam(axisNo, function,  newValue);
@@ -1535,7 +1535,7 @@ asynStatus ethercatmcController::indexerPoll(void)
             const char *paramName = "";
             epicsInt64 newValue, oldValue;
             getParamName(axisNo, function, &paramName);
-            newValue = (epicsInt64)netToUint64(pDataInPlc, lenInPLC);
+            newValue = (epicsInt64)netToSint64(pDataInPlc, lenInPLC);
             status = getInteger64Param(axisNo, function,  &oldValue);
             if (status != asynSuccess || oldValue != newValue) {
               setInteger64Param(axisNo, function,  newValue);
