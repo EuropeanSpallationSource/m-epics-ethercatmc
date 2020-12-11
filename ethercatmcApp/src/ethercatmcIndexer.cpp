@@ -589,12 +589,12 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     asynPrint(pasynUserController_, traceMask,
               "%sindexerParamWrite(%d) paramIndex=%s (%u) value=%02g "
               "lenInPlcPara=%u counter=%u"
-              " status=%s (%d) cmdSubParamIndex=%s\n",
+              " status=%s (%d) cmdSubParamIndex=%s (0x%04x) cmdAcked=0x%04x\n",
               modNamEMC, axisNo,
               plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
               value, lenInPlcPara, counter,
               ethercatmcstrStatus(status), (int)status,
-              paramIfCmdToString(cmdSubParamIndex));
+              paramIfCmdToString(cmdSubParamIndex), cmdSubParamIndex, cmdAcked);
     /* This is good, return */
     if (cmdSubParamIndex == cmdAcked) return asynSuccess;
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
@@ -1130,9 +1130,9 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
                                      sizeof(descVersAuthors.author2));
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sindexerDevice(%u) \"%s\" TypCode=0x%x OffsBytes=%u "
+              "%sindexerDevice(%u) devNum=%d \"%s\" TypCode=0x%x OffsBytes=%u "
               "SizeBytes=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
-              modNamEMC, devNum, descVersAuthors.desc, iTypCode, iOffsBytes,
+              modNamEMC, axisNo, devNum, descVersAuthors.desc, iTypCode, iOffsBytes,
               iSizeBytes, iUnit,
               plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
               plcUnitTxtFromUnitCode(iUnit & 0xFF),
@@ -1235,15 +1235,15 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 }
 
 
-void ethercatmcController::addPilsAsynDevList(int           axisNo,
-                                              const char    *paramName,
-                                              unsigned      lenInPLC,
-                                              unsigned      inputOffset,
-                                              unsigned      outputOffset,
-                                              asynParamType myEPICSParamType,
-                                              asynParamType myMCUParamType)
+void ethercatmcController::addPilsAsynDevLst(int           axisNo,
+                                             const char    *paramName,
+                                             unsigned      lenInPLC,
+                                             unsigned      inputOffset,
+                                             unsigned      outputOffset,
+                                             asynParamType myEPICSParamType,
+                                             asynParamType myMCUParamType)
 {
-  const static char *const functionName = "addPilsAsynDevList";
+  const static char *const functionName = "addPilsAsynDevLst";
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
   static size_t maxNumPilsAsynDevInfo =
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
@@ -1260,14 +1260,15 @@ void ethercatmcController::addPilsAsynDevList(int           axisNo,
     return;
   }
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-            "%s%s(%u) axisNo=%d \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u EPICSParamType=%i MCUParamType=%i\n",
-            modNamEMC, functionName, numPilsAsynDevInfo, axisNo,
+            "%s%s(%u) pilsNo=%d \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u"
+            " EPICSParamType=%s(%i) MCUParamType=%s(%i)\n",
+            modNamEMC, functionName, axisNo, numPilsAsynDevInfo,
             paramName,
             lenInPLC,
             inputOffset,
             outputOffset,
-            (int)myEPICSParamType,
-            (int)myMCUParamType);
+            stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
+            stringFromAsynParamType(myMCUParamType), (int)myMCUParamType);
   /* Some parameters are alread pre-created by the Controller.cpp,
      e.g.errorId. Use those, otherwise create a parameter */
   status = findParam(/* axisNo, */paramName, &function);
@@ -1281,8 +1282,8 @@ void ethercatmcController::addPilsAsynDevList(int           axisNo,
                          myEPICSParamType,
                          &function);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s(%u) axisNo=%d created function=%d paramName=%s status=%s (%d)\n",
-              modNamEMC, functionName, numPilsAsynDevInfo, axisNo, function,
+              "%s%s(%u) pilsNo=%d created function=%d paramName=%s status=%s (%d)\n",
+              modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
               paramName,
               ethercatmcstrStatus(status), (int)status);
     if (status != asynSuccess) return;
@@ -1318,9 +1319,9 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   asynParamType myAsynParamType = asynParamNotDefined;
 
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s%s(%u) axisNo=%i indexOffset=%u iTypCode=0x%x paramName=\"%s\"\n",
-            modNamEMC, functionName, numPilsAsynDevInfo,
-            axisNo, indexOffset, iTypCode, paramName);
+            "%s%s(%u) pilsNo=%i indexOffset=%u iTypCode=0x%x paramName=\"%s\"\n",
+            modNamEMC, functionName, axisNo, numPilsAsynDevInfo,
+            indexOffset, iTypCode, paramName);
 
   switch (iTypCode) {
     case 0x1201:
@@ -1366,14 +1367,14 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
     asynParamType myMCUParamType  = myAsynParamType;
     if (!strcmp(paramName, "homeSeq")) {
       if (outputOffset) {
-        addPilsAsynDevList(axisNo, "HomProc", lenInPLC,
-                           0, //inputOffset,
-                           outputOffset,
-                           myEPICSParamType,  myMCUParamType);
-        addPilsAsynDevList(axisNo, "HomProc-RB", lenInPLC,
-                           inputOffset,
-                           0, //outputOffset,
-                           myEPICSParamType, myMCUParamType);
+        addPilsAsynDevLst(axisNo, "HomProc", lenInPLC,
+                          0, //inputOffset,
+                          outputOffset,
+                          myEPICSParamType,  myMCUParamType);
+        addPilsAsynDevLst(axisNo, "HomProc-RB", lenInPLC,
+                          inputOffset,
+                          0, //outputOffset,
+                          myEPICSParamType, myMCUParamType);
         return;
       } else {
         paramName = "HomProc-RB";
@@ -1383,17 +1384,17 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
       /* Special handling for encoderRaw */
       myEPICSParamType = asynParamFloat64;
     }
-    addPilsAsynDevList(axisNo,
-                       paramName,
-                       lenInPLC,
-                       inputOffset,
-                       outputOffset,
-                       myEPICSParamType,
-                       myMCUParamType);
+    addPilsAsynDevLst(axisNo,
+                      paramName,
+                      lenInPLC,
+                      inputOffset,
+                      outputOffset,
+                      myEPICSParamType,
+                      myMCUParamType);
   } else {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s(%u) axisNo=%d not created paramName=%s)\n",
-              modNamEMC, functionName, numPilsAsynDevInfo, axisNo, paramName);
+              "%s%s(%u) pilsNo=%d not created paramName=%s)\n",
+              modNamEMC, functionName, axisNo, numPilsAsynDevInfo, paramName);
   }
 }
 
@@ -1492,7 +1493,7 @@ asynStatus ethercatmcController::indexerPoll(void)
               if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
             }
             asynPrint(pasynUserController_, tracelevel,
-                      "%sindexerPoll axisNo=%d function=%s(%d) oldValue=%d newValue=%d\n",
+                      "%sindexerPoll(%d) function=%s(%d) oldValue=%d newValue=%d\n",
                       modNamEMC, axisNo,
                       paramName, function, oldValue, newValue);
           }
@@ -1522,7 +1523,7 @@ asynStatus ethercatmcController::indexerPoll(void)
               }
             }
             asynPrint(pasynUserController_, tracelevel,
-                      "%sindexerPoll axisNo=%d function=%s(%d) oldValue=%f newValue=%f\n",
+                      "%sindexerPoll(%d) function=%s(%d) oldValue=%f newValue=%f\n",
                       modNamEMC, axisNo,
                       paramName, function, oldValue, newValue);
           }
@@ -1542,7 +1543,7 @@ asynStatus ethercatmcController::indexerPoll(void)
               if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
             }
             asynPrint(pasynUserController_, tracelevel,
-                      "%sindexerPoll axisNo=%d function=%s(%d)  oldValue=%" PRIi64 " newValue=%" PRIi64 "\n",
+                      "%sindexerPoll(%d) function=%s(%d)  oldValue=%" PRIi64 " newValue=%" PRIi64 "\n",
                       modNamEMC, axisNo,
                       paramName, function, (int64_t)oldValue, (int64_t)newValue);
           }

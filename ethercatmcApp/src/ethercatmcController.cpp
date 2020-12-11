@@ -93,6 +93,29 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "";
   }
 }
+extern "C" const char *stringFromAsynParamType(asynParamType paramType)
+{
+  switch (paramType) {
+  case asynParamNotDefined: return "asynParamNotDefined";
+  case asynParamInt32: return "asynParamInt32";
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64    
+  case asynParamInt64: return "asynParamInt64";
+#endif
+  case asynParamUInt32Digital: return "asynParamUInt32Digital";
+  case asynParamFloat64: return "asynParamFloat64";
+  case asynParamOctet: return "asynParamOctet";
+  case asynParamInt8Array: return "asynParamInt8Array";
+  case asynParamInt16Array: return "asynParamInt16Array";
+  case asynParamInt32Array: return "asynParamInt32Array";
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64    
+  case asynParamInt64Array: return "asynParamInt64Array";
+#endif
+  case asynParamFloat32Array: return "asynParamFloat32Array";
+  case asynParamFloat64Array: return "asynParamFloat64Array";
+  case asynParamGenericPointer: return "asynParamGenericPointer";
+  default: return "asynParamXXXXX";
+  }
+}
 
 extern "C" const char *ethercatmcstrStatus(asynStatus status)
 {

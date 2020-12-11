@@ -131,6 +131,7 @@ extern "C" {
   int paramIndexIsInteger(unsigned paramIndex);
   const char *ethercatmcstrStatus(asynStatus status);
   const char *errStringFromErrId(int nErrorId);
+  const char *stringFromAsynParamType(asynParamType);
 }
 #define NETTOUINT(n)       netToUint((const void*)&n, sizeof(n))
 #define NETTODOUBLE(n)     netToDouble((const void*)&n, sizeof(n))
@@ -316,13 +317,13 @@ public:
 
   asynStatus getPlcMemoryFromProcessImage(unsigned indexOffset,
                                           void *data, size_t lenInPlc);
-  void addPilsAsynDevList(int           axisNo,
-                          const char    *paramName,
-                          unsigned      lenInPLC,
-                          unsigned      inputOffset,
-                          unsigned      outputOffset,
-                          asynParamType myEPICSParamType,
-                          asynParamType myMCUParamType);
+  void addPilsAsynDevLst(int           axisNo,
+                         const char    *paramName,
+                         unsigned      lenInPLC,
+                         unsigned      inputOffset,
+                         unsigned      outputOffset,
+                         asynParamType myEPICSParamType,
+                         asynParamType myMCUParamType);
 
   void newPilsAsynDevice(int      axisNo,
                          unsigned indexOffset,
