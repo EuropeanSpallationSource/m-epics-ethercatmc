@@ -166,7 +166,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   ctrlLocal.oldStatus = asynError; //asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
   features_ = 0;
-  lockADSsocket_ = epicsMutexMustCreate();
 #ifndef motorMessageTextString
   createParam("MOTOR_MESSAGE_TEXT",          asynParamOctet,       &ethercatmcMCUErrMsg_);
 #else
