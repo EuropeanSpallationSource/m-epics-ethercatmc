@@ -108,8 +108,10 @@ extern "C" {
 }
 extern "C" {
   unsigned   netToUint(const void *data, size_t lenInPlc);
+  int        netToSint(const void *data, size_t lenInPlc);
   double     netToDouble(const void *data, size_t lenInPlc);
   uint64_t   netToUint64(const void *data, size_t lenInPlc);
+  int64_t    netToSint64(const void *data, size_t lenInPlc);
   void       doubleToNet(const double value, void *data, size_t lenInPlc);
   void       uintToNet(const unsigned value, void *data, size_t lenInPlc);
   int ethercatmcCreateAxis(const char *ethercatmcName, int axisNo,

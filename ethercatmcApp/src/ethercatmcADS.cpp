@@ -116,6 +116,24 @@ extern "C" unsigned netToUint(const void *data, size_t lenInPlc)
   return 0;
 }
 
+extern "C" int netToSint(const void *data, size_t lenInPlc)
+{
+  const uint8_t *src = (const uint8_t*)data;
+  if (lenInPlc == 2) {
+    int16_t uRes16;
+    uRes16 = (unsigned)src[0] + ((unsigned)src[1] << 8);
+    return (int)(int16_t)uRes16; /* sign extend */
+  } else if ((lenInPlc == 4) || (lenInPlc == 8)) {
+    unsigned uRes32;
+    /* We don't use the full range of 64 bit integers,
+       only values up to 2^31 */
+    uRes32 = (unsigned)src[0] + ((unsigned)src[1] << 8) +
+           ((unsigned)src[2] << 16) + ((unsigned)src[3] << 24);
+    return (int)uRes32;
+  }
+  return 0;
+}
+
 extern "C" uint64_t netToUint64(const void *data, size_t lenInPlc)
 {
   const uint8_t *src = (const uint8_t*)data;
@@ -134,6 +152,10 @@ extern "C" uint64_t netToUint64(const void *data, size_t lenInPlc)
   return 0;
 }
 
+extern "C" int64_t netToSint64(const void *data, size_t lenInPlc)
+{
+  return (int64_t)netToUint64(data, lenInPlc);
+}
 extern "C" double netToDouble(const void *data, size_t lenInPlc)
 {
   const uint8_t *src = (const uint8_t*)data;
