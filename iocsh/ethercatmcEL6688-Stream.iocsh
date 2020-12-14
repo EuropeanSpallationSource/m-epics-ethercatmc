@@ -27,4 +27,4 @@ asynSetTraceIOMask("$(ASYN_PORT)", -1, 2)
 #define ASYN_TRACEINFO_THREAD 0x0008
 asynSetTraceInfoMask("$(ASYN_PORT)", -1, 5)
 
-dbLoadRecords("ethercatmcDcTime-Stream.template", "PREFIX=$(PREFIX), ASYN_PORT=$(ASYN_PORT), PORT=$(ASYN_PORT)")
+dbLoadRecords("ethercatmcEL6688-Stream.template", "PREFIX=$(PREFIX), ASYN_PORT=$(ASYN_PORT), PORT=$(ASYN_PORT)")
