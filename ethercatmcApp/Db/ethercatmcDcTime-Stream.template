@@ -9,3 +9,17 @@ record(stringin, "$(PREFIX)sCurDcTaskTime") {
    field(SCAN,   "1 second")
 }
 
+record(stringin, "$(PREFIX)sIntTimeStamp") {
+   field(DTYP,   "stream")
+   field(DESC,   "DC time")
+   field(INP,    "@ethercatmcDcTime-Stream.proto getsIntTimeStamp() $(PORT)")
+   field(SCAN,   "1 second")
+}
+
+record(stringin, "$(PREFIX)sExtTimeStamp") {
+   field(DTYP,   "stream")
+   field(DESC,   "DC time")
+   field(INP,    "@ethercatmcDcTime-Stream.proto getsExtTimeStamp() $(PORT)")
+   field(SCAN,   "1 second")
+}
+

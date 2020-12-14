@@ -24,6 +24,16 @@ getsDctEL1252N {
    in "%s";
 }
 
+getsIntTimeStamp {
+   out "ADSPORT=852/GVL_APP.sEL6688InternalTimeStamp?;";
+   in "%s";
+}
+
+getsExtTimeStamp {
+   out "ADSPORT=852/GVL_APP.sEL6688ExternalTimeStamp?;";
+   in "%s";
+}
+
 
 ##
 #getUTCtime {
