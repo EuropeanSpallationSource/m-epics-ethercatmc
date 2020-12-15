@@ -89,6 +89,16 @@ record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToMCU") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToMCU")
 }
 
+record(ao,"$(PREFIX)$(MOTOR_NAME)-HomPos") {
+    field(DESC, "EC Home Position")
+    field(VAL,  0.0)
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
 record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM") {
     field(DESC, "EC High Soft Limit")
     field(VAL,  0.0)

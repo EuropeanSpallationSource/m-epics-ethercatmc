@@ -11,6 +11,10 @@ epicsEnvSet("ECM_NUMAXES",   "4")
 epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=851)")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=5.40.216.206.1.1;amsNetIdLocal=192.168.209.71.1.1"
 
+# Faster polling
+epicsEnvSet("ECM_MOVINGPOLLPERIOD",  "100")
+epicsEnvSet("ECM_IDLEPOLLPERIOD",    "100")
+
 < ethercatmcController.iocsh
 
 

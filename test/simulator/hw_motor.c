@@ -120,7 +120,6 @@ void hw_motor_init(int axis_no,
                    const struct motor_init_values *pMotor_init_values,
                    size_t motor_init_len)
 {
-  static char init_done[MAX_AXES];
   if (axis_no >= MAX_AXES || axis_no < 0) {
     return;
   }
@@ -131,9 +130,7 @@ void hw_motor_init(int axis_no,
             (unsigned)motor_init_len,
             (unsigned)sizeof(struct motor_init_values));
       return;
-  }
-
-  if (!init_done[axis_no]) {
+  } else {
     double ReverseERES = pMotor_init_values->ReverseERES;
     double ParkingPos = pMotor_init_values->ParkingPos;
     double MaxHomeVelocityAbs = pMotor_init_values->MaxHomeVelocityAbs;
@@ -183,7 +180,6 @@ void hw_motor_init(int axis_no,
     motor_axis[axis_no].EncoderPos = getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
     motor_axis_last[axis_no].EncoderPos  = motor_axis[axis_no].EncoderPos;
     motor_axis_last[axis_no].MotorPosNow = motor_axis[axis_no].MotorPosNow;
-    init_done[axis_no] = 1;
   }
 }
 
@@ -191,6 +187,7 @@ void hw_motor_init(int axis_no,
 
 static void init_axis(int axis_no)
 {
+  static char init_done[MAX_AXES];
   struct motor_init_values motor_init_values;
   const double MRES = 1;
   const double UREV = 60.0; /* mm/revolution */
@@ -209,9 +206,12 @@ static void init_axis(int axis_no)
   motor_init_values.hWlowPos = valueLow;
   motor_init_values.hWhighPos = valueHigh;
 
-  hw_motor_init(axis_no,
-                &motor_init_values,
-                sizeof(motor_init_values));
+  if (!init_done[axis_no]) {
+    hw_motor_init(axis_no,
+                  &motor_init_values,
+                  sizeof(motor_init_values));
+    init_done[axis_no] = 1;
+  }
 }
 
 

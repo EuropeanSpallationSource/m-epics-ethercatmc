@@ -57,10 +57,9 @@
    + 2 motors 5008
    + 2 1202 errorId for the 5008 motors
    + 2 1202 encoderRaw for the 5008 motors
-   + 2 1604 homProc for the 5008 motors
    + 2 motors 5010
 */
-#define NUM_INDEXER_5008_1202_1604 9
+#define NUM_INDEXER_5008_1202 7
 
 #ifdef HAS_0518
 #define  NUM_0518           1
@@ -73,8 +72,13 @@
 #else
 #define  NUM_5010           0
 #endif
+#ifdef HAS_1604HOMPROC
+#define  NUM_1604_HOMPROC   2
+#else
+#define  NUM_1604_HOMPROC   0
+#endif
 
-#define  NUM_DEVICES        (NUM_INDEXER_5008_1202_1604 + NUM_0518 + NUM_5010)
+#define  NUM_DEVICES        (NUM_INDEXER_5008_1202 + NUM_1604_HOMPROC + NUM_0518 + NUM_5010)
 
 
 typedef enum {
@@ -135,6 +139,14 @@ typedef enum {
 #define PARAM_IDX_FUN_REFERENCE               133
 #define PARAM_IDX_FUN_SET_POSITION            137
 #define PARAM_IDX_FUN_MOVE_VELOCITY           142
+/* Implementation defined, integer */
+#define PARAM_IDX_USR_MIN_EN_UINT32           192
+#define PARAM_IDX_USR_MAX_EN_UINT32           193
+#define PARAM_IDX_HOME_PROC_UINT32            194
+/* Implementation defined, floating point */
+#define PARAM_IDX_UNITS_PER_REV_FLOAT32       221
+#define PARAM_IDX_STEPS_PER_REV_FLOAT32       222
+#define PARAM_IDX_MAX_VELO_FLOAT32            223
 
 /*  Which parameters are available */
 #define PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32             (1 << (1))
@@ -166,6 +178,13 @@ typedef enum {
 #define PARAM_AVAIL_136_143_FUN_SET_POSITION           (1 << (137-136))
 #define PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY          (1 << (142-136))
 
+#define PARAM_AVAIL_192_199_USR_MIN_EN                 (1 << (192-192))
+#define PARAM_AVAIL_192_199_USR_MAX_EN                 (1 << (193-192))
+#define PARAM_AVAIL_192_199_HOME_PROC                  (1 << (194-192))
+
+#define PARAM_AVAIL_216_223_UNITS_PER_REV              (1 << (221-216))
+#define PARAM_AVAIL_216_223_STEPS_PER_REV              (1 << (222-216))
+#define PARAM_AVAIL_216_223_MAX_VELO                   (1 << (223-216))
 
 
 /* In the memory bytes, the indexer starts at 64 */
@@ -230,7 +249,9 @@ typedef struct {
   netDevice5008interface_type dev5008;
   netDevice1202interface_type dev1202errorID;
   netDevice1202interface_type dev1202encoderRaw;
+#ifdef HAS_1604HOMPROC
   netDevice1604interface_type dev1604homProc;
+#endif
 } netDevice5008_1202_1604_Interface_type;
 
 /* struct as seen on the network = in memory
@@ -302,17 +323,17 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 112..119 */ 0,
        /* 120..127 */ 0,
        /* 128..135 */ PARAM_AVAIL_128_135_FUN_REFERENCE,
-       /* 136..143 */ PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
+       /* 136..143 */ PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
        /* 144..151 */ 0,
        /* 152..159 */ 0,
        /* 160..167 */ 0,
        /* 168..175 */ 0,
        /* 176..183 */ 0,
        /* 184..191 */ 0,
-       /* 192..199 */ 0,
+       /* 192..199 */ PARAM_AVAIL_192_199_USR_MIN_EN | PARAM_AVAIL_192_199_USR_MAX_EN | PARAM_AVAIL_192_199_HOME_PROC,
        /* 200..207 */ 0,
        /* 208..215 */ 0,
-       /* 216..223 */ 0,
+       /* 216..223 */ PARAM_AVAIL_216_223_UNITS_PER_REV | PARAM_AVAIL_216_223_STEPS_PER_REV | PARAM_AVAIL_216_223_MAX_VELO,
        /* 224..231 */ 0,
        /* 232..239 */ 0,
        /* 240..247 */ 0,
@@ -344,6 +365,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_1604HOMPROC
     /* device for homProc */
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
       UNITCODE_NONE, 1,
@@ -354,22 +376,42 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#endif
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_DEGREE, 2,
-      {PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32, 0,
-       0, 0,
-       PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32, 0,
-       0, PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0},
+      {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
+       /*  8..15   */ 0,
+       /* 16..23   */ 0,
+       /* 24..31   */ 0,
+       /* 32..39   */ PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32,
+       /* 40..47   */ 0,
+       /* 48..55   */ 0,
+       /* 56..63   */ PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
+       /* 64..71   */ 0,
+       /* 72..79   */ 0,
+       /* 80..87   */ 0,
+       /* 88..95   */ 0,
+       /* 96..103  */ 0,
+       /* 104..111 */ 0,
+       /* 112..119 */ 0,
+       /* 120..127 */ 0,
+       /* 128..135 */ 0,
+       /* 136..143 */ PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
+       /* 144..151 */ 0,
+       /* 152..159 */ 0,
+       /* 160..167 */ 0,
+       /* 168..175 */ 0,
+       /* 176..183 */ 0,
+       /* 184..191 */ 0,
+       /* 192..199 */ PARAM_AVAIL_192_199_USR_MIN_EN | PARAM_AVAIL_192_199_USR_MAX_EN,
+       /* 200..207 */ 0,
+       /* 208..215 */ 0,
+       /* 216..223 */ 0,
+       /* 224..231 */ 0,
+       /* 232..239 */ 0,
+       /* 240..247 */ 0,
+       /* 248..255 */ 0
+      },
       "RotAxis2",
       { "notHomed", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -396,6 +438,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_1604HOMPROC
     /* device for homProc */
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
       UNITCODE_NONE, 2,
@@ -406,6 +449,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#endif
 #ifdef HAS_5010
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 3,
@@ -433,7 +477,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 168..175 */ 0,
        /* 176..183 */ 0,
        /* 184..191 */ 0,
-       /* 192..199 */ 0,
+       /* 192..199 */ PARAM_AVAIL_192_199_HOME_PROC,
        /* 200..207 */ 0,
        /* 208..215 */ 0,
        /* 216..223 */ 0,
@@ -450,21 +494,39 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     },
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 4,
-      {PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32, 0,
-       0, 0,
-       PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32, 0,
-       0, PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
-       PARAM_AVAIL_64_71_HOME_POSITION_FLOAT32, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0,
-       0, 0},
+      {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
+       /*  8..15   */ 0,
+       /* 16..23   */ 0,
+       /* 24..31   */ 0,
+       /* 32..39   */ PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32,
+       /* 40..47   */ 0,
+       /* 48..55   */ 0,
+       /* 56..63   */ PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
+       /* 64..71   */ PARAM_AVAIL_64_71_HOME_POSITION_FLOAT32,
+       /* 72..79   */ 0,
+       /* 80..87   */ 0,
+       /* 88..95   */ 0,
+       /* 96..103  */ 0,
+       /* 104..111 */ 0,
+       /* 112..119 */ 0,
+       /* 120..127 */ 0,
+       /* 128..135 */ 0,
+       /* 136..143 */ PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
+       /* 144..151 */ 0,
+       /* 152..159 */ 0,
+       /* 160..167 */ 0,
+       /* 168..175 */ 0,
+       /* 176..183 */ 0,
+       /* 184..191 */ 0,
+       /* 192..199 */ 0,
+       /* 200..207 */ 0,
+       /* 208..215 */ 0,
+       /* 216..223 */ 0,
+       /* 224..231 */ 0,
+       /* 232..239 */ 0,
+       /* 240..247 */ 0,
+       /* 248..255 */ 0
+      },
       "Axis5010-4",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -478,7 +540,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 typedef struct
 {
   double fHysteresis;
-  double fHomPos;
   int   nHomProc;
   int   nOldHomProc;
 } cmd_Motor_cmd_type;
@@ -646,8 +707,8 @@ static void init_axis(int axis_no)
     double valueHigh = 186.0 * ReverseMRES;
     memset(&motor_init_values, 0, sizeof(motor_init_values));
     motor_init_values.ReverseERES = MRES/ERES;
-    motor_init_values.ParkingPos = (100 + axis_no/10.0);
-    motor_init_values.MaxHomeVelocityAbs = 5 * ReverseMRES;
+    motor_init_values.ParkingPos = (10 + axis_no/10.0);
+    motor_init_values.MaxHomeVelocityAbs = 10 * ReverseMRES;
     motor_init_values.lowHardLimitPos = valueLow;
     motor_init_values.highHardLimitPos = valueHigh;
     motor_init_values.hWlowPos = valueLow;
@@ -659,15 +720,15 @@ static void init_axis(int axis_no)
 
     setMRES_23(axis_no, UREV);
     setMRES_24(axis_no, SREV);
-    if (axis_no == 1)
-      cmd_Motor_cmd[axis_no].fHysteresis = 2.0;
-    else
-      cmd_Motor_cmd[axis_no].fHysteresis = 0.1;
+    cmd_Motor_cmd[axis_no].fHysteresis = 0.1;
+    if (axis_no == 4)
+      setAxisHomed(axis_no, 1);
     cmd_Motor_cmd[axis_no].nHomProc = 1;
     cmd_Motor_cmd[axis_no].nOldHomProc = cmd_Motor_cmd[axis_no].nHomProc;
-    cmd_Motor_cmd[axis_no].fHomPos = 0.0;
-    setNxtMoveVelocity(axis_no, 2 + axis_no / 10.0);
+    setHomePos(axis_no, 0.1);
+    setNxtMoveVelocity(axis_no, 50 + axis_no / 10.0);
     setNxtMoveAcceleration(axis_no, 1 + axis_no / 10.0);
+    setMaxHomeVelocityAbs(axis_no, 10);
     /* Simulated limit switches, take from indexer table */
     {
       int tmp_axis_no = 1;
@@ -947,6 +1008,24 @@ indexerMotorParamRead(unsigned motor_axis_no,
     /* Use half of the velocity as "JVEL" */
     *fRet = getNxtMoveVelocity(motor_axis_no) / 2.0;
     return ret;
+  case PARAM_IDX_USR_MIN_EN_UINT32:
+    *fRet = getEnableLowSoftLimit(motor_axis_no);
+    return ret;
+  case PARAM_IDX_USR_MAX_EN_UINT32:
+    *fRet = getEnableHighSoftLimit(motor_axis_no);
+    return ret;
+  case PARAM_IDX_HOME_PROC_UINT32:
+    *fRet = cmd_Motor_cmd[motor_axis_no].nHomProc;
+    return ret;
+  case PARAM_IDX_UNITS_PER_REV_FLOAT32:
+    *fRet = getMRES_23(motor_axis_no);
+    return ret;
+  case PARAM_IDX_STEPS_PER_REV_FLOAT32:
+    *fRet = getMRES_24(motor_axis_no);
+    return ret;
+  case PARAM_IDX_MAX_VELO_FLOAT32:
+    return ret;
+
   default:
     break;
   }
@@ -985,6 +1064,9 @@ indexerMotorParamWrite(unsigned motor_axis_no,
       }
       return ret;
     }
+  case PARAM_IDX_HOME_POSITION_FLOAT32:
+    setHomePos(motor_axis_no, fValue);
+    return ret;
   case PARAM_IDX_USR_MAX_FLOAT32:
     setHighSoftLimitPos(motor_axis_no, fValue);
     return ret;
@@ -1030,6 +1112,9 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     if ((ret & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
       switch(paramIndex) {
       case PARAM_IDX_OPMODE_AUTO_UINT32:
+      case PARAM_IDX_USR_MIN_EN_UINT32:
+      case PARAM_IDX_USR_MAX_EN_UINT32:
+      case PARAM_IDX_HOME_PROC_UINT32:
         uintToNet((unsigned)fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
         break;
       default:
@@ -1039,13 +1124,16 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     }
   } else if (paramCommand == PARAM_IF_CMD_DOWRITE) {
     double fValue;
-    fValue =  netToDouble(&netData.memoryBytes[offset + 2], lenInPlcPara);
+    int iValue;
+    fValue = netToDouble(&netData.memoryBytes[offset + 2], lenInPlcPara);
+    iValue = netToUint(&netData.memoryBytes[offset + 2], lenInPlcPara);
     ret = PARAM_IF_CMD_ERR_NO_IDX;
     switch(paramIndex) {
     case PARAM_IDX_OPMODE_AUTO_UINT32:
       /* Comes as an uint via the wire */
       fValue =  (double)netToUint(&netData.memoryBytes[offset + 2], lenInPlcPara);
       /* fall through */
+    case PARAM_IDX_HOME_POSITION_FLOAT32:
     case PARAM_IDX_USR_MAX_FLOAT32:
     case PARAM_IDX_USR_MIN_FLOAT32:
     case PARAM_IDX_SPEED_FLOAT32:
@@ -1055,7 +1143,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     case PARAM_IDX_FUN_REFERENCE:
       {
         int direction = 0;
-        double max_velocity = 2;
+        double max_velocity = 10;
         double acceleration = 3;
 #if 0
         moveHome(motor_axis_no,
@@ -1066,7 +1154,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
         moveHomeProc(motor_axis_no,
                      direction,
                      cmd_Motor_cmd[motor_axis_no].nHomProc,
-                     cmd_Motor_cmd[motor_axis_no].fHomPos,
+                     getHomePos(motor_axis_no),
                      max_velocity,
                      acceleration);
 
@@ -1095,6 +1183,18 @@ indexerMotorParamInterface(unsigned motor_axis_no,
       break;
     case PARAM_IDX_FUN_SET_POSITION:
       setMotorPos(motor_axis_no, fValue);
+      ret = PARAM_IF_CMD_DONE | paramIndex;
+      break;
+    case PARAM_IDX_USR_MIN_EN_UINT32:
+      setEnableLowSoftLimit(motor_axis_no, iValue);
+      ret = PARAM_IF_CMD_DONE | paramIndex;
+      break;
+    case PARAM_IDX_USR_MAX_EN_UINT32:
+      setEnableHighSoftLimit(motor_axis_no, iValue);
+      ret = PARAM_IF_CMD_DONE | paramIndex;
+      break;
+    case PARAM_IDX_HOME_PROC_UINT32:
+      cmd_Motor_cmd[motor_axis_no].nHomProc = iValue;
       ret = PARAM_IF_CMD_DONE | paramIndex;
       break;
     }
@@ -1153,7 +1253,7 @@ static int indexerHandleIndexerCmd(unsigned offset,
         if (strlen(indexerDeviceAbsStraction[devNum].auxName[auxIdx])) {
           flags |= (1 << auxIdx);
         }
-        LOGINFO3("%s/%s:%d devNum=%u auxIdx=%u flagsLow=0x%x\n",
+        LOGINFO6("%s/%s:%d devNum=%u auxIdx=%u flagsLow=0x%x\n",
                  __FILE__, __FUNCTION__, __LINE__,
                  devNum, auxIdx, flags);
       }
@@ -1422,6 +1522,9 @@ void indexerHandlePLCcycle(void)
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
           unsigned motor5008Num = axisNo - 1;
+          (void)motor5008Num;
+          (void)pLCcycleInitDone;
+#ifdef HAS_1604HOMPROC
           if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "homProc"))) {
             unsigned homProc = cmd_Motor_cmd[axisNo].nHomProc;
             if (pLCcycleInitDone) {
@@ -1444,6 +1547,7 @@ void indexerHandlePLCcycle(void)
             UINTTONET(homProc,
                       netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1604homProc.actualValue);
           }
+#endif
         }
       }
       break;

@@ -654,17 +654,25 @@ asynStatus ethercatmcAxis::move(double position, int relative, double minVelocit
 asynStatus ethercatmcAxis::home(double minVelocity, double maxVelocity, double acceleration, int forwards)
 {
   asynStatus status = asynSuccess;
+  int homeVis = 0;
   int nCommand = NCOMMANDHOME;
 
   int homProc = -1;
   double homPos = 0.0;
 
-  drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
+  (void)pC_->getIntegerParam(axisNo_, pC_->ethercatmcHomeVis_, &homeVis);
+  (void)pC_->getIntegerParam(axisNo_, pC_->ethercatmcHomProc_, &homProc);
+  if ((!homeVis) || (homProc == HOMPROC_MANUAL_SETPOS)) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%shome(%d) homeVis=%d homProc=%d\n",
+              modNamEMC, axisNo_, homeVis, homProc);
+    return asynError;
+  }
+
   /* The homPos may be undefined, then use 0.0 */
   (void)pC_->getDoubleParam(axisNo_, pC_->ethercatmcHomPos_, &homPos);
-  status = pC_->getIntegerParam(axisNo_, pC_->ethercatmcHomProc_,&homProc);
-  if (homProc == HOMPROC_MANUAL_SETPOS)
-    return asynError;
+
+  drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
   if (pC_->features_ & FEATURE_BITS_ECMC) {
@@ -1384,10 +1392,8 @@ asynStatus ethercatmcAxis::poll(bool *moving)
   } else if (drvlocal.old_bError != st_axis_status.bError ||
              drvlocal.old_MCU_nErrorId != drvlocal.MCU_nErrorId ||
              drvlocal.dirty.sErrorMessage) {
-    char sErrorMessage[256];
     int nErrorId = st_axis_status.nErrorId;
     const char *errIdString = errStringFromErrId(nErrorId);
-    sErrorMessage[0] = '\0';
     drvlocal.sErrorMessage[0] = '\0';
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) bError=%d st_axis_status.nErrorId=0x%x\n",
@@ -1396,22 +1402,10 @@ asynStatus ethercatmcAxis::poll(bool *moving)
     drvlocal.old_bError = st_axis_status.bError;
     drvlocal.old_MCU_nErrorId = nErrorId;
     drvlocal.dirty.sErrorMessage = 0;
-    if (nErrorId) {
-      /* Get the ErrorMessage to have it in the log file */
-      (void)getStringFromAxis("sErrorMessage", (char *)&sErrorMessage[0],
-                              sizeof(sErrorMessage));
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%ssErrorMessage(%d)=\"%s\"\n",
-                modNamEMC, axisNo_, sErrorMessage);
-    }
     /* First choice: "well known" ErrorIds */
     if (errIdString[0]) {
       snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: %s %x",
                errIdString, nErrorId);
-    } else if ((pC_->features_ & FEATURE_BITS_ECMC) && nErrorId) {
-      /* emcmc has error messages */
-      snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: %s",
-               sErrorMessage);
     } else if (nErrorId) {
       snprintf(drvlocal.sErrorMessage, sizeof(drvlocal.sErrorMessage)-1, "E: Cntrl Error %x", nErrorId);
     }
@@ -1469,6 +1463,15 @@ asynStatus ethercatmcAxis::setIntegerParam(int function, int value)
     if (value == HOMPROC_MANUAL_SETPOS) {
       /* Manual setPosition is allowed now */
       setIntegerParam(pC_->ethercatmcFoffVis_, 1);
+      setIntegerParam(pC_->ethercatmcHomeVis_, 0);
+    } else if (value == 0) {
+      /* no homing at all */
+      setIntegerParam(pC_->ethercatmcFoffVis_, 0);
+      setIntegerParam(pC_->ethercatmcHomeVis_, 0);
+    } else {
+      /* homing via HONF/HOMR */
+      setIntegerParam(pC_->ethercatmcFoffVis_, 0);
+      setIntegerParam(pC_->ethercatmcHomeVis_, 1);
     }
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",

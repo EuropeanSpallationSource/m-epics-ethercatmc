@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+#
+
+import datetime
 import unittest
 import os
 import sys
@@ -8,6 +12,7 @@ import time
 import math
 import inspect
 
+filnam = "910xx.py"
 ###
 
 
@@ -28,7 +33,9 @@ def motorInitTC(self, tc_no, frac, encRel):
     self.axisCom.put(".UEIP", encRel)
     self.axisCom.put(".RTRY", 1)
     msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-    print(f"{tc_no}:{int(lineno())} motorInitTC msta={self.axisMr.getMSTAtext(msta)}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} motorInitTC msta={self.axisMr.getMSTAtext(msta)}"
+    )
 
 
 def setMotorStartPos(self, tc_no, startpos):
@@ -90,7 +97,9 @@ def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)

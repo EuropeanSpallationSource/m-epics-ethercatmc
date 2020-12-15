@@ -22,6 +22,8 @@
 
 /* Some parameters are functions */
 #define PARAM_IF_IDX_FIRST_FUNCTION                128
+#define PARAM_IF_IDX_FIRST_CUSTOM_PARA             192
+#define PARAM_IF_IDX_LAST_CUSTOM_PARA              223
 
 extern "C" {
   int ethercatmcCreateIndexerAxis(const char *ethercatmcName, int axisNo,

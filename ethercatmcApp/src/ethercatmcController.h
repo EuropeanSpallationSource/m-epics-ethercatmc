@@ -43,6 +43,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcNamBit24_String            "NamBit24"
 #define ethercatmcNamBit25_String            "NamBit25"
 #define ethercatmcFoffVisString              "FoffVis"
+#define ethercatmcHomeVisString              "HomeVis"
 #define ethercatmcHomProc_RBString           "HomProc-RB"
 #define ethercatmcHomPos_RBString            "HomPos-RB"
 #define ethercatmcHomProcString              "HomProc"
@@ -107,8 +108,10 @@ extern "C" {
 }
 extern "C" {
   unsigned   netToUint(const void *data, size_t lenInPlc);
+  int        netToSint(const void *data, size_t lenInPlc);
   double     netToDouble(const void *data, size_t lenInPlc);
   uint64_t   netToUint64(const void *data, size_t lenInPlc);
+  int64_t    netToSint64(const void *data, size_t lenInPlc);
   void       doubleToNet(const double value, void *data, size_t lenInPlc);
   void       uintToNet(const unsigned value, void *data, size_t lenInPlc);
   int ethercatmcCreateAxis(const char *ethercatmcName, int axisNo,
@@ -127,8 +130,10 @@ extern "C" {
   asynStatus checkACK(const char *outdata, size_t outlen, const char *indata);
   const char *plcUnitTxtFromUnitCode(unsigned unitCode);
   const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex);
+  int paramIndexIsInteger(unsigned paramIndex);
   const char *ethercatmcstrStatus(asynStatus status);
   const char *errStringFromErrId(int nErrorId);
+  const char *stringFromAsynParamType(asynParamType);
 }
 #define NETTOUINT(n)       netToUint((const void*)&n, sizeof(n))
 #define NETTODOUBLE(n)     netToDouble((const void*)&n, sizeof(n))
@@ -158,10 +163,19 @@ public:
 #define PARAM_IDX_MICROSTEPS_FLOAT           67
 #define PARAM_IDX_STEPS_PER_UNIT_FLOAT       68
 #define PARAM_IDX_HOME_POSITION_FLOAT        69
+
 #define PARAM_IDX_FUN_REFERENCE             133
 #define PARAM_IDX_FUN_SET_POSITION          137
 #define PARAM_IDX_FUN_MOVE_VELOCITY         142
 
+/* Implementation defined, integer */
+#define PARAM_IDX_USR_MIN_EN_UINT           192
+#define PARAM_IDX_USR_MAX_EN_UINT           193
+#define PARAM_IDX_HOMPROC_UINT              194
+/* Implementation defined, floating point */
+#define PARAM_IDX_UNITS_PER_REV_FLOAT       221
+#define PARAM_IDX_STEPS_PER_REV_FLOAT       222
+#define PARAM_IDX_MAX_VELO_FLOAT            223
 
 #define FEATURE_BITS_V1               (1)
 #define FEATURE_BITS_V2               (1<<1)
@@ -193,7 +207,6 @@ public:
   int features_;
 
   protected:
-  epicsMutexId      lockADSsocket_;
   void udateMotorLimitsRO(int axisNo);
   void udateMotorLimitsRO(int axisNo, int enabledHighAndLow,
                           double fValueHigh, double fValueLow);
@@ -201,11 +214,13 @@ public:
                             const char *fileName,
                             int lineNo);
 #define  handleStatusChange(a) handleStatusChangeFL(a, __FILE__, __LINE__);
-  asynStatus writeReadBinaryOnErrorDisconnect(asynUser *pasynUser,
-                                              const char *outdata,
-                                              size_t outlen,
-                                              char *indata, size_t inlen,
-                                              size_t *pnread);
+  asynStatus writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
+                                                const char *outdata,
+                                                size_t outlen,
+                                                char *indata, size_t inlen,
+                                                size_t *pnread,
+                                                const char *fileName,
+                                                int lineNo);
 
   /* memory bytes via ADS */
   asynStatus writeWriteReadAdsFL(asynUser *pasynUser,
@@ -303,13 +318,13 @@ public:
 
   asynStatus getPlcMemoryFromProcessImage(unsigned indexOffset,
                                           void *data, size_t lenInPlc);
-  void addPilsAsynDevList(int           axisNo,
-                          const char    *paramName,
-                          unsigned      lenInPLC,
-                          unsigned      inputOffset,
-                          unsigned      outputOffset,
-                          asynParamType myEPICSParamType,
-                          asynParamType myMCUParamType);
+  void addPilsAsynDevLst(int           axisNo,
+                         const char    *paramName,
+                         unsigned      lenInPLC,
+                         unsigned      inputOffset,
+                         unsigned      outputOffset,
+                         asynParamType myEPICSParamType,
+                         asynParamType myMCUParamType);
 
   void newPilsAsynDevice(int      axisNo,
                          unsigned indexOffset,
@@ -364,6 +379,7 @@ public:
   int ethercatmcNamBit24_;
   int ethercatmcNamBit25_;
   int ethercatmcFoffVis_;
+  int ethercatmcHomeVis_;
   int ethercatmcHomProc_RB_;
   int ethercatmcHomPos_RB_;
   int ethercatmcHomProc_;

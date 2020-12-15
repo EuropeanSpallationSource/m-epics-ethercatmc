@@ -7,14 +7,19 @@
 # - via ADS using pyads
 #
 
+import datetime
 import re
 import sys
 
+filnam = "AxisCom"
+
 
 def help_and_exit(self, url_string, problem_string):
-    print(f"Invalid URL ({url_string}) ({problem_string})")
-    print("Use e.g. ca://IOC:m1")
-    print("Use e.g. pva://IOC:m1")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} Invalid URL ({url_string}) ({problem_string})"
+    )
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} Use e.g. ca://IOC:m1")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} Use e.g. pva://IOC:m1")
     sys.exit(1)
 
 
@@ -51,17 +56,19 @@ class AxisCom:
         pvname = self.pvpfx + pvsuf
         fullname = self.url_scheme + pvname
         ret = None
-        # if self.log_debug:
-        #    print(f"get {fullname}")
+        if self.log_debug:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} get {fullname}"
+            )
         if self.ctxt is not None:
             ret = self.ctxt.get(pvname, timeout=timeout)
         else:
-            ret = self.epics.caget(pvname, timeout=timeout)
+            ret = self.epics.caget(pvname, timeout=timeout, use_monitor=use_monitor)
 
         if self.log_debug:
-            print(f"get {fullname} ret={ret}")
-            # print(f"get fullname={fullname} ret={ret} type(ret)={type(ret)}")
-            # print("get ret(string)=%s" % (ret))
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} get {fullname} ret={ret}"
+            )
 
         if ret is None:
             raise Exception("get None")
@@ -78,7 +85,9 @@ class AxisCom:
         fullname = self.url_scheme + pvname
         ret = None
         if self.log_debug:
-            print(f"put {fullname} value={value}")
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value}"
+            )
         if self.ctxt is not None:
             self.ctxt.put(pvname, value, timeout=timeout)
         else:
@@ -86,5 +95,7 @@ class AxisCom:
             # This function returns 1 on success,
             # and a negative number if the timeout has been exceeded
             if caput_ret != 1:
-                print(f"put {fullname} value={value} caput_ret={ret}")
+                print(
+                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} caput_ret={ret}"
+                )
                 raise Exception(f"caput({pvname},{value}) returned error {caput_ret}")

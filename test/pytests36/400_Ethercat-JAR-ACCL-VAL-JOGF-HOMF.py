@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import datetime
 import unittest
 import os
 import sys
@@ -8,12 +9,16 @@ from AxisCom import AxisCom
 
 import time
 
+filnam = "400xx.py"
+
 ###
 
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(f"url_string={url_string}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+    )
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
@@ -27,7 +32,9 @@ class Test(unittest.TestCase):
     msta = int(axisCom.get(".MSTA"))
 
     def getAcceleration(self, tc_no):
-        print(f"{tc_no}: getAcceleration")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: getAcceleration"
+        )
         res = self.axisCom.get("-Acc-RB")
         return res
 
@@ -81,7 +88,7 @@ class Test(unittest.TestCase):
     # JOGR
     def test_TC_4004(self):
         tc_no = "4004"
-        print(f"{tc_no}")
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisCom.put("-DbgStrToLOG", "Start " + tc_no)
             accl = float(self.axisCom.get(".ACCL"))

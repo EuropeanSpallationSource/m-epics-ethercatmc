@@ -93,6 +93,29 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "";
   }
 }
+extern "C" const char *stringFromAsynParamType(asynParamType paramType)
+{
+  switch (paramType) {
+  case asynParamNotDefined: return "asynParamNotDefined";
+  case asynParamInt32: return "asynParamInt32";
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64    
+  case asynParamInt64: return "asynParamInt64";
+#endif
+  case asynParamUInt32Digital: return "asynParamUInt32Digital";
+  case asynParamFloat64: return "asynParamFloat64";
+  case asynParamOctet: return "asynParamOctet";
+  case asynParamInt8Array: return "asynParamInt8Array";
+  case asynParamInt16Array: return "asynParamInt16Array";
+  case asynParamInt32Array: return "asynParamInt32Array";
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64    
+  case asynParamInt64Array: return "asynParamInt64Array";
+#endif
+  case asynParamFloat32Array: return "asynParamFloat32Array";
+  case asynParamFloat64Array: return "asynParamFloat64Array";
+  case asynParamGenericPointer: return "asynParamGenericPointer";
+  default: return "asynParamXXXXX";
+  }
+}
 
 extern "C" const char *ethercatmcstrStatus(asynStatus status)
 {
@@ -143,7 +166,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   ctrlLocal.oldStatus = asynError; //asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
   features_ = 0;
-  lockADSsocket_ = epicsMutexMustCreate();
 #ifndef motorMessageTextString
   createParam("MOTOR_MESSAGE_TEXT",          asynParamOctet,       &ethercatmcMCUErrMsg_);
 #else
@@ -162,6 +184,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcStatusCodeString,    asynParamInt32,       &ethercatmcStatusCode_);
   createParam(ethercatmcStatusBitsString,    asynParamInt32,       &ethercatmcStatusBits_);
   createParam(ethercatmcFoffVisString,       asynParamInt32,       &ethercatmcFoffVis_);
+  createParam(ethercatmcHomeVisString,       asynParamInt32,       &ethercatmcHomeVis_);
   createParam(ethercatmcHomProc_RBString,    asynParamInt32,       &ethercatmcHomProc_RB_);
   createParam(ethercatmcHomPos_RBString,     asynParamFloat64,     &ethercatmcHomPos_RB_);
   createParam(ethercatmcVelToHomString,      asynParamFloat64,     &ethercatmcVelToHom_);
@@ -700,6 +723,8 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
         asynMotorAxis *pAxis=getAxis(axisNo);
         if (!pAxis) continue;
         pAxis->setIntegerParam(motorStatusCommsError_, 1);
+        setIntegerParam(axisNo, ethercatmcFoffVis_, 0);
+        setIntegerParam(axisNo, ethercatmcHomeVis_, 0);
         pAxis->callParamCallbacks();
       }
     } else {
