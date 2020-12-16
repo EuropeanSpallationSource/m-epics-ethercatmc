@@ -361,6 +361,7 @@ public:
     } supported;
     pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
     unsigned numPilsAsynDevInfo;
+    int lockADSlineno;
   } ctrlLocal;
 
 
@@ -435,6 +436,20 @@ public:
   #define FIRST_VIRTUAL_PARAM ethercatmcErr_
   #define LAST_VIRTUAL_PARAM ethercatmcErrId_
   #define NUM_VIRTUAL_MOTOR_PARAMS ((int) (&LAST_VIRTUAL_PARAM - &FIRST_VIRTUAL_PARAM + 1))
+
+#define EMC_ENTER_ADS_CHECK_LOCK(LINENO) do {                           \
+    if (ctrlLocal.lockADSlineno) {                                      \
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,                  \
+                "%s lockADSlineno=%d\n",                                \
+                "ethercatmcADS", ctrlLocal.lockADSlineno);              \
+    }                                                                   \
+    ctrlLocal.lockADSlineno = LINENO;                                   \
+  } while (0)
+
+
+#define EMC_LEAVE_ADS_CHECK_LOCK() do {   \
+    ctrlLocal.lockADSlineno = 0;          \
+  } while (0)
 
   friend class ethercatmcAxis;
   friend class ethercatmcIndexerAxis;

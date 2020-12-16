@@ -250,6 +250,7 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
   size_t nread;
   uint32_t part_1_len = sizeof(AmsTcpHdrType);
   asynStatus status;
+  EMC_ENTER_ADS_CHECK_LOCK(lineNo);
   status = pasynOctetSyncIO->write(pasynUser, outdata, outlen,
                                    DEFAULT_CONTROLLER_TIMEOUT,
                                    &nwrite);
@@ -266,6 +267,7 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
       ctrlLocal.cntADSstatus++;
     }
     status = asynError; /* TimeOut -> Error */
+    EMC_LEAVE_ADS_CHECK_LOCK();
     return status;
   }
   ethercatmchexdump(pasynUser, tracelevel, "OUT",
@@ -345,6 +347,9 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
                                     toread,
                                     DEFAULT_CONTROLLER_TIMEOUT,
                                     &nread, &eomReason);
+
+    EMC_LEAVE_ADS_CHECK_LOCK();
+
     if ((status == asynTimeout) ||
         (!status && !nread && (eomReason & ASYN_EOM_END))) {
       errorProblem = 1;
@@ -384,6 +389,8 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
     } else {
       *pnread = nread + part_1_len;
     }
+  } else {
+    EMC_LEAVE_ADS_CHECK_LOCK();
   }
 
   return status;
