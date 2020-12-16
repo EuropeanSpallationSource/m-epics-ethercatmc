@@ -98,7 +98,7 @@ extern "C" const char *stringFromAsynParamType(asynParamType paramType)
   switch (paramType) {
   case asynParamNotDefined: return "asynParamNotDefined";
   case asynParamInt32: return "asynParamInt32";
-#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64    
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
   case asynParamInt64: return "asynParamInt64";
 #endif
   case asynParamUInt32Digital: return "asynParamUInt32Digital";
@@ -107,7 +107,7 @@ extern "C" const char *stringFromAsynParamType(asynParamType paramType)
   case asynParamInt8Array: return "asynParamInt8Array";
   case asynParamInt16Array: return "asynParamInt16Array";
   case asynParamInt32Array: return "asynParamInt32Array";
-#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64    
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
   case asynParamInt64Array: return "asynParamInt64Array";
 #endif
   case asynParamFloat32Array: return "asynParamFloat32Array";
@@ -142,12 +142,18 @@ extern "C" const char *ethercatmcstrStatus(asynStatus status)
   * \param[in] movingPollPeriod  The time between polls when any axis is moving
   * \param[in] idlePollPeriod    The time between polls when no axis is moving
   */
+
+#if ETHERCATMC_ASYN_VERSION_INT < VERSION_INT_4_32
+#error Need_asyn_later_than_4_32
+#endif
+
 ethercatmcController::ethercatmcController(const char *portName,
                                            const char *MotorPortName, int numAxes,
                                            double movingPollPeriod,
                                            double idlePollPeriod,
                                            const char *optionStr)
-  :  asynMotorController(portName, numAxes, NUM_VIRTUAL_MOTOR_PARAMS,
+  :  asynMotorController(portName, numAxes,
+                         0, // Olbsolete: Fixed number of additional asyn parameters
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
                          asynInt64Mask, // additional callback interface beyond those in base class
                          asynInt64Mask, // additional callback interface beyond those in base class

@@ -433,9 +433,6 @@ public:
   int ethercatmcErrId_;
   /* Last parameter */
 
-  #define FIRST_VIRTUAL_PARAM ethercatmcErr_
-  #define LAST_VIRTUAL_PARAM ethercatmcErrId_
-  #define NUM_VIRTUAL_MOTOR_PARAMS ((int) (&LAST_VIRTUAL_PARAM - &FIRST_VIRTUAL_PARAM + 1))
 
 #define EMC_ENTER_ADS_CHECK_LOCK(LINENO) do {                           \
     if (ctrlLocal.lockADSlineno) {                                      \
