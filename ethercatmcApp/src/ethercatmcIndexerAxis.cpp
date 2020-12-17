@@ -152,6 +152,34 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
     new ethercatmcIndexerAxis(pC, axisNo, axisFlags, axisOptionsStr);
   }
   pC->unlock();
+  ethercatmcIndexerAxis *pAxis =
+    static_cast<ethercatmcIndexerAxis*>(pC->asynMotorController::getAxis(axisNo));
+  if (axisOptionsStr && axisOptionsStr[0]) {
+    const char * const axisID_is_str = "axisID=";
+
+    char *pOptions = strdup(axisOptionsStr);
+    char *pThisOption = pOptions;
+    char *pNextOption = pOptions;
+
+    while (pNextOption && pNextOption[0]) {
+      pNextOption = strchr(pNextOption, ';');
+      if (pNextOption) {
+        *pNextOption = '\0'; /* Terminate */
+        pNextOption++;       /* Jump to (possible) next */
+      }
+      if (!strncmp(pThisOption, axisID_is_str, strlen(axisID_is_str))) {
+        pThisOption += strlen(axisID_is_str);
+        int axisID = atoi(pThisOption);
+        printf("ethercatmcCreateIndexerAxis axisNo=%d axisID=%d\n",
+               axisNo, axisID);
+        if (axisID > 0) {
+          pAxis->setAxisID(axisID);
+        }
+      }
+      pThisOption = pNextOption;
+    }
+    free(pOptions);
+  }
   return asynSuccess;
 }
 
@@ -470,6 +498,14 @@ asynStatus ethercatmcIndexerAxis::stop(double acceleration )
 {
   //drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   return stopAxisInternal(__FUNCTION__, acceleration);
+}
+
+void ethercatmcIndexerAxis::setAxisID(unsigned axisID)
+{
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%ssetAxisID(%u) %d\n",
+            modNamEMC, axisNo_, axisID);
+  drvlocal.axisID = axisID;
 }
 
 asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,

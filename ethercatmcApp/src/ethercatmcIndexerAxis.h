@@ -50,6 +50,7 @@ public:
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
   void setAuxBitsEnabledMask(unsigned auxBitsEnabledMask);
   void addPollNowParam(uint8_t paramIndex);
+  void       setAxisID(unsigned axisID);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
   asynStatus poll(bool *moving);
   asynStatus resetAxis(void);
@@ -74,6 +75,7 @@ private:
     unsigned pollNowIdx;
     unsigned iTypCode;
     unsigned devNum;
+    unsigned axisID;
     unsigned iOffset;
     unsigned lenInPlcPara;
     unsigned paramIfOffset;
