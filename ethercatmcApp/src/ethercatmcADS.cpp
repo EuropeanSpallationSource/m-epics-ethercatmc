@@ -628,7 +628,7 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
   }
   status = writeWriteReadAdsFL(pasynUser,
                                (AmsHdrType *)p_write_buf, write_buf_len,
-                               ctrlLocal.adsport,
+                               targetAdsport,
                                invokeID, ADS_WRITE,
                                &ADS_Write_rep, sizeof(ADS_Write_rep),
                                &nread, fileName,  lineNo);
@@ -636,6 +636,10 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
   if (!status) {
     uint32_t ads_result = NETTOUINT(ADS_Write_rep.response.net_res);
     if (ads_result) {
+      tracelevel |= ASYN_TRACE_INFO;
+      ethercatmcamsdump(pasynUser, tracelevel, "OUT ", p_write_buf);
+      ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc);
+
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "%s:%d ads_result=0x%x\n",
                 fileName, lineNo, (unsigned)ads_result);
