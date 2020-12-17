@@ -885,6 +885,7 @@ asynStatus ethercatmcIndexerAxis::setClosedLoop(bool closedLoop)
 
 asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
 {
+  const static unsigned indexGroup5000 = 0x5000;
   asynStatus status = asynSuccess;
   if (function == pC_->motorUpdateStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -937,10 +938,20 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     return asynSuccess;
   } else if (function == pC_->ethercatmcCfgDHLM_En_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MAX_EN_UINT;
-    status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
-                                    paramIndex,
-                                    drvlocal.lenInPlcPara,
-                                    value);
+
+    if (drvlocal.axisID && (value < 0)) {
+      /* Special trick to talk to NC */
+      size_t lenInPlc = 2;
+      value = value == -2 ? 0 : 1;
+      status = pC_->setSAFValueOnAxisViaADS(drvlocal.axisID, indexGroup5000,
+                                            0xC, value, lenInPlc);
+    } else {
+      value = !!value; /* 0 or 1 */
+      status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
+                                      paramIndex,
+                                      drvlocal.lenInPlcPara,
+                                      value);
+    }
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcCfgDHLM_En)=%d  status=%s(%d)\n",
               modNamEMC, axisNo_, value,
@@ -953,10 +964,19 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     return asynError;
   } else if (function == pC_->ethercatmcCfgDLLM_En_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MIN_EN_UINT;
-    status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
-                                    paramIndex,
-                                    drvlocal.lenInPlcPara,
-                                    value);
+    if (drvlocal.axisID && (value < 0)) {
+      /* Special trick to talk to NC */
+      size_t lenInPlc = 2;
+      value = value == -2 ? 0 : 1;
+      status = pC_->setSAFValueOnAxisViaADS(drvlocal.axisID, indexGroup5000,
+                                            0xB, value, lenInPlc);
+    } else {
+      value = !!value; /* 0 or 1 */
+      status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
+                                      paramIndex,
+                                      drvlocal.lenInPlcPara,
+                                      value);
+    }
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcCfgDLLM_En)=%d status=%s(%d)\n",
               modNamEMC, axisNo_, value,
