@@ -225,6 +225,7 @@ public:
   /* memory bytes via ADS */
   asynStatus writeWriteReadAdsFL(asynUser *pasynUser,
                                  AmsHdrType *amsHdr_p, size_t outlen,
+                                 uint16_t targetAdsport,
                                  uint32_t invokeID,
                                  uint32_t ads_cmdID,
                                  void *indata, size_t inlen,
@@ -235,13 +236,20 @@ public:
                                   void *data, size_t lenInPlc,
                                   const char *fileName,
                                   int lineNo);
+  asynStatus setMemIdxGrpIdxOffFL(unsigned indexGroup,
+                                  unsigned indexOffset,
+                                  unsigned targetAdsport,
+                                  const void *data,
+                                  size_t lenInPlc,
+                                  const char *fileName,
+                                  int lineNo);
   asynStatus setPlcMemoryViaADSFL(unsigned indexOffset,
                                   const void *data, size_t lenInPlc,
                                   const char *fileName,
                                   int lineNo);
 
-  /* Re-definition */
-#define writeWriteReadAds(a,b,c,d,e,f,g,h)  writeWriteReadAdsFL(a,b,c,d,e,f,g,h,__FILE__, __LINE__)
+/* Re-definition */
+#define setMemIdxGrpIdxOff(a,b,b,d,e) setMemIdxGrpIdxOffFL(a,b,b,d,e,__FILE__, __LINE__)
 #define getPlcMemoryViaADS(a,b,c)           getPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
 #define setPlcMemoryViaADS(a,b,c)           setPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
 
