@@ -249,7 +249,7 @@ public:
                                   int lineNo);
 
 /* Re-definition */
-#define setMemIdxGrpIdxOff(a,b,b,d,e) setMemIdxGrpIdxOffFL(a,b,b,d,e,__FILE__, __LINE__)
+#define setMemIdxGrpIdxOff(a,b,c,d,e) setMemIdxGrpIdxOffFL(a,b,c,d,e,__FILE__, __LINE__)
 #define getPlcMemoryViaADS(a,b,c)           getPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
 #define setPlcMemoryViaADS(a,b,c)           setPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
 
@@ -268,6 +268,16 @@ public:
                                  size_t lenInPlc);
   asynStatus getSymbolHandleByNameViaADS(const char *symbolName,
                                          uint32_t *handle);
+
+  asynStatus setSAFValueOnAxisViaADSFL(unsigned axisID,
+                                       unsigned indexGroup,
+                                       unsigned indexOffset,
+                                       int      value,
+                                       size_t   lenInPlc,
+                                       const char *fileName,
+                                       int lineNo);
+
+#define setSAFValueOnAxisViaADS(a,b,c,d,e) setSAFValueOnAxisViaADSFL(a,b,c,d,e,__FILE__, __LINE__)
 
   /* Indexer */
   asynStatus readDeviceIndexerFL(unsigned devNum, unsigned infoType,

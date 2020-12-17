@@ -297,8 +297,42 @@ asynStatus ethercatmcController::setPlcMemoryDouble(unsigned indexOffset,
     uint8_t raw[8];
     doubleToNet(value, &raw, lenInPlc);
     return setPlcMemoryOnErrorStateChange(indexOffset, &raw, lenInPlc);
+  } else {
+    return asynError;
   }
-  return asynError;
+}
+
+asynStatus ethercatmcController::setSAFValueOnAxisViaADSFL(unsigned axisID,
+                                                           unsigned indexGroup,
+                                                           unsigned indexOffset,
+                                                           int      value,
+                                                           size_t   lenInPlc,
+                                                           const char *fileName,
+                                                           int lineNo)
+{
+  const static unsigned targetAdsport = 501;
+  asynStatus status;
+  if (lenInPlc <= 8) {
+    uint8_t raw[8];
+    uintToNet(value, &raw, lenInPlc);
+
+    status = setMemIdxGrpIdxOffFL(indexGroup + axisID,
+                                  indexOffset,
+                                  targetAdsport,
+                                  &raw, lenInPlc,
+                                  fileName, lineNo);
+    asynPrint(pasynUserController_,
+              ASYN_TRACE_INFO,
+              "%s%s:%d setSAFValueOnAxisViaADSFL axisID=%u indexGroup=0x%x indexOffset=0x%x"
+              " value=%d lenInPlc=%u status=%s (%d)\n",
+              modNamEMC,fileName, lineNo,
+              axisID, indexGroup, indexOffset,
+              value,  (unsigned)lenInPlc,
+              ethercatmcstrStatus(status), (int)status);
+    return status;
+  } else {
+    return asynError;
+  }
 }
 
 
