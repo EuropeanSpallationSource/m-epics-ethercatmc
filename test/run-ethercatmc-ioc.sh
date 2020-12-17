@@ -77,7 +77,16 @@ echo MOTORCFG=$MOTORCFG
 shift
 
 MOTORIP=127.0.0.1
-MOTORPORT=5000
+
+# motor port is different for indexer
+case $MOTORCFG in
+  *indexer)
+    MOTORPORT=48898
+    ;;
+  *)
+    MOTORPORT=5000
+    ;;
+esac
 
 if test -n "$1"; then
   # allow doit.sh host:port
