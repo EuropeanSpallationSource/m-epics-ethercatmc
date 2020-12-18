@@ -2,6 +2,7 @@
 #include "logerr_info.h"
 #include "sock-util.h"
 #include "indexer.h"
+#include "cmd_EAT.h"
 #include "ads.h"
 
 #define ADSIGRP_SYM_INFOBYNAMEEX 0xF009
@@ -80,25 +81,41 @@ void handleADSwrite(int fd, ams_hdr_type *ams_hdr_p)
 
   memset(&ADS_Write_rep_p->response, 0, sizeof(ADS_Write_rep_p->response));
 
-  LOGINFO7("%s/%s:%d ADS_Writecmd indexGroup=0x%x indexOffset=%u len_in_PLC=%u\n",
+  LOGINFO7("%s/%s:%d ADS_Writecmd adsport=%u indexGroup=0x%x indexOffset=%u len_in_PLC=%u\n",
            __FILE__,__FUNCTION__, __LINE__,
-           indexGroup, indexOffset,len_in_PLC);
-  if (len_in_PLC == 2) {
-    uint8_t *data_ptr = (uint8_t *)ADS_Write_req_p + sizeof(*ADS_Write_req_p);
-    unsigned value;
-    value = data_ptr[0] + (data_ptr [1] << 8);
+           adsport, indexGroup, indexOffset,len_in_PLC);
+  if (adsport == 851 && indexGroup == 0x4020) {
+    if (len_in_PLC == 2) {
+      uint8_t *data_ptr = (uint8_t *)ADS_Write_req_p + sizeof(*ADS_Write_req_p);
+      unsigned value;
+      value = data_ptr[0] + (data_ptr [1] << 8);
 
-    LOGINFO7("%s/%s:%d ADS_Writecmd data=0x%x 0x%x value=0x%x\n",
-             __FILE__,__FUNCTION__, __LINE__,
-             data_ptr[0], data_ptr[1], value);
-    indexerHandleADS_ADR_putUInt(adsport, indexOffset,
-                                 len_in_PLC, value);
-  } else {
+      LOGINFO7("%s/%s:%d ADS_Writecmd data=0x%x 0x%x value=0x%x\n",
+               __FILE__,__FUNCTION__, __LINE__,
+               data_ptr[0], data_ptr[1], value);
+      indexerHandleADS_ADR_putUInt(adsport, indexOffset,
+                                   len_in_PLC, value);
+    } else {
+      uint8_t *data_ptr = (uint8_t *)ADS_Write_req_p + sizeof(*ADS_Write_req_p);
+      (void)indexerHandleADS_ADR_setMemory(adsport, indexOffset,
+                                           len_in_PLC, data_ptr);
+    }
+    send_ams_reply(fd, ams_hdr_p, sizeof(ADS_Write_rep_type));
+  } else if ((adsport == 501) && (len_in_PLC == 2)) {
     uint8_t *data_ptr = (uint8_t *)ADS_Write_req_p + sizeof(*ADS_Write_req_p);
-    (void)indexerHandleADS_ADR_setMemory(adsport, indexOffset,
-                                         len_in_PLC, data_ptr);
+    unsigned value = data_ptr[0] + (data_ptr [1] << 8);
+    int ret = motorHandleADS_ADR_putInt(adsport, indexGroup, indexOffset,
+                                        (int)value);
+    LOGINFO3("%s/%s:%d ADS_Writecmd adsport=%u indexGroup=0x%x indexOffset=%u"
+             " value=%u len_in_PLC=%u ret=%d\n",
+             __FILE__,__FUNCTION__, __LINE__,
+             adsport, indexGroup, indexOffset, value, len_in_PLC, ret);
+    send_ams_reply(fd, ams_hdr_p, sizeof(ADS_Write_rep_type));
+  } else {
+    LOGERR("%s/%s:%d ADS_Writecmd adsport=%u indexGroup=0x%x indexOffset=%u len_in_PLC=%u\n",
+           __FILE__,__FUNCTION__, __LINE__,
+           adsport, indexGroup, indexOffset,len_in_PLC);
   }
-  send_ams_reply(fd, ams_hdr_p, sizeof(ADS_Write_rep_type));
 }
 
 
