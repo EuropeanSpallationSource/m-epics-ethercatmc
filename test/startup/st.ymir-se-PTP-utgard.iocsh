@@ -11,7 +11,6 @@ epicsEnvSet("SM_NOAXES",     "3")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=851;amsNetIdRemote=5.50.60.0.1.1;amsNetIdLocal=172.30.244.38.1.1"
 
 < ethercatmcController.iocsh
-< ethercatmcPTP.iocsh
 
 #
 # Axis 1
