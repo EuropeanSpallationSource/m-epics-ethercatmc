@@ -269,15 +269,14 @@ public:
   asynStatus getSymbolHandleByNameViaADS(const char *symbolName,
                                          uint32_t *handle);
 
-  asynStatus setSAFValueOnAxisViaADSFL(unsigned axisID,
-                                       unsigned indexGroup,
+  asynStatus setSAFValueOnAxisViaADSFL(unsigned indexGroup,
                                        unsigned indexOffset,
                                        int      value,
                                        size_t   lenInPlc,
                                        const char *fileName,
                                        int lineNo);
 
-#define setSAFValueOnAxisViaADS(a,b,c,d,e) setSAFValueOnAxisViaADSFL(a,b,c,d,e,__FILE__, __LINE__)
+#define setSAFValueOnAxisViaADS(a,b,c,d) setSAFValueOnAxisViaADSFL(a,b,c,d,__FILE__, __LINE__)
 
   /* Indexer */
   asynStatus readDeviceIndexerFL(unsigned devNum, unsigned infoType,

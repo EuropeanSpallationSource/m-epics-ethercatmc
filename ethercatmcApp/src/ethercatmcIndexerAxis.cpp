@@ -943,8 +943,8 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
       /* Special trick to talk to NC */
       size_t lenInPlc = 2;
       value = value == -2 ? 0 : 1;
-      status = pC_->setSAFValueOnAxisViaADS(drvlocal.axisID, indexGroup5000,
-                                            0xC, value, lenInPlc);
+      return pC_->setSAFValueOnAxisViaADS(indexGroup5000 + drvlocal.axisID, 0xC,
+                                          value, lenInPlc);
     } else {
       value = !!value; /* 0 or 1 */
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
@@ -968,8 +968,8 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
       /* Special trick to talk to NC */
       size_t lenInPlc = 2;
       value = value == -2 ? 0 : 1;
-      status = pC_->setSAFValueOnAxisViaADS(drvlocal.axisID, indexGroup5000,
-                                            0xB, value, lenInPlc);
+      return pC_->setSAFValueOnAxisViaADS(indexGroup5000 + drvlocal.axisID, 0xB,
+                                          value, lenInPlc);
     } else {
       value = !!value; /* 0 or 1 */
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
