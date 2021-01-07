@@ -77,6 +77,7 @@ static int deftracelevel = ASYN_TRACE_DEBUG;
       (amsHdr_p->net_invokeID[1] << 8) +\
       (amsHdr_p->net_invokeID[2] << 16) +\
       (amsHdr_p->net_invokeID[3] << 24);\
+    unsigned cmd = amsHdr_p->cmdID_low + (amsHdr_p->cmdID_high <<8); \
   asynPrint(pasynUser, tracelevel,\
             "%samsTcpHdr_len=%u ams target=%d.%d.%d.%d.%d.%d:%d "  \
             "source=%d.%d.%d.%d.%d.%d:%d\n",                       \
@@ -93,9 +94,33 @@ static int deftracelevel = ASYN_TRACE_DEBUG;
   asynPrint(pasynUser, tracelevel,\
             "%samsHdr cmd=%u flags=%u ams_len=%u ams_err=%u id=%u\n",\
             help_txt,                                        \
-            amsHdr_p->cmdID_low + (amsHdr_p->cmdID_high <<8),\
+            cmd,\
             amsHdr_p->stateFlags_low + (amsHdr_p->stateFlags_high << 8),\
             ams_lenght, ams_errorCode, ams_invokeID);\
+  if (cmd == ADS_READ || cmd == ADS_WRITE || cmd == ADS_READ_WRITE) { \
+    AdsReadReqType *ads_read_req_p = (AdsReadReqType*)ams_headdr_p;\
+    const char *cmd_str = "";\
+    switch (cmd) { case ADS_READ: cmd_str =  "RD"; break;\
+                   case ADS_WRITE: cmd_str = "WR"; break;\
+                   case ADS_READ_WRITE: cmd_str = "WRRD"; break;\
+                 }\
+    unsigned idxGrp = ads_read_req_p->net_idxGrp[0] +\
+      (ads_read_req_p->net_idxGrp[1] << 8) +\
+      (ads_read_req_p->net_idxGrp[2] << 16) +\
+      (ads_read_req_p->net_idxGrp[3] << 24);\
+    unsigned idxOff = ads_read_req_p->net_idxOff[0] +\
+      (ads_read_req_p->net_idxOff[1] << 8) + \
+      (ads_read_req_p->net_idxOff[2] << 16) +\
+      (ads_read_req_p->net_idxOff[3] << 24);\
+    unsigned len = ads_read_req_p->net_len[0] +\
+      (ads_read_req_p->net_len[1] << 8) + \
+      (ads_read_req_p->net_len[2] << 16) +\
+      (ads_read_req_p->net_len[3] << 24);\
+  asynPrint(pasynUser, tracelevel,\
+            "%s %4s idxGrp=0X%04X idxOff=0x%04X len=%u\n",\
+            help_txt, cmd_str,                           \
+            idxGrp, idxOff, len);                        \
+  } \
 }\
 
 /****************************************************************************/
