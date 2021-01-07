@@ -352,7 +352,7 @@ class AxisMr:
             self.axisCom.put(".JOGF", 1)
         else:
             self.axisCom.put(".JOGR", 1)
-        self.waitForStartAndDone(tc_no + " jogDirection", 30 + time_to_wait + 3.0)
+        self.waitForStartAndDone(str(tc_no) + " jogDirection", 30 + time_to_wait + 3.0)
         if direction > 0:
             self.axisCom.put(".JOGF", 0)
         else:
@@ -385,7 +385,7 @@ class AxisMr:
     #            distance = math.fabs(self.axisCom.get(".RBV") - destination)
     #            time_to_wait += distance / velocity + 2 * acceleration
     #        self.axisCom.put(".VAL", destination)
-    #        done = self.waitForStartAndDone(tc_no + " movePosition", time_to_wait)
+    #        done = self.waitForStartAndDone(str(tc_no) + " movePosition", time_to_wait)
 
     def moveWait(self, tc_no, destination):
         timeout = 30
