@@ -8,8 +8,8 @@ import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-filnam = "122xx.py"
-
+filnam = os.path.basename(__file__)[0:2]
+tc_no_base = int(os.path.basename(__file__)[0:2]) * 10
 ###
 
 
@@ -21,8 +21,6 @@ class Test(unittest.TestCase):
 
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
-
-    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
 
     hlm = axisCom.get(".HLM")
     llm = axisCom.get(".LLM")
@@ -42,20 +40,27 @@ class Test(unittest.TestCase):
 
     # Make sure that motor is homed
     def test_TC_1221(self):
-        tc_no = "1221"
+        tc_no = tc_no_base + 1
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
             self.axisMr.powerOnHomeAxis(tc_no)
             self.msta = int(self.axisCom.get(".MSTA"))
-            self.assertNotEqual(
-                0,
-                self.msta & self.axisMr.MSTA_BIT_HOMED,
-                "MSTA.homed (Axis is not homed)",
-            )
+            passed = (self.msta & self.axisMr.MSTA_BIT_HOMED) == 0
+            if not passed:
+                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+                self.assertEqual(
+                    passed,
+                    True,
+                    "MSTA.homed (Axis is not homed)",
+                )
+            else:
+                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
 
     # high limit switch
     def test_TC_1222(self):
+        tc_no = tc_no_base + 2
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1222"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             old_high_limit = self.axisCom.get(".HLM")
             old_low_limit = self.axisCom.get(".LLM")
@@ -69,7 +74,6 @@ class Test(unittest.TestCase):
             timeout = self.axisMr.calcTimeOut(destination, jvel) * 2
 
             self.axisMr.setSoftLimitsOff(tc_no)
-
             self.axisMr.jogDirection(tc_no, 1)
             # Get values, check them later
             lvio = int(self.axisCom.get(".LVIO"))
@@ -93,3 +97,4 @@ class Test(unittest.TestCase):
             self.assertNotEqual(
                 0, mstaE & self.axisMr.MSTA_BIT_PLUS_LS, "HLS should be active"
             )
+        self.axisCom.put("-DbgStrToLOG", "Finish " + str(tc_no))
