@@ -89,6 +89,14 @@ record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToMCU") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToMCU")
 }
 
+# only one record for the whole MCU
+record(stringout, "$(PREFIX)DbgStrToNC") {
+    field(DESC, "Talk to NC")
+    field(VAL, "")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,"@asyn($(MOTOR_PORT),0)StrToNC")
+}
+
 record(ao,"$(PREFIX)$(MOTOR_NAME)-HomPos") {
     field(DESC, "EC Home Position")
     field(VAL,  0.0)

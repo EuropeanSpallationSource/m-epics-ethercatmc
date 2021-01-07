@@ -86,6 +86,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcMCUErrMsgString            "MCUErrMsg"
 #define ethercatmcDbgStrToMcuString          "StrToMCU"
 #define ethercatmcDbgStrToLogString          "StrToLOG"
+#define ethercatmcDbgStrToNCString           "StrToNC"
 
 #define HOMPROC_MANUAL_SETPOS    15
 
@@ -190,7 +191,10 @@ public:
                        int numAxes, double movingPollPeriod,
                        double idlePollPeriod,
                        const char *optionStr);
-
+  /* Special for Streamdevice */
+  asynStatus readOctet(asynUser *pasynUser,
+                       char *value, size_t maxChars, size_t *nActual,
+                       int *eomReason);
   /* Note: the motor/master version does not have it, so we need it here */
   asynStatus writeOctet(asynUser *pasynUser, const char *value,
                         size_t nChars, size_t *nActual);
@@ -418,6 +422,7 @@ public:
   int ethercatmcMCUErrMsg_;
   int ethercatmcDbgStrToMcu_;
   int ethercatmcDbgStrToLog_;
+  int ethercatmcDbgStrToNC_;
   int ethercatmcVelAct_;
   int ethercatmcVel_RB_;
   int ethercatmcAcc_RB_;
