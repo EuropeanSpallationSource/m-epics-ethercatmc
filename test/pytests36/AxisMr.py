@@ -686,18 +686,30 @@ class AxisMr:
 
         return sameContent
 
-    def setSoftLimitsOff(self, tc_no):
+    def setSoftLimitsOff(self, tc_no, direction=-1, axisID=0):
         """
         Switch off the soft limits
         """
         actDHLM = self.axisCom.get(".DHLM", use_monitor=False)
         actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
+
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff hlm={actDHLM} llm={actDLLM}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff direction={direction} axisID={axisID}"
         )
+        print(f"setSoftLimitsOff hlm={actDHLM} llm={actDLLM}")
         # switch off the controller soft limits
-        self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-        self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+        if axisID > 0:
+            assert direction >= 0
+            assert direction <= 1
+            # ADSPORT=501/.ADR.16#5001,16#B,2,2=0;
+            idxGrp = f"{axisID:02X}"
+            idxOff = f"{direction+0xB:X}"
+            cmd = f"ADSPORT=501/.ADR.16#50{idxGrp},16#{idxOff},2,2=0;"
+            print(f"{tc_no}: setSoftLimitsOff cmd={cmd}")
+            self.axisCom.put("-DbgStrToNC", cmd, wait=True)
+        else:
+            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
 
         maxTime = 10  # seconds maximum to let read only parameters ripple through
         maxDelta = 0.05  # 5 % error tolerance margin
@@ -871,7 +883,7 @@ class AxisMr:
         # Go away from limit switch
         self.moveWait(tc_no, jog_start_pos)
 
-        self.setSoftLimitsOff(tc_no)
+        self.setSoftLimitsOff(tc_no, direction=direction, axisID=axisID)
         self.jogDirection(tc_no, direction)
         # Get values, check them later
         lvio = int(self.axisCom.get(".LVIO"))
