@@ -843,3 +843,63 @@ class AxisMr:
             )
             return False
         return True
+
+    # move into limit switch
+    def moveIntoLS(self, tc_no=0, direction=-1, axisID=0):
+        assert tc_no != 0
+        assert direction >= 0
+        margin = 1.1
+        jvel = self.axisCom.get(".JVEL")
+        rdbd = self.axisCom.get(".RDBD")
+        old_high_limit = self.axisCom.get(".HLM")
+        old_low_limit = self.axisCom.get(".LLM")
+        if direction > 0:
+            soft_limit_pos = old_high_limit
+            jog_start_pos = soft_limit_pos - jvel - margin
+            ls_to_be_activated = self.MSTA_BIT_PLUS_LS
+            ls_not_to_be_activated = self.MSTA_BIT_MINUS_LS
+        else:
+            soft_limit_pos = old_low_limit
+            jog_start_pos = soft_limit_pos + jvel + margin
+            ls_to_be_activated = self.MSTA_BIT_MINUS_LS
+            ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
+
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} direction={direction } jog_start_pos={jog_start_pos:f}"
+        )
+        self.axisCom.put(".STOP", 1)
+        # Go away from limit switch
+        self.moveWait(tc_no, jog_start_pos)
+
+        self.setSoftLimitsOff(tc_no)
+        self.jogDirection(tc_no, direction)
+        # Get values, check them later
+        lvio = int(self.axisCom.get(".LVIO"))
+        mstaE = int(self.axisCom.get(".MSTA"))
+        # Go away from limit switch
+        self.moveWait(tc_no, jog_start_pos)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}"
+        )
+
+        self.setSoftLimitsOn(old_low_limit, old_high_limit)
+        passed = True
+        if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x}"
+            )
+            passed = False
+
+        if (mstaE & ls_not_to_be_activated) != 0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wrong LS activated"
+            )
+            passed = False
+
+        if (mstaE & ls_to_be_activated) == 0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wrong LS activated"
+            )
+            passed = False
+
+        return passed
