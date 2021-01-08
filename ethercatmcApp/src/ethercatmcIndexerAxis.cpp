@@ -170,7 +170,7 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
       if (!strncmp(pThisOption, axisID_is_str, strlen(axisID_is_str))) {
         pThisOption += strlen(axisID_is_str);
         int axisID = atoi(pThisOption);
-        printf("ethercatmcCreateIndexerAxis axisNo=%d axisID=%d\n",
+        printf("ethercatmcCreateIndexerAxis.options(%d): axisID=%d\n",
                axisNo, axisID);
         if (axisID > 0) {
           pAxis->setAxisID(axisID);
@@ -506,6 +506,7 @@ void ethercatmcIndexerAxis::setAxisID(unsigned axisID)
             "%ssetAxisID(%u) %d\n",
             modNamEMC, axisNo_, axisID);
   drvlocal.axisID = axisID;
+  setIntegerParamLog(pC_->ethercatmcCfgAxisID_RB_, drvlocal.axisID,"axisID");
 }
 
 asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,

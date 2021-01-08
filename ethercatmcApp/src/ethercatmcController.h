@@ -56,6 +56,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVelActString               "VelAct"
 #define ethercatmcVel_RBString               "Vel-RB"
 #define ethercatmcAcc_RBString               "Acc-RB"
+#define ethercatmcCfgAxisID_RBString         "CfgAxisID-RB"
 #define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
 #define ethercatmcCfgJVEL_RBString           "CfgJVEL-RB"
@@ -426,6 +427,7 @@ public:
   int ethercatmcVelAct_;
   int ethercatmcVel_RB_;
   int ethercatmcAcc_RB_;
+  int ethercatmcCfgAxisID_RB_;
   int ethercatmcCfgVELO_RB_;
   int ethercatmcCfgVMAX_RB_;
   int ethercatmcCfgJVEL_RB_;

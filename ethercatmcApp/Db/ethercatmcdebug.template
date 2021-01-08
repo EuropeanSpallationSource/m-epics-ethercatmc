@@ -159,6 +159,13 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU-RB") {
     field(SCAN, "I/O Intr")
 }
 
+record(longin,"$(PREFIX)$(MOTOR_NAME)-AxisID-RB") {
+    field(DESC, "AxisID")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgAxisID-RB")
+    field(SCAN, "I/O Intr")
+}
+
 
 # Help records, to read what the record sends to the model 3 driver
 record(ai,"$(PREFIX)$(MOTOR_NAME)-M3RHLM") {
