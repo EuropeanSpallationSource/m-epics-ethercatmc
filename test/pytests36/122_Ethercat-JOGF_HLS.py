@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
 
     # Make sure that motor is homed
     def test_TC_1221(self):
-        tc_no = int(tc_no_base + 1)
+        tc_no = tc_no_base + 1
         self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
             self.axisMr.powerOnHomeAxis(tc_no)
@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
 
     # high limit switch
     def test_TC_1222(self):
-        tc_no = int(tc_no_base + 2)
+        tc_no = tc_no_base + 2
         direction = 1
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
