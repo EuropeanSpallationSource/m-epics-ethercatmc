@@ -22,18 +22,17 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
-    msta = int(axisCom.get(".MSTA"))
-
     print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}")
 
     # Make sure that motor is homed
     def test_TC_1221(self):
         tc_no = tc_no_base + 1
         self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
-        if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
+        msta = int(self.axisCom.get(".MSTA"))
+        if not (msta & self.axisMr.MSTA_BIT_HOMED):
             self.axisMr.powerOnHomeAxis(tc_no)
-            self.msta = int(self.axisCom.get(".MSTA"))
-            passed = (self.msta & self.axisMr.MSTA_BIT_HOMED) != 0
+            msta = int(self.axisCom.get(".MSTA"))
+            passed = (msta & self.axisMr.MSTA_BIT_HOMED) != 0
             if not passed:
                 self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
                 self.assertEqual(
@@ -48,7 +47,8 @@ class Test(unittest.TestCase):
     def test_TC_1222(self):
         tc_no = tc_no_base + 2
         direction = 1
-        if self.msta & self.axisMr.MSTA_BIT_HOMED:
+        msta = int(self.axisCom.get(".MSTA"))
+        if msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
             passed = self.axisMr.moveIntoLS(tc_no=tc_no, direction=direction)
             if passed:
@@ -61,7 +61,8 @@ class Test(unittest.TestCase):
     def test_TC_1223(self):
         tc_no = tc_no_base + 3
         direction = 1
-        if self.msta & self.axisMr.MSTA_BIT_HOMED:
+        msta = int(self.axisCom.get(".MSTA"))
+        if msta & self.axisMr.MSTA_BIT_HOMED:
             axisID = int(self.axisCom.get("-AxisID-RB"))
             if axisID > 0:
                 self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
