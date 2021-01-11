@@ -954,21 +954,38 @@ asynStatus ethercatmcController::writeOctet(asynUser *pasynUser,
     int      addr = 0;
     int      nvals;
     unsigned adsport;
-    unsigned idxGrp;
+    unsigned idxGrp = 0;
     unsigned idxOff;
     unsigned lenInPlc;
     unsigned typInPlc;
     double   fValInPlc;
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%swriteOctet function=%d value=%s\n",
-              modNamEMC, function, value);
+              "%s%s function=%d value=%s\n",
+              modNamEMC, functionName, function, value);
 
     nvals = sscanf(value, "ADSPORT=%u/.ADR.16#%x,16#%x,%u,%u=%lf;",
                    &adsport, &idxGrp, &idxOff,
                    &lenInPlc, &typInPlc, &fValInPlc);
     if (nvals != 6) {
-      setStringParam(addr, ethercatmcDbgStrToNC_, "Bad String;");
-      return asynSuccess;
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s function=%d value=%s Bad String\n",
+                modNamEMC, functionName, function, value);
+      return asynError;
+    } else {
+      unsigned requestedAxisID = idxGrp & 0xFF;
+      int      axisAxisID = 0;
+      asynMotorAxis *pAxis = getAxis(requestedAxisID);
+      status = pAxis ? asynSuccess : asynError;
+      if (!status) {
+        getIntegerParam(requestedAxisID, ethercatmcCfgAxisID_RB_, &axisAxisID);
+        if ((unsigned)axisAxisID != requestedAxisID) status = asynError;
+      }
+      if (status) {
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s Bad idxGrp requestedAxisID=%u pAxis=%p axisAxisID=%d\n",
+                  modNamEMC, functionName, requestedAxisID, pAxis, axisAxisID);
+        return asynError;
+      }
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s adsport=%u idxGrp=0x%X idxOff=0x%X lenInPlc=%u typInPlc=%u fValInPlc=%f\n",
