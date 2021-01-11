@@ -60,6 +60,32 @@ void handleADSread(int fd, ams_hdr_type *ams_hdr_p)
   send_ams_reply(fd, ams_hdr_p, total_len_reply);
 }
 
+static double netToDouble(void *data, size_t lenInPlc)
+{
+  const uint8_t *src = (const uint8_t*)data;
+  if (lenInPlc == 4) {
+    union {
+      volatile uint32_t uRes;
+      volatile float    fRes;
+    } dst;
+    dst.uRes = (uint32_t)src[0] + ((uint32_t)src[1] << 8) +
+      ((uint32_t)src[2] << 16) + ((uint32_t)src[3] << 24);
+    return (double)dst.fRes;
+  } else if (lenInPlc == 8) {
+    union {
+      volatile uint64_t uRes;
+      volatile double   fRes;
+    } dst;
+    dst.uRes = (uint64_t)src[0] + ((uint64_t)src[1] << 8) +
+      ((uint64_t)src[2] << 16) + ((uint64_t)src[3] << 24) +
+      ((uint64_t)src[4] << 32) + ((uint64_t)src[5] << 40) +
+      ((uint64_t)src[6] << 48) + ((uint64_t)src[7] << 56);
+    return dst.fRes;
+  } else {
+    return 0.0;
+  }
+}
+
 void handleADSwrite(int fd, ams_hdr_type *ams_hdr_p)
 {
   ADS_Write_req_type *ADS_Write_req_p = (ADS_Write_req_type *)ams_hdr_p;
@@ -110,6 +136,17 @@ void handleADSwrite(int fd, ams_hdr_type *ams_hdr_p)
              " value=%u len_in_PLC=%u ret=%d\n",
              __FILE__,__FUNCTION__, __LINE__,
              adsport, indexGroup, indexOffset, value, len_in_PLC, ret);
+    send_ams_reply(fd, ams_hdr_p, sizeof(ADS_Write_rep_type));
+  } else if ((adsport == 501) && (len_in_PLC == 8)) {
+    uint8_t *data_ptr = (uint8_t *)ADS_Write_req_p + sizeof(*ADS_Write_req_p);
+    double fValue;
+    fValue = netToDouble(data_ptr, len_in_PLC);
+    int ret = motorHandleADS_ADR_putFloat(adsport, indexGroup, indexOffset,
+                                          fValue);
+    LOGINFO3("%s/%s:%d ADS_Writecmd adsport=%u indexGroup=0x%x indexOffset=%u"
+             " value=%f len_in_PLC=%u ret=%d\n",
+             __FILE__,__FUNCTION__, __LINE__,
+             adsport, indexGroup, indexOffset, fValue, len_in_PLC, ret);
     send_ams_reply(fd, ams_hdr_p, sizeof(ADS_Write_rep_type));
   } else {
     LOGERR("%s/%s:%d ADS_Writecmd adsport=%u indexGroup=0x%x indexOffset=%u len_in_PLC=%u\n",
