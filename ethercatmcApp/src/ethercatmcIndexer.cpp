@@ -302,7 +302,7 @@ asynStatus ethercatmcController::setPlcMemoryDouble(unsigned indexOffset,
   }
 }
 
-asynStatus ethercatmcController::setSAFValueOnAxisViaADSFL(unsigned indexGroup,
+asynStatus ethercatmcController::setSAFIntegerOnAxisViaADSFL(unsigned indexGroup,
                                                            unsigned indexOffset,
                                                            int      value,
                                                            size_t   lenInPlc,
@@ -322,7 +322,7 @@ asynStatus ethercatmcController::setSAFValueOnAxisViaADSFL(unsigned indexGroup,
                                   fileName, lineNo);
     asynPrint(pasynUserController_,
               ASYN_TRACE_INFO,
-              "%s%s:%d setSAFValueOnAxisViaADSFL indexGroup=0x%X indexOffset=0x%X"
+              "%s%s:%d setSAFIntegerOnAxisViaADSFL indexGroup=0x%X indexOffset=0x%X"
               " value=%d lenInPlc=%u status=%s (%d)\n",
               modNamEMC,fileName, lineNo,
               indexGroup, indexOffset,

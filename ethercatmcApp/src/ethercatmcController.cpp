@@ -994,7 +994,7 @@ asynStatus ethercatmcController::writeOctet(asynUser *pasynUser,
 
     if (adsport == 501 && typInPlc == 2 && lenInPlc == 2) {
       if (ctrlLocal.useADSbinary) {
-        status = setSAFValueOnAxisViaADS(idxGrp, idxOff, (int)fValInPlc, lenInPlc);
+        status = setSAFIntegerOnAxisViaADS(idxGrp, idxOff, (int)fValInPlc, lenInPlc);
         setStringParam(addr, ethercatmcDbgStrToNC_,
                        status ? "Error;" : "OK;");
         return status;
