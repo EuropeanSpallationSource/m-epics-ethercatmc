@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
             self.axisMr.powerOnHomeAxis(tc_no)
             self.msta = int(self.axisCom.get(".MSTA"))
-            passed = (self.msta & self.axisMr.MSTA_BIT_HOMED) == 0
+            passed = (self.msta & self.axisMr.MSTA_BIT_HOMED) != 0
             if not passed:
                 self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
                 self.assertEqual(
