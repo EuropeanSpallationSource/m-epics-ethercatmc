@@ -275,13 +275,21 @@ public:
                                          uint32_t *handle);
 
   asynStatus setSAFIntegerOnAxisViaADSFL(unsigned indexGroup,
-                                       unsigned indexOffset,
-                                       int      value,
-                                       size_t   lenInPlc,
-                                       const char *fileName,
-                                       int lineNo);
+                                         unsigned indexOffset,
+                                         int      value,
+                                         size_t   lenInPlc,
+                                         const char *fileName,
+                                         int lineNo);
 
 #define setSAFIntegerOnAxisViaADS(a,b,c,d) setSAFIntegerOnAxisViaADSFL(a,b,c,d,__FILE__, __LINE__)
+
+  asynStatus setSAFDoubleOnAxisViaADSFL(unsigned indexGroup,
+                                        unsigned indexOffset,
+                                        double   value,
+                                        size_t   lenInPlc,
+                                        const char *fileName,
+                                        int lineNo);
+#define setSAFDoubleOnAxisViaADS(a,b,c,d) setSAFDoubleOnAxisViaADSFL(a,b,c,d,__FILE__, __LINE__)
 
   /* Indexer */
   asynStatus readDeviceIndexerFL(unsigned devNum, unsigned infoType,
