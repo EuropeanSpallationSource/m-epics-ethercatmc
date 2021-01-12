@@ -352,7 +352,7 @@ class AxisMr:
             self.axisCom.put(".JOGF", 1)
         else:
             self.axisCom.put(".JOGR", 1)
-        self.waitForStartAndDone(tc_no + " jogDirection", 30 + time_to_wait + 3.0)
+        self.waitForStartAndDone(str(tc_no) + " jogDirection", 30 + time_to_wait + 3.0)
         if direction > 0:
             self.axisCom.put(".JOGF", 0)
         else:
@@ -385,7 +385,7 @@ class AxisMr:
     #            distance = math.fabs(self.axisCom.get(".RBV") - destination)
     #            time_to_wait += distance / velocity + 2 * acceleration
     #        self.axisCom.put(".VAL", destination)
-    #        done = self.waitForStartAndDone(tc_no + " movePosition", time_to_wait)
+    #        done = self.waitForStartAndDone(str(tc_no) + " movePosition", time_to_wait)
 
     def moveWait(self, tc_no, destination):
         timeout = 30
@@ -686,18 +686,30 @@ class AxisMr:
 
         return sameContent
 
-    def setSoftLimitsOff(self, tc_no):
+    def setSoftLimitsOff(self, tc_no, direction=-1, axisID=0):
         """
         Switch off the soft limits
         """
         actDHLM = self.axisCom.get(".DHLM", use_monitor=False)
         actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
+
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff hlm={actDHLM} llm={actDLLM}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff direction={direction} axisID={axisID}"
         )
+        print(f"setSoftLimitsOff hlm={actDHLM} llm={actDLLM}")
         # switch off the controller soft limits
-        self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-        self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+        if axisID > 0:
+            assert direction >= 0
+            assert direction <= 1
+            # ADSPORT=501/.ADR.16#5001,16#B,2,2=0;
+            idxGrp = f"{axisID:02X}"
+            idxOff = f"{direction+0xB:X}"
+            cmd = f"ADSPORT=501/.ADR.16#50{idxGrp},16#{idxOff},2,2=0;"
+            print(f"{tc_no}: setSoftLimitsOff cmd={cmd}")
+            self.axisCom.put("-DbgStrToNC", cmd, wait=True)
+        else:
+            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
 
         maxTime = 10  # seconds maximum to let read only parameters ripple through
         maxDelta = 0.05  # 5 % error tolerance margin
@@ -723,16 +735,30 @@ class AxisMr:
         raise Exception(debug_text)
         assert False
 
-    def setSoftLimitsOn(self, low_limit, high_limit):
+    def setSoftLimitsOn(self, tc_no, low_limit, high_limit, direction=-1, axisID=0):
         """
         Set the soft limits
         """
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit={low_limit} high_limit={high_limit} direction={direction} axisID={axisID}"
+        )
         # switch on the controller soft limits
         try:
             self.axisCom.put("-CfgDHLM", high_limit, wait=True, timeout=2)
             self.axisCom.put("-CfgDLLM", low_limit, wait=True, timeout=2)
-            self.axisCom.put("-CfgDHLM-En", 1, wait=True, timeout=2)
-            self.axisCom.put("-CfgDLLM-En", 1, wait=True, timeout=2)
+
+            if axisID > 0:
+                assert direction >= 0
+                assert direction <= 1
+                # ADSPORT=501/.ADR.16#5001,16#B,2,2=1;
+                idxGrp = f"{axisID:02X}"
+                idxOff = f"{direction+0xB:X}"
+                cmd = f"ADSPORT=501/.ADR.16#50{idxGrp},16#{idxOff},2,2=1;"
+                print(f"{tc_no}: setSoftLimitsOff cmd={cmd}")
+                self.axisCom.put("-DbgStrToNC", cmd, wait=True)
+            else:
+                self.axisCom.put("-CfgDHLM-En", 1, wait=True, timeout=2)
+                self.axisCom.put("-CfgDLLM-En", 1, wait=True, timeout=2)
         finally:
             oldRBV = self.axisCom.get(".RBV")
 
@@ -843,3 +869,63 @@ class AxisMr:
             )
             return False
         return True
+
+    # move into limit switch
+    def moveIntoLS(self, tc_no=0, direction=-1, axisID=0):
+        assert tc_no != 0
+        assert direction >= 0
+        margin = 1.1
+        jvel = self.axisCom.get(".JVEL")
+        rdbd = self.axisCom.get(".RDBD")
+        old_high_limit = self.axisCom.get("-CfgDHLM")
+        old_low_limit = self.axisCom.get("-CfgDLLM")
+        if direction > 0:
+            soft_limit_pos = old_high_limit
+            jog_start_pos = soft_limit_pos - jvel - margin
+            ls_to_be_activated = self.MSTA_BIT_PLUS_LS
+            ls_not_to_be_activated = self.MSTA_BIT_MINUS_LS
+        else:
+            soft_limit_pos = old_low_limit
+            jog_start_pos = soft_limit_pos + jvel + margin
+            ls_to_be_activated = self.MSTA_BIT_MINUS_LS
+            ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
+
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} direction={direction } jog_start_pos={jog_start_pos:f}"
+        )
+        self.axisCom.put(".STOP", 1)
+        # Go away from limit switch
+        self.moveWait(tc_no, jog_start_pos)
+
+        self.setSoftLimitsOff(tc_no, direction=direction, axisID=axisID)
+        self.jogDirection(tc_no, direction)
+        # Get values, check them later
+        lvio = int(self.axisCom.get(".LVIO"))
+        mstaE = int(self.axisCom.get(".MSTA"))
+        # Go away from limit switch
+        self.moveWait(tc_no, jog_start_pos)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}"
+        )
+
+        self.setSoftLimitsOn(tc_no, old_low_limit, old_high_limit, direction=direction, axisID=axisID)
+        passed = True
+        if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x}"
+            )
+            passed = False
+
+        if (mstaE & ls_not_to_be_activated) != 0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wrong LS activated"
+            )
+            passed = False
+
+        if (mstaE & ls_to_be_activated) == 0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wrong LS activated"
+            )
+            passed = False
+
+        return passed

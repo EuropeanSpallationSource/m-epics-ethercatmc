@@ -104,6 +104,7 @@ $(BIN)/ads.o: \
  Makefile \
  ads.h \
  logerr_info.h \
+ cmd_EAT.h \
  ads.c
 	$(CC) -c $(CFLAGS) ads.c -o $@
 

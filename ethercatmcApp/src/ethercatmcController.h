@@ -56,6 +56,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVelActString               "VelAct"
 #define ethercatmcVel_RBString               "Vel-RB"
 #define ethercatmcAcc_RBString               "Acc-RB"
+#define ethercatmcCfgAxisID_RBString         "CfgAxisID-RB"
 #define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
 #define ethercatmcCfgJVEL_RBString           "CfgJVEL-RB"
@@ -86,6 +87,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcMCUErrMsgString            "MCUErrMsg"
 #define ethercatmcDbgStrToMcuString          "StrToMCU"
 #define ethercatmcDbgStrToLogString          "StrToLOG"
+#define ethercatmcDbgStrToNCString           "StrToNC"
 
 #define HOMPROC_MANUAL_SETPOS    15
 
@@ -190,7 +192,10 @@ public:
                        int numAxes, double movingPollPeriod,
                        double idlePollPeriod,
                        const char *optionStr);
-
+  /* Special for Streamdevice */
+  asynStatus readOctet(asynUser *pasynUser,
+                       char *value, size_t maxChars, size_t *nActual,
+                       int *eomReason);
   /* Note: the motor/master version does not have it, so we need it here */
   asynStatus writeOctet(asynUser *pasynUser, const char *value,
                         size_t nChars, size_t *nActual);
@@ -225,6 +230,7 @@ public:
   /* memory bytes via ADS */
   asynStatus writeWriteReadAdsFL(asynUser *pasynUser,
                                  AmsHdrType *amsHdr_p, size_t outlen,
+                                 uint16_t targetAdsport,
                                  uint32_t invokeID,
                                  uint32_t ads_cmdID,
                                  void *indata, size_t inlen,
@@ -235,13 +241,20 @@ public:
                                   void *data, size_t lenInPlc,
                                   const char *fileName,
                                   int lineNo);
+  asynStatus setMemIdxGrpIdxOffFL(unsigned indexGroup,
+                                  unsigned indexOffset,
+                                  unsigned targetAdsport,
+                                  const void *data,
+                                  size_t lenInPlc,
+                                  const char *fileName,
+                                  int lineNo);
   asynStatus setPlcMemoryViaADSFL(unsigned indexOffset,
                                   const void *data, size_t lenInPlc,
                                   const char *fileName,
                                   int lineNo);
 
-  /* Re-definition */
-#define writeWriteReadAds(a,b,c,d,e,f,g,h)  writeWriteReadAdsFL(a,b,c,d,e,f,g,h,__FILE__, __LINE__)
+/* Re-definition */
+#define setMemIdxGrpIdxOff(a,b,c,d,e) setMemIdxGrpIdxOffFL(a,b,c,d,e,__FILE__, __LINE__)
 #define getPlcMemoryViaADS(a,b,c)           getPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
 #define setPlcMemoryViaADS(a,b,c)           setPlcMemoryViaADSFL(a,b,c,__FILE__, __LINE__)
 
@@ -260,6 +273,15 @@ public:
                                  size_t lenInPlc);
   asynStatus getSymbolHandleByNameViaADS(const char *symbolName,
                                          uint32_t *handle);
+
+  asynStatus setSAFValueOnAxisViaADSFL(unsigned indexGroup,
+                                       unsigned indexOffset,
+                                       int      value,
+                                       size_t   lenInPlc,
+                                       const char *fileName,
+                                       int lineNo);
+
+#define setSAFValueOnAxisViaADS(a,b,c,d) setSAFValueOnAxisViaADSFL(a,b,c,d,__FILE__, __LINE__)
 
   /* Indexer */
   asynStatus readDeviceIndexerFL(unsigned devNum, unsigned infoType,
@@ -361,6 +383,7 @@ public:
     } supported;
     pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
     unsigned numPilsAsynDevInfo;
+    int lockADSlineno;
   } ctrlLocal;
 
 
@@ -400,9 +423,11 @@ public:
   int ethercatmcMCUErrMsg_;
   int ethercatmcDbgStrToMcu_;
   int ethercatmcDbgStrToLog_;
+  int ethercatmcDbgStrToNC_;
   int ethercatmcVelAct_;
   int ethercatmcVel_RB_;
   int ethercatmcAcc_RB_;
+  int ethercatmcCfgAxisID_RB_;
   int ethercatmcCfgVELO_RB_;
   int ethercatmcCfgVMAX_RB_;
   int ethercatmcCfgJVEL_RB_;
@@ -432,9 +457,20 @@ public:
   int ethercatmcErrId_;
   /* Last parameter */
 
-  #define FIRST_VIRTUAL_PARAM ethercatmcErr_
-  #define LAST_VIRTUAL_PARAM ethercatmcErrId_
-  #define NUM_VIRTUAL_MOTOR_PARAMS ((int) (&LAST_VIRTUAL_PARAM - &FIRST_VIRTUAL_PARAM + 1))
+
+#define EMC_ENTER_ADS_CHECK_LOCK(LINENO) do {                           \
+    if (ctrlLocal.lockADSlineno) {                                      \
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,                  \
+                "%s lockADSlineno=%d\n",                                \
+                "ethercatmcADS", ctrlLocal.lockADSlineno);              \
+    }                                                                   \
+    ctrlLocal.lockADSlineno = LINENO;                                   \
+  } while (0)
+
+
+#define EMC_LEAVE_ADS_CHECK_LOCK() do {   \
+    ctrlLocal.lockADSlineno = 0;          \
+  } while (0)
 
   friend class ethercatmcAxis;
   friend class ethercatmcIndexerAxis;

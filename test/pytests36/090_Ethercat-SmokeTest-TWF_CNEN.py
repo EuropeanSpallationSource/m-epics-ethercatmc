@@ -189,7 +189,7 @@ def tweakToLimit(self, tc_no, direction):
         f"{tc_no}:{int(lineno())} direction={int(direction)} hls={int(hls)} lls={int(lls)}"
     )
     # Put back the limits for the next run
-    self.axisMr.setSoftLimitsOn(old_low_limit, old_high_limit)
+    self.axisMr.setSoftLimitsOn(tc_no, old_low_limit, old_high_limit)
 
     # Check if we reached the limit switch, prepare to move away from it
     if direction > 0:

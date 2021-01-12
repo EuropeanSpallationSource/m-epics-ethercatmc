@@ -77,6 +77,7 @@ static int deftracelevel = ASYN_TRACE_DEBUG;
       (amsHdr_p->net_invokeID[1] << 8) +\
       (amsHdr_p->net_invokeID[2] << 16) +\
       (amsHdr_p->net_invokeID[3] << 24);\
+    unsigned cmd = amsHdr_p->cmdID_low + (amsHdr_p->cmdID_high <<8); \
   asynPrint(pasynUser, tracelevel,\
             "%samsTcpHdr_len=%u ams target=%d.%d.%d.%d.%d.%d:%d "  \
             "source=%d.%d.%d.%d.%d.%d:%d\n",                       \
@@ -93,9 +94,33 @@ static int deftracelevel = ASYN_TRACE_DEBUG;
   asynPrint(pasynUser, tracelevel,\
             "%samsHdr cmd=%u flags=%u ams_len=%u ams_err=%u id=%u\n",\
             help_txt,                                        \
-            amsHdr_p->cmdID_low + (amsHdr_p->cmdID_high <<8),\
+            cmd,\
             amsHdr_p->stateFlags_low + (amsHdr_p->stateFlags_high << 8),\
             ams_lenght, ams_errorCode, ams_invokeID);\
+  if (cmd == ADS_READ || cmd == ADS_WRITE || cmd == ADS_READ_WRITE) { \
+    AdsReadReqType *ads_read_req_p = (AdsReadReqType*)ams_headdr_p;\
+    const char *cmd_str = "";\
+    switch (cmd) { case ADS_READ: cmd_str =  "RD"; break;\
+                   case ADS_WRITE: cmd_str = "WR"; break;\
+                   case ADS_READ_WRITE: cmd_str = "WRRD"; break;\
+                 }\
+    unsigned idxGrp = ads_read_req_p->net_idxGrp[0] +\
+      (ads_read_req_p->net_idxGrp[1] << 8) +\
+      (ads_read_req_p->net_idxGrp[2] << 16) +\
+      (ads_read_req_p->net_idxGrp[3] << 24);\
+    unsigned idxOff = ads_read_req_p->net_idxOff[0] +\
+      (ads_read_req_p->net_idxOff[1] << 8) + \
+      (ads_read_req_p->net_idxOff[2] << 16) +\
+      (ads_read_req_p->net_idxOff[3] << 24);\
+    unsigned len = ads_read_req_p->net_len[0] +\
+      (ads_read_req_p->net_len[1] << 8) + \
+      (ads_read_req_p->net_len[2] << 16) +\
+      (ads_read_req_p->net_len[3] << 24);\
+  asynPrint(pasynUser, tracelevel,\
+            "%s %4s idxGrp=0X%04X idxOff=0x%04X len=%u\n",\
+            help_txt, cmd_str,                           \
+            idxGrp, idxOff, len);                        \
+  } \
 }\
 
 /****************************************************************************/
@@ -250,6 +275,7 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
   size_t nread;
   uint32_t part_1_len = sizeof(AmsTcpHdrType);
   asynStatus status;
+  EMC_ENTER_ADS_CHECK_LOCK(lineNo);
   status = pasynOctetSyncIO->write(pasynUser, outdata, outlen,
                                    DEFAULT_CONTROLLER_TIMEOUT,
                                    &nwrite);
@@ -266,6 +292,7 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
       ctrlLocal.cntADSstatus++;
     }
     status = asynError; /* TimeOut -> Error */
+    EMC_LEAVE_ADS_CHECK_LOCK();
     return status;
   }
   ethercatmchexdump(pasynUser, tracelevel, "OUT",
@@ -345,6 +372,9 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
                                     toread,
                                     DEFAULT_CONTROLLER_TIMEOUT,
                                     &nread, &eomReason);
+
+    EMC_LEAVE_ADS_CHECK_LOCK();
+
     if ((status == asynTimeout) ||
         (!status && !nread && (eomReason & ASYN_EOM_END))) {
       errorProblem = 1;
@@ -384,6 +414,8 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
     } else {
       *pnread = nread + part_1_len;
     }
+  } else {
+    EMC_LEAVE_ADS_CHECK_LOCK();
   }
 
   return status;
@@ -392,6 +424,7 @@ ethercatmcController::writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
 asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
                                                      AmsHdrType *ams_req_hdr_p,
                                                      size_t outlen,
+                                                     uint16_t targetAdsport,
                                                      uint32_t invokeID,
                                                      uint32_t ads_cmdID,
                                                      void *indata, size_t inlen,
@@ -405,8 +438,10 @@ asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
   *pnread = 0;
 
   UINTTONET(ams_payload_len, ams_req_hdr_p->amsTcpHdr.net_len);
-  memcpy(&ams_req_hdr_p->target,
-         &ctrlLocal.remote,  sizeof(ams_req_hdr_p->target));
+  memcpy(&ams_req_hdr_p->target.netID,
+         &ctrlLocal.remote.netID,  sizeof(ams_req_hdr_p->target.netID));
+  ams_req_hdr_p->target.port_low  = (uint8_t)targetAdsport;
+  ams_req_hdr_p->target.port_high = (uint8_t)(targetAdsport >> 8);
   memcpy(&ams_req_hdr_p->source,
          &ctrlLocal.local, sizeof(ams_req_hdr_p->source));
   ams_req_hdr_p->cmdID_low  = (uint8_t)ads_cmdID;
@@ -520,6 +555,7 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
   status = writeWriteReadAdsFL(pasynUser,
                                (AmsHdrType *)&ads_read_req,
                                sizeof(ads_read_req),
+                               ctrlLocal.adsport,
                                invokeID, ADS_READ,
                                (char*)p_read_buf, read_buf_len,
                                &nread, fileName, lineNo);
@@ -568,7 +604,21 @@ asynStatus ethercatmcController::setPlcMemoryViaADSFL(unsigned indexOffset,
                                                       const char *fileName,
                                                       int lineNo)
 {
-  static unsigned indexGroup = 0x4020;
+  const static unsigned indexGroup = 0x4020;
+  return setMemIdxGrpIdxOffFL(indexGroup, indexOffset,
+                              ctrlLocal.adsport,
+                              data, lenInPlc,
+                              fileName, lineNo);
+}
+
+asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
+                                                      unsigned indexOffset,
+                                                      unsigned targetAdsport,
+                                                      const void *data,
+                                                      size_t lenInPlc,
+                                                      const char *fileName,
+                                                      int lineNo)
+{
   int tracelevel = deftracelevel;
   asynUser *pasynUser = pasynUserController_;
   AdsWriteRepType ADS_Write_rep;
@@ -603,6 +653,7 @@ asynStatus ethercatmcController::setPlcMemoryViaADSFL(unsigned indexOffset,
   }
   status = writeWriteReadAdsFL(pasynUser,
                                (AmsHdrType *)p_write_buf, write_buf_len,
+                               targetAdsport,
                                invokeID, ADS_WRITE,
                                &ADS_Write_rep, sizeof(ADS_Write_rep),
                                &nread, fileName,  lineNo);
@@ -610,6 +661,10 @@ asynStatus ethercatmcController::setPlcMemoryViaADSFL(unsigned indexOffset,
   if (!status) {
     uint32_t ads_result = NETTOUINT(ADS_Write_rep.response.net_res);
     if (ads_result) {
+      tracelevel |= ASYN_TRACE_INFO;
+      ethercatmcamsdump(pasynUser, tracelevel, "OUT ", p_write_buf);
+      ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc);
+
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "%s:%d ads_result=0x%x\n",
                 fileName, lineNo, (unsigned)ads_result);
@@ -660,6 +715,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
   status = writeWriteReadAdsFL(pasynUser,
                                (AmsHdrType *)ads_read_write_req_p,
                                write_buf_len,
+                               ctrlLocal.adsport,
                                invokeID, ADS_READ_WRITE,
                                (char*)p_read_buf, read_buf_len,
                                &nread,
@@ -735,6 +791,7 @@ ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
   status = writeWriteReadAdsFL(pasynUser,
                                (AmsHdrType *)ads_read_write_req_p,
                                write_buf_len,
+                               ctrlLocal.adsport,
                                invokeID, ADS_READ_WRITE,
                                (char*)p_read_buf, read_buf_len,
                                &nread,

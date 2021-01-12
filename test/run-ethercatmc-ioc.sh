@@ -77,7 +77,16 @@ echo MOTORCFG=$MOTORCFG
 shift
 
 MOTORIP=127.0.0.1
-MOTORPORT=5000
+
+# motor port is different for indexer
+case $MOTORCFG in
+  *indexer)
+    MOTORPORT=48898
+    ;;
+  *)
+    MOTORPORT=5000
+    ;;
+esac
 
 if test -n "$1"; then
   # allow doit.sh host:port
@@ -103,7 +112,15 @@ if test "$MOTORPORT" = 48898; then
     #echo LOCALIP=$LOCALIP
     echo >&2         $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "<REMOTEAMSNETID> <LOCALAMSNETID>"
     for LOCALIP in $LOCALIPS; do
-      echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "  $MOTORIP.1.1     $LOCALIP.1.1"
+      REMOTEAMSNETID=$MOTORIP.1.1
+      case $MOTORCFG in
+      mcu0[0-9][0-9]*)
+        CRATENO=$(echo $MOTORCFG | sed -e "s/mcu0//")
+        IP_DIGIT=$((50 + $CRATENO))
+        REMOTEAMSNETID=192.168.88.$IP_DIGIT.1.1
+        ;;
+      esac
+      echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT " $REMOTEAMSNETID  $LOCALIP.1.1"
     done
     exit 1
   fi

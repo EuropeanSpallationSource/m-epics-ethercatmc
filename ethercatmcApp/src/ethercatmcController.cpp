@@ -98,7 +98,7 @@ extern "C" const char *stringFromAsynParamType(asynParamType paramType)
   switch (paramType) {
   case asynParamNotDefined: return "asynParamNotDefined";
   case asynParamInt32: return "asynParamInt32";
-#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64    
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
   case asynParamInt64: return "asynParamInt64";
 #endif
   case asynParamUInt32Digital: return "asynParamUInt32Digital";
@@ -107,7 +107,7 @@ extern "C" const char *stringFromAsynParamType(asynParamType paramType)
   case asynParamInt8Array: return "asynParamInt8Array";
   case asynParamInt16Array: return "asynParamInt16Array";
   case asynParamInt32Array: return "asynParamInt32Array";
-#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64    
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
   case asynParamInt64Array: return "asynParamInt64Array";
 #endif
   case asynParamFloat32Array: return "asynParamFloat32Array";
@@ -142,12 +142,18 @@ extern "C" const char *ethercatmcstrStatus(asynStatus status)
   * \param[in] movingPollPeriod  The time between polls when any axis is moving
   * \param[in] idlePollPeriod    The time between polls when no axis is moving
   */
+
+#if ETHERCATMC_ASYN_VERSION_INT < VERSION_INT_4_32
+#error Need_asyn_later_than_4_32
+#endif
+
 ethercatmcController::ethercatmcController(const char *portName,
                                            const char *MotorPortName, int numAxes,
                                            double movingPollPeriod,
                                            double idlePollPeriod,
                                            const char *optionStr)
-  :  asynMotorController(portName, numAxes, NUM_VIRTUAL_MOTOR_PARAMS,
+  :  asynMotorController(portName, numAxes,
+                         0, // Olbsolete: Fixed number of additional asyn parameters
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
                          asynInt64Mask, // additional callback interface beyond those in base class
                          asynInt64Mask, // additional callback interface beyond those in base class
@@ -173,6 +179,7 @@ ethercatmcController::ethercatmcController(const char *portName,
 #endif
   createParam(ethercatmcDbgStrToMcuString,   asynParamOctet,       &ethercatmcDbgStrToMcu_);
   createParam(ethercatmcDbgStrToLogString,   asynParamOctet,       &ethercatmcDbgStrToLog_);
+  createParam(ethercatmcDbgStrToNCString,    asynParamOctet,       &ethercatmcDbgStrToNC_);
 
   /* Per axis */
   createParam(ethercatmcErrString,           asynParamInt32,       &ethercatmcErr_);
@@ -204,6 +211,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcNamAux7_String,      asynParamOctet,       &ethercatmcNamAux7_);
   createParam(ethercatmcNamBit24_String,     asynParamOctet,       &ethercatmcNamBit24_);
   createParam(ethercatmcNamBit25_String,     asynParamOctet,       &ethercatmcNamBit25_);
+  createParam(ethercatmcCfgAxisID_RBString,  asynParamInt32,       &ethercatmcCfgAxisID_RB_);
   createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &ethercatmcCfgVELO_RB_);
   createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &ethercatmcCfgVMAX_RB_);
   createParam(ethercatmcCfgJVEL_RBString,    asynParamFloat64,     &ethercatmcCfgJVEL_RB_);
@@ -888,6 +896,41 @@ asynStatus ethercatmcController::getFeatures(int *pRet)
   return asynError;
 }
 
+asynStatus ethercatmcController::readOctet(asynUser *pasynUser, char *value,
+                                           size_t maxChars, size_t *nActual,
+                                           int *eomReason)
+{
+  static const char *functionName = "readOctet";
+  asynStatus status = asynSuccess;
+  int function = pasynUser->reason;
+
+  if (!function || (function == ethercatmcDbgStrToNC_)) {
+    /*
+     * There are 2 ways to end up here:
+     * - e.g. an bo Record using StreamDevice with a proto file
+     *   doing like this:
+     *   setDHLM_En {
+     *      out "ADSPORT=501/.ADR.16#5001,16#B,2,2=%d;";
+     *   }
+     *   Then we will see function == 0 here
+     *   Note: The StreamDevice must talk to the MOTOR_PORT,
+     *   not the ASYN_PORT.
+     * - A asyn stringout (or waveform of chars) connected to "StrToNC"
+     *
+     */
+    int addr = 0;
+    function = ethercatmcDbgStrToNC_;
+    status = getStringParam(addr, function, (int)maxChars, value);
+    setStringParam(addr, function, "NoResonse;");
+    return status;
+  }
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s%s function=%d\n",
+            modNamEMC, functionName, function);
+  return asynPortDriver::readOctet(pasynUser, value,
+                                   maxChars, nActual, eomReason);
+}
+
 /** Called when asyn clients call pasynOctetSyncIO->write().
   * Extracts the function and axis number from pasynUser.
   * Sets the value in the parameter library.
@@ -899,11 +942,69 @@ asynStatus ethercatmcController::writeOctet(asynUser *pasynUser,
                                             const char *value,
                                             size_t nChars, size_t *nActual)
 {
+  static const char *functionName = "writeOctet";
   asynStatus status = asynSuccess;
   asynMotorAxis *pAxis;
   int function = pasynUser->reason;
-
   pAxis = getAxis(pasynUser);
+
+  *nActual = nChars; /* All data went out */
+  if (!function || (function == ethercatmcDbgStrToNC_)) {
+    /* Streamdevice special handling */
+    int      addr = 0;
+    int      nvals;
+    unsigned adsport;
+    unsigned idxGrp = 0;
+    unsigned idxOff;
+    unsigned lenInPlc;
+    unsigned typInPlc;
+    double   fValInPlc;
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s function=%d value=%s\n",
+              modNamEMC, functionName, function, value);
+
+    nvals = sscanf(value, "ADSPORT=%u/.ADR.16#%x,16#%x,%u,%u=%lf;",
+                   &adsport, &idxGrp, &idxOff,
+                   &lenInPlc, &typInPlc, &fValInPlc);
+    if (nvals != 6) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s function=%d value=%s Bad String\n",
+                modNamEMC, functionName, function, value);
+      return asynError;
+    } else {
+      unsigned requestedAxisID = idxGrp & 0xFF;
+      int      axisAxisID = 0;
+      asynMotorAxis *pAxis = getAxis(requestedAxisID);
+      status = pAxis ? asynSuccess : asynError;
+      if (!status) {
+        getIntegerParam(requestedAxisID, ethercatmcCfgAxisID_RB_, &axisAxisID);
+        if ((unsigned)axisAxisID != requestedAxisID) status = asynError;
+      }
+      if (status) {
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s Bad idxGrp requestedAxisID=%u pAxis=%p axisAxisID=%d\n",
+                  modNamEMC, functionName, requestedAxisID, pAxis, axisAxisID);
+        return asynError;
+      }
+    }
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s adsport=%u idxGrp=0x%X idxOff=0x%X lenInPlc=%u typInPlc=%u fValInPlc=%f\n",
+              modNamEMC, functionName,
+              adsport, idxGrp, idxOff, lenInPlc, typInPlc, fValInPlc);
+
+    if (adsport == 501 && typInPlc == 2 && lenInPlc == 2) {
+      if (ctrlLocal.useADSbinary) {
+        status = setSAFValueOnAxisViaADS(idxGrp, idxOff, (int)fValInPlc, lenInPlc);
+        setStringParam(addr, ethercatmcDbgStrToNC_,
+                       status ? "Error;" : "OK;");
+        return status;
+      }
+    }
+    /* If we come here: Something went wrong */
+    setStringParam(addr, ethercatmcDbgStrToNC_, value);
+    return asynError;
+  }
+
   if (!pAxis) return asynError;
 
   status = pAxis->setStringParam(function, value);

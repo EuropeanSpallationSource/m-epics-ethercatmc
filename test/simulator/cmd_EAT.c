@@ -123,10 +123,10 @@ static const char * const getAxisDebugInfoData_str = "getAxisDebugInfoData";
 
 static const char *seperator_seperator = ";";
 
-static int motorHandleADS_ADR_getInt(unsigned adsport,
-                                     unsigned indexGroup,
-                                     unsigned indexOffset,
-                                     int *iValue)
+int motorHandleADS_ADR_getInt(unsigned adsport,
+                              unsigned indexGroup,
+                              unsigned indexOffset,
+                              int *iValue)
 {
   if (indexGroup >= 0x4000 && indexGroup < 0x5000) {
     int motor_axis_no = (int)indexGroup - 0x4000;
@@ -194,10 +194,10 @@ static int motorHandleADS_ADR_getInt(unsigned adsport,
   ADSPORT=501/.ADR.16#5001,16#B,2,2=1; #enable low Softlimit
   ADSPORT=501/.ADR.16#5001,16#C,2,2=1; #enable high Softlimit
 */
-static int motorHandleADS_ADR_putInt(unsigned adsport,
-                                     unsigned indexGroup,
-                                     unsigned indexOffset,
-                                     int iValue)
+int motorHandleADS_ADR_putInt(unsigned adsport,
+                              unsigned indexGroup,
+                              unsigned indexOffset,
+                              int iValue)
 {
   if (indexGroup >= 0x5000 && indexGroup < 0x6000) {
     int motor_axis_no = (int)indexGroup - 0x5000;
@@ -232,10 +232,10 @@ static int motorHandleADS_ADR_putInt(unsigned adsport,
 }
 
 
-static int motorHandleADS_ADR_getFloat(unsigned adsport,
-                                       unsigned indexGroup,
-                                       unsigned indexOffset,
-                                       double *fValue)
+int motorHandleADS_ADR_getFloat(unsigned adsport,
+                                unsigned indexGroup,
+                                unsigned indexOffset,
+                                double *fValue)
 {
   if (indexGroup >= 0x4000 && indexGroup < 0x5000) {
     int motor_axis_no = (int)indexGroup - 0x4000;
@@ -310,10 +310,10 @@ static int motorHandleADS_ADR_getFloat(unsigned adsport,
   ADSPORT=501/.ADR.16#5001,16#D,8,5=-13.5; #low Softlimit
   ADSPORT=501/.ADR.16#5001,16#E,8,5=140.0; #high Softlimit
 */
-static int motorHandleADS_ADR_putFloat(unsigned adsport,
-                                       unsigned indexGroup,
-                                       unsigned indexOffset,
-                                       double fValue)
+int motorHandleADS_ADR_putFloat(unsigned adsport,
+                                unsigned indexGroup,
+                                unsigned indexOffset,
+                                double fValue)
 {
   if (indexGroup >= 0x4000 && indexGroup < 0x5000) {
     int motor_axis_no = (int)indexGroup - 0x4000;

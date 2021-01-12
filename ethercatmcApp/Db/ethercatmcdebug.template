@@ -89,6 +89,13 @@ record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToMCU") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToMCU")
 }
 
+record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToNC") {
+    field(DESC, "Talk to NC")
+    field(VAL, "")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToNC")
+}
+
 record(ao,"$(PREFIX)$(MOTOR_NAME)-HomPos") {
     field(DESC, "EC Home Position")
     field(VAL,  0.0)
@@ -149,6 +156,13 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU-RB") {
     field(DESC, "Record uses EGU")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_DRIVER_USES_EGU")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin,"$(PREFIX)$(MOTOR_NAME)-AxisID-RB") {
+    field(DESC, "AxisID")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgAxisID-RB")
     field(SCAN, "I/O Intr")
 }
 

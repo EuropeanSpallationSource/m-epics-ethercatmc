@@ -297,8 +297,41 @@ asynStatus ethercatmcController::setPlcMemoryDouble(unsigned indexOffset,
     uint8_t raw[8];
     doubleToNet(value, &raw, lenInPlc);
     return setPlcMemoryOnErrorStateChange(indexOffset, &raw, lenInPlc);
+  } else {
+    return asynError;
   }
-  return asynError;
+}
+
+asynStatus ethercatmcController::setSAFValueOnAxisViaADSFL(unsigned indexGroup,
+                                                           unsigned indexOffset,
+                                                           int      value,
+                                                           size_t   lenInPlc,
+                                                           const char *fileName,
+                                                           int lineNo)
+{
+  const static unsigned targetAdsport = 501;
+  asynStatus status;
+  if (lenInPlc <= 8) {
+    uint8_t raw[8];
+    uintToNet(value, &raw, lenInPlc);
+
+    status = setMemIdxGrpIdxOffFL(indexGroup,
+                                  indexOffset,
+                                  targetAdsport,
+                                  &raw, lenInPlc,
+                                  fileName, lineNo);
+    asynPrint(pasynUserController_,
+              ASYN_TRACE_INFO,
+              "%s%s:%d setSAFValueOnAxisViaADSFL indexGroup=0x%X indexOffset=0x%X"
+              " value=%d lenInPlc=%u status=%s (%d)\n",
+              modNamEMC,fileName, lineNo,
+              indexGroup, indexOffset,
+              value,  (unsigned)lenInPlc,
+              ethercatmcstrStatus(status), (int)status);
+    return status;
+  } else {
+    return asynError;
+  }
 }
 
 
@@ -352,7 +385,7 @@ asynStatus ethercatmcController::readDeviceIndexerFL(unsigned devNum,
   status = asynDisabled;
   asynPrint(pasynUserController_,
             ASYN_TRACE_INFO,
-            "%sreadDeviceIndexer devNum=0x%x infoType=0x%x counter=%u value=0x%x status=%s (%d)\n",
+            "%sreadDeviceIndexer devNum=0x%X infoType=0x%X counter=%u value=0x%X status=%s (%d)\n",
             modNamEMC, devNum, infoType, counter, value,
             ethercatmcstrStatus(status), (int)status);
   return status;
@@ -1018,7 +1051,7 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
     uint32_t MainsVersionHandle = 0;
     status = getSymbolHandleByNameViaADS(symbolName, &MainsVersionHandle);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s(%s) MainsVersionHandle=0x%x status=%s (%d)\n",
+              "%s(%s) MainsVersionHandle=0x%X status=%s (%d)\n",
               modNamEMC, symbolName, MainsVersionHandle,
               ethercatmcstrStatus(status), (int)status);
   }
@@ -1030,8 +1063,8 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
     status = getSymbolInfoViaADS(symbolName,
                                  &adsSymbolInfo, sizeof(adsSymbolInfo));
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s(%s) indexGroup=0x%x indexOffset=0x%x size=%u dataType=%u"
-              " flags=0x%x nameLength=%u typeLength=%u commentLength=%u "
+              "%s(%s) indexGroup=0x%X indexOffset=0x%X size=%u dataType=%u"
+              " flags=0x%X nameLength=%u typeLength=%u commentLength=%u "
               "status=%s (%d)\n",
               modNamEMC, symbolName,
               NETTOUINT(adsSymbolInfo.indexGroup),
@@ -1130,8 +1163,8 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
                                      sizeof(descVersAuthors.author2));
     }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sindexerDevice(%u) devNum=%d \"%s\" TypCode=0x%x OffsBytes=%u "
-              "SizeBytes=%u UnitCode=0x%x (%s%s) AllFlags=0x%x AbsMin=%e AbsMax=%e\n",
+              "%sindexerDevice(%u) devNum=%d \"%s\" TypCode=0x%X OffsBytes=%u "
+              "SizeBytes=%u UnitCode=0x%X (%s%s) AllFlags=0x%X AbsMin=%e AbsMax=%e\n",
               modNamEMC, axisNo, devNum, descVersAuthors.desc, iTypCode, iOffsBytes,
               iSizeBytes, iUnit,
               plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
@@ -1319,7 +1352,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   asynParamType myAsynParamType = asynParamNotDefined;
 
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s%s(%u) pilsNo=%i indexOffset=%u iTypCode=0x%x paramName=\"%s\"\n",
+            "%s%s(%u) pilsNo=%i indexOffset=%u iTypCode=0x%X paramName=\"%s\"\n",
             modNamEMC, functionName, axisNo, numPilsAsynDevInfo,
             indexOffset, iTypCode, paramName);
 
@@ -1358,7 +1391,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   }
   if (!lenInPLC) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s(%u) iTypCode not supported, ignored 0x%x\n",
+              "%s%s(%u) iTypCode not supported, ignored 0x%X\n",
               modNamEMC, functionName, numPilsAsynDevInfo, iTypCode);
     return;
   }
