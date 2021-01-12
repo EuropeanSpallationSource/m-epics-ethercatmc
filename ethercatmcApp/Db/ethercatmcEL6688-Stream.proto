@@ -24,6 +24,14 @@ getsDctEL1252N {
    in "%s";
 }
 
+# External/Internal time as String
+getsUTCabsolut {
+   out "ADSPORT=852/GVL_APP.sUTCabsolut?;";
+   in "%s";
+}
+
+
+# External/Internal time as String
 getsIntTimeStamp {
    out "ADSPORT=852/GVL_APP.sEL6688InternalTimeStamp?;";
    in "%s";
@@ -32,6 +40,17 @@ getsIntTimeStamp {
 getsExtTimeStamp {
    out "ADSPORT=852/GVL_APP.sEL6688ExternalTimeStamp?;";
    in "%s";
+}
+
+# Internal/External time as integer
+getnIntTimeStamp {
+   out "ADSPORT=852/GVL_APP.nEL6688InternalTimeStamp?;";
+   in "%i;";
+}
+
+getnExtTimeStamp {
+   out "ADSPORT=852/GVL_APP.nEL6688ExternalTimeStamp?;";
+   in "%i;";
 }
 
 
