@@ -992,11 +992,14 @@ asynStatus ethercatmcController::writeOctet(asynUser *pasynUser,
               modNamEMC, functionName,
               adsport, idxGrp, idxOff, lenInPlc, typInPlc, fValInPlc);
 
-    if (adsport == 501 && typInPlc == 2 && lenInPlc == 2) {
-      if (ctrlLocal.useADSbinary) {
-        status = setSAFValueOnAxisViaADS(idxGrp, idxOff, (int)fValInPlc, lenInPlc);
-        setStringParam(addr, ethercatmcDbgStrToNC_,
-                       status ? "Error;" : "OK;");
+    if (ctrlLocal.useADSbinary) {
+      if (adsport == 501 && typInPlc == 2 && lenInPlc == 2) {
+        status = setSAFIntegerOnAxisViaADS(idxGrp, idxOff, (int)fValInPlc, lenInPlc);
+        setStringParam(addr, ethercatmcDbgStrToNC_, status ? "Error;" : "OK;");
+        return status;
+      } else if (adsport == 501 && typInPlc == 5 && lenInPlc == 8) {
+        status = setSAFDoubleOnAxisViaADS(idxGrp, idxOff, fValInPlc, lenInPlc);
+        setStringParam(addr, ethercatmcDbgStrToNC_, status ? "Error;" : "OK;");
         return status;
       }
     }

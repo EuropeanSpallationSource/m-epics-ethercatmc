@@ -886,7 +886,6 @@ asynStatus ethercatmcIndexerAxis::setClosedLoop(bool closedLoop)
 
 asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
 {
-  const static unsigned indexGroup5000 = 0x5000;
   asynStatus status = asynSuccess;
   if (function == pC_->motorUpdateStatus_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
