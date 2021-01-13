@@ -3,13 +3,15 @@ require ethercatmc,2.1.0
 
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.16.0.2)")
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.244.59)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=SES-PREMP:MC-MCU-01:)")
 epicsEnvSet("EGU",           "$(SM_EGU=mm)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 < ethercatmcController.iocsh
+#asynSetTraceMask("$(ASYN_PORT)", -1, 0xFF)
+
 
 epicsEnvSet("AXISCONFIG",    "HomProc=1;HomPos=0")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
