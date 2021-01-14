@@ -1,0 +1,76 @@
+# .github/workflows/ci-scripts-build.yml for use with EPICS Base ci-scripts
+# (see: https://github.com/epics-base/ci-scripts)
+
+# This is YAML - indentation levels are crucial
+
+# Workflow name
+
+name: ethercatmc
+
+# Trigger on pushes and PRs to any branch
+on:
+  push:
+    paths-ignore:
+      - .appveyor.yml
+  pull_request:
+
+env:
+    SETUP_PATH: .ci-local:.ci
+
+jobs:
+  build-base:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    # Set environment variables from matrix parameters
+    env:
+      BASE: ${{ matrix.base }}
+      CMP: ${{ matrix.cmp }}
+      BCFG: ${{ matrix.configuration }}
+      SET:  ${{ matrix.set }}
+      EXTRA: ${{ matrix.extra }}
+      TEST: ${{ matrix.test }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Job names also name artifacts, character limitations apply
+        include:
+
+          - os: ubuntu-20.04
+            cmp: clang
+            configuration: static
+            base: "7.0"
+            set: latest
+            checkws: true
+            extra: "CMD_CXXFLAGS=-std=c++11"
+            name: "7.0 Ub-20 clang-10 C++11 static"
+
+          - os: ubuntu-20.04
+            cmp: gcc
+            configuration: default
+            base: "7.0"
+            set: latest
+            runpytests: true
+            name: "7.0 Ub-20 gcc pytest"
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Cache Dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache
+        key: ${{ matrix.base }}/${{ matrix.set }}/${{ matrix.os }}/${{ matrix.cmp }}/${{ matrix.configuration }}/${{ matrix.extra }}
+    - name: Prepare and compile dependencies
+      run: python .ci/cue.py prepare
+    - name: Build main module
+      run: python .ci/cue.py build
+    - name: check whitespace damage
+      run: |
+        ./checkws.sh
+      if: matrix.checkws
+    - name: run python based tests
+      run: |
+          test/install-pytest-pyepics-p4p.sh
+          make -k -C test all-ca
+      if: matrix.runpytests
