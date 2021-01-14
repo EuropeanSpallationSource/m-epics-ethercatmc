@@ -62,7 +62,9 @@ checkAndInstallPythonPackage()
 }
 ########################################
 
-if which virtualenv-3.7 >/dev/null 2>&1; then
+if which virtualenv-3.8 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.8
+elif which virtualenv-3.7 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.7
 elif which pyenv-virtualenv >/dev/null 2>&1; then
   # brew has pyenv-virtualenv
@@ -74,11 +76,20 @@ elif which pyenv-virtualenv >/dev/null 2>&1; then
     PATH=/usr/local/opt/python@3.7/bin:$PATH
     export PATH
   fi
-elif type virtualenv; then
+elif type virtualenv >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv
 fi
 
+echo MYVIRTUALENV=$MYVIRTUALENV
+
 export MYVIRTUALENV
+
+# There must be a better way to do this
+if test "$ImageOS" = ubuntu20; then
+  ./doRunTests.sh "$@"
+  exit
+fi
+
 
 ########################################
 #
