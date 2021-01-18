@@ -113,14 +113,14 @@ extern "C" {
   const char *paramIfCmdToString(unsigned cmdSubParamIndex)
   {
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-    case PARAM_IF_CMD_INVALID     : return "PARAM_IF_CMD_INVALID";
-    case PARAM_IF_CMD_DOREAD      : return "PARAM_IF_CMD_DOREAD";
-    case PARAM_IF_CMD_DOWRITE     : return "PARAM_IF_CMD_DOWRITE";
-    case PARAM_IF_CMD_BUSY        : return "PARAM_IF_CMD_BUSY";
-    case PARAM_IF_CMD_DONE        : return "PARAM_IF_CMD_DONE";
-    case PARAM_IF_CMD_ERR_NO_IDX  : return "PARAM_IF_CMD_ERR_NO_IDX";
-    case PARAM_IF_CMD_READONLY    : return "PARAM_IF_CMD_READONLY";
-    case PARAM_IF_CMD_RETRY_LATER : return "PARAM_IF_CMD_RETRY_LATER";
+    case PARAM_IF_CMD_INITIALIZED     : return "PARAM_IF_CMD_INITIALIZED";
+    case PARAM_IF_CMD_DOREAD          : return "PARAM_IF_CMD_DOREAD";
+    case PARAM_IF_CMD_DOWRITE         : return "PARAM_IF_CMD_DOWRITE";
+    case PARAM_IF_CMD_BUSY            : return "PARAM_IF_CMD_BUSY";
+    case PARAM_IF_CMD_DONE            : return "PARAM_IF_CMD_DONE";
+    case PARAM_IF_CMD_ERR_NO_IDX      : return "PARAM_IF_CMD_ERR_NO_IDX";
+    case PARAM_IF_CMD_ERR_READONLY    : return "PARAM_IF_CMD_ERR_READONLY";
+    case PARAM_IF_CMD_ERR_RETRY_LATER : return "PARAM_IF_CMD_ERR_RETRY_LATER";
     default: return "cmdSubParamIndexXXXX";
     }
   }
@@ -465,13 +465,14 @@ asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
               ethercatmcstrStatus(status), (int)status);
     if (status) return status;
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-    case PARAM_IF_CMD_INVALID:
+    case PARAM_IF_CMD_INITIALIZED:
     case PARAM_IF_CMD_DONE:
     case PARAM_IF_CMD_ERR_NO_IDX:
-    case PARAM_IF_CMD_READONLY:
+    case PARAM_IF_CMD_ERR_READONLY:
+    case PARAM_IF_CMD_ERR_RETRY_LATER:
       return asynSuccess;
-    case PARAM_IF_CMD_RETRY_LATER:
-      break;  /* continue looping */
+    case PARAM_IF_CMD_DOREAD:
+    case PARAM_IF_CMD_DOWRITE:
     case PARAM_IF_CMD_BUSY:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%sBUSY\n",
@@ -530,7 +531,6 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
     if (status) return status;
     while (counter < MAX_COUNTER) {
       unsigned cmdSubParamIndex = 0;
-      double fValue;
       struct {
         uint8_t   paramCtrl[2];
         uint8_t   paramValue[8];
@@ -547,19 +547,20 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
       }
       cmdSubParamIndex = netToUint(&paramIf.paramCtrl,
                                    sizeof(paramIf.paramCtrl));
-      if (paramIndexIsInteger(paramIndex)) {
-        fValue = (double)netToUint(&paramIf.paramValue, lenInPlcPara);
-      } else {
-        fValue = netToDouble(&paramIf.paramValue,lenInPlcPara);
-      }
       if (cmdSubParamIndex == cmdAcked) {
         /* This is good, return */
+        double fValue;
+        if (paramIndexIsInteger(paramIndex)) {
+          fValue = (double)netToUint(&paramIf.paramValue, lenInPlcPara);
+        } else {
+          fValue = netToDouble(&paramIf.paramValue,lenInPlcPara);
+        }
         *value = fValue;
         return asynSuccess;
       }
 
       switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-      case PARAM_IF_CMD_INVALID:
+      case PARAM_IF_CMD_INITIALIZED:
         status = asynDisabled;
       case PARAM_IF_CMD_DOREAD:
         status = asynDisabled;
@@ -571,9 +572,9 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
         status = asynDisabled;
       case PARAM_IF_CMD_ERR_NO_IDX:
         return asynDisabled;
-      case PARAM_IF_CMD_READONLY:
+      case PARAM_IF_CMD_ERR_READONLY:
         return asynDisabled;
-      case PARAM_IF_CMD_RETRY_LATER:
+      case PARAM_IF_CMD_ERR_RETRY_LATER:
         break;  /* continue looping */
       }
       if (status && (counter > 1)) {
@@ -663,7 +664,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     /* This is good, return */
     if (cmdSubParamIndex == cmdAcked) return asynSuccess;
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-    case PARAM_IF_CMD_INVALID:
+    case PARAM_IF_CMD_INITIALIZED:
       status = asynDisabled;
     case PARAM_IF_CMD_DOREAD:
       status = asynDisabled;
@@ -691,9 +692,9 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
       status = asynDisabled;
     case PARAM_IF_CMD_ERR_NO_IDX:
       status = asynDisabled;
-    case PARAM_IF_CMD_READONLY:
+    case PARAM_IF_CMD_ERR_READONLY:
       status = asynDisabled;
-    case PARAM_IF_CMD_RETRY_LATER:
+    case PARAM_IF_CMD_ERR_RETRY_LATER:
       break;  /* continue looping */
     }
     if (status) {
