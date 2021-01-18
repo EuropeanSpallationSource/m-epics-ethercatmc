@@ -35,22 +35,21 @@ jobs:
         # Job names also name artifacts, character limitations apply
         include:
 
-          - os: ubuntu-20.04
-            cmp: clang
+          - os: ubuntu-16.04
+            cmp: gcc-4.8
             configuration: static
-            base: "7.0"
-            set: latest
+            base: "3.15"
+            set: oldestset
             checkws: true
-            extra: "CMD_CXXFLAGS=-std=c++11"
-            name: "7.0 Ub-20 clang-10 C++11 static"
+            name: "3.15 oldest static"
 
           - os: ubuntu-20.04
             cmp: gcc
             configuration: default
             base: "7.0"
-            set: latest
+            set: latestset
             runpytests: true
-            name: "7.0 Ub-20 gcc pytest"
+            name: "7.0 latest pytest"
 
     steps:
     - uses: actions/checkout@v2

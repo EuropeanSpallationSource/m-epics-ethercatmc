@@ -1,7 +1,7 @@
 MODULES=calc asyn motor
 
-include motor
+include motorset
 
-CALC=R3-7-1
-ASYN=R4-33
+ASYN=master
+CALC=master
 MOTOR=ess-master
