@@ -474,10 +474,6 @@ asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
     case PARAM_IF_CMD_DOREAD:
     case PARAM_IF_CMD_DOWRITE:
     case PARAM_IF_CMD_BUSY:
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%sBUSY\n",
-                modNamEMC);
-      return asynDisabled;
     default:
       ; /* Read, write continue looping */
     }
