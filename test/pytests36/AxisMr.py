@@ -877,15 +877,15 @@ class AxisMr:
         margin = 1.1
         jvel = self.axisCom.get(".JVEL")
         rdbd = self.axisCom.get(".RDBD")
-        old_high_limit = self.axisCom.get("-CfgDHLM")
-        old_low_limit = self.axisCom.get("-CfgDLLM")
+        old_DHLM = self.axisCom.get("-CfgDHLM")
+        old_DLLM = self.axisCom.get("-CfgDLLM")
         if direction > 0:
-            soft_limit_pos = old_high_limit
+            soft_limit_pos = old_DHLM
             jog_start_pos = soft_limit_pos - jvel - margin
             ls_to_be_activated = self.MSTA_BIT_PLUS_LS
             ls_not_to_be_activated = self.MSTA_BIT_MINUS_LS
         else:
-            soft_limit_pos = old_low_limit
+            soft_limit_pos = old_DLLM
             jog_start_pos = soft_limit_pos + jvel + margin
             ls_to_be_activated = self.MSTA_BIT_MINUS_LS
             ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
@@ -908,7 +908,9 @@ class AxisMr:
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}"
         )
 
-        self.setSoftLimitsOn(tc_no, old_low_limit, old_high_limit, direction=direction, axisID=axisID)
+        self.setSoftLimitsOn(
+            tc_no, old_DLLM, old_DHLM, direction=direction, axisID=axisID
+        )
         passed = True
         if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
             print(

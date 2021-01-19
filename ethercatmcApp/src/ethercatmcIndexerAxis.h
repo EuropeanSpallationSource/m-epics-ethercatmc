@@ -11,14 +11,14 @@
 #define PARAM_IF_ACK_MASK                          0x8000
 
 
-#define PARAM_IF_CMD_INVALID                       0x0000
+#define PARAM_IF_CMD_INITIALIZED                   0x0000
 #define PARAM_IF_CMD_DOREAD                        0x2000
 #define PARAM_IF_CMD_DOWRITE                       0x4000
 #define PARAM_IF_CMD_BUSY                          0x6000
 #define PARAM_IF_CMD_DONE                          0x8000
 #define PARAM_IF_CMD_ERR_NO_IDX                    0xA000
-#define PARAM_IF_CMD_READONLY                      0xC000
-#define PARAM_IF_CMD_RETRY_LATER                   0xE000
+#define PARAM_IF_CMD_ERR_READONLY                  0xC000
+#define PARAM_IF_CMD_ERR_RETRY_LATER               0xE000
 
 /* Some parameters are functions */
 #define PARAM_IF_IDX_FIRST_FUNCTION                128

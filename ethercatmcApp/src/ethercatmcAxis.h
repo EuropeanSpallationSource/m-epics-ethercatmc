@@ -151,6 +151,7 @@ private:
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     char adsport_zero[1]; /* 15 + 1 for '\' keep us aligned in memory */
     unsigned int adsPort;
+    int homProc;
   } drvlocal;
 
   asynStatus handleConnect(void);
