@@ -103,8 +103,12 @@ def waitForStop(self, tc_no, wait_for_stop, direction, oldRBV, TweakValue):
 def tweakToLimit(self, tc_no, direction):
     self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
     assert direction
-    old_high_limit = self.axisCom.get(".HLM", timeout=5)
-    old_low_limit = self.axisCom.get(".LLM", timeout=5)
+    old_DHLM = self.axisCom.get(".DHLM", timeout=5)
+    old_DLLM = self.axisCom.get(".DLLM", timeout=5)
+    if old_DHLM == 0.0 and old_DLLM == 0.0:
+        old_DHLM = self.axisCom.get("-CfgDHLM-RB", timeout=5)
+        old_DLLM = self.axisCom.get("-CfgDLLM-RB", timeout=5)
+
     # switch off the soft limits, save the values
     self.axisMr.setSoftLimitsOff(tc_no)
 
@@ -114,10 +118,10 @@ def tweakToLimit(self, tc_no, direction):
     print(f"{tc_no}:{int(lineno())} CNEN=1")
     self.axisMr.setCNENandWait(tc_no, 1)
     # Step through the range in 20 steps or so
-    deltaToMove = (old_high_limit - old_low_limit) / 20
+    deltaToMove = (old_DHLM - old_DLLM) / 20
     maxDeltaAfterMove = deltaToMove / 2
     # soft limit range + 110 % (some test crates simulate a slit, with restrictive soft limits
-    maxTweaks = (old_high_limit - old_low_limit) * 2.1 / deltaToMove
+    maxTweaks = (old_DHLM - old_DLLM) * 2.1 / deltaToMove
     assert maxTweaks > 0
     stopTheLoop = 0
     count = 0
@@ -177,8 +181,8 @@ def tweakToLimit(self, tc_no, direction):
             inPosition = -1
 
         print(
-            "%s:%d old_high_limit=%f old_low_limit=%f deltaToMove=%f"
-            % (tc_no, lineno(), old_high_limit, old_low_limit, deltaToMove)
+            "%s:%d old_DHLM=%f old_DLLM=%f deltaToMove=%f"
+            % (tc_no, lineno(), old_DHLM, old_DLLM, deltaToMove)
         )
         print(
             "%s:%d count=%d maxTweaks=%d stopTheLoop=%d inPosition=%d"
@@ -189,7 +193,7 @@ def tweakToLimit(self, tc_no, direction):
         f"{tc_no}:{int(lineno())} direction={int(direction)} hls={int(hls)} lls={int(lls)}"
     )
     # Put back the limits for the next run
-    self.axisMr.setSoftLimitsOn(tc_no, old_low_limit, old_high_limit)
+    self.axisMr.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM)
 
     # Check if we reached the limit switch, prepare to move away from it
     if direction > 0:
@@ -234,8 +238,8 @@ class Test(unittest.TestCase):
         self.axisMr.setCNENandWait(tc_no, 1)
 
         oldRBV = self.axisCom.get(".RBV")
-        old_high_limit = self.axisCom.get(".HLM")
-        old_low_limit = self.axisCom.get(".LLM")
+        old_DHLM = self.axisCom.get(".HLM")
+        old_DLLM = self.axisCom.get(".LLM")
         # Switch off soft limits
         self.axisMr.setSoftLimitsOff(tc_no)
 
@@ -262,8 +266,8 @@ class Test(unittest.TestCase):
         print(f"{tc_no} STOP=1 start={int(ret1)} stop={int(ret2)}")
         self.axisCom.put(".STOP", 1)
 
-        self.axisCom.put(".LLM", old_low_limit)
-        self.axisCom.put(".HLM", old_high_limit)
+        self.axisCom.put(".DLLM", old_DLLM)
+        self.axisCom.put(".DHLM", old_DHLM)
         ReadBackValue = self.axisCom.get(".RBV", use_monitor=False)
         print(f"{tc_no} destination={int(destination)} postion={ReadBackValue:f}")
         # self.assertEqual(True, ret1, 'waitForStart return True')
