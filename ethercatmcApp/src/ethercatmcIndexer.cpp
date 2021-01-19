@@ -599,109 +599,106 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
   unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status;
   unsigned cmd      = PARAM_IF_CMD_DOWRITE + paramIndex;
-  unsigned cmdAcked = PARAM_IF_CMD_DONE    + paramIndex;
   size_t lenInPlcCmd = 2;
   unsigned counter = 0;
 
-  if (paramIndex > 0xFF) return asynDisabled;
-  status = indexerParamWaitNotBusy(paramIfOffset);
-  if (status) return status;
-
-  /*
-    The parameter interface has this layout:
-    0 CmdParamReasonIdx
-    2 ParamValue
-  */
-  if (paramIndexIsInteger(paramIndex))
-    status = setPlcMemoryInteger(paramIfOffset + 2, (int)value, lenInPlcPara);
-  else
-    status = setPlcMemoryDouble(paramIfOffset + 2, value, lenInPlcPara);
-
-  if (status){
-    asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-              "%sindexerParamWrite(%d) paramIfOffset=%u paramIndex=%u "
-              "value=%f lenInPlcPara=%u status=%s (%d)\n",
-              modNamEMC, axisNo, paramIfOffset, paramIndex,
-              value, lenInPlcPara,
-              ethercatmcstrStatus(status), (int)status);
-    return status;
-  }
-
-  status = setPlcMemoryInteger(paramIfOffset, cmd, lenInPlcCmd);
-  if (status) {
-    asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-              "%sstatus=%s (%d)\n",
-              modNamEMC,
-              ethercatmcstrStatus(status), (int)status);
-    return status;
+  if (paramIndex > 0xFF || lenInPlcPara > 8) {
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s paramIndex=%u lenInPlcPara=%u\n",
+              modNamEMC, paramIndex, lenInPlcPara);
+    return asynDisabled;
   }
   while (counter < MAX_COUNTER) {
-    unsigned cmdSubParamIndex = 0;
-    status = getPlcMemoryUint(paramIfOffset, &cmdSubParamIndex, 2);
+    status = indexerParamWaitNotBusy(paramIfOffset);
+    if (status) return status;
+    if (paramIndexIsInteger(paramIndex))
+      status = setPlcMemoryInteger(paramIfOffset + 2, (int)value, lenInPlcPara);
+    else
+      status = setPlcMemoryDouble(paramIfOffset + 2, value, lenInPlcPara);
+
+    if (status){
+      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+                "%sindexerParamWrite(%d) paramIfOffset=%u paramIndex=%u "
+                "value=%f lenInPlcPara=%u status=%s (%d)\n",
+                modNamEMC, axisNo, paramIfOffset, paramIndex,
+                value, lenInPlcPara,
+                ethercatmcstrStatus(status), (int)status);
+      return status;
+    }
+
+    status = setPlcMemoryInteger(paramIfOffset, cmd, lenInPlcCmd);
+    if (status) {
+      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
+                "%sstatus=%s (%d)\n",
+                modNamEMC,
+                ethercatmcstrStatus(status), (int)status);
+      return status;
+    }
+    unsigned cmdSubParamIndexRB = 0;
+    status = getPlcMemoryUint(paramIfOffset, &cmdSubParamIndexRB, 2);
     if (status) {
       asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
                 "%ssindexerParamWrite(%d) paramIndex=%s (%u) value=%f "
                 "lenInPlcpara=%u cmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
                 modNamEMC, axisNo,
                 plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                value, lenInPlcPara, cmdSubParamIndex, counter,
+                value, lenInPlcPara, cmdSubParamIndexRB, counter,
                 ethercatmcstrStatus(status), (int)status);
       return status;
     }
     asynPrint(pasynUserController_, traceMask,
               "%sindexerParamWrite(%d) paramIndex=%s (%u) value=%02g "
               "lenInPlcPara=%u counter=%u"
-              " status=%s (%d) cmdSubParamIndex=%s (0x%04x) cmdAcked=0x%04x\n",
+              " cmdSubParamIndexRB=%s (0x%04x)\n",
               modNamEMC, axisNo,
               plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
               value, lenInPlcPara, counter,
-              ethercatmcstrStatus(status), (int)status,
-              paramIfCmdToString(cmdSubParamIndex), cmdSubParamIndex, cmdAcked);
-    /* This is good, return */
-    if (cmdSubParamIndex == cmdAcked) return asynSuccess;
-    switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-    case PARAM_IF_CMD_INITIALIZED:
-      status = asynDisabled;
-    case PARAM_IF_CMD_DOREAD:
-      status = asynDisabled;
-    case PARAM_IF_CMD_DOWRITE:
-      break;
-    case PARAM_IF_CMD_BUSY:
-      {
-        /* Calling the parameter interface on a function
-           may return busy. That is OK */
-        switch (paramIndex) {
-        case PARAM_IDX_FUN_REFERENCE:
-        case PARAM_IDX_FUN_SET_POSITION:
-        case PARAM_IDX_FUN_MOVE_VELOCITY:
-          if ((cmdSubParamIndex & PARAM_IF_IDX_MASK) == paramIndex) {
+              paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
+    unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
+    if (paramIndexRB == paramIndex) {
+      switch (cmdSubParamIndexRB & PARAM_IF_CMD_MASK) {
+      case PARAM_IF_CMD_DONE:
+        return asynSuccess;
+      case PARAM_IF_CMD_BUSY:
+        {
+          /* Calling the parameter interface on a function
+             may return busy. That is OK */
+          switch (paramIndex) {
+          case PARAM_IDX_FUN_REFERENCE:
+          case PARAM_IDX_FUN_SET_POSITION:
+          case PARAM_IDX_FUN_MOVE_VELOCITY:
             return asynSuccess;
           }
-          break;
-        default:
-          ;
         }
+        break;
+      case PARAM_IF_CMD_ERR_NO_IDX:
+      case PARAM_IF_CMD_ERR_READONLY:
+      case PARAM_IF_CMD_ERR_RETRY_LATER:
+        {
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                    "%sindexerParamWrite(%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
+                    "paramIndexRB=%u counter=%u cmdSubParamIndex=%s\n",
+                    modNamEMC, axisNo, paramIfOffset,
+                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                    paramIndexRB, counter,
+                    paramIfCmdToString(cmdSubParamIndexRB));
+          return asynDisabled;
+        }
+      case PARAM_IF_CMD_INITIALIZED:
+      case PARAM_IF_CMD_DOREAD:
+      case PARAM_IF_CMD_DOWRITE:
+      default:
+        break;
+        ;
       }
-      break;
-    case PARAM_IF_CMD_DONE:
-      /* This is an error. (collision ?) */
-      status = asynDisabled;
-    case PARAM_IF_CMD_ERR_NO_IDX:
-      status = asynDisabled;
-    case PARAM_IF_CMD_ERR_READONLY:
-      status = asynDisabled;
-    case PARAM_IF_CMD_ERR_RETRY_LATER:
-      break;  /* continue looping */
     }
-    if (status) {
-      traceMask |= ASYN_TRACE_INFO;
-      asynPrint(pasynUserController_, traceMask,
-                "%scmdSubParamIndex=0x%04x counter=%u status=%s (%d)\n",
-                modNamEMC, cmdSubParamIndex,
-                counter,
-                ethercatmcstrStatus(status), (int)status);
-      return status;
-    }
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s (%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
+              "paramIndexRB=%u counter=%u cmdSubParamIndex=%s\n",
+              modNamEMC, axisNo, paramIfOffset,
+              plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+              paramIndexRB, counter,
+              paramIfCmdToString(cmdSubParamIndexRB));
     epicsThreadSleep(calcSleep(counter));
     counter++;
   }
