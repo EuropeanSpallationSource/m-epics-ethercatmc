@@ -90,6 +90,7 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
 #endif
 
   drvlocal.scaleFactor = 1.0;
+  drvlocal.homProc = -1;
   if (axisOptionsStr && axisOptionsStr[0]) {
     const char * const encoder_is_str = "encoder=";
     const char * const cfgfile_str = "cfgFile=";
@@ -150,8 +151,7 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
         powerAutoOnOff = atoi(pThisOption);
       } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
         pThisOption += strlen(homProc_str);
-        int homProc = atoi(pThisOption);
-        setIntegerParam(pC_->ethercatmcHomProc_, homProc);
+        drvlocal.homProc = atoi(pThisOption); /* See even readBackHoming() */
       } else if (!strncmp(pThisOption, foffVis_str, strlen(foffVis_str))) {
         pThisOption += strlen(foffVis_str);
         int foffVis = atoi(pThisOption);
@@ -281,9 +281,10 @@ asynStatus ethercatmcAxis::readBackHoming(void)
   double homPos  = 0.0;
 
   /* Don't read it, when the driver has been configured with HomProc= */
-  status = pC_->getIntegerParam(axisNo_, pC_->ethercatmcHomProc_,&homProc);
-  if (status == asynSuccess) return status;
-
+  if (drvlocal.homProc >= 0) {
+    setIntegerParam(pC_->ethercatmcHomProc_, drvlocal.homProc);
+    return asynSuccess;
+  }
   status = getValueFromAxis("_EPICS_HOMPROC", &homProc);
   if (!status) setIntegerParam(pC_->ethercatmcHomProc_, homProc);
   status = getValueFromAxis("_EPICS_HOMPOS", &homPos);
@@ -1458,24 +1459,18 @@ asynStatus ethercatmcAxis::setIntegerParam(int function, int value)
               "%ssetIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modNamEMC, axisNo_, value);
 #endif
   } else if (function == pC_->ethercatmcHomProc_) {
-    int motorNotHomedProblem = 0;
-    setIntegerParam(pC_->ethercatmcHomProc_RB_, value);
+    int foffVis = 0;
+    int homeVis = 0;
     if (value == HOMPROC_MANUAL_SETPOS) {
       /* Manual setPosition is allowed now */
-      setIntegerParam(pC_->ethercatmcFoffVis_, 1);
-      setIntegerParam(pC_->ethercatmcHomeVis_, 0);
-    } else if (value == 0) {
-      /* no homing at all */
-      setIntegerParam(pC_->ethercatmcFoffVis_, 0);
-      setIntegerParam(pC_->ethercatmcHomeVis_, 0);
-    } else {
-      /* homing via HONF/HOMR */
-      setIntegerParam(pC_->ethercatmcFoffVis_, 0);
-      setIntegerParam(pC_->ethercatmcHomeVis_, 1);
+      foffVis = 1;
+    } else if (value != 0) {
+      /* homing via HOMF/HOMR */
+      homeVis = 1;
     }
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetIntegerParam(%d HomProc_)=%d motorNotHomedProblem=%d\n",
-              modNamEMC, axisNo_, value, motorNotHomedProblem);
+    pC_->updateCfgValue(axisNo_, pC_->ethercatmcHomProc_RB_, value, "homeProcRB");
+    pC_->updateCfgValue(axisNo_, pC_->ethercatmcFoffVis_, foffVis, "foffVis");
+    pC_->updateCfgValue(axisNo_, pC_->ethercatmcHomeVis_, homeVis, "homeVis");
   } else if (function == pC_->ethercatmcErrRst_) {
     if (value) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
