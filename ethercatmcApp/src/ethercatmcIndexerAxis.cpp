@@ -123,9 +123,6 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
       ASYN_TRACEINFO_SOURCE) {
     modNamEMC = "";
   }
-  if (axisOptionsStr && axisOptionsStr[0]) {
-    printf("Error options not supported %s not found\n", axisOptionsStr);
-  }
 }
 
 extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
@@ -175,6 +172,8 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
         if (axisID > 0) {
           pAxis->setAxisID(axisID);
         }
+      } else {
+        printf("Error option \"%s\" not supported\n", pThisOption);
       }
       pThisOption = pNextOption;
     }
