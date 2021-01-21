@@ -113,7 +113,7 @@ extern "C" {
   const char *paramIfCmdToString(unsigned cmdSubParamIndex)
   {
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-    case PARAM_IF_CMD_INITIALIZED     : return "PARAM_IF_CMD_INITIALIZED";
+    case PARAM_IF_CMD_INVALID         : return "PARAM_IF_CMD_INVALID";
     case PARAM_IF_CMD_DOREAD          : return "PARAM_IF_CMD_DOREAD";
     case PARAM_IF_CMD_DOWRITE         : return "PARAM_IF_CMD_DOWRITE";
     case PARAM_IF_CMD_BUSY            : return "PARAM_IF_CMD_BUSY";
@@ -130,6 +130,7 @@ extern "C" {
   const char *plcParamIndexTxtFromParamIndex(unsigned cmdSubParamIndex)
  {
    switch(cmdSubParamIndex & PARAM_IF_IDX_MASK) {
+   case 0:                                 return "PARAM_ZERO";
    case PARAM_IDX_OPMODE_AUTO_UINT:        return "OPMODE_AUTO";
    case PARAM_IDX_MICROSTEPS_UINT:         return "MICROSTEPS";
    case PARAM_IDX_ABS_MIN_FLOAT:           return "ABS_MIN";
@@ -152,13 +153,13 @@ extern "C" {
    case PARAM_IDX_FUN_REFERENCE:           return "REFERENCE";
    case PARAM_IDX_FUN_SET_POSITION:        return "SET_POSITION";
    case PARAM_IDX_FUN_MOVE_VELOCITY:       return "MOVE_VELOCITY";
-   case PARAM_IDX_USR_MIN_EN_UINT:         return "PARAM_IDX_USR_MIN_EN_UINT";
-   case PARAM_IDX_USR_MAX_EN_UINT:         return "PARAM_IDX_USR_MAX_EN_UINT";
-   case PARAM_IDX_HOMPROC_UINT:            return "PARAM_IDX_HOMPROC_UINT";
-   case PARAM_IDX_UNITS_PER_REV_FLOAT:     return "PARAM_IDX_UNITS_PER_REV_FLOAT";
-   case PARAM_IDX_STEPS_PER_REV_FLOAT:     return "PARAM_IDX_STEPS_PER_REV_FLOAT";
-   case PARAM_IDX_MAX_VELO_FLOAT:          return "PARAM_IDX_MAX_VELO_FLOAT";
-   default: return "";
+   case PARAM_IDX_USR_MIN_EN_UINT:         return "USR_MIN_EN";
+   case PARAM_IDX_USR_MAX_EN_UINT:         return "USR_MAX_EN";
+   case PARAM_IDX_HOMPROC_UINT:            return "HOMPROC";
+   case PARAM_IDX_UNITS_PER_REV_FLOAT:     return "UNITS_PER_REV";
+   case PARAM_IDX_STEPS_PER_REV_FLOAT:     return "STEPS_PER_REV";
+   case PARAM_IDX_MAX_VELO_FLOAT:          return "MAX_VELO";
+   default: return "PX";
    }
  }
 };
@@ -453,24 +454,26 @@ asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
 {
   unsigned traceMask = ASYN_TRACE_FLOW;
   asynStatus status;
-  unsigned   cmdSubParamIndex = 0;
   unsigned   counter = 0;
 
   while (counter < MAX_COUNTER) {
+    unsigned cmdSubParamIndex = 0;
     status = getPlcMemoryUint(indexOffset, &cmdSubParamIndex, 2);
-    asynPrint(pasynUserController_,
-              status ? traceMask | ASYN_TRACE_INFO : traceMask,
-              "%scmdSubParamIndex=0x%04x status=%s (%d)\n",
-              modNamEMC, cmdSubParamIndex,
-              ethercatmcstrStatus(status), (int)status);
+    if (status || counter) traceMask |= ASYN_TRACE_INFO;
+    asynPrint(pasynUserController_, traceMask,
+              "%s%s(%s)=%s indexOffset=%u cmdSubParamIndex=0x%04x counter=%d\n",
+              modNamEMC, "indexerParamWaitNotBusy",
+              plcParamIndexTxtFromParamIndex(cmdSubParamIndex),
+              paramIfCmdToString(cmdSubParamIndex),
+              indexOffset, cmdSubParamIndex, counter);
     if (status) return status;
     switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-    case PARAM_IF_CMD_INITIALIZED:
     case PARAM_IF_CMD_DONE:
     case PARAM_IF_CMD_ERR_NO_IDX:
     case PARAM_IF_CMD_ERR_READONLY:
     case PARAM_IF_CMD_ERR_RETRY_LATER:
       return asynSuccess;
+    case PARAM_IF_CMD_INVALID:
     case PARAM_IF_CMD_DOREAD:
     case PARAM_IF_CMD_DOWRITE:
     case PARAM_IF_CMD_BUSY:
@@ -480,12 +483,6 @@ asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
     counter++;
     epicsThreadSleep(calcSleep(counter));
   }
-  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s(%s %s) indexOffset=%u cmdSubParamIndex=0x%04x counter=%d\n",
-            modNamEMC,
-            plcParamIndexTxtFromParamIndex(cmdSubParamIndex),
-            paramIfCmdToString(cmdSubParamIndex),
-            indexOffset, cmdSubParamIndex, counter);
   return asynDisabled;
 }
 
@@ -556,7 +553,7 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
       }
 
       switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-      case PARAM_IF_CMD_INITIALIZED:
+      case PARAM_IF_CMD_INVALID:
         status = asynDisabled;
       case PARAM_IF_CMD_DOREAD:
         status = asynDisabled;
@@ -596,13 +593,16 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                                                    unsigned lenInPlcPara,
                                                    double value)
 {
+  paramIf_type paramIf_to_MCU;
+  paramIf_type paramIf_from_MCU;
   unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status;
   unsigned cmd      = PARAM_IF_CMD_DOWRITE + paramIndex;
-  size_t lenInPlcCmd = 2;
+  size_t lenInPLCparamIf = sizeof(paramIf_to_MCU.paramCtrl) + lenInPlcPara;
   unsigned counter = 0;
 
-  if (paramIndex > 0xFF || lenInPlcPara > 8) {
+  if (paramIndex > 0xFF ||
+      lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s paramIndex=%u lenInPlcPara=%u\n",
               modNamEMC, paramIndex, lenInPlcPara);
@@ -612,9 +612,12 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     status = indexerParamWaitNotBusy(paramIfOffset);
     if (status) return status;
     if (paramIndexIsInteger(paramIndex))
-      status = setPlcMemoryInteger(paramIfOffset + 2, (int)value, lenInPlcPara);
+      uintToNet((int)value, &paramIf_to_MCU.paramValueRaw, lenInPlcPara);
     else
-      status = setPlcMemoryDouble(paramIfOffset + 2, value, lenInPlcPara);
+      doubleToNet(value, &paramIf_to_MCU.paramValueRaw, lenInPlcPara);
+    UINTTONET(cmd, paramIf_to_MCU.paramCtrl);
+    status = setPlcMemoryOnErrorStateChange(paramIfOffset,
+                                            &paramIf_to_MCU, lenInPLCparamIf);
 
     if (status){
       asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
@@ -625,17 +628,11 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                 ethercatmcstrStatus(status), (int)status);
       return status;
     }
-
-    status = setPlcMemoryInteger(paramIfOffset, cmd, lenInPlcCmd);
-    if (status) {
-      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-                "%sstatus=%s (%d)\n",
-                modNamEMC,
-                ethercatmcstrStatus(status), (int)status);
-      return status;
-    }
-    unsigned cmdSubParamIndexRB = 0;
-    status = getPlcMemoryUint(paramIfOffset, &cmdSubParamIndexRB, 2);
+    status = getPlcMemoryOnErrorStateChange(paramIfOffset,
+                                            &paramIf_from_MCU,
+                                            lenInPLCparamIf);
+    unsigned cmdSubParamIndexRB = NETTOUINT(paramIf_from_MCU.paramCtrl);
+    unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
     if (status) {
       asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
                 "%ssindexerParamWrite(%d) paramIndex=%s (%u) value=%f "
@@ -654,7 +651,6 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
               plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
               value, lenInPlcPara, counter,
               paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
-    unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
     if (paramIndexRB == paramIndex) {
       switch (cmdSubParamIndexRB & PARAM_IF_CMD_MASK) {
       case PARAM_IF_CMD_DONE:
@@ -674,6 +670,9 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
       case PARAM_IF_CMD_ERR_NO_IDX:
       case PARAM_IF_CMD_ERR_READONLY:
       case PARAM_IF_CMD_ERR_RETRY_LATER:
+      case PARAM_IF_CMD_INVALID:
+      case PARAM_IF_CMD_DOREAD:
+      default:
         {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sindexerParamWrite(%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
@@ -684,10 +683,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                     paramIfCmdToString(cmdSubParamIndexRB));
           return asynDisabled;
         }
-      case PARAM_IF_CMD_INITIALIZED:
-      case PARAM_IF_CMD_DOREAD:
       case PARAM_IF_CMD_DOWRITE:
-      default:
         break;
         ;
       }
