@@ -1097,16 +1097,21 @@ indexerMotorParamInterface(unsigned motor_axis_no,
   unsigned paramIndex = uValue & PARAM_IF_CMD_MASKPARAM_IF_IDX_MASK;
   uint16_t ret = (uint16_t)uValue;
   if (paramCommand == PARAM_IF_CMD_INVALID) {
+    uValue = PARAM_IF_CMD_DONE;
+    paramCommand = uValue & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK;
+    paramIndex = uValue & PARAM_IF_CMD_MASKPARAM_IF_IDX_MASK;
+    ret = (uint16_t)uValue;
     /* PILS specification say that the PLC set it to done
        after initialization */
     LOGINFO6("%s/%s:%d motor_axis_no=%u setting to PARAM_IF_CMD_DONE\n",
              __FILE__, __FUNCTION__, __LINE__, motor_axis_no);
-    uintToNet(PARAM_IF_CMD_DONE, &netData.memoryBytes[offset], 2);
+    uintToNet(uValue, &netData.memoryBytes[offset], 2);
   }
   if (!(paramCommand & PARAM_IF_CMD_MASKPARAM_DONE)) {
-    LOGINFO6("%s/%s:%d motor_axis_no=%u paramIndex=%u offset=%u uValue=0x%x lenInPlcPara=%u\n",
+    LOGINFO6("%s/%s:%d NOT done motor_axis_no=%u paramIndex=%u offset=%u paramCommand=0x%4x uValue=0x%x lenInPlcPara=%u\n",
              __FILE__, __FUNCTION__, __LINE__,
-             motor_axis_no, paramIndex, offset, uValue, lenInPlcPara);
+             motor_axis_no, paramIndex, offset,
+             paramCommand, uValue, lenInPlcPara);
   }
   if (paramCommand == PARAM_IF_CMD_DOREAD) {
     double fRet;
@@ -1207,6 +1212,16 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     }
     /* put DONE (or ERROR) into the process image */
     uintToNet(ret, &netData.memoryBytes[offset], 2);
+  } else if (paramCommand == PARAM_IF_CMD_INVALID) {
+    LOGINFO3("%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x ret=%x\n",
+           __FILE__, __FUNCTION__, __LINE__,
+           motor_axis_no, paramIndex, uValue, ret);
+  } else if (paramCommand == PARAM_IF_CMD_DONE) {
+    ;
+  } else {
+    LOGINFO3("%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x ret=%x\n",
+           __FILE__, __FUNCTION__, __LINE__,
+           motor_axis_no, paramIndex, uValue, ret);
   }
   LOGINFO6("%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x ret=%x\n",
            __FILE__, __FUNCTION__, __LINE__,
