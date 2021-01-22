@@ -508,66 +508,60 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
     return asynDisabled;
   }
   while (counter < MAX_COUNTER) {
-    status = indexerParamWaitNotBusy(paramIfOffset);
-    if (status) return status;
-    status = setPlcMemoryInteger(paramIfOffset, cmd,
-                                 (unsigned)sizeof(paramIf_from_MCU.paramCtrl));
-    asynPrint(pasynUserController_, traceMask | (status ? ASYN_TRACE_ERROR : 0),
-              "%sstatus=%s (%d)\n",
-              modNamEMC,
-              ethercatmcstrStatus(status), (int)status);
-    if (status) return status;
+    /* get the paraminterface "as is". It may be in DONE state as an answer
+       to a write from a previous round */
     status = getPlcMemoryOnErrorStateChange(paramIfOffset,
                                             &paramIf_from_MCU,
                                             lenInPLCparamIf);
-    if (status) {
-      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-                "%sstatus=%s (%d)\n",
-                modNamEMC,
-                ethercatmcstrStatus(status), (int)status);
-      return status;
-    }
+
+    if (status) return status;
     unsigned cmdSubParamIndexRB = NETTOUINT(paramIf_from_MCU.paramCtrl);
     unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
-    if (paramIndexRB == paramIndex) {
-      switch (cmdSubParamIndexRB & PARAM_IF_CMD_MASK) {
-      case PARAM_IF_CMD_DONE:
-          {
-            /* This is good, return */
-            double fValue;
-            if (paramIndexIsInteger(paramIndex)) {
-              fValue = (double)netToUint(&paramIf_from_MCU.paramValueRaw,
-                                         lenInPlcPara);
-            } else {
-              fValue = netToDouble(&paramIf_from_MCU.paramValueRaw,
-                                   lenInPlcPara);
-            }
-            *value = fValue;
-            return asynSuccess;
-          }
-      case PARAM_IF_CMD_BUSY:
-      case PARAM_IF_CMD_DOREAD:
-      case PARAM_IF_CMD_DOWRITE:
-        break;
-      case PARAM_IF_CMD_INVALID:
-      case PARAM_IF_CMD_ERR_NO_IDX:
-      case PARAM_IF_CMD_ERR_READONLY:
-      case PARAM_IF_CMD_ERR_RETRY_LATER:
-        status = asynDisabled;
+    if (counter > 1) {
+      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
+                "%s (%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
+                "counter=%u cmdSubParamIndex=%s\n",
+                modNamEMC, axisNo, paramIfOffset,
+                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                counter,
+                paramIfCmdToString(cmdSubParamIndexRB));
+    }
+    switch (cmdSubParamIndexRB & PARAM_IF_CMD_MASK) {
+    case PARAM_IF_CMD_DONE:
+      if (paramIndexRB == paramIndex) {
+        /* This is good, return */
+        double fValue;
+        if (paramIndexIsInteger(paramIndex)) {
+          fValue = (double)netToUint(&paramIf_from_MCU.paramValueRaw,
+                                     lenInPlcPara);
+        } else {
+          fValue = netToDouble(&paramIf_from_MCU.paramValueRaw,
+                               lenInPlcPara);
+        }
+        *value = fValue;
+        return asynSuccess;
       }
-      if (status || (counter > 1)) {
-        asynPrint(pasynUserController_, traceMask | ASYN_TRACE_ERROR,
-                  "%s (%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
-                  "counter=%u cmdSubParamIndex=%s\n",
-                  modNamEMC, axisNo, paramIfOffset,
-                  plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                  counter,
-                  paramIfCmdToString(cmdSubParamIndexRB));
+      /* fall through */
+    case PARAM_IF_CMD_ERR_NO_IDX:
+    case PARAM_IF_CMD_ERR_READONLY:
+    case PARAM_IF_CMD_ERR_RETRY_LATER:
+      /* param interface is not busy */
+      if (paramIndexRB != paramIndex) {
+        /* Send the read request, unless we already done it */
+        status = setPlcMemoryInteger(paramIfOffset, cmd,
+                                     (unsigned)sizeof(paramIf_from_MCU.paramCtrl));
+        if (status) return status;
       }
-      if (status) return status;
-      epicsThreadSleep(calcSleep(counter));
-      counter++;
-    } /* paramIndexRB == paramIndex */
+      break;
+    case PARAM_IF_CMD_INVALID:
+    case PARAM_IF_CMD_BUSY:
+    case PARAM_IF_CMD_DOREAD:
+    case PARAM_IF_CMD_DOWRITE:
+      /* wait */
+      break;
+    }
+    epicsThreadSleep(calcSleep(counter));
+    counter++;
   }
   return asynError;
 }
