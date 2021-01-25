@@ -64,6 +64,7 @@ typedef struct
   double HomeVelocityAbsWanted;
   double MaxHomeVelocityAbs;
   double MaxVelocity;
+  double MaxAcceleration;
   struct {
     struct {
       double HomeVelocity;
@@ -166,6 +167,7 @@ void hw_motor_init(int axis_no,
 
 
     motor_axis[axis_no].MaxVelocity = 100; /* May be overwritten later */
+    motor_axis[axis_no].MaxAcceleration = 95; /* May be overwritten later */
     motor_axis[axis_no].lowHardLimitPos = lowHardLimitPos;
     motor_axis[axis_no].definedLowHardLimitPos = 1;
     motor_axis[axis_no].highHardLimitPos = highHardLimitPos;
@@ -237,6 +239,28 @@ void setMaxVelocity(int axis_no, double value)
     return;
   }
   motor_axis[axis_no].MaxVelocity = value;
+}
+
+double getMaxAcceleration(int axis_no)
+{
+  double velocity;
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  if (motor_axis[axis_no].moving.rampUpAfterStart) {
+    return 0;
+  }
+  velocity = motor_axis[axis_no].MaxAcceleration;
+  return velocity;
+}
+
+void setMaxAcceleration(int axis_no, double value)
+{
+  fprintf(stdlog,
+          "%s/%s:%d axis_no=%d value=%g\n",
+          __FILE__, __FUNCTION__, __LINE__, axis_no, value);
+  if (((axis_no) <= 0) || ((axis_no) >=MAX_AXES)) {
+    return;
+  }
+  motor_axis[axis_no].MaxAcceleration = value;
 }
 
 double getNxtMoveAcceleration(int axis_no)
