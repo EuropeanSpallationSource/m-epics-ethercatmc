@@ -30,7 +30,6 @@ typedef struct
   double inTargetPositionMonitorWindow;
   double inTargetPositionMonitorTime;
   int    inTargetPositionMonitorEnabled;
-  double maximumVelocity;
   double referenceVelocity;
   double positionLagMonitoringValue;
   double positionLagFilterTime;
@@ -101,7 +100,7 @@ static void init_axis(int axis_no)
                   &motor_init_values,
                   sizeof(motor_init_values));
 
-    cmd_Motor_cmd[axis_no].maximumVelocity = 50;
+    setMaxVelocity(axis_no, 50);
     cmd_Motor_cmd[axis_no].homeVeloTowardsHomeSensor = 10;
     cmd_Motor_cmd[axis_no].homeVeloFromHomeSensor = 5;
     cmd_Motor_cmd[axis_no].fPosition = getMotorPos(axis_no);
@@ -259,7 +258,7 @@ int motorHandleADS_ADR_getFloat(unsigned adsport,
       *fValue = cmd_Motor_cmd[motor_axis_no].inTargetPositionMonitorTime;
       return 0;
     case 0x27:
-      *fValue = cmd_Motor_cmd[motor_axis_no].maximumVelocity;
+      *fValue = getMaxVelocity(motor_axis_no);
       return 0;
     case 0x101:
       *fValue = cmd_Motor_cmd[motor_axis_no].defaultAcceleration;
@@ -334,7 +333,7 @@ int motorHandleADS_ADR_putFloat(unsigned adsport,
       cmd_Motor_cmd[motor_axis_no].inTargetPositionMonitorWindow = fValue;
       return 0;
     case 0x27:
-      cmd_Motor_cmd[motor_axis_no].maximumVelocity = fValue;
+      setMaxVelocity(motor_axis_no, fValue);
       return 0;
     case 0x101:
       cmd_Motor_cmd[motor_axis_no].defaultAcceleration = fValue;
@@ -756,14 +755,14 @@ static int motorHandleOneSetArg(const char *myarg_1, int motor_axis_no)
     } else if (iValue == 1) {
       double velocity = getNxtMoveVelocity(motor_axis_no);
       double acceleration = getNxtMoveAcceleration(motor_axis_no);
-
+      double maxVelocity = getMaxVelocity(motor_axis_no);
       // TODO: Check for max acceleration
-      if (velocity > cmd_Motor_cmd[motor_axis_no].maximumVelocity) {
+      if (velocity > maxVelocity) {
         fprintf(stdlog, "%s/%s:%d axis_no=%d velocity=%g maximumVelocity=%g\n",
                 __FILE__, __FUNCTION__, __LINE__,
                 motor_axis_no,
                 velocity,
-                cmd_Motor_cmd[motor_axis_no].maximumVelocity);
+                maxVelocity);
         set_nErrorId(motor_axis_no, 0x4221);
         cmd_buf_printf("OK");
         return 0;

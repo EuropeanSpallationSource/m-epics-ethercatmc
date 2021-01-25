@@ -33,6 +33,8 @@ static void init_axis(int);
 void hw_motor_init(int axis_no,
                    const struct motor_init_values *pMotor_init_values,
                    size_t motor_init_len);
+double getMaxVelocity(int axis_no);
+void   setMaxVelocity(int axis_no, double value);
 double getNxtMoveAcceleration(int axis_no);
 void   setNxtMoveAcceleration(int axis_no, double value);
 double getNxtMoveVelocity(int axis_no);
