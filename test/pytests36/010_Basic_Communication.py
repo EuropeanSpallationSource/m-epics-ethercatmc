@@ -29,13 +29,22 @@ class Test(unittest.TestCase):
     def test_TC_01001(self):
         url_string = self.url_string
         axisCom = self.axisCom
+        # Don't do this here:
+        #axisMr = AxisMr(axisCom) # Use 30 seconds retry in AxisMr, if needed
 
         tc_no = "TC-01001"
         rbv = None
         enabled = None
-        print(f"{tc_no} Test RBV/CNEN url_string={url_string}")
-        rbv = axisCom.get(".RBV")
-        enabled = axisCom.get(".CNEN")
+        wait_for = 30
+        while wait_for > 0:
+            print(f"{tc_no} Test RBV/CNEN url_string={url_string}")
+            try:
+                rbv = axisCom.get(".RBV")
+                enabled = axisCom.get(".CNEN")
+            except:
+                wait_for -= 1 # Next loop
+            if rbv != None or enabled != None:
+                wait_for = -1 # Finished
 
         print(f"{tc_no}/{url_string} rbv={rbv} enabled={int(enabled)}")
 
