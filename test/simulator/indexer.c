@@ -1048,7 +1048,7 @@ indexerMotorParamWrite(unsigned motor_axis_no,
   }
 
   init_axis((int)motor_axis_no);
-  LOGINFO3("%s/%s:%d motor_axis_no=%u paramIndex=%u ,fValue=%f\n",
+  LOGINFO3("%s/%s:%d motor_axis_no=%u paramIndex=%u, fValue=%f\n",
            __FILE__, __FUNCTION__, __LINE__,
            motor_axis_no, paramIndex, fValue);
 
@@ -1074,10 +1074,20 @@ indexerMotorParamWrite(unsigned motor_axis_no,
     setLowSoftLimitPos(motor_axis_no, fValue);
     return ret;
   case PARAM_IDX_SPEED_FLOAT32:
-    setNxtMoveVelocity(motor_axis_no, fValue);
+    {
+      double maxVelocity = getMaxVelocity(motor_axis_no);
+      if (maxVelocity && fValue > maxVelocity)
+        fValue = maxVelocity;
+      setNxtMoveVelocity(motor_axis_no, fValue);
+    }
     return ret;
   case PARAM_IDX_ACCEL_FLOAT32:
-    setNxtMoveAcceleration(motor_axis_no, fValue);
+    {
+      double maxAcceleration = getMaxAcceleration(motor_axis_no);
+      if (maxAcceleration && fValue > maxAcceleration)
+        fValue = maxAcceleration;
+      setNxtMoveAcceleration(motor_axis_no, fValue);
+    }
     return ret;
     break;
   default:
@@ -1113,28 +1123,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
              motor_axis_no, paramIndex, offset,
              paramCommand, uValue, lenInPlcPara);
   }
-  if (paramCommand == PARAM_IF_CMD_DOREAD) {
-    double fRet;
-    /* do the read */
-    ret = indexerMotorParamRead(motor_axis_no,
-                                paramIndex,
-                                &fRet);
-    /* put DONE (or ERROR) into the process image */
-    uintToNet(ret, &netData.memoryBytes[offset], 2);
-    if ((ret & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
-      switch(paramIndex) {
-      case PARAM_IDX_OPMODE_AUTO_UINT32:
-      case PARAM_IDX_USR_MIN_EN_UINT32:
-      case PARAM_IDX_USR_MAX_EN_UINT32:
-      case PARAM_IDX_HOME_PROC_UINT32:
-        uintToNet((unsigned)fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
-        break;
-      default:
-        doubleToNet(fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
-        break;
-      }
-    }
-  } else if (paramCommand == PARAM_IF_CMD_DOWRITE) {
+  if (paramCommand == PARAM_IF_CMD_DOWRITE) {
     double fValue;
     int iValue;
     fValue = netToDouble(&netData.memoryBytes[offset + 2], lenInPlcPara);
@@ -1151,6 +1140,9 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     case PARAM_IDX_SPEED_FLOAT32:
     case PARAM_IDX_ACCEL_FLOAT32:
       ret = indexerMotorParamWrite(motor_axis_no, paramIndex, fValue);
+      /* the spec says, that the response must have the "real" value!
+         Get it by doing a read */
+      paramCommand = PARAM_IF_CMD_DOREAD;
       break;
     case PARAM_IDX_FUN_REFERENCE:
       {
@@ -1212,16 +1204,28 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     }
     /* put DONE (or ERROR) into the process image */
     uintToNet(ret, &netData.memoryBytes[offset], 2);
-  } else if (paramCommand == PARAM_IF_CMD_INVALID) {
-    LOGINFO3("%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x ret=%x\n",
-           __FILE__, __FUNCTION__, __LINE__,
-           motor_axis_no, paramIndex, uValue, ret);
-  } else if (paramCommand == PARAM_IF_CMD_DONE) {
-    ;
-  } else {
-    LOGINFO3("%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x ret=%x\n",
-           __FILE__, __FUNCTION__, __LINE__,
-           motor_axis_no, paramIndex, uValue, ret);
+  }
+  if (paramCommand == PARAM_IF_CMD_DOREAD) {
+    double fRet;
+    /* do the read */
+    ret = indexerMotorParamRead(motor_axis_no,
+                                paramIndex,
+                                &fRet);
+    /* put DONE (or ERROR) into the process image */
+    uintToNet(ret, &netData.memoryBytes[offset], 2);
+    if ((ret & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
+      switch(paramIndex) {
+      case PARAM_IDX_OPMODE_AUTO_UINT32:
+      case PARAM_IDX_USR_MIN_EN_UINT32:
+      case PARAM_IDX_USR_MAX_EN_UINT32:
+      case PARAM_IDX_HOME_PROC_UINT32:
+        uintToNet((unsigned)fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
+        break;
+      default:
+        doubleToNet(fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
+        break;
+      }
+    }
   }
   LOGINFO6("%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x ret=%x\n",
            __FILE__, __FUNCTION__, __LINE__,
