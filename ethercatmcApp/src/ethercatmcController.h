@@ -337,7 +337,6 @@ public:
                                 double value, size_t lenInPlc);
 
   asynStatus indexerWaitSpecialDeviceIdle(unsigned indexOffset);
-  asynStatus indexerParamWaitNotBusy(unsigned indexOffset);
   asynStatus indexerParamRead(int axisNo,
                               unsigned paramIfOffset,
                               unsigned paramIndex,

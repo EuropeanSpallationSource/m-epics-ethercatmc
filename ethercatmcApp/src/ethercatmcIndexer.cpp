@@ -450,43 +450,6 @@ asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
   return asynDisabled;
 }
 
-asynStatus ethercatmcController::indexerParamWaitNotBusy(unsigned indexOffset)
-{
-  unsigned traceMask = ASYN_TRACE_FLOW;
-  asynStatus status;
-  unsigned   counter = 0;
-
-  while (counter < MAX_COUNTER) {
-    unsigned cmdSubParamIndex = 0;
-    status = getPlcMemoryUint(indexOffset, &cmdSubParamIndex, 2);
-    if (status || counter) traceMask |= ASYN_TRACE_INFO;
-    asynPrint(pasynUserController_, traceMask,
-              "%s%s(%s)=%s indexOffset=%u cmdSubParamIndex=0x%04x counter=%d\n",
-              modNamEMC, "indexerParamWaitNotBusy",
-              plcParamIndexTxtFromParamIndex(cmdSubParamIndex),
-              paramIfCmdToString(cmdSubParamIndex),
-              indexOffset, cmdSubParamIndex, counter);
-    if (status) return status;
-    switch (cmdSubParamIndex & PARAM_IF_CMD_MASK) {
-    case PARAM_IF_CMD_DONE:
-    case PARAM_IF_CMD_ERR_NO_IDX:
-    case PARAM_IF_CMD_ERR_READONLY:
-    case PARAM_IF_CMD_ERR_RETRY_LATER:
-      return asynSuccess;
-    case PARAM_IF_CMD_INVALID:
-    case PARAM_IF_CMD_DOREAD:
-    case PARAM_IF_CMD_DOWRITE:
-    case PARAM_IF_CMD_BUSY:
-    default:
-      ; /* Read, write continue looping */
-    }
-    counter++;
-    epicsThreadSleep(calcSleep(counter));
-  }
-  return asynDisabled;
-}
-
-
 asynStatus ethercatmcController::indexerParamRead(int axisNo,
                                                   unsigned paramIfOffset,
                                                   unsigned paramIndex,
