@@ -279,7 +279,7 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
             position, relative, minVelocity, maxVelocity, acceleration);
 
   if (maxVelocity > 0.0) {
-    double oldValue;
+    double oldValue, valueRB;
     status = pC_->getDoubleParam(axisNo_, pC_->ethercatmcVel_RB_, &oldValue);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
               "%smove (%d) ethercatmcVel status=%s (%d)\n",
@@ -289,7 +289,7 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_SPEED_FLOAT,
                                       drvlocal.lenInPlcPara,
-                                      maxVelocity);
+                                      maxVelocity, &valueRB);
       if (status) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
                   "%smove (%d) status=%s (%d)\n",
@@ -301,7 +301,7 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
     }
   }
   if (acceleration > 0.0) {
-    double oldValue;
+    double oldValue, valueRB;
     status = pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
               "%smove (%d) ethercatmcAcc status=%s (%d)\n",
@@ -311,7 +311,7 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_ACCEL_FLOAT,
                                       drvlocal.lenInPlcPara,
-                                      acceleration);
+                                      acceleration, &valueRB);
       if (status) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
                   "%smove (%d) status=%s (%d)\n",
@@ -382,7 +382,7 @@ asynStatus ethercatmcIndexerAxis::home(double minVelocity, double maxVelocity,
   status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                   PARAM_IDX_FUN_REFERENCE,
                                   drvlocal.lenInPlcPara,
-                                  0.0);
+                                  0.0, NULL);
   return status;
 }
 
@@ -408,13 +408,13 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
             minVelocity, maxVelocity, acceleration);
 
   if (acceleration > 0.0) {
-    double oldValue;
+    double oldValue, valueRB;
     pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
     if (acceleration != oldValue) {
       status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                       PARAM_IDX_ACCEL_FLOAT,
                                       drvlocal.lenInPlcPara,
-                                      acceleration);
+                                      acceleration, &valueRB);
       if (status) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
                   "%smoveVelocity (%d) status=%s (%d)\n",
@@ -428,7 +428,7 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
   status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                   PARAM_IDX_FUN_MOVE_VELOCITY,
                                   drvlocal.lenInPlcPara,
-                                  maxVelocity);
+                                  maxVelocity, NULL);
   return status;
 }
 
@@ -443,7 +443,7 @@ asynStatus ethercatmcIndexerAxis::setPosition(double value)
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     PARAM_IDX_FUN_SET_POSITION,
                                     drvlocal.lenInPlcPara,
-                                    value);
+                                    value, NULL);
   }
   return status;
 }
@@ -877,7 +877,7 @@ asynStatus ethercatmcIndexerAxis::setClosedLoop(bool closedLoop)
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     PARAM_IDX_OPMODE_AUTO_UINT,
                                     drvlocal.lenInPlcPara,
-                                    fValue);
+                                    fValue, NULL);
   }
   return status;
 }
@@ -911,17 +911,18 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
 #endif
   } else if (function == pC_->ethercatmcHomProc_) {
     static const unsigned paramIndex = PARAM_IDX_HOMPROC_UINT;
+    double valueRB = -1;
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
-                                    value);
+                                    value, &valueRB);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcHomProc)=%d  status=%s(%d)\n",
               modNamEMC, axisNo_, value,
               ethercatmcstrStatus(status), (int)status);
     if (status == asynSuccess) {
       int initial = 0;
-      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
       return asynSuccess;
     }
     return asynError;
@@ -937,33 +938,35 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     return asynSuccess;
   } else if (function == pC_->ethercatmcCfgDHLM_En_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MAX_EN_UINT;
+    double valueRB = -1;
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
-                                    value);
+                                    value, &valueRB);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcCfgDHLM_En)=%d  status=%s(%d)\n",
               modNamEMC, axisNo_, value,
               ethercatmcstrStatus(status), (int)status);
     if (status == asynSuccess) {
       int initial = 0;
-      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
       return asynSuccess;
     }
     return asynError;
   } else if (function == pC_->ethercatmcCfgDLLM_En_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MIN_EN_UINT;
+    double valueRB = -1;
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
-                                    value);
+                                    value, &valueRB);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcCfgDLLM_En)=%d status=%s(%d)\n",
               modNamEMC, axisNo_, value,
               ethercatmcstrStatus(status), (int)status);
     if (status == asynSuccess) {
       int initial = 0;
-      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
       return asynSuccess;
     }
     return asynError;
@@ -999,43 +1002,46 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
   asynStatus status;
   if (function == pC_->ethercatmcHomPos_) {
     static const unsigned paramIndex = PARAM_IDX_HOME_POSITION_FLOAT;
+    double valueRB = -1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d ethercatmcHomPos_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
-                                    value);
+                                    value, &valueRB);
     if (status == asynSuccess) {
       int initial = 0;
-      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
       return asynSuccess;
     }
     return asynError;
   } else if (function == pC_->ethercatmcCfgDHLM_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MAX_FLOAT;
+    double valueRB = -1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d ethercatmcCfgDHLM_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
-                                    value);
+                                    value, &valueRB);
     if (status == asynSuccess) {
       int initial = 0;
-      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
       return asynSuccess;
     }
     return asynError;
   } else if (function == pC_->ethercatmcCfgDLLM_) {
+    double valueRB = -1;
     static const unsigned paramIndex = PARAM_IDX_USR_MIN_FLOAT;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d ethercatmcCfgDLLM_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
-                                    value);
+                                    value, &valueRB);
     if (status == asynSuccess) {
       int initial = 0;
-      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, value);
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
       return asynSuccess;
     }
     return asynError;

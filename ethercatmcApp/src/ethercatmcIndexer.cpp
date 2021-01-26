@@ -533,7 +533,8 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                                                    unsigned paramIfOffset,
                                                    unsigned paramIndex,
                                                    unsigned lenInPlcPara,
-                                                   double value)
+                                                   double value,
+                                                   double *pValueRB)
 {
   paramIf_type paramIf_to_MCU;
   paramIf_type paramIf_from_MCU;
@@ -595,8 +596,10 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
                     value, valueRB, has_written);
-          if (value == valueRB || has_written)
+          if (value == valueRB || has_written) {
+            if (pValueRB) *pValueRB = valueRB;
             return asynSuccess;
+          }
         } else {
           has_written = 0;
         }
@@ -630,6 +633,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
           case PARAM_IDX_FUN_REFERENCE:
           case PARAM_IDX_FUN_SET_POSITION:
           case PARAM_IDX_FUN_MOVE_VELOCITY:
+            if (pValueRB) *pValueRB = -1.0; //
             return asynSuccess;
           };
         }

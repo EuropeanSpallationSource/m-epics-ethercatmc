@@ -346,7 +346,8 @@ public:
                                unsigned paramIfOffset,
                                unsigned paramIndex,
                                unsigned lenInPlcPara,
-                               double value);
+                               double value,
+                               double *pValueRB);
 
   asynStatus getPlcMemoryFromProcessImage(unsigned indexOffset,
                                           void *data, size_t lenInPlc);
