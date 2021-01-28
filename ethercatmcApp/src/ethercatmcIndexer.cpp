@@ -1520,9 +1520,9 @@ asynStatus ethercatmcController::indexerPoll(void)
             if (pPilsAsynDevInfo->myMCUParamType == asynParamFloat64) {
               newValue = netToDouble(pDataInPlc, lenInPLC);
             } else if (lenInPLC <= sizeof(epicsInt32)) {
-              newValue = (double)(epicsInt64)netToUint(pDataInPlc, lenInPLC);
+              newValue = (double)(epicsInt64)netToSint(pDataInPlc, lenInPLC);
             } else if (lenInPLC == sizeof(uint64_t)) {
-              newValue = (double)(epicsInt64)netToUint64(pDataInPlc, lenInPLC);
+              newValue = (double)(epicsInt64)netToSint64(pDataInPlc, lenInPLC);
             } else {
               newValueValid = 0;
             }
