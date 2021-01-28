@@ -450,11 +450,13 @@ asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
   return asynDisabled;
 }
 
-asynStatus ethercatmcController::indexerParamRead(int axisNo,
-                                                  unsigned paramIfOffset,
-                                                  unsigned paramIndex,
-                                                  unsigned lenInPlcPara,
-                                                  double   *value)
+asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
+                                                    unsigned paramIfOffset,
+                                                    unsigned paramIndex,
+                                                    unsigned lenInPlcPara,
+                                                    double   *value,
+                                                    const char *fileName,
+                                                    int lineNo)
 {
   paramIf_type paramIf_from_MCU;
   unsigned traceMask = ASYN_TRACE_FLOW;
@@ -482,9 +484,9 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
     unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
     if (counter > 1) {
       asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
-                "%s (%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
+                "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
                 "counter=%u cmdSubParamIndex=%s\n",
-                modNamEMC, axisNo, paramIfOffset,
+                fileName, lineNo, "indexerParamRead", axisNo, paramIfOffset,
                 plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
                 counter,
                 paramIfCmdToString(cmdSubParamIndexRB));
@@ -510,10 +512,12 @@ asynStatus ethercatmcController::indexerParamRead(int axisNo,
     case PARAM_IF_CMD_ERR_RETRY_LATER:
       /* param interface is not busy */
       if (paramIndexRB != paramIndex) {
-        /* Send the read request, unless we already done it */
+        /* Send the read request */
         status = setPlcMemoryInteger(paramIfOffset, cmd,
                                      (unsigned)sizeof(paramIf_from_MCU.paramCtrl));
         if (status) return status;
+      } else {
+        return asynDisabled;
       }
       break;
     case PARAM_IF_CMD_INVALID:
@@ -621,6 +625,8 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                                                   (unsigned)sizeof(paramIf_to_MCU));
           if (status) return status;
           has_written = 1;
+        } else if (paramIndexRB == paramIndex) {
+          return asynDisabled;
         }
       }
       break;
@@ -881,9 +887,10 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
           if (status) {
             asynPrint(pasynUserController_,
                       ASYN_TRACE_INFO,
-                      "%sindexerReadAxisParameters paramIdx=%s (%u)"
+                      "%sindexerReadAxisParameters(%d) paramIdx=%s (%u)"
                       " lenInPlcPara=%u status=%s (%d)\n",
-                      modNamEMC, plcParamIndexTxtFromParamIndex(paramIndex),
+                      modNamEMC, axisNo,
+                      plcParamIndexTxtFromParamIndex(paramIndex),
                       paramIndex, lenInPlcPara,
                       ethercatmcstrStatus(status), (int)status);
             if ((paramIndex >= 128) && (status == asynDisabled)) {
