@@ -1639,12 +1639,12 @@ static int indexerHandleIndexerCmd(unsigned offset,
           permPTyp permP;
           unsigned param_idx = byteIdx * size_of_param + bitIdx;
           permP = indexerDeviceAbsStraction[devNum].permP[param_idx];
-          LOGINFO3("%s/%s:%d devNum=%u param_idx=%u byteIdx=%02u bitIdx=%u permP=%d\n",
+          LOGINFO6("%s/%s:%d devNum=%u param_idx=%u byteIdx=%02u bitIdx=%u permP=%d\n",
                    __FILE__, __FUNCTION__, __LINE__,
                    devNum, param_idx, byteIdx, bitIdx, (int)permP);
           if (permP != permPNone) parameter |= (1 << bitIdx);
         }
-        LOGINFO3("%s/%s:%d devNum=%u byteIdx=%02u parameter=0x%02X\n",
+        LOGINFO6("%s/%s:%d devNum=%u byteIdx=%02u parameter=0x%02X\n",
                  __FILE__, __FUNCTION__, __LINE__,
                  devNum, byteIdx, parameter);
         netData.memoryStruct.indexer.infoType15.parameters[byteIdx] = parameter;
