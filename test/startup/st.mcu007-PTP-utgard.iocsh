@@ -12,6 +12,7 @@ epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=192.168.88.57.1.1;amsNe
 
 < ethercatmcController.iocsh
 < ethercatmcDctEL1252-PILS.iocsh
+< ethercatmcEL6688-PILS.iocsh
 
 #
 # Axis 1

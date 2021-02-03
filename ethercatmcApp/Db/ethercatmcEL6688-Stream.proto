@@ -25,8 +25,8 @@ getsDctEL1252N {
 }
 
 # External/Internal time as String
-getsTAIabsolut {
-   out "ADSPORT=852/GVL_APP.sTAIabsolut?;";
+getsSystemTAIclock {
+   out "ADSPORT=852/GVL_APP.sSystemTAIclock?;";
    in "%s";
 }
 

@@ -44,12 +44,12 @@ record(longin, "$(PREFIX)PTPSyncSeqNum")
     field(SCAN, "I/O Intr")
 }
 
-record(int64in, "$(PREFIX)SystemDClock")
+record(int64in, "$(PREFIX)nSystemTAIclock")
 {
     field(DTYP, "asynInt64")
-    field(DESC, "SystemDClock")
+    field(DESC, "SystemTAIclock")
     field(EGU,  "nanoSeconds")
-    field(INP,  "@asyn($(MOTOR_PORT),0)SystemDClock")
+    field(INP,  "@asyn($(MOTOR_PORT),0)nSystemTAIclock")
     field(SCAN, "I/O Intr")
 }
 
@@ -60,15 +60,15 @@ record(int64in, "$(PREFIX)SystemDClock")
 #  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
 #}
 
-record(stringin, "$(PREFIX)SystemDClockASC") {
+record(stringin, "$(PREFIX)SystemTAIclockASC") {
   field(DTYP, "Soft Timestamp")
-  field(TSEL, "$(PREFIX)SystemDClock.TIME CP")
+  field(TSEL, "$(PREFIX)SystemTAIclock.TIME CP")
   field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
 }
 
-record(stringin, "$(PREFIX)SystemDClockASC2") {
+record(stringin, "$(PREFIX)SystemTAIclockASC2") {
   field(DTYP, "Soft Timestamp")
-  field(TSEL, "$(PREFIX)SystemDClock.TIME")
+  field(TSEL, "$(PREFIX)SystemTAIclock.TIME")
   field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
 }
 

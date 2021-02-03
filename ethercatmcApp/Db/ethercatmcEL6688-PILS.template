@@ -1,0 +1,9 @@
+#record(int64in, "$(PREFIX)nSystemTAIclock")
+#{
+#    field(DTYP, "asynInt64")
+#    field(DESC, "nSystemTAIclock")
+#    field(EGU,  "nanoSeconds")
+#    field(INP,  "@asyn($(MOTOR_PORT),0)nSystemTAIclock")
+#    field(SCAN, "I/O Intr")
+#    field(TSE, -2)
+#}

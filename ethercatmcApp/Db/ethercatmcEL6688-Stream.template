@@ -3,10 +3,10 @@
 ##
 
 
-record(stringin, "$(PREFIX)sTAIabsolut") {
+record(stringin, "$(PREFIX)sSystemTAIclock") {
    field(DTYP,   "stream")
    field(DESC,   "TAI Absolute time str")
-   field(INP,    "@ethercatmcEL6688-Stream.proto getsTAIabsolut() $(PORT)")
+   field(INP,    "@ethercatmcEL6688-Stream.proto getsSystemTAIclock() $(PORT)")
    field(SCAN,   "1 second")
 }
 

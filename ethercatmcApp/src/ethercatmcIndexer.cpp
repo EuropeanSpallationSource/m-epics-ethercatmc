@@ -1355,8 +1355,8 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->myEPICSParamType = myEPICSParamType;
   pPilsAsynDevInfo->myMCUParamType   = myMCUParamType;
   pPilsAsynDevInfo->function         = function;
-  if (!strcmp(paramName, "SystemDClock")) {
-    pPilsAsynDevInfo->isSystemDClock = 1;
+  if (!strcmp(paramName, "SystemTAIclock")) {
+    pPilsAsynDevInfo->isSystemTAIclock = 1;
   }
   setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
 
@@ -1611,13 +1611,13 @@ asynStatus ethercatmcController::indexerPoll(void)
         default:
           ;
         }
-        if (pPilsAsynDevInfo->isSystemDClock) {
+        if (pPilsAsynDevInfo->isSystemTAIclock) {
           uint64_t nSec;
           epicsTimeStamp timeStamp;
           nSec = netToUint64(pDataInPlc, lenInPLC);
           DCtimeToEpicsTimeStamp(nSec, &timeStamp);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                    "%sindexerPoll SystemDClock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+                    "%sindexerPoll SystemTAIclock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
                     modNamEMC, nSec,
                     timeStamp.secPastEpoch, timeStamp.nsec);
           setTimeStamp(&timeStamp);

@@ -15,6 +15,7 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
+DB += ethercatmcEL6688-PILS.template
 DB += ethercatmcEL6688-Stream.template
 DB += ethercatmcEL6688-Stream.proto
 DB += ethercatmcDctEL1252-Stream.proto
