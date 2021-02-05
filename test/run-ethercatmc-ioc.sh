@@ -3,6 +3,7 @@ APPXX=ethercatmc
 TOP=$(echo $PWD/.. | sed -e "s%/test/\.\.$%%")
 export APPXX
 EPICS_EEE_E3=n
+DOLOG=
 
 uname_s=$(uname -s 2>/dev/null || echo unknown)
 uname_m=$(uname -m 2>/dev/null || echo unknown)
@@ -47,6 +48,14 @@ if test -z "$EPICS_HOST_ARCH"; then
   exit 1
 fi
 
+if test "$1" = "-l"; then
+  if test -f xx.txt; then
+    timestamp=$(date "+%y-%m-%d-%H.%M.%S")
+    mv xx.txt ../logs/$timestamp.txt || exit 1
+  fi
+  DOLOG=" 2>&1 | tee $PWD/xx.txt"
+  shift
+fi
 MOTORCFG="$1"
 export MOTORCFG
 echo MOTORCFG=$MOTORCFG
@@ -75,6 +84,15 @@ echo MOTORCFG=$MOTORCFG
 ) || exit 1
 
 shift
+if test "$1" = "-l"; then
+  if test -f xx.txt; then
+    timestamp=$(date "+%y-%m-%d-%H.%M.%S")
+    mv xx.txt ../logs/$timestamp.txt || exit 1
+  fi
+  DOLOG=" 2>&1 | tee $PWD/xx.txt"
+  shift
+fi
+export DOLOG
 
 MOTORIP=127.0.0.1
 
@@ -130,6 +148,13 @@ if test "$MOTORPORT" = 48898; then
   shift
 fi
 export LOCALAMSNETID REMOTEAMSNETID
+
+if test -z "$1"; then
+  echo >&2 "dollar 1 is empty"
+else
+  echo >&2 "dollar 1 is $1y"
+fi
+
 (
   IOCDIR=../iocBoot/ioc${APPXX}
   DBMOTOR=db
@@ -271,8 +296,8 @@ EOF
 EOF
           chmod +x $stcmddst &&
           egrep -v "^ *#" $stcmddst >xx
-          echo PWD=$PWD $stcmddst
-          $stcmddst
+          echo PWD=$PWD $stcmddst DOLOG=$DOLOG
+          eval $stcmddst $DOLOG
           ;;
       e3)
           #e3
