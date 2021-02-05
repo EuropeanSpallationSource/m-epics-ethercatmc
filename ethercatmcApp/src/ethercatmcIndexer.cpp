@@ -1308,6 +1308,10 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
 
   asynStatus status;
+  struct {
+    char     name[34];
+    unsigned axisNoOrIndex;
+  } splitedParamNameNumber;
   int function = -1;
   pilsAsynDevInfo_type *pPilsAsynDevInfo
     = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
@@ -1318,6 +1322,7 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
               modNamEMC, functionName,  numPilsAsynDevInfo);
     return;
   }
+    
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
             "%s%s(%u) pilsNo=%d \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u"
             " EPICSParamType=%s(%i) MCUParamType=%s(%i)\n",
@@ -1328,6 +1333,28 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
             outputOffset,
             stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
             stringFromAsynParamType(myMCUParamType), (int)myMCUParamType);
+  if (strlen(paramName) < sizeof(splitedParamNameNumber.name)) {
+    /* Need to split the parameter, like "TAIEL1252P#1" */
+    int nvals;
+    memset(&splitedParamNameNumber, 0, sizeof(splitedParamNameNumber));
+    nvals = sscanf(paramName, "%[^#]#%u",
+                   &splitedParamNameNumber.name[0],
+                   &splitedParamNameNumber.axisNoOrIndex);
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
+              modNamEMC, functionName, nvals,
+              &splitedParamNameNumber.name[0],
+              splitedParamNameNumber.axisNoOrIndex);
+
+    if (nvals == 2) {
+      paramName = &splitedParamNameNumber.name[0];
+      axisNo = (int)splitedParamNameNumber.axisNoOrIndex;
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s(%u) \"%s\"\n",
+                modNamEMC, functionName, axisNo,  paramName);
+    }
+  }
+
   /* Some parameters are alread pre-created by the Controller.cpp,
      e.g.errorId. Use those, otherwise create a parameter */
   status = findParam(/* axisNo, */paramName, &function);

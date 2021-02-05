@@ -20,7 +20,7 @@ def main(argv=None):
 #LabS-MCAG:MC-MCU-07:nSystemTAIclock 2021-02-03 07:52:39.632  1612338796622117100
     RE_MATCH_SYSTEMTAICLOCK = re.compile(
         #r"(\S*TAIclock\S*)\s+(\d+-\d*-\d*\s\d+:\d+:\d\.\d+)"
-        r"(\S*TAIclock\S*)(\s+)(\d+-\d*-\d*\s+\d+:\d+:\d+\.\d+)(\s+)(\d+)$"
+        r"(\S*TAI\S*)(\s+)(\d+-\d*-\d*\s+\d+:\d+:\d+\.\d+)(\s+)(\d+)$"
     )
 
     for line in sys.stdin:

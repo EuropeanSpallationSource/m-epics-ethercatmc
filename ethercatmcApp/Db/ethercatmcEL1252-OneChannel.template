@@ -1,0 +1,26 @@
+record(int64in, "$(PREFIX)TAIEL1252P$(CHNO)")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "TAI of raising edge")
+    field(EGU,  "nanoSeconds")
+    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))TAIEL1252P")
+    field(SCAN, "I/O Intr")
+    #field(TSE, -2)
+}
+
+record(int64in, "$(PREFIX)TAIEL1252N$(CHNO)")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "TAI of falling edge")
+    field(EGU,  "nanoSeconds")
+    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))TAIEL1252N")
+    field(SCAN, "I/O Intr")
+    #field(TSE, -2)
+}
+
+#record(stringin, "$(PREFIX)DClockEL1252ASC") {
+#  field(DTYP, "Soft Timestamp")
+#  field(TSEL, "$(PREFIX)DClockEL1252 CP")
+#  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
+#}
+
