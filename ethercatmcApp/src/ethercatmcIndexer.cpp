@@ -1382,6 +1382,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
             modNamEMC, functionName, axisNo, numPilsAsynDevInfo,
             indexOffset, iTypCode, paramName);
 
+  if (!iTypCode) return;
   switch (iTypCode) {
     case 0x1201:
       lenInPLC = 2;
@@ -1424,21 +1425,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   if (myAsynParamType != asynParamNotDefined) {
     asynParamType myEPICSParamType = myAsynParamType;
     asynParamType myMCUParamType  = myAsynParamType;
-    if (!strcmp(paramName, "homeSeq")) {
-      if (outputOffset) {
-        addPilsAsynDevLst(axisNo, "HomProc", lenInPLC,
-                          0, //inputOffset,
-                          outputOffset,
-                          myEPICSParamType,  myMCUParamType);
-        addPilsAsynDevLst(axisNo, "HomProc-RB", lenInPLC,
-                          inputOffset,
-                          0, //outputOffset,
-                          myEPICSParamType, myMCUParamType);
-        return;
-      } else {
-        paramName = "HomProc-RB";
-      }
-    } else if (!strcmp(paramName, "encoderRaw")) {
+    if (!strcmp(paramName, "encoderRaw")) {
       paramName = "EncAct";
       /* Special handling for encoderRaw */
       myEPICSParamType = asynParamFloat64;
