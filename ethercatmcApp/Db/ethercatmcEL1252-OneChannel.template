@@ -1,19 +1,19 @@
-record(int64in, "$(PREFIX)TAIEL1252P$(CHNO)")
+record(int64in, "$(PREFIX)EPOCHEL1252P$(CHNO)")
 {
     field(DTYP, "asynInt64")
-    field(DESC, "TAI of raising edge")
+    field(DESC, "EPOCH of raising edge")
     field(EGU,  "nanoSeconds")
-    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))TAIEL1252P")
+    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))EPOCHEL1252P")
     field(SCAN, "I/O Intr")
     #field(TSE, -2)
 }
 
-record(int64in, "$(PREFIX)TAIEL1252N$(CHNO)")
+record(int64in, "$(PREFIX)EPOCHEL1252N$(CHNO)")
 {
     field(DTYP, "asynInt64")
-    field(DESC, "TAI of falling edge")
+    field(DESC, "EPOCH of falling edge")
     field(EGU,  "nanoSeconds")
-    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))TAIEL1252N")
+    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))EPOCHEL1252N")
     field(SCAN, "I/O Intr")
     #field(TSE, -2)
 }

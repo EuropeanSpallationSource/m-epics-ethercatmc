@@ -1322,7 +1322,7 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
               modNamEMC, functionName,  numPilsAsynDevInfo);
     return;
   }
-    
+
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
             "%s%s(%u) pilsNo=%d \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u"
             " EPICSParamType=%s(%i) MCUParamType=%s(%i)\n",
@@ -1334,7 +1334,7 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
             stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
             stringFromAsynParamType(myMCUParamType), (int)myMCUParamType);
   if (strlen(paramName) < sizeof(splitedParamNameNumber.name)) {
-    /* Need to split the parameter, like "TAIEL1252P#1" */
+    /* Need to split the parameter, like "EPOCHEL1252P#1" */
     int nvals;
     memset(&splitedParamNameNumber, 0, sizeof(splitedParamNameNumber));
     nvals = sscanf(paramName, "%[^#]#%u",
@@ -1382,8 +1382,8 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->myEPICSParamType = myEPICSParamType;
   pPilsAsynDevInfo->myMCUParamType   = myMCUParamType;
   pPilsAsynDevInfo->function         = function;
-  if (!strcmp(paramName, "SystemTAIclock")) {
-    pPilsAsynDevInfo->isSystemTAIclock = 1;
+  if (!strcmp(paramName, "SystemEPOCHclock")) {
+    pPilsAsynDevInfo->isSystemEPOCHclock = 1;
   }
   setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
 
@@ -1625,13 +1625,13 @@ asynStatus ethercatmcController::indexerPoll(void)
         default:
           ;
         }
-        if (pPilsAsynDevInfo->isSystemTAIclock) {
+        if (pPilsAsynDevInfo->isSystemEPOCHclock) {
           uint64_t nSec;
           epicsTimeStamp timeStamp;
           nSec = netToUint64(pDataInPlc, lenInPLC);
           DCtimeToEpicsTimeStamp(nSec, &timeStamp);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                    "%sindexerPoll SystemTAIclock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+                    "%sindexerPoll SystemEPOCHclock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
                     modNamEMC, nSec,
                     timeStamp.secPastEpoch, timeStamp.nsec);
           setTimeStamp(&timeStamp);
