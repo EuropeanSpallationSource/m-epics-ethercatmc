@@ -60,15 +60,15 @@ record(int64in, "$(PREFIX)nSystemTAIclock")
 #  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
 #}
 
-record(stringin, "$(PREFIX)SystemTAIclockASC") {
-  field(DTYP, "Soft Timestamp")
-  field(TSEL, "$(PREFIX)SystemTAIclock.TIME CP")
-  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
-}
+#record(stringin, "$(PREFIX)SystemTAIclockASC") {
+#  field(DTYP, "Soft Timestamp")
+#  field(TSEL, "$(PREFIX)SystemTAIclock.TIME CP")
+#  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
+#}
 
-record(stringin, "$(PREFIX)SystemTAIclockASC2") {
-  field(DTYP, "Soft Timestamp")
-  field(TSEL, "$(PREFIX)SystemTAIclock.TIME")
-  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
-}
+#record(stringin, "$(PREFIX)SystemTAIclockASC2") {
+#  field(DTYP, "Soft Timestamp")
+#  field(TSEL, "$(PREFIX)SystemTAIclock.TIME")
+#  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
+#}
 

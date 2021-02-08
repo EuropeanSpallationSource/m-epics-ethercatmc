@@ -42,6 +42,6 @@ epicsEnvSet("CHNO",     "0")
 epicsEnvSet("IPPORT",        "5000")
 epicsEnvSet("ASYN_PORT",     "STREAM_1")
 
-epicsEnvSet("STREAM_PROTOCOL_PATH", "./db")
-< ethercatmcDctEL1252-Stream.iocsh
-< ethercatmcEL6688-Stream.iocsh
+#epicsEnvSet("STREAM_PROTOCOL_PATH", "./db")
+#< ethercatmcDctEL1252-Stream.iocsh
+#< ethercatmcEL6688-Stream.iocsh
