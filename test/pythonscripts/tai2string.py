@@ -73,6 +73,7 @@ def main(argv=None):
             print(f"{pvname}{sep1}{pvdatetime}{sep2}{plcdatetime}.{subnsec:09d} sec-epoch-now={sec_epoch_now} sec_epoch_plc={sec_epoch_plc}")
         else:
             print (line)
+        sys.stdout.flush()
 
 
 if __name__ == "__main__":
