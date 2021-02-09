@@ -1,9 +1,0 @@
-#record(int64in, "$(PREFIX)nSystemEPOCHclock")
-#{
-#    field(DTYP, "asynInt64")
-#    field(DESC, "nSystemEPOCHclock")
-#    field(EGU,  "nanoSeconds")
-#    field(INP,  "@asyn($(MOTOR_PORT),0)nSystemEPOCHclock")
-#    field(SCAN, "I/O Intr")
-#    field(TSE, -2)
-#}

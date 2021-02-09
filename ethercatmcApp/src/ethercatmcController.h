@@ -108,7 +108,7 @@ extern "C" {
     int            function;    /* asyn: "function" */
     asynParamType  myEPICSParamType; /* asynParamType.h */
     asynParamType  myMCUParamType; /* asynParamType.h */
-    int            isSystemEPOCHclock:1;
+    int            isSystemUTCtime:1;
   } pilsAsynDevInfo_type;
 }
 extern "C" {

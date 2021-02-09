@@ -1382,8 +1382,8 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->myEPICSParamType = myEPICSParamType;
   pPilsAsynDevInfo->myMCUParamType   = myMCUParamType;
   pPilsAsynDevInfo->function         = function;
-  if (!strcmp(paramName, "SystemEPOCHclock")) {
-    pPilsAsynDevInfo->isSystemEPOCHclock = 1;
+  if (!strcmp(paramName, "SystemUTCtime")) {
+    pPilsAsynDevInfo->isSystemUTCtime = 1;
   }
   setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
 
@@ -1471,17 +1471,15 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   }
 }
 
-extern "C" void DCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
+extern "C" void UTCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
 {
 #define NSEC_PER_SEC      1000000000
-#define POSIX_TIME_AT_DCCLOCK_EPOCH 946684800
   /*
-   * convert from DC clock Time to Epics time 2000 Jan 1 to 1990 Jan 1
+   * convert from UTC Time to Epics time
    * (POSIX_TIME_AT_EPICS_EPOCH defined in epicsTime.h)
   */
   uint64_t nSecEpicsEpoch;
-  nSecEpicsEpoch = dcNsec - ((uint64_t)POSIX_TIME_AT_EPICS_EPOCH -
-                             POSIX_TIME_AT_DCCLOCK_EPOCH) * NSEC_PER_SEC;
+  nSecEpicsEpoch = dcNsec - ((uint64_t)POSIX_TIME_AT_EPICS_EPOCH) * NSEC_PER_SEC;
   ts->secPastEpoch = (uint32_t)(nSecEpicsEpoch / NSEC_PER_SEC);
   ts->nsec =         (uint32_t)(nSecEpicsEpoch % NSEC_PER_SEC);
 }
@@ -1625,13 +1623,13 @@ asynStatus ethercatmcController::indexerPoll(void)
         default:
           ;
         }
-        if (pPilsAsynDevInfo->isSystemEPOCHclock) {
+        if (pPilsAsynDevInfo->isSystemUTCtime) {
           uint64_t nSec;
           epicsTimeStamp timeStamp;
           nSec = netToUint64(pDataInPlc, lenInPLC);
-          DCtimeToEpicsTimeStamp(nSec, &timeStamp);
+          UTCtimeToEpicsTimeStamp(nSec, &timeStamp);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                    "%sindexerPoll SystemEPOCHclock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+                    "%sindexerPoll SystemUTCtime nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
                     modNamEMC, nSec,
                     timeStamp.secPastEpoch, timeStamp.nsec);
           setTimeStamp(&timeStamp);

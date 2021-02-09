@@ -23,16 +23,15 @@ def main(argv=None):
         r"(\S*TAI\S*)(\s+)(\d+-\d*-\d*\s+\d+:\d+:\d+\.\d+)(\s+)(\d+)$"
     )
 
-#LabS-MCAG:MC-MCU-07:nSystemEPOCHclock 2021-02-03 07:52:39.632  1612338796622117100
-    RE_MATCH_EPOCH = re.compile(
-        #r"(\S*EPOCHclock\S*)\s+(\d+-\d*-\d*\s\d+:\d+:\d\.\d+)"
-        r"(\S*EPOCH\S*)(\s+)(\d+-\d*-\d*\s+\d+:\d+:\d+\.\d+)(\s+)(\d+)$"
+#LabS-MCAG:MC-MCU-07:nSystemUTCtime 2021-02-03 07:52:39.632  1612338796622117100
+    RE_MATCH_UTC = re.compile(
+        r"(\S*UTC\S*)(\s+)(\d+-\d*-\d*\s+\d+:\d+:\d+\.\d+)(\s+)(\d+)$"
     )
 
     for line in sys.stdin:
         line = line.strip()
         match_tai = RE_MATCH_TAI.match(line)
-        match_epoch = RE_MATCH_EPOCH.match(line)
+        match_epoch = RE_MATCH_UTC.match(line)
         if match_tai != None:
             gidx = 1
             pvname = match_tai.group(gidx)

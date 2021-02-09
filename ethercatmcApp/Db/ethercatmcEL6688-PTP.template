@@ -44,31 +44,12 @@ record(longin, "$(PREFIX)PTPSyncSeqNum")
     field(SCAN, "I/O Intr")
 }
 
-record(int64in, "$(PREFIX)nSystemEPOCHclock")
+record(int64in, "$(PREFIX)SystemUTCtime")
 {
     field(DTYP, "asynInt64")
-    field(DESC, "SystemEPOCHclock")
+    field(DESC, "SystemUTCtime")
     field(EGU,  "nanoSeconds")
-    field(INP,  "@asyn($(MOTOR_PORT),0)nSystemEPOCHclock")
+    field(INP,  "@asyn($(MOTOR_PORT),0)SystemUTCtime")
     field(SCAN, "I/O Intr")
 }
-
-
-#record(stringin, "$(PREFIX)PTPdateTimeASC") {
-#  field(DTYP, "Soft Timestamp")
-#  field(TSEL, "$(PREFIX)PTPSyncSeqNum.TIME CP")
-#  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
-#}
-
-#record(stringin, "$(PREFIX)SystemEPOCHclockASC") {
-#  field(DTYP, "Soft Timestamp")
-#  field(TSEL, "$(PREFIX)SystemEPOCHclock.TIME CP")
-#  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
-#}
-
-#record(stringin, "$(PREFIX)SystemEPOCHclockASC2") {
-#  field(DTYP, "Soft Timestamp")
-#  field(TSEL, "$(PREFIX)SystemEPOCH!clock.TIME")
-#  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
-#}
 
