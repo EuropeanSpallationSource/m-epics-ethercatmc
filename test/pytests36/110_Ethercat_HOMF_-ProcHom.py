@@ -24,6 +24,7 @@ START_FROM_HLS = 1
 
 
 def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
     old_high_limit = self.axisCom.get(".HLM")
     old_low_limit = self.axisCom.get(".LLM")
     old_HomProc = self.axisCom.get("-HomProc")
@@ -74,6 +75,16 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
         elif homProc == 2:
             self.axisCom.put("-HomPos", old_high_limit + 1.0)
 
+    # Calculate the timeout, based on the driving range
+    range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
+    hvel = self.axisCom.get(".HVEL")
+    accl = self.axisCom.get(".ACCL")
+
+    if range_postion > 0 and hvel > 0:
+        time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
+    else:
+        time_to_wait = 180
+
     msta = int(self.axisCom.get(".MSTA"))
     # We can home while sitting on a limit switch
     if msta & self.axisMr.MSTA_BIT_MINUS_LS:
@@ -81,26 +92,20 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
     else:
         self.axisCom.put(".HOMF", 1)
 
-    # Calculate the timeout, based on the driving range
-    range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
-    hvel = self.axisCom.get(".HVEL")
-    accl = self.axisCom.get(".ACCL")
-    msta1 = int(self.axisCom.get(".MSTA"))
+    try:
+        self.axisMr.waitForStart(tc_no, 3)
+        msta1 = int(self.axisCom.get(".MSTA"))
+        if msta1 & self.axisMr.MSTA_BIT_HOMED:
+            unhomed = 0
+        else:
+            unhomed = 1
+            print(
+                "%s homeTheMotor msta1=%s unhomed=%d"
+                % (tc_no, self.axisMr.getMSTAtext(msta1), unhomed)
+            )
+    except Exception as ex:
+        print(f"{tc_no} waitFoeStart ex={ex} ")
 
-    if range_postion > 0 and hvel > 0:
-        time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
-    else:
-        time_to_wait = 180
-
-    self.axisMr.waitForStart(tc_no, 3)
-    if msta1 & self.axisMr.MSTA_BIT_HOMED:
-        unhomed = 0
-    else:
-        unhomed = 1
-    print(
-        "%s homeTheMotor msta1=%s unhomed=%d"
-        % (tc_no, self.axisMr.getMSTAtext(msta1), unhomed)
-    )
     stopped = self.axisMr.waitForStop(tc_no, time_to_wait)
 
     msta2 = int(self.axisCom.get(".MSTA"))
@@ -117,6 +122,7 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
         tc_no + "MSTA.no MSTA_BIT_SLIP_STALL",
     )
     self.assertNotEqual(0, homed, tc_no + "MSTA.homed (Axis has been homed)")
+    self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
 
 
 class Test(unittest.TestCase):

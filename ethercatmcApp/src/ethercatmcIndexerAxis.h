@@ -11,7 +11,7 @@
 #define PARAM_IF_ACK_MASK                          0x8000
 
 
-#define PARAM_IF_CMD_INITIALIZED                   0x0000
+#define PARAM_IF_CMD_INVALID                   0x0000
 #define PARAM_IF_CMD_DOREAD                        0x2000
 #define PARAM_IF_CMD_DOWRITE                       0x4000
 #define PARAM_IF_CMD_BUSY                          0x6000
@@ -29,6 +29,10 @@ extern "C" {
   int ethercatmcCreateIndexerAxis(const char *ethercatmcName, int axisNo,
                                   int axisFlags, const char *axisOptionsStr);
   const char *paramIfCmdToString(unsigned cmdSubParamIndex);
+  typedef struct {
+    uint8_t   paramCtrl[2];
+    uint8_t   paramValueRaw[8]; /* May be 4 or 8 bytes */
+  } paramIf_type;
 };
 
 class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis

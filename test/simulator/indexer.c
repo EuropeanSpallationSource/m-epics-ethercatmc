@@ -14,6 +14,7 @@
 #include "logerr_info.h"
 #include "cmd.h"
 
+//#define XXOLDPERM 1
 /* type codes and sizes */
 #define TYPECODE_INDEXER               0
 /* The lenght of the indexer data, the longest is
@@ -100,6 +101,55 @@ typedef enum {
   idxStatusCodeERR15    = 15
 } idxStatusCodeType;
 
+typedef enum {
+              permPNone,
+              permPRead,
+              permPRDWR
+} permPTyp;
+
+#define modePRDWR permPRDWR
+
+#define uminPRDWR permPRDWR
+#define umaxPRDWR permPRDWR
+
+#define homePNone permPNone
+#define homePRDWR permPRDWR
+
+#define setPoNone permPNone
+#define setPoRDWR permPRDWR
+
+#define vmaxPRead permPRDWR
+#define umaxPRDWR permPRDWR
+#define umaxPRDWR permPRDWR
+#define umaxPRDWR permPRDWR
+#define umaxPRDWR permPRDWR
+
+#define hystPNone permPNone
+#define hystPRead permPRead
+
+#define folleRead permPRead
+
+#define hvelPNone permPNone
+#define hvelPRead permPRead
+
+#define hposPRead permPRead
+#define urevPRead permPRead
+#define srevPRead permPRead
+
+
+#define hprocRDWR permPRDWR
+
+
+#define speedRDWR permPRDWR
+#define acclPRDWR permPRDWR
+#define hposPRDWR permPRDWR
+#define mvVelRDWR permPRDWR
+
+#define uminERDWR permPRDWR
+#define umaxERDWR permPRDWR
+#define hprocRDWR permPRDWR
+
+
 
 /* Param interface
    The bit 15..13 are coded like this: */
@@ -148,6 +198,7 @@ typedef enum {
 #define PARAM_IDX_STEPS_PER_REV_FLOAT32       222
 #define PARAM_IDX_MAX_VELO_FLOAT32            223
 
+#if XXOLDPERM
 /*  Which parameters are available */
 #define PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32             (1 << (1))
 #define PARAM_AVAIL_0_7_MICROSTEPS_UINT32              (1 << (2))
@@ -185,7 +236,7 @@ typedef enum {
 #define PARAM_AVAIL_216_223_UNITS_PER_REV              (1 << (221-216))
 #define PARAM_AVAIL_216_223_STEPS_PER_REV              (1 << (222-216))
 #define PARAM_AVAIL_216_223_MAX_VELO                   (1 << (223-216))
-
+#endif
 
 /* In the memory bytes, the indexer starts at 64 */
   static unsigned offsetIndexer;
@@ -272,7 +323,11 @@ typedef struct {
   uint16_t  sizeInBytes;
   uint16_t  unitCode;
   uint16_t  axisNo;
+#if XXOLDPERM
   uint8_t   paramAvail[32]; /* counting 0..31 */
+#else
+  permPTyp  permP[256];
+#endif
   char      devName[34];
   char      auxName[24][34];
   float     absMin;
@@ -306,6 +361,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 #endif
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_MM, 1,
+#if XXOLDPERM
       {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
        /*  8..15   */ 0,
        /* 16..23   */ 0,
@@ -339,6 +395,58 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 240..247 */ 0,
        /* 248..255 */ 0
       },
+#else
+    {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
+     /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  10..14  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  15..19  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  20..24  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  25..29  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  30..34  */ permPNone, permPNone, uminPRDWR, umaxPRDWR, permPNone,
+     /*  35..39  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  40..44  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  45..49  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  50..54  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  55..59  */ permPNone, hystPRead, permPNone, hvelPNone, permPNone,
+     /*  60..64  */ speedRDWR, acclPRDWR, permPNone, permPNone, permPNone,
+     /*  65..69  */ permPNone, permPNone, permPNone, permPNone, hposPRead,
+     /*  70..74  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  75..79  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  80..84  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  85..89  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  90..94  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  95..99  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 100..105 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 105..109 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 110..114 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 115..119 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 120..124 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 125..129 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 130..134 */ permPNone, permPNone, permPNone, homePRDWR, permPNone,
+     /* 135..139 */ permPNone, permPNone, setPoRDWR, permPNone, permPNone,
+     /* 140..144 */ permPNone, permPNone, mvVelRDWR, permPNone, permPNone,
+     /* 145..159 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 150..154 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 155..159 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 160..164 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 165..169 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 170..174 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 175..179 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 180..184 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 185..189 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 190..194 */ permPNone, permPNone, uminERDWR, umaxERDWR, hprocRDWR,
+     /* 195..199 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 200..204 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 205..209 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 210..214 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 215..219 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 220..224 */ permPNone, urevPRead, srevPRead, vmaxPRead, permPNone,
+     /* 225..229 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 230..234 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
+    },
+#endif
       "SimAxis1",
       { "notHomed", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -379,6 +487,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 #endif
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_DEGREE, 2,
+#if XXOLDPERM
       {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
        /*  8..15   */ 0,
        /* 16..23   */ 0,
@@ -412,6 +521,58 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 240..247 */ 0,
        /* 248..255 */ 0
       },
+#else
+    {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
+     /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  10..14  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  15..19  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  20..24  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  25..29  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  30..34  */ permPNone, permPNone, uminPRDWR, umaxPRDWR, permPNone,
+     /*  35..39  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  40..44  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  45..49  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  50..54  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  55..59  */ permPNone, hystPRead, permPNone, hvelPNone, permPNone,
+     /*  60..64  */ speedRDWR, acclPRDWR, permPNone, permPNone, permPNone,
+     /*  65..69  */ permPNone, permPNone, permPNone, permPNone, hposPRead,
+     /*  70..74  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  75..79  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  80..84  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  85..89  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  90..94  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  95..99  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 100..105 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 105..109 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 110..114 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 115..119 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 120..124 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 125..129 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 130..134 */ permPNone, permPNone, permPNone, homePNone, permPNone,
+     /* 135..139 */ permPNone, permPNone, setPoRDWR, permPNone, permPNone,
+     /* 140..144 */ permPNone, permPNone, mvVelRDWR, permPNone, permPNone,
+     /* 145..159 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 150..154 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 155..159 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 160..164 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 165..169 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 170..174 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 175..179 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 180..184 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 185..189 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 190..194 */ permPNone, permPNone, uminERDWR, umaxERDWR, hprocRDWR,
+     /* 195..199 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 200..204 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 205..209 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 210..214 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 215..219 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 220..224 */ permPNone, urevPRead, srevPRead, vmaxPRead, permPNone,
+     /* 225..229 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 230..234 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
+    },
+#endif
       "RotAxis2",
       { "notHomed", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -453,6 +614,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 #ifdef HAS_5010
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 3,
+#if XXOLDPERM
       {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
        /*  8..15   */ 0,
        /* 16..23   */ 0,
@@ -486,6 +648,58 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 240..247 */ 0,
        /* 248..255 */ 0
       },
+#else
+    {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
+     /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  10..14  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  15..19  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  20..24  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  25..29  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  30..34  */ permPNone, permPNone, uminPRDWR, umaxPRDWR, permPNone,
+     /*  35..39  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  40..44  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  45..49  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  50..54  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  55..59  */ permPNone, hystPRead, permPNone, hvelPNone, permPNone,
+     /*  60..64  */ speedRDWR, acclPRDWR, permPNone, permPNone, permPNone,
+     /*  65..69  */ permPNone, permPNone, permPNone, permPNone, hposPRead,
+     /*  70..74  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  75..79  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  80..84  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  85..89  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  90..94  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  95..99  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 100..105 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 105..109 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 110..114 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 115..119 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 120..124 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 125..129 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 130..134 */ permPNone, permPNone, permPNone, homePRDWR, permPNone,
+     /* 135..139 */ permPNone, permPNone, setPoNone, permPNone, permPNone,
+     /* 140..144 */ permPNone, permPNone, mvVelRDWR, permPNone, permPNone,
+     /* 145..159 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 150..154 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 155..159 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 160..164 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 165..169 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 170..174 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 175..179 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 180..184 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 185..189 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 190..194 */ permPNone, permPNone, uminERDWR, umaxERDWR, hprocRDWR,
+     /* 195..199 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 200..204 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 205..209 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 210..214 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 215..219 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 220..224 */ permPNone, urevPRead, srevPRead, vmaxPRead, permPNone,
+     /* 225..229 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 230..234 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
+    },
+#endif
       "Axis5010-3",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -494,6 +708,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     },
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 4,
+#if XXOLDPERM
       {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
        /*  8..15   */ 0,
        /* 16..23   */ 0,
@@ -527,6 +742,58 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        /* 240..247 */ 0,
        /* 248..255 */ 0
       },
+#else
+    {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
+     /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  10..14  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  15..19  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  20..24  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  25..29  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  30..34  */ permPNone, permPNone, uminPRDWR, umaxPRDWR, permPNone,
+     /*  35..39  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  40..44  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  45..49  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  50..54  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  55..59  */ permPNone, hystPRead, permPNone, hvelPNone, permPNone,
+     /*  60..64  */ speedRDWR, acclPRDWR, permPNone, permPNone, permPNone,
+     /*  65..69  */ permPNone, permPNone, permPNone, permPNone, hposPRead,
+     /*  70..74  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  75..79  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  80..84  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  85..89  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  90..94  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /*  95..99  */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 100..105 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 105..109 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 110..114 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 115..119 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 120..124 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 125..129 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 130..134 */ permPNone, permPNone, permPNone, homePNone, permPNone,
+     /* 135..139 */ permPNone, permPNone, setPoNone, permPNone, permPNone,
+     /* 140..144 */ permPNone, permPNone, mvVelRDWR, permPNone, permPNone,
+     /* 145..159 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 150..154 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 155..159 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 160..164 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 165..169 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 170..174 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 175..179 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 180..184 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 185..189 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 190..194 */ permPNone, permPNone, uminERDWR, umaxERDWR, hprocRDWR,
+     /* 195..199 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 200..204 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 205..209 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 210..214 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 215..219 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 220..224 */ permPNone, urevPRead, srevPRead, vmaxPRead, permPNone,
+     /* 225..229 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 230..234 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
+     /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
+    },
+#endif
       "Axis5010-4",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -746,16 +1013,21 @@ static void init_axis(int axis_no)
             if (tmp_axis_no == axis_no) {
               double absMax = indexerDeviceAbsStraction[devNum].absMax;
               double absMin = indexerDeviceAbsStraction[devNum].absMin;
+              int hasUserMin = 0;
+#if XXOLDPERM
+              hasUserMin = indexerDeviceAbsStraction[devNum].paramAvail[4] &
+                PARAM_AVAIL_32_39_USR_MIN_FLOAT32;
+ #else
+              hasUserMin = indexerDeviceAbsStraction[devNum].permP != permPNone;
+ #endif
               setHighHardLimitPos(axis_no, absMax);
               setLowHardLimitPos(axis_no,  absMin);
               LOGINFO3("%s/%s:%d axis_no=%d tmp_axis_no=%d USR_MIN_BIT=%u\n",
                        __FILE__, __FUNCTION__, __LINE__,
                        axis_no, tmp_axis_no,
-                       indexerDeviceAbsStraction[devNum].paramAvail[4] &
-                       PARAM_AVAIL_32_39_USR_MIN_FLOAT32);
+                       hasUserMin);
 
-              if (indexerDeviceAbsStraction[devNum].paramAvail[4] &
-                  PARAM_AVAIL_32_39_USR_MIN_FLOAT32) {
+              if (hasUserMin) {
                 setHighSoftLimitPos(tmp_axis_no, absMax - 1.0);
                 setLowSoftLimitPos(tmp_axis_no, absMin + 1.0);
                 setEnableHighSoftLimit(tmp_axis_no, 1);
@@ -1048,7 +1320,7 @@ indexerMotorParamWrite(unsigned motor_axis_no,
   }
 
   init_axis((int)motor_axis_no);
-  LOGINFO3("%s/%s:%d motor_axis_no=%u paramIndex=%u ,fValue=%f\n",
+  LOGINFO3("%s/%s:%d motor_axis_no=%u paramIndex=%u, fValue=%f\n",
            __FILE__, __FUNCTION__, __LINE__,
            motor_axis_no, paramIndex, fValue);
 
@@ -1074,10 +1346,20 @@ indexerMotorParamWrite(unsigned motor_axis_no,
     setLowSoftLimitPos(motor_axis_no, fValue);
     return ret;
   case PARAM_IDX_SPEED_FLOAT32:
-    setNxtMoveVelocity(motor_axis_no, fValue);
+    {
+      double maxVelocity = getMaxVelocity(motor_axis_no);
+      if (maxVelocity && fValue > maxVelocity)
+        fValue = maxVelocity;
+      setNxtMoveVelocity(motor_axis_no, fValue);
+    }
     return ret;
   case PARAM_IDX_ACCEL_FLOAT32:
-    setNxtMoveAcceleration(motor_axis_no, fValue);
+    {
+      double maxAcceleration = getMaxAcceleration(motor_axis_no);
+      if (maxAcceleration && fValue > maxAcceleration)
+        fValue = maxAcceleration;
+      setNxtMoveAcceleration(motor_axis_no, fValue);
+    }
     return ret;
     break;
   default:
@@ -1096,33 +1378,24 @@ indexerMotorParamInterface(unsigned motor_axis_no,
   unsigned paramCommand = uValue & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK;
   unsigned paramIndex = uValue & PARAM_IF_CMD_MASKPARAM_IF_IDX_MASK;
   uint16_t ret = (uint16_t)uValue;
-  if (!(paramCommand & PARAM_IF_CMD_MASKPARAM_DONE)) {
-    LOGINFO6("%s/%s:%d motor_axis_no=%u paramIndex=%u offset=%u uValue=0x%x lenInPlcPara=%u\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             motor_axis_no, paramIndex, offset, uValue, lenInPlcPara);
+  if (paramCommand == PARAM_IF_CMD_INVALID) {
+    uValue = PARAM_IF_CMD_DONE;
+    paramCommand = uValue & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK;
+    paramIndex = uValue & PARAM_IF_CMD_MASKPARAM_IF_IDX_MASK;
+    ret = (uint16_t)uValue;
+    /* PILS specification say that the PLC set it to done
+       after initialization */
+    LOGINFO6("%s/%s:%d motor_axis_no=%u setting to PARAM_IF_CMD_DONE\n",
+             __FILE__, __FUNCTION__, __LINE__, motor_axis_no);
+    uintToNet(uValue, &netData.memoryBytes[offset], 2);
   }
-  if (paramCommand == PARAM_IF_CMD_DOREAD) {
-    double fRet;
-    /* do the read */
-    ret = indexerMotorParamRead(motor_axis_no,
-                                paramIndex,
-                                &fRet);
-    /* put DONE (or ERROR) into the process image */
-    uintToNet(ret, &netData.memoryBytes[offset], 2);
-    if ((ret & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
-      switch(paramIndex) {
-      case PARAM_IDX_OPMODE_AUTO_UINT32:
-      case PARAM_IDX_USR_MIN_EN_UINT32:
-      case PARAM_IDX_USR_MAX_EN_UINT32:
-      case PARAM_IDX_HOME_PROC_UINT32:
-        uintToNet((unsigned)fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
-        break;
-      default:
-        doubleToNet(fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
-        break;
-      }
-    }
-  } else if (paramCommand == PARAM_IF_CMD_DOWRITE) {
+  if (!(paramCommand & PARAM_IF_CMD_MASKPARAM_DONE)) {
+    LOGINFO6("%s/%s:%d NOT done motor_axis_no=%u paramIndex=%u offset=%u paramCommand=0x%4x uValue=0x%x lenInPlcPara=%u\n",
+             __FILE__, __FUNCTION__, __LINE__,
+             motor_axis_no, paramIndex, offset,
+             paramCommand, uValue, lenInPlcPara);
+  }
+  if (paramCommand == PARAM_IF_CMD_DOWRITE) {
     double fValue;
     int iValue;
     fValue = netToDouble(&netData.memoryBytes[offset + 2], lenInPlcPara);
@@ -1139,6 +1412,9 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     case PARAM_IDX_SPEED_FLOAT32:
     case PARAM_IDX_ACCEL_FLOAT32:
       ret = indexerMotorParamWrite(motor_axis_no, paramIndex, fValue);
+      /* the spec says, that the response must have the "real" value!
+         Get it by doing a read */
+      paramCommand = PARAM_IF_CMD_DOREAD;
       break;
     case PARAM_IDX_FUN_REFERENCE:
       {
@@ -1200,6 +1476,28 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     }
     /* put DONE (or ERROR) into the process image */
     uintToNet(ret, &netData.memoryBytes[offset], 2);
+  }
+  if (paramCommand == PARAM_IF_CMD_DOREAD) {
+    double fRet;
+    /* do the read */
+    ret = indexerMotorParamRead(motor_axis_no,
+                                paramIndex,
+                                &fRet);
+    /* put DONE (or ERROR) into the process image */
+    uintToNet(ret, &netData.memoryBytes[offset], 2);
+    if ((ret & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
+      switch(paramIndex) {
+      case PARAM_IDX_OPMODE_AUTO_UINT32:
+      case PARAM_IDX_USR_MIN_EN_UINT32:
+      case PARAM_IDX_USR_MAX_EN_UINT32:
+      case PARAM_IDX_HOME_PROC_UINT32:
+        uintToNet((unsigned)fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
+        break;
+      default:
+        doubleToNet(fRet, &netData.memoryBytes[offset + 2], lenInPlcPara);
+        break;
+      }
+    }
   }
   LOGINFO6("%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x ret=%x\n",
            __FILE__, __FUNCTION__, __LINE__,
@@ -1320,9 +1618,39 @@ static int indexerHandleIndexerCmd(unsigned offset,
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
   case 15:
+#if XXOLDPERM
     memcpy(&netData.memoryStruct.indexer.infoType15,
            indexerDeviceAbsStraction[devNum].paramAvail,
            sizeof(netData.memoryStruct.indexer.infoType15));
+#else
+    {
+      unsigned byteIdx;
+      memset(&netData.memoryStruct.indexer.infoType15,
+             0,
+             sizeof(netData.memoryStruct.indexer.infoType15));
+      for (byteIdx = 0;
+           byteIdx < sizeof(netData.memoryStruct.indexer.infoType15.parameters);
+           byteIdx ++) {
+        unsigned bitIdx;
+        unsigned parameter = 0;
+        size_t size_of_param;
+        size_of_param = 8 * sizeof(netData.memoryStruct.indexer.infoType15.parameters[0]);
+        for (bitIdx = 0; bitIdx < size_of_param; bitIdx++) {
+          permPTyp permP;
+          unsigned param_idx = byteIdx * size_of_param + bitIdx;
+          permP = indexerDeviceAbsStraction[devNum].permP[param_idx];
+          LOGINFO6("%s/%s:%d devNum=%u param_idx=%u byteIdx=%02u bitIdx=%u permP=%d\n",
+                   __FILE__, __FUNCTION__, __LINE__,
+                   devNum, param_idx, byteIdx, bitIdx, (int)permP);
+          if (permP != permPNone) parameter |= (1 << bitIdx);
+        }
+        LOGINFO6("%s/%s:%d devNum=%u byteIdx=%02u parameter=0x%02X\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 devNum, byteIdx, parameter);
+        netData.memoryStruct.indexer.infoType15.parameters[byteIdx] = parameter;
+      }
+    }
+#endif
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
   default:
