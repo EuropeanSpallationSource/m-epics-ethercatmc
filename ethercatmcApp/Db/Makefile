@@ -15,16 +15,12 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
-DB += sDctEL1252.proto
-DB += UTCtime.proto
 DB += ethercatmc.template
-DB += ethercatmcPTP.template
-DB += ethercatmcDctEL1252-PILS.template
-DB += ethercatmcDctEL1252-Stream.template
+DB += ethercatmcEL6688-PTP.template
+DB += ethercatmcEL1252-OneChannel.template
 DB += ethercatmcdebug.template
 DB += ethercatmchome.template
 DB += ethercatmcindexer.template
-DB += ethercatmcmcUTCtime.template
 DB += ethercatmcreadback.template
 DB += ethercatmcslit_soft.template
 DB += ethercatmcslit_hard.template

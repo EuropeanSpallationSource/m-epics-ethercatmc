@@ -1,0 +1,1 @@
+dbLoadRecords("ethercatmcEL1252-OneChannel.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO)")

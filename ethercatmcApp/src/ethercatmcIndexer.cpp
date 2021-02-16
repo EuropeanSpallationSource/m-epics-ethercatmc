@@ -1304,6 +1304,10 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
 
   asynStatus status;
+  struct {
+    char     name[34];
+    unsigned axisNoOrIndex;
+  } splitedParamNameNumber;
   int function = -1;
   pilsAsynDevInfo_type *pPilsAsynDevInfo
     = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
@@ -1314,6 +1318,7 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
               modNamEMC, functionName,  numPilsAsynDevInfo);
     return;
   }
+
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
             "%s%s(%u) pilsNo=%d \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u"
             " EPICSParamType=%s(%i) MCUParamType=%s(%i)\n",
@@ -1324,6 +1329,28 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
             outputOffset,
             stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
             stringFromAsynParamType(myMCUParamType), (int)myMCUParamType);
+  if (strlen(paramName) < sizeof(splitedParamNameNumber.name)) {
+    /* Need to split the parameter, like "EPOCHEL1252P#1" */
+    int nvals;
+    memset(&splitedParamNameNumber, 0, sizeof(splitedParamNameNumber));
+    nvals = sscanf(paramName, "%[^#]#%u",
+                   &splitedParamNameNumber.name[0],
+                   &splitedParamNameNumber.axisNoOrIndex);
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
+              modNamEMC, functionName, nvals,
+              &splitedParamNameNumber.name[0],
+              splitedParamNameNumber.axisNoOrIndex);
+
+    if (nvals == 2) {
+      paramName = &splitedParamNameNumber.name[0];
+      axisNo = (int)splitedParamNameNumber.axisNoOrIndex;
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s(%u) \"%s\"\n",
+                modNamEMC, functionName, axisNo,  paramName);
+    }
+  }
+
   /* Some parameters are alread pre-created by the Controller.cpp,
      e.g.errorId. Use those, otherwise create a parameter */
   status = findParam(/* axisNo, */paramName, &function);
@@ -1351,8 +1378,8 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->myEPICSParamType = myEPICSParamType;
   pPilsAsynDevInfo->myMCUParamType   = myMCUParamType;
   pPilsAsynDevInfo->function         = function;
-  if (!strcmp(paramName, "SystemDClock")) {
-    pPilsAsynDevInfo->isSystemDClock = 1;
+  if (!strcmp(paramName, "SystemUTCtime")) {
+    pPilsAsynDevInfo->isSystemUTCtime = 1;
   }
   setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
 
@@ -1378,6 +1405,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
             modNamEMC, functionName, axisNo, numPilsAsynDevInfo,
             indexOffset, iTypCode, paramName);
 
+  if (!iTypCode) return;
   switch (iTypCode) {
     case 0x1201:
       lenInPLC = 2;
@@ -1420,21 +1448,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   if (myAsynParamType != asynParamNotDefined) {
     asynParamType myEPICSParamType = myAsynParamType;
     asynParamType myMCUParamType  = myAsynParamType;
-    if (!strcmp(paramName, "homeSeq")) {
-      if (outputOffset) {
-        addPilsAsynDevLst(axisNo, "HomProc", lenInPLC,
-                          0, //inputOffset,
-                          outputOffset,
-                          myEPICSParamType,  myMCUParamType);
-        addPilsAsynDevLst(axisNo, "HomProc-RB", lenInPLC,
-                          inputOffset,
-                          0, //outputOffset,
-                          myEPICSParamType, myMCUParamType);
-        return;
-      } else {
-        paramName = "HomProc-RB";
-      }
-    } else if (!strcmp(paramName, "encoderRaw")) {
+    if (!strcmp(paramName, "encoderRaw")) {
       paramName = "EncAct";
       /* Special handling for encoderRaw */
       myEPICSParamType = asynParamFloat64;
@@ -1453,17 +1467,15 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   }
 }
 
-extern "C" void DCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
+extern "C" void UTCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
 {
 #define NSEC_PER_SEC      1000000000
-#define POSIX_TIME_AT_DCCLOCK_EPOCH 946684800
   /*
-   * convert from DC clock Time to Epics time 2000 Jan 1 to 1990 Jan 1
+   * convert from UTC Time to Epics time
    * (POSIX_TIME_AT_EPICS_EPOCH defined in epicsTime.h)
   */
   uint64_t nSecEpicsEpoch;
-  nSecEpicsEpoch = dcNsec - ((uint64_t)POSIX_TIME_AT_EPICS_EPOCH -
-                             POSIX_TIME_AT_DCCLOCK_EPOCH) * NSEC_PER_SEC;
+  nSecEpicsEpoch = dcNsec - ((uint64_t)POSIX_TIME_AT_EPICS_EPOCH) * NSEC_PER_SEC;
   ts->secPastEpoch = (uint32_t)(nSecEpicsEpoch / NSEC_PER_SEC);
   ts->nsec =         (uint32_t)(nSecEpicsEpoch % NSEC_PER_SEC);
 }
@@ -1607,13 +1619,13 @@ asynStatus ethercatmcController::indexerPoll(void)
         default:
           ;
         }
-        if (pPilsAsynDevInfo->isSystemDClock) {
+        if (pPilsAsynDevInfo->isSystemUTCtime) {
           uint64_t nSec;
           epicsTimeStamp timeStamp;
           nSec = netToUint64(pDataInPlc, lenInPLC);
-          DCtimeToEpicsTimeStamp(nSec, &timeStamp);
+          UTCtimeToEpicsTimeStamp(nSec, &timeStamp);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                    "%sindexerPoll SystemDClock nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+                    "%sindexerPoll SystemUTCtime nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
                     modNamEMC, nSec,
                     timeStamp.secPastEpoch, timeStamp.nsec);
           setTimeStamp(&timeStamp);

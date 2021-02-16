@@ -33,7 +33,6 @@ record(longin, "$(PREFIX)PTPOffset")
     field(EGU,  "nsec")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPOffset")
     field(SCAN, "I/O Intr")
-    field(TSE, -2)
 }
 
 record(longin, "$(PREFIX)PTPSyncSeqNum")
@@ -43,5 +42,14 @@ record(longin, "$(PREFIX)PTPSyncSeqNum")
     field(EGU,  "num")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPSyncSeqNum")
     field(SCAN, "I/O Intr")
-    field(TSE, -2)
 }
+
+record(int64in, "$(PREFIX)SystemUTCtime")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "SystemUTCtime")
+    field(EGU,  "nanoSeconds")
+    field(INP,  "@asyn($(MOTOR_PORT),0)SystemUTCtime")
+    field(SCAN, "I/O Intr")
+}
+
