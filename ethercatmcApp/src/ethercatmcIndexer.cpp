@@ -1119,6 +1119,7 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 
   status = getPlcMemoryUint(ctrlLocal.indexerOffset,
                             &ctrlLocal.indexerOffset, 2);
+  if (status) goto endPollIndexer;
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
             "%sindexerOffset=%u\n",
             modNamEMC, ctrlLocal.indexerOffset);
@@ -1132,62 +1133,57 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
     double fAbsMin = 0;
     double fAbsMax = 0;
     status = readDeviceIndexer(devNum, infoType0);
-    if (!status) {
-      struct {
-        uint8_t   typCode_0;
-        uint8_t   typCode_1;
-        uint8_t   size_0;
-        uint8_t   size_1;
-        uint8_t   offset_0;
-        uint8_t   offset_1;
-        uint8_t   unit_0;
-        uint8_t   unit_1;
-        uint8_t   flags_0;
-        uint8_t   flags_1;
-        uint8_t   flags_2;
-        uint8_t   flags_3;
-        uint8_t   absMin[4];
-        uint8_t   absMax[4];
-      } infoType0_data;
-      status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset +  1*2,
-                                              &infoType0_data, sizeof(infoType0_data));
-      if (!status) {
-        iTypCode  = infoType0_data.typCode_0 + (infoType0_data.typCode_1 << 8);
-        iSizeBytes= infoType0_data.size_0 + (infoType0_data.size_1 << 8);
-        iOffsBytes= infoType0_data.offset_0 + (infoType0_data.offset_1 << 8);
-        iUnit     = infoType0_data.unit_0 + (infoType0_data.unit_1 << 8);
-        iAllFlags = infoType0_data.flags_0 + (infoType0_data.flags_1 << 8) +
-          (infoType0_data.flags_2 << 16) + (infoType0_data.flags_3 << 24);
-        fAbsMin   = netToDouble(&infoType0_data.absMin,
-                                sizeof(infoType0_data.absMin));
-        fAbsMax   = netToDouble(&infoType0_data.absMax,
-                                sizeof(infoType0_data.absMax));
-      }
-    }
+    if (status) goto endPollIndexer;
+    struct {
+      uint8_t   typCode_0;
+      uint8_t   typCode_1;
+      uint8_t   size_0;
+      uint8_t   size_1;
+      uint8_t   offset_0;
+      uint8_t   offset_1;
+      uint8_t   unit_0;
+      uint8_t   unit_1;
+      uint8_t   flags_0;
+      uint8_t   flags_1;
+      uint8_t   flags_2;
+      uint8_t   flags_3;
+      uint8_t   absMin[4];
+      uint8_t   absMax[4];
+    } infoType0_data;
+    status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset +  1*2,
+                                            &infoType0_data, sizeof(infoType0_data));
+    if (status) goto endPollIndexer;
+    iTypCode  = infoType0_data.typCode_0 + (infoType0_data.typCode_1 << 8);
+    iSizeBytes= infoType0_data.size_0 + (infoType0_data.size_1 << 8);
+    iOffsBytes= infoType0_data.offset_0 + (infoType0_data.offset_1 << 8);
+    iUnit     = infoType0_data.unit_0 + (infoType0_data.unit_1 << 8);
+    iAllFlags = infoType0_data.flags_0 + (infoType0_data.flags_1 << 8) +
+      (infoType0_data.flags_2 << 16) + (infoType0_data.flags_3 << 24);
+    fAbsMin   = netToDouble(&infoType0_data.absMin,
+                            sizeof(infoType0_data.absMin));
+    fAbsMax   = netToDouble(&infoType0_data.absMax,
+                            sizeof(infoType0_data.absMax));
+
     status = readDeviceIndexer(devNum, infoType4);
-    if (!status) {
-      getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                     descVersAuthors.desc,
-                                     sizeof(descVersAuthors.desc));
-    }
+    if (status) goto endPollIndexer;
+    getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                   descVersAuthors.desc,
+                                   sizeof(descVersAuthors.desc));
     status = readDeviceIndexer(devNum, infoType5);
-    if (!status) {
-      getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                     descVersAuthors.vers,
-                                     sizeof(descVersAuthors.vers));
-    }
+    if (status) goto endPollIndexer;
+    getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                   descVersAuthors.vers,
+                                   sizeof(descVersAuthors.vers));
     status = readDeviceIndexer(devNum, infoType6);
-    if (!status) {
-      getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                     descVersAuthors.author1,
-                                     sizeof(descVersAuthors.author1));
-    }
+    if (status) goto endPollIndexer;
+    getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                   descVersAuthors.author1,
+                                   sizeof(descVersAuthors.author1));
     status = readDeviceIndexer(devNum, infoType7);
-    if (!status) {
-      getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                     descVersAuthors.author2,
-                                     sizeof(descVersAuthors.author2));
-    }
+    if (status) goto endPollIndexer;
+    getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
+                                   descVersAuthors.author2,
+                                   sizeof(descVersAuthors.author2));
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%sindexerDevice(%u) devNum=%d \"%s\" TypCode=0x%X OffsBytes=%u "
               "SizeBytes=%u UnitCode=0x%X (%s%s) AllFlags=0x%X AbsMin=%e AbsMax=%e\n",
