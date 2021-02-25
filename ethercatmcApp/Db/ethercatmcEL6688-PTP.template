@@ -75,7 +75,7 @@ record(longin, "$(PREFIX)WriteDoneExtTimeOffset")
 {
     field(DTYP, "asynInt32")
     field(DESC, "WriteDoneExtTimeOffset")
-    field(EGU,  "Counter-HowOften")
+    field(EGU,  "CounterHowOften")
     field(INP,  "@asyn($(MOTOR_PORT),0)WriteDoneExtTimeOffset")
     field(SCAN, "I/O Intr")
 }
