@@ -153,9 +153,12 @@ extern "C" {
    case PARAM_IDX_FUN_REFERENCE:           return "REFERENCE";
    case PARAM_IDX_FUN_SET_POSITION:        return "SET_POSITION";
    case PARAM_IDX_FUN_MOVE_VELOCITY:       return "MOVE_VELOCITY";
-   case PARAM_IDX_USR_MIN_EN_UINT:         return "USR_MIN_EN";
-   case PARAM_IDX_USR_MAX_EN_UINT:         return "USR_MAX_EN";
-   case PARAM_IDX_HOMPROC_UINT:            return "HOMPROC";
+   case PARAM_IDX_USR_MIN_EN_UINT:         return "USR_MIN_EN_OLD";
+   case PARAM_IDX_USR_MAX_EN_UINT:         return "USR_MAX_EN_OLD";
+   case PARAM_IDX_HOMPROC_UINT:            return "HOMPROC_OLD";
+   case PARAM_IDX_USR_MIN_EN_FLOAT:        return "USR_MIN_EN";
+   case PARAM_IDX_USR_MAX_EN_FLOAT:        return "USR_MAX_EN";
+   case PARAM_IDX_HOMPROC_FLOAT:           return "HOMPROC";
    case PARAM_IDX_UNITS_PER_REV_FLOAT:     return "UNITS_PER_REV";
    case PARAM_IDX_STEPS_PER_REV_FLOAT:     return "STEPS_PER_REV";
    case PARAM_IDX_MAX_VELO_FLOAT:          return "MAX_VELO";
@@ -780,6 +783,18 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_HOMPROC_UINT:
+    updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
+    if (initial) updateCfgValue(axisNo, ethercatmcHomProc_, (int)fValue, "homproc");
+    break;
+  case PARAM_IDX_USR_MIN_EN_FLOAT:
+    updateCfgValue(axisNo, ethercatmcCfgDLLM_En_RB_, (int)fValue, "dllm_en");
+    udateMotorLimitsRO(axisNo);
+    break;
+  case PARAM_IDX_USR_MAX_EN_FLOAT:
+    updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, (int)fValue, "dhlm_en");
+    udateMotorLimitsRO(axisNo);
+    break;
+  case PARAM_IDX_HOMPROC_FLOAT:
     updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
     if (initial) updateCfgValue(axisNo, ethercatmcHomProc_, (int)fValue, "homproc");
     break;

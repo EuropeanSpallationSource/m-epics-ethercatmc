@@ -178,6 +178,9 @@ public:
 #define PARAM_IDX_USR_MAX_EN_UINT           193
 #define PARAM_IDX_HOMPROC_UINT              194
 /* Implementation defined, floating point */
+#define PARAM_IDX_USR_MIN_EN_FLOAT          218
+#define PARAM_IDX_USR_MAX_EN_FLOAT          219
+#define PARAM_IDX_HOMPROC_FLOAT             220
 #define PARAM_IDX_UNITS_PER_REV_FLOAT       221
 #define PARAM_IDX_STEPS_PER_REV_FLOAT       222
 #define PARAM_IDX_MAX_VELO_FLOAT            223
