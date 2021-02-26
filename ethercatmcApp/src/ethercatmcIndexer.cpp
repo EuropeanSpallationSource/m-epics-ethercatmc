@@ -588,12 +588,11 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
 
     if (counter >= 1) {
       asynPrint(pasynUserController_, traceMask,
-                "%sindexerParamWrite(%d) paramIndex=%s(%u) value=%02g "
-                "lenInPlcPara=%u counter=%u"
-                " cmdSubParamIndexRB=%s (0x%04x)\n",
+                "%sindexerParamWrite(%d) paramIndex=%s(%u 0x%02X) value=%02g "
+                "counter=%u cmdSubParamIndexRB=%s (0x%04x)\n",
                 modNamEMC, axisNo,
-                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                value, lenInPlcPara, counter,
+                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
+                value, counter,
                 paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
     }
     unsigned paramIfCmd = cmdSubParamIndexRB & PARAM_IF_CMD_MASK;
@@ -629,10 +628,10 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
         if (paramIndexRB != paramIndex || !has_written) {
           /* Send the write request, unless we already done it */
           asynPrint(pasynUserController_, traceMask,
-                    "%sindexerParamWrite(%d) writing to MCU paramIndex=%s(%u) value=%02g has_written=%d\n",
+                    "%sindexerParamWrite(%d) writing to MCU paramIndex=%s(%u) value=%02g lenInPlcPara=%u has_written=%d\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                    value, has_written);
+                    value, lenInPlcPara, has_written);
           status = setPlcMemoryOnErrorStateChange(paramIfOffset, &paramIf_to_MCU,
                                                   (unsigned)sizeof(paramIf_to_MCU));
           if (status) return status;
