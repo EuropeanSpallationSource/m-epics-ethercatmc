@@ -149,11 +149,16 @@ if test "$MOTORPORT" = 48898; then
 fi
 export LOCALAMSNETID REMOTEAMSNETID
 
-if test -z "$1"; then
-  echo >&2 "dollar 1 is empty"
-else
-  echo >&2 "dollar 1 is $1y"
+if test "$1" = "-l"; then
+  if test -f xx.txt; then
+    timestamp=$(date "+%y-%m-%d-%H.%M.%S")
+    mv xx.txt ../logs/$timestamp.txt || exit 1
+  fi
+  DOLOG=" 2>&1 | tee $PWD/xx.txt"
+  shift
 fi
+export DOLOG
+
 
 (
   IOCDIR=../iocBoot/ioc${APPXX}
