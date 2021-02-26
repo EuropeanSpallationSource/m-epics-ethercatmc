@@ -1270,10 +1270,10 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
   }
 
  endPollIndexer:
-  /* Special case: asynDisabled means "no indexer found".
-     That is OK, return asynSuccess */
-  if (status == asynDisabled)
-    return asynSuccess;
+  if (status) {
+    /* Clean up, if we manged to come half-through only */
+    indexerDisconnected();
+  }
   return status;
 
 }
