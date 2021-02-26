@@ -1018,7 +1018,8 @@ static void init_axis(int axis_no)
               hasUserMin = indexerDeviceAbsStraction[devNum].paramAvail[4] &
                 PARAM_AVAIL_32_39_USR_MIN_FLOAT32;
  #else
-              hasUserMin = indexerDeviceAbsStraction[devNum].permP != permPNone;
+              unsigned param_idx = PARAM_IDX_USR_MIN_FLOAT32;
+              hasUserMin = indexerDeviceAbsStraction[devNum].permP[param_idx] != permPNone;
  #endif
               setHighHardLimitPos(axis_no, absMax);
               setLowHardLimitPos(axis_no,  absMin);
