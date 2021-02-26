@@ -25,6 +25,13 @@
 #define PARAM_IF_IDX_FIRST_CUSTOM_PARA             192
 #define PARAM_IF_IDX_LAST_CUSTOM_PARA              223
 
+typedef enum
+  {
+    PILSparamPermNone = 0,
+    PILSparamPermRead = 1,
+    PILSparamPermWrite = 2
+  } PILSparamPermType;
+
 extern "C" {
   int ethercatmcCreateIndexerAxis(const char *ethercatmcName, int axisNo,
                                   int axisFlags, const char *axisOptionsStr);
@@ -90,6 +97,7 @@ private:
     unsigned int hasProblem :1;
     char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
+    PILSparamPermType PILSparamPerm[256];
     } drvlocal;
 
 #ifndef motorMessageTextString

@@ -543,15 +543,23 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                                                    double value,
                                                    double *pValueRB)
 {
+  ethercatmcIndexerAxis *pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
   paramIf_type paramIf_to_MCU;
   paramIf_type paramIf_from_MCU;
   unsigned traceMask = ASYN_TRACE_INFO;
-  asynStatus status;
+  asynStatus status = asynSuccess;
   unsigned cmd      = PARAM_IF_CMD_DOWRITE + paramIndex;
   size_t lenInPLCparamIf = sizeof(paramIf_to_MCU.paramCtrl) + lenInPlcPara;
   unsigned counter = 0;
   int has_written = 0;
 
+  if (pAxis) {
+    if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermRead) {
+      return asynParamWrongType;
+    } else if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermNone) {
+      return asynParamBadIndex;
+    }
+  }
   if (paramIndex > 0xFF ||
       lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
@@ -588,7 +596,8 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                 value, lenInPlcPara, counter,
                 paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
     }
-    switch (cmdSubParamIndexRB & PARAM_IF_CMD_MASK) {
+    unsigned paramIfCmd = cmdSubParamIndexRB & PARAM_IF_CMD_MASK;
+    switch (paramIfCmd) {
     case PARAM_IF_CMD_DONE:
       {
         if (paramIndexRB == paramIndex) {
@@ -629,6 +638,15 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
           if (status) return status;
           has_written = 1;
         } else if (paramIndexRB == paramIndex) {
+          if (pAxis) {
+            if (paramIfCmd == PARAM_IF_CMD_ERR_NO_IDX) {
+              pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermNone;
+              return asynParamBadIndex;
+            } else if (paramIfCmd == PARAM_IF_CMD_ERR_READONLY) {
+              pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermRead;
+              return asynParamWrongType;
+            }
+          }
           return asynDisabled;
         }
       }
@@ -886,6 +904,9 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
       if (bitIsSet) {
         double fValue = 0.0;
         int initial = 1;
+        if (paramIndex < sizeof(pAxis->drvlocal.PILSparamPerm)) {
+          pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermWrite;
+        }
         if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
             (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY) ||
             (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&

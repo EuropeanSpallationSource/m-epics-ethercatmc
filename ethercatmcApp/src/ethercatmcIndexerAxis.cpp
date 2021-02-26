@@ -910,8 +910,11 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
               "%ssetIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modNamEMC, axisNo_, value);
 #endif
   } else if (function == pC_->ethercatmcHomProc_) {
-    static const unsigned paramIndex = PARAM_IDX_HOMPROC_UINT;
+    unsigned paramIndex = PARAM_IDX_HOMPROC_UINT;
     double valueRB = -1;
+    if (drvlocal.PILSparamPerm[paramIndex] != PILSparamPermWrite) {
+      paramIndex = PARAM_IDX_HOMPROC_FLOAT;
+    }
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
@@ -937,8 +940,11 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
   } else if (function == pC_->ethercatmcCfgDHLM_En_) {
-    static const unsigned paramIndex = PARAM_IDX_USR_MAX_EN_UINT;
+    unsigned paramIndex = PARAM_IDX_USR_MAX_EN_UINT;
     double valueRB = -1;
+    if (drvlocal.PILSparamPerm[paramIndex] != PILSparamPermWrite) {
+      paramIndex = PARAM_IDX_USR_MAX_EN_FLOAT;
+    }
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
@@ -954,8 +960,11 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     }
     return asynError;
   } else if (function == pC_->ethercatmcCfgDLLM_En_) {
-    static const unsigned paramIndex = PARAM_IDX_USR_MIN_EN_UINT;
+    unsigned paramIndex = PARAM_IDX_USR_MIN_EN_UINT;
     double valueRB = -1;
+    if (drvlocal.PILSparamPerm[paramIndex] != PILSparamPermWrite) {
+      paramIndex = PARAM_IDX_USR_MIN_EN_FLOAT;
+    }
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                     paramIndex,
                                     drvlocal.lenInPlcPara,
