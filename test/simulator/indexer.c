@@ -190,10 +190,14 @@ typedef enum {
 #define PARAM_IDX_FUN_SET_POSITION            137
 #define PARAM_IDX_FUN_MOVE_VELOCITY           142
 /* Implementation defined, integer */
+/* The following 3 are obsolete */
 #define PARAM_IDX_USR_MIN_EN_UINT32           192
 #define PARAM_IDX_USR_MAX_EN_UINT32           193
 #define PARAM_IDX_HOME_PROC_UINT32            194
 /* Implementation defined, floating point */
+#define PARAM_IDX_USR_MIN_EN_FLOAT32          218
+#define PARAM_IDX_USR_MAX_EN_FLOAT32          219
+#define PARAM_IDX_HOME_PROC_FLOAT32           220
 #define PARAM_IDX_UNITS_PER_REV_FLOAT32       221
 #define PARAM_IDX_STEPS_PER_REV_FLOAT32       222
 #define PARAM_IDX_MAX_VELO_FLOAT32            223
@@ -434,13 +438,13 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 175..179 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 180..184 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 185..189 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 190..194 */ permPNone, permPNone, uminERDWR, umaxERDWR, hprocRDWR,
+     /* 190..194 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 195..199 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 200..204 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 205..209 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 210..214 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 215..219 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 220..224 */ permPNone, urevPRead, srevPRead, vmaxPRead, permPNone,
+     /* 215..219 */ permPNone, permPNone, permPNone, uminERDWR, umaxERDWR,
+     /* 220..224 */ hprocRDWR, urevPRead, srevPRead, vmaxPRead, permPNone,
      /* 225..229 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 230..234 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -560,13 +564,13 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 175..179 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 180..184 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 185..189 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 190..194 */ permPNone, permPNone, uminERDWR, umaxERDWR, hprocRDWR,
+     /* 190..194 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 195..199 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 200..204 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 205..209 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 210..214 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 215..219 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 220..224 */ permPNone, urevPRead, srevPRead, vmaxPRead, permPNone,
+     /* 215..219 */ permPNone, permPNone, permPNone, uminERDWR, umaxERDWR,
+     /* 220..224 */ hprocRDWR, urevPRead, srevPRead, vmaxPRead, permPNone,
      /* 225..229 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 230..234 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -687,13 +691,13 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 175..179 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 180..184 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 185..189 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 190..194 */ permPNone, permPNone, uminERDWR, umaxERDWR, hprocRDWR,
+     /* 190..194 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 195..199 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 200..204 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 205..209 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 210..214 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 215..219 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 220..224 */ permPNone, urevPRead, srevPRead, vmaxPRead, permPNone,
+     /* 215..219 */ permPNone, permPNone, permPNone, uminERDWR, umaxERDWR,
+     /* 220..224 */ hprocRDWR, urevPRead, srevPRead, vmaxPRead, permPNone,
      /* 225..229 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 230..234 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -781,13 +785,13 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 175..179 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 180..184 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 185..189 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 190..194 */ permPNone, permPNone, uminERDWR, umaxERDWR, hprocRDWR,
+     /* 190..194 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 195..199 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 200..204 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 205..209 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 210..214 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 215..219 */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /* 220..224 */ permPNone, urevPRead, srevPRead, vmaxPRead, permPNone,
+     /* 215..219 */ permPNone, permPNone, permPNone, uminERDWR, umaxERDWR,
+     /* 220..224 */ hprocRDWR, urevPRead, srevPRead, vmaxPRead, permPNone,
      /* 225..229 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 230..234 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -1282,12 +1286,15 @@ indexerMotorParamRead(unsigned motor_axis_no,
     *fRet = getNxtMoveVelocity(motor_axis_no) / 2.0;
     return ret;
   case PARAM_IDX_USR_MIN_EN_UINT32:
+  case PARAM_IDX_USR_MIN_EN_FLOAT32:
     *fRet = getEnableLowSoftLimit(motor_axis_no);
     return ret;
   case PARAM_IDX_USR_MAX_EN_UINT32:
+  case PARAM_IDX_USR_MAX_EN_FLOAT32:
     *fRet = getEnableHighSoftLimit(motor_axis_no);
     return ret;
   case PARAM_IDX_HOME_PROC_UINT32:
+  case PARAM_IDX_HOME_PROC_FLOAT32:
     *fRet = cmd_Motor_cmd[motor_axis_no].nHomProc;
     return ret;
   case PARAM_IDX_UNITS_PER_REV_FLOAT32:
@@ -1362,7 +1369,18 @@ indexerMotorParamWrite(unsigned motor_axis_no,
       setNxtMoveAcceleration(motor_axis_no, fValue);
     }
     return ret;
-    break;
+  case PARAM_IDX_USR_MIN_EN_FLOAT32:
+    setEnableLowSoftLimit(motor_axis_no, (int)fValue);
+    ret = PARAM_IF_CMD_DONE | paramIndex;
+    return ret;
+  case PARAM_IDX_USR_MAX_EN_FLOAT32:
+    setEnableHighSoftLimit(motor_axis_no, (int)fValue);
+    ret = PARAM_IF_CMD_DONE | paramIndex;
+    return ret;
+  case PARAM_IDX_HOME_PROC_FLOAT32:
+    cmd_Motor_cmd[motor_axis_no].nHomProc = (int)fValue;
+    ret = PARAM_IF_CMD_DONE | paramIndex;
+    return ret;
   default:
     break;
   }
@@ -1412,6 +1430,9 @@ indexerMotorParamInterface(unsigned motor_axis_no,
     case PARAM_IDX_USR_MIN_FLOAT32:
     case PARAM_IDX_SPEED_FLOAT32:
     case PARAM_IDX_ACCEL_FLOAT32:
+    case PARAM_IDX_USR_MIN_EN_FLOAT32:
+    case PARAM_IDX_USR_MAX_EN_FLOAT32:
+    case PARAM_IDX_HOME_PROC_FLOAT32:
       ret = indexerMotorParamWrite(motor_axis_no, paramIndex, fValue);
       /* the spec says, that the response must have the "real" value!
          Get it by doing a read */
