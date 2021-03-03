@@ -1207,6 +1207,14 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
     /* indexer has devNum == 0, it is not a device */
     if (devNum) {
       unsigned endOffset = iOffsBytes + iSizeBytes;
+      if (iOffsBytes < lastDeviceEndOffset) {
+        /* There is an overlap */
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%sOverlap iOffsBytes=%u lastDeviceEndOffset=%u\n",
+                  modNamEMC, iOffsBytes, lastDeviceEndOffset);
+        status = asynError;
+        goto endPollIndexer;
+      }
       /* find the lowest and highest offset for all devices */
       if (iOffsBytes < firstDeviceStartOffset) {
         firstDeviceStartOffset = iOffsBytes;
