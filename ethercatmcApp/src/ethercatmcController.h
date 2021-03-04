@@ -136,6 +136,7 @@ extern "C" {
   const char *plcUnitTxtFromUnitCode(unsigned unitCode);
   const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex);
   int paramIndexIsInteger(unsigned paramIndex);
+  int paramIndexIsFunction(unsigned paramIndex);
   const char *ethercatmcstrStatus(asynStatus status);
   const char *errStringFromErrId(int nErrorId);
   const char *stringFromAsynParamType(asynParamType);

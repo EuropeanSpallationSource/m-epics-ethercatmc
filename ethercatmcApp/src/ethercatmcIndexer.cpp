@@ -180,6 +180,15 @@ extern "C" {
       return 0;
     }
   }
+  int paramIndexIsFunction(unsigned paramIndex) {
+    if (paramIndex >= 128 && paramIndex <= 191) {
+      return 1;
+    } else  if (paramIndex >= 224 && paramIndex <= 239) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 };
 
 static const double fABSMIN = -3.0e+38;
@@ -599,7 +608,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     switch (paramIfCmd) {
     case PARAM_IF_CMD_DONE:
       {
-        if (paramIndexRB == paramIndex) {
+        if (paramIndexRB == paramIndex && (!paramIndexIsFunction(paramIndex))) {
           double valueRB;
           if (paramIndexIsInteger(paramIndex)) {
             valueRB = netToUint(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
@@ -653,12 +662,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     case PARAM_IF_CMD_BUSY:
       {
         if (paramIndexRB == paramIndex) {
-          /* Calling the parameter interface on a function
-             may return busy. That is OK */
-          switch (paramIndex) {
-          case PARAM_IDX_FUN_REFERENCE:
-          case PARAM_IDX_FUN_SET_POSITION:
-          case PARAM_IDX_FUN_MOVE_VELOCITY:
+          if (paramIndexIsFunction(paramIndex)) {
             if (pValueRB) *pValueRB = -1.0; //
             return asynSuccess;
           };
