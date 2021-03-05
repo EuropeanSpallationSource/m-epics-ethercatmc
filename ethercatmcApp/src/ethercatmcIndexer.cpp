@@ -1296,7 +1296,7 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
                                              unsigned      inputOffset,
                                              unsigned      outputOffset,
                                              asynParamType myEPICSParamType,
-                                             asynParamType myMCUParamType)
+                                             unsigned      iTypCode)
 {
   const static char *const functionName = "addPilsAsynDevLst";
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
@@ -1321,14 +1321,14 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
 
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
             "%s%s axisNo=%i \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u"
-            " EPICSParamType=%s(%i) MCUParamType=%s(%i)\n",
+            " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
             modNamEMC, functionName, axisNo,
             paramName,
             lenInPLC,
             inputOffset,
             outputOffset,
             stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
-            stringFromAsynParamType(myMCUParamType), (int)myMCUParamType);
+            iTypCode);
   if (strlen(paramName) < sizeof(splitedParamNameNumber.name)) {
     /* Need to split the parameter, like "EPOCHEL1252P#1" */
     int nvals;
@@ -1376,7 +1376,7 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->inputOffset      = inputOffset;
   pPilsAsynDevInfo->outputOffset     = outputOffset;
   pPilsAsynDevInfo->myEPICSParamType = myEPICSParamType;
-  pPilsAsynDevInfo->myMCUParamType   = myMCUParamType;
+  pPilsAsynDevInfo->iTypCode         = iTypCode;
   pPilsAsynDevInfo->function         = function;
   if (!strcmp(paramName, "SystemUTCtime")) {
     pPilsAsynDevInfo->isSystemUTCtime = 1;
@@ -1442,7 +1442,6 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   }
   if (myAsynParamType != asynParamNotDefined) {
     asynParamType myEPICSParamType = myAsynParamType;
-    asynParamType myMCUParamType  = myAsynParamType;
     if (!strcmp(paramName, "encoderRaw")) {
       paramName = "EncAct";
       /* Special handling for encoderRaw */
@@ -1454,7 +1453,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
                       inputOffset,
                       outputOffset,
                       myEPICSParamType,
-                      myMCUParamType);
+                      iTypCode);
   } else {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s(%u) pilsNo=%d not created paramName=%s)\n",
@@ -1533,7 +1532,6 @@ asynStatus ethercatmcController::indexerPoll(void)
         if (!pPilsAsynDevInfo->inputOffset) continue;
 
         unsigned inputOffset = pPilsAsynDevInfo->inputOffset;
-        unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
         /* Each axis has it's own parameters.
            axisNo == 0 is no special axis, parameters
            for "the controller", additional IO, PTP info */
@@ -1545,6 +1543,7 @@ asynStatus ethercatmcController::indexerPoll(void)
           {
             int tracelevel = ASYN_TRACE_FLOW;
             const char *paramName = "";
+            unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
             epicsInt32 newValue, oldValue;
             getParamName(axisNo, function, &paramName);
             newValue = (epicsInt32)netToSint(pDataInPlc, lenInPLC);
@@ -1561,21 +1560,29 @@ asynStatus ethercatmcController::indexerPoll(void)
           }
           break;
         case asynParamFloat64:
+          /* Float64 may be read from integers or float or double */
           {
             int tracelevel = ASYN_TRACE_FLOW;
             const char *paramName = "";
             double newValue = 0.0, oldValue = 0.0;
             int newValueValid = 1;
-            getParamName(axisNo, function, &paramName);
-            if (pPilsAsynDevInfo->myMCUParamType == asynParamFloat64) {
-              newValue = netToDouble(pDataInPlc, lenInPLC);
-            } else if (lenInPLC <= sizeof(epicsInt32)) {
-              newValue = (double)(epicsInt64)netToSint(pDataInPlc, lenInPLC);
-            } else if (lenInPLC == sizeof(uint64_t)) {
-              newValue = (double)(epicsInt64)netToSint64(pDataInPlc, lenInPLC);
-            } else {
+            unsigned iTypCode = pPilsAsynDevInfo->iTypCode;
+            switch (iTypCode) {
+            case 0x1201:
+            case 0x1602:
+              newValue = (double)(epicsInt64)netToSint(pDataInPlc, 2);
+              break;
+            case 0x1202:
+            case 0x1604:
+                newValue = (double)(epicsInt64)netToSint(pDataInPlc, 4);
+                break;
+            case 0x1204:
+              newValue = (double)(epicsInt64)netToSint64(pDataInPlc, 8);
+              break;
+            default:
               newValueValid = 0;
             }
+            getParamName(axisNo, function, &paramName);
             if (newValueValid) {
               status = getDoubleParam(axisNo, function,  &oldValue);
               if (status != asynSuccess || oldValue != newValue) {
@@ -1617,6 +1624,7 @@ asynStatus ethercatmcController::indexerPoll(void)
         if (pPilsAsynDevInfo->isSystemUTCtime) {
           uint64_t nSec;
           epicsTimeStamp timeStamp;
+          unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
           nSec = netToUint64(pDataInPlc, lenInPLC);
           UTCtimeToEpicsTimeStamp(nSec, &timeStamp);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,

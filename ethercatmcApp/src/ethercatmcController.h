@@ -107,7 +107,7 @@ extern "C" {
     unsigned       lenInPLC;    /* len  inside the "plc memory bytes" */
     int            function;    /* asyn: "function" */
     asynParamType  myEPICSParamType; /* asynParamType.h */
-    asynParamType  myMCUParamType; /* asynParamType.h */
+    unsigned       iTypCode;
     int            isSystemUTCtime:1;
   } pilsAsynDevInfo_type;
 }
@@ -364,7 +364,7 @@ public:
                          unsigned      inputOffset,
                          unsigned      outputOffset,
                          asynParamType myEPICSParamType,
-                         asynParamType myMCUParamType);
+                         unsigned      iTypCode);
 
   void newPilsAsynDevice(int      axisNo,
                          unsigned indexOffset,
