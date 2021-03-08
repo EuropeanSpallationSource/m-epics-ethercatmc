@@ -585,11 +585,17 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
   UINTTONET(cmd, paramIf_to_MCU.paramCtrl);
 
   while (counter < MAX_COUNTER) {
+    double valueRB = -1.0;
     /* get the paraminterface "as is". It may be in DONE state as an answer
        to a write from a previous round */
     status = getPlcMemoryOnErrorStateChange(paramIfOffset,
                                             &paramIf_from_MCU,
                                             lenInPLCparamIf);
+    if (paramIndexIsInteger(paramIndex)) {
+      valueRB = netToUint(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
+    } else {
+      valueRB = netToDouble(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
+    }
 
     if (status) return status;
     unsigned cmdSubParamIndexRB = NETTOUINT(paramIf_from_MCU.paramCtrl);
@@ -609,12 +615,6 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     case PARAM_IF_CMD_DONE:
       {
         if (paramIndexRB == paramIndex && (!paramIndexIsFunction(paramIndex))) {
-          double valueRB;
-          if (paramIndexIsInteger(paramIndex)) {
-            valueRB = netToUint(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
-          } else {
-            valueRB = netToDouble(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
-          }
           asynPrint(pasynUserController_, traceMask,
                     "%sindexerParamWrite(%d) paramIndex=%s(%u) value=%02g valueRB=%02g has_written=%d\n",
                     modNamEMC, axisNo,
@@ -661,11 +661,10 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
       break;
     case PARAM_IF_CMD_BUSY:
       {
-        if (paramIndexRB == paramIndex) {
-          if (paramIndexIsFunction(paramIndex)) {
-            if (pValueRB) *pValueRB = -1.0; //
-            return asynSuccess;
-          };
+        /* The param function goes into busy - and stays there */
+        if (paramIndexRB == paramIndex && paramIndexIsFunction(paramIndex)) {
+          if (pValueRB) *pValueRB = valueRB;
+          return asynSuccess;
         }
       }
       /* fall through */
