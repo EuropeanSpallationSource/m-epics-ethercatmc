@@ -1601,6 +1601,7 @@ asynStatus ethercatmcController::indexerPoll(void)
           {
             int tracelevel = ASYN_TRACE_FLOW;
             const char *paramName = "";
+            unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
             epicsInt64 newValue, oldValue;
             getParamName(axisNo, function, &paramName);
             newValue = (epicsInt64)netToSint64(pDataInPlc, lenInPLC);
