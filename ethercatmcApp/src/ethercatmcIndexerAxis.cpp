@@ -399,14 +399,20 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
 {
   unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status;
+  double veloRB = 0.0;
+  int motorStatusDone = 0;
   (void)minVelocity;
   (void)acceleration;
 
+  pC_->getIntegerParam(axisNo_, pC_->motorStatusDone_, &motorStatusDone);
   asynPrint(pC_->pasynUserController_, traceMask,
             "%smoveVelocity (%d) minVelocity=%f maxVelocity=%f"
-            " acceleration=%f\n", modNamEMC, axisNo_,
-            minVelocity, maxVelocity, acceleration);
+            " acceleration=%f motorStatusDone=%d\n", modNamEMC, axisNo_,
+            minVelocity, maxVelocity, acceleration, motorStatusDone);
 
+  if (!motorStatusDone) {
+    stopAxisInternal("moveVelocity", acceleration);
+  }
   if (acceleration > 0.0) {
     double oldValue, valueRB;
     pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
@@ -428,7 +434,13 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
   status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
                                   PARAM_IDX_FUN_MOVE_VELOCITY,
                                   drvlocal.lenInPlcPara,
-                                  maxVelocity, NULL);
+                                  maxVelocity, &veloRB);
+  asynPrint(pC_->pasynUserController_, traceMask,
+            "%smoveVelocity (%d) veloRB=%f status=%s(%d)\n",
+            "ethercatmcIndexerAxis", axisNo_,
+            veloRB, ethercatmcstrStatus(status), (int)status);
+  if (status) return status;
+  setDoubleParam(pC_->ethercatmcVel_RB_, veloRB);
   return status;
 }
 

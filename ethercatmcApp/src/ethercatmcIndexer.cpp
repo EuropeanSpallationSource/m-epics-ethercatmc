@@ -180,12 +180,12 @@ extern "C" {
       return 0;
     }
   }
-  int paramIndexIsFunction(unsigned paramIndex) {
-    if (paramIndex >= 128 && paramIndex <= 191) {
+  int paramIndexIsMovingFunction(unsigned paramIndex) {
+    switch (paramIndex) {
+    case PARAM_IDX_FUN_MOVE_VELOCITY:
+    case PARAM_IDX_FUN_REFERENCE:
       return 1;
-    } else  if (paramIndex >= 224 && paramIndex <= 239) {
-      return 1;
-    } else {
+    default:
       return 0;
     }
   }
@@ -614,7 +614,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     switch (paramIfCmd) {
     case PARAM_IF_CMD_DONE:
       {
-        if (paramIndexRB == paramIndex && (!paramIndexIsFunction(paramIndex))) {
+        if (paramIndexRB == paramIndex && (!paramIndexIsMovingFunction(paramIndex))) {
           asynPrint(pasynUserController_, traceMask,
                     "%sindexerParamWrite(%d) paramIndex=%s(%u) value=%02g valueRB=%02g has_written=%d\n",
                     modNamEMC, axisNo,
@@ -662,7 +662,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     case PARAM_IF_CMD_BUSY:
       {
         /* The param function goes into busy - and stays there */
-        if (paramIndexRB == paramIndex && paramIndexIsFunction(paramIndex)) {
+        if (paramIndexRB == paramIndex && paramIndexIsMovingFunction(paramIndex)) {
           if (pValueRB) *pValueRB = valueRB;
           return asynSuccess;
         }
