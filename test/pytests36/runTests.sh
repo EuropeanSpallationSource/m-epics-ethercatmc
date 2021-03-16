@@ -62,7 +62,9 @@ checkAndInstallPythonPackage()
 }
 ########################################
 
-if which virtualenv-3.8 >/dev/null 2>&1; then
+if which virtualenv-3.9 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.9
+elif which virtualenv-3.8 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.8
 elif which virtualenv-3.7 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.7
@@ -136,7 +138,9 @@ if ! type pytest >/dev/null 2>&1 ; then
 
   ##############################################################################
   if type $MYVIRTUALENV >/dev/null 2>&1; then
-    if which python3.8 >/dev/null 2>&1; then
+    if which python3.9 >/dev/null 2>&1; then
+      PYTHON=python3.9
+    elif which python3.8 >/dev/null 2>&1; then
       PYTHON=python3.8
     elif which python3.7 >/dev/null 2>&1; then
       PYTHON=python3.7
