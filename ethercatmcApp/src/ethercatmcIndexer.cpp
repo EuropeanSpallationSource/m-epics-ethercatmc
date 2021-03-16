@@ -43,7 +43,7 @@ extern "C" {
   const char *plcUnitTxtFromUnitCode(unsigned unitCode)
   {
     const static char *const unitTxts[] = {
-      " ",
+      "",
       "V",
       "A",
       "W",
@@ -1275,7 +1275,32 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
       }
       break;
     default:
-      newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, descVersAuthors.desc);
+      {
+        const char *paramName = descVersAuthors.desc;
+        int function;
+
+        function = newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, paramName);
+        if (function > 0) {
+#ifdef ETHERCATMC_ASYN_PARAMMETA
+          char metaValue[256];
+          memset(&metaValue, 0, sizeof(metaValue));
+          if (!strcmp(paramName, "errorID")) {
+            snprintf(&metaValue[0], sizeof(metaValue) - 1, "%s",
+                     "TwinCAT_errorID");
+          } else {
+            snprintf(&metaValue[0], sizeof(metaValue) - 1, "%s%s",
+                     plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
+                     plcUnitTxtFromUnitCode(iUnit & 0xFF));
+          }
+          if (strlen(metaValue)) {
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%s%s(%d) asynParamMeta metaValue=\"%s\")\n",
+                      modNamEMC, "initialPoll", axisNo, metaValue);
+            setParamMeta(axisNo, function, "EGU", metaValue);
+          }
+#endif
+        }
+      }
     }
   }
 
@@ -1289,13 +1314,13 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 }
 
 
-void ethercatmcController::addPilsAsynDevLst(int           axisNo,
-                                             const char    *paramName,
-                                             unsigned      lenInPLC,
-                                             unsigned      inputOffset,
-                                             unsigned      outputOffset,
-                                             asynParamType myEPICSParamType,
-                                             unsigned      iTypCode)
+int ethercatmcController::addPilsAsynDevLst(int           axisNo,
+                                            const char    *paramName,
+                                            unsigned      lenInPLC,
+                                            unsigned      inputOffset,
+                                            unsigned      outputOffset,
+                                            asynParamType myEPICSParamType,
+                                            unsigned      iTypCode)
 {
   const static char *const functionName = "addPilsAsynDevLst";
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
@@ -1315,7 +1340,7 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
               "%s%s(%u) out of range\n",
               modNamEMC, functionName,  numPilsAsynDevInfo);
-    return;
+    return -1;
   }
 
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
@@ -1367,7 +1392,7 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
               modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
               paramName,
               ethercatmcstrStatus(status), (int)status);
-    if (status != asynSuccess) return;
+    if (status != asynSuccess) return -1;
   }
 
   pPilsAsynDevInfo->axisNo           = axisNo;
@@ -1384,13 +1409,14 @@ void ethercatmcController::addPilsAsynDevLst(int           axisNo,
 
   /* Last action of this code: Increment the counter */
   ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
+  return function;
 }
 
 
-void ethercatmcController::newPilsAsynDevice(int      axisNo,
-                                             unsigned indexOffset,
-                                             unsigned iTypCode,
-                                             const char *paramName)
+int ethercatmcController::newPilsAsynDevice(int      axisNo,
+                                            unsigned indexOffset,
+                                            unsigned iTypCode,
+                                            const char *paramName)
 {
   const static char *const functionName = "newPilsAsynDevice";
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
@@ -1399,7 +1425,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
   unsigned      outputOffset      = 0;
   asynParamType myAsynParamType = asynParamNotDefined;
 
-  if (!iTypCode) return;
+  if (!iTypCode) return -1;
   switch (iTypCode) {
     case 0x1201:
       lenInPLC = 2;
@@ -1437,7 +1463,7 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s(%u) iTypCode not supported, ignored 0x%X\n",
               modNamEMC, functionName, numPilsAsynDevInfo, iTypCode);
-    return;
+    return -1;
   }
   if (myAsynParamType != asynParamNotDefined) {
     asynParamType myEPICSParamType = myAsynParamType;
@@ -1446,18 +1472,19 @@ void ethercatmcController::newPilsAsynDevice(int      axisNo,
       /* Special handling for encoderRaw */
       myEPICSParamType = asynParamFloat64;
     }
-    addPilsAsynDevLst(axisNo,
-                      paramName,
-                      lenInPLC,
-                      inputOffset,
-                      outputOffset,
-                      myEPICSParamType,
-                      iTypCode);
+    return addPilsAsynDevLst(axisNo,
+                             paramName,
+                             lenInPLC,
+                             inputOffset,
+                             outputOffset,
+                             myEPICSParamType,
+                             iTypCode);
   } else {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s(%u) pilsNo=%d not created paramName=%s)\n",
               modNamEMC, functionName, axisNo, numPilsAsynDevInfo, paramName);
   }
+  return -1;
 }
 
 extern "C" void UTCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)

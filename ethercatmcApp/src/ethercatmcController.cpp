@@ -155,11 +155,11 @@ ethercatmcController::ethercatmcController(const char *portName,
   :  asynMotorController(portName, numAxes,
                          0, // Olbsolete: Fixed number of additional asyn parameters
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
-                         asynInt64Mask, // additional callback interface beyond those in base class
-                         asynInt64Mask, // additional callback interface beyond those in base class
+                         asynInt64Mask | asynParamMetaMask, // additional interface
+                         asynInt64Mask | asynParamMetaMask, // additional callback interface
 #else
-                         0, // No additional interfaces beyond those in base class
-                         0, // No additional callback interfaces beyond those in base class
+                         asynParamMetaMask,
+                         asynParamMetaMask,
 #endif
                          ASYN_CANBLOCK | ASYN_MULTIDEVICE,
                          1, // autoconnect

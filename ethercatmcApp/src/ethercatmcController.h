@@ -21,6 +21,12 @@ FILENAME...   ethercatmcController.h
 #define ETHERCATMC_ASYN_ASYNPARAMINT64
 #endif
 
+#ifdef asynParamMetaMask
+#define ETHERCATMC_ASYN_PARAMMETA
+#else
+#define asynParamMetaMask 0
+#endif
+
 #ifndef motorRecResolutionString
 #define CREATE_MOTOR_REC_RESOLUTION
 #define motorRecDirectionString         "MOTOR_REC_DIRECTION"
@@ -358,7 +364,7 @@ public:
 
   asynStatus getPlcMemoryFromProcessImage(unsigned indexOffset,
                                           void *data, size_t lenInPlc);
-  void addPilsAsynDevLst(int           axisNo,
+  int  addPilsAsynDevLst(int           axisNo,
                          const char    *paramName,
                          unsigned      lenInPLC,
                          unsigned      inputOffset,
@@ -366,10 +372,10 @@ public:
                          asynParamType myEPICSParamType,
                          unsigned      iTypCode);
 
-  void newPilsAsynDevice(int      axisNo,
-                         unsigned indexOffset,
-                         unsigned iTypCode,
-                         const char *paramName);
+  int newPilsAsynDevice(int      axisNo,
+                        unsigned indexOffset,
+                        unsigned iTypCode,
+                        const char *paramName);
 
   pilsAsynDevInfo_type *findIndexerOutputDevice(int axisNo,
                                                 int function,
