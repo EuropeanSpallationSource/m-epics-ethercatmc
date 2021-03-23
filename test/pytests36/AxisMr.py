@@ -230,7 +230,7 @@ class AxisMr:
             inrange = False
 
         print(
-            f"{tc_no}: calcAlmostEqual {tc_no} exp{expected} act={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
+            f"{tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
         )
         return inrange
 
