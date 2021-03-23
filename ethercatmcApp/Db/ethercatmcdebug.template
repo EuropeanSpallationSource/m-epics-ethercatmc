@@ -126,7 +126,7 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM") {
     info(asyn:INITIAL_READBACK,"1")
 }
 
-record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-En") {
+record(bo,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-En") {
     field(DESC, "EC High Soft Limit enable")
     field(VAL,  0)
     field(DTYP, "asynInt32")
@@ -135,7 +135,7 @@ record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-En") {
     info(asyn:INITIAL_READBACK,"1")
 }
 
-record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En") {
+record(bo,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En") {
     field(DESC, "EC Low Soft Limit enable")
     field(VAL,  0)
     field(DTYP, "asynInt32")
@@ -144,19 +144,44 @@ record(longout,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En") {
     info(asyn:INITIAL_READBACK,"1")
 }
 
-record(longout,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU") {
+record(bo,"$(PREFIX)$(MOTOR_NAME)-HomeOnLs") {
+    field(DESC, "Allow HOMF on HLS, HOMR on LLS")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_HOME_ON_LS")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-LsRampDown") {
+    field(DESC, "LS hit needs ramp down")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_LS_RAMP_DOWN")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-NoStopOnLs") {
+    field(DESC, "Recoord does not stop on LS")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_NO_STOP_ON_LS")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU") {
     field(DESC, "Record uses EGU")
     field(DTYP, "asynInt32")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_DRIVER_USES_EGU")
     info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
 }
 
-
-record(longin,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU-RB") {
-    field(DESC, "Record uses EGU")
+record(bo,"$(PREFIX)$(MOTOR_NAME)-AdjAfterHomed") {
+    field(DESC, "Adjust (out of soft limit) after homed")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_DRIVER_USES_EGU")
-    field(SCAN, "I/O Intr")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_ADJ_AFTER_HOMED")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
 }
 
 record(longin,"$(PREFIX)$(MOTOR_NAME)-AxisID-RB") {
@@ -166,6 +191,12 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-AxisID-RB") {
     field(SCAN, "I/O Intr")
 }
 
+record(longin,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU-RB") {
+    field(DESC, "Record uses EGU")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_DRIVER_USES_EGU")
+    field(SCAN, "I/O Intr")
+}
 
 # Help records, to read what the record sends to the model 3 driver
 record(ai,"$(PREFIX)$(MOTOR_NAME)-M3RHLM") {
