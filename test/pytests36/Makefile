@@ -18,6 +18,7 @@ SIMULATOR-ONE-CA = \
 
 SIMULATOR-TWO-CA = \
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-ca-m1\
+  960_Simulator-motorFlags.log-ca-m1\
 
 
 RECORD-CA = \
