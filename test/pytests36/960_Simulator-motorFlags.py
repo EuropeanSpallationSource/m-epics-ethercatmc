@@ -48,8 +48,13 @@ def readBackParamVerify(self, tc_no, field_name, expVal):
 
 def writeReadMotorFlag(self, tc_no, field_name="invalid_field_name", bit_mask=0):
     mflg_orig = int(self.axisCom.get(".MFLG"))
-
+    field_sevr = self.axisCom.get(field_name + ".SEVR")
     self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+    print(f"field_name={field_name} bit_mask={bit_mask} field_sevr={field_sevr}")
+    if field_sevr != 0:
+        self.axisCom.put("-DbgStrToLOG", "Skipped " + str(tc_no))
+        return True
+
     if (mflg_orig & bit_mask) != 0:
         pv_val_first = 0
         pv_val_last = 1
@@ -82,32 +87,25 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
-    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
-    vers = float(axisCom.get(".VERS"))
-    if vers >= 7.04 and vers <= 7.09:
-        axisCom.put(".SPAM", 255)
-        hasMFLG = True
-
     def test_TC_9601(self):
         tc_no = 9601
 
         field_name = "-HomeOnLs"
         bit_mask = 1
-        if self.hasMFLG == True:
-            testPassed = writeReadMotorFlag(
-                self, tc_no, field_name=field_name, bit_mask=bit_mask
-            )
+        testPassed = writeReadMotorFlag(
+            self, tc_no, field_name=field_name, bit_mask=bit_mask
+        )
         assert testPassed
+
 
     def test_TC_9602(self):
         tc_no = 9602
 
         field_name = "-LsRampDown"
         bit_mask = 2
-        if self.hasMFLG == True:
-            testPassed = writeReadMotorFlag(
-                self, tc_no, field_name=field_name, bit_mask=bit_mask
-            )
+        testPassed = writeReadMotorFlag(
+            self, tc_no, field_name=field_name, bit_mask=bit_mask
+        )
         assert testPassed
 
     def test_TC_9603(self):
@@ -115,10 +113,9 @@ class Test(unittest.TestCase):
 
         field_name = "-NoStopOnLs"
         bit_mask = 4
-        if self.hasMFLG == True:
-            testPassed = writeReadMotorFlag(
-                self, tc_no, field_name=field_name, bit_mask=bit_mask
-            )
+        testPassed = writeReadMotorFlag(
+            self, tc_no, field_name=field_name, bit_mask=bit_mask
+        )
         assert testPassed
 
     def test_TC_9604(self):
@@ -126,10 +123,9 @@ class Test(unittest.TestCase):
 
         field_name = "-DrvUseEGU"
         bit_mask = 8
-        if self.hasMFLG == True:
-            testPassed = writeReadMotorFlag(
-                self, tc_no, field_name=field_name, bit_mask=bit_mask
-            )
+        testPassed = writeReadMotorFlag(
+            self, tc_no, field_name=field_name, bit_mask=bit_mask
+        )
         assert testPassed
 
     def test_TC_9605(self):
@@ -137,8 +133,7 @@ class Test(unittest.TestCase):
 
         field_name = "-AdjAfterHomed"
         bit_mask = 0x10
-        if self.hasMFLG == True:
-            testPassed = writeReadMotorFlag(
-                self, tc_no, field_name=field_name, bit_mask=bit_mask
-            )
+        testPassed = writeReadMotorFlag(
+            self, tc_no, field_name=field_name, bit_mask=bit_mask
+        )
         assert testPassed
