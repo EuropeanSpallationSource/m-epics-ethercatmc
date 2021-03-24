@@ -64,6 +64,8 @@ echo set
 set
 echo =====
 
+# compile simulator
+(cd ../simulator && make) &&
 # start simulator
 (cd .. && ./run-ethercatmc-simulator.sh ) &
 SIMULATOR_PID=$!
