@@ -115,6 +115,9 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #ifdef motorFlagsHomeOnLsString
   setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
 #endif
+#ifdef  motorNotHomedProblemString
+  setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
+#endif
   setStringParam(pC_->ethercatmcNamBit25_, "Dynamic problem, timeout");
   setStringParam(pC_->ethercatmcNamBit24_, "Static problem, inhibit");
 
@@ -818,10 +821,13 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       msgTxtFromDriver = "localMode";
       hasError = -1;
     }
-    if (drvlocal.dirty.old_hasError != hasError) {
+    /* Update if we have an error now.
+       Update even if we had an error before - it may have gone now,
+       and the we need to set the NULL pointer */
+    if (hasError || drvlocal.dirty.old_hasError) {
       updateMsgTxtFromDriver(msgTxtFromDriver);
-      drvlocal.dirty.old_hasError = hasError;
     }
+    drvlocal.dirty.old_hasError = hasError;
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
