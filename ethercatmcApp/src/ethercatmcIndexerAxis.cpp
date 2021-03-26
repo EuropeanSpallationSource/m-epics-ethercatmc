@@ -566,6 +566,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   int statusValid = 0;
   int positionValid = 1; /* all states except RESET */
   int hasError = 0;
+  int localMode = 0;
   idxStatusCodeType idxStatusCode;
   unsigned idxReasonBits = 0;
   unsigned idxAuxBits = 0;
@@ -782,7 +783,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     int hls = idxReasonBits & 0x8 ? 1 : 0;
     int lls = idxReasonBits & 0x4 ? 1 : 0;
     if (drvlocal.auxBitsLocalModeMask) {
-      nowMoving |= idxAuxBits & drvlocal.auxBitsLocalModeMask ? 1 : 0;
+      localMode = idxAuxBits & drvlocal.auxBitsLocalModeMask ? 1 : 0;;
+      nowMoving |= localMode;
     }
     setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
     setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
@@ -812,13 +814,16 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                  "E: TwinCAT Err %X", errorID);
       }
       msgTxtFromDriver = sErrorMessage;
+    } else if (localMode) {
+      msgTxtFromDriver = "localMode";
+      hasError = -1;
     }
     if (drvlocal.dirty.old_hasError != hasError) {
       updateMsgTxtFromDriver(msgTxtFromDriver);
       drvlocal.dirty.old_hasError = hasError;
     }
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
-    setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem);
+    setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
   }
 
