@@ -1008,6 +1008,9 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
         else if (!strcmp("enabled", auxBitName)) {
           pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
         }
+        else if (!strcmp("localMode", auxBitName)) {
+          pAxis->setAuxBitsLocalModeMask(1 << auxBitIdx);
+        }
       }
     }
   }

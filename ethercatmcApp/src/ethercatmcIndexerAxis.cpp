@@ -221,6 +221,14 @@ void ethercatmcIndexerAxis::setAuxBitsEnabledMask(unsigned auxBitsEnabledMask)
   drvlocal.auxBitsEnabledMask = auxBitsEnabledMask;
 }
 
+void ethercatmcIndexerAxis::setAuxBitsLocalModeMask(unsigned auxBitsLocalModeMask)
+{
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) setAuxBitsLocalModeMask=0x%x\n",
+            modNamEMC, axisNo_, auxBitsLocalModeMask);
+  drvlocal.auxBitsLocalModeMask = auxBitsLocalModeMask;
+}
+
 void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex)
 {
   size_t pollNowIdx;
@@ -773,6 +781,9 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   if (statusValid) {
     int hls = idxReasonBits & 0x8 ? 1 : 0;
     int lls = idxReasonBits & 0x4 ? 1 : 0;
+    if (drvlocal.auxBitsLocalModeMask) {
+      nowMoving |= idxAuxBits & drvlocal.auxBitsLocalModeMask ? 1 : 0;
+    }
     setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
     setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
     setIntegerParam(pC_->motorStatusMoving_, nowMoving);
