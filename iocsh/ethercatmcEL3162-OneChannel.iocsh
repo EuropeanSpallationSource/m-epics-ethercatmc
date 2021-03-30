@@ -1,0 +1,4 @@
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME) Int32
+
+dbLoadRecords("ethercatmcEL3162-OneChannel.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO), DESC=$(DESC), ASYNPARAMNAME=$(ASYNPARAMNAME)")
+

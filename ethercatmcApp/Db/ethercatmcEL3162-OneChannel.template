@@ -1,0 +1,8 @@
+record(longin, "$(PREFIX)$(ASYNPARAMNAME)$(CHNO)")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "$(DESC)")
+    field(EGU,  "16 bits")
+    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
+    field(SCAN, "I/O Intr")
+}
