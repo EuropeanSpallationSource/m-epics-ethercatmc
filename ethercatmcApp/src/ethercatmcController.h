@@ -215,6 +215,9 @@ public:
   void report(FILE *fp, int level);
   asynStatus setMCUErrMsg(const char *value);
   asynStatus configController(int needOk, const char *value);
+  asynStatus ethercatmcCreateParam(const char *paramName,
+                                   asynParamType myEPICSParamType,
+                                   int *function);
   asynStatus writeReadOnErrorDisconnect(void);
   void setAlarmStatusSeverityAllReadbacks(asynStatus status);
   void setAlarmStatusSeverityAllAxes(int function, asynStatus status);

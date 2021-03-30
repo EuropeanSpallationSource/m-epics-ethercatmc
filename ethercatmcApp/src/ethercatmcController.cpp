@@ -29,6 +29,7 @@ const static char *const strethercatmcConfigOrDie      = "ethercatmcConfigOrDie"
 const static char *const strethercatmcReadController   = "ethercatmcReadController";
 const static char *const strethercatmcCreateAxisDef    = "ethercatmcCreateAxis";
 const static char *const strethercatmcCreateIndexerAxisDef = "ethercatmcCreateIndexerAxis";
+const static char *const strethercatmcCreateAsynParamDef = "ethercatmcCreateAsynParam";
 const static char *const strCtrlReset = ".ctrl.ErrRst";
 
 const static char *const modulName = "ethercatmcAxis::";
@@ -457,6 +458,63 @@ asynStatus ethercatmcController::configController(int needOkOrDie, const char *v
 
   printf("%s\n", inString);
   return status;
+}
+
+
+asynStatus
+ethercatmcController::ethercatmcCreateParam(const char *paramName,
+                                            asynParamType myEPICSParamType,
+                                            int *pFunction)
+{
+  asynStatus status;
+  status = createParam(paramName,
+                       myEPICSParamType,
+                       pFunction);
+
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s paramName=%s paramType=%s function=%d status=%s (%d)\n",
+            modNamEMC, paramName,
+            stringFromAsynParamType(myEPICSParamType),
+            *pFunction,
+            ethercatmcstrStatus(status), (int)status);
+  return status;
+}
+
+
+extern "C" int ethercatmcCreateAsynParam(const char *ethercatmcName,
+                                         const char *paramName,
+                                         const char *paramType)
+{
+  ethercatmcController *pC;
+  int newFunction = 0;
+  asynParamType myEPICSParamType;
+
+  if (!ethercatmcName || !paramName || !paramType) {
+    printf("ethercatmcCreateAsynParam MCU1 paramName [Float64|Int32|Int64]\n");
+    return asynError;
+  }
+  pC = (ethercatmcController*) findAsynPortDriver(ethercatmcName);
+  if (!pC) {
+    printf("Error port %s not found\n", ethercatmcName);
+    return asynError;
+  }
+  if (!strcmp(paramType, "Float64")) {
+    myEPICSParamType = asynParamFloat64;
+  } else if (!strcmp(paramType, "Int32")) {
+    myEPICSParamType = asynParamInt32;
+  } else if (!strcmp(paramType, "Int64")) {
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+    myEPICSParamType = asynParamInt64;
+#else
+    myEPICSParamType = asynParamFloat64;
+#endif
+  } else {
+    printf("ethercatmcCreateAsynParam: paramType=%s not supported\n",
+           paramType);
+    return asynError;
+  }
+  pC->ethercatmcCreateParam(paramName, myEPICSParamType, &newFunction);
+  return asynSuccess;
 }
 
 extern "C" asynStatus disconnect_C(asynUser *pasynUser)
@@ -1102,6 +1160,8 @@ static void ethercatmcReadContollerCallFunc(const iocshArgBuf *args)
   ethercatmcConfigController(needOkOrDie, args[0].sval, args[1].sval);
 }
 
+
+
 /* ethercatmcCreateAxis */
 static const iocshArg ethercatmcCreateAxisArg0 = {"Controller port name", iocshArgString};
 static const iocshArg ethercatmcCreateAxisArg1 = {"Axis number", iocshArgInt};
@@ -1123,6 +1183,16 @@ static const iocshFuncDef ethercatmcCreateAxisDef = {strethercatmcCreateAxisDef,
 static const iocshFuncDef ethercatmcCreateIndexerAxisDef = {strethercatmcCreateIndexerAxisDef, 4,
                                                      ethercatmcCreateIndexerAxisArgs};
 
+static const iocshArg ethercatmcCreateAsynParamArg0 = {"Controller port name", iocshArgString};
+static const iocshArg ethercatmcCreateAsynParamArg1 = {"Param Name", iocshArgString};
+static const iocshArg ethercatmcCreateAsynParamArg2 = {"Param Type: Float64 Int32", iocshArgString};
+static const iocshArg * const ethercatmcCreateAsynParamArgs[] = {&ethercatmcCreateAsynParamArg0,
+                                                                 &ethercatmcCreateAsynParamArg1,
+                                                                 &ethercatmcCreateAsynParamArg2};
+
+
+static const iocshFuncDef ethercatmcCreateAsynParamDef = {strethercatmcCreateAsynParamDef, 3,
+                                                          ethercatmcCreateAsynParamArgs};
 static void ethercatmcCreateAxisCallFunc(const iocshArgBuf *args)
 {
   ethercatmcCreateAxis(args[0].sval, args[1].ival, args[2].ival, args[3].sval);
@@ -1133,6 +1203,11 @@ static void ethercatmcCreateIndexerAxisCallFunc(const iocshArgBuf *args)
   ethercatmcCreateIndexerAxis(args[0].sval, args[1].ival, args[2].ival, args[3].sval);
 }
 
+static void ethercatmcCreateAsynParamCallFunc(const iocshArgBuf *args)
+{
+  ethercatmcCreateAsynParam(args[0].sval, args[1].sval, args[2].sval);
+}
+
 static void ethercatmcControllerRegister(void)
 {
   iocshRegister(&ethercatmcCreateControllerDef, ethercatmcCreateContollerCallFunc);
@@ -1141,6 +1216,7 @@ static void ethercatmcControllerRegister(void)
   iocshRegister(&ethercatmcReadControllerDef,   ethercatmcReadContollerCallFunc);
   iocshRegister(&ethercatmcCreateAxisDef,       ethercatmcCreateAxisCallFunc);
   iocshRegister(&ethercatmcCreateIndexerAxisDef,ethercatmcCreateIndexerAxisCallFunc);
+  iocshRegister(&ethercatmcCreateAsynParamDef,  ethercatmcCreateAsynParamCallFunc);
 }
 
 extern "C" {
