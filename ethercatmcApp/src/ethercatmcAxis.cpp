@@ -773,32 +773,20 @@ asynStatus ethercatmcAxis::setPosition(double value)
   asynStatus status = asynSuccess;
   int foffVis = 0;
   double valueEgu = value * drvlocal.scaleFactor;
-  double motorPosition = 0.0;
 
-  asynStatus statusM = pC_->getDoubleParam(axisNo_,
-                                           pC_->motorPosition_,
-                                           &motorPosition);
-  status = pC_->getIntegerParam(axisNo_,
-                                pC_->ethercatmcFoffVis_,
-                                &foffVis);
-
+  status = pC_->getIntegerParam(axisNo_, pC_->ethercatmcFoffVis_, &foffVis);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%ssetPosition(%d) foffVis=%d pos=%g posEgu=%g motorPos=%f "
-            "statM=%d\n",
-            modNamEMC, axisNo_,  foffVis, value, valueEgu,
-            motorPosition, (int)statusM);
+            "%ssetPosition(%d) foffVis=%d pos=%g posEgu=%g\n",
+            modNamEMC, axisNo_, foffVis, value, valueEgu);
 
-  status = asynSuccess;
-  if (foffVis) {
-    if (status == asynSuccess) status = stopAxisInternal(__FUNCTION__, 0);
-    if (status == asynSuccess) status = setValueOnAxis("fHomePosition",
-                                                       valueEgu);
-    if (status == asynSuccess) status = setValueOnAxis("nCommand",
-                                                       NCOMMANDHOME);
-    if (status == asynSuccess) status = setValueOnAxis("nCmdData",
-                                                       HOMPROC_MANUAL_SETPOS);
-    if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
-  }
+  if (!foffVis) return asynDisabled;
+
+  status = stopAxisInternal(__FUNCTION__, 0);
+  if (status == asynSuccess) status = setValueOnAxis("fHomePosition", valueEgu);
+  if (status == asynSuccess) status = setValueOnAxis("nCommand", NCOMMANDHOME);
+  if (status == asynSuccess) status = setValueOnAxis("nCmdData",
+                                                     HOMPROC_MANUAL_SETPOS);
+  if (status == asynSuccess) status = setValueOnAxis("bExecute", 1);
   return status;
 }
 
