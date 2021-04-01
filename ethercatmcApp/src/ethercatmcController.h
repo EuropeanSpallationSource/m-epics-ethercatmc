@@ -218,6 +218,8 @@ public:
   asynStatus ethercatmcCreateParam(const char *paramName,
                                    asynParamType myEPICSParamType,
                                    int *function);
+  asynStatus ethercatmcStartPoller(double movingPollPeriod,
+                                   double idlePollPeriod);
   asynStatus writeReadOnErrorDisconnect(void);
   void setAlarmStatusSeverityAllReadbacks(asynStatus status);
   void setAlarmStatusSeverityAllAxes(int function, asynStatus status);

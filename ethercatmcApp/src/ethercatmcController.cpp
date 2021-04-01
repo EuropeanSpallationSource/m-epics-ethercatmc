@@ -30,6 +30,7 @@ const static char *const strethercatmcReadController   = "ethercatmcReadControll
 const static char *const strethercatmcCreateAxisDef    = "ethercatmcCreateAxis";
 const static char *const strethercatmcCreateIndexerAxisDef = "ethercatmcCreateIndexerAxis";
 const static char *const strethercatmcCreateAsynParamDef = "ethercatmcCreateAsynParam";
+const static char *const strethercatmcStartPollerDef   = "ethercatmcStartPoller";
 const static char *const strCtrlReset = ".ctrl.ErrRst";
 
 const static char *const modulName = "ethercatmcAxis::";
@@ -362,10 +363,14 @@ ethercatmcController::ethercatmcController(const char *portName,
                 ethercatmcstrStatus(status), (int)status);
     }
   } else {
-    /*  Find additional devices/asynParams */
-    poll();
+    if (movingPollPeriod && idlePollPeriod) {
+      /*  Find additional devices/asynParams */
+      poll();
+    }
   }
-  startPoller(movingPollPeriod, idlePollPeriod, 2);
+  if (movingPollPeriod && idlePollPeriod) {
+    startPoller(movingPollPeriod, idlePollPeriod, 2);
+  }
 }
 
 
@@ -480,6 +485,11 @@ ethercatmcController::ethercatmcCreateParam(const char *paramName,
   return status;
 }
 
+asynStatus ethercatmcController::ethercatmcStartPoller(double movingPollPeriod,
+                                                       double idlePollPeriod)
+{
+  return startPoller(movingPollPeriod, idlePollPeriod, 2);
+}
 
 extern "C" int ethercatmcCreateAsynParam(const char *ethercatmcName,
                                          const char *paramName,
@@ -515,6 +525,25 @@ extern "C" int ethercatmcCreateAsynParam(const char *ethercatmcName,
   }
   pC->ethercatmcCreateParam(paramName, myEPICSParamType, &newFunction);
   return asynSuccess;
+}
+
+extern "C" int ethercatmcStartPoller_C(const char *ethercatmcName,
+                                       int movingPollPeriod,
+                                       int idlePollPeriod)
+{
+  ethercatmcController *pC;
+
+  if (!ethercatmcName) {
+    printf("ethercatmcStartPoller MCU1\n");
+    return asynError;
+  }
+  pC = (ethercatmcController*) findAsynPortDriver(ethercatmcName);
+  if (!pC) {
+    printf("ethercatmcStartPoller: Error port %s not found\n", ethercatmcName);
+    return asynError;
+  }
+  return pC->ethercatmcStartPoller((double)movingPollPeriod,
+                                   (double)idlePollPeriod);
 }
 
 extern "C" asynStatus disconnect_C(asynUser *pasynUser)
@@ -1190,9 +1219,18 @@ static const iocshArg * const ethercatmcCreateAsynParamArgs[] = {&ethercatmcCrea
                                                                  &ethercatmcCreateAsynParamArg1,
                                                                  &ethercatmcCreateAsynParamArg2};
 
+static const iocshArg ethercatmcStartPollerArg0 = {"Controller port name", iocshArgString};
+static const iocshArg ethercatmcStartPollerArg1 = {"Moving poll period (ms)", iocshArgInt};
+static const iocshArg ethercatmcStartPollerArg2 = {"Idle poll period (ms)", iocshArgInt};
+
+static const iocshArg * const ethercatmcStartPollerArgs[] = {&ethercatmcStartPollerArg0,
+                                                             &ethercatmcStartPollerArg1,
+                                                             &ethercatmcStartPollerArg2};
 
 static const iocshFuncDef ethercatmcCreateAsynParamDef = {strethercatmcCreateAsynParamDef, 3,
                                                           ethercatmcCreateAsynParamArgs};
+static const iocshFuncDef ethercatmcStartPollerDef = {strethercatmcStartPollerDef, 3,
+                                                      ethercatmcStartPollerArgs};
 static void ethercatmcCreateAxisCallFunc(const iocshArgBuf *args)
 {
   ethercatmcCreateAxis(args[0].sval, args[1].ival, args[2].ival, args[3].sval);
@@ -1208,6 +1246,11 @@ static void ethercatmcCreateAsynParamCallFunc(const iocshArgBuf *args)
   ethercatmcCreateAsynParam(args[0].sval, args[1].sval, args[2].sval);
 }
 
+static void ethercatmcStartPollerCallFunc(const iocshArgBuf *args)
+{
+  ethercatmcStartPoller_C(args[0].sval, args[1].ival, args[2].ival);
+}
+
 static void ethercatmcControllerRegister(void)
 {
   iocshRegister(&ethercatmcCreateControllerDef, ethercatmcCreateContollerCallFunc);
@@ -1217,6 +1260,7 @@ static void ethercatmcControllerRegister(void)
   iocshRegister(&ethercatmcCreateAxisDef,       ethercatmcCreateAxisCallFunc);
   iocshRegister(&ethercatmcCreateIndexerAxisDef,ethercatmcCreateIndexerAxisCallFunc);
   iocshRegister(&ethercatmcCreateAsynParamDef,  ethercatmcCreateAsynParamCallFunc);
+  iocshRegister(&ethercatmcStartPollerDef,      ethercatmcStartPollerCallFunc);
 }
 
 extern "C" {
