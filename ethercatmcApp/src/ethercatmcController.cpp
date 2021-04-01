@@ -488,7 +488,7 @@ ethercatmcController::ethercatmcCreateParam(const char *paramName,
 asynStatus ethercatmcController::ethercatmcStartPoller(double movingPollPeriod,
                                                        double idlePollPeriod)
 {
-  return startPoller(movingPollPeriod, idlePollPeriod, 2);
+  return startPoller(movingPollPeriod/1000., idlePollPeriod/1000., 2);
 }
 
 extern "C" int ethercatmcCreateAsynParam(const char *ethercatmcName,
