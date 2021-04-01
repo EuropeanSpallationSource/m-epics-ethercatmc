@@ -65,6 +65,3 @@ asynSetTraceIOMask("$(ASYN_PORT)", -1, 2)
 asynSetTraceInfoMask("$(ASYN_PORT)", -1, 5)
 
 ethercatmcCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)", "$(ECC_OPTIONS)")
-
-# Add PTP variables
-dbLoadRecords("ethercatmcEL6688-PTP.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT)")

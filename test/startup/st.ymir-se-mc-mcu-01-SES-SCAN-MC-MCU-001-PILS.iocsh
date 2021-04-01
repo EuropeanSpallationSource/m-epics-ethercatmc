@@ -10,7 +10,25 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "3")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=172.30.244.59.1.1;amsNetIdLocal=172.30.242.52.1.1"
 
+# No poller yet, see 
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 < ethercatmcController.iocsh
+
+#
+#
+#
+< ethercatmcEL6688-PTP.iocsh
+< ethercatmcEL6688-ExtSync.iocsh
+
+#
+# Analog input
+#
+epicsEnvSet("CHNO",          "0")
+epicsEnvSet("DESC",          "LaserDiodeSensor")
+epicsEnvSet("ASYNPARAMNAME", "AnalogInput")
+< ethercatmcEL3162-OneChannel.iocsh
+
 
 #
 # Axis 1
@@ -46,5 +64,9 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 < ethercatmcAxishome.iocsh
 
 
-#setIdlePollPeriod("$(MOTOR_PORT)", 0.100)
-#setMovingPollPeriod("$(MOTOR_PORT)", 0.100)
+#
+# Start polling, values are in millisconds
+#
+epicsEnvSet("MOVINGPOLLPERIOD", "100")
+epicsEnvSet("IDLEPOLLPERIOD",   "100")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

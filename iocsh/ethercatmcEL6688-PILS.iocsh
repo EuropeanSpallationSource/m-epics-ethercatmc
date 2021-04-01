@@ -1,1 +1,0 @@
-dbLoadRecords("ethercatmcEL6688-PILS.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT)")
