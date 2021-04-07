@@ -30,9 +30,11 @@ void setAxisHomed_fl(int axis_no, int value, const char *file, int line_no);
 #define setAxisHomed(a,b) setAxisHomed_fl(a,b, __FILE__, __LINE__);
 
 static void init_axis(int);
-void hw_motor_init(int axis_no,
-                   const struct motor_init_values *pMotor_init_values,
-                   size_t motor_init_len);
+void hw_motor_init_fl(const char *file, int line_no, int axis_no,
+                      const struct motor_init_values *pMotor_init_values,
+                      size_t motor_init_len);
+#define hw_motor_init(a,b,c)  hw_motor_init_fl(__FILE__, __LINE__, a, b, c)
+
 double getMaxVelocity(int axis_no);
 void   setMaxVelocity(int axis_no, double value);
 double getMaxAcceleration(int axis_no);

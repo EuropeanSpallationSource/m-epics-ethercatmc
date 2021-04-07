@@ -91,6 +91,7 @@ typedef struct
 } motor_axis_type;
 
 
+static char init_done[MAX_AXES];
 static motor_axis_type motor_axis[MAX_AXES];
 static motor_axis_type motor_axis_last[MAX_AXES];
 static motor_axis_type motor_axis_reported[MAX_AXES];
@@ -118,13 +119,17 @@ static double getMotorPosFromEncoderPos(int axis_no, double EncoderPos)
 }
 #endif
 
-void hw_motor_init(int axis_no,
-                   const struct motor_init_values *pMotor_init_values,
-                   size_t motor_init_len)
+void hw_motor_init_fl(const char *file, int line_no, int axis_no,
+                      const struct motor_init_values *pMotor_init_values,
+                      size_t motor_init_len)
 {
   if (axis_no >= MAX_AXES || axis_no < 0) {
     return;
   }
+  if (init_done[axis_no]) {
+    return;
+  }
+
   if (motor_init_len != sizeof(struct motor_init_values)) {
     fprintf(stderr,
             "%s/%s:%d axis_no=%d motor_init_len=%u sizeof=%u\n",
@@ -144,9 +149,9 @@ void hw_motor_init(int axis_no,
     int    defRampUpAfterStart = pMotor_init_values->defRampUpAfterStart;
 
     fprintf(stdlog,
-            "%s/%s:%d axis_no=%d ReverseERES=%f ParkingPos=%f MaxHomeVelocityAbs=%f"
+            "%s:%d %s axis_no=%d ReverseERES=%f ParkingPos=%f MaxHomeVelocityAbs=%f"
             "\n  lowHardLimitPos=%f highHardLimitPos=%f hWlowPos=%f hWhighPos=%f homeSwitchPos=%f\n",
-            __FILE__, __FUNCTION__, __LINE__, axis_no,
+            file, line_no, __FUNCTION__, axis_no,
             ReverseERES,
             ParkingPos,
             MaxHomeVelocityAbs,
@@ -184,6 +189,8 @@ void hw_motor_init(int axis_no,
     motor_axis[axis_no].EncoderPos = getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
     motor_axis_last[axis_no].EncoderPos  = motor_axis[axis_no].EncoderPos;
     motor_axis_last[axis_no].MotorPosNow = motor_axis[axis_no].MotorPosNow;
+    /* Do not re-initalize again */
+    init_done[axis_no] = 1;
   }
 }
 
@@ -191,7 +198,6 @@ void hw_motor_init(int axis_no,
 
 static void init_axis(int axis_no)
 {
-  static char init_done[MAX_AXES];
   struct motor_init_values motor_init_values;
   const double MRES = 1;
   const double UREV = 60.0; /* mm/revolution */
