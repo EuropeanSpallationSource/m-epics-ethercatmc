@@ -593,15 +593,6 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     }
   }
   pC_->getIntegerParam(axisNo_, pC_->motorStatusPowerOn_, &powerIsOn);
-  {
-    int errorID_readByPoller;
-    if (pC_->getIntegerParam(axisNo_, pC_->ethercatmcErrId_,
-                             &errorID_readByPoller) == asynSuccess) {
-      /* The poller had read errorID as a device, the result
-         is in the parameter library */
-      errorID = errorID_readByPoller;
-    }
-  }
 
   if ((drvlocal.iTypCode == 0x5008) || (drvlocal.iTypCode == 0x500c)) {
     struct {
@@ -633,6 +624,9 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     statusReasonAux = statusReasonAux16 & 0xFF;
     /* 4 reason bits */
     statusReasonAux |= (idxReasonBits << 24);
+    /* The poller had read errorID as a device, the result
+       is in the parameter library */
+    pC_->getIntegerParam(axisNo_, pC_->ethercatmcErrId_, &errorID);
   } else if (drvlocal.iTypCode == 0x5010) {
     struct {
       uint8_t   actPos[8];
