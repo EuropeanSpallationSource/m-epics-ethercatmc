@@ -10,7 +10,7 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "3")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=172.30.244.59.1.1;amsNetIdLocal=172.30.242.52.1.1"
 
-# No poller yet, see 
+# No poller yet, see ethercatmcStartPoller at the end of the script
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
 epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 < ethercatmcController.iocsh
@@ -20,15 +20,6 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 #
 < ethercatmcEL6688-PTP.iocsh
 < ethercatmcEL6688-ExtSync.iocsh
-
-#
-# Analog input
-#
-epicsEnvSet("CHNO",          "0")
-epicsEnvSet("DESC",          "LaserDiodeSensor")
-epicsEnvSet("ASYNPARAMNAME", "AnalogInput")
-< ethercatmcEL3162-OneChannel.iocsh
-
 
 #
 # Axis 1
@@ -62,6 +53,18 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
+
+#
+# Analog input
+# Obs: new prefix
+#
+epicsEnvSet("P",             "SES-SCAN:LSR-001:")
+epicsEnvSet("R",             "AnalogInput")
+epicsEnvSet("DESC",          "LaserDiodeSensor")
+epicsEnvSet("ASYNPARAMNAME", "AnalogInput")
+epicsEnvSet("CHNO",          "0")
+epicsEnvSet("ECEL3162FIELDINIT", "")
+< ethercatmcEL3162-OneChannel.iocsh
 
 
 #

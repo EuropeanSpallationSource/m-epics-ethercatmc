@@ -1,4 +1,4 @@
-record(longin, "$(PREFIX)$(ASYNPARAMNAME)$(CHNO)")
+record(longin, "$(P)$(R)")
 {
     field(DTYP, "asynInt32")
     field(DESC, "$(DESC)")
