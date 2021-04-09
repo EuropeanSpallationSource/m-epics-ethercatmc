@@ -62,9 +62,6 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVelActString               "VelAct"
 #define ethercatmcVel_RBString               "Vel-RB"
 #define ethercatmcAcc_RBString               "Acc-RB"
-#define ethercatmcPTPStateString             "PTPState"
-#define ethercatmcPTPOffsetString            "PTPOffset"
-#define ethercatmcPTPSyncSeqNumString        "PTPSyncSeqNum"
 #define ethercatmcCfgAxisID_RBString         "CfgAxisID-RB"
 #define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
@@ -456,9 +453,6 @@ public:
   int ethercatmcVelAct_;
   int ethercatmcVel_RB_;
   int ethercatmcAcc_RB_;
-  int ethercatmcPTPState_;
-  int ethercatmcPTPOffset_;
-  int ethercatmcPTPSyncSeqNum_;
   int ethercatmcCfgAxisID_RB_;
   int ethercatmcCfgVELO_RB_;
   int ethercatmcCfgVMAX_RB_;

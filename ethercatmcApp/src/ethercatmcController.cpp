@@ -213,9 +213,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcNamAux7_String,      asynParamOctet,       &ethercatmcNamAux7_);
   createParam(ethercatmcNamBit24_String,     asynParamOctet,       &ethercatmcNamBit24_);
   createParam(ethercatmcNamBit25_String,     asynParamOctet,       &ethercatmcNamBit25_);
-  createParam(ethercatmcPTPStateString,      asynParamInt32,       &ethercatmcPTPState_);
-  createParam(ethercatmcPTPOffsetString,     asynParamInt32,       &ethercatmcPTPOffset_);
-  createParam(ethercatmcPTPSyncSeqNumString, asynParamInt32,       &ethercatmcPTPSyncSeqNum_);
   createParam(ethercatmcCfgAxisID_RBString,  asynParamInt32,       &ethercatmcCfgAxisID_RB_);
   createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &ethercatmcCfgVELO_RB_);
   createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &ethercatmcCfgVMAX_RB_);
