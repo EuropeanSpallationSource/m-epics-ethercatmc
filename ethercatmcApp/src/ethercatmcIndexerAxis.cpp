@@ -781,7 +781,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     int lls = idxReasonBits & 0x4 ? 1 : 0;
     if (drvlocal.auxBitsLocalModeMask) {
       localMode = idxAuxBits & drvlocal.auxBitsLocalModeMask ? 1 : 0;;
-      nowMoving |= localMode;
+      //nowMoving |= localMode;
     }
     setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
     setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
