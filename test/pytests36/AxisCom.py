@@ -89,7 +89,7 @@ class AxisCom:
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value}"
             )
         if self.ctxt is not None:
-            self.ctxt.put(pvname, value, timeout=timeout)
+            self.ctxt.put(pvname, value, timeout=timeout, wait=wait)
         else:
             caput_ret = self.epics.caput(pvname, value, timeout=timeout, wait=wait)
             # This function returns 1 on success,
