@@ -686,7 +686,7 @@ class AxisMr:
 
         return sameContent
 
-    def setSoftLimitsOff(self, tc_no, direction=-1, axisID=0):
+    def setSoftLimitsOff(self, tc_no, direction=-1):
         """
         Switch off the soft limits
         """
@@ -694,22 +694,12 @@ class AxisMr:
         actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
 
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff direction={direction} axisID={axisID}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff direction={direction}"
         )
         print(f"setSoftLimitsOff hlm={actDHLM} llm={actDLLM}")
         # switch off the controller soft limits
-        if axisID > 0:
-            assert direction >= 0
-            assert direction <= 1
-            # ADSPORT=501/.ADR.16#5001,16#B,2,2=0;
-            idxGrp = f"{axisID:02X}"
-            idxOff = f"{direction+0xB:X}"
-            cmd = f"ADSPORT=501/.ADR.16#50{idxGrp},16#{idxOff},2,2=0;"
-            print(f"{tc_no}: setSoftLimitsOff cmd={cmd}")
-            self.axisCom.put("-DbgStrToNC", cmd, wait=True)
-        else:
-            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+        self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+        self.axisCom.put("-CfgDLLM-En", 0, wait=True)
 
         maxTime = 10  # seconds maximum to let read only parameters ripple through
         maxDelta = 0.05  # 5 % error tolerance margin
@@ -735,30 +725,19 @@ class AxisMr:
         raise Exception(debug_text)
         assert False
 
-    def setSoftLimitsOn(self, tc_no, low_limit, high_limit, direction=-1, axisID=0):
+    def setSoftLimitsOn(self, tc_no, low_limit, high_limit, direction=-1):
         """
         Set the soft limits
         """
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit={low_limit} high_limit={high_limit} direction={direction} axisID={axisID}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit={low_limit} high_limit={high_limit} direction={direction}"
         )
         # switch on the controller soft limits
         try:
             self.axisCom.put("-CfgDHLM", high_limit, wait=True, timeout=2)
             self.axisCom.put("-CfgDLLM", low_limit, wait=True, timeout=2)
-
-            if axisID > 0:
-                assert direction >= 0
-                assert direction <= 1
-                # ADSPORT=501/.ADR.16#5001,16#B,2,2=1;
-                idxGrp = f"{axisID:02X}"
-                idxOff = f"{direction+0xB:X}"
-                cmd = f"ADSPORT=501/.ADR.16#50{idxGrp},16#{idxOff},2,2=1;"
-                print(f"{tc_no}: setSoftLimitsOff cmd={cmd}")
-                self.axisCom.put("-DbgStrToNC", cmd, wait=True)
-            else:
-                self.axisCom.put("-CfgDHLM-En", 1, wait=True, timeout=2)
-                self.axisCom.put("-CfgDLLM-En", 1, wait=True, timeout=2)
+            self.axisCom.put("-CfgDHLM-En", 1, wait=True, timeout=2)
+            self.axisCom.put("-CfgDLLM-En", 1, wait=True, timeout=2)
         finally:
             oldRBV = self.axisCom.get(".RBV")
 
@@ -871,7 +850,7 @@ class AxisMr:
         return True
 
     # move into limit switch
-    def moveIntoLS(self, tc_no=0, direction=-1, axisID=0):
+    def moveIntoLS(self, tc_no=0, direction=-1):
         assert tc_no != 0
         assert direction >= 0
         margin = 1.1
@@ -897,7 +876,7 @@ class AxisMr:
         # Go away from limit switch
         self.moveWait(tc_no, jog_start_pos)
 
-        self.setSoftLimitsOff(tc_no, direction=direction, axisID=axisID)
+        self.setSoftLimitsOff(tc_no, direction=direction)
         self.jogDirection(tc_no, direction)
         # Get values, check them later
         lvio = int(self.axisCom.get(".LVIO"))
@@ -908,9 +887,7 @@ class AxisMr:
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}"
         )
 
-        self.setSoftLimitsOn(
-            tc_no, old_DLLM, old_DHLM, direction=direction, axisID=axisID
-        )
+        self.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM, direction=direction)
         passed = True
         if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
             print(

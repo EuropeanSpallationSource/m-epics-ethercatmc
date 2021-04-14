@@ -63,16 +63,12 @@ class Test(unittest.TestCase):
         direction = 0
         msta = int(self.axisCom.get(".MSTA"))
         if msta & self.axisMr.MSTA_BIT_HOMED:
-            axisID = int(self.axisCom.get("-AxisID-RB"))
-            if axisID > 0:
-                self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
-                passed = self.axisMr.moveIntoLS(
-                    tc_no=tc_no, direction=direction, axisID=1
-                )
-                if passed:
-                    self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
-                else:
-                    self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
-                assert passed
+            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
+            passed = self.axisMr.moveIntoLS(tc_no=tc_no, direction=direction)
+            if passed:
+                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
             else:
-                self.axisCom.put("-DbgStrToLOG", "Skipped " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+            assert passed
+        else:
+            self.axisCom.put("-DbgStrToLOG", "Skipped " + str(tc_no))
