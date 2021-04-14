@@ -78,6 +78,7 @@ private:
   struct {
     const char *externalEncoderStr;
     struct {
+      int          old_ErrorId;
       int          old_hasError;
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialPollNeeded :1;
@@ -96,7 +97,6 @@ private:
     unsigned auxBitsLocalModeMask;
     unsigned old_paramCtrl;
     unsigned old_idxAuxBits;
-    unsigned old_ErrorId;
     unsigned int hasProblem :1;
     uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
     PILSparamPermType PILSparamPerm[256];

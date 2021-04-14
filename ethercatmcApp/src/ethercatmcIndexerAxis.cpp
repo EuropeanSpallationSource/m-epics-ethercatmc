@@ -665,7 +665,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   drvlocal.hasProblem = 0;
   setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
   if ((idxStatusCode != drvlocal.dirty.idxStatusCode) ||
-      (errorID != drvlocal.old_ErrorId)) {
+      (errorID != drvlocal.dirty.old_ErrorId)) {
     if (errorID) {
       asynPrint(pC_->pasynUserController_, traceMask,
                 "%spoll(%d) statusReasonAux=0x%08X (%s) errorID=0x%04X \"%s\" actPos=%f\n",
@@ -682,7 +682,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                 idxStatusCodeTypeToStr(idxStatusCode),
                 actPosition);
     }
-    drvlocal.old_ErrorId = errorID;
+    drvlocal.dirty.old_ErrorId = errorID;
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
     #define MAX_AUX_BIT_SHOWN 8
