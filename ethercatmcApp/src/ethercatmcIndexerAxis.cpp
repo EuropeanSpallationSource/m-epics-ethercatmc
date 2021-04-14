@@ -155,7 +155,6 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
   ethercatmcIndexerAxis *pAxis =
     static_cast<ethercatmcIndexerAxis*>(pC->asynMotorController::getAxis(axisNo));
   if (axisOptionsStr && axisOptionsStr[0]) {
-    const char * const axisID_is_str = "axisID=";
 
     char *pOptions = strdup(axisOptionsStr);
     char *pThisOption = pOptions;
@@ -167,14 +166,8 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
         *pNextOption = '\0'; /* Terminate */
         pNextOption++;       /* Jump to (possible) next */
       }
-      if (!strncmp(pThisOption, axisID_is_str, strlen(axisID_is_str))) {
-        pThisOption += strlen(axisID_is_str);
-        int axisID = atoi(pThisOption);
-        printf("ethercatmcCreateIndexerAxis.options(%d): axisID=%d\n",
-               axisNo, axisID);
-        if (axisID > 0) {
-          pAxis->setAxisID(axisID);
-        }
+      if (0) {
+        ;
       } else {
         printf("Error option \"%s\" not supported\n", pThisOption);
       }
