@@ -190,7 +190,7 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
                                                            unsigned iTypCode)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%sOffsetTypeCode(%d) devNum=%u iTypCode=0x%x, iOffset=%u\n",
+            "%sOffsetTypeCode(%d) devNum=%u iTypCode=0x%X, iOffset=%u\n",
             modNamEMC, axisNo_, devNum, iTypCode, iOffset);
   drvlocal.devNum = devNum;
   drvlocal.iTypCode = iTypCode;
@@ -203,7 +203,7 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
     drvlocal.paramIfOffset = drvlocal.iOffset + 22;
   } else {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s(%d) iTypCode=0x%x\n",
+              "%s(%d) iTypCode=0x%X\n",
               modNamEMC, axisNo_, drvlocal.iTypCode);
   }
 }
@@ -211,7 +211,7 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
 void ethercatmcIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s(%d) auxBitsNotHomedMask=0x%x\n",
+            "%s(%d) auxBitsNotHomedMask=0x%X\n",
             modNamEMC, axisNo_, auxBitsNotHomedMask);
   drvlocal.auxBitsNotHomedMask = auxBitsNotHomedMask;
 }
@@ -219,7 +219,7 @@ void ethercatmcIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
 void ethercatmcIndexerAxis::setAuxBitsEnabledMask(unsigned auxBitsEnabledMask)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s(%d) setAuxBitsEnabledMask=0x%x\n",
+            "%s(%d) setAuxBitsEnabledMask=0x%X\n",
             modNamEMC, axisNo_, auxBitsEnabledMask);
   drvlocal.auxBitsEnabledMask = auxBitsEnabledMask;
 }
@@ -227,7 +227,7 @@ void ethercatmcIndexerAxis::setAuxBitsEnabledMask(unsigned auxBitsEnabledMask)
 void ethercatmcIndexerAxis::setAuxBitsLocalModeMask(unsigned auxBitsLocalModeMask)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s(%d) setAuxBitsLocalModeMask=0x%x\n",
+            "%s(%d) setAuxBitsLocalModeMask=0x%X\n",
             modNamEMC, axisNo_, auxBitsLocalModeMask);
   drvlocal.auxBitsLocalModeMask = auxBitsLocalModeMask;
 }
@@ -369,7 +369,7 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
                                    &posCmd, sizeof(posCmd));
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%smove(%d) iTypCode=0x%x\n",
+            "%smove(%d) iTypCode=0x%X\n",
             modNamEMC, axisNo_, drvlocal.iTypCode);
   return asynError;
 }
@@ -474,7 +474,7 @@ asynStatus ethercatmcIndexerAxis::setPosition(double value)
 asynStatus ethercatmcIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
 {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%swriteCmdRegisster(%d) idxStatusCode=0x%x (%s)\n",
+            "%swriteCmdRegisster(%d) idxStatusCode=0x%X (%s)\n",
             modNamEMC, axisNo_, idxStatusCode,
             idxStatusCodeTypeToStr((idxStatusCodeType)idxStatusCode));
   if ((drvlocal.iTypCode == 0x5008) || (drvlocal.iTypCode == 0x500c)) {
@@ -495,7 +495,7 @@ asynStatus ethercatmcIndexerAxis::writeCmdRegisster(unsigned idxStatusCode)
                                    &posCmd, sizeof(posCmd));
   }
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%swriteCmdRegisster(%d) iTypCode=0x%x\n",
+            "%swriteCmdRegisster(%d) iTypCode=0x%X\n",
             modNamEMC, axisNo_, drvlocal.iTypCode);
   return asynError;
 }
@@ -658,16 +658,17 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     idxAuxBits    =  statusReasonAux  & 0x0FFFFFF;
   } else {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%spoll(%d) iTypCode=0x%x\n",
+              "%spoll(%d) iTypCode=0x%X\n",
               modNamEMC, axisNo_, drvlocal.iTypCode);
     return asynError;
   }
   drvlocal.hasProblem = 0;
   setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
-  if (idxStatusCode   != drvlocal.dirty.idxStatusCode) {
+  if ((idxStatusCode != drvlocal.dirty.idxStatusCode) ||
+      (errorID != drvlocal.old_ErrorId)) {
     if (errorID) {
       asynPrint(pC_->pasynUserController_, traceMask,
-                "%spoll(%d) statusReasonAux=0x%08x (%s) errorID=0x%4x \"%s\" actPos=%f\n",
+                "%spoll(%d) statusReasonAux=0x%08X (%s) errorID=0x%04X \"%s\" actPos=%f\n",
                 modNamEMC, axisNo_,
                 statusReasonAux,
                 idxStatusCodeTypeToStr(idxStatusCode),
@@ -675,12 +676,13 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                 actPosition);
     } else {
       asynPrint(pC_->pasynUserController_, traceMask,
-                "%spoll(%d) statusReasonAux=0x%08x (%s) actPos=%f\n",
+                "%spoll(%d) statusReasonAux=0x%08X (%s) actPos=%f\n",
                 modNamEMC, axisNo_,
                 statusReasonAux,
                 idxStatusCodeTypeToStr(idxStatusCode),
                 actPosition);
     }
+    drvlocal.old_ErrorId = errorID;
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
     #define MAX_AUX_BIT_SHOWN 8
@@ -711,7 +713,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       }
     }
     asynPrint(pC_->pasynUserController_, traceMask,
-              "%spoll(%d) auxBits=0x%02x (%s%s%s%s%s%s%s%s) actPos=%f\n",
+              "%spoll(%d) auxBits=0x%02X (%s%s%s%s%s%s%s%s) actPos=%f\n",
               modNamEMC, axisNo_, idxAuxBits,
               changedNames[0],
               changedNames[1],

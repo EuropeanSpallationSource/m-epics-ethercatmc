@@ -96,8 +96,8 @@ private:
     unsigned auxBitsLocalModeMask;
     unsigned old_paramCtrl;
     unsigned old_idxAuxBits;
+    unsigned old_ErrorId;
     unsigned int hasProblem :1;
-    char adsport_str[15]; /* "ADSPORT=12345/" */ /* 14 should be enough, */
     uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
     PILSparamPermType PILSparamPerm[256];
     } drvlocal;
