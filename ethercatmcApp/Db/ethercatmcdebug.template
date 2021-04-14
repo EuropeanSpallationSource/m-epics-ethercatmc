@@ -184,13 +184,6 @@ record(bo,"$(PREFIX)$(MOTOR_NAME)-AdjAfterHomed") {
     info(asyn:INITIAL_READBACK,"1")
 }
 
-record(longin,"$(PREFIX)$(MOTOR_NAME)-AxisID-RB") {
-    field(DESC, "AxisID")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgAxisID-RB")
-    field(SCAN, "I/O Intr")
-}
-
 record(longin,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU-RB") {
     field(DESC, "Record uses EGU")
     field(DTYP, "asynInt32")
