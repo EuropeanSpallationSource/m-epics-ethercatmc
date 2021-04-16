@@ -358,7 +358,7 @@ class AxisMr:
         else:
             self.axisCom.put(".JOGR", 0)
 
-    def jogDirection(self, tc_no, direction):
+    def jogCalcTimeout(self, tc_no, direction):
         jvel = self.axisCom.get(".JVEL")
         hlm = self.axisCom.get(".HLM")
         llm = self.axisCom.get(".LLM")
@@ -377,6 +377,10 @@ class AxisMr:
         print(
             f"{tc_no}: jogDirection={direction} rbv={rbv} delta={delta} time_to_wait={time_to_wait}"
         )
+        return time_to_wait
+
+    def jogDirection(self, tc_no, direction):
+        time_to_wait = self.jogCalcTimeout(tc_no, direction)
         self.jogDirectionTimeout(tc_no, direction, time_to_wait)
 
     #    def movePosition(self, tc_no, destination, velocity, acceleration):
@@ -850,14 +854,16 @@ class AxisMr:
         return True
 
     # move into limit switch
-    def moveIntoLS(self, tc_no=0, direction=-1):
+    def moveIntoLS(self, tc_no=0, direction=-1, paramWhileMove=False):
         assert tc_no != 0
         assert direction >= 0
-        margin = 1.1
         jvel = self.axisCom.get(".JVEL")
         rdbd = self.axisCom.get(".RDBD")
         old_DHLM = self.axisCom.get("-CfgDHLM")
         old_DLLM = self.axisCom.get("-CfgDLLM")
+        margin = 1.1
+        if paramWhileMove:
+            margin = margin + 2
         if direction > 0:
             soft_limit_pos = old_DHLM
             jog_start_pos = soft_limit_pos - jvel - margin
@@ -868,7 +874,9 @@ class AxisMr:
             jog_start_pos = soft_limit_pos + jvel + margin
             ls_to_be_activated = self.MSTA_BIT_MINUS_LS
             ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
-
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} paramWhileMove={paramWhileMove} margin={margin}"
+            )
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} direction={direction } jog_start_pos={jog_start_pos:f}"
         )
@@ -876,8 +884,25 @@ class AxisMr:
         # Go away from limit switch
         self.moveWait(tc_no, jog_start_pos)
 
-        self.setSoftLimitsOff(tc_no, direction=direction)
-        self.jogDirection(tc_no, direction)
+        if paramWhileMove:
+            # Start jogging, switch soft limit off while jogging
+            #
+            wait_for_stop = self.jogCalcTimeout(tc_no, direction)
+            if direction > 0:
+                self.axisCom.put(".JOGF", 1)
+            else:
+                self.axisCom.put(".JOGR", 1)
+            wait_for_start = 2
+            self.waitForStart(tc_no, wait_for_start)
+            self.setSoftLimitsOff(tc_no, direction=direction)
+            self.waitForStop(tc_no, wait_for_stop)
+            if direction > 0:
+                self.axisCom.put(".JOGF", 0)
+            else:
+                self.axisCom.put(".JOGR", 0)
+        else:
+            self.setSoftLimitsOff(tc_no, direction=direction)
+            self.jogDirection(tc_no, direction)
         # Get values, check them later
         lvio = int(self.axisCom.get(".LVIO"))
         mstaE = int(self.axisCom.get(".MSTA"))
