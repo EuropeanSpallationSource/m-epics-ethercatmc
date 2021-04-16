@@ -8,8 +8,8 @@ import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-filnam = os.path.basename(__file__)[0:2]
-tc_no_base = int(os.path.basename(__file__)[0:2]) * 10
+filnam = os.path.basename(__file__)[0:3]
+tc_no_base = int(os.path.basename(__file__)[0:3]) * 10
 ###
 
 
@@ -57,14 +57,15 @@ class Test(unittest.TestCase):
                 self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
             assert passed
 
-    # high limit switch
+    # high limit switch, disabling softlimts after the JOG
+    # had been started
     def test_TC_1223(self):
         tc_no = tc_no_base + 3
         direction = 1
         msta = int(self.axisCom.get(".MSTA"))
         if msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
-            passed = self.axisMr.moveIntoLS(tc_no=tc_no, direction=direction)
+            passed = self.axisMr.moveIntoLS(tc_no=tc_no, direction=direction, paramWhileMove=True)
             if passed:
                 self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
             else:
