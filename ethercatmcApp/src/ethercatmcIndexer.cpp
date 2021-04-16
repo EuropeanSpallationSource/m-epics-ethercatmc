@@ -614,15 +614,25 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     switch (paramIfCmd) {
     case PARAM_IF_CMD_DONE:
       {
-        if (paramIndexRB == paramIndex && (!paramIndexIsMovingFunction(paramIndex))) {
+        if (paramIndexRB == paramIndex) {
           asynPrint(pasynUserController_, traceMask,
                     "%sindexerParamWrite(%d) paramIndex=%s(%u) value=%02g valueRB=%02g has_written=%d\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
                     value, valueRB, has_written);
-          if (value == valueRB || has_written) {
-            if (pValueRB) *pValueRB = valueRB;
-            return asynSuccess;
+          if (paramIndexIsMovingFunction(paramIndex)) {
+            /* New param interface handling:
+               PLC goes to DONE, the interface is released
+               Since this is a moving function, value != valueRB is OK here */
+            if (has_written) {
+              if (pValueRB) *pValueRB = valueRB;
+              return asynSuccess;
+            }
+          } else {
+            if (value == valueRB || has_written) {
+              if (pValueRB) *pValueRB = valueRB;
+              return asynSuccess;
+            }
           }
         } else {
           has_written = 0;

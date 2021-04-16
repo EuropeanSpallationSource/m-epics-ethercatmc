@@ -1397,19 +1397,6 @@ indexerMotorParamInterface(unsigned motor_axis_no,
   unsigned paramCommand = uValue & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK;
   unsigned paramIndex = uValue & PARAM_IF_CMD_MASKPARAM_IF_IDX_MASK;
   uint16_t ret = (uint16_t)uValue;
-
-  if (paramCommand == PARAM_IF_CMD_BUSY) {
-    if (!isMotorMoving(motor_axis_no)) {
-      if (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY ||
-          paramIndex == PARAM_IDX_FUN_REFERENCE) {
-        LOGINFO3("%s/%s:%d motor_axis_no=%d jogging/homing stopped. paraminterface := DONE\n",
-                 __FILE__, __FUNCTION__, __LINE__,
-                 motor_axis_no);
-        ret = PARAM_IF_CMD_DONE | paramIndex;
-        uintToNet(ret, &netData.memoryBytes[offset], 2);
-      }
-    }
-  }
   if (paramCommand == PARAM_IF_CMD_INVALID) {
     uValue = PARAM_IF_CMD_DONE;
     paramCommand = uValue & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK;
@@ -1470,7 +1457,7 @@ indexerMotorParamInterface(unsigned motor_axis_no,
                      acceleration);
 
 #endif
-        ret = PARAM_IF_CMD_BUSY | paramIndex;
+        ret = PARAM_IF_CMD_DONE | paramIndex;
       }
       break;
     case PARAM_IDX_FUN_MOVE_VELOCITY:
@@ -1485,17 +1472,11 @@ indexerMotorParamInterface(unsigned motor_axis_no,
              but for the moment we need it for TC950 */
           setNxtMoveVelocity(motor_axis_no, fValue);
         }
-        if (isMotorMoving(motor_axis_no)) {
-          ret = PARAM_IF_CMD_BUSY | paramIndex;
-          LOGINFO3("%s/%s:%d motor_axis_no=%d jogging started, param interface := BUSY\n",
-                   __FILE__, __FUNCTION__, __LINE__,
-                   motor_axis_no);
-        } else {
-          moveVelocity(motor_axis_no,
-                       direction,
-                       fVelocity,
-                       getNxtMoveAcceleration(motor_axis_no));
-        }
+        moveVelocity(motor_axis_no,
+                     direction,
+                     fVelocity,
+                     getNxtMoveAcceleration(motor_axis_no));
+        ret = PARAM_IF_CMD_DONE | paramIndex;
       }
       break;
     case PARAM_IDX_FUN_SET_POSITION:
