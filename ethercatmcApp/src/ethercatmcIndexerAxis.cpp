@@ -152,8 +152,8 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
     new ethercatmcIndexerAxis(pC, axisNo, axisFlags, axisOptionsStr);
   }
   pC->unlock();
-  ethercatmcIndexerAxis *pAxis =
-    static_cast<ethercatmcIndexerAxis*>(pC->asynMotorController::getAxis(axisNo));
+  //ethercatmcIndexerAxis *pAxis =
+  //  static_cast<ethercatmcIndexerAxis*>(pC->asynMotorController::getAxis(axisNo));
   if (axisOptionsStr && axisOptionsStr[0]) {
 
     char *pOptions = strdup(axisOptionsStr);
