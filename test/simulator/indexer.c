@@ -257,9 +257,6 @@ typedef struct {
   netDevice5008interface_type dev5008;
   netDevice1202interface_type dev1202errorID;
   netDevice1202interface_type dev1202encoderRaw;
-#ifdef HAS_1604HOMPROC
-  netDevice1604interface_type dev1604homProc;
-#endif
 } netDevice5008_1202_1604_Interface_type;
 
 /* struct as seen on the network = in memory
@@ -390,18 +387,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
-#ifdef HAS_1604HOMPROC
-    /* device for homProc */
-    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
-      UNITCODE_NONE, 1,
-      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "homProc",
-      { "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", ""},
-      0.0, 0.0
-    },
-#endif
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_DEGREE, 2,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
@@ -480,18 +465,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
-#ifdef HAS_1604HOMPROC
-    /* device for homProc */
-    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
-      UNITCODE_NONE, 2,
-      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "homProc",
-      { "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", ""},
-      0.0, 0.0
-    },
-#endif
 #ifdef HAS_5010
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 3,
@@ -1668,30 +1641,6 @@ void indexerHandlePLCcycle(void)
           unsigned motor5008Num = axisNo - 1;
           (void)motor5008Num;
           (void)pLCcycleInitDone;
-#ifdef HAS_1604HOMPROC
-          if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "homProc"))) {
-            unsigned homProc = cmd_Motor_cmd[axisNo].nHomProc;
-            if (pLCcycleInitDone) {
-              homProc = NETTOUINT(netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1604homProc.targetValue);
-              if (homProc != cmd_Motor_cmd[axisNo].nOldHomProc) {
-                LOGINFO3("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u homProc=%i oldHomeProc=%u\n",
-                         __FILE__, __FUNCTION__, __LINE__,
-                         devNum, axisNo, motor5008Num,
-                         homProc, cmd_Motor_cmd[axisNo].nOldHomProc);
-                cmd_Motor_cmd[axisNo].nHomProc = homProc;
-                cmd_Motor_cmd[axisNo].nOldHomProc = homProc;
-              } else {
-                UINTTONET(homProc,
-                          netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1604homProc.targetValue);
-              }
-            }
-            LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u homProc=%u\n",
-                     __FILE__, __FUNCTION__, __LINE__,
-                     devNum, axisNo, motor5008Num, homProc);
-            UINTTONET(homProc,
-                      netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1604homProc.actualValue);
-          }
-#endif
         }
       }
       break;
