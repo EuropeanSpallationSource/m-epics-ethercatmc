@@ -73,13 +73,7 @@
 #else
 #define  NUM_5010           0
 #endif
-#ifdef HAS_1604HOMPROC
-#define  NUM_1604_HOMPROC   2
-#else
-#define  NUM_1604_HOMPROC   0
-#endif
-
-#define  NUM_DEVICES        (NUM_INDEXER_5008_1202 + NUM_1604_HOMPROC + NUM_0518 + NUM_5010)
+#define  NUM_DEVICES        (NUM_INDEXER_5008_1202 + NUM_0518 + NUM_5010)
 
 
 typedef enum {
