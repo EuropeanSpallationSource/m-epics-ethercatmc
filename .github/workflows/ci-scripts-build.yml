@@ -52,6 +52,11 @@ jobs:
             name: "7.0 latest pytest"
 
     steps:
+    - name: Get Date
+      id: get-week
+      run: |
+        echo "::set-output name=week::$(/bin/date -u "+%U")"
+      shell: bash
     - uses: actions/checkout@v2
       with:
         submodules: true
@@ -59,7 +64,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.cache
-        key: ${{ matrix.base }}/${{ matrix.set }}/${{ matrix.os }}/${{ matrix.cmp }}/${{ matrix.configuration }}/${{ matrix.extra }}
+        key: ${{ matrix.base }}/${{ matrix.set }}/${{ matrix.os }}/${{ matrix.cmp }}/${{ matrix.configuration }}/${{ matrix.extra }}/-${{ steps.get-week.outputs.week }}
     - name: Prepare and compile dependencies
       run: python .ci/cue.py prepare
     - name: Build main module
