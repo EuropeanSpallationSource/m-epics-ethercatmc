@@ -14,7 +14,6 @@
 #include "logerr_info.h"
 #include "cmd.h"
 
-//#define XXOLDPERM 1
 /* type codes and sizes */
 #define TYPECODE_INDEXER               0
 /* The lenght of the indexer data, the longest is
@@ -196,46 +195,6 @@ typedef enum {
 #define PARAM_IDX_STEPS_PER_REV_FLOAT32       222
 #define PARAM_IDX_MAX_VELO_FLOAT32            223
 
-#if XXOLDPERM
-/*  Which parameters are available */
-#define PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32             (1 << (1))
-#define PARAM_AVAIL_0_7_MICROSTEPS_UINT32              (1 << (2))
-
-#define PARAM_AVAIL_24_31_ABS_MIN_FLOAT32              (1 << (30-24))
-#define PARAM_AVAIL_24_31_ABS_MAX_FLOAT32              (1 << (31-24))
-
-#define PARAM_AVAIL_32_39_USR_MIN_FLOAT32              (1 << (32-32))
-#define PARAM_AVAIL_32_39_USR_MAX_FLOAT32              (1 << (33-32))
-#define PARAM_AVAIL_32_39_WRN_MIN_FLOAT32              (1 << (34-32))
-#define PARAM_AVAIL_32_39_WRN_MAX_FLOAT32              (1 << (35-32))
-
-#define PARAM_AVAIL_48_55_FOLLOWING_ERR_WIN_FLOAT32    (1 << (55-48))
-
-#define PARAM_AVAIL_56_63_HYTERESIS_FLOAT32            (1 << (56-56))
-#define PARAM_AVAIL_56_63_REFSPEED_FLOAT32             (1 << (58-56))
-#define PARAM_AVAIL_56_63_VBAS_FLOAT32                 (1 << (59-56))
-#define PARAM_AVAIL_56_63_SPEED_FLOAT32                (1 << (60-56))
-#define PARAM_AVAIL_56_63_ACCEL_FLOAT32                (1 << (61-56))
-#define PARAM_AVAIL_56_63_IDLE_CURRENT_FLOAT32         (1 << (62-56))
-
-#define PARAM_AVAIL_64_71_MOVE_CURRENT_FLOAT32         (1 << (64-64))
-#define PARAM_AVAIL_64_71_MICROSTEPS_FLOAT32           (1 << (67-64))
-#define PARAM_AVAIL_64_71_STEPS_PER_UNIT_FLOAT32       (1 << (68-64))
-#define PARAM_AVAIL_64_71_HOME_POSITION_FLOAT32        (1 << (69-64))
-
-#define PARAM_AVAIL_128_135_FUN_REFERENCE              (1 << (133-128))
-#define PARAM_AVAIL_136_143_FUN_SET_POSITION           (1 << (137-136))
-#define PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY          (1 << (142-136))
-
-#define PARAM_AVAIL_192_199_USR_MIN_EN                 (1 << (192-192))
-#define PARAM_AVAIL_192_199_USR_MAX_EN                 (1 << (193-192))
-#define PARAM_AVAIL_192_199_HOME_PROC                  (1 << (194-192))
-
-#define PARAM_AVAIL_216_223_UNITS_PER_REV              (1 << (221-216))
-#define PARAM_AVAIL_216_223_STEPS_PER_REV              (1 << (222-216))
-#define PARAM_AVAIL_216_223_MAX_VELO                   (1 << (223-216))
-#endif
-
 /* In the memory bytes, the indexer starts at 64 */
   static unsigned offsetIndexer;
 
@@ -321,11 +280,7 @@ typedef struct {
   uint16_t  sizeInBytes;
   uint16_t  unitCode;
   uint16_t  axisNo;
-#if XXOLDPERM
-  uint8_t   paramAvail[32]; /* counting 0..31 */
-#else
   permPTyp  permP[256];
-#endif
   char      devName[34];
   char      auxName[24][34];
   float     absMin;
@@ -359,41 +314,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 #endif
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_MM, 1,
-#if XXOLDPERM
-      {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
-       /*  8..15   */ 0,
-       /* 16..23   */ 0,
-       /* 24..31   */ 0,
-       /* 32..39   */ PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32,
-       /* 40..47   */ 0,
-       /* 48..55   */ 0,
-       /* 56..63   */ PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
-       /* 64..71   */ PARAM_AVAIL_64_71_HOME_POSITION_FLOAT32,
-       /* 72..79   */ 0,
-       /* 80..87   */ 0,
-       /* 88..95   */ 0,
-       /* 96..103  */ 0,
-       /* 104..111 */ 0,
-       /* 112..119 */ 0,
-       /* 120..127 */ 0,
-       /* 128..135 */ PARAM_AVAIL_128_135_FUN_REFERENCE,
-       /* 136..143 */ PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
-       /* 144..151 */ 0,
-       /* 152..159 */ 0,
-       /* 160..167 */ 0,
-       /* 168..175 */ 0,
-       /* 176..183 */ 0,
-       /* 184..191 */ 0,
-       /* 192..199 */ PARAM_AVAIL_192_199_USR_MIN_EN | PARAM_AVAIL_192_199_USR_MAX_EN | PARAM_AVAIL_192_199_HOME_PROC,
-       /* 200..207 */ 0,
-       /* 208..215 */ 0,
-       /* 216..223 */ PARAM_AVAIL_216_223_UNITS_PER_REV | PARAM_AVAIL_216_223_STEPS_PER_REV | PARAM_AVAIL_216_223_MAX_VELO,
-       /* 224..231 */ 0,
-       /* 232..239 */ 0,
-       /* 240..247 */ 0,
-       /* 248..255 */ 0
-      },
-#else
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
      /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /*  10..14  */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -444,7 +364,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
     },
-#endif
       "SimAxis1",
       { "notHomed", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -485,41 +404,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 #endif
     { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
       UNITCODE_DEGREE, 2,
-#if XXOLDPERM
-      {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
-       /*  8..15   */ 0,
-       /* 16..23   */ 0,
-       /* 24..31   */ 0,
-       /* 32..39   */ PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32,
-       /* 40..47   */ 0,
-       /* 48..55   */ 0,
-       /* 56..63   */ PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
-       /* 64..71   */ 0,
-       /* 72..79   */ 0,
-       /* 80..87   */ 0,
-       /* 88..95   */ 0,
-       /* 96..103  */ 0,
-       /* 104..111 */ 0,
-       /* 112..119 */ 0,
-       /* 120..127 */ 0,
-       /* 128..135 */ 0,
-       /* 136..143 */ PARAM_AVAIL_136_143_FUN_SET_POSITION | PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
-       /* 144..151 */ 0,
-       /* 152..159 */ 0,
-       /* 160..167 */ 0,
-       /* 168..175 */ 0,
-       /* 176..183 */ 0,
-       /* 184..191 */ 0,
-       /* 192..199 */ PARAM_AVAIL_192_199_USR_MIN_EN | PARAM_AVAIL_192_199_USR_MAX_EN,
-       /* 200..207 */ 0,
-       /* 208..215 */ 0,
-       /* 216..223 */ 0,
-       /* 224..231 */ 0,
-       /* 232..239 */ 0,
-       /* 240..247 */ 0,
-       /* 248..255 */ 0
-      },
-#else
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
      /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /*  10..14  */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -570,7 +454,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
     },
-#endif
       "RotAxis2",
       { "notHomed", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -612,41 +495,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 #ifdef HAS_5010
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 3,
-#if XXOLDPERM
-      {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
-       /*  8..15   */ 0,
-       /* 16..23   */ 0,
-       /* 24..31   */ 0,
-       /* 32..39   */ PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32,
-       /* 40..47   */ 0,
-       /* 48..55   */ 0,
-       /* 56..63   */ PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
-       /* 64..71   */ PARAM_AVAIL_64_71_HOME_POSITION_FLOAT32,
-       /* 72..79   */ 0,
-       /* 80..87   */ 0,
-       /* 88..95   */ 0,
-       /* 96..103  */ 0,
-       /* 104..111 */ 0,
-       /* 112..119 */ 0,
-       /* 120..127 */ 0,
-       /* 128..135 */ PARAM_AVAIL_128_135_FUN_REFERENCE,
-       /* 136..143 */ PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
-       /* 144..151 */ 0,
-       /* 152..159 */ 0,
-       /* 160..167 */ 0,
-       /* 168..175 */ 0,
-       /* 176..183 */ 0,
-       /* 184..191 */ 0,
-       /* 192..199 */ PARAM_AVAIL_192_199_HOME_PROC,
-       /* 200..207 */ 0,
-       /* 208..215 */ 0,
-       /* 216..223 */ 0,
-       /* 224..231 */ 0,
-       /* 232..239 */ 0,
-       /* 240..247 */ 0,
-       /* 248..255 */ 0
-      },
-#else
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
      /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /*  10..14  */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -697,7 +545,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
     },
-#endif
       "Axis5010-3",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -706,41 +553,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     },
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 4,
-#if XXOLDPERM
-      {/*  0..7    */ PARAM_AVAIL_0_7_OPMODE_AUTO_UINT32,
-       /*  8..15   */ 0,
-       /* 16..23   */ 0,
-       /* 24..31   */ 0,
-       /* 32..39   */ PARAM_AVAIL_32_39_USR_MIN_FLOAT32 | PARAM_AVAIL_32_39_USR_MAX_FLOAT32,
-       /* 40..47   */ 0,
-       /* 48..55   */ 0,
-       /* 56..63   */ PARAM_AVAIL_56_63_SPEED_FLOAT32 | PARAM_AVAIL_56_63_ACCEL_FLOAT32 | PARAM_AVAIL_56_63_HYTERESIS_FLOAT32,
-       /* 64..71   */ PARAM_AVAIL_64_71_HOME_POSITION_FLOAT32,
-       /* 72..79   */ 0,
-       /* 80..87   */ 0,
-       /* 88..95   */ 0,
-       /* 96..103  */ 0,
-       /* 104..111 */ 0,
-       /* 112..119 */ 0,
-       /* 120..127 */ 0,
-       /* 128..135 */ 0,
-       /* 136..143 */ PARAM_AVAIL_136_143_FUN_MOVE_VELOCITY,
-       /* 144..151 */ 0,
-       /* 152..159 */ 0,
-       /* 160..167 */ 0,
-       /* 168..175 */ 0,
-       /* 176..183 */ 0,
-       /* 184..191 */ 0,
-       /* 192..199 */ 0,
-       /* 200..207 */ 0,
-       /* 208..215 */ 0,
-       /* 216..223 */ 0,
-       /* 224..231 */ 0,
-       /* 232..239 */ 0,
-       /* 240..247 */ 0,
-       /* 248..255 */ 0
-      },
-#else
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
      /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /*  10..14  */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -791,7 +603,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 235..239 */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
     },
-#endif
       "Axis5010-4",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
@@ -1012,13 +823,8 @@ static void init_axis(int axis_no)
               double absMax = indexerDeviceAbsStraction[devNum].absMax;
               double absMin = indexerDeviceAbsStraction[devNum].absMin;
               int hasUserMin = 0;
-#if XXOLDPERM
-              hasUserMin = indexerDeviceAbsStraction[devNum].paramAvail[4] &
-                PARAM_AVAIL_32_39_USR_MIN_FLOAT32;
- #else
               unsigned param_idx = PARAM_IDX_USR_MIN_FLOAT32;
               hasUserMin = indexerDeviceAbsStraction[devNum].permP[param_idx] != permPNone;
- #endif
               setHighHardLimitPos(axis_no, absMax);
               setLowHardLimitPos(axis_no,  absMin);
               LOGINFO3("%s/%s:%d axis_no=%d tmp_axis_no=%d USR_MIN_BIT=%u\n",
@@ -1634,11 +1440,6 @@ static int indexerHandleIndexerCmd(unsigned offset,
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
   case 15:
-#if XXOLDPERM
-    memcpy(&netData.memoryStruct.indexer.infoType15,
-           indexerDeviceAbsStraction[devNum].paramAvail,
-           sizeof(netData.memoryStruct.indexer.infoType15));
-#else
     {
       unsigned byteIdx;
       memset(&netData.memoryStruct.indexer.infoType15,
@@ -1666,7 +1467,6 @@ static int indexerHandleIndexerCmd(unsigned offset,
         netData.memoryStruct.indexer.infoType15.parameters[byteIdx] = parameter;
       }
     }
-#endif
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
   default:
