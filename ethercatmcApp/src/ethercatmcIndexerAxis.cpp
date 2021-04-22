@@ -567,6 +567,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   unsigned idxReasonBits = 0;
   unsigned idxAuxBits = 0;
   int pollReadBackInBackGround = 1;
+  int homed = 0;
 
   /* Don't leave *moving un-initialized, if we return early */
   *moving = false;
@@ -785,7 +786,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     setIntegerParam(pC_->ethercatmcStatusBits_, statusReasonAux);
     setIntegerParam(pC_->ethercatmcErr_, hasError);
     if (drvlocal.auxBitsNotHomedMask) {
-      int homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
+      homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
       setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
       if (!homed) {
         drvlocal.hasProblem = 1;
@@ -820,6 +821,27 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
+  }
+
+  if (pC_->ctrlLocal.systemUTCtimeOffset)  {
+    /* Motor position in user coordinates with UTC time */
+    double motorRecOffset;
+    int motorRecDirection;
+    asynStatus RBV_UTCstatus = asynSuccess;
+    if (!homed) RBV_UTCstatus = asynDisabled;
+    if ((!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
+                              &motorRecOffset)) &&
+        (!pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
+                               &motorRecDirection))) {
+
+      double ethercatmcRBV_UTC;
+      /* direction == 1 means "negative" */
+      motorRecDirection = motorRecDirection ? -1 : 1;
+      ethercatmcRBV_UTC = actPosition *  motorRecDirection + motorRecOffset;
+      setDoubleParam(pC_->ethercatmcRBV_UTC_, ethercatmcRBV_UTC);
+    }
+    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcRBV_UTC_,
+                                       RBV_UTCstatus);
   }
 
   if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {

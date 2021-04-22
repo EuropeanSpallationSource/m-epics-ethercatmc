@@ -1417,6 +1417,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->function         = function;
   if (!strcmp(paramName, "SystemUTCtime")) {
     pPilsAsynDevInfo->isSystemUTCtime = 1;
+    ctrlLocal.systemUTCtimeOffset = inputOffset;
   }
   setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
 

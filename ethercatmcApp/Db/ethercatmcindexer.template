@@ -23,3 +23,11 @@ record(stringout, "$(PREFIX)$(MOTOR_NAME)-EGU_") {
     field(OMSL, "closed_loop")
 }
 
+record(ai,"$(PREFIX)$(MOTOR_NAME)-RBV-UTC") {
+    field(DESC, "Position UTC timestamped")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))RBV-UTC")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}
