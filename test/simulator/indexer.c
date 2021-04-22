@@ -25,16 +25,13 @@
 #endif
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
 #define TYPECODE_DISCRETEOUTPUT_1604 0x1604
-#define TYPECODE_PARAMDEVICE_5008 0x5008
+//#define TYPECODE_PARAMDEVICE_5008 0x5008
 
-#define HAS_5010
-#ifdef HAS_5010
 #define TYPECODE_PARAMDEVICE_5010 0x5010
-#endif
 #define WORDS_SPECIALDEVICE_0518    0x18
 #define WORDS_DISCRETEINPUT_1202     0x2
 #define WORDS_DISCRETEOUTPUT_1604    0x4
-#define WORDS_PARAMDEVICE_5008       0x8
+//#define WORDS_PARAMDEVICE_5008       0x8
 #define WORDS_PARAMDEVICE_5010      0x10
 
 
@@ -44,22 +41,19 @@
 #define UNITCODE_DEGREE             0x000C
 
 #define AXISNO_NONE         0
-/* axis1, axis2 */
-#define  NUM_MOTORS5008     2
+//#define  NUM_MOTORS5008     2
 
-/* axis3 axis4 */
-#define  NUM_MOTORS5010     2
+/* axis1 .. axis4 */
+#define  NUM_MOTORS5010     4
 
 /*
    Devices for the indexer:
    + the indexer itself
    + 1 special 0518
-   + 2 motors 5008
-   + 2 1202 errorId for the 5008 motors
-   + 2 1202 encoderRaw for the 5008 motors
-   + 2 motors 5010
+   + 4 motors 5010
+   + 4 encoders
 */
-#define NUM_INDEXER_5008_1202 7
+#define NUM_INDEXERS        1
 
 #ifdef HAS_0518
 #define  NUM_0518           1
@@ -67,12 +61,8 @@
 #define  NUM_0518           0
 #endif
 
-#ifdef HAS_5010
-#define  NUM_5010           2
-#else
-#define  NUM_5010           0
-#endif
-#define  NUM_DEVICES        (NUM_INDEXER_5008_1202 + NUM_0518 + NUM_5010)
+#define  NUM_5010           4
+#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010)
 
 
 typedef enum {
@@ -242,6 +232,7 @@ typedef struct {
   uint8_t   targetValue[4];
 } netDevice1604interface_type;
 
+#ifdef HAS_5008
 /* The paramDevice structure.
    floating point values are 4 bytes long,
    the whole structure uses 16 bytes, 8 words */
@@ -258,6 +249,7 @@ typedef struct {
   netDevice1202interface_type dev1202errorID;
   netDevice1202interface_type dev1202encoderRaw;
 } netDevice5008_1202_1604_Interface_type;
+#endif
 
 /* struct as seen on the network = in memory
  * data must be stored using  uintToNet/doubleToNet
@@ -270,6 +262,11 @@ typedef struct {
   uint8_t   paramCtrl[2];
   uint8_t   paramValue[8];
 } netDevice5010interface_type;
+
+typedef struct {
+  netDevice5010interface_type dev5010;
+  netDevice1202interface_type dev1202encoderRaw;
+} netDevice5010_1202_Interface_type;
 
 /* Info type as seen here locally in memory */
 typedef struct {
@@ -309,7 +306,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       0.0, 0.0
     },
 #endif
-    { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
+    { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 1,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
      /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -367,16 +364,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       5.0, 175.0
     },
-    /* device for errorID */
-    { TYPECODE_DISCRETEINPUT_1202, 2*WORDS_DISCRETEINPUT_1202,
-      UNITCODE_NONE, 1,
-      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "errorID",
-      { "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", ""},
-      0.0, 0.0
-    },
     /* device for encoderRaw */
     { TYPECODE_DISCRETEINPUT_1202, 2*WORDS_DISCRETEINPUT_1202,
       UNITCODE_NONE, 1,
@@ -387,7 +374,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
-    { TYPECODE_PARAMDEVICE_5008, 2*WORDS_PARAMDEVICE_5008,
+    { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_DEGREE, 2,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
      /*   5..9   */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -445,16 +432,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       -181.0, +181.0
     },
-    /* device for errorID */
-    { TYPECODE_DISCRETEINPUT_1202, 2*WORDS_DISCRETEINPUT_1202,
-      UNITCODE_NONE, 2,
-      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "errorID",
-      { "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", ""},
-      0.0, 0.0
-    },
     /* device for encoderRaw */
     { TYPECODE_DISCRETEINPUT_1202, 2*WORDS_DISCRETEINPUT_1202,
       UNITCODE_NONE, 2,
@@ -465,7 +442,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
-#ifdef HAS_5010
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 3,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
@@ -524,6 +500,16 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", "notHomed"},
       0, +173.0
     },
+    /* device for encoderRaw */
+    { TYPECODE_DISCRETEINPUT_1202, 2*WORDS_DISCRETEINPUT_1202,
+      UNITCODE_NONE, 3,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "encoderRaw",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 4,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
@@ -581,8 +567,17 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "notHomed"},
       0, +163.0
+    },
+    /* device for encoderRaw */
+    { TYPECODE_DISCRETEINPUT_1202, 2*WORDS_DISCRETEINPUT_1202,
+      UNITCODE_NONE, 4,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "encoderRaw",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
     }
-#endif
   };
 
 
@@ -612,8 +607,7 @@ static union {
     netDevice0518interface_type special0518; /* 42 bytes for ASCII to the simulator */
 #endif
     /* Remember that motor[0] is defined, but never used */
-    netDevice5008_1202_1604_Interface_type motors5008_1202_1604[NUM_MOTORS5008];
-    netDevice5010interface_type motors5010[NUM_MOTORS5010];
+    netDevice5010_1202_Interface_type motors5010_1202[NUM_MOTORS5010];
   } memoryStruct;
 } netData;
 
@@ -788,8 +782,8 @@ static void init_axis(int axis_no)
                  axis_no, tmp_axis_no, devNum,
                  indexerDeviceAbsStraction[devNum].typeCode);
         switch (indexerDeviceAbsStraction[devNum].typeCode) {
-        case 0x5008:
-        case 0x500C:
+          //case 0x5008:
+          //case 0x500C:
         case 0x5010:
           {
             if (tmp_axis_no == axis_no) {
@@ -825,7 +819,7 @@ static void init_axis(int axis_no)
   }
 }
 
-
+#ifdef HAS_5008
 static void
 indexerMotorStatusRead5008(unsigned devNum,
                            unsigned motor_axis_no,
@@ -914,8 +908,8 @@ indexerMotorStatusRead5008(unsigned devNum,
   ret = statusReasonAux | (idxStatusCode << 12);;
   UINTTONET(ret, pIndexerDevice5008interface->statusReasonAux16);
 }
+#endif
 
-#ifdef HAS_5010
 static void
 indexerMotorStatusRead5010(unsigned devNum,
                            unsigned motor_axis_no,
@@ -1010,7 +1004,6 @@ indexerMotorStatusRead5010(unsigned devNum,
   UINTTONET(statusReasonAux32,
             pIndexerDevice5010interface->statusReasonAux32);
 }
-#endif
 
 /* Reads a parameter.
    All return values are returned as double,
@@ -1077,6 +1070,7 @@ indexerMotorParamRead(unsigned motor_axis_no,
     *fRet = getMRES_24(motor_axis_no);
     return ret;
   case PARAM_IDX_MAX_VELO_FLOAT32:
+    *fRet = (double)0.0;
     return ret;
 
   default:
@@ -1616,20 +1610,13 @@ void indexerHandlePLCcycle(void)
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
           unsigned motor5008Num = axisNo - 1;
-          if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "errorID"))) {
-            unsigned errorID = get_nErrorId(axisNo);
-            LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u errorID=%u\n",
-                     __FILE__, __FUNCTION__, __LINE__,
-                     devNum, axisNo, motor5008Num, errorID);
-            UINTTONET(errorID,
-                      netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1202errorID.value);
-          } else if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "encoderRaw"))) {
+          if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "encoderRaw"))) {
             int encoderRaw = (int)getEncoderPos(axisNo);
             LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u encoderRaw=%u\n",
                      __FILE__, __FUNCTION__, __LINE__,
                      devNum, axisNo, motor5008Num, encoderRaw);
             UINTTONET(encoderRaw,
-                      netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev1202encoderRaw.value);
+                      netData.memoryStruct.motors5010_1202[motor5008Num].dev1202encoderRaw.value);
           }
         }
       }
@@ -1644,6 +1631,7 @@ void indexerHandlePLCcycle(void)
         }
       }
       break;
+#ifdef HAS_5008
     case TYPECODE_PARAMDEVICE_5008:
       {
         double fRet;
@@ -1652,7 +1640,7 @@ void indexerHandlePLCcycle(void)
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         unsigned motor5008Num = axisNo - 1;
         static const unsigned numAuxBits = 8;
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5008_1202_1604[motor5008Num] -
+        offset = (unsigned)((void*)&netData.memoryStruct.motors5010_1202[motor5008Num] -
                             (void*)&netData);
 
         fRet = getMotorPos((int)axisNo);
@@ -1662,10 +1650,10 @@ void indexerHandlePLCcycle(void)
         doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
         /* status */
         indexerMotorStatusRead5008(devNum, axisNo, numAuxBits,
-                                   &netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev5008);
+                                   &netData.memoryStruct.motors5010_1202[motor5008Num].dev5008);
 
         /* param interface */
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5008_1202_1604[motor5008Num].dev5008.paramCtrl -
+        offset = (unsigned)((void*)&netData.memoryStruct.motors5010_1202[motor5008Num].dev5008.paramCtrl -
                             (void*)&netData);
         LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u paramoffset=%u\n",
                  __FILE__, __FUNCTION__, __LINE__,
@@ -1673,16 +1661,16 @@ void indexerHandlePLCcycle(void)
         indexerMotorParamInterface(axisNo, offset, lenInPlcPara);
       }
       break;
-#ifdef HAS_5010
+#endif
     case TYPECODE_PARAMDEVICE_5010:
       {
         double fRet;
         size_t lenInPlcPara = 8;
         unsigned offset;
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
-        unsigned motor5010Num = axisNo - NUM_MOTORS5008 - 1;
+        unsigned motor5010Num = axisNo - 1;
         static const unsigned numAuxBits = 24;
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5010[motor5010Num].actualValue -
+        offset = (unsigned)((void*)&netData.memoryStruct.motors5010_1202[motor5010Num].dev5010.actualValue -
                             (void*)&netData);
 
         fRet = getMotorPos((int)axisNo);
@@ -1692,10 +1680,10 @@ void indexerHandlePLCcycle(void)
         doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
         /* status */
         indexerMotorStatusRead5010(devNum, axisNo, numAuxBits,
-                                   &netData.memoryStruct.motors5010[motor5010Num]);
+                                   &netData.memoryStruct.motors5010_1202[motor5010Num].dev5010);
 
         /* param interface */
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5010[motor5010Num].paramCtrl -
+        offset = (unsigned)((void*)&netData.memoryStruct.motors5010_1202[motor5010Num].dev5010.paramCtrl -
                             (void*)&netData);
         LOGINFO6("%s/%s:%d devNum=%u motor5010Num=%u paramoffset=%u\n",
                  __FILE__, __FUNCTION__, __LINE__,
@@ -1703,7 +1691,6 @@ void indexerHandlePLCcycle(void)
         indexerMotorParamInterface(axisNo, offset, lenInPlcPara);
       }
       break;
-#endif
     case TYPECODE_INDEXER:
       {
         uint16_t indexer_ack = NETTOUINT(netData.memoryStruct.indexer_ack);
