@@ -66,6 +66,19 @@ epicsEnvSet("CHNO",          "0")
 epicsEnvSet("ECEL3162FIELDINIT", "")
 < ethercatmcEL3162-OneChannel.iocsh
 
+#
+# Analog input.
+# Same as before, but timestamped with the
+# UTC from the PTP timing server.
+#
+epicsEnvSet("P",             "SES-SCAN:LSR-001:")
+epicsEnvSet("R",             "AnalogInput-UTC")
+epicsEnvSet("DESC",          "LaserDiodeSensor-UTC")
+epicsEnvSet("ASYNPARAMNAME", "AnalogInput")
+epicsEnvSet("CHNO",          "0")
+epicsEnvSet("ECEL3162FIELDINIT", ", TSE=-2")
+< ethercatmcEL3162-OneChannel.iocsh
+epicsEnvSet("ECEL3162FIELDINIT", "")
 
 #
 # Start polling, values are in millisconds
