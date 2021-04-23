@@ -823,8 +823,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
   }
 
-  if (pC_->ctrlLocal.systemUTCtimeOffset)  {
-    /* Motor position in user coordinates with UTC time */
+  if (positionValid && statusValid && pC_->ctrlLocal.systemUTCtimeOffset)  {
+    /* Motor position in "user coordinates" with UTC time from PTP */
     double motorRecOffset;
     int motorRecDirection;
     asynStatus RBV_UTCstatus = asynSuccess;
