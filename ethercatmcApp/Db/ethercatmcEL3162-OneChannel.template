@@ -5,4 +5,5 @@ record(longin, "$(P)$(R)")
     field(EGU,  "16 bits")
     field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
     field(SCAN, "I/O Intr")
+    field(TSE,  "$(TSE=0)")
 }
