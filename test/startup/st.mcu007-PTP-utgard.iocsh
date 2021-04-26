@@ -25,14 +25,22 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
 
-#setIdlePollPeriod("$(MOTOR_PORT)", 0.100)
-#setMovingPollPeriod("$(MOTOR_PORT)", 0.100)
-
-setIdlePollPeriod("$(MOTOR_PORT)", 0.500)
-setMovingPollPeriod("$(MOTOR_PORT)", 0.500)
 
 #####################################################
 # EL1252, first channel, CHNO == 0
 epicsEnvSet("CHNO",     "0")
 < ethercatmcEL1252-OneChannel.iocsh
 
+
+#####################################################
+# PTP with ExtSync
+< ethercatmcEL6688-PTP.iocsh
+< ethercatmcEL6688-ExtSync.iocsh
+
+
+#
+# Start polling, values are in millisconds
+#
+epicsEnvSet("MOVINGPOLLPERIOD", "100")
+epicsEnvSet("IDLEPOLLPERIOD",   "100")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
