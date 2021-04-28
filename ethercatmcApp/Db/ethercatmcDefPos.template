@@ -7,7 +7,7 @@
 # This record contains an index to the list of positions for motor.
 # The multipositioner writes to the VAL field to select one.
 record(longout, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL") {
-  field(DESC, "$(DESC)")
+  field(DESC, "Select defined motor position")
   field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC1")
 }
 
@@ -16,7 +16,7 @@ record(longout, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL") {
 #
 record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC1") {
   field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC2")
-  field(CALC, "A<12?1:0")
+  field(CALC, "(A>=0 && A<12)?1:0")
   field(INPA, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL.VAL")
   field(OUT, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.SELN PP")
   field(OOPT, "When Non-zero")
@@ -29,7 +29,7 @@ record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC1") {
 #
 record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC2") {
   field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSetDOL_")
-  field(CALC, "A<12?1:0")
+  field(CALC, "(A>=0 && A<12)?1:0")
   field(INPA, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL")
   field(OUT,  "$(PREFIX)$(MOTOR_NAME).OMSL")
 }
