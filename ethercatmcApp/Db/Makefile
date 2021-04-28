@@ -24,6 +24,7 @@ DB += ethercatmcdebug.template
 DB += ethercatmchome.template
 DB += ethercatmcindexer.template
 DB += ethercatmcreadback.template
+DB += ethercatmcDefPos.template
 DB += ethercatmcslit_soft.template
 DB += ethercatmcslit_hard.template
 DB += ethercatmcslitAvoidCollSoftlimits.template
