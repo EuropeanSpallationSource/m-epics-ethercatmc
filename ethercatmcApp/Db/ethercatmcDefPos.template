@@ -15,7 +15,7 @@ record(longout, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL") {
 # Range check of the index - must be 0..11
 #
 record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC1") {
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC2")
+  field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC2")
   field(CALC, "A<12?1:0")
   field(INPA, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL.VAL")
   field(OUT, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.SELN PP")
@@ -24,6 +24,23 @@ record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC1") {
   field(OCAL, "A")
 }
 
+#
+# Set up .OMSL field
+#
+record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC2") {
+  field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSetDOL_")
+  field(CALC, "A<12?1:0")
+  field(INPA, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL")
+  field(OUT,  "$(PREFIX)$(MOTOR_NAME).OMSL")
+}
+
+#
+# Set up .DOL field
+#
+record(stringout, "$(PREFIX)$(MOTOR_NAME)-DefPosSetDOL_") {
+  field(VAL, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1")
+  field(OUT, "$(PREFIX)$(MOTOR_NAME).DOL CP")
+}
 
 #
 # The sel record itself, the heart of our business.
