@@ -68,6 +68,8 @@ elif which virtualenv-3.8 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.8
 elif which virtualenv-3.7 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.7
+elif which virtualenv-3.6 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.6
 elif which pyenv-virtualenv >/dev/null 2>&1; then
   # brew has pyenv-virtualenv
   # and a bug, "pyenv-root" should be written as "pyenv root"
