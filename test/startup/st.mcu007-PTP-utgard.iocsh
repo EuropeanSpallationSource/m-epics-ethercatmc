@@ -11,7 +11,8 @@ epicsEnvSet("SM_NOAXES",     "1")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=192.168.88.57.1.1;amsNetIdLocal=172.30.244.38.1.1"
 
 < ethercatmcController.iocsh
-< ethercatmcEL6688-PILS.iocsh
+< ethercatmcEL6688-PTP.iocsh
+< ethercatmcEL6688-ExtSync.iocsh
 
 #
 # Axis 1
@@ -24,6 +25,11 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
+# Predefined Positions
+epicsEnvSet("NVL",           "")
+epicsEnvSet("EGU",           "")
+< ethercatmcDefPos.iocsh
+
 
 
 #####################################################
