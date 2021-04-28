@@ -85,17 +85,26 @@ class AxisCom:
         fullname = self.url_scheme + pvname
         ret = None
         if self.log_debug:
+            if wait:
+                print(
+                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} timeout={timeout} wait={wait} value={value}"
+                )
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value}"
             )
         if self.ctxt is not None:
-            self.ctxt.put(pvname, value, timeout=timeout, wait=wait)
+            ret = self.ctxt.put(pvname, value, timeout=timeout, wait=wait)
+            if self.log_debug:
+                print(
+                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} pvput_ret={ret}"
+                )
         else:
             caput_ret = self.epics.caput(pvname, value, timeout=timeout, wait=wait)
             # This function returns 1 on success,
             # and a negative number if the timeout has been exceeded
-            if caput_ret != 1:
+            if self.log_debug:
                 print(
                     f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} caput_ret={ret}"
                 )
+            if caput_ret != 1:
                 raise Exception(f"caput({pvname},{value}) returned error {caput_ret}")
