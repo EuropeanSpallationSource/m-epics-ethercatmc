@@ -108,3 +108,6 @@ class AxisCom:
                 )
             if caput_ret != 1:
                 raise Exception(f"caput({pvname},{value}) returned error {caput_ret}")
+
+    def getMotorPvName(self):
+        return self.pvpfx
