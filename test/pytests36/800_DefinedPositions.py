@@ -52,8 +52,9 @@ class Test(unittest.TestCase):
         if msta & self.axisMr.MSTA_BIT_HOMED:
             old_dol = self.axisCom.get(".DOL")
             old_omsl = self.axisCom.get(".OMSL")
-            self.axisCom.put(".DOL", self.motorPvName + "-DefPosSEL1")
-            self.axisCom.put(".OMSL", "closed_loop")
+            # Note: Setting up .DOL and .OMLS is done in the template
+            #self.axisCom.put(".DOL", self.motorPvName + "-DefPosSEL1")
+            #self.axisCom.put(".OMSL", "closed_loop")
             velo = self.axisCom.get(".VELO")
 
             # Calculate values
