@@ -853,6 +853,25 @@ class AxisMr:
             return False
         return True
 
+    def postMoveCheck(self, tc_no):
+        """
+        Check the motor for the correct state at the end of move.
+        """
+        dmov = self.axisCom.get(".DMOV")
+        movn = self.axisCom.get(".MOVN")
+        stat = self.axisCom.get(".STAT")
+        sevr = self.axisCom.get(".SEVR")
+        lvio = self.axisCom.get(".LVIO")
+        miss = self.axisCom.get(".MISS")
+        rhls = self.axisCom.get(".RHLS")
+        rlls = self.axisCom.get(".RLLS")
+
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov} movn={movn} stat={stat} sevr={sevr} miss={miss} rhls={rhls} rlls={rlls}"
+            )
+        return dmov == 1 and movn == 0 and stat == 0 and sevr == 0 and lvio == 0 and miss == 0 and rhls == 0 and rlls == 0
+
+
     # move into limit switch
     def moveIntoLS(self, tc_no=0, direction=-1, paramWhileMove=False):
         assert tc_no != 0
