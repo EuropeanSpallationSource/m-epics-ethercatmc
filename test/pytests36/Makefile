@@ -26,6 +26,7 @@ RECORD-CA = \
   121_Record-JOGF_DIR_DLY_HLM.log-ca-m1\
   131_Record-JOGR_DIR_DLY_LLM.log-ca-m1\
   140_Record-VAL_VMAX.log-ca-m1\
+  141_Record_NTM.log-ca-m1\
   220_Record_auto_power.log-ca-m1\
   500_Record-DLY-STOP.log-ca-m1\
 
