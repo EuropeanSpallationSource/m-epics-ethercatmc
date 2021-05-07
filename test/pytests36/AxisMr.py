@@ -221,16 +221,16 @@ class AxisMr:
             ret = ret + "EXTERNAL "
         return ret
 
-    def calcAlmostEqual(self, tc_no, expected, actual, maxdelta):
+    def calcAlmostEqual(self, tc_no, expected, actual, maxdelta, doPrint=True):
         delta = math.fabs(expected - actual)
         delta <= maxdelta
         if delta <= maxdelta:
             inrange = True
         else:
             inrange = False
-
-        print(
-            f"{tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
+        if doPrint:
+            print(
+                f"{tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
         )
         return inrange
 
@@ -245,6 +245,9 @@ class AxisMr:
             timeout += delta / velocity
         else:
             timeout += 60.0
+        print(
+            f"calcTimeOut: rbv={rbv} destination={destination} velocity={velocity} timeout={timeout}"
+        )
         return timeout
 
     def waitForStart(self, tc_no, wait_for_start):
@@ -253,7 +256,7 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV")
-            debug_text = f"{tc_no}: wait_for_start={wait_for_start} dmov={dmov} movn={movn} rbv={rbv:.2f}"
+            debug_text = f"{tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
             print(debug_text)
             if movn and not dmov:
                 return
@@ -267,7 +270,7 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{tc_no}: wait_for_stop={wait_for_stop} dmov={dmov} movn={movn} rbv={rbv:.2f}"
+            debug_text = f"{tc_no}: wait_for_stop={wait_for_stop:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
             print(debug_text)
             if not movn and dmov:
                 return
@@ -343,6 +346,18 @@ class AxisMr:
             time.sleep(polltime)
             wait_for_powerOff -= polltime
         raise Exception(debug_text)
+
+    def waitForValueChanged(self, tc_no, field_name, expVal, maxDelta, time_to_wait):
+        while time_to_wait > 0:
+            actVal= self.axisCom.get(field_name, use_monitor=False)
+            inrange = self.calcAlmostEqual(tc_no, expVal, actVal, maxDelta, doPrint=False)
+            debug_text = f"{tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal} actVal={actVal} maxDelta={maxDelta} inrange={inrange}"
+            print(debug_text)
+            if inrange:
+                return True
+            time.sleep(polltime)
+            time_to_wait -= polltime
+        return False
 
     def jogDirectionTimeout(self, tc_no, direction, time_to_wait):
         print(
