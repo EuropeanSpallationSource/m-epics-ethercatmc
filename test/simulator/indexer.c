@@ -1104,10 +1104,17 @@ indexerMotorParamWrite(unsigned motor_axis_no,
     {
       /* param = 1 means amplifier off.
          param = 0 means "on", then ramp up */
-      int setOnNotOff = fValue ? 0 : 1;
-      int isOnNotOff  = getAmplifierOn(motor_axis_no);
-      if (isOnNotOff != setOnNotOff) {
-        setAmplifierPercent(motor_axis_no, setOnNotOff ? 97 : 0);
+      int newOnNotOff = fValue ? 0 : 1;
+      int oldOnNotOff  = getAmplifierOn(motor_axis_no);
+      if (oldOnNotOff != newOnNotOff) {
+        if (newOnNotOff) {
+          /* Ramp up */
+          setAmplifierPercent(motor_axis_no, 97);
+        } else {
+          /* Stop; then power off */
+          motorStop(motor_axis_no);
+          setAmplifierPercent(motor_axis_no, 0);
+        }
       }
       return ret;
     }
