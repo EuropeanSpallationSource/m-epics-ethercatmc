@@ -1,7 +1,7 @@
 ###########################################################
 # The default target: all
 
-all-ca:
+test all-ca:
 	make -k -C pytests36 record-ca
 	make -k -C pytests36 ethercatmc-ca
 	make -k -C pytests36 simulator-one-ca
