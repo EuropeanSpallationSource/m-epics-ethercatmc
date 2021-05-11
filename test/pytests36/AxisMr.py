@@ -10,6 +10,7 @@ import math
 import time
 import os
 import filecmp
+import time
 
 from AxisCom import AxisCom
 
@@ -29,16 +30,27 @@ class AxisMr:
     def __init__(self, axisCom, url_string=None):
         self.axisCom = axisCom
         self.url_string = url_string
-        wait_for = 30
-        while wait_for > 0:
+        start_seconds = time.time()
+        end_seconds = start_seconds + 30
+        now = start_seconds
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} AxisMr.__init__ start url_string={url_string}"
+        )
+        while now < end_seconds:
             # Dummy read to give the IOC time to start
             try:
-                msta = int(axisCom.get(".MSTA", timeout=2.0))
-                wait_for = -1
+                msta = int(axisCom.get(".MSTA", timeout=2.0, use_monitor=False))
+                return
             except:
-                wait_for -= 1
-        if wait_for == 0:
-            raise Exception("wait_for = 0 get None")
+                pass
+            time.sleep(polltime)
+            now = time.time()
+        print(
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} AxisMr.__init__ failed url_string={url_string}"
+            )
+        )
+        raise Exception("wait_for = 0 get None")
 
     MSTA_BIT_HOMED = 1 << (15 - 1)  # 4000
     MSTA_BIT_MINUS_LS = 1 << (14 - 1)  # 2000
@@ -231,7 +243,7 @@ class AxisMr:
         if doPrint:
             print(
                 f"{tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
-        )
+            )
         return inrange
 
     def calcTimeOut(self, destination, velocity):
@@ -349,8 +361,10 @@ class AxisMr:
 
     def waitForValueChanged(self, tc_no, field_name, expVal, maxDelta, time_to_wait):
         while time_to_wait > 0:
-            actVal= self.axisCom.get(field_name, use_monitor=False)
-            inrange = self.calcAlmostEqual(tc_no, expVal, actVal, maxDelta, doPrint=False)
+            actVal = self.axisCom.get(field_name, use_monitor=False)
+            inrange = self.calcAlmostEqual(
+                tc_no, expVal, actVal, maxDelta, doPrint=False
+            )
             debug_text = f"{tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal} actVal={actVal} maxDelta={maxDelta} inrange={inrange}"
             print(debug_text)
             if inrange:
@@ -883,9 +897,17 @@ class AxisMr:
 
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov} movn={movn} stat={stat} sevr={sevr} miss={miss} rhls={rhls} rlls={rlls}"
-            )
-        return dmov == 1 and movn == 0 and stat == 0 and sevr == 0 and lvio == 0 and miss == 0 and rhls == 0 and rlls == 0
-
+        )
+        return (
+            dmov == 1
+            and movn == 0
+            and stat == 0
+            and sevr == 0
+            and lvio == 0
+            and miss == 0
+            and rhls == 0
+            and rlls == 0
+        )
 
     # move into limit switch
     def moveIntoLS(self, tc_no=0, direction=-1, paramWhileMove=False):
@@ -910,7 +932,7 @@ class AxisMr:
             ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} paramWhileMove={paramWhileMove} margin={margin}"
-            )
+        )
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} direction={direction } jog_start_pos={jog_start_pos:f}"
         )
