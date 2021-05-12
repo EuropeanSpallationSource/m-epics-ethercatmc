@@ -56,6 +56,17 @@ if test "$1" = "-l"; then
   DOLOG=" 2>&1 | tee $PWD/xx.txt"
   shift
 fi
+if test "$1" = "--no-make"; then
+  NOMAKE=y
+  shift
+fi
+export NOMAKE
+if test "$1" = "--no-run"; then
+  NORUN=y
+  shift
+fi
+export NORUN
+
 MOTORCFG="$1"
 export MOTORCFG
 echo MOTORCFG=$MOTORCFG
@@ -65,6 +76,7 @@ echo MOTORCFG=$MOTORCFG
     CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g" | sort)
     #echo CMDS=$CMDS
     test -n "$1" && echo >&2 "not found st.${1}.iocsh"
+    echo >&2 $0  "[--no-make][--no-run]"
     echo >&2 "try one of these:"
     for cmd in $CMDS; do
       case $cmd in
@@ -159,7 +171,7 @@ if test "$1" = "-l"; then
 fi
 export DOLOG
 
-
+if test "$NOMAKE" != "y"; then
 (
   IOCDIR=../iocBoot/ioc${APPXX}
   DBMOTOR=db
@@ -253,11 +265,7 @@ export DOLOG
               echo >&2 can not create stcmddst $stcmddst
               exit 1
           }
-          rm -fv  require.lock* &&
-          chmod +x $stcmddst &&
-          cmd=$(echo iocsh $stcmddst) &&
-          echo PWD=$PWD cmd=$cmd &&
-          eval $cmd
+          chmod +x $stcmddst
           ;;
       n)
           # classic EPICS, non EEE
@@ -301,8 +309,6 @@ EOF
 EOF
           chmod +x $stcmddst &&
           egrep -v "^ *#" $stcmddst >xx
-          echo PWD=$PWD $stcmddst DOLOG=$DOLOG
-          eval $stcmddst $DOLOG
           ;;
       e3)
           #e3
@@ -328,7 +334,38 @@ EOF
               echo >&2 can not create stcmddst $stcmddst
               exit 1
           }
-          chmod +x $stcmddst &&
+          chmod +x $stcmddst
+          ;;
+      *)
+          echo >&2 invalid2 EPICS_EEE_E3 $EPICS_EEE_E3
+          exit 1
+          ;;
+  esac
+)
+fi
+if test "$NORUN" != "y"; then
+  IOCDIR=../iocBoot/ioc${APPXX}
+  DBMOTOR=db
+  envPathsdst=./envPaths.$EPICS_HOST_ARCH &&
+  stcmddst=./st.iocsh.$EPICS_HOST_ARCH &&
+  cd $IOCDIR/ &&
+  case $EPICS_EEE_E3 in
+      y)
+          rm -fv  require.lock* &&
+          cmd=$(echo iocsh $stcmddst) &&
+          echo PWD=$PWD cmd=$cmd &&
+          eval $cmd
+          ;;
+      n)
+          # classic EPICS, non EEE
+          # We need to patch the cmd files to adjust dbLoadRecords
+          # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
+          echo PWD=$PWD $stcmddst DOLOG=$DOLOG
+          eval $stcmddst $DOLOG
+          ;;
+      e3)
+          #e3
+          stcmddst=./st.iocsh.EEE.$EPICS_HOST_ARCH &&
           cmd=$(echo iocsh.bash $stcmddst) &&
           echo PWD=$PWD cmd=$cmd &&
           eval $cmd
@@ -338,4 +375,4 @@ EOF
           exit 1
           ;;
   esac
-)
+fi
