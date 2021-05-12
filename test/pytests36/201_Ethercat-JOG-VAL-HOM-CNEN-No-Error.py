@@ -76,7 +76,74 @@ def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
         self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
     else:
         self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
-    assert testPassed
+    return testPassed
+
+
+def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+    self.axisCom.put(".CNEN", 1)
+    self.axisMr.waitForPowerOn(tc_no, 8.0)
+    self.axisMr.moveWait(tc_no, startpos)
+
+    self.axisCom.put("-PwrAuto", 0)
+    self.axisCom.put(".CNEN", 0)
+    self.axisCom.put(field_name, field_value)
+
+    # self.axisMr.waitForStart(tc_no, 3.0)
+    # self.axisMr.waitForStop(tc_no, 3.0)
+    self.axisMr.waitForStartAndDone(tc_no, 6.0)
+
+    msta_1 = int(self.axisCom.get(".MSTA", use_monitor=False))
+    bError_1 = self.axisCom.get("-Err", use_monitor=False)
+    nErrorId_1 = self.axisCom.get("-ErrId", use_monitor=False)
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} bError_1={int(bError_1)} nErrorId_1=0x{int(nErrorId_1):04X}"
+    )
+
+    if bError_1 != 0:
+        self.axisMr.resetAxis(tc_no)
+        # Loop until moving has stopped and error has been reseted
+        counter = 7
+        msta = msta_1
+        nErrorId = nErrorId_1
+        bError = bError_1
+        while msta & self.axisMr.MSTA_BIT_MOVING or bError != 0 or nErrorId != 0:
+            time.sleep(polltime)
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} sleep counter = {int(counter)}"
+            )
+            msta = int(self.axisCom.get(".MSTA", use_monitor=False))
+            bError = self.axisCom.get("-Err", use_monitor=False)
+            nErrorId = self.axisCom.get("-ErrId", use_monitor=False)
+            counter = counter - 1
+            if counter == 0:
+                break
+
+    # Re-home if needed
+    msta = int(self.axisCom.get(".MSTA"))
+    if not (msta & self.axisMr.MSTA_BIT_HOMED):
+        self.axisMr.powerOnHomeAxis(tc_no)
+
+    # Restore the values we had before this test started
+    self.axisCom.put(".CNEN", self.saved_CNEN)
+    if self.saved_CNEN:
+        self.axisMr.waitForPowerOn(tc_no + "restore", 8.0)
+    else:
+        self.axisMr.waitForPowerOff(tc_no + "restore", 3.0)
+
+    self.axisCom.put("-PwrAuto", self.saved_PwrAuto)
+
+    # Run the assert after we have restored the original state
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} bError_1={bError_1} msta_1={self.axisMr.getMSTAtext(msta_1)}"
+    )
+    testPassed = int(bError_1) != 0
+    if testPassed:
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+    else:
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+    return testPassed
 
 
 class Test(unittest.TestCase):
@@ -85,7 +152,7 @@ class Test(unittest.TestCase):
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
     )
 
-    axisCom = AxisCom(url_string, log_debug=True)
+    axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
     msta = int(axisCom.get(".MSTA"))
@@ -112,7 +179,8 @@ class Test(unittest.TestCase):
         tc_no = "2012"
         # startpos = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
         startpos = self.saved_LLM
-        startAndPowerOff(self, tc_no, startpos, ".JOGF", 1)
+        testPassed = startAndPowerOff(self, tc_no, startpos, ".JOGF", 1)
+        assert testPassed
 
     # Move, wait for start, power off, check for no error, reset error if needed
     def test_TC_2013(self):
@@ -122,10 +190,39 @@ class Test(unittest.TestCase):
         if endpos > self.saved_HLM:
             startpos = self.saved_LLM
             endpos = self.saved_HLM
-        startAndPowerOff(self, tc_no, startpos, ".VAL", endpos)
+        testPassed = startAndPowerOff(self, tc_no, startpos, ".VAL", endpos)
+        assert testPassed
 
     # Move, wait for start, power off, check for no error, reset error if needed
-    def test_TC_2013(self):
-        tc_no = "2013"
+    def test_TC_2014(self):
+        tc_no = "2014"
         startpos = (self.saved_HLM + self.saved_LLM) / 2.0
-        startAndPowerOff(self, tc_no, startpos, ".HOMF", 1)
+        testPassed = startAndPowerOff(self, tc_no, startpos, ".HOMF", 1)
+        assert testPassed
+
+    ###############################
+    # power off, try to jog, check for error, reset error if needed
+    def test_TC_2015(self):
+        tc_no = "2015"
+        # startpos = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
+        startpos = self.saved_LLM
+        testPassed = powerOffAndStart(self, tc_no, startpos, ".JOGF", 1)
+        assert testPassed
+
+    # power off, move, check for error, reset error if needed
+    def test_TC_2016(self):
+        tc_no = "2016"
+        startpos = self.axisCom.get(".VAL")
+        endpos = startpos + 3 * self.axisCom.get(".VELO")
+        if endpos > self.saved_HLM:
+            startpos = self.saved_LLM
+            endpos = self.saved_HLM
+        testPassed = powerOffAndStart(self, tc_no, startpos, ".VAL", endpos)
+        assert testPassed
+
+    # power off, try to move, check for error, reset error if needed
+    def test_TC_2017(self):
+        tc_no = "2017"
+        startpos = (self.saved_HLM + self.saved_LLM) / 2.0
+        testPassed = powerOffAndStart(self, tc_no, startpos, ".HOMF", 1)
+        assert testPassed
