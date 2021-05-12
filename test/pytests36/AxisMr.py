@@ -819,7 +819,7 @@ class AxisMr:
         self.axisCom.put(".CNEN", cnen)
         while wait_for_power_changed > 0:
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-            debug_text = f"{tc_no}: wait_for_power_changed={wait_for_power_changed} msta={msta:4x} {self.getMSTAtext(msta)}"
+            debug_text = f"{tc_no}: wait_for_power_changed={wait_for_power_changed:.2f} msta={msta:04x} {self.getMSTAtext(msta)}"
             print(debug_text)
             if cnen and (msta & self.MSTA_BIT_AMPON):
                 return
@@ -841,7 +841,7 @@ class AxisMr:
             wait_for_ErrRst -= polltime
             err = int(self.axisCom.get("-Err", use_monitor=False))
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wait_for_ErrRst={wait_for_ErrRst:f} err=0x{err:x}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wait_for_ErrRst={wait_for_ErrRst:.2f} err=0X{err:X}"
             )
             if not err:
                 return True
