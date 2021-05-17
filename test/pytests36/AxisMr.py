@@ -940,25 +940,29 @@ class AxisMr:
         # Go away from limit switch
         self.moveWait(tc_no, jog_start_pos)
 
-        if paramWhileMove:
-            # Start jogging, switch soft limit off while jogging
-            #
-            wait_for_stop = self.jogCalcTimeout(tc_no, direction)
-            if direction > 0:
-                self.axisCom.put(".JOGF", 1)
+        if doSetSoftLimitsOff:
+            if paramWhileMove:
+                # Start jogging, switch soft limit off while jogging
+                #
+                wait_for_stop = self.jogCalcTimeout(tc_no, direction)
+                if direction > 0:
+                    self.axisCom.put(".JOGF", 1)
+                else:
+                    self.axisCom.put(".JOGR", 1)
+                wait_for_start = 2
+                self.waitForStart(tc_no, wait_for_start)
+                self.setSoftLimitsOff(tc_no, direction=direction)
+                self.waitForStop(tc_no, wait_for_stop)
+                if direction > 0:
+                    self.axisCom.put(".JOGF", 0)
+                else:
+                    self.axisCom.put(".JOGR", 0)
             else:
-                self.axisCom.put(".JOGR", 1)
-            wait_for_start = 2
-            self.waitForStart(tc_no, wait_for_start)
-            self.setSoftLimitsOff(tc_no, direction=direction)
-            self.waitForStop(tc_no, wait_for_stop)
-            if direction > 0:
-                self.axisCom.put(".JOGF", 0)
-            else:
-                self.axisCom.put(".JOGR", 0)
+                self.setSoftLimitsOff(tc_no, direction=direction)
+                self.jogDirection(tc_no, direction)
         else:
-            self.setSoftLimitsOff(tc_no, direction=direction)
             self.jogDirection(tc_no, direction)
+
         # Get values, check them later
         lvio = int(self.axisCom.get(".LVIO"))
         mstaE = int(self.axisCom.get(".MSTA"))
@@ -968,7 +972,8 @@ class AxisMr:
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}"
         )
 
-        self.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM, direction=direction)
+        if doSetSoftLimitsOn:
+            self.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM, direction=direction)
         passed = True
         if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
             print(
