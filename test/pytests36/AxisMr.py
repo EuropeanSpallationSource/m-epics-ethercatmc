@@ -910,7 +910,7 @@ class AxisMr:
         )
 
     # move into limit switch
-    def moveIntoLS(self, tc_no=0, direction=-1, paramWhileMove=False):
+    def moveIntoLS(self, tc_no=0, direction=-1, doSetSoftLimitsOff=True, doSetSoftLimitsOn=True, paramWhileMove=False):
         assert tc_no != 0
         assert direction >= 0
         jvel = self.axisCom.get(".JVEL")
