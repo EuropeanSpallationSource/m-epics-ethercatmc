@@ -72,7 +72,7 @@ SIMULATOR_PID=$!
 sleep 5
 
 #build ioc
-./run-ethercatmc-ioc.sh --no-run sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1
+( cd .. && ./run-ethercatmc-ioc.sh --no-run sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1)
 
 # start ioc
 date
