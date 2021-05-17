@@ -91,6 +91,8 @@ class Test(unittest.TestCase):
     # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
     saved_HLM = axisCom.get(".HLM")
     saved_LLM = axisCom.get(".LLM")
+    saved_DHLM = axisCom.get(".DHLM")
+    saved_DLLM = axisCom.get(".DLLM")
 
     # Assert that motor is homed
     def test_TC_2031(self):
@@ -123,7 +125,6 @@ class Test(unittest.TestCase):
                 direction=direction,
                 doSetSoftLimitsOff=False,
                 doSetSoftLimitsOn=False,
-                paramWhileMove=True,
             )
             if passed:
                 self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
@@ -142,11 +143,15 @@ class Test(unittest.TestCase):
                 tc_no=tc_no,
                 direction=direction,
                 doSetSoftLimitsOff=False,
-                doSetSoftLimitsOn=True,
-                paramWhileMove=True,
+                doSetSoftLimitsOn=False,
             )
             if passed:
                 self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
             else:
                 self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
             assert passed
+
+    def test_TC_2034(self):
+        tc_no = "2034"
+        # Put back the limits for the next run
+        self.axisMr.setSoftLimitsOn(tc_no, self.saved_DLLM, self.saved_DHLM)
