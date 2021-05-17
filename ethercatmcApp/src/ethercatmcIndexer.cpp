@@ -457,7 +457,7 @@ asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
     epicsThreadSleep(calcSleep(counter));
   }
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%sindexOffset=%u ctrlLen=0x%04x counter=%d\n",
+            "%sindexOffset=%u ctrlLen=0x%04X counter=%d\n",
             modNamEMC, indexOffset, ctrlLen, counter);
   return asynDisabled;
 }
@@ -604,7 +604,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     if (counter >= 1) {
       asynPrint(pasynUserController_, traceMask,
                 "%sindexerParamWrite(%d) paramIndex=%s(%u 0x%02X) value=%02g "
-                "counter=%u cmdSubParamIndexRB=%s (0x%04x)\n",
+                "counter=%u cmdSubParamIndexRB=%s (0x%04X)\n",
                 modNamEMC, axisNo,
                 plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                 value, counter,
@@ -685,7 +685,9 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
       break;
     }
     epicsThreadSleep(calcSleep(counter));
-    counter++;
+    if (has_written) {
+      counter++;
+    }
   }
   asynPrint(pasynUserController_,
             traceMask | ASYN_TRACE_INFO,
@@ -887,7 +889,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
     /* dataIdx == 0 has ACK + infoType/devNum
        dataIdx == 1 has supported parameters 15..0 */
     asynPrint(pasynUserController_, traceMask,
-              "%sparameters[%03u..%03u]=0x%04x\n",
+              "%sparameters[%03u..%03u]=0x%04X\n",
               modNamEMC, dataIdx*16 +15,
               dataIdx*16, parameters);
     /* Where is the parameter interface to this device ?
