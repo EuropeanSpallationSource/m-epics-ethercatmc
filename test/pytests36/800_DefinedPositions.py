@@ -81,16 +81,16 @@ class Test(unittest.TestCase):
                 pvname = "-DefPosVAL" + chr(ord("A") + step)
                 destination = (
                     float(step) * self.hlm + float(steps - step) * self.llm
-                ) / float(steps)
+                ) / float(steps - 1)
                 self.axisCom.put(pvname, destination)
                 timeout = self.axisMr.calcTimeOut(destination, velo)
                 self.axisCom.put("-DefPosSEL", step, wait=True, timeout=timeout)
                 # The following should not be needed:
-                # if not self.axisMr.verifyRBVinsideRDBD(tc_no, destination):
-                #    try:
-                #        self.axisMr.waitForStart(tc_no, 1.0)
-                #    except Exception:
-                #        pass
+                if not self.axisMr.verifyRBVinsideRDBD(tc_no, destination):
+                    try:
+                        self.axisMr.waitForStart(tc_no, 1.0)
+                    except Exception:
+                        pass
 
                 # self.axisMr.waitForStop(tc_no, timeout)
 
