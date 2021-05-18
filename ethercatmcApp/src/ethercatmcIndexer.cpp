@@ -1241,8 +1241,10 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
         lastDeviceEndOffset = endOffset;
       }
     } else {
+#ifdef motorMessageTextString
       /* We find the name of the MCU here */
       setStringParam(0, motorMessageText_, descVersAuthors.desc);
+#endif
     }
     switch (iTypCode) {
     case 0x5008:
