@@ -51,15 +51,20 @@ def moveVALnewRBVnewValRtryDly(
     timeout = self.axisMr.calcTimeOut(pointOfReturnPos + 1.0, velo)
     self.axisMr.waitForValueChanged(tc_no, ".RBV", pointOfReturnPos, maxDelta, timeout)
 
-    timeout = self.axisMr.calcTimeOut(secondVal, velo)
+    # Extra long timeout: The motor may overshoot, kind of
+    timeout = 2 * self.axisMr.calcTimeOut(secondVal, velo)
     self.axisCom.put(".VAL", secondVal)
 
     rdbd = self.axisCom.get(".RDBD")
-    testPassed = self.axisMr.waitForValueChanged(
+    valueChangedOK = self.axisMr.waitForValueChanged(
         tc_no, ".RBV", secondVal, rdbd, timeout
     )
     self.axisMr.waitForStop(tc_no, timeout + dly + 1.0)
-    testPassed = testPassed and self.axisMr.postMoveCheck(tc_no)
+    postMoveCheckOK = self.axisMr.postMoveCheck(tc_no)
+    testPassed = valueChangedOK and postMoveCheckOK
+    print(
+        f"{tc_no} moveVALnewRBVnewValRtryDly valueChangedOK={valueChangedOK} postMoveCheckOK={postMoveCheckOK}"
+    )
 
     self.axisCom.put(".DLY", oldDLY)
     self.axisCom.put(".NTM", oldNTM)
