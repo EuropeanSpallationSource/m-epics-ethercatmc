@@ -45,11 +45,9 @@ class AxisMr:
                 pass
             time.sleep(polltime)
             now = time.time()
-        print(
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} AxisMr.__init__ failed url_string={url_string}"
             )
-        )
         raise Exception("wait_for = 0 get None")
 
     MSTA_BIT_HOMED = 1 << (15 - 1)  # 4000
@@ -258,7 +256,7 @@ class AxisMr:
         else:
             timeout += 60.0
         print(
-            f"calcTimeOut: rbv={rbv} destination={destination} velocity={velocity} timeout={timeout}"
+            f"calcTimeOut: rbv={rbv:.2f} destination={destination:.2f} velocity={velocity:.2f} timeout={timeout:.2f}"
         )
         return timeout
 
@@ -421,6 +419,13 @@ class AxisMr:
     #        done = self.waitForStartAndDone(str(tc_no) + " movePosition", time_to_wait)
 
     def moveWait(self, tc_no, destination):
+        rbv = self.axisCom.get(".RBV", use_monitor=False)
+        rdbd = self.axisCom.get(".RDBD")
+
+        inrange = self.calcAlmostEqual(tc_no, destination, rbv, rdbd, doPrint=False)
+        if inrange:
+            print(f"{tc_no}: moveWait destination={destination:.2f} rbv={rbv:.2f}")
+            return
         timeout = 30
         acceleration = self.axisCom.get(".ACCL")
         velocity = self.axisCom.get(".VELO")
@@ -910,7 +915,14 @@ class AxisMr:
         )
 
     # move into limit switch
-    def moveIntoLS(self, tc_no=0, direction=-1, doSetSoftLimitsOff=True, doSetSoftLimitsOn=True, paramWhileMove=False):
+    def moveIntoLS(
+        self,
+        tc_no=0,
+        direction=-1,
+        doSetSoftLimitsOff=True,
+        doSetSoftLimitsOn=True,
+        paramWhileMove=False,
+    ):
         assert tc_no != 0
         assert direction >= 0
         jvel = self.axisCom.get(".JVEL")
