@@ -878,7 +878,7 @@ class AxisMr:
     def verifyRBVinsideRDBD(self, tc_no, position):
         """"""
         rdbd = self.axisCom.get(".RDBD")
-        rbv = self.axisCom.get(".RBV")
+        rbv = self.axisCom.get(".RBV", use_monitor=False)
 
         if (rbv < position - rdbd) or (rbv > position + rdbd):
             print(
@@ -891,6 +891,8 @@ class AxisMr:
         """
         Check the motor for the correct state at the end of move.
         """
+        val = self.axisCom.get(".VAL")
+        rbv = self.axisCom.get(".RBV", use_monitor=False)
         dmov = self.axisCom.get(".DMOV")
         movn = self.axisCom.get(".MOVN")
         stat = self.axisCom.get(".STAT")
@@ -901,7 +903,7 @@ class AxisMr:
         rlls = self.axisCom.get(".RLLS")
 
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov} movn={movn} stat={stat} sevr={sevr} miss={miss} rhls={rhls} rlls={rlls}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov} movn={movn} stat={stat} sevr={sevr} miss={miss} rhls={rhls} rlls={rlls} val={val:.2f} rbv={rbv:.2f}"
         )
         return (
             dmov == 1
