@@ -62,9 +62,14 @@ class Test(unittest.TestCase):
                 tc_no = 100 * (tc_no_base + 2) + step
                 self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)), wait=True)
                 pvname = "-DefPosVAL" + chr(ord("A") + step)
-                destination = (
-                    float(step) * self.hlm + float(steps - step) * self.llm
-                ) / float(steps - 1)
+                if step == 0:
+                    destination = self.llm
+                elif step == steps -1:
+                    destination = self.hlm
+                else:
+                    destination = (
+                        float(step) * self.hlm + float(steps - step) * self.llm
+                    ) / float(steps - 1)
                 self.axisCom.put(pvname, destination)
                 # Workaround: Acceleration may be wrong Allow longer timeout
                 timeout = 2 + 2 * self.axisMr.calcTimeOut(destination, velo)
