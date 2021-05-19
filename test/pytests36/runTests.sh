@@ -147,7 +147,7 @@ if ! type pytest >/dev/null 2>&1 ; then
     elif which python3.7 >/dev/null 2>&1; then
       PYTHON=python3.7
     elif which python36 >/dev/null 2>&1; then
-      PYTHON=python37
+      PYTHON=python36
     elif which python3.6 >/dev/null 2>&1; then
       PYTHON=python3.6
     elif which python3.5 >/dev/null 2>&1; then
