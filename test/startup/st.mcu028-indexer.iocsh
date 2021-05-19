@@ -28,6 +28,11 @@ epicsEnvSet("AXISCONFIG",    "axisID=1")
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
 
+# Predefined Positions
+# NVL: Input Value Location (INLINK)
+epicsEnvSet("NVL",           "")
+epicsEnvSet("EGU",           "")
+< ethercatmcDefPos.iocsh
 
 #
 # Axis 2
@@ -38,3 +43,9 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
+
+# Predefined Positions
+# NVL: Input Value Location (INLINK)
+epicsEnvSet("NVL",           "")
+epicsEnvSet("EGU",           "")
+< ethercatmcDefPos.iocsh
