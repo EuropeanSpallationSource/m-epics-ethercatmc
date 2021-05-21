@@ -1,0 +1,205 @@
+require ethercatmc,USER
+
+epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=192.168.1.60)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("PREFIX",        "$(SM_PREFIX=PSI-ESTIARND:MC-MCU-01:)")
+epicsEnvSet("ECM_NUMAXES",   "18")
+epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
+epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=5.82.112.102.1.1;amsNetIdLocal=192.168.1.105.1.1")
+
+
+# Faster polling
+epicsEnvSet("ECM_MOVINGPOLLPERIOD",  "500")
+epicsEnvSet("ECM_IDLEPOLLPERIOD",    "500")
+
+< ethercatmcController.iocsh
+
+
+# Common to all axes
+epicsEnvSet("EGU",           "$(SM_EGU=mm)")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("DESC",          "motor")
+
+#
+# Axis 1
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 2
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 3
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 4
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 5
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m5)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=5)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 6
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m6)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=6)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 7
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m7)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=7)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 8
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m8)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=8)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 9
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m9)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=9)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 10
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m10)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=10)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 11
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m11)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=11)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 12
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m12)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=12)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 13
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m13)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=13)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 14
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m14)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=14)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 15
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m15)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=15)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 16
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m16)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=16)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 17
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m17)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=17)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 18
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m18)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=18)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
