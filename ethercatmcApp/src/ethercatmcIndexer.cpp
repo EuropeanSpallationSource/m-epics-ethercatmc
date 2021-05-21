@@ -995,7 +995,7 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
   /* AUX bits */
   {
     unsigned auxBitIdx = 0;
-    for (auxBitIdx = 0; auxBitIdx <= 23; auxBitIdx++) {
+    for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_SHOWN; auxBitIdx++) {
       int function = ethercatmcNamAux0_ + auxBitIdx;
       if ((iAllFlags >> auxBitIdx) & 1) {
         char auxBitName[34];
@@ -1010,7 +1010,7 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
                   "%sauxBitName[%d] auxBitName(%02u)=%s\n",
                   modNamEMC, axisNo, auxBitIdx, auxBitName);
         if (status) return status;
-        if (function <= ethercatmcNamAux7_) {
+        if (function <= ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN) {
           pAxis->setStringParam(function, auxBitName);
           setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
         }
@@ -1698,7 +1698,7 @@ void ethercatmcController::indexerDisconnected(void)
   for (int axisNo=0; axisNo<numAxes_; axisNo++) {
     setIntegerParam(axisNo, motorStatusGainSupport_, 0);
     for (int function = ethercatmcNamAux0_;
-         function < ethercatmcNamAux7_;
+         function < ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN;
          function++) {
       setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
     }

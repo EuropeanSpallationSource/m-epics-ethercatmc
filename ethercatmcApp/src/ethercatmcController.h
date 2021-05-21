@@ -21,6 +21,8 @@ FILENAME...   ethercatmcController.h
 #define ETHERCATMC_ASYN_ASYNPARAMINT64
 #endif
 
+#define MAX_AUX_BIT_SHOWN 24
+
 #ifdef asynParamMetaMask
 #define ETHERCATMC_ASYN_PARAMMETA
 #else
@@ -46,6 +48,22 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcNamAux5_String             "NamAuxBit5"
 #define ethercatmcNamAux6_String             "NamAuxBit6"
 #define ethercatmcNamAux7_String             "NamAuxBit7"
+#define ethercatmcNamAux8_String             "NamAuxBit8"
+#define ethercatmcNamAux9_String             "NamAuxBit9"
+#define ethercatmcNamAux10_String            "NamAuxBit10"
+#define ethercatmcNamAux11_String            "NamAuxBit11"
+#define ethercatmcNamAux12_String            "NamAuxBit12"
+#define ethercatmcNamAux13_String            "NamAuxBit13"
+#define ethercatmcNamAux14_String            "NamAuxBit14"
+#define ethercatmcNamAux15_String            "NamAuxBit15"
+#define ethercatmcNamAux16_String            "NamAuxBit16"
+#define ethercatmcNamAux17_String            "NamAuxBit17"
+#define ethercatmcNamAux18_String            "NamAuxBit18"
+#define ethercatmcNamAux19_String            "NamAuxBit19"
+#define ethercatmcNamAux20_String            "NamAuxBit20"
+#define ethercatmcNamAux21_String            "NamAuxBit21"
+#define ethercatmcNamAux22_String            "NamAuxBit22"
+#define ethercatmcNamAux23_String            "NamAuxBit23"
 #define ethercatmcNamBit24_String            "NamBit24"
 #define ethercatmcNamBit25_String            "NamBit25"
 #define ethercatmcFoffVisString              "FoffVis"
@@ -427,6 +445,22 @@ public:
   int ethercatmcNamAux5_;
   int ethercatmcNamAux6_;
   int ethercatmcNamAux7_;
+  int ethercatmcNamAux8_;
+  int ethercatmcNamAux9_;
+  int ethercatmcNamAux10_;
+  int ethercatmcNamAux11_;
+  int ethercatmcNamAux12_;
+  int ethercatmcNamAux13_;
+  int ethercatmcNamAux14_;
+  int ethercatmcNamAux15_;
+  int ethercatmcNamAux16_;
+  int ethercatmcNamAux17_;
+  int ethercatmcNamAux18_;
+  int ethercatmcNamAux19_;
+  int ethercatmcNamAux20_;
+  int ethercatmcNamAux21_;
+  int ethercatmcNamAux22_;
+  int ethercatmcNamAux23_;
   int ethercatmcNamBit24_;
   int ethercatmcNamBit25_;
   int ethercatmcFoffVis_;

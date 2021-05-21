@@ -679,7 +679,6 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     drvlocal.dirty.old_ErrorId = errorID;
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
-    #define MAX_AUX_BIT_SHOWN 8
     char changedNames[MAX_AUX_BIT_SHOWN][36];
     unsigned changed = idxAuxBits ^ drvlocal.old_idxAuxBits;
     unsigned auxBitIdx;
@@ -707,7 +706,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       }
     }
     asynPrint(pC_->pasynUserController_, traceMask,
-              "%spoll(%d) auxBits=0x%02X (%s%s%s%s%s%s%s%s) actPos=%f\n",
+              "%spoll(%d) auxBits=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
               modNamEMC, axisNo_, idxAuxBits,
               changedNames[0],
               changedNames[1],
@@ -717,6 +716,22 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
               changedNames[5],
               changedNames[6],
               changedNames[7],
+              changedNames[8],
+              changedNames[9],
+              changedNames[10],
+              changedNames[11],
+              changedNames[12],
+              changedNames[13],
+              changedNames[14],
+              changedNames[15],
+              changedNames[16],
+              changedNames[17],
+              changedNames[18],
+              changedNames[19],
+              changedNames[20],
+              changedNames[21],
+              changedNames[22],
+              changedNames[23],
               actPosition);
   }
   switch (idxStatusCode) {
