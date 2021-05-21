@@ -1190,6 +1190,16 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
     getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
                                    descVersAuthors.author2,
                                    sizeof(descVersAuthors.author2));
+    switch (iTypCode) {
+      case 0x5008:
+      case 0x500C:
+      case 0x5010:
+        {
+          axisNo++;
+        }
+      default:
+        ;
+    }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%sPilsDevice axisNo=%i devNumPILS=%d \"%s\" TypCode=0x%X OffsBytes=%u "
               "SizeBytes=%u UnitCode=0x%X (%s%s) AllFlags=0x%X AbsMin=%e AbsMax=%e\n",
@@ -1252,7 +1262,6 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
     case 0x5010:
       {
         char unitCodeTxt[40];
-        axisNo++;
         pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
         if (!pAxis) {
           pAxis = new ethercatmcIndexerAxis(this, axisNo, 0, NULL);
