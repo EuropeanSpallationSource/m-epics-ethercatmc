@@ -1343,7 +1343,7 @@ void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
       break;
   }
   if (newStat != oldStat) {
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
               "%s%s(%d) %s(%d) asynStatus=%s(%d) STAT=%s(%d)->%s(%d)\n",
               modNamEMC, functionName,
               axisNo, paramName, function,
@@ -1353,7 +1353,7 @@ void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
     setParamAlarmStatus(axisNo, function, newStat);
   }
   if (newSevr != oldSevr) {
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
               "%s%s(%d) %s(%d) asynStatus=%s(%d) STAT=%s(%d)->%s(%d)\n",
               modNamEMC, functionName,
               axisNo, paramName, function,
