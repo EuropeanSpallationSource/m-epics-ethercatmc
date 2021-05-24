@@ -189,6 +189,19 @@ extern "C" {
       return 0;
     }
   }
+  int paramIndexIsParameterToPoll(unsigned paramIndex) {
+    if (paramIndex == PARAM_IDX_OPMODE_AUTO_UINT) {
+      return 0; /* parameter 0 is power on only for the moment. Don't poll it */
+    } else if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
+      return 1;
+    } else if ((paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+                paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA)) {
+      return 1;
+    }
+    /* All others are not pollable */
+    return 0;
+  }
+
 };
 
 static const double fABSMIN = -3.0e+38;
@@ -921,12 +934,9 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
         if (paramIndex < sizeof(pAxis->drvlocal.PILSparamPerm)) {
           pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermWrite;
         }
-        if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
-            (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY) ||
-            (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
-             paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA)) {
-          /* paramIndex >= PARAM_IF_IDX_FIRST_FUNCTION (128) are functions.
-             Don't read them.
+        if (paramIndexIsParameterToPoll(paramIndex) ||
+            (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)) {
+          /* Some parameters are functions: Don't read them.
              tell driver that the function exist
              But read 142, which becomes JVEL */
           status = indexerParamRead(axisNo,
@@ -970,9 +980,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex);
         }
-        if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) |
-            (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
-             paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA)) {
+        if (paramIndexIsParameterToPoll(paramIndex)) {
           pAxis->addPollNowParam(paramIndex);
         }
         parameterFloatReadBack(axisNo, initial, paramIndex, fValue);

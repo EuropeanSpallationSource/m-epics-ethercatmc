@@ -873,9 +873,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     if ((paramCtrl != drvlocal.old_paramCtrl) ||
         (paramfValue != drvlocal.old_paramValue)) {
       /* Only read real parameters, not functions */
-      if ((paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) ||
-          (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
-           paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA)) {
+      if (paramIndexIsParameterToPoll(paramIndex)) {
         int initial = 0;
         pC_->parameterFloatReadBack(axisNo_,
                                     initial,
