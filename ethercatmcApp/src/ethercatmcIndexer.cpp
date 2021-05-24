@@ -1610,9 +1610,18 @@ asynStatus ethercatmcController::indexerPoll(void)
             newValue = (epicsInt32)netToSint(pDataInPlc, lenInPLC);
             status = getIntegerParam(axisNo, function, &oldValue);
             if (status != asynSuccess || oldValue != newValue) {
-              setIntegerParam(axisNo, function,  newValue);
-              callBacksNeeded = 1;
-              if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
+              status = setIntegerParam(axisNo, function,  newValue);
+              if (status == asynParamWrongType) {
+                asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+                          "%sindexerPoll(%d) ERROR: need to disable function=%s(%d) status=%s (%d)\n",
+                          modNamEMC, axisNo,
+                          paramName, function,
+                          ethercatmcstrStatus(status), (int)status);
+                pPilsAsynDevInfo->inputOffset = 0;
+              } else {
+                callBacksNeeded = 1;
+                if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
+              }
             }
             asynPrint(pasynUserController_, tracelevel,
                       "%sindexerPoll(%d) function=%s(%d) oldValue=%d newValue=%d\n",
@@ -1647,9 +1656,18 @@ asynStatus ethercatmcController::indexerPoll(void)
             if (newValueValid) {
               status = getDoubleParam(axisNo, function,  &oldValue);
               if (status != asynSuccess || oldValue != newValue) {
-                setDoubleParam(axisNo, function,  newValue);
-                callBacksNeeded = 1;
-                if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
+                status = setDoubleParam(axisNo, function,  newValue);
+                if (status == asynParamWrongType) {
+                  asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+                            "%sindexerPoll(%d) ERROR: need to disable function=%s(%d) status=%s (%d)\n",
+                            modNamEMC, axisNo,
+                            paramName, function,
+                            ethercatmcstrStatus(status), (int)status);
+                  pPilsAsynDevInfo->inputOffset = 0;
+                } else {
+                  callBacksNeeded = 1;
+                  if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
+                }
               }
             }
             asynPrint(pasynUserController_, tracelevel,
@@ -1669,9 +1687,18 @@ asynStatus ethercatmcController::indexerPoll(void)
             newValue = (epicsInt64)netToSint64(pDataInPlc, lenInPLC);
             status = getInteger64Param(axisNo, function,  &oldValue);
             if (status != asynSuccess || oldValue != newValue) {
-              setInteger64Param(axisNo, function,  newValue);
-              callBacksNeeded = 1;
-              if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
+              status = setInteger64Param(axisNo, function,  newValue);
+              if (status == asynParamWrongType) {
+                asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+                          "%sindexerPoll(%d) ERROR: need to disable function=%s(%d) status=%s (%d)\n",
+                          modNamEMC, axisNo,
+                          paramName, function,
+                          ethercatmcstrStatus(status), (int)status);
+                pPilsAsynDevInfo->inputOffset = 0;
+              } else {
+                callBacksNeeded = 1;
+                if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
+              }
             }
             asynPrint(pasynUserController_, tracelevel,
                       "%sindexerPoll(%d) function=%s(%d)  oldValue=%" PRIi64 " newValue=%" PRIi64 "\n",
