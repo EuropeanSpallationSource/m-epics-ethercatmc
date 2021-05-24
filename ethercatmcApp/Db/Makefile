@@ -21,6 +21,7 @@ DB += ethercatmcEL3162-OneChannel.template
 DB += ethercatmcEL6688-PTP.template
 DB += ethercatmcEL6688-ExtSync.template
 DB += ethercatmcMotorTemp.template
+DB += ethercatmcClutch.template
 DB += ethercatmcdebug.template
 DB += ethercatmchome.template
 DB += ethercatmcindexer.template
