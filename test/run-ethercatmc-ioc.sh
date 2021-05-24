@@ -184,7 +184,7 @@ if test "$NOMAKE" != "y"; then
         DBMOTOR=dbmotor
         #motor
         (cd ../motor && make install) && (cd .. && make install) || {
-          echo >&2 make install failed
+          echo >&2 make ../motor install failed
           exit 1
         }
         (cd .. &&
@@ -201,13 +201,13 @@ if test "$NOMAKE" != "y"; then
       if test -d ../../motor; then
         (cd ../../motor &&
             make install) || {
-            echo >&2 make install failed
+            echo >&2 make ../.. motor install failed
             exit 1
         }
       fi
       (cd .. &&
         make install) || {
-        echo >&2 make install failed
+        echo >&2 make classic EPICS install failed
         exit 1
       }
       ;;
@@ -218,7 +218,7 @@ if test "$NOMAKE" != "y"; then
         (cd ../../motor &&
             rm -rfv ./dbd ./include ./doc ./db &&
             make install) || {
-          echo >&2 make install failed
+          echo >&2 make EEE motor install failed
           exit 1
         }
       fi &&
@@ -227,7 +227,7 @@ if test "$NOMAKE" != "y"; then
           (cd .. &&
               rm -rfv ./dbd ./include ./doc ./db &&
               make install) || {
-            echo >&2 make install failed
+            echo >&2 make EEE install failed
             exit 1
           }
         fi
@@ -341,7 +341,7 @@ EOF
           exit 1
           ;;
   esac
-)
+) || exit
 fi
 if test "$NORUN" != "y"; then
   IOCDIR=../iocBoot/ioc${APPXX}
