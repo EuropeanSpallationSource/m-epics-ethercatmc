@@ -1,0 +1,3 @@
+ethercatmcCreateAsynParam $(MOTOR_PORT) Temp Float64
+
+dbLoadRecords("ethercatmcMotorTemp.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), DESC=$(DESC), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
