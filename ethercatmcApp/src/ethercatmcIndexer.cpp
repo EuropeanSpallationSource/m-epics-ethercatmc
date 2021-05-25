@@ -1492,14 +1492,14 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
     case 0x1602:
       lenInPLC = 2;
       /* 1602 has "current value, followed by target value */
-      inputOffset = indexOffset;
+      inputOffset = indexOffset + lenInPLC; // Look at the target value for readback
       outputOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamInt32;
       break;
     case 0x1604:
       lenInPLC = 4;
       /* 1604 has "current value, followed by target value */
-      inputOffset = indexOffset;
+      inputOffset = indexOffset + lenInPLC;  // Look at the target value for readback
       outputOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamInt32;
       break;
@@ -1620,6 +1620,7 @@ asynStatus ethercatmcController::indexerPoll(void)
             newValue = (epicsInt32)netToSint(pDataInPlc, lenInPLC);
             status = getIntegerParam(axisNo, function, &oldValue);
             if (status != asynSuccess || oldValue != newValue) {
+            if (pPilsAsynDevInfo->outputOffset) tracelevel |= ASYN_TRACE_INFO;
               status = setIntegerParam(axisNo, function,  newValue);
               if (status == asynParamWrongType) {
                 asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
