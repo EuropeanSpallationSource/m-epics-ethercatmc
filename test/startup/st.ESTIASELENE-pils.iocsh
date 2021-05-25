@@ -11,9 +11,9 @@ epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=5.82.112.102.1.1;amsNetIdLocal=192.168.1.105.1.1")
 
 
-# Faster polling
-epicsEnvSet("ECM_MOVINGPOLLPERIOD",  "500")
-epicsEnvSet("ECM_IDLEPOLLPERIOD",    "500")
+# No poller yet, see ethercatmcStartPoller at the end of the script
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 
 < ethercatmcController.iocsh
 
@@ -82,6 +82,8 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m6)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=6)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+< ethercatmcOpenClutch.iocsh
 
 #
 # Axis 7
@@ -92,6 +94,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m7)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=7)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
 
 #
 # Axis 8
@@ -102,6 +105,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m8)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=8)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
 
 #
 # Axis 9
@@ -122,6 +126,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m10)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=10)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
 
 #
 # Axis 11
@@ -132,6 +137,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m11)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=11)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
 
 #
 # Axis 12
@@ -142,6 +148,8 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m12)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=12)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+< ethercatmcOpenClutch.iocsh
 
 #
 # Axis 13
@@ -152,6 +160,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m13)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=13)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
 
 #
 # Axis 14
@@ -203,3 +212,9 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=18)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
+#
+# Start polling, values are in millisconds
+#
+epicsEnvSet("MOVINGPOLLPERIOD", "500")
+epicsEnvSet("IDLEPOLLPERIOD",   "500")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
