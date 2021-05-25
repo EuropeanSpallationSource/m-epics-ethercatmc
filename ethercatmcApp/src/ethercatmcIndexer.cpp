@@ -1024,12 +1024,12 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
         }
         if (!strcmp("notHomed", auxBitName)) {
           pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
-        }
-        else if (!strcmp("enabled", auxBitName)) {
+        } else if (!strcmp("enabled", auxBitName)) {
           pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
-        }
-        else if (!strcmp("localMode", auxBitName)) {
+        } else if (!strcmp("localMode", auxBitName)) {
           pAxis->setAuxBitsLocalModeMask(1 << auxBitIdx);
+        } else if (!strcmp("homeSwitch", auxBitName)) {
+          pAxis->setAuxBitsHomeSwitchMask(1 << auxBitIdx);
         }
       }
     }

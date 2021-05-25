@@ -61,6 +61,7 @@ public:
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
   void setAuxBitsEnabledMask(unsigned auxBitsEnabledMask);
   void setAuxBitsLocalModeMask(unsigned auxBitsLocalModeMask);
+  void setAuxBitsHomeSwitchMask(unsigned auxBitsHomeSwitchMask);
   void addPollNowParam(uint8_t paramIndex);
   void       setAxisID(unsigned axisID);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
@@ -95,6 +96,7 @@ private:
     unsigned auxBitsNotHomedMask;
     unsigned auxBitsEnabledMask;
     unsigned auxBitsLocalModeMask;
+    unsigned auxBitsHomeSwitchMask;
     unsigned old_paramCtrl;
     unsigned old_idxAuxBits;
     unsigned int hasProblem :1;

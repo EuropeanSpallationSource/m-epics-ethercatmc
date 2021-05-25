@@ -225,6 +225,14 @@ void ethercatmcIndexerAxis::setAuxBitsLocalModeMask(unsigned auxBitsLocalModeMas
   drvlocal.auxBitsLocalModeMask = auxBitsLocalModeMask;
 }
 
+void ethercatmcIndexerAxis::setAuxBitsHomeSwitchMask(unsigned auxBitsHomeSwitchMask)
+{
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) setAuxBitsHomeswitchMask=0x%X\n",
+            modNamEMC, axisNo_, auxBitsHomeSwitchMask);
+  drvlocal.auxBitsHomeSwitchMask = auxBitsHomeSwitchMask;
+}
+
 void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex)
 {
   size_t pollNowIdx;
@@ -806,6 +814,10 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       if (!homed) {
         drvlocal.hasProblem = 1;
       }
+    }
+    if (drvlocal.auxBitsHomeSwitchMask) {
+      int homeSwitch = idxAuxBits & drvlocal.auxBitsHomeSwitchMask ? 0 : 1;
+      setIntegerParamLog(pC_->motorStatusAtHome_, homeSwitch, "atHome");
     }
     if (drvlocal.auxBitsEnabledMask) {
       powerIsOn = idxAuxBits & drvlocal.auxBitsEnabledMask ? 1 : 0;
