@@ -1479,6 +1479,16 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       myAsynParamType = asynParamInt64;
 #endif
       break;
+    case 0x1302:
+      lenInPLC = 4;
+      inputOffset = indexOffset;
+      myAsynParamType = asynParamFloat64;
+      break;
+    case 0x1304:
+      lenInPLC = 8;
+      inputOffset = indexOffset;
+      myAsynParamType = asynParamFloat64;
+      break;
     case 0x1602:
       lenInPLC = 2;
       /* 1602 has "current value, followed by target value */
@@ -1637,17 +1647,24 @@ asynStatus ethercatmcController::indexerPoll(void)
             double newValue = 0.0, oldValue = 0.0;
             int newValueValid = 1;
             unsigned iTypCode = pPilsAsynDevInfo->iTypCode;
+            unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
             switch (iTypCode) {
+            case 0x1302:
+              newValue = (double)netToDouble(pDataInPlc, lenInPLC);
+              break;
+            case 0x1304:
+              newValue = (double)netToDouble(pDataInPlc, lenInPLC);
+              break;
             case 0x1201:
             case 0x1602:
-              newValue = (double)(epicsInt64)netToSint(pDataInPlc, 2);
+              newValue = (double)(epicsInt64)netToSint(pDataInPlc, lenInPLC);
               break;
             case 0x1202:
             case 0x1604:
-                newValue = (double)(epicsInt64)netToSint(pDataInPlc, 4);
+                newValue = (double)(epicsInt64)netToSint(pDataInPlc, lenInPLC);
                 break;
             case 0x1204:
-              newValue = (double)(epicsInt64)netToSint64(pDataInPlc, 8);
+              newValue = (double)(epicsInt64)netToSint64(pDataInPlc, lenInPLC);
               break;
             default:
               newValueValid = 0;
