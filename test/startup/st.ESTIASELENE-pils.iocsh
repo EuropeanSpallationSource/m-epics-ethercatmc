@@ -116,6 +116,7 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m9)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=9)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
 
 #
 # Axis 10
