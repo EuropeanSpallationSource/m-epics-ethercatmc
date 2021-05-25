@@ -3,6 +3,8 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-Temp")
     field(DTYP, "asynFloat64")
     field(DESC, "$(DESC=MotorTemperature)")
     field(EGU,  "$(EGU=DegreeCelsius)")
+    field(ADEL,  "0.11")
+    field(MDEL,  "0.11")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Temp")
     field(SCAN, "I/O Intr")
 }
