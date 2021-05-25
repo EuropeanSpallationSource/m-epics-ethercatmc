@@ -173,6 +173,11 @@ export DOLOG
 
 if test "$NOMAKE" != "y"; then
 (
+  if test -x ../checkws.sh; then
+  (
+    cd .. && ./checkws.sh
+  ) || exit
+  fi
   IOCDIR=../iocBoot/ioc${APPXX}
   DBMOTOR=db
   envPathsdst=./envPaths.$EPICS_HOST_ARCH &&
