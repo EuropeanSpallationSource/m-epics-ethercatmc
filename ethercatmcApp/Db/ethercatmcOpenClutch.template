@@ -1,0 +1,9 @@
+record(bo, "$(PREFIX)$(MOTOR_NAME)-OpenClutch")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "$(DESC=Clutch)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))OpenClutch")
+    field(ZNAM, "Closed")
+    field(ONAM, "Open")
+    info(asyn:READBACK,"1")
+}
