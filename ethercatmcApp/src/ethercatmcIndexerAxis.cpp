@@ -938,10 +938,6 @@ asynStatus ethercatmcIndexerAxis::setClosedLoop(bool closedLoop)
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
             "%ssetClosedLoop(%d)=%d\n",  modNamEMC, axisNo_,
             (int)closedLoop);
-  if (!closedLoop) {
-    /* Report off before the poller detects off */
-    setIntegerParamLog(pC_->motorStatusPowerOn_, closedLoop, "poweron");
-  }
   if (drvlocal.paramIfOffset) {
     double fValue = closedLoop ? 0.0 : 1.0; /* 1.0 means disable */
     status = pC_->indexerParamWrite(axisNo_, drvlocal.paramIfOffset,
