@@ -407,11 +407,11 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-CnenVis") {
     field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(PREFIX)$(MOTOR_NAME)-StatusBits")
+record(mbbiDirect, "$(PREFIX)$(MOTOR_NAME)-StatusBits")
 {
-    field(DTYP, "asynInt32")
+    field(DTYP, "asynUInt32Digital")
     field(DESC, "StatusBits")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))StatusBits")
+    field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO) 0xFFFFFF)StatusBits")
     field(SCAN, "I/O Intr")
 }
 

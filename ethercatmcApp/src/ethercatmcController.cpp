@@ -157,11 +157,11 @@ ethercatmcController::ethercatmcController(const char *portName,
   :  asynMotorController(portName, numAxes,
                          0, // Olbsolete: Fixed number of additional asyn parameters
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
-                         asynInt64Mask | asynParamMetaMask, // additional interface
-                         asynInt64Mask | asynParamMetaMask, // additional callback interface
+                         asynInt64Mask | asynUInt32DigitalMask | asynParamMetaMask, // additional interface
+                         asynInt64Mask | asynUInt32DigitalMask | asynParamMetaMask, // additional callback interface
 #else
-                         asynParamMetaMask,
-                         asynParamMetaMask,
+                         asynParamMetaMask | asynUInt32DigitalMask,
+                         asynParamMetaMask | asynUInt32DigitalMask,
 #endif
                          ASYN_CANBLOCK | ASYN_MULTIDEVICE,
                          1, // autoconnect
@@ -191,7 +191,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcHomProcString,       asynParamInt32,       &ethercatmcHomProc_);
   createParam(ethercatmcHomPosString,        asynParamFloat64,     &ethercatmcHomPos_);
   createParam(ethercatmcStatusCodeString,    asynParamInt32,       &ethercatmcStatusCode_);
-  createParam(ethercatmcStatusBitsString,    asynParamInt32,       &ethercatmcStatusBits_);
+  createParam(ethercatmcStatusBitsString,    asynParamUInt32Digital, &ethercatmcStatusBits_);
   createParam(ethercatmcFoffVisString,       asynParamInt32,       &ethercatmcFoffVis_);
   createParam(ethercatmcHomeVisString,       asynParamInt32,       &ethercatmcHomeVis_);
   createParam(ethercatmcHomProc_RBString,    asynParamInt32,       &ethercatmcHomProc_RB_);
