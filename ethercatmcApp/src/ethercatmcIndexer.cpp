@@ -509,10 +509,10 @@ asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
     unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
     if (counter > 1) {
       asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
-                "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u) "
+                "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
                 "counter=%u cmdSubParamIndexRB=%s (0x%04X)\n",
                 fileName, lineNo, "indexerParamRead", axisNo, paramIfOffset,
-                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                 counter,
                 paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
     }
