@@ -14,6 +14,8 @@
 #include "logerr_info.h"
 #include "cmd.h"
 
+#define HAS_1604_OPEN_CLUTCH
+
 /* type codes and sizes */
 #define TYPECODE_INDEXER               0
 /* The lenght of the indexer data, the longest is
@@ -46,6 +48,12 @@
 /* axis1 .. axis4 */
 #define  NUM_MOTORS5010     4
 
+#ifdef HAS_1604_OPEN_CLUTCH
+#define NUM_1604 NUM_MOTORS5010
+#else
+#define NUM_1604 0
+#endif
+
 /*
    Devices for the indexer:
    + the indexer itself
@@ -62,7 +70,7 @@
 #endif
 
 #define  NUM_5010           4
-#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010)
+#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604)
 
 
 typedef enum {
@@ -185,6 +193,7 @@ typedef enum {
 #define PARAM_IDX_STEPS_PER_REV_FLOAT32       222
 #define PARAM_IDX_MAX_VELO_FLOAT32            223
 
+
 /* In the memory bytes, the indexer starts at 64 */
   static unsigned offsetIndexer;
 
@@ -266,6 +275,9 @@ typedef struct {
 typedef struct {
   netDevice5010interface_type dev5010;
   netDevice1202interface_type dev1202encoderRaw;
+#ifdef HAS_1604_OPEN_CLUTCH
+  netDevice1604interface_type dev1604openClutch;
+#endif
 } netDevice5010_1202_Interface_type;
 
 /* Info type as seen here locally in memory */
@@ -374,6 +386,18 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_1604_OPEN_CLUTCH
+    /* device for openClutch */
+    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
+      UNITCODE_NONE, 1,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "openClutch",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
+#endif
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_DEGREE, 2,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
@@ -442,6 +466,18 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_1604_OPEN_CLUTCH
+    /* device for openClutch */
+    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
+      UNITCODE_NONE, 2,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "openClutch",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
+#endif
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 3,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
@@ -510,6 +546,18 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
+#ifdef HAS_1604_OPEN_CLUTCH
+    /* device for openClutch */
+    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
+      UNITCODE_NONE, 3,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "openClutch",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
+#endif
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 4,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
@@ -577,7 +625,19 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
+    },
+#ifdef HAS_1604_OPEN_CLUTCH
+    /* device for openClutch */
+    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
+      UNITCODE_NONE, 4,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "openClutch",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
     }
+#endif
   };
 
 
