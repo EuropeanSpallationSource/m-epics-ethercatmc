@@ -852,23 +852,24 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
   }
 
-  if (positionValid && statusValid && pC_->ctrlLocal.systemUTCtimeOffset)  {
+  if (pC_->ctrlLocal.systemUTCtimeOffset)  {
     /* Motor position in "user coordinates" with UTC time from PTP */
     double motorRecOffset;
     int motorRecDirection;
-    asynStatus RBV_UTCstatus = asynSuccess;
-    if (!homed) RBV_UTCstatus = asynDisabled;
-    if ((!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
+    asynStatus RBV_UTCstatus = asynDisabled;
+    double ethercatmcRBV_UTC = 0.0;
+    if (homed && positionValid && statusValid &&
+        (!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
                               &motorRecOffset)) &&
         (!pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
                                &motorRecDirection))) {
 
-      double ethercatmcRBV_UTC;
+      RBV_UTCstatus = asynSuccess;
       /* direction == 1 means "negative" */
       motorRecDirection = motorRecDirection ? -1 : 1;
       ethercatmcRBV_UTC = actPosition *  motorRecDirection + motorRecOffset;
-      setDoubleParam(pC_->ethercatmcRBV_UTC_, ethercatmcRBV_UTC);
     }
+    setDoubleParam(pC_->ethercatmcRBV_UTC_, ethercatmcRBV_UTC);
     pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcRBV_UTC_,
                                        RBV_UTCstatus);
   }
