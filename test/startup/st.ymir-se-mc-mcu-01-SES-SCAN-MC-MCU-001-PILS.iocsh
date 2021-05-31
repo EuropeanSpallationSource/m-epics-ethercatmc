@@ -32,6 +32,12 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
+# Predefined Positions
+# NVL: Input Value Location (INLINK)
+epicsEnvSet("NVL",           "")
+epicsEnvSet("EGU",           "")
+< ethercatmcDefPos.iocsh
+
 
 
 #
@@ -43,6 +49,12 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
+# Predefined Positions
+# NVL: Input Value Location (INLINK)
+epicsEnvSet("NVL",           "")
+epicsEnvSet("EGU",           "")
+< ethercatmcDefPos.iocsh
+
 
 #
 # Axis 3
@@ -53,6 +65,12 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
+# Predefined Positions
+# NVL: Input Value Location (INLINK)
+epicsEnvSet("NVL",           "")
+epicsEnvSet("EGU",           "")
+< ethercatmcDefPos.iocsh
+
 
 #
 # Analog input
