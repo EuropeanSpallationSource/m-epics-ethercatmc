@@ -1048,8 +1048,18 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image></image>
-    <rules />
-    <pv_value />
+     <rules>
+      <rule name="TWR-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 != 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 == 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M1).OMSL</pv>
+      </rule>
+    </rules>
+     <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -1155,7 +1165,17 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image></image>
-    <rules />
+    <rules>
+      <rule name="TWF-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 != 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 == 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M1).OMSL</pv>
+      </rule>
+    </rules>
     <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
@@ -1219,12 +1239,88 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <confirm_message></confirm_message>
-    <rules />
+    <rules>
+      <rule name="VAL-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 != 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 == 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M1).OMSL</pv>
+      </rule>
+    </rules>
     <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" hook_all="false" />
+    <y>85</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>9</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <multiline_input>false</multiline_input>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>25</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </background_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text></text>
+    <font>
+      <fontdata fontName="Sans" height="15" style="0" />
+    </font>
+    <width>98</width>
+    <border_style>3</border_style>
+    <pv_value />
+    <border_width>1</border_width>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
+    <show_units>false</show_units>
+    <wuid>39872d87:13e14015f61:d1e</wuid>
+    <rotation_angle>0.0</rotation_angle>
+    <name>Text Input</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <format_type>1</format_type>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>$(P)$(M1).VAL</pv_name>
+    <foreground_color>
+      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+    </foreground_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <confirm_message></confirm_message>
+    <rules>
+      <rule name="VAL2-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M1).OMSL</pv>
+      </rule>
+    </rules>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
     <y>85</y>
     <tooltip>$(pv_name)
@@ -2280,8 +2376,18 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image></image>
-    <rules />
-    <pv_value />
+     <rules>
+      <rule name="TWR-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 != 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 == 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M2).OMSL</pv>
+      </rule>
+    </rules>
+     <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -2387,7 +2493,17 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image></image>
-    <rules />
+    <rules>
+      <rule name="TWF-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 != 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 == 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M2).OMSL</pv>
+      </rule>
+    </rules>
     <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
@@ -2451,12 +2567,88 @@ $(pv_value)</tooltip>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <confirm_message></confirm_message>
-    <rules />
+    <rules>
+      <rule name="VAL-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 != 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 == 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M2).OMSL</pv>
+      </rule>
+    </rules>
     <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" hook_all="false" />
+    <y>85</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>129</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <multiline_input>false</multiline_input>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>25</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <precision_from_pv>true</precision_from_pv>
+    <background_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </background_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text></text>
+    <font>
+      <fontdata fontName="Sans" height="15" style="0" />
+    </font>
+    <width>98</width>
+    <border_style>3</border_style>
+    <pv_value />
+    <border_width>1</border_width>
+    <maximum>Infinity</maximum>
+    <minimum>-Infinity</minimum>
+    <show_units>false</show_units>
+    <wuid>39872d87:13e14015f61:d1e</wuid>
+    <rotation_angle>0.0</rotation_angle>
+    <name>Text Input</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <format_type>1</format_type>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>$(P)$(M2).VAL</pv_name>
+    <foreground_color>
+      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+    </foreground_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <confirm_message></confirm_message>
+    <rules>
+      <rule name="VAL2-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M2).OMSL</pv>
+      </rule>
+    </rules>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
     <y>85</y>
     <tooltip>$(pv_name)
