@@ -1015,7 +1015,7 @@ ethercatmcController::newIndexerAxis(ethercatmcIndexerAxis *pAxis,
                                                 auxBitName,
                                                 sizeof(auxBitName));
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%sauxBitName[%d] auxBitName(%02u)=%s\n",
+                  "%sauxBitName(%d) auxBitName[%02u]=%s\n",
                   modNamEMC, axisNo, auxBitIdx, auxBitName);
         if (status) return status;
         if (function <= ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN) {
