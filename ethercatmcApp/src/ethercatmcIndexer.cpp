@@ -684,10 +684,22 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
       break;
     case PARAM_IF_CMD_BUSY:
       {
-        /* The param function goes into busy - and stays there */
-        if (paramIndexRB == paramIndex && paramIndexIsMovingFunction(paramIndex)) {
-          if (pValueRB) *pValueRB = valueRB;
-          return asynSuccess;
+        /* A "function" goes into busy - and stays there */
+        if (paramIndexIsMovingFunction(paramIndexRB)) {
+          if (paramIndexRB == paramIndex) {
+            /* "our" function: return */
+            if (pValueRB) *pValueRB = valueRB;
+            return asynSuccess;
+          }
+          /* No parameter settings during jogging/homing */
+          asynPrint(pasynUserController_, traceMask,
+                    "%sindexerParamWrite(%d) paramIndex=%s(%u 0x%02X) value=%02g "
+                    "cmdSubParamIndexRB=%s (0x%04X)\n",
+                    modNamEMC, axisNo,
+                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
+                    value,
+                    paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
+          return asynDisabled;
         }
       }
       /* fall through */
