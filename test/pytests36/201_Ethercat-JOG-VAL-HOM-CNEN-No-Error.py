@@ -174,13 +174,13 @@ class Test(unittest.TestCase):
                 "MSTA.homed (Axis is not homed)",
             )
 
-    # Jog, wait for start, power off, check for no error, reset error if needed
-    def test_TC_2012(self):
-        tc_no = "2012"
-        # startpos = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
-        startpos = self.saved_LLM
-        testPassed = startAndPowerOff(self, tc_no, startpos, ".JOGF", 1)
-        assert testPassed
+#    # Jog, wait for start, power off, check for no error, reset error if needed
+#    def test_TC_2012(self):
+#        tc_no = "2012"
+#        # startpos = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
+#        startpos = self.saved_LLM
+#        testPassed = startAndPowerOff(self, tc_no, startpos, ".JOGF", 1)
+#        assert testPassed
 
     # Move, wait for start, power off, check for no error, reset error if needed
     def test_TC_2013(self):
@@ -193,12 +193,12 @@ class Test(unittest.TestCase):
         testPassed = startAndPowerOff(self, tc_no, startpos, ".VAL", endpos)
         assert testPassed
 
-    # Move, wait for start, power off, check for no error, reset error if needed
-    def test_TC_2014(self):
-        tc_no = "2014"
-        startpos = (self.saved_HLM + self.saved_LLM) / 2.0
-        testPassed = startAndPowerOff(self, tc_no, startpos, ".HOMF", 1)
-        assert testPassed
+#    # Home, wait for start, power off, check for no error, reset error if needed
+#    def test_TC_2014(self):
+#        tc_no = "2014"
+#        startpos = (self.saved_HLM + self.saved_LLM) / 2.0
+#        testPassed = startAndPowerOff(self, tc_no, startpos, ".HOMF", 1)
+#        assert testPassed
 
     ###############################
     # power off, try to jog, check for error, reset error if needed
