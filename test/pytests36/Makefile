@@ -41,7 +41,6 @@ ETHERCATMC-CA = \
   133_Ethercat_MoveVel_MCU_Lsoftlimit.log-ca-m1\
   160-Ethercat-MoveAbs-STOP.log-ca-m1\
   201_Ethercat-JOG-VAL-HOM-CNEN-No-Error.log-ca-m1\
-  203_Ethercat-HOM-ParamInterface.log-ca-m1\
   240_Ethercat-JOGF_stopped.log-ca-m1\
   400_Ethercat-JAR-ACCL-VAL-JOGF-HOMF.log-ca-m1\
   410_Ethercat-ACCL_ACCS_VELO_TWF.log-ca-m1\
