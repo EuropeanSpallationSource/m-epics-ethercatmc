@@ -191,6 +191,8 @@ class Test(unittest.TestCase):
             startpos = self.saved_LLM
             endpos = self.saved_HLM
         testPassed = startAndPowerOff(self, tc_no, startpos, ".VAL", endpos)
+        # .VAL and .RBV are out of sync
+        self.axisCom.put(".SYNC", 1)
         assert testPassed
 
 #    # Home, wait for start, power off, check for no error, reset error if needed
