@@ -76,7 +76,9 @@
 typedef enum {
   idxStatusCodeRESET    = 0,
   idxStatusCodeIDLE     = 1,
+#ifdef USE_IDXSTATUSCODEPOWEROFF
   idxStatusCodePOWEROFF = 2,
+#endif
   idxStatusCodeWARN     = 3,
   idxStatusCodeERR4     = 4,
   idxStatusCodeSTART    = 5,
@@ -371,7 +373,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
     },
       "SimAxis1",
-      { "notHomed", "", "", "", "", "", "", "",
+      { "notHomed", "enabled", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
       5.0, 175.0
@@ -451,7 +453,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
     },
       "RotAxis2",
-      { "notHomed", "", "", "", "", "", "", "",
+      { "notHomed", "enabled", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
       -181.0, +181.0
@@ -533,7 +535,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       "Axis5010-3",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "notHomed"},
+        "", "", "", "", "", "", "enabled", "notHomed"},
       0, +173.0
     },
     /* device for encoderRaw */
@@ -613,7 +615,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       "Axis5010-4",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "notHomed"},
+        "", "", "", "", "", "", "enabled", "notHomed"},
       0, +163.0
     },
     /* device for encoderRaw */
@@ -948,6 +950,13 @@ indexerMotorStatusRead5008(unsigned devNum,
                  motor_axis_no, auxBitIdx, bValue);
         if (!bValue) {
           statusReasonAux |= 1 << auxBitIdx;
+      } else if (!strcmp("enabled", auxBitName)) {
+        int bValue = getAmplifierOn(motor_axis_no);
+        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 motor_axis_no, auxBitIdx, bValue);
+        if (bValue) {
+          statusReasonAux |= 1 << auxBitIdx;
         }
       }
     }
@@ -956,8 +965,10 @@ indexerMotorStatusRead5008(unsigned devNum,
   /* the status bits */
   if (get_bError(motor_axis_no))
     idxStatusCode = idxStatusCodeERROR;
+#ifdef USE_IDXSTATUSCODEPOWEROFF
   else if (!getAmplifierOn(motor_axis_no))
     idxStatusCode = idxStatusCodePOWEROFF;
+#endif
   else if (isMotorMoving(motor_axis_no))
     idxStatusCode = idxStatusCodeBUSY;
   else if(statusReasonAux)
@@ -1042,6 +1053,14 @@ indexerMotorStatusRead5010(unsigned devNum,
         if (!bValue) {
           statusReasonAux32 |= 1 << auxBitIdx;
         }
+      } else if (!strcmp("enabled", auxBitName)) {
+        int bValue = getAmplifierOn(motor_axis_no);
+        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 motor_axis_no, auxBitIdx, bValue);
+        if (bValue) {
+          statusReasonAux32 |= 1 << auxBitIdx;
+        }
       }
     }
   }
@@ -1051,8 +1070,11 @@ indexerMotorStatusRead5010(unsigned devNum,
     idxStatusCode = idxStatusCodeERROR;
     UINTTONET(get_nErrorId(motor_axis_no),
               pIndexerDevice5010interface->errorID);
-  } else if (!getAmplifierOn(motor_axis_no))
+  }
+#ifdef USE_IDXSTATUSCODEPOWEROFF
+  else if (!getAmplifierOn(motor_axis_no))
     idxStatusCode = idxStatusCodePOWEROFF;
+#endif
   else if (isMotorMoving(motor_axis_no))
     idxStatusCode = idxStatusCodeBUSY;
   else if (statusReasonAux32 & 0x0C000000)
@@ -1277,20 +1299,16 @@ indexerMotorParamInterface(unsigned motor_axis_no,
         int direction = 0;
         double max_velocity = 10;
         double acceleration = 3;
-#if 0
-        moveHome(motor_axis_no,
-                 direction,
-                 max_velocity,
-                 acceleration);
-#else
-        moveHomeProc(motor_axis_no,
-                     direction,
-                     cmd_Motor_cmd[motor_axis_no].nHomProc,
-                     getHomePos(motor_axis_no),
-                     max_velocity,
-                     acceleration);
-
-#endif
+        if (getAmplifierOn(motor_axis_no)) {
+          moveHomeProc(motor_axis_no,
+                       direction,
+                       cmd_Motor_cmd[motor_axis_no].nHomProc,
+                       getHomePos(motor_axis_no),
+                       max_velocity,
+                       acceleration);
+        } else {
+          set_nErrorId(motor_axis_no, 0x4260);
+        }
         ret = PARAM_IF_CMD_DONE | paramIndex;
       }
       break;
@@ -1306,10 +1324,14 @@ indexerMotorParamInterface(unsigned motor_axis_no,
              but for the moment we need it for TC950 */
           setNxtMoveVelocity(motor_axis_no, fValue);
         }
-        moveVelocity(motor_axis_no,
-                     direction,
-                     fVelocity,
-                     getNxtMoveAcceleration(motor_axis_no));
+        if (getAmplifierOn(motor_axis_no)) {
+          moveVelocity(motor_axis_no,
+                       direction,
+                       fVelocity,
+                       getNxtMoveAcceleration(motor_axis_no));
+        } else {
+          set_nErrorId(motor_axis_no, 0x4260);
+        }
         ret = PARAM_IF_CMD_DONE | paramIndex;
       }
       break;
