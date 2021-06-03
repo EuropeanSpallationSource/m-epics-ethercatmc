@@ -714,8 +714,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       }
     }
     asynPrint(pC_->pasynUserController_, traceMask,
-              "%spoll(%d) auxBits=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
-              modNamEMC, axisNo_, idxAuxBits,
+              "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
+              modNamEMC, axisNo_, drvlocal.old_idxAuxBits, idxAuxBits,
               changedNames[0],
               changedNames[1],
               changedNames[2],
