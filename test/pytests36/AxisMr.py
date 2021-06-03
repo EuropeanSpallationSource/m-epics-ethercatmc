@@ -240,7 +240,7 @@ class AxisMr:
             inrange = False
         if doPrint:
             print(
-                f"{tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
             )
         return inrange
 
@@ -266,7 +266,7 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV")
-            debug_text = f"{tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
             print(debug_text)
             if movn and not dmov:
                 return
@@ -280,7 +280,7 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{tc_no}: wait_for_stop={wait_for_stop:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_stop={wait_for_stop:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
             print(debug_text)
             if not movn and dmov:
                 return
@@ -296,7 +296,7 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV"))
             movn = int(self.axisCom.get(".MOVN"))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{tc_no}: wait_for_start_and_done_start={wait_for_start:.2f} dmov={dmov} movn={movn} val={val:.2f} rbv={rbv:.2f}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start_and_done_start={wait_for_start:.2f} dmov={dmov} movn={movn} val={val:.2f} rbv={rbv:.2f}"
             print(debug_text)
             if movn or not dmov:
                 wait_for_start = 0
@@ -310,7 +310,7 @@ class AxisMr:
             movn = int(self.axisCom.get(".MOVN"))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
             mipTxt = self.getMIPtext(int(self.axisCom.get(".MIP", use_monitor=False)))
-            debug_text = f"{tc_no}: wait_for_start_and_done_done={wait_for_done:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f} mipTxt={mipTxt}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start_and_done_done={wait_for_done:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f} mipTxt={mipTxt}"
             print(debug_text)
             if dmov and not movn:
                 return
@@ -323,7 +323,7 @@ class AxisMr:
             wait_for_mip_zero -= polltime
             mip = int(self.axisCom.get(".MIP", use_monitor=False))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{tc_no}: wait_for_mip_zero={wait_for_mip_zero:.2f} mip={self.getMIPtext(mip)} (0x{mip:04x}) rbv ={rbv }"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_mip_zero={wait_for_mip_zero:.2f} mip={self.getMIPtext(mip)} (0x{mip:04x}) rbv ={rbv }"
             print(debug_text)
             if not mip:
                 return
@@ -336,7 +336,7 @@ class AxisMr:
             wait_for_powerOn -= polltime
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             powerOn = msta & self.MSTA_BIT_AMPON
-            debug_text = f"{tc_no}: wait_for_powerOn={wait_for_powerOn:.2f} powerOn={int(powerOn)}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_powerOn={wait_for_powerOn:.2f} powerOn={int(powerOn)}"
             print(debug_text)
             if powerOn:
                 return
@@ -349,7 +349,7 @@ class AxisMr:
             wait_for_powerOff -= polltime
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             powerOn = msta & self.MSTA_BIT_AMPON
-            debug_text = f"{tc_no}: wait_for_powerOff={wait_for_powerOff:.2f} powerOn={int(powerOn)}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_powerOff={wait_for_powerOff:.2f} powerOn={int(powerOn)}"
             print(debug_text)
             if not powerOn:
                 return True
@@ -363,7 +363,7 @@ class AxisMr:
             inrange = self.calcAlmostEqual(
                 tc_no, expVal, actVal, maxDelta, doPrint=False
             )
-            debug_text = f"{tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal} actVal={actVal} maxDelta={maxDelta} inrange={inrange}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal} actVal={actVal} maxDelta={maxDelta} inrange={inrange}"
             print(debug_text)
             if inrange:
                 return True
@@ -373,7 +373,7 @@ class AxisMr:
 
     def jogDirectionTimeout(self, tc_no, direction, time_to_wait):
         print(
-            f"{tc_no}: jogDirectionTimeout direction={direction} time_to_wait={time_to_wait}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogDirectionTimeout direction={direction} time_to_wait={time_to_wait}"
         )
         if direction > 0:
             self.axisCom.put(".JOGF", 1)
@@ -402,7 +402,7 @@ class AxisMr:
         # TODO: add JAR to the calculation
         time_to_wait = delta / jvel + 2 * accl + 2.0
         print(
-            f"{tc_no}: jogDirection={direction} rbv={rbv} delta={delta} time_to_wait={time_to_wait}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogDirection={direction} rbv={rbv} delta={delta} time_to_wait={time_to_wait}"
         )
         return time_to_wait
 
@@ -424,7 +424,9 @@ class AxisMr:
 
         inrange = self.calcAlmostEqual(tc_no, destination, rbv, rdbd, doPrint=False)
         if inrange:
-            print(f"{tc_no}: moveWait destination={destination:.2f} rbv={rbv:.2f}")
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: moveWait destination={destination:.2f} rbv={rbv:.2f}"
+            )
             return
         timeout = 30
         acceleration = self.axisCom.get(".ACCL")
@@ -512,7 +514,7 @@ class AxisMr:
             directionOfBL = -1
 
         print(
-            f"{tc_no}: writeExpFileRMOD_X encRel={encRel} motorStartPos={motorStartPos} motorEndPos={motorEndPos} directionOfMove{directionOfMove} directionOfBL={directionOfBL}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: writeExpFileRMOD_X encRel={encRel} motorStartPos={motorStartPos} motorEndPos={motorEndPos} directionOfMove{directionOfMove} directionOfBL={directionOfBL}"
         )
 
         if rmod == motorRMOD_I:
@@ -753,7 +755,7 @@ class AxisMr:
             )
             resH = self.calcAlmostEqual(tc_no, 0.0, actDHLM, maxDelta)
             resL = self.calcAlmostEqual(tc_no, 0.0, actDLLM, maxDelta)
-            debug_text = f"{tc_no}: setSoftLimitsOff actDHLM={actDHLM} actDLLM={actDLLM} resH={resH} resL={resL}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: setSoftLimitsOff actDHLM={actDHLM} actDLLM={actDLLM} resH={resH} resL={resL}"
             print(debug_text)
             if (resH == True) and (resL == True):
                 return
@@ -824,7 +826,7 @@ class AxisMr:
         self.axisCom.put(".CNEN", cnen)
         while wait_for_power_changed > 0:
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-            debug_text = f"{tc_no}: wait_for_power_changed={wait_for_power_changed:.2f} msta={msta:04x} {self.getMSTAtext(msta)}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_power_changed={wait_for_power_changed:.2f} msta={msta:04x} {self.getMSTAtext(msta)}"
             print(debug_text)
             if cnen and (msta & self.MSTA_BIT_AMPON):
                 return
@@ -882,7 +884,7 @@ class AxisMr:
 
         if (rbv < position - rdbd) or (rbv > position + rdbd):
             print(
-                f"{tc_no}: verifyRBVinsideRDBD position={position} rbv={rbv:.2f} rdbd={rdbd}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: verifyRBVinsideRDBD position={position} rbv={rbv:.2f} rdbd={rdbd}"
             )
             return False
         return True
