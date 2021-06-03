@@ -685,13 +685,8 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     case PARAM_IF_CMD_BUSY:
       {
         /* A "function" goes into busy - and stays there */
+        /* No parameter settings during jogging/homing */
         if (paramIndexIsMovingFunction(paramIndexRB)) {
-          if (paramIndexRB == paramIndex) {
-            /* "our" function: return */
-            if (pValueRB) *pValueRB = valueRB;
-            return asynSuccess;
-          }
-          /* No parameter settings during jogging/homing */
           asynPrint(pasynUserController_, traceMask,
                     "%sindexerParamWrite(%d) paramIndex=%s(%u 0x%02X) value=%02g "
                     "cmdSubParamIndexRB=%s (0x%04X)\n",
@@ -699,6 +694,11 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                     value,
                     paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
+          if (paramIndexRB == paramIndex) {
+            /* "our" function: return */
+            if (pValueRB) *pValueRB = valueRB;
+            return asynSuccess;
+          }
           return asynDisabled;
         }
       }
