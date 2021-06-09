@@ -238,10 +238,18 @@ void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex)
   size_t pollNowIdx;
   const size_t pollNowIdxMax = sizeof(drvlocal.pollNowParams)/sizeof(drvlocal.pollNowParams[0]) - 1;
   for (pollNowIdx = 0; pollNowIdx < pollNowIdxMax; pollNowIdx++) {
+    if (drvlocal.pollNowParams[pollNowIdx] == paramIndex) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%saddPollNowParam(%d) paramIndex=%s (%d) already at pollNowIdx=%u\n",
+                modNamEMC, axisNo_,
+                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                (unsigned)pollNowIdx);
+      return;
+    }
     if (!drvlocal.pollNowParams[pollNowIdx]) {
       drvlocal.pollNowParams[pollNowIdx] = paramIndex;
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%saddPollNowParam(%d) paramIndex=%s (%d) at pollNowIdx=%u\n",
+                "%saddPollNowParam(%d) paramIndex=%s (%d) new at pollNowIdx=%u\n",
                 modNamEMC, axisNo_,
                 plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
                 (unsigned)pollNowIdx);
