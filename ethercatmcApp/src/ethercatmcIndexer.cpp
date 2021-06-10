@@ -25,8 +25,7 @@
 
 
 /* Sleep time and max counter for communication*/
-static double sleepTime = 0.1; /* 100 msec */
-#define MAX_COUNTER 5
+#define MAX_COUNTER 14
 
 /*
  * Calculation of sleep time when the PLC answers/answers with "interface busy"
@@ -35,7 +34,8 @@ static double sleepTime = 0.1; /* 100 msec */
 extern "C" {
   double calcSleep(int counter)
   {
-    return sleepTime * (counter<<1);
+    static double sleepTime = 0.005; /* 5 msec */
+    return sleepTime * (counter <<1);
   }
 };
 
