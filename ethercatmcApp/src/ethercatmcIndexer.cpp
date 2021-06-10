@@ -938,13 +938,17 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
     unsigned bitIdx;
 
     for (bitIdx = 0; bitIdx <= 15; bitIdx++) {
+      double fValue = 0.0;
+      int initial = 1;
       unsigned paramIndex = dataIdx*16 + bitIdx;
       unsigned bitIsSet = parameters & (1 << bitIdx) ? 1 : 0;
       if (bitIsSet) {
-        double fValue = 0.0;
-        int initial = 1;
-        if (paramIndex < sizeof(pAxis->drvlocal.PILSparamPerm)) {
-          pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermWrite;
+        if (paramIndex >= sizeof(pAxis->drvlocal.PILSparamPerm)) {
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%sparameters(%d) paramIdx (%u 0x%02X) out of range\n",
+                      modNamEMC, axisNo,
+                      paramIndex, paramIndex);
+            return asynError;
         }
         if (paramIndexIsParameterToPoll(paramIndex) ||
             (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)) {
@@ -965,11 +969,6 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                       plcParamIndexTxtFromParamIndex(paramIndex),
                       paramIndex, lenInPlcPara,
                       ethercatmcstrStatus(status), (int)status);
-            if ((paramIndex >= 128) && (status == asynDisabled)) {
-              /* Read back of functions as parameters is not defined in PILS
-                 if it fails, that is OK */
-              return asynSuccess;
-            }
             return status;
           }
           if (paramIndexIsInteger(paramIndex)) {
@@ -987,11 +986,12 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
           }
         } else {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdx=%s (%u)\n",
+                    "%sparameters(%d) paramIdx=%s (%u) not polled in background\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex);
         }
+        pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermWrite;
         if (paramIndexIsParameterToPoll(paramIndex)) {
           pAxis->addPollNowParam(paramIndex);
         }
