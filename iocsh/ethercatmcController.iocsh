@@ -65,3 +65,6 @@ asynSetTraceIOMask("$(ASYN_PORT)", -1, 2)
 asynSetTraceInfoMask("$(ASYN_PORT)", -1, 5)
 
 ethercatmcCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)", "$(ECC_OPTIONS)")
+
+asynSetOption $(ASYN_PORT) -1 disconnectOnReadTimeout Y
+asynShowOption $(ASYN_PORT) -1 disconnectOnReadTimeout
