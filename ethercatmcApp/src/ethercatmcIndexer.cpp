@@ -201,42 +201,16 @@ extern "C" {
     /* All others are not pollable */
     return 0;
   }
-  /* These parameters are slow to read -  or it is not
-     important to know them from the beginning:
-     poll them later in the background polling */
+  /*
+   * These parameters are slow to read -
+   * poll them later in the background polling
+   * Note: This is probably a temporary workaround
+   * In the log run, reading of all paramters should be fast
+   */
   int paramIndexIsReadLaterInBackground(unsigned paramIndex) {
     switch (paramIndex) {
-    case PARAM_IDX_OPMODE_AUTO_UINT: return 0;
-    case PARAM_IDX_MICROSTEPS_UINT: return 1;
-    case PARAM_IDX_ABS_MIN_FLOAT: return 0;
-    case PARAM_IDX_ABS_MAX_FLOAT: return 0;
-    case PARAM_IDX_USR_MIN_FLOAT: return 0;
-    case PARAM_IDX_USR_MAX_FLOAT: return 0;
-    case PARAM_IDX_WRN_MIN_FLOAT: return 0;
-    case PARAM_IDX_WRN_MAX_FLOAT: return 0;
-    case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT: return 1;
-    case PARAM_IDX_HYTERESIS_FLOAT: return 1;
-    case PARAM_IDX_REFSPEED_FLOAT: return 1;
-    case PARAM_IDX_VBAS_FLOAT: return 1;
-    case PARAM_IDX_SPEED_FLOAT: return 1;
-    case PARAM_IDX_ACCEL_FLOAT: return 1;
-    case PARAM_IDX_IDLE_CURRENT_FLOAT: return 1;
-    case PARAM_IDX_MOVE_CURRENT_FLOAT: return 1;
-    case PARAM_IDX_MICROSTEPS_FLOAT: return 0;
-    case PARAM_IDX_STEPS_PER_UNIT_FLOAT: return 0;
-    case PARAM_IDX_HOME_POSITION_FLOAT: return 1;
-    case PARAM_IDX_FUN_REFERENCE: return 0;
-    case PARAM_IDX_FUN_SET_POSITION: return 0;
-    case PARAM_IDX_FUN_MOVE_VELOCITY: return 1;
-    case PARAM_IDX_USR_MIN_EN_UINT: return 0;
-    case PARAM_IDX_USR_MAX_EN_UINT : return 0;
-    case PARAM_IDX_HOMPROC_UINT: return 0;
-    case PARAM_IDX_USR_MIN_EN_FLOAT: return 0;
-    case PARAM_IDX_USR_MAX_EN_FLOAT: return 0;
-    case PARAM_IDX_HOMPROC_FLOAT: return 0;
     case PARAM_IDX_UNITS_PER_REV_FLOAT: return 1;
     case PARAM_IDX_STEPS_PER_REV_FLOAT: return 1;
-    case PARAM_IDX_MAX_VELO_FLOAT: return 0;
     default:
       return 0;
     }
