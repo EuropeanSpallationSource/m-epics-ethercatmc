@@ -223,7 +223,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-5.opi</path>
+        <path>motor-4x4.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <P>PSI-ESTIARND:MC-MCU-01:</P>
@@ -233,12 +233,32 @@ $(pv_value)</tooltip>
           <M4>m4</M4>
           <M5>m5</M5>
           <M6>m6</M6>
+          <M7>m7</M7>
+          <M8>m8</M8>
+          <M9>m9</M9>
+          <M10>m10</M10>
+          <M11>m11</M11>
+          <M12>m12</M12>
+          <M13>m13</M13>
+          <M14>m14</M14>
+          <M15>m15</M15>
+          <M16>m16</M16>
           <R1>m1-</R1>
           <R2>m2-</R2>
           <R3>m3-</R3>
           <R4>m4-</R4>
           <R5>m5-</R5>
           <R6>m6-</R6>
+          <R7>m7-</R7>
+          <R8>m8-</R8>
+          <R9>m9-</R9>
+          <R10>m10-</R10>
+          <R11>m11-</R11>
+          <R12>m12-</R12>
+          <R13>m13-</R13>
+          <R14>m14-</R14>
+          <R15>m15-</R15>
+          <R16>m16-</R16>
         </macros>
         <mode>1</mode>
         <description></description>
