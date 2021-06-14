@@ -5,7 +5,6 @@ TITLEH=16
 GNERATEDOPIS = \
   ../motor-1.opi \
   ../motor-2.opi \
-  ../motor-2-2.opi \
   ../motor-3.opi \
   ../motor-4.opi \
   ../motor-5.opi \
@@ -36,18 +35,16 @@ DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.end
 
 
 
- ../motor-2-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh 2 2
-
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh 1
+
 
 ../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) 
 	TITLEH=$(TITLEH) ./genXY.sh 2
 
+
 ../motor-3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh 3
-
 
 ../motor-4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh 4
@@ -67,10 +64,8 @@ DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.end
 ../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh 4 x 4
 
-../motor-4-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genY.sh ethercatmcaxisExpert
-
 ../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_EXPERT_OPI)
+	TITLEH=$(TITLEH) ./genY.sh ethercatmcaxisExpert
 
 checkwhitespace:
 	../../../../checkws.sh

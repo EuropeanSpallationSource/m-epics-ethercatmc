@@ -74,7 +74,7 @@ if test "$1" -eq 0; then
   exit 1
 fi
 X=$1
-# Get the right name inside the opi, like motor-2-2.opi
+# Get the right name inside the opi, like motor-4x3.opi
 XXYY=$(echo "$@" | sed -e "s/ /-/g")
 shift
 FILE=motor-${XXYY}.$EXT
