@@ -11,6 +11,7 @@ GNERATEDOPIS = \
   ../motor-5.opi \
   ../motor-6.opi  \
   ../motor-4x3.opi \
+  ../motor-4x4.opi \
   ../motor-4-2.opi \
   ../ethercatmcaxisExpert.opi \
 
@@ -63,6 +64,8 @@ DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.end
 ../motor-4x3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh 4 x 3
 
+../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	TITLEH=$(TITLEH) ./genXY.sh 4 x 4
 
 ../motor-4-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genY.sh ethercatmcaxisExpert
