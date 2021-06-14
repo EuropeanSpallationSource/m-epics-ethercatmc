@@ -70,7 +70,7 @@ DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.end
 	TITLEH=$(TITLEH) ./genXY.sh 4 x 4
 
 ../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_EXPERT_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh ethercatmcaxisExpert 0 1 2 3 4 5 6 7
+	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh ethercatmcaxisExpert 17 18 19 20 0 1 2 3 4
 
 
 checkwhitespace:
