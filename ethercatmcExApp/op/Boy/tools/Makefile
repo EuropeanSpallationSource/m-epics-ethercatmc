@@ -11,11 +11,13 @@ GNERATEDOPIS = \
   ../motor-6.opi  \
   ../motor-4x3.opi \
   ../motor-4x4.opi \
-  ../motor-4-2.opi \
   ../ethercatmcaxisExpert.opi \
 
 #Main target:
 all: checkwhitespace $(GNERATEDOPIS)
+
+clean:
+	rm -f $(GNERATEDOPIS)
 
 # Depencies, when do we need to revuild a .opi file
 DEPENDENCIES_FOR_MOTOR_OPI = Makefile
@@ -28,8 +30,11 @@ DEPENDENCIES_FOR_MOTOR_OPI += motorx.end
 
 DEPENDENCIES_FOR_EXPERT_OPI = Makefile
 DEPENDENCIES_FOR_EXPERT_OPI += genY.sh
+DEPENDENCIES_FOR_EXPERT_OPI += genExpertWithAuxBits.sh
+DEPENDENCIES_FOR_EXPERT_OPI += genExpertWithAuxBits.py
 DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.start
 DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.mid
+DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
 DEPENDENCIES_FOR_EXPERT_OPI += ptp.mid
 DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.end
 
@@ -65,7 +70,8 @@ DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.end
 	TITLEH=$(TITLEH) ./genXY.sh 4 x 4
 
 ../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_EXPERT_OPI)
-	TITLEH=$(TITLEH) ./genY.sh ethercatmcaxisExpert
+	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh ethercatmcaxisExpert 0 1 2 3 4 5 6 7
+
 
 checkwhitespace:
 	../../../../checkws.sh

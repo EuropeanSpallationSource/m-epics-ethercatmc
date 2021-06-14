@@ -5572,7 +5572,7 @@ $(pv_value)</tooltip>
     <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
-      <rule name="AuxBitLED5LED-Visible" prop_id="visible" out_exp="false">
+      <rule name="AuxBitLED5-Visible" prop_id="visible" out_exp="false">
         <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
