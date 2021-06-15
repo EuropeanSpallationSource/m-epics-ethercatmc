@@ -11,6 +11,8 @@ WIDTH=120
 # File name extension
 EXT=opi
 
+HAS_PTP=""
+
 export OPIS TITLEH WIDTH HIGHT
 
 
@@ -60,11 +62,16 @@ genXX() {
       X=
     fi
   done
-  FILE=$FILE.$EXT
+  FILE=$FILE${HAS_PTP}.$EXT
 }
 
 ########################
 
+if test "$1" = "ptp"; then
+  shift
+  HAS_PTP="-ptp"
+  export HAS_PTP
+fi &&
 if test -z "$1"; then
   echo >&2 "$0 <numberOfMotorsX>"
   exit 1
@@ -77,7 +84,7 @@ X=$1
 # Get the right name inside the opi, like motor-4x3.opi
 XXYY=$(echo "$@" | sed -e "s/ /-/g")
 shift
-FILE=motor-${XXYY}.$EXT
+FILE=motor-${XXYY}${HAS_PTP}.$EXT
 
 #Do we have e.g. 4 x 3
 if test "$1" = x; then
@@ -89,13 +96,16 @@ if test "$1" = x; then
     fi
     Y=$1
     shift
-    FILE=motor-${X}x${Y}.$EXT
+    FILE=motor-${X}x${Y}${HAS_PTP}.$EXT
   fi
 fi
 
 sed -e "s!<name>motorx</name>!<name>$FILE</name>!"  <motorx.start >$OPIS/$$ &&
   echo "Creating $OPIS/$FILE" &&
-  cat ptp.mid  >>$OPIS/$$ &&
+  cat plcName.mid  >>$OPIS/$$ &&
+  if test "$HAS_PTP" != ""; then
+    cat ptp.mid  >>$OPIS/$$
+  fi &&
   if test "$Y" = 1; then
     genXX "$@"
   else

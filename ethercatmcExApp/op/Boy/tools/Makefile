@@ -4,8 +4,10 @@ TITLEH=16
 
 GNERATEDOPIS = \
   ../motor-1.opi \
+  ../motor-1-ptp.opi \
   ../motor-2.opi \
   ../motor-3.opi \
+  ../motor-3-ptp.opi \
   ../motor-4.opi \
   ../motor-5.opi \
   ../motor-6.opi  \
@@ -24,6 +26,7 @@ DEPENDENCIES_FOR_MOTOR_OPI = Makefile
 DEPENDENCIES_FOR_MOTOR_OPI += genXY.sh
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.start
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.mid
+DEPENDENCIES_FOR_MOTOR_OPI += plcName.mid
 DEPENDENCIES_FOR_MOTOR_OPI += ptp.mid
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.end 
 
@@ -43,13 +46,17 @@ DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.end
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh 1
 
+../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	TITLEH=$(TITLEH) ./genXY.sh ptp 1
 
 ../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) 
 	TITLEH=$(TITLEH) ./genXY.sh 2
 
-
 ../motor-3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh 3
+
+../motor-3-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	TITLEH=$(TITLEH) ./genXY.sh ptp 3
 
 ../motor-4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh 4
