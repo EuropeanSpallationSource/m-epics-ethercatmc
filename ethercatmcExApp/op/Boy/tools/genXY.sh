@@ -2,8 +2,6 @@
 
 # Number of motors in Y direction
 Y=1
-# Where to find the OPI files
-OPIS=..
 # Hight of one "motor widget"
 HIGHT=204
 # Width of one "motor widget"
@@ -13,7 +11,7 @@ EXT=opi
 
 HAS_PTP=""
 
-export OPIS TITLEH WIDTH HIGHT
+export TITLEH WIDTH HIGHT
 
 
 ########################
@@ -28,7 +26,7 @@ genXY() {
       x=$(($ix * $WIDTH))
       cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
       echo cmd=$cmd
-      eval $cmd <motorx.mid >>$OPIS/$$
+      eval $cmd <motorx.mid >>$$
       im=$(($im + 1))
       ix=$(($ix + 1))
     done &&
@@ -41,16 +39,14 @@ genXX() {
   echo genXX "$@"
   iy=0
   im=0
-  FILE=motor
   while test -n "$X"; do
-    FILE=$FILE-$X
     ix=0
     y=$(($TITLEH + $iy * $HIGHT))
     while test $ix -lt $X; do
       x=$(($ix * $WIDTH))
       cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
       echo cmd=$cmd
-      eval $cmd <motorx.mid >>$OPIS/$$
+      eval $cmd <motorx.mid >>$$
       im=$(($im + 1))
       ix=$(($ix + 1))
     done
@@ -62,10 +58,13 @@ genXX() {
       X=
     fi
   done
-  FILE=$FILE${HAS_PTP}.$EXT
 }
 
 ########################
+
+FILE=$1
+shift
+BASENAMEF=${FILE##*/}
 
 if test "$1" = "ptp"; then
   shift
@@ -84,7 +83,6 @@ X=$1
 # Get the right name inside the opi, like motor-4x3.opi
 XXYY=$(echo "$@" | sed -e "s/ /-/g")
 shift
-FILE=motor-${XXYY}${HAS_PTP}.$EXT
 
 #Do we have e.g. 4 x 3
 if test "$1" = x; then
@@ -96,22 +94,24 @@ if test "$1" = x; then
     fi
     Y=$1
     shift
-    FILE=motor-${X}x${Y}${HAS_PTP}.$EXT
   fi
 fi
 
-sed -e "s!<name>motorx</name>!<name>$FILE</name>!"  <motorx.start >$OPIS/$$ &&
-  echo "Creating $OPIS/$FILE" &&
-  cat plcName.mid  >>$OPIS/$$ &&
+sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!"  <motorx.start >$$ &&
+  echo "Creating $FILE" &&
+  cat plcName.mid  >>$$ &&
   if test "$HAS_PTP" != ""; then
-    cat ptp.mid  >>$OPIS/$$
+    cat ptp.mid  >>$$
   fi &&
   if test "$Y" = 1; then
     genXX "$@"
   else
     genXY "$@"
   fi &&
-  cat motorx.end  >>$OPIS/$$ &&
-  mv -f $OPIS/$$ $OPIS/$FILE
-
-
+  cat motorx.end  >>$$ &&
+  if test "$HAS_PTP" != ""; then
+    sed -e "s!ethercatmcaxisExpert.opi!ethercatmcaxisExpert-ptp.opi!"  <$$ >$FILE &&
+    rm $$
+  else
+    mv -f $$ $FILE
+  fi
