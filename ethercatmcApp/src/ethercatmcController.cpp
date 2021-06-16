@@ -234,6 +234,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &ethercatmcCfgVELO_RB_);
   createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &ethercatmcCfgVMAX_RB_);
   createParam(ethercatmcCfgJVEL_RBString,    asynParamFloat64,     &ethercatmcCfgJVEL_RB_);
+  createParam(ethercatmcCfgHVEL_RBString,    asynParamFloat64,     &ethercatmcCfgHVEL_RB_);
   createParam(ethercatmcCfgACCS_RBString,    asynParamFloat64,     &ethercatmcCfgACCS_RB_);
   createParam(ethercatmcCfgDHLMRBString,    asynParamFloat64,     &ethercatmcCfgDHLM_RB_);
   createParam(ethercatmcCfgDLLMRBString,    asynParamFloat64,     &ethercatmcCfgDLLM_RB_);
@@ -1308,6 +1309,7 @@ void ethercatmcController::setAlarmStatusSeverityAllReadbacks(asynStatus status)
   setAlarmStatusSeverityAllAxes(ethercatmcCfgVELO_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcCfgVMAX_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcCfgJVEL_RB_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcCfgHVEL_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcCfgACCS_RB_, status);
 
 }

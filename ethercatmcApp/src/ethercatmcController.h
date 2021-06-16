@@ -85,6 +85,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
 #define ethercatmcCfgJVEL_RBString           "CfgJVEL-RB"
+#define ethercatmcCfgHVEL_RBString           "CfgHVEL-RB"
 #define ethercatmcCfgACCS_RBString           "CfgACCS-RB"
 #define ethercatmcCfgDHLMRBString            "CfgDHLM-RB"
 #define ethercatmcCfgDLLMRBString            "CfgDLLM-RB"
@@ -495,6 +496,7 @@ public:
   int ethercatmcCfgVELO_RB_;
   int ethercatmcCfgVMAX_RB_;
   int ethercatmcCfgJVEL_RB_;
+  int ethercatmcCfgHVEL_RB_;
   int ethercatmcCfgACCS_RB_;
   int ethercatmcCfgSREV_RB_;
   int ethercatmcCfgUREV_RB_;

@@ -333,7 +333,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /*  40..44  */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /*  45..49  */ permPNone, permPNone, permPNone, permPNone, permPNone,
      /*  50..54  */ permPNone, permPNone, permPNone, permPNone, permPNone,
-     /*  55..59  */ permPNone, hystPRead, permPNone, hvelPNone, permPNone,
+     /*  55..59  */ permPNone, hystPRead, permPNone, hvelPRead, permPNone,
      /*  60..64  */ speedRDWR, acclPRDWR, permPNone, permPNone, permPNone,
      /*  65..69  */ permPNone, permPNone, permPNone, permPNone, hposPRead,
      /*  70..74  */ permPNone, permPNone, permPNone, permPNone, permPNone,
@@ -646,6 +646,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
 typedef struct
 {
   double fHysteresis;
+  double fRefSpeed;
   int   nHomProc;
   int   nOldHomProc;
 } cmd_Motor_cmd_type;
@@ -826,6 +827,7 @@ static void init_axis(int axis_no)
     setMRES_23(axis_no, UREV);
     setMRES_24(axis_no, SREV);
     cmd_Motor_cmd[axis_no].fHysteresis = 0.1;
+    cmd_Motor_cmd[axis_no].fRefSpeed = 1.5;
     if (axis_no == 4)
       setAxisHomed(axis_no, 1);
     cmd_Motor_cmd[axis_no].nHomProc = 1;
@@ -1119,6 +1121,9 @@ indexerMotorParamRead(unsigned motor_axis_no,
     return ret;
   case PARAM_IDX_HYTERESIS_FLOAT32:
     *fRet = cmd_Motor_cmd[motor_axis_no].fHysteresis;
+    return ret;
+  case PARAM_IDX_REFSPEED_FLOAT32:
+    *fRet = cmd_Motor_cmd[motor_axis_no].fRefSpeed;
     return ret;
   case PARAM_IDX_SPEED_FLOAT32:
     *fRet = getNxtMoveVelocity(motor_axis_no);

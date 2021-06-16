@@ -800,7 +800,7 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     updateCfgValue(axisNo, ethercatmcCfgRDBD_En_RB_, 1, "rdbd_en");
     break;
   case PARAM_IDX_REFSPEED_FLOAT:
-    updateCfgValue(axisNo, ethercatmcVelToHom_, fValue, "hvel");
+    updateCfgValue(axisNo, ethercatmcCfgHVEL_RB_, fValue, "hvel");
     break;
   case PARAM_IDX_SPEED_FLOAT:
     if (initial) updateCfgValue(axisNo, ethercatmcCfgVELO_RB_, fValue, "veloCFG");

@@ -290,6 +290,15 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-CfgJVEL-RB")
     field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(PREFIX)$(MOTOR_NAME)-CfgHVEL-RB")
+{
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgHVEL-RB")
+    field(SCAN, "I/O Intr")
+}
+
+
 record(ai, "$(PREFIX)$(MOTOR_NAME)-CfgACCS-RB")
 {
     field(DTYP, "asynFloat64")

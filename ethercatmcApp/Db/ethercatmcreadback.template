@@ -22,6 +22,14 @@ record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgJVEL-RB_")
     field(OMSL, "closed_loop")
 }
 
+record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgHVEL_")
+{
+    field(PREC, "$(PREC)")
+    field(DOL,  "$(PREFIX)$(MOTOR_NAME)-CfgHVEL-RB CP")
+    field(OUT,  "$(PREFIX)$(MOTOR_NAME).HVEL")
+    field(OMSL, "closed_loop")
+}
+
 record(ao, "$(PREFIX)$(MOTOR_NAME)-CfgACCS-RB_")
 {
     field(PREC, "$(PREC)")
