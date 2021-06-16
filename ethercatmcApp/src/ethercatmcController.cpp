@@ -58,9 +58,9 @@ extern "C" const char *errStringFromErrId(int nErrorId)
   case 0x4451:
     return "Follow err";
   case 0x4260:
-    return "Amplifier off";
+    return "Amplifie off";
   case 0x4263:
-    return "Is still proc";
+    return "Still proce";
   case 0x42A0:
     return "Consequ Err";
   case 0x42EF:
@@ -80,17 +80,17 @@ extern "C" const char *errStringFromErrId(int nErrorId)
   case 0x4467:
     return "Enc inv pos";
   case 0x4550:
-    return "Follow err pos";
+    return "Follw errpos";
   case 0x4551:
-    return "Follow err vel";
+    return "Follw errvel";
   case 0x4650:
-    return "Drv HW not rdy";
+    return "DrvHW notrdy";
   case 0x4655:
     return "Inv IO data";
   case 0x4B09:
-    return "Axis not ready";
+    return "Axis not rdy";
   case 0x4B0A:
-    return "Homing failed";
+    return "Homing faild";
   default:
     return "";
   }
