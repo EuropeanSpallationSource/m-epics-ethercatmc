@@ -156,6 +156,7 @@ void close_and_remove_client_con_i(int i)
              i, fd, res,
              res ? strerror(errno) : "");
     client_cons[i].fd = -1;
+    handle_close_and_remove_client_con();
     return;
   }
   LOGINFO7("%s/%s:%d close i=%d\n",
@@ -442,9 +443,10 @@ void socket_loop_with_select(void)
               int is_listen = 0;
               int accepted_socket;
               accepted_socket = accept(client_cons[i].fd, NULL, NULL);
-              LOGINFO7("%s/%s:%d accepted_socket=%d\n",
+              LOGINFO3("%s/%s:%d accepted_socket=%d\n",
                        __FILE__, __FUNCTION__, __LINE__, accepted_socket);
               add_client_con(accepted_socket, is_listen, client_cons[i].is_ADS);
+              handle_accept_new_client(accepted_socket);
             } else {
               client_cons[i].last_active_sec = tv_now.tv_sec;
               ssize_t read_res;

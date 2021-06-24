@@ -258,3 +258,15 @@ int handle_input_line(const char *input_line, int had_cr, int had_lf)
 {
   return  handle_input_line_fd(-1, input_line, had_cr, had_lf);
 }
+
+void handle_accept_new_client(int fd)
+{
+  (void)fd;
+  memset(&sim_usleep, 0, sizeof(sim_usleep));
+}
+
+void handle_close_and_remove_client_con(void)
+{
+  ; /* memset(&sim_usleep, 0, sizeof(sim_usleep)); */
+}
+

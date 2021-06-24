@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include "max_axes.h"
 
 
 
@@ -12,4 +13,4 @@ void add_to_buf(const char *add_txt, size_t add_len);
 char *get_buf(void);
 void clear_buf(void);
 
-extern useconds_t sim_usleep[];
+extern useconds_t sim_usleep[MAX_AXES];

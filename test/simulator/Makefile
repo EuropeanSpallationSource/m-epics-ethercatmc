@@ -147,6 +147,7 @@ $(BIN)/cmd.o: \
 $(BIN)/cmd_buf.o: \
  Makefile \
  cmd_buf.h \
+ max_axes.h \
  cmd_buf.c
 	$(CC) -c $(CFLAGS) cmd_buf.c -o $@
 
@@ -184,6 +185,7 @@ $(BIN)/cmd_TCPsim.o: \
 $(BIN)/hw_motor.o: \
  Makefile \
  hw_motor.h \
+ max_axes.h \
  hw_motor.c
 	$(CC) -c $(CFLAGS) hw_motor.c -o $@
 

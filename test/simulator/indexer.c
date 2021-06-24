@@ -13,6 +13,7 @@
 #include "indexer.h"
 #include "logerr_info.h"
 #include "cmd.h"
+#include "cmd_buf.h"
 
 #define HAS_1604_OPEN_CLUTCH
 
@@ -1771,6 +1772,13 @@ void indexerHandlePLCcycle(void)
         LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u offset=%u fRet=%f\n",
                  __FILE__, __FUNCTION__, __LINE__,
                  devNum, axisNo, motor5010Num, offset, (double)fRet);
+        if (sim_usleep[axisNo]) {
+          LOGINFO3("%s/%s:%d axis_no=%d usleep=%lu\n",
+                   __FILE__, __FUNCTION__, __LINE__, axisNo,
+                   (unsigned long)sim_usleep[axisNo]);
+          (void)usleep(sim_usleep[axisNo]);
+        }
+
         doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
         /* status */
         indexerMotorStatusRead5010(devNum, axisNo, numAuxBits,
