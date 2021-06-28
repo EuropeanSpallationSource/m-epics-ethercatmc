@@ -4,6 +4,8 @@
 #include "indexer.h"
 #include "cmd_EAT.h"
 #include "ads.h"
+#include "logerr_info.h"
+#include "cmd_Sim_Ads.h"
 
 #define ADSIGRP_SYM_INFOBYNAMEEX 0xF009
 
@@ -243,4 +245,59 @@ void send_ams_reply(int fd, ams_hdr_type *ams_hdr_p, uint32_t total_len_reply)
   ams_hdr_p->lenght_2 = (uint8_t)(ams_payload_len << 16);
   ams_hdr_p->lenght_3 = (uint8_t)(ams_payload_len << 24);
   send_to_socket(fd, ams_hdr_p, total_len_reply);
+}
+
+static void adsHandleOneArg(const char *myarg_1)
+{
+  static const char * const Sim_this_ads_dot_str = "Sim.this.ads.";
+  const char *myarg = myarg_1;
+  int simulated_network_problem = 0;
+  int nvals;
+
+  /* Sim.this.ads. */
+  if (!strncmp(myarg_1, Sim_this_ads_dot_str, strlen(Sim_this_ads_dot_str))) {
+    myarg_1 += strlen(Sim_this_ads_dot_str);
+  }
+  /* From here on, only  Sim.this.ads. commands */
+  nvals = sscanf(myarg_1, "simulatedNetworkProblem=%d", &simulated_network_problem);
+  if (nvals != 1) {
+    LOGERR("%s/%s:%d line=%s nvals=%d myarg_1=\"%s\"",
+           __FILE__, __FUNCTION__, __LINE__,
+           myarg, nvals, myarg_1);
+    exit(2);
+  }
+
+
+  /* if we come here, we do not understand the command */
+  LOGERR("%s/%s:%d illegal line=%s myarg_1=%s",
+         __FILE__, __FUNCTION__, __LINE__,
+         myarg, myarg_1);
+  exit(2);
+}
+
+
+void cmd_Sim_Ads(int argc, const char *argv[])
+{
+  const char *myargline = (argc > 0) ? argv[0] : "";
+  if (PRINT_STDOUT_BIT6())
+  {
+    const char *myarg[5];
+    myarg[0] = myargline;
+    myarg[1] = (argc > 1) ? argv[1] : "";
+    myarg[2] = (argc > 2) ? argv[2] : "";
+    myarg[3] = (argc > 3) ? argv[3] : "";
+    myarg[4] = (argc > 4) ? argv[4] : "";
+    LOGINFO6("%s/%s:%d argc=%d "
+             "myargline=\"%s\" myarg[1]=\"%s\" myarg[2]=\"%s\" myarg[3]=\"%s\" myarg[4]=\"%s\"\n",
+             __FILE__, __FUNCTION__, __LINE__,
+             argc,  myargline,
+             myarg[1], myarg[2],
+             myarg[3], myarg[4]);
+  }
+
+  while (argc > 1) {
+    adsHandleOneArg(argv[1]);
+    argc--;
+    argv++;
+  } /* while argc > 0 */
 }

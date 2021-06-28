@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include "sock-util.h"
 #include "cmd.h"
+#include "cmd_Sim_Ads.h"
 #include "cmd_Sim.h"
 #include "cmd_EAT.h"
 #include "cmd_IcePAP.h"
@@ -174,6 +175,7 @@ int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int 
   static const char *seperator_seperator = ";";
   static const char *terminator_terminator = "\n";
   const char *this_stSettings_iTimeOut_str_s = ".THIS.stSettings.iTimeOut=";
+  const char *Sim_this_ads_dot_str = "Sim.this.ads.";
   const char *sim_str_s = "Sim.";
 
   static unsigned int counter;
@@ -202,8 +204,9 @@ int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int 
                      seperator_seperator,
                      terminator_terminator);
     }
-  }
-  else if (!strncmp(argv1, sim_str_s, strlen(sim_str_s))) {
+  } else if (!strncmp(argv1, Sim_this_ads_dot_str, strlen(Sim_this_ads_dot_str))) {
+    cmd_Sim_Ads(argc, my_argv);
+  } else if (!strncmp(argv1, sim_str_s, strlen(sim_str_s))) {
     cmd_Sim(argc, my_argv);
   } else if (is_EAT_cmd) {
     cmd_EAT(argc, my_argv);

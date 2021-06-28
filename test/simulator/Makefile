@@ -105,6 +105,7 @@ $(BIN)/ads.o: \
  ads.h \
  logerr_info.h \
  cmd_EAT.h \
+ cmd_Sim_Ads.h \
  ads.c
 	$(CC) -c $(CFLAGS) ads.c -o $@
 
@@ -138,9 +139,14 @@ $(BIN)/sock-util.o: \
 $(BIN)/cmd.o: \
  Makefile \
  sock-util.h \
- hw_motor.h \
+ cmd.h \
+ cmd_Sim_Ads.h \
+ cmd_Sim.h \
+ cmd_EAT.h \
  cmd_IcePAP.h \
  cmd_TCPsim.h \
+ logerr_info.h \
+ cmd_buf.h \
  cmd.c
 	$(CC) -c $(CFLAGS) cmd.c -o $@
 

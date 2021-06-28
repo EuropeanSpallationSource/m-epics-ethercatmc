@@ -1162,6 +1162,7 @@ asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
   asynStatus status;
   const char * const Main_this_str = "Main.this.";
   const char * const Sim_this_str = "Sim.this.";
+  const char * const Sim_this_ads_str = "Sim.this.ads.";
   /* The special device structure. */
   struct {
     /* 2 bytes control, 46 payload */
@@ -1179,16 +1180,22 @@ asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
   /* No special device found */
   if (!pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset) return asynError;
 
-  /* Check the string. E.g. Main.this. and Sim.this. are passed
-     as Main.M1 or Sim.M1 */
-  if (!strncmp(value, Main_this_str, strlen(Main_this_str))) {
+
+
+  if (!strncmp(value, Sim_this_ads_str, strlen(Sim_this_ads_str))) {
+    /* caput IOC:m1-DbgStrToMCU Sim.this.ads.simulatedNetworkProblem=1 */
+    valueLen = snprintf((char*)&netDevice0518interface.value,
+                        sizeof(netDevice0518interface.value),
+                        "%s;\n", value);
+  } else if (!strncmp(value, Main_this_str, strlen(Main_this_str))) {
+    /* Check the string. E.g. Main.this. and Sim.this. are passed
+       as Main.M1 or Sim.M1 */
     valueLen = snprintf((char*)&netDevice0518interface.value,
                         sizeof(netDevice0518interface.value),
                         "Main.M%d.%s;\n",
                         axisNo_, value + strlen(Main_this_str));
-  }
-  /* caput IOC:m1-DbgStrToMCU Sim.this.log=M1.log */
-  else if (!strncmp(value, Sim_this_str, strlen(Sim_this_str))) {
+  } else if (!strncmp(value, Sim_this_str, strlen(Sim_this_str))) {
+    /* caput IOC:m1-DbgStrToMCU Sim.this.log=M1.log */
     valueLen = snprintf((char*)&netDevice0518interface.value,
                         sizeof(netDevice0518interface.value),
                         "Sim.M%d.%s;\n",

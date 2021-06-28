@@ -4,6 +4,7 @@
 #include <stdio.h>  /* FILE */
 #include <string.h> /* strerror */
 #include <errno.h>
+#include "cmd_buf.h"
 
 extern unsigned int debug_print_flags;
 extern unsigned int die_on_error_flags;
