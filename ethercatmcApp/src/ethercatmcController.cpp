@@ -872,7 +872,11 @@ asynStatus ethercatmcController::poll(void)
         }
       }
     } else {
-      return indexerPoll();
+      status = indexerPoll();
+      if (status) {
+        handleStatusChange(status);
+      }
+      return status;
     }
   } else {
     if (!(features_ & reportedFeatureBits)) {
