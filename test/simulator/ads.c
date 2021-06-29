@@ -9,6 +9,9 @@
 
 #define ADSIGRP_SYM_INFOBYNAMEEX 0xF009
 
+static simulatedNetworkProblemType
+  simulatedNetworkProblemNew = simulatedNetworkProblemNone;
+
 
 void handleADSread(int fd, ams_hdr_type *ams_hdr_p)
 {
@@ -50,16 +53,22 @@ void handleADSread(int fd, ams_hdr_type *ams_hdr_p)
     uint8_t *data_ptr = (uint8_t *)ADS_Read_rep_p + sizeof(*ADS_Read_rep_p);
     (void)indexerHandleADS_ADR_getMemory(adsport, indexOffset,
                                          len_in_PLC, data_ptr);
-  LOGINFO7("%s/%s:%d ADS_Readcmd ADS_Read_rep_p=%p data_ptr=%p data=0x%2x 0x%2x 0x%2x 0x%2x\n",
-           __FILE__,__FUNCTION__, __LINE__,
-           ADS_Read_rep_p, data_ptr,
-           data_ptr[0],
-           data_ptr[1],
-           data_ptr[2],
-           data_ptr[3]
-           );
+    LOGINFO7("%s/%s:%d ADS_Readcmd ADS_Read_rep_p=%p data_ptr=%p data=0x%2x 0x%2x 0x%2x 0x%2x\n",
+             __FILE__,__FUNCTION__, __LINE__,
+             ADS_Read_rep_p, data_ptr,
+             data_ptr[0],
+             data_ptr[1],
+             data_ptr[2],
+             data_ptr[3]
+             );
+    send_ams_reply_simulate_network_problem(fd,
+                                            ams_hdr_p,
+                                            total_len_reply,
+                                            simulatedNetworkProblemNew);
+    if (simulatedNetworkProblemNew != simulatedNetworkProblemNone) {
+      simulatedNetworkProblemNew = simulatedNetworkProblemNone;
+    }
   }
-  send_ams_reply(fd, ams_hdr_p, total_len_reply);
 }
 
 static double netToDouble(void *data, size_t lenInPlc)
@@ -218,9 +227,34 @@ void handleADSreadwrite(int fd, ams_hdr_type *ams_hdr_p)
 
 void send_ams_reply(int fd, ams_hdr_type *ams_hdr_p, uint32_t total_len_reply)
 {
+  send_ams_reply_simulate_network_problem(fd, ams_hdr_p, total_len_reply,
+                                          simulatedNetworkProblemNone);
+}
+
+void
+send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
+                                        uint32_t total_len_reply,
+                                        simulatedNetworkProblemType simulatedNetworkProblem)
+{
+  uint32_t len_to_socket = total_len_reply;
   uint32_t ams_payload_len = total_len_reply - sizeof(*ams_hdr_p);
   uint32_t ams_tcp_header_len = total_len_reply - sizeof(ams_tcp_header_type);
   ams_netid_port_type ams_netid_port_tmp;
+
+  if (simulatedNetworkProblemNew != simulatedNetworkProblemNone) {
+    switch (simulatedNetworkProblem) {
+    case simulatedNetworkProblemAmsTcpHeaderOnly:
+      len_to_socket = sizeof(ams_tcp_header_type);
+      break;
+    default:
+      ;
+    }
+    LOGERR("%s/%s:%d ADS_Readcmd ADS_new_simulatedNetworkProblemNew=%u len_to_socket=%u (0x%02x) total_len_reply=%u (0x%02x)\n",
+           __FILE__,__FUNCTION__, __LINE__,
+           (int)simulatedNetworkProblemNew,
+           (unsigned)len_to_socket, (unsigned)len_to_socket,
+           (unsigned)total_len_reply, (unsigned)total_len_reply);
+  }
   LOGINFO7("%s/%s:%d total_len_reply=%u ams_tcp_header_len=%u ams_payload_len=%u id=%u\n",
            __FILE__,__FUNCTION__, __LINE__,
            total_len_reply, ams_tcp_header_len, ams_payload_len,
@@ -244,14 +278,14 @@ void send_ams_reply(int fd, ams_hdr_type *ams_hdr_p, uint32_t total_len_reply)
   ams_hdr_p->lenght_1 = (uint8_t)(ams_payload_len << 8);
   ams_hdr_p->lenght_2 = (uint8_t)(ams_payload_len << 16);
   ams_hdr_p->lenght_3 = (uint8_t)(ams_payload_len << 24);
-  send_to_socket(fd, ams_hdr_p, total_len_reply);
+  send_to_socket(fd, ams_hdr_p, len_to_socket);
 }
 
 static void adsHandleOneArg(const char *myarg_1)
 {
   static const char * const Sim_this_ads_dot_str = "Sim.this.ads.";
   const char *myarg = myarg_1;
-  int simulated_network_problem = 0;
+  unsigned simulated_network_problem = 0;
   int nvals;
 
   /* Sim.this.ads. */
@@ -259,14 +293,22 @@ static void adsHandleOneArg(const char *myarg_1)
     myarg_1 += strlen(Sim_this_ads_dot_str);
   }
   /* From here on, only  Sim.this.ads. commands */
-  nvals = sscanf(myarg_1, "simulatedNetworkProblem=%d", &simulated_network_problem);
+  nvals = sscanf(myarg_1, "simulatedNetworkProblem=%u", &simulated_network_problem);
   if (nvals != 1) {
     LOGERR("%s/%s:%d line=%s nvals=%d myarg_1=\"%s\"",
            __FILE__, __FUNCTION__, __LINE__,
            myarg, nvals, myarg_1);
     exit(2);
   }
-
+  if (simulated_network_problem < simulatedNetworkProblemLast) {
+    simulatedNetworkProblemNew = (simulatedNetworkProblemType)simulated_network_problem;
+    return;
+  } else {
+    LOGERR("%s/%s:%d line=%s nvals=%d simulated_network_problem=%u myarg_1=\"%s\"",
+           __FILE__, __FUNCTION__, __LINE__,
+           myarg, nvals, simulated_network_problem, myarg_1);
+    exit(2);
+  }
 
   /* if we come here, we do not understand the command */
   LOGERR("%s/%s:%d illegal line=%s myarg_1=%s",

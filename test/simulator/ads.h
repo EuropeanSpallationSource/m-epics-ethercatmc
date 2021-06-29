@@ -155,7 +155,19 @@ typedef struct {
   } response;
 } ADS_Write_rep_type;
 
+typedef enum {
+    simulatedNetworkProblemNone = 0,
+    simulatedNetworkProblemAmsTcpHeaderOnly = 1,
+
+    simulatedNetworkProblemLast
+} simulatedNetworkProblemType;
+
+
 void send_ams_reply(int fd, ams_hdr_type *ams_hdr_p, uint32_t total_len_reply);
+void
+send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
+                                        uint32_t total_len_reply,
+                                        simulatedNetworkProblemType simulatedNetworkProblem);
 void handleADSread(int fd, ams_hdr_type *ams_hdr_p);
 void handleADSwrite(int fd, ams_hdr_type *ams_hdr_p);
 void handleADSreadwrite(int fd, ams_hdr_type *ams_hdr_p);
