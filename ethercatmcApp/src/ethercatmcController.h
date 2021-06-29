@@ -255,13 +255,13 @@ public:
                             const char *fileName,
                             int lineNo);
 #define  handleStatusChange(a) handleStatusChangeFL(a, __FILE__, __LINE__);
-  asynStatus writeReadBinaryOnErrorDisconnectFL(asynUser *pasynUser,
-                                                const char *outdata,
-                                                size_t outlen,
-                                                char *indata, size_t inlen,
-                                                size_t *pnread,
-                                                const char *fileName,
-                                                int lineNo);
+  asynStatus writeReadBinaryFL(asynUser *pasynUser,
+                               const char *outdata,
+                               size_t outlen,
+                               char *indata, size_t inlen,
+                               size_t *pnread,
+                               const char *fileName,
+                               int lineNo);
 
   /* memory bytes via ADS */
   asynStatus writeWriteReadAdsFL(asynUser *pasynUser,
