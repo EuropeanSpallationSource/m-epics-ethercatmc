@@ -31,9 +31,9 @@ void handleADSread(int fd, ams_hdr_type *ams_hdr_p)
                         (ads_read_req_p->indexOffset_2 << 16) +
                         (ads_read_req_p->indexOffset_3 << 24);
   uint32_t len_in_PLC = (uint32_t)ads_read_req_p->lenght_0 +
-    (ads_read_req_p->lenght_1 << 8) +
-                    (ads_read_req_p->lenght_2 << 16) +
-                    (ads_read_req_p->lenght_3 << 24);
+                        (ads_read_req_p->lenght_1 << 8) +
+                        (ads_read_req_p->lenght_2 << 16) +
+                        (ads_read_req_p->lenght_3 << 24);
   payload_len      = sizeof(ADS_Read_rep_p->response) + len_in_PLC;
   total_len_reply = sizeof(*ADS_Read_rep_p) -
                     sizeof(ADS_Read_rep_p->response) + payload_len;
@@ -241,20 +241,6 @@ send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
   uint32_t ams_tcp_header_len = total_len_reply - sizeof(ams_tcp_header_type);
   ams_netid_port_type ams_netid_port_tmp;
 
-  if (simulatedNetworkProblemNew != simulatedNetworkProblemNone) {
-    switch (simulatedNetworkProblem) {
-    case simulatedNetworkProblemAmsTcpHeaderOnly:
-      len_to_socket = sizeof(ams_tcp_header_type);
-      break;
-    default:
-      ;
-    }
-    LOGERR("%s/%s:%d ADS_Readcmd ADS_new_simulatedNetworkProblemNew=%u len_to_socket=%u (0x%02x) total_len_reply=%u (0x%02x)\n",
-           __FILE__,__FUNCTION__, __LINE__,
-           (int)simulatedNetworkProblemNew,
-           (unsigned)len_to_socket, (unsigned)len_to_socket,
-           (unsigned)total_len_reply, (unsigned)total_len_reply);
-  }
   LOGINFO7("%s/%s:%d total_len_reply=%u ams_tcp_header_len=%u ams_payload_len=%u id=%u\n",
            __FILE__,__FUNCTION__, __LINE__,
            total_len_reply, ams_tcp_header_len, ams_payload_len,
@@ -268,6 +254,47 @@ send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
   memcpy(&ams_hdr_p->target,  &ams_hdr_p->source,  sizeof(ams_netid_port_type));
   memcpy(&ams_hdr_p->source,  &ams_netid_port_tmp, sizeof(ams_netid_port_type));
 
+  if (simulatedNetworkProblemNew != simulatedNetworkProblemNone) {
+    switch (simulatedNetworkProblem) {
+    case simulatedNetworkProblemNone:
+      break;
+    case simulatedNetworkProblemAmsTcpHeaderOnly:
+      len_to_socket = sizeof(ams_tcp_header_type);
+      break;
+    case simulatedNetworkProblemAmsTcpHdrShortOnly:
+      len_to_socket = sizeof(ams_tcp_header_type) - 1;
+      break;
+    case simulatedNetworkProblemPacketTooShort:
+      len_to_socket = total_len_reply - 1;
+      break;
+    case simulatedNetworkProblemAmsHeaderLengthTooShort:
+      ams_tcp_header_len -= 1;
+      break;
+    case simulatedNetworkProblemAmsHeaderLengthTooLong:
+      ams_tcp_header_len -= 1;
+      break;
+    case simulatedNetworkProblemInvokeID_0:
+      ams_hdr_p->invokeID_0++;
+      break;
+    case simulatedNetworkProblemInvokeID_1:
+      ams_hdr_p->invokeID_1++;
+      break;
+    case simulatedNetworkProblemInvokeID_2:
+      ams_hdr_p->invokeID_2++;
+      break;
+    case simulatedNetworkProblemInvokeID_3:
+      ams_hdr_p->invokeID_3++;
+      break;
+    default:
+      ;
+    }
+    LOGERR("%s/%s:%d ADS_Readcmd ADS_new_simulatedNetworkProblemNew=%u len_to_socket=%u (0x%02x) total_len_reply=%u (0x%02x)\n",
+           __FILE__,__FUNCTION__, __LINE__,
+           (int)simulatedNetworkProblemNew,
+           (unsigned)len_to_socket, (unsigned)len_to_socket,
+           (unsigned)total_len_reply, (unsigned)total_len_reply);
+  }
+
   ams_hdr_p->ams_tcp_header.lenght_0 = (uint8_t)ams_tcp_header_len;
   ams_hdr_p->ams_tcp_header.lenght_1 = (uint8_t)(ams_tcp_header_len >> 8);
   ams_hdr_p->ams_tcp_header.lenght_2 = (uint8_t)(ams_tcp_header_len >> 16);
@@ -278,6 +305,7 @@ send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
   ams_hdr_p->lenght_1 = (uint8_t)(ams_payload_len << 8);
   ams_hdr_p->lenght_2 = (uint8_t)(ams_payload_len << 16);
   ams_hdr_p->lenght_3 = (uint8_t)(ams_payload_len << 24);
+
   send_to_socket(fd, ams_hdr_p, len_to_socket);
 }
 
@@ -304,9 +332,12 @@ static void adsHandleOneArg(const char *myarg_1)
     simulatedNetworkProblemNew = (simulatedNetworkProblemType)simulated_network_problem;
     return;
   } else {
-    LOGERR("%s/%s:%d line=%s nvals=%d simulated_network_problem=%u myarg_1=\"%s\"",
+    LOGERR("%s/%s:%d line=%s nvals=%d simulated_network_problem=%u out of range. Allowed: 0..%u myarg_1=\"%s\"",
            __FILE__, __FUNCTION__, __LINE__,
-           myarg, nvals, simulated_network_problem, myarg_1);
+           myarg, nvals,
+           simulated_network_problem,
+           (unsigned)simulatedNetworkProblemLast - 1,
+           myarg_1);
     exit(2);
   }
 
