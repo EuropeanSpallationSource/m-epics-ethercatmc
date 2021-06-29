@@ -1428,6 +1428,14 @@ static int indexerHandleIndexerCmd(unsigned offset,
       unsigned auxIdx;
       unsigned flags = 0;
       unsigned maxAuxIdx;
+      unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
+      if (axisNo) {
+        init_axis((int)axisNo);
+        DOUBLETONET(getLowHardLimitPos((int)axisNo),
+                    netData.memoryStruct.indexer.infoType0.absMin);
+        DOUBLETONET(getHighHardLimitPos((int)axisNo),
+                    netData.memoryStruct.indexer.infoType0.absMax);
+      }
       maxAuxIdx = sizeof(indexerDeviceAbsStraction[devNum].auxName) /
         sizeof(indexerDeviceAbsStraction[devNum].auxName[0]);
 

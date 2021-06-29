@@ -62,12 +62,14 @@ double getLowSoftLimitPos(int axis_no);
 void   setLowSoftLimitPos(int axis_no, double value);
 int    getEnableLowSoftLimit(int axis_no);
 void   setEnableLowSoftLimit(int axis_no, int value);
+double getLowHardLimitPos(int axis_no);
 void   setLowHardLimitPos(int axis_no, double value);
 
 double getHighSoftLimitPos(int axis_no);
 void   setHighSoftLimitPos(int axis_no, double value);
 int    getEnableHighSoftLimit(int axis_no);
 void   setEnableHighSoftLimit(int axis_no, int value);
+double getHighHardLimitPos(int axis_no);
 void   setHighHardLimitPos(int axis_no, double value);
 
 double getMRES_23(int axis_no);

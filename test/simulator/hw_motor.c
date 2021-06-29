@@ -492,6 +492,12 @@ void setEnableLowSoftLimit(int axis_no, int value)
   motor_axis[axis_no].enabledLowSoftLimitPos = value;
 }
 
+double getLowHardLimitPos(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].lowHardLimitPos;
+}
+
 void setLowHardLimitPos(int axis_no, double value)
 {
   fprintf(stdlog,
@@ -533,6 +539,12 @@ void setEnableHighSoftLimit(int axis_no, int value)
           __FILE__, __FUNCTION__, __LINE__, axis_no, value);
   AXIS_CHECK_RETURN(axis_no);
   motor_axis[axis_no].enabledHighSoftLimitPos = value;
+}
+
+double getHighHardLimitPos(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].highHardLimitPos;
 }
 
 void setHighHardLimitPos(int axis_no, double value)
