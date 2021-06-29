@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 #
+#
+# Test the communication robustness in the IOC
+# Send "corrupted" resposense from the simulator to the IOC
+# The IOC should close the connection, and open a new one
+# After this, the initial poll must be performed
+# To verify this, we manipulate the "abs limit" before each test case
+# The "abs limit" is read via PILS, but only once
+# When the re-reading is done, the new value should be in "-CfgPMAX-RB"
+# When the re-reading is not done, we see the "old" value,
+# and the test case fails
+# What the different failures mean, is defined in the simulator
+
+
 
 import datetime
 import unittest
@@ -12,7 +25,7 @@ import time
 import math
 import inspect
 
-filnam = "980xx.py"
+filnam = "9800xx.py"
 ###
 
 maxDelta = 0.5
@@ -44,16 +57,52 @@ class Test(unittest.TestCase):
     axisMr = AxisMr(axisCom)
 
     # Reset simulator
-#    def test_TC_9800(self):
-#        tc_no = 9800
-#        simulateNetworkProblem(self, tc_no, 0);
+    def test_TC_98000(self):
+        tc_no = 98000
+        self.axisMr.setValueOnSimulator(tc_no, "fHighHardLimitPos", tc_no)
 
     #
-    def test_TC_9801(self):
-        tc_no = 9801
-        simulateNetworkProblem(self, tc_no, tc_no - 9800);
+    def test_TC_98001(self):
+        tc_no = 98001
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
 
-    def test_TC_9802(self):
-        tc_no = 9802
-        simulateNetworkProblem(self, tc_no, tc_no - 9800);
+    def test_TC_98002(self):
+        tc_no = 98002
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+    def test_TC_98003(self):
+        tc_no = 98003
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+    def test_TC_98004(self):
+        tc_no = 98004
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+    def test_TC_98005(self):
+        tc_no = 98005
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+    def test_TC_98006(self):
+        tc_no = 98006
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+    def test_TC_98007(self):
+        tc_no = 98007
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+    def test_TC_98008(self):
+        tc_no = 98008
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+    def test_TC_98009(self):
+        tc_no = 98009
+        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+#    def test_TC_98010(self):
+#        tc_no = 98010
+#        simulateNetworkProblem(self, tc_no, tc_no - 98000);
+
+#    def test_TC_98011(self):
+#        tc_no = 98011
+#        simulateNetworkProblem(self, tc_no, tc_no - 98000);
 
