@@ -1,1 +1,1 @@
-void cmd_Sim_Ads(int argc, const char *argv[]);
+int cmd_Sim_Ads(int argc, const char *argv[]);

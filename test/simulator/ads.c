@@ -309,7 +309,7 @@ send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
   send_to_socket(fd, ams_hdr_p, len_to_socket);
 }
 
-static void adsHandleOneArg(const char *myarg_1)
+static int adsHandleOneArg(const char *myarg_1)
 {
   static const char * const Sim_this_ads_dot_str = "Sim.this.ads.";
   const char *myarg = myarg_1;
@@ -330,7 +330,7 @@ static void adsHandleOneArg(const char *myarg_1)
   }
   if (simulated_network_problem < simulatedNetworkProblemLast) {
     simulatedNetworkProblemNew = (simulatedNetworkProblemType)simulated_network_problem;
-    return;
+    return 0;
   } else {
     LOGERR("%s/%s:%d line=%s nvals=%d simulated_network_problem=%u out of range. Allowed: 0..%u myarg_1=\"%s\"",
            __FILE__, __FUNCTION__, __LINE__,
@@ -338,20 +338,21 @@ static void adsHandleOneArg(const char *myarg_1)
            simulated_network_problem,
            (unsigned)simulatedNetworkProblemLast - 1,
            myarg_1);
-    exit(2);
+    return 1;
   }
 
   /* if we come here, we do not understand the command */
   LOGERR("%s/%s:%d illegal line=%s myarg_1=%s",
          __FILE__, __FUNCTION__, __LINE__,
          myarg, myarg_1);
-  exit(2);
+  return 1; /* exit(2); */
 }
 
 
-void cmd_Sim_Ads(int argc, const char *argv[])
+int cmd_Sim_Ads(int argc, const char *argv[])
 {
   const char *myargline = (argc > 0) ? argv[0] : "";
+  int retval = 0;
   if (PRINT_STDOUT_BIT6())
   {
     const char *myarg[5];
@@ -369,8 +370,9 @@ void cmd_Sim_Ads(int argc, const char *argv[])
   }
 
   while (argc > 1) {
-    adsHandleOneArg(argv[1]);
+    retval |= adsHandleOneArg(argv[1]);
     argc--;
     argv++;
   } /* while argc > 0 */
+  return retval;
 }

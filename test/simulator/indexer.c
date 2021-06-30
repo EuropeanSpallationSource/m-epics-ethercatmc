@@ -232,7 +232,7 @@ typedef struct {
 typedef struct {
   /* 2 bytes control, 46 payload */
   uint8_t   control[2];
-  uint8_t   value[46];
+  char      value[46];
 } netDevice0518interface_type;
 
 typedef struct {
@@ -1820,6 +1820,7 @@ void indexerHandlePLCcycle(void)
         uint16_t ctrl_word = NETTOUINT(netData.memoryStruct.special0518.control);
         unsigned plcNotHostHasWritten = (ctrl_word & 0x8000) ? 1 : 0;
         unsigned numBytes  = ctrl_word & 0x02FF; /* Bit 9..0 */
+        int retval = 0;
         LOGINFO6("%s/%s:%d devNum=%u special0518 ctrl0=0x%x crtl1=0x%x "
                  "plcNotHostHasWritten=%u numBytes=%u\n",
                  __FILE__, __FUNCTION__, __LINE__,
@@ -1847,16 +1848,26 @@ void indexerHandlePLCcycle(void)
             LOGINFO6("%s/%s:%d devNum=%u special0518 value=\"%s\"\n",
                      __FILE__, __FUNCTION__, __LINE__,
                      devNum, (const char*)netData.memoryStruct.special0518.value);
-            (void)handle_input_line((const char *)&netData.memoryStruct.special0518.value,
+            retval = handle_input_line((const char *)&netData.memoryStruct.special0518.value,
                                     had_cr, 1);
+            LOGINFO6("%s/%s:%d devNum=%u special0518 value=\"%s\" retval=%d\n",
+                     __FILE__, __FUNCTION__, __LINE__,
+                     devNum, (const char*)netData.memoryStruct.special0518.value,
+                     retval);
           } else {
             LOGINFO3("%s/%s:%d devNum=%u special0518=\"%s\"\n",
                      __FILE__, __FUNCTION__, __LINE__,
                      devNum, (const char*)netData.memoryStruct.special0518.value);
           }
-          memset(&netData.memoryStruct.special0518, 0,
-                 sizeof(netData.memoryStruct.special0518));
-          ctrl_word = 0x8000;
+          ctrl_word = snprintf(&netData.memoryStruct.special0518.value[0],
+                               sizeof(netData.memoryStruct.special0518.value),
+                               "%s",
+                               retval ? "Error" : "OK");
+          LOGINFO3("%s/%s:%d devNum=%u special0518=\"%s\" retval=%d ctrl_word_len=%u\n",
+                   __FILE__, __FUNCTION__, __LINE__,
+                   devNum, (const char*)netData.memoryStruct.special0518.value,
+                   retval, ctrl_word);
+          ctrl_word |= 0x8000;
           UINTTONET(ctrl_word, netData.memoryStruct.special0518.control);
         }
       }
