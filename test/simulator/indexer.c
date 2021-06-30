@@ -1826,7 +1826,11 @@ void indexerHandlePLCcycle(void)
                  netData.memoryStruct.special0518.control[0],
                  netData.memoryStruct.special0518.control[1],
                  devNum, plcNotHostHasWritten, numBytes);
-        if (!plcNotHostHasWritten && numBytes) {
+        if (!ctrl_word) {
+          /* Init phase */
+          ctrl_word = 0x8000;
+          UINTTONET(ctrl_word, netData.memoryStruct.special0518.control);
+        } else if (!plcNotHostHasWritten && numBytes) {
           char *pNewline;
           pNewline = strchr((char *)&netData.memoryStruct.special0518.value, '\n');
           if (pNewline) {
@@ -1852,7 +1856,7 @@ void indexerHandlePLCcycle(void)
           }
           memset(&netData.memoryStruct.special0518, 0,
                  sizeof(netData.memoryStruct.special0518));
-          ctrl_word = 0;
+          ctrl_word = 0x8000;
           UINTTONET(ctrl_word, netData.memoryStruct.special0518.control);
         }
       }

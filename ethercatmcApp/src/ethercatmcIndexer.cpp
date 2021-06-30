@@ -469,16 +469,19 @@ asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
   asynStatus status;
   unsigned   ctrlLen = 0;
   unsigned   counter = 0;
+  unsigned   plcNotHostHasWritten;
 
   while (counter < MAX_COUNTER) {
     status = getPlcMemoryUint(indexOffset, &ctrlLen, 2);
+    plcNotHostHasWritten = (ctrlLen & 0x8000) ? 1 : 0;
+
     asynPrint(pasynUserController_,
               status ? traceMask | ASYN_TRACE_INFO : traceMask,
               "%sindexerWaitSpecialDeviceIdle ctrlLen=0x%04x status=%s (%d)\n",
               modNamEMC, ctrlLen,
               ethercatmcstrStatus(status), (int)status);
     if (status) return status;
-    if (!ctrlLen) return asynSuccess;
+    if (plcNotHostHasWritten) return asynSuccess;
     counter++;
     epicsThreadSleep(calcSleep(counter));
   }

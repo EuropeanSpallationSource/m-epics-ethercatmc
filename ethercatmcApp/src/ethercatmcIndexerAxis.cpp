@@ -1221,14 +1221,25 @@ asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
 
   /* obey the handshake */
   status = pC_->indexerWaitSpecialDeviceIdle(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset);
-  if (status) {
-    return status;
-  }
+  if (status) return status;
 
-  /* TODO2: update the simulator to send the "OK" and read it here */
-  return pC_->setPlcMemoryViaADS(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
+  status = pC_->setPlcMemoryViaADS(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
                                  (char*)&netDevice0518interface,
                                  pC_->ctrlLocal.specialDbgStrToMcuDeviceLength);
+  if (status) return status;
+  /* Wait for the MCU to acknowledge the command */
+  status = pC_->indexerWaitSpecialDeviceIdle(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset);
+  if (status) return status;
+  status = pC_->getPlcMemoryViaADS(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
+                                 (char*)&netDevice0518interface,
+                                 pC_->ctrlLocal.specialDbgStrToMcuDeviceLength);
+  if (status) return status;
+
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%ssetStringParamDbgStrToMcu(%d)=\"%s\" ret=\"%s\"\n",
+            modNamEMC, axisNo_, value,
+            (char*)&netDevice0518interface.value);
+  return status;
 }
 
 asynStatus ethercatmcIndexerAxis::setStringParam(int function, const char *value)
