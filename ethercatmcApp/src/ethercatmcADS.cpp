@@ -294,7 +294,7 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
       ctrlLocal.cntADSstatus++;
     }
     status = asynError; /* TimeOut -> Error */
-    EMC_LEAVE_ADS_CHECK_LOCK();
+    EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
     return status;
   }
   ethercatmchexdump(pasynUser, tracelevel, "OUT",
@@ -332,9 +332,6 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
                                     toread,
                                     DEFAULT_CONTROLLER_TIMEOUT,
                                     &nread2, &eomReason);
-
-    EMC_LEAVE_ADS_CHECK_LOCK();
-
     if (status) errorProblem |= 1;
     if (!nread2) errorProblem |= 2;
     if (eomReason & ASYN_EOM_END) errorProblem |= 4;
@@ -352,6 +349,7 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
               ethercatmcstrStatus(status), status);
     *pnread = nread1 + nread2;
   }
+  EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
   ethercatmcamsdump(pasynUser, tracelevel, "OUT ", outdata);
   ethercatmchexdump(pasynUser, tracelevel, "OUT ", outdata, outlen);
   if (nread1) {

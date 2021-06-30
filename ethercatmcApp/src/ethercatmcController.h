@@ -534,8 +534,13 @@ public:
   } while (0)
 
 
-#define EMC_LEAVE_ADS_CHECK_LOCK() do {   \
-    ctrlLocal.lockADSlineno = 0;          \
+#define EMC_LEAVE_ADS_CHECK_LOCK(LINENO) do {   \
+    if (!ctrlLocal.lockADSlineno) {                                     \
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,                  \
+                "%s lockADSlineno=%d\n",                                \
+                "ethercatmcADS", LINENO);                               \
+    }                                                                   \
+    ctrlLocal.lockADSlineno = 0;                                        \
   } while (0)
 
   friend class ethercatmcAxis;
