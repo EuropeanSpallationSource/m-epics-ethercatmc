@@ -1167,7 +1167,7 @@ asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
   struct {
     /* 2 bytes control, 46 payload */
     uint8_t   busyLen[2];
-    uint8_t   value[46];
+    char      value[46];
   } netDevice0518interface;
   int valueLen;
 
@@ -1184,19 +1184,19 @@ asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
 
   if (!strncmp(value, Sim_this_ads_str, strlen(Sim_this_ads_str))) {
     /* caput IOC:m1-DbgStrToMCU Sim.this.ads.simulatedNetworkProblem=1 */
-    valueLen = snprintf((char*)&netDevice0518interface.value,
+    valueLen = snprintf(netDevice0518interface.value,
                         sizeof(netDevice0518interface.value),
                         "%s;\n", value);
   } else if (!strncmp(value, Main_this_str, strlen(Main_this_str))) {
     /* Check the string. E.g. Main.this. and Sim.this. are passed
        as Main.M1 or Sim.M1 */
-    valueLen = snprintf((char*)&netDevice0518interface.value,
+    valueLen = snprintf(netDevice0518interface.value,
                         sizeof(netDevice0518interface.value),
                         "Main.M%d.%s;\n",
                         axisNo_, value + strlen(Main_this_str));
   } else if (!strncmp(value, Sim_this_str, strlen(Sim_this_str))) {
     /* caput IOC:m1-DbgStrToMCU Sim.this.log=M1.log */
-    valueLen = snprintf((char*)&netDevice0518interface.value,
+    valueLen = snprintf(netDevice0518interface.value,
                         sizeof(netDevice0518interface.value),
                         "Sim.M%d.%s;\n",
                         axisNo_, value + strlen(Sim_this_str));
@@ -1224,21 +1224,23 @@ asynStatus ethercatmcIndexerAxis::setStringParamDbgStrToMcu(const char *value)
   if (status) return status;
 
   status = pC_->setPlcMemoryViaADS(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
-                                 (char*)&netDevice0518interface,
+                                 &netDevice0518interface,
                                  pC_->ctrlLocal.specialDbgStrToMcuDeviceLength);
   if (status) return status;
   /* Wait for the MCU to acknowledge the command */
   status = pC_->indexerWaitSpecialDeviceIdle(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset);
   if (status) return status;
   status = pC_->getPlcMemoryViaADS(pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset,
-                                 (char*)&netDevice0518interface,
-                                 pC_->ctrlLocal.specialDbgStrToMcuDeviceLength);
+                                   &netDevice0518interface,
+                                   pC_->ctrlLocal.specialDbgStrToMcuDeviceLength);
   if (status) return status;
+  if (strcmp(netDevice0518interface.value, "OK")) status = asynError;
 
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%ssetStringParamDbgStrToMcu(%d)=\"%s\" ret=\"%s\"\n",
+            "%ssetStringParamDbgStrToMcu(%d)=\"%s\" ret=\"%s\" status=%d\n",
             modNamEMC, axisNo_, value,
-            (char*)&netDevice0518interface.value);
+            netDevice0518interface.value,
+            (int)status);
   return status;
 }
 
