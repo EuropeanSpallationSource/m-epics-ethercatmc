@@ -310,9 +310,9 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
   if (errorProblem) tracelevel |= ASYN_TRACE_ERROR;
 
   asynPrint(pasynUser, tracelevel,
-            "%sIN1 part_1_len=%lu read=%lu eomReason=%x (%s%s%s) err=%s errorProblem=%d status=%s (%d)\n",
-            modNamEMC,
-            (unsigned long)part_1_len,  (unsigned long)nread1,
+            "%s:%d IN1 toread=0x%x %u nread1=%lu eomReason=%x (%s%s%s) err=%s errorProblem=%d status=%s (%d)\n",
+            fileName, lineNo,
+            (unsigned)part_1_len, (unsigned)part_1_len, (unsigned long)nread1,
             eomReason,
             eomReason & ASYN_EOM_CNT ? "CNT" : "",
             eomReason & ASYN_EOM_EOS ? "EOS" : "",
@@ -337,11 +337,10 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
     if (eomReason & ASYN_EOM_END) errorProblem |= 4;
     if (errorProblem) tracelevel |= ASYN_TRACE_ERROR;
     asynPrint(pasynUser, tracelevel,
-              "%s toread=0x%x %u nread2=%lu timeout=%f eomReason=%x (%s%s%s) status=%s (%d)\n",
-              modNamEMC,
+              "%s:%d IN2 toread=0x%x %u nread2=%lu eomReason=%x (%s%s%s) status=%s (%d)\n",
+              fileName, lineNo,
               (unsigned)toread, (unsigned)toread,
               (unsigned long)nread2,
-              DEFAULT_CONTROLLER_TIMEOUT,
               eomReason,
               eomReason & ASYN_EOM_CNT ? "CNT" : "",
               eomReason & ASYN_EOM_EOS ? "EOS" : "",
@@ -363,7 +362,7 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
 
   if (status == asynTimeout) {
     asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s calling disconnect_C\n", modNamEMC);
+              "%s status == asynTimeout: calling disconnect_C\n", modNamEMC);
     disconnect_C(pasynUser);
   }
   return status ? asynError : asynSuccess;
@@ -406,13 +405,16 @@ asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
   if (!status) {
     size_t nread = *pnread;
     AmsHdrType *ams_rep_hdr_p = (AmsHdrType*)indata;
-    uint32_t amsTcpHdr_len = NETTOUINT(ams_rep_hdr_p->amsTcpHdr.net_len);
-    if (amsTcpHdr_len  != (nread - sizeof(ams_rep_hdr_p->amsTcpHdr))) {
+    uint32_t amsTcpHdr_len_exp = nread - sizeof(ams_rep_hdr_p->amsTcpHdr);
+    uint32_t amsTcpHdr_len_act = NETTOUINT(ams_rep_hdr_p->amsTcpHdr.net_len);
+
+    if (amsTcpHdr_len_act != amsTcpHdr_len_exp) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s:%d calling disconnect_C: nread=%u amsTcpHdr_len=%u\n",
-                fileName, lineNo,
-                (unsigned)nread, (unsigned)amsTcpHdr_len);
-        disconnect_C(pasynUser);
+                "%s:%d nread=%u calling disconnect_C: amsTcpHdr_len_exp=%u 0x%08X amsTcpHdr_len_act=%u 0x%08X\n",
+                fileName, lineNo, (unsigned)nread,
+                (unsigned)amsTcpHdr_len_exp, (unsigned)amsTcpHdr_len_exp,
+                (unsigned)amsTcpHdr_len_act, (unsigned)amsTcpHdr_len_act);
+      disconnect_C(pasynUser);
       status = asynError;
     }
     if (!status) {
@@ -420,8 +422,10 @@ asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
       uint32_t ads_rep_len_act = NETTOUINT(ams_rep_hdr_p->net_len);
       if (ads_rep_len_act != ads_rep_len_exp) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%s calling disconnect_C: ads_rep_len_exp=%u ads_rep_len_act=%u\n", modNamEMC,
-                  (unsigned)ads_rep_len_exp, (unsigned)ads_rep_len_act);
+                  "%s:%d nread=%u calling disconnect_C: ads_rep_len_exp=%u  0x%08X ads_rep_len_act=%u 0x%08X \n",
+                  fileName, lineNo, (unsigned)nread,
+                  (unsigned)ads_rep_len_exp, (unsigned)ads_rep_len_exp,
+                  (unsigned)ads_rep_len_act, (unsigned)ads_rep_len_act);
         disconnect_C(pasynUser);
         status = asynError;
       }
