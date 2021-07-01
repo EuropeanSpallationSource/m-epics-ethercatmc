@@ -9,7 +9,7 @@ from AxisCom import AxisCom
 
 import time
 
-filnam = "410xx.py"
+filnam = "931xx.py"
 ###
 
 
@@ -88,8 +88,8 @@ class Test(unittest.TestCase):
         hasACCSfield = False
 
     # Make sure that motor is homed
-    def test_TC_4101(self):
-        tc_no = "4101"
+    def test_TC_9311(self):
+        tc_no = "9311"
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
             self.axisMr.powerOnHomeAxis(tc_no)
             self.msta = int(self.axisCom.get(".MSTA"))
@@ -100,8 +100,8 @@ class Test(unittest.TestCase):
             )
 
     # 10% dialPosition
-    def test_TC_4102(self):
-        tc_no = "4102"
+    def test_TC_9312(self):
+        tc_no = "9312"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisMr.moveWait(tc_no, self.per10_UserPosition)
@@ -109,51 +109,51 @@ class Test(unittest.TestCase):
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} destination={self.per10_UserPosition:f}"
             )
 
-    def test_TC_4103(self):
-        tc_no = "4103"
+    def test_TC_9313(self):
+        tc_no = "9313"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                            vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0, 6.0, 0.2, -1, 30)
 
-    def test_TC_4104(self):
-        tc_no = "4104"
+    def test_TC_9314(self):
+        tc_no = "9314"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                           vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.2, -1, 5)
 
-    def test_TC_4105(self):
-        tc_no = "4105"
+    def test_TC_9315(self):
+        tc_no = "9315"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.4, -1, 2.5)
 
-    def test_TC_4106(self):
-        tc_no = "4106"
+    def test_TC_9316(self):
+        tc_no = "9316"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 4.0, 4.0, 0.5, -1, 8.0)
 
-    def test_TC_4107(self):
-        tc_no = "4107"
+    def test_TC_9317(self):
+        tc_no = "9317"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, 0.5, -1, 16.0)
 
-    def test_TC_4108(self):
-        tc_no = "4108"
+    def test_TC_9318(self):
+        tc_no = "9318"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, -1.0, 16.0, 16.0)
 
-    # Keep ACCS and expAccEGU if velociy is changed
-    def test_TC_4109(self):
-        tc_no = "4109"
+    # Keep ACCS and expAccEGU if velocity is changed
+    def test_TC_9319(self):
+        tc_no = "9319"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU

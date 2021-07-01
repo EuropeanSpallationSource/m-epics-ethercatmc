@@ -14,6 +14,7 @@ SIMULATOR-ONE-CA = \
   910_Simulator_JOGF_BDST.log-ca-m1\
   920_Simulator_RTRY_FRAC_RMOD.log-ca-m1\
   930_Simulator_Vel-RB_Acc-RB.log-ca-m1\
+  931_Simulator-ACCL_ACCS_VELO_TWF.log-ca-m1\
   940_Simulator-powerOnFailed.log-ca-m1\
 
 SIMULATOR-TWO-CA = \
@@ -43,7 +44,6 @@ ETHERCATMC-CA = \
   201_Ethercat-JOG-VAL-HOM-CNEN-No-Error.log-ca-m1\
   240_Ethercat-JOGF_stopped.log-ca-m1\
   400_Ethercat-JAR-ACCL-VAL-JOGF-HOMF.log-ca-m1\
-  410_Ethercat-ACCL_ACCS_VELO_TWF.log-ca-m1\
 
 ##################################
 SIMULATOR-ONE-PVA = \
@@ -51,6 +51,7 @@ SIMULATOR-ONE-PVA = \
   910_Simulator_JOGF_BDST.log-pva-m1\
   920_Simulator_RTRY_FRAC_RMOD.log-pva-m1\
   930_Simulator_Vel-RB_Acc-RB.log-pva-m1\
+  931_Simulator-ACCL_ACCS_VELO_TWF.log-pva-m1\
   940_Simulator-powerOnFailed.log-pva-m1\
 
 SIMULATOR-TWO-PVA = \
@@ -80,7 +81,6 @@ ETHERCATMC-PVA = \
   201_Ethercat-JOG-VAL-HOM-CNEN-No-Error.log-pva-m1\
   240_Ethercat-JOGF_stopped.log-pva-m1\
   400_Ethercat-JAR-ACCL-VAL-JOGF-HOMF.log-pva-m1\
-  410_Ethercat-ACCL_ACCS_VELO_TWF.log-pva-m1\
 
 
 all-pva: \
