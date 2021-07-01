@@ -1433,10 +1433,18 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
     if (nvals == 2) {
       paramName = &splitedParamNameNumber.name[0];
       axisNo = (int)splitedParamNameNumber.axisNoOrIndex;
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s(%u) \"%s\"\n",
-                modNamEMC, functionName, axisNo,  paramName);
     }
+    if (!strcmp(paramName, "encoderRaw")) {
+      paramName = "EncAct";
+      /* Special handling for encoderRaw */
+      myEPICSParamType = asynParamFloat64;
+    }
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s(%u) \"%s\" EPICSParamType=%s(%i)\n",
+              modNamEMC, functionName, axisNo,
+              paramName,
+              stringFromAsynParamType(myEPICSParamType),
+              (int)myEPICSParamType);
   }
 
   /* Some parameters are alread pre-created by the Controller.cpp,
@@ -1541,18 +1549,12 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
     return -1;
   }
   if (myAsynParamType != asynParamNotDefined) {
-    asynParamType myEPICSParamType = myAsynParamType;
-    if (!strcmp(paramName, "encoderRaw")) {
-      paramName = "EncAct";
-      /* Special handling for encoderRaw */
-      myEPICSParamType = asynParamFloat64;
-    }
     return addPilsAsynDevLst(axisNo,
                              paramName,
                              lenInPLC,
                              inputOffset,
                              outputOffset,
-                             myEPICSParamType,
+                             myAsynParamType,
                              iTypCode);
   } else {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
