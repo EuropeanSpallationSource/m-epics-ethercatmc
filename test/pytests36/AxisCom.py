@@ -56,6 +56,8 @@ class AxisCom:
         pvname = self.pvpfx + pvsuf
         fullname = self.url_scheme + pvname
         ret = None
+        if as_string == True:
+            raise Exception("as_string=True not supported")
         if self.log_debug:
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} get {fullname}"
