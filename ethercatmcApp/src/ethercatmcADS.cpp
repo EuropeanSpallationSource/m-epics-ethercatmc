@@ -49,7 +49,7 @@ static int deftracelevel = ASYN_TRACE_DEBUG;
       }\
     }\
     asynPrint(pasynUser, tracelevel,\
-              "%s %s [%02x]%s\n",\
+              "%s%s [%02x]%s\n",\
               modNamEMC, help_txt, pos, (char*)&print_buf);\
     len -= 8;\
     data += 8;\
@@ -259,14 +259,14 @@ extern "C" void uintToNet(const unsigned value, void *data, size_t lenInPlc)
 
 
 asynStatus
-ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
-                                        const char *outdata,
-                                        size_t outlen,
-                                        char *indata,
-                                        size_t inlen,
-                                        size_t *pnread,
-                                        const char *fileName,
-                                        int lineNo)
+ethercatmcController::writeReadControllerADS(asynUser *pasynUser,
+                                             const char *outdata,
+                                             size_t outlen,
+                                             char *indata,
+                                             size_t inlen,
+                                             size_t *pnread,
+                                             const char *fileName,
+                                             int lineNo)
 {
   int tracelevel = deftracelevel;
   int errorProblem = 0;
@@ -293,9 +293,8 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
                 ethercatmcstrStatus(status), status);
       ctrlLocal.cntADSstatus++;
     }
-    status = asynError; /* TimeOut -> Error */
     EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
-    return status;
+    return asynError;
   }
   ethercatmchexdump(pasynUser, tracelevel, "OUT",
                     outdata, outlen);
@@ -321,6 +320,8 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
             errorProblem,
             ethercatmcstrStatus(status), status);
 
+  /* asyn returns nread == 0 and asynSuccess on EOF */
+  if (eomReason & ASYN_EOM_END) status = asynError;
   if (!errorProblem && !status) {
     /* The length to read is inside the AMS/TCP header */
     const AmsHdrType *amsHdr_p = (const AmsHdrType *)indata;
@@ -346,18 +347,16 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
               eomReason & ASYN_EOM_EOS ? "EOS" : "",
               eomReason & ASYN_EOM_END ? "END" : "",
               ethercatmcstrStatus(status), status);
+    if (eomReason & ASYN_EOM_END) status = asynError;
     *pnread = nread1 + nread2;
   }
   EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
-  ethercatmcamsdump(pasynUser, tracelevel, "OUT ", outdata);
-  ethercatmchexdump(pasynUser, tracelevel, "OUT ", outdata, outlen);
-  if (nread1) {
+  ethercatmcamsdump(pasynUser, tracelevel, "OUT", outdata);
+  ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
+  if (nread2) {
     ethercatmcamsdump(pasynUser, tracelevel, "IN1 ", indata);
     ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1);
-  }
-  if (nread2) {
-    ethercatmchexdump(pasynUser, tracelevel, "IN2 ",
-                      indata, nread2 + part_1_len);
+    ethercatmchexdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2);
   }
 
   if (status == asynTimeout) {
@@ -368,16 +367,16 @@ ethercatmcController::writeReadBinaryFL(asynUser *pasynUser,
   return status ? asynError : asynSuccess;
 }
 
-asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
-                                                     AmsHdrType *ams_req_hdr_p,
-                                                     size_t outlen,
-                                                     uint16_t targetAdsport,
-                                                     uint32_t invokeID,
-                                                     uint32_t ads_cmdID,
-                                                     void *indata, size_t inlen,
-                                                     size_t *pnread,
-                                                     const char *fileName,
-                                                     int lineNo)
+asynStatus ethercatmcController::writeReadAds(asynUser *pasynUser,
+                                              AmsHdrType *ams_req_hdr_p,
+                                              size_t outlen,
+                                              uint16_t targetAdsport,
+                                              uint32_t invokeID,
+                                              uint32_t ads_cmdID,
+                                              void *indata, size_t inlen,
+                                              size_t *pnread,
+                                              const char *fileName,
+                                              int lineNo)
 {
   asynStatus status;
   uint32_t ams_payload_len = outlen - sizeof(ams_req_hdr_p->amsTcpHdr);
@@ -396,19 +395,19 @@ asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
   ams_req_hdr_p->stateFlags_low = 0x4; /* Command */
   UINTTONET(ads_len, ams_req_hdr_p->net_len);
   UINTTONET(invokeID, ams_req_hdr_p->net_invokeID);
-  status = writeReadBinaryFL(pasynUser,
-                             (const char *)ams_req_hdr_p,
-                             outlen,
-                             (char *)indata, inlen,
-                             pnread,
-                             fileName, lineNo);
+  status = writeReadControllerADS(pasynUser,
+                                  (const char *)ams_req_hdr_p,
+                                  outlen,
+                                  (char *)indata, inlen,
+                                  pnread,
+                                  fileName, lineNo);
   if (!status) {
     size_t nread = *pnread;
     AmsHdrType *ams_rep_hdr_p = (AmsHdrType*)indata;
     uint32_t amsTcpHdr_len_exp = nread - sizeof(ams_rep_hdr_p->amsTcpHdr);
     uint32_t amsTcpHdr_len_act = NETTOUINT(ams_rep_hdr_p->amsTcpHdr.net_len);
 
-    if (amsTcpHdr_len_act != amsTcpHdr_len_exp) {
+    if ((!status) && (amsTcpHdr_len_act != amsTcpHdr_len_exp)) {
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "%s:%d nread=%u calling disconnect_C: amsTcpHdr_len_exp=%u 0x%08X amsTcpHdr_len_act=%u 0x%08X\n",
                 fileName, lineNo, (unsigned)nread,
@@ -454,13 +453,10 @@ asynStatus ethercatmcController::writeWriteReadAdsFL(asynUser *pasynUser,
         default:
           ;
         }
-        ethercatmchexdump(pasynUser, tracelevel, "OUT",
-                          outdata, outlen);
+        ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
         ethercatmcamsdump(pasynUser, tracelevel, "OUT", ams_req_hdr_p);
-
-        ethercatmchexdump(pasynUser, tracelevel, "IN",
-                          indata, nread);
-        ethercatmcamsdump(pasynUser, tracelevel, "IN", indata);
+        ethercatmchexdump(pasynUser, tracelevel, "IN ", indata, nread);
+        ethercatmcamsdump(pasynUser, tracelevel, "IN ", indata);
 
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%s nread=%u ams_errorCode=0x%x\n", modNamEMC,
@@ -509,13 +505,13 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
   UINTTONET(indexOffset, ads_read_req.net_idxOff);
   UINTTONET(lenInPlc, ads_read_req.net_len);
 
-  status = writeWriteReadAdsFL(pasynUser,
-                               (AmsHdrType *)&ads_read_req,
-                               sizeof(ads_read_req),
-                               ctrlLocal.adsport,
-                               invokeID, ADS_READ,
-                               (char*)p_read_buf, read_buf_len,
-                               &nread, fileName, lineNo);
+  status = writeReadAds(pasynUser,
+                        (AmsHdrType *)&ads_read_req,
+                        sizeof(ads_read_req),
+                        ctrlLocal.adsport,
+                        invokeID, ADS_READ,
+                        (char*)p_read_buf, read_buf_len,
+                        &nread, fileName, lineNo);
   asynPrint(pasynUser, tracelevel,
             "%s:%d RDMEM indexOffset=%u lenInPlc=%u status=%s (%d)\n",
             fileName, lineNo, indexOffset, (unsigned)lenInPlc,
@@ -547,8 +543,7 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
       uint8_t *src_ptr = (uint8_t*) p_read_buf;
       src_ptr += sizeof(AdsReadRepType);
       memcpy(data, src_ptr, ads_length);
-      ethercatmchexdump(pasynUser, tracelevel, "RDMEM",
-                        src_ptr, ads_length);
+      ethercatmchexdump(pasynUser, tracelevel, "RDMEM", src_ptr, ads_length);
     }
   }
   free(p_read_buf);
@@ -605,15 +600,14 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
     uint8_t *dst_ptr = (uint8_t*)p_write_buf;
     dst_ptr += sizeof(AdsWriteReqType);
     memcpy(dst_ptr, data, lenInPlc);
-    ethercatmchexdump(pasynUser, tracelevel, "WRMEM",
-                      data, lenInPlc);
+    ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc);
   }
-  status = writeWriteReadAdsFL(pasynUser,
-                               (AmsHdrType *)p_write_buf, write_buf_len,
-                               targetAdsport,
-                               invokeID, ADS_WRITE,
-                               &ADS_Write_rep, sizeof(ADS_Write_rep),
-                               &nread, fileName,  lineNo);
+  status = writeReadAds(pasynUser,
+                        (AmsHdrType *)p_write_buf, write_buf_len,
+                        targetAdsport,
+                        invokeID, ADS_WRITE,
+                        &ADS_Write_rep, sizeof(ADS_Write_rep),
+                        &nread, fileName,  lineNo);
 
   if (!status) {
     uint32_t ads_result = NETTOUINT(ADS_Write_rep.response.net_res);
@@ -669,14 +663,14 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
     ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
                       symbolName, symbolNameLen);
   }
-  status = writeWriteReadAdsFL(pasynUser,
-                               (AmsHdrType *)ads_read_write_req_p,
-                               write_buf_len,
-                               ctrlLocal.adsport,
-                               invokeID, ADS_READ_WRITE,
-                               (char*)p_read_buf, read_buf_len,
-                               &nread,
-                               __FILE__, __LINE__);
+  status = writeReadAds(pasynUser,
+                        (AmsHdrType *)ads_read_write_req_p,
+                        write_buf_len,
+                        ctrlLocal.adsport,
+                        invokeID, ADS_READ_WRITE,
+                        (char*)p_read_buf, read_buf_len,
+                        &nread,
+                        __FILE__, __LINE__);
   if (!status)
   {
     AdsReadWriteRepType *adsReadWriteRep_p = (AdsReadWriteRepType*) p_read_buf;
@@ -698,8 +692,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
       asynPrint(pasynUser, tracelevel,
                 "%s ads_result=0x%x ads_length=0x%x\n",
                 modNamEMC, (unsigned)ads_result, (unsigned)ads_length);
-      ethercatmchexdump(pasynUser, tracelevel, "IN ADS",
-                        src_ptr, ads_length);
+      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length);
       memcpy(data, src_ptr, ads_length);
     }
   }
@@ -745,14 +738,14 @@ ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
     ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
                       symbolName, symbolNameLen);
   }
-  status = writeWriteReadAdsFL(pasynUser,
-                               (AmsHdrType *)ads_read_write_req_p,
-                               write_buf_len,
-                               ctrlLocal.adsport,
-                               invokeID, ADS_READ_WRITE,
-                               (char*)p_read_buf, read_buf_len,
-                               &nread,
-                               __FILE__, __LINE__);
+  status = writeReadAds(pasynUser,
+                        (AmsHdrType *)ads_read_write_req_p,
+                        write_buf_len,
+                        ctrlLocal.adsport,
+                        invokeID, ADS_READ_WRITE,
+                        (char*)p_read_buf, read_buf_len,
+                        &nread,
+                        __FILE__, __LINE__);
   if (!status)
   {
     AdsReadWriteRepType *adsReadWriteRep_p = (AdsReadWriteRepType*) p_read_buf;
@@ -774,8 +767,7 @@ ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
       asynPrint(pasynUser, tracelevel,
                 "%s ads_result=0x%x ads_length=0x%x\n",
                 modNamEMC, (unsigned)ads_result, (unsigned)ads_length);
-      ethercatmchexdump(pasynUser, tracelevel, "IN ADS",
-                        src_ptr, ads_length);
+      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length);
       if (ads_length == lenInPlc) {
         *handle = netToUint(src_ptr, lenInPlc);
       } else {

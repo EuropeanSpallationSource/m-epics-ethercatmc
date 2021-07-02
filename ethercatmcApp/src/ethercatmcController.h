@@ -255,24 +255,24 @@ public:
                             const char *fileName,
                             int lineNo);
 #define  handleStatusChange(a) handleStatusChangeFL(a, __FILE__, __LINE__);
-  asynStatus writeReadBinaryFL(asynUser *pasynUser,
-                               const char *outdata,
-                               size_t outlen,
-                               char *indata, size_t inlen,
-                               size_t *pnread,
-                               const char *fileName,
-                               int lineNo);
+  asynStatus writeReadControllerADS(asynUser *pasynUser,
+                                    const char *outdata,
+                                    size_t outlen,
+                                    char *indata, size_t inlen,
+                                    size_t *pnread,
+                                    const char *fileName,
+                                    int lineNo);
 
   /* memory bytes via ADS */
-  asynStatus writeWriteReadAdsFL(asynUser *pasynUser,
-                                 AmsHdrType *amsHdr_p, size_t outlen,
-                                 uint16_t targetAdsport,
-                                 uint32_t invokeID,
-                                 uint32_t ads_cmdID,
-                                 void *indata, size_t inlen,
-                                 size_t *pnread,
-                                 const char *fileName,
-                                 int lineNo);
+  asynStatus writeReadAds(asynUser *pasynUser,
+                          AmsHdrType *amsHdr_p, size_t outlen,
+                          uint16_t targetAdsport,
+                          uint32_t invokeID,
+                          uint32_t ads_cmdID,
+                          void *indata, size_t inlen,
+                          size_t *pnread,
+                          const char *fileName,
+                          int lineNo);
   asynStatus getPlcMemoryViaADSFL(unsigned indexOffset,
                                   void *data, size_t lenInPlc,
                                   const char *fileName,
