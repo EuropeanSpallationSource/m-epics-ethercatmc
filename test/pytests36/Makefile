@@ -20,6 +20,7 @@ SIMULATOR-ONE-CA = \
 SIMULATOR-TWO-CA = \
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-ca-m1\
   960_Simulator-motorFlags.log-ca-m1\
+  980_Simulator-networkproblems.log-ca-m1\
 
 
 RECORD-CA = \
@@ -57,6 +58,7 @@ SIMULATOR-ONE-PVA = \
 SIMULATOR-TWO-PVA = \
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-pva-m1\
   960_Simulator-motorFlags.log-pva-m1\
+  980_Simulator-networkproblems.log-pva-m1\
 
 
 RECORD-PVA = \
