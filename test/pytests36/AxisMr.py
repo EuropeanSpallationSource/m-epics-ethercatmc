@@ -456,12 +456,14 @@ class AxisMr:
                 )
                 assert len(outStr) < 40
         self.axisCom.put("-DbgStrToMCU", outStr, wait=True)
-        err = int(self.axisCom.get("-Err", use_monitor=False))
+        stat = int(self.axisCom.get("-DbgStrToMCU.STAT", use_monitor=False))
+        sevr = int(self.axisCom.get("-DbgStrToMCU.SEVR", use_monitor=False))
         print(
-            "%s/%s: DbgStrToMCU  var=%s value=%s err=%d"
-            % (tc_no, self.url_string, var, value, err)
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: setValueOnSimulator var={var} value={value} stat={stat} sevr={sevr}"
         )
-        assert not err
+        if stat != 0 or sevr != 0:
+            debug_text = f"stat={stat} sevr={sevr}"
+            raise Exception(debug_text)
 
     def motorInitAllForBDST(self, tc_no):
         self.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
