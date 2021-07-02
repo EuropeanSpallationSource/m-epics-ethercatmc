@@ -68,6 +68,7 @@ do {                                             \
     if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, "Error: ");   \
     if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, fmt, ##__VA_ARGS__);   \
     if (DIE_ON_ERROR_BIT0()) (void)fprintf(stdlog, "%s", "\n"); \
+    if (DIE_ON_ERROR_BIT1()) (void)fprintf(stdlog, "%s\n", "exit(2)"); \
     if (DIE_ON_ERROR_BIT1())  exit(2);          \
     return errcode;                             \
   }                                             \

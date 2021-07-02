@@ -1,4 +1,5 @@
 #include <string.h>
+#include <sys/socket.h>
 #include "logerr_info.h"
 #include "sock-util.h"
 #include "indexer.h"
@@ -61,12 +62,17 @@ void handleADSread(int fd, ams_hdr_type *ams_hdr_p)
              data_ptr[2],
              data_ptr[3]
              );
-    send_ams_reply_simulate_network_problem(fd,
-                                            ams_hdr_p,
-                                            total_len_reply,
-                                            simulatedNetworkProblemNew);
-    if (simulatedNetworkProblemNew != simulatedNetworkProblemNone) {
-      simulatedNetworkProblemNew = simulatedNetworkProblemNone;
+    if (len_in_PLC > 50) {
+      /* Only for poll() readings - but not for "special device" */
+      send_ams_reply_simulate_network_problem(fd,
+                                              ams_hdr_p,
+                                              total_len_reply,
+                                              simulatedNetworkProblemNew);
+      if (simulatedNetworkProblemNew != simulatedNetworkProblemNone) {
+        simulatedNetworkProblemNew = simulatedNetworkProblemNone;
+      }
+    } else {
+      send_ams_reply(fd, ams_hdr_p, total_len_reply);
     }
   }
 }
@@ -256,22 +262,23 @@ send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
 
   if (simulatedNetworkProblemNew != simulatedNetworkProblemNone) {
     switch (simulatedNetworkProblem) {
-    case simulatedNetworkProblemNone:
-      break;
-    case simulatedNetworkProblemAmsTcpHeaderOnly:
+    case simulatedNetworkProblemAmsTcpHdrOnly:
+    case simulatedNetworkProblemAmsTcpHdrOnlyEOF:
       len_to_socket = sizeof(ams_tcp_header_type);
       break;
     case simulatedNetworkProblemAmsTcpHdrShortOnly:
+    case simulatedNetworkProblemAmsTcpHdrShortOnlyEOF:
       len_to_socket = sizeof(ams_tcp_header_type) - 1;
       break;
     case simulatedNetworkProblemPacketTooShort:
+    case simulatedNetworkProblemPacketTooShortEOF:
       len_to_socket = total_len_reply - 1;
       break;
     case simulatedNetworkProblemAmsHeaderLengthTooShort:
       ams_tcp_header_len -= 1;
       break;
     case simulatedNetworkProblemAmsHeaderLengthTooLong:
-      ams_tcp_header_len -= 1;
+      ams_tcp_header_len += 1;
       break;
     case simulatedNetworkProblemInvokeID_0:
       ams_hdr_p->invokeID_0++;
@@ -307,6 +314,28 @@ send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
   ams_hdr_p->lenght_3 = (uint8_t)(ams_payload_len << 24);
 
   send_to_socket(fd, ams_hdr_p, len_to_socket);
+  switch (simulatedNetworkProblem) {
+    case simulatedNetworkProblemShutdownRead:
+      {
+        int ret = shutdown(fd, SHUT_RD);
+        LOGERR("%s/%s:%d shutdown(%d, SHUT_RD) ret=%d\n",
+               __FILE__,__FUNCTION__, __LINE__,
+               fd, ret);
+      }
+      break;
+    case simulatedNetworkProblemAmsTcpHdrOnlyEOF:
+    case simulatedNetworkProblemAmsTcpHdrShortOnlyEOF:
+    case simulatedNetworkProblemPacketTooShortEOF:
+      {
+        int ret = shutdown(fd, SHUT_WR);
+        LOGERR("%s/%s:%d shutdown(%d, SHUT_WR) ret=%d\n",
+               __FILE__,__FUNCTION__, __LINE__,
+               fd, ret);
+      }
+      break;
+    default:
+      ;
+  }
 }
 
 static int adsHandleOneArg(const char *myarg_1)
@@ -345,7 +374,7 @@ static int adsHandleOneArg(const char *myarg_1)
   LOGERR("%s/%s:%d illegal line=%s myarg_1=%s",
          __FILE__, __FUNCTION__, __LINE__,
          myarg, myarg_1);
-  return 1; /* exit(2); */
+  return 1;
 }
 
 

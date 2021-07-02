@@ -1552,7 +1552,6 @@ static int indexerHandleIndexerCmd(unsigned offset,
                         "%s/%s:%d invalid infoType. infoType=%d",
                         __FILE__, __FUNCTION__, __LINE__,
                         infoType);
-    exit(2);
   }
   return __LINE__;
 }

@@ -192,8 +192,7 @@ int get_listen_socket(const char *listen_port_asc)
 #endif
 
   if (startWinSock()) {
-    LOGERR_ERRNO("startWinSock() failed\n");
-    exit(3);
+    RETURN_ERROR_OR_DIE(1, "%s\n", "startWinSock() failed");
   }
 
 #ifndef USE_WINSOCK2

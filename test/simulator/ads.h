@@ -157,9 +157,13 @@ typedef struct {
 
 typedef enum {
     simulatedNetworkProblemNone = 0,
-    simulatedNetworkProblemAmsTcpHeaderOnly,
+    simulatedNetworkProblemShutdownRead,
+    simulatedNetworkProblemAmsTcpHdrOnly,
+    simulatedNetworkProblemAmsTcpHdrOnlyEOF,
     simulatedNetworkProblemAmsTcpHdrShortOnly,
+    simulatedNetworkProblemAmsTcpHdrShortOnlyEOF,
     simulatedNetworkProblemPacketTooShort,
+    simulatedNetworkProblemPacketTooShortEOF,
     simulatedNetworkProblemAmsHeaderLengthTooShort,
     simulatedNetworkProblemAmsHeaderLengthTooLong,
     simulatedNetworkProblemInvokeID_0,

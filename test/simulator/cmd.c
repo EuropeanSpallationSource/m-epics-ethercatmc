@@ -217,6 +217,7 @@ int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int 
     return 1;
   }
   else if ((argc > 1) && (0 == strcmp(argv1, "kill"))) {
+    fprintf(stdlog, "%s/%s:%d killed\n", __FILE__, __FUNCTION__, __LINE__);
     exit(0);
   }
   else if (cmd_IcePAP(argc, my_argv)) {
