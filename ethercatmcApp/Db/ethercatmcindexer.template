@@ -31,3 +31,12 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-RBV-UTC") {
     field(SCAN, "I/O Intr")
     field(TSE, -2)
 }
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-EncAct-UTC") {
+    field(DESC, "Encoder UTC timestamped")
+    field(DTYP, "asynFloat64")
+    field(PREC, "0")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct-UTC")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}

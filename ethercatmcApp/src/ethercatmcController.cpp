@@ -188,6 +188,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcErrIdString,         asynParamInt32,       &ethercatmcErrId_);
 
   createParam(ethercatmcEnc_ActString,       asynParamFloat64,     &ethercatmcEncAct_);
+  createParam(ethercatmcEnc_ActUTCString,    asynParamFloat64,     &ethercatmcEncActUTC_);
   createParam(ethercatmcHomProcString,       asynParamInt32,       &ethercatmcHomProc_);
   createParam(ethercatmcHomPosString,        asynParamFloat64,     &ethercatmcHomPos_);
   createParam(ethercatmcStatusCodeString,    asynParamInt32,       &ethercatmcStatusCode_);
@@ -1288,6 +1289,8 @@ extern "C" {
 
 void ethercatmcController::setAlarmStatusSeverityAllReadbacks(asynStatus status)
 {
+  setAlarmStatusSeverityAllAxes(ethercatmcEncAct_, status);
+  setAlarmStatusSeverityAllAxes(ethercatmcEncActUTC_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcHomProc_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcHomPos_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcVel_RB_, status);

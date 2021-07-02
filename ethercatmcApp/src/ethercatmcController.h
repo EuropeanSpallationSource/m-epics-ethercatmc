@@ -76,6 +76,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVelFrmHomString            "VelFrmHom"
 #define ethercatmcAccHomString               "AccHom"
 #define ethercatmcEnc_ActString              "EncAct"
+#define ethercatmcEnc_ActUTCString           "EncAct-UTC"
 #define ethercatmcErrRstString               "ErrRst"
 #define ethercatmcVelActString               "VelAct"
 #define ethercatmcVel_RBString               "Vel-RB"
@@ -475,6 +476,7 @@ public:
   int ethercatmcVelFrmHom_;
   int ethercatmcAccHom_;
   int ethercatmcEncAct_;
+  int ethercatmcEncActUTC_;
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
   int motorRecResolution_;

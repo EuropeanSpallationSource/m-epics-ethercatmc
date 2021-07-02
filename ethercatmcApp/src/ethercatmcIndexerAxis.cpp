@@ -888,6 +888,16 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     setDoubleParam(pC_->ethercatmcRBV_UTC_, ethercatmcRBV_UTC);
     pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcRBV_UTC_,
                                        RBV_UTCstatus);
+    {
+      /* encoder act in UTC */
+      double ethercatmcEncAct;
+      if (!pC_->getDoubleParam(axisNo_, pC_->ethercatmcEncAct_,
+                               &ethercatmcEncAct)) {
+        setDoubleParam(pC_->ethercatmcEncActUTC_, ethercatmcEncAct);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcEncActUTC_,
+                                           asynSuccess);
+      }
+    }
   }
 
   if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
