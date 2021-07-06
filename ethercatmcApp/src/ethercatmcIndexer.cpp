@@ -1683,19 +1683,15 @@ asynStatus ethercatmcController::indexerPoll(void)
             unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
             switch (iTypCode) {
             case 0x1302:
-              newValue = (double)netToDouble(pDataInPlc, lenInPLC);
-              break;
             case 0x1304:
               newValue = (double)netToDouble(pDataInPlc, lenInPLC);
               break;
             case 0x1201:
+            case 0x1202:
             case 0x1602:
+            case 0x1604:
               newValue = (double)(epicsInt64)netToSint(pDataInPlc, lenInPLC);
               break;
-            case 0x1202:
-            case 0x1604:
-                newValue = (double)(epicsInt64)netToSint(pDataInPlc, lenInPLC);
-                break;
             case 0x1204:
               newValue = (double)(epicsInt64)netToSint64(pDataInPlc, lenInPLC);
               break;
