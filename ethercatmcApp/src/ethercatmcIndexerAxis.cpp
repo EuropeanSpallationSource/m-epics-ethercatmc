@@ -868,18 +868,17 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
   }
 
-  if (pC_->ctrlLocal.systemUTCtimeOffset)  {
+  if (pC_->ctrlLocal.systemUTCtimeOffset && positionValid && statusValid)  {
     /* Motor position in "user coordinates" with UTC time from PTP */
     double motorRecOffset;
     int motorRecDirection;
     asynStatus RBV_UTCstatus = asynDisabled;
     double ethercatmcRBV_UTC = 0.0;
-    if (homed && positionValid && statusValid &&
+    if (homed &&
         (!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
                               &motorRecOffset)) &&
         (!pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
                                &motorRecDirection))) {
-
       RBV_UTCstatus = asynSuccess;
       /* direction == 1 means "negative" */
       motorRecDirection = motorRecDirection ? -1 : 1;
