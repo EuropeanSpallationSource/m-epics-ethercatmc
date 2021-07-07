@@ -1,6 +1,7 @@
 record(motor,"$(PREFIX)$(MOTOR_NAME)")
 {
 	field(DESC,"$(DESC)")
+	field(CARD,"$(AXIS_NO=0)")
 	field(DTYP,"asynMotor")
 	field(DVAL,"$(DVAL=0)")
 	field(DIR,"$(DIR=0)")
