@@ -105,9 +105,12 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-Acc-RB")
 
 record(ai, "$(PREFIX)$(MOTOR_NAME)-EncAct")
 {
+    field(DESC, "Raw value of encoder ticks")
     field(DTYP, "asynFloat64")
     field(PREC, "0")
     field(EGU,  "Steps")
+    field(ADEL, "$(ADEL=1)")
+    field(MDEL, "$(MDEL=1)")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct")
     field(SCAN, "I/O Intr")
 }
