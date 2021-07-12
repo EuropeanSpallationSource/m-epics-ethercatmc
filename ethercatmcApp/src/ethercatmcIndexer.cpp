@@ -1392,10 +1392,6 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
 
   asynStatus status;
-  struct {
-    char     name[34];
-    unsigned axisNoOrIndex;
-  } splitedParamNameNumber;
   int function = -1;
   pilsAsynDevInfo_type *pPilsAsynDevInfo
     = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
@@ -1417,35 +1413,17 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
             outputOffset,
             stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
             iTypCode);
-  if (strlen(paramName) < sizeof(splitedParamNameNumber.name)) {
-    /* Need to split the parameter, like "EPOCHEL1252P#1" */
-    int nvals;
-    memset(&splitedParamNameNumber, 0, sizeof(splitedParamNameNumber));
-    nvals = sscanf(paramName, "%[^#]#%u",
-                   &splitedParamNameNumber.name[0],
-                   &splitedParamNameNumber.axisNoOrIndex);
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
-              modNamEMC, functionName, nvals,
-              &splitedParamNameNumber.name[0],
-              splitedParamNameNumber.axisNoOrIndex);
-
-    if (nvals == 2) {
-      paramName = &splitedParamNameNumber.name[0];
-      axisNo = (int)splitedParamNameNumber.axisNoOrIndex;
-    }
-    if (!strcmp(paramName, "encoderRaw")) {
+  if (!strcmp(paramName, "encoderRaw")) {
       paramName = "EncAct";
       /* Special handling for encoderRaw */
       myEPICSParamType = asynParamFloat64;
-    }
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s(%u) \"%s\" EPICSParamType=%s(%i)\n",
-              modNamEMC, functionName, axisNo,
-              paramName,
-              stringFromAsynParamType(myEPICSParamType),
-              (int)myEPICSParamType);
   }
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s%s(%u) \"%s\" EPICSParamType=%s(%i)\n",
+            modNamEMC, functionName, axisNo,
+            paramName,
+            stringFromAsynParamType(myEPICSParamType),
+            (int)myEPICSParamType);
 
   /* Some parameters are alread pre-created by the Controller.cpp,
      e.g.errorId. Use those, otherwise create a parameter */
@@ -1460,7 +1438,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
                          myEPICSParamType,
                          &function);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s(%u) pilsNo=%d created function=%d paramName=%s status=%s (%d)\n",
+              "%s%s(%u) numPilsAsynDevInfo=%d created function=%d paramName=%s status=%s (%d)\n",
               modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
               paramName,
               ethercatmcstrStatus(status), (int)status);
@@ -1497,6 +1475,28 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
   unsigned      inputOffset       = 0;
   unsigned      outputOffset      = 0;
   asynParamType myAsynParamType = asynParamNotDefined;
+  struct {
+    char     name[80];      /* 34 + some spare */
+    unsigned axisNoOrIndex;
+  } splitedParamNameNumber;
+
+  if (strlen(paramName) < sizeof(splitedParamNameNumber.name)) {
+    /* Need to split the parameter, like "EPOCHEL1252P#1" */
+    int nvals;
+    memset(&splitedParamNameNumber, 0, sizeof(splitedParamNameNumber));
+    nvals = sscanf(paramName, "%[^#]#%u",
+                   &splitedParamNameNumber.name[0],
+                   &splitedParamNameNumber.axisNoOrIndex);
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
+              modNamEMC, functionName, nvals,
+              &splitedParamNameNumber.name[0],
+              splitedParamNameNumber.axisNoOrIndex);
+    if (nvals == 2) {
+      paramName = &splitedParamNameNumber.name[0];
+      axisNo = (int)splitedParamNameNumber.axisNoOrIndex;
+    }
+  }
 
   if (!iTypCode) return -1;
   switch (iTypCode) {
@@ -1590,10 +1590,6 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
     pilsAsynDevInfo_type *pPilsAsynDevInfo
       = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
-    if ((!pPilsAsynDevInfo->inputOffset) &&
-        (!pPilsAsynDevInfo->outputOffset))
-      return NULL;
-
     if ((axisNo == pPilsAsynDevInfo->axisNo) &&
         (function == pPilsAsynDevInfo->function) &&
         (myEPICSParamType == pPilsAsynDevInfo->myEPICSParamType) &&
@@ -1652,7 +1648,7 @@ asynStatus ethercatmcController::indexerPoll(void)
             newValue = (epicsInt32)netToSint(pDataInPlc, lenInPLC);
             status = getIntegerParam(axisNo, function, &oldValue);
             if (status != asynSuccess || oldValue != newValue) {
-            if (pPilsAsynDevInfo->outputOffset) tracelevel |= ASYN_TRACE_INFO;
+              if (pPilsAsynDevInfo->outputOffset) tracelevel |= ASYN_TRACE_INFO;
               status = setIntegerParam(axisNo, function,  newValue);
               if (status == asynParamWrongType) {
                 asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
