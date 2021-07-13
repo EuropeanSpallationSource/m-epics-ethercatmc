@@ -51,6 +51,7 @@ fi
 if test "$1" = "-l"; then
   if test -f xx.txt; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
+    mkdir -p ../logs/ &&
     mv xx.txt ../logs/$timestamp.txt || exit 1
   fi
   DOLOG=" 2>&1 | tee $PWD/xx.txt"
@@ -99,6 +100,7 @@ shift
 if test "$1" = "-l"; then
   if test -f xx.txt; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
+    mkdir -p ../logs/ &&
     mv xx.txt ../logs/$timestamp.txt || exit 1
   fi
   DOLOG=" 2>&1 | tee $PWD/xx.txt"
@@ -164,6 +166,7 @@ export LOCALAMSNETID REMOTEAMSNETID
 if test "$1" = "-l"; then
   if test -f xx.txt; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
+    mkdir -p ../logs/ &&
     mv xx.txt ../logs/$timestamp.txt || exit 1
   fi
   DOLOG=" 2>&1 | tee $PWD/xx.txt"
