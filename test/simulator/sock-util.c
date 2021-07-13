@@ -12,9 +12,18 @@
 #include "sock-util.h"
 #include "sock-ads.h"
 
-#if (!defined _WIN32 && !defined __WIN32__ && !defined __CYGWIN__)
-  #include <signal.h>
+#define EPICSSOCKETENABLEADDRESSREUSE_FLAG (1)
+
+#if !defined(__linux__)
+  #if defined(SOCK_CLOEXEC) && !defined(__rtems__) && !defined(vxWorks)
+  /* with glibc, SOCK_CLOEXEC does not expand to a simple constant */
+  #  define HAVE_SOCK_CLOEXEC
+  #else
+  #  undef SOCK_CLOEXEC
+  #  define SOCK_CLOEXEC (0)
+  #endif
 #endif
+
 
 #ifdef USE_WINSOCK2
 #include <winsock2.h>
@@ -26,6 +35,14 @@
 #include <arpa/inet.h>   /* htons, ntohs .. */
 #include <netdb.h>
 #include <sys/select.h>
+#include <fcntl.h>
+#endif
+
+#if (!defined _WIN32 && !defined __WIN32__ && !defined __CYGWIN__)
+  #include <signal.h>
+  typedef int SOCKET;
+  #define INVALID_SOCKET -1
+  typedef socklen_t osiSocklen_t;
 #endif
 
 #ifdef START_WINSOCK2
@@ -45,6 +62,16 @@
 /*****************************************************************************/
 
 /* typedefs */
+
+
+typedef union osiSockAddr46 {
+  struct sockaddr          sa;  /* old struct, too short to hold IPv6 addresses */
+  struct sockaddr_storage  ss;  /* new struct. long enough for everything */
+  struct sockaddr_in       in;  /* Internet, IPv4 */
+  struct sockaddr_in6      in6; /* INternet, IPv6 */
+} osiSockAddr46;
+
+
 typedef struct client_con_type {
   size_t        len_used;
   unsigned char *buffer;
@@ -98,6 +125,190 @@ static client_con_type client_cons[NUM_CLIENT_CONS];
 }\
 
 
+#define errlogPrintf printf
+#define epicsSnprintf snprintf
+
+void epicsSocketConvertErrnoToString (char *pBuf, size_t bufSize)
+{
+   strerror_r(errno, pBuf, bufSize);
+}
+
+/*****************************************************************************/
+SOCKET epicsSocketCreate(int domain, int type, int protocol)
+{
+    SOCKET sock = socket ( domain, type | SOCK_CLOEXEC, protocol );
+    if ( sock < 0 ) {
+        sock = INVALID_SOCKET;
+    }
+    else {
+        int status = fcntl ( sock, F_SETFD, FD_CLOEXEC );
+        if ( status < 0 ) {
+            char buf [ 64 ];
+            epicsSocketConvertErrnoToString (  buf, sizeof ( buf ) );
+            errlogPrintf (
+                "epicsSocketCreate: failed to "
+                "fcntl FD_CLOEXEC because \"%s\"\n",
+                buf );
+            close ( sock );
+            sock = INVALID_SOCKET;
+        }
+    }
+    return sock;
+}
+
+int epicsSocketDestroy (SOCKET sock)
+{
+  return close(sock);
+}
+
+void  epicsSocketEnableAddressReuseDuringTimeWaitState ( SOCKET s )
+{
+#ifdef _WIN32
+    /*
+     * Note: WINSOCK appears to assign a different functionality for
+     * SO_REUSEADDR compared to other OS. With WINSOCK SO_REUSEADDR indicates
+     * that simultaneously servers can bind to the same TCP port on the same host!
+     * Also, servers are always enabled to reuse a port immediately after
+     * they exit ( even if SO_REUSEADDR isnt set ).
+     */
+#else
+    int yes = true;
+    int status;
+    status = setsockopt ( s, SOL_SOCKET, SO_REUSEADDR,
+        (char *) & yes, sizeof ( yes ) );
+    if ( status < 0 ) {
+        errlogPrintf (
+            "epicsSocketEnableAddressReuseDuringTimeWaitState: "
+            "unable to set SO_REUSEADDR?\n");
+    }
+#endif
+}
+
+/*****************************************************************************/
+SOCKET epicsSocketCreateBind(int domain, int type, int protocol,
+                             unsigned short port, int flags)
+{
+    osiSockAddr46 addr;
+    int status;
+    SOCKET sock = socket ( domain, type | SOCK_CLOEXEC, protocol );
+    if ( sock < 0 ) {
+      return INVALID_SOCKET;
+    }  else {
+      status = fcntl ( sock, F_SETFD, FD_CLOEXEC );
+      if ( status < 0 ) {
+        char buf [ 64 ];
+        epicsSocketConvertErrnoToString (  buf, sizeof ( buf ) );
+        errlogPrintf (
+                      "epicsSocketCreate: failed to "
+                      "fcntl FD_CLOEXEC because \"%s\"\n",
+                      buf );
+        epicsSocketDestroy (sock);
+        return INVALID_SOCKET;
+      }
+    }
+    if (flags & EPICSSOCKETENABLEADDRESSREUSE_FLAG) {
+      epicsSocketEnableAddressReuseDuringTimeWaitState(sock);
+    }
+
+    memset(&addr, 0 , sizeof (addr) );
+    if (domain == AF_INET) {
+      addr.in.sin_family = domain;
+      addr.in.sin_addr.s_addr = htonl (INADDR_ANY);
+      addr.in.sin_port = htons ( port );
+      status = bind (sock, &addr.sa, sizeof (addr.in));
+    } else if (domain == AF_INET6) {
+      addr.in6.sin6_family = domain;
+      addr.in6.sin6_port = htons(port);
+      status = bind (sock, &addr.sa, sizeof (addr.in6));
+    } else {
+      errlogPrintf ("epicsSocketCreate: invalid domain %d\n",
+                    domain);
+      epicsSocketDestroy (sock);
+      return INVALID_SOCKET;
+    }
+    if (status < 0) {
+      char sockErrBuf[64];
+      epicsSocketConvertErrnoToString (sockErrBuf, sizeof (sockErrBuf));
+      errlogPrintf ("epicsSocketCreate: failed to "
+                    "bind because \"%s\"\n",
+                    sockErrBuf);
+      epicsSocketDestroy (sock);
+      return INVALID_SOCKET;
+    }
+    return sock;
+}
+
+unsigned ipAddrToDottedIP64 (
+    const osiSockAddr46 *paddr, char *pBuf, unsigned bufSize )
+{
+    static const char * pErrStr = "<IPA>";
+    unsigned strLen;
+    int status = -1;
+
+    if ( bufSize == 0u ) {
+        return 0u;
+    }
+    if (paddr->in.sin_family == AF_INET) {
+      unsigned addr = ntohl ( paddr->in.sin_addr.s_addr );
+      /*
+       * inet_ntoa() isnt used because it isnt thread safe
+       * (and the replacements are not standardized)
+       */
+      status = epicsSnprintf (pBuf, bufSize, "%u.%u.%u.%u:%hu",
+                              (addr >> 24) & 0xFF,
+                              (addr >> 16) & 0xFF,
+                              (addr >> 8) & 0xFF,
+                              (addr) & 0xFF,
+                              ntohs ( paddr->in.sin_port ) );
+    } else if (paddr->in6.sin6_family == AF_INET6) {
+      if (IN6_IS_ADDR_V4MAPPED(&paddr->in6.sin6_addr)) {
+        status = epicsSnprintf (pBuf, bufSize, "%u.%u.%u.%u:%hu",
+                                paddr->in6.sin6_addr.s6_addr[12],
+                                paddr->in6.sin6_addr.s6_addr[13],
+                                paddr->in6.sin6_addr.s6_addr[14],
+                                paddr->in6.sin6_addr.s6_addr[15],
+                                ntohs ( paddr->in6.sin6_port ) );
+      } else {
+        status = epicsSnprintf (pBuf, bufSize,
+                                "[%02X%02X:%02X%02X:%02X%02X:%02X%02X:%02X%02X:%02X%02X:%02X%02X:%02X%02X]:%hu",
+                                paddr->in6.sin6_addr.s6_addr[0],
+                                paddr->in6.sin6_addr.s6_addr[1],
+                                paddr->in6.sin6_addr.s6_addr[2],
+                                paddr->in6.sin6_addr.s6_addr[3],
+                                paddr->in6.sin6_addr.s6_addr[4],
+                                paddr->in6.sin6_addr.s6_addr[5],
+                                paddr->in6.sin6_addr.s6_addr[6],
+                                paddr->in6.sin6_addr.s6_addr[7],
+                                paddr->in6.sin6_addr.s6_addr[8],
+                                paddr->in6.sin6_addr.s6_addr[9],
+                                paddr->in6.sin6_addr.s6_addr[10],
+                                paddr->in6.sin6_addr.s6_addr[11],
+                                paddr->in6.sin6_addr.s6_addr[12],
+                                paddr->in6.sin6_addr.s6_addr[13],
+                                paddr->in6.sin6_addr.s6_addr[14],
+                                paddr->in6.sin6_addr.s6_addr[15],
+                                ntohs ( paddr->in6.sin6_port ) );
+      }
+    }
+    if ( status > 0 ) {
+      strLen = ( unsigned ) status;
+      if ( strLen < bufSize - 1 ) {
+        return strLen;
+      }
+    }
+    strLen = strlen ( pErrStr );
+    if ( strLen < bufSize ) {
+        strcpy ( pBuf, pErrStr );
+        return strLen;
+    }
+    else {
+        strncpy ( pBuf, pErrStr, bufSize );
+        pBuf[bufSize-1] = '\0';
+        return bufSize - 1u;
+    }
+}
+
+/*****************************************************************************/
 /*****************************************************************************/
 void init_client_cons(void)
 {
@@ -442,6 +653,22 @@ void socket_loop_with_select(void)
               int is_listen = 0;
               int accepted_socket;
               accepted_socket = accept(client_cons[i].fd, NULL, NULL);
+              {
+                osiSockAddr46 addr;
+                char buf[64];
+                osiSocklen_t saddr_length = sizeof (addr);
+                int status;
+                status = getpeername ( accepted_socket, &addr.sa, &saddr_length );
+                if ( status < 0 ) {
+                  char sockErrBuf[64];
+                  epicsSocketConvertErrnoToString (sockErrBuf, sizeof ( sockErrBuf ) );
+                  errlogPrintf ( "listen: getpeername () error was \"%s\"\n", sockErrBuf );
+                } else {
+                  ipAddrToDottedIP64(&addr, buf, sizeof(buf));
+                  LOGINFO3("%s/%s:%d accepted_socket remote=%s\n",
+                           __FILE__, __FUNCTION__, __LINE__, buf);
+                }
+              }
               LOGINFO3("%s/%s:%d accepted_socket=%d\n",
                        __FILE__, __FUNCTION__, __LINE__, accepted_socket);
               add_client_con(accepted_socket, is_listen, client_cons[i].is_ADS);
@@ -525,8 +752,23 @@ void socket_loop(void)
   int stop_and_exit = 0;
 
   init_client_cons();
-
+#if XXX_OLD_CODE
   listen_socket = get_listen_socket("5000");
+#else
+  {
+    unsigned short port = 5000;
+    listen_socket = epicsSocketCreateBind(AF_INET6, SOCK_STREAM, IPPROTO_TCP,
+                                          port,
+                                          EPICSSOCKETENABLEADDRESSREUSE_FLAG);
+    if (listen_socket >= 0) {
+      LOGINFO("listening2 on port %d\n", port);
+    }
+    if (listen(listen_socket, 1) < 0) {
+      LOGERR_ERRNO ("listen() failed\n");
+      exit(3);
+    }
+  }
+#endif
   if (listen_socket < 0)
   {
     LOGERR_ERRNO("no listening socket for ASCII!\n");
@@ -534,7 +776,23 @@ void socket_loop(void)
   }
   add_client_con(listen_socket, is_listen, is_ADS);
 
+#if XXXX_OLD_CODE
   listen_socket = get_listen_socket("48898");
+#else
+  {
+    unsigned short port = 48898;
+    listen_socket = epicsSocketCreateBind(AF_INET6, SOCK_STREAM, IPPROTO_TCP,
+                                          port,
+                                          EPICSSOCKETENABLEADDRESSREUSE_FLAG);
+    if (listen(listen_socket, 1) < 0) {
+      LOGERR_ERRNO ("listen() failed\n");
+      exit(3);
+    }
+    if (listen_socket >= 0) {
+      LOGINFO("listening2 on port %d\n", port);
+    }
+  }
+#endif
   if (listen_socket < 0)
   {
     LOGERR_ERRNO("no listening socket for ADS!\n");
