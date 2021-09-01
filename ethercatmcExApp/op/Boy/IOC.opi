@@ -499,14 +499,18 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-2.opi</path>
+        <path>motor-4.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <P>LabS-MCAG:MC-MCU-28:</P>
           <M1>m1</M1>
           <M2>m2</M2>
+          <M3>m3</M3>
+          <M4>m4</M4>
           <R1>m1-</R1>
           <R2>m2-</R2>
+          <R3>m3-</R3>
+          <R4>m4-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
