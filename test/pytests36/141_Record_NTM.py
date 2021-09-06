@@ -53,6 +53,7 @@ def moveVALnewRBVnewValRtryDly(
 
     # Extra long timeout: The motor may overshoot, kind of
     timeout = 2 * self.axisMr.calcTimeOut(secondVal, velo)
+    self.axisCom.put("-DbgStrToLOG", "NewVAL " + str(tc_no))
     self.axisCom.put(".VAL", secondVal)
 
     rdbd = self.axisCom.get(".RDBD")
@@ -131,6 +132,17 @@ class Test(unittest.TestCase):
         firstVal = hlm
         pointOfReturnPos = (llm + hlm) / 2
         secondVal = (3 * llm + 1 * hlm) / 4
+        moveVALnewRBVnewVal(
+            self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
+        )
+    def test_TC_14020(self):
+        tc_no = "14020"
+        llm = self.llm
+        hlm = self.hlm
+        startpos = hlm
+        firstVal = llm
+        pointOfReturnPos = (llm + hlm) / 2
+        secondVal = (1 * llm + 3 * hlm) / 4
         moveVALnewRBVnewVal(
             self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
         )
