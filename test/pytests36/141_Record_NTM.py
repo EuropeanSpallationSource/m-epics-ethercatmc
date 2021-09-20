@@ -124,6 +124,9 @@ class Test(unittest.TestCase):
                 "MSTA.homed (Axis is not homed)",
             )
 
+    #
+    # NTM starting from LLm going forward
+    #
     def test_TC_14010(self):
         tc_no = "14010"
         llm = self.llm
@@ -135,8 +138,26 @@ class Test(unittest.TestCase):
         moveVALnewRBVnewVal(
             self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
         )
-    def test_TC_14020(self):
-        tc_no = "14020"
+
+    #
+    # NTM starting from LLM goiing forward, and then again to LLM
+    #
+    def test_TC_142020(self):
+        tc_no = "142020"
+        llm = self.llm
+        hlm = self.hlm
+        startpos = llm
+        firstVal = hlm
+        pointOfReturnPos = (llm + hlm) / 2
+        moveVALnewRBVnewVal(
+            self, tc_no, startpos, firstVal, pointOfReturnPos, startpos
+        )
+
+    #
+    # NTM starting from HLM going backward
+    #
+    def test_TC_14030(self):
+        tc_no = "14030"
         llm = self.llm
         hlm = self.hlm
         startpos = hlm
@@ -145,4 +166,18 @@ class Test(unittest.TestCase):
         secondVal = (1 * llm + 3 * hlm) / 4
         moveVALnewRBVnewVal(
             self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
+        )
+
+    #
+    # NTM starting from HLM going backward, and then again to HLM
+    #
+    def test_TC_14040(self):
+        tc_no = "14040"
+        llm = self.llm
+        hlm = self.hlm
+        startpos = hlm
+        firstVal = llm
+        pointOfReturnPos = (llm + hlm) / 2
+        moveVALnewRBVnewVal(
+            self, tc_no, startpos, firstVal, pointOfReturnPos, startpos
         )
