@@ -1844,11 +1844,11 @@ void indexerHandlePLCcycle(void)
               had_cr = 1;
               *pNewline = '\0';
             }
-            LOGINFO6("%s/%s:%d devNum=%u special0518 value=\"%s\"\n",
+            LOGINFO3("%s/%s:%d devNum=%u special0518 value=\"%s\"\n",
                      __FILE__, __FUNCTION__, __LINE__,
                      devNum, (const char*)netData.memoryStruct.special0518.value);
             retval = handle_input_line((const char *)&netData.memoryStruct.special0518.value,
-                                    had_cr, 1);
+                                       had_cr, 1);
             LOGINFO6("%s/%s:%d devNum=%u special0518 value=\"%s\" retval=%d\n",
                      __FILE__, __FUNCTION__, __LINE__,
                      devNum, (const char*)netData.memoryStruct.special0518.value,

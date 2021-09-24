@@ -466,13 +466,15 @@ class AxisMr:
             raise Exception(debug_text)
 
     def motorInitAllForBDST(self, tc_no):
-        self.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
+        # The next is needed to change MRES_23/24 further down
+        self.setValueOnSimulator(tc_no, "nAmplifierPercent", 0)
         self.setValueOnSimulator(tc_no, "bAxisHomed", 1)
         self.setValueOnSimulator(tc_no, "fLowHardLimitPos", -120)
         self.setValueOnSimulator(tc_no, "fHighHardLimitPos", 120)
         self.setValueOnSimulator(tc_no, "setMRES_23", 0)
         self.setValueOnSimulator(tc_no, "setMRES_24", 0)
         self.setValueOnSimulator(tc_no, "fActPosition", 0.0)
+        self.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
 
         self.axisCom.put("-ErrRst", 1)
         # Prepare parameters for jogging and backlash

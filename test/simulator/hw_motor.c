@@ -1323,21 +1323,22 @@ int openLogFile(int axis_no, const char *filename)
 
 int closeLogFile(int axis_no)
 {
-  const static char *EOF_str = "EOF";
+  const static char *EOF_LF_str = "EOF\n";
+  int strlen_EOF_LF_str = (int) strlen(EOF_LF_str);
   int res1 = 0;
   int res2 = -1;
   AXIS_CHECK_RETURN_ERROR(axis_no);
   if (motor_axis[axis_no].logFile) {
     res1 = fprintf(motor_axis[axis_no].logFile,
-                   "%s\n", "EOF");
+                   "%s", EOF_LF_str);
     res2 = fclose(motor_axis[axis_no].logFile);
     motor_axis[axis_no].logFile = NULL;
   }
-  fprintf(stdlog, "LLLL %s/%s:%d axis_no=%d res1=%d res2=%d\n",
+  fprintf(stdlog, "LLLL %s/%s:%d axis_no=%d res1=%d strlen_EOF_LF_str=%d res2=%d\n",
             __FILE__, __FUNCTION__, __LINE__,
-          axis_no, res1, res2);
+          axis_no, res1, strlen_EOF_LF_str, res2);
 
-  if ((res1 == (int) strlen(EOF_str)) && (res2 == 0))
+  if ((res1 == strlen_EOF_LF_str) && (res2 == 0))
     return 0;
   else
     return 1;

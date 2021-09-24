@@ -184,7 +184,7 @@ int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int 
   int argc = create_argv(input_line, had_cr, had_lf, (const char*** )&my_argv);
   const char *argv1 = (argc > 1) ? my_argv[1] : "";
   int is_EAT_cmd = strchr(input_line, ';') != NULL;
-  int retval = 0;
+  int retval = 1;
 
   clear_buf();
   if ((socket_fd >= 0) &&
@@ -208,7 +208,7 @@ int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int 
   } else if (!strncmp(argv1, Sim_this_ads_dot_str, strlen(Sim_this_ads_dot_str))) {
     retval = cmd_Sim_Ads(argc, my_argv);
   } else if (!strncmp(argv1, sim_str_s, strlen(sim_str_s))) {
-    cmd_Sim(argc, my_argv);
+    retval = cmd_Sim(argc, my_argv);
   } else if (is_EAT_cmd) {
     cmd_EAT(argc, my_argv);
   }
