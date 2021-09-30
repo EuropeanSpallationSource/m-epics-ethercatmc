@@ -30,6 +30,7 @@ class AxisMr:
     def __init__(self, axisCom, url_string=None):
         self.axisCom = axisCom
         self.url_string = url_string
+        self.hasFieldSPAM = None
         start_seconds = time.time()
         end_seconds = start_seconds + 30
         now = start_seconds
@@ -107,6 +108,30 @@ class AxisMr:
     myPOSlow = 48  #
     myPOSmid = 72  # low + BDST
     myPOShig = 96  # low + 2*BDST
+
+    def setFieldSPAM(self, tc_no, value):
+        if self.hasFieldSPAM == None:
+            vers = float(self.axisCom.get(".VERS"))
+            if vers >= 6.94 and vers <= 7.09:
+                self.hasFieldSPAM = True
+            else:
+                self.hasFieldSPAM = False
+        if self.hasFieldSPAM == True:
+            self.axisCom.put(".SPAM", value)
+
+    def getFieldSPAM(
+        self,
+        tc_no,
+    ):
+        if self.hasFieldSPAM == None:
+            vers = float(self.axisCom.get(".VERS"))
+            if vers >= 6.94 and vers <= 7.09:
+                self.hasFieldSPAM = True
+            else:
+                self.hasFieldSPAM = False
+        if self.hasFieldSPAM == True:
+            return self.axisCom.get(".SPAM")
+        return None
 
     def initializeMotorRecordOneField(self, tc_no, field_name, value):
         oldVal = self.axisCom.get(field_name)
@@ -466,6 +491,7 @@ class AxisMr:
             raise Exception(debug_text)
 
     def motorInitAllForBDST(self, tc_no):
+        startPos = 0.0
         # The next is needed to change MRES_23/24 further down
         self.setValueOnSimulator(tc_no, "nAmplifierPercent", 0)
         self.setValueOnSimulator(tc_no, "bAxisHomed", 1)
@@ -473,7 +499,7 @@ class AxisMr:
         self.setValueOnSimulator(tc_no, "fHighHardLimitPos", 120)
         self.setValueOnSimulator(tc_no, "setMRES_23", 0)
         self.setValueOnSimulator(tc_no, "setMRES_24", 0)
-        self.setValueOnSimulator(tc_no, "fActPosition", 0.0)
+        self.setValueOnSimulator(tc_no, "fActPosition", startPos)
         self.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
 
         self.axisCom.put("-ErrRst", 1)
@@ -495,6 +521,8 @@ class AxisMr:
         self.axisCom.put(".RTRY", self.myRTRY)
         self.axisCom.put(".RMOD", motorRMOD_D)
         self.axisCom.put(".DLY", self.myDLY)
+        self.axisCom.put(".SYNC", 1)
+        self.waitForValueChanged(tc_no, ".VAL", startPos, 0.1, 2.0)
 
     def writeExpFileRMOD_X(
         self,
