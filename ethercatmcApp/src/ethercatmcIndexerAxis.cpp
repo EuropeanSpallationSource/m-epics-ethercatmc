@@ -199,6 +199,11 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
               "%s(%d) iTypCode=0x%X\n",
               modNamEMC, axisNo_, drvlocal.iTypCode);
   }
+#ifdef motorFlagsNtmUpdateString
+  if (pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset) {
+    setIntegerParamLog(pC_-> motorFlagsNtmUpdate_, 1, "NtmUpdate");
+  }
+#endif
 }
 
 void ethercatmcIndexerAxis::setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask)
