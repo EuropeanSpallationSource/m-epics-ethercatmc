@@ -12,7 +12,7 @@ import time
 import math
 import inspect
 
-filnam = "140xx.py"
+filnam = "141xx.py"
 ###
 
 
@@ -20,8 +20,8 @@ def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 
-def moveVALnewRBVnewValRtryDly(
-    self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, rtry, dly
+def moveVALnewRBVnewValNtmRtryDly(
+    self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm, rtry, dly
 ):
     self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
     # Go to start
@@ -30,7 +30,7 @@ def moveVALnewRBVnewValRtryDly(
     oldRTRY = self.axisCom.get(".RTRY")
     oldSPAM = self.axisCom.get(".SPAM")
     self.axisCom.put(".DLY", dly)
-    self.axisCom.put(".NTM", 1)
+    self.axisCom.put(".NTM", ntm)
     self.axisCom.put(".RTRY", rtry)
     self.axisCom.put(".SPAM", 2047)
     velo = self.axisCom.get(".VELO")
@@ -64,7 +64,7 @@ def moveVALnewRBVnewValRtryDly(
     postMoveCheckOK = self.axisMr.postMoveCheck(tc_no)
     testPassed = valueChangedOK and postMoveCheckOK
     print(
-        f"{tc_no} moveVALnewRBVnewValRtryDly valueChangedOK={valueChangedOK} postMoveCheckOK={postMoveCheckOK}"
+        f"{tc_no} moveVALnewRBVnewValNtmRtryDly valueChangedOK={valueChangedOK} postMoveCheckOK={postMoveCheckOK}"
     )
 
     self.axisCom.put(".DLY", oldDLY)
@@ -78,23 +78,53 @@ def moveVALnewRBVnewValRtryDly(
     assert testPassed
 
 
-def moveVALnewRBVnewVal(self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal):
+def moveVALnewRBVnewValNtm(
+    self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm
+):
     rtry = 0
-    moveVALnewRBVnewValRtryDly(
-        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, rtry, 0.0
+    moveVALnewRBVnewValNtmRtryDly(
+        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm, rtry, 0.0
     )
     tc_no = int(tc_no) + 1
-    moveVALnewRBVnewValRtryDly(
-        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, rtry, 0.5
+    moveVALnewRBVnewValNtmRtryDly(
+        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm, rtry, 0.5
     )
     tc_no = int(tc_no) + 1
     rtry = 1
-    moveVALnewRBVnewValRtryDly(
-        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, rtry, 0.0
+    moveVALnewRBVnewValNtmRtryDly(
+        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm, rtry, 0.0
     )
     tc_no = int(tc_no) + 1
-    moveVALnewRBVnewValRtryDly(
-        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, rtry, 0.5
+    moveVALnewRBVnewValNtmRtryDly(
+        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm, rtry, 0.5
+    )
+
+
+def moveVALnewRBVnewValWrapper(
+    self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
+):
+
+    ntm = 0
+    moveVALnewRBVnewValNtm(
+        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm
+    )
+    tc_no = int(tc_no) + 10
+    ntm = 1
+    moveVALnewRBVnewValNtm(
+        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm
+    )
+
+    vers = float(self.axisCom.get(".VERS"))
+    if vers < 7.07 or vers > 7.09:
+        return
+    mflg = int(self.axisCom.get(".MFLG"))
+    mf_ntm_update_bit = 32
+    if not mflg & mf_ntm_update_bit:
+        return
+    ntm = 2
+    tc_no = int(tc_no) + 10
+    moveVALnewRBVnewValNtm(
+        self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm
     )
 
 
@@ -113,8 +143,8 @@ class Test(unittest.TestCase):
     vmax = axisCom.get(".VMAX")
     msta = int(axisCom.get(".MSTA"))
 
-    def test_TC_1400(self):
-        tc_no = "1400"
+    def test_TC_14100(self):
+        tc_no = "14100"
         if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
             self.axisMr.powerOnHomeAxis(tc_no)
             self.msta = int(self.axisCom.get(".MSTA"))
@@ -127,57 +157,57 @@ class Test(unittest.TestCase):
     #
     # NTM starting from LLm going forward
     #
-    def test_TC_14010(self):
-        tc_no = "14010"
+    def test_TC_141100(self):
+        tc_no = "141100"
         llm = self.llm
         hlm = self.hlm
         startpos = llm
         firstVal = hlm
         pointOfReturnPos = (llm + hlm) / 2
         secondVal = (3 * llm + 1 * hlm) / 4
-        moveVALnewRBVnewVal(
+        moveVALnewRBVnewValWrapper(
             self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
         )
 
     #
     # NTM starting from LLM goiing forward, and then again to LLM
     #
-    def test_TC_142020(self):
-        tc_no = "142020"
+    def test_TC_141200(self):
+        tc_no = "141200"
         llm = self.llm
         hlm = self.hlm
         startpos = llm
         firstVal = hlm
         pointOfReturnPos = (llm + hlm) / 2
-        moveVALnewRBVnewVal(
+        moveVALnewRBVnewValWrapper(
             self, tc_no, startpos, firstVal, pointOfReturnPos, startpos
         )
 
     #
     # NTM starting from HLM going backward
     #
-    def test_TC_14030(self):
-        tc_no = "14030"
+    def test_TC_141300(self):
+        tc_no = "141300"
         llm = self.llm
         hlm = self.hlm
         startpos = hlm
         firstVal = llm
         pointOfReturnPos = (llm + hlm) / 2
         secondVal = (1 * llm + 3 * hlm) / 4
-        moveVALnewRBVnewVal(
+        moveVALnewRBVnewValWrapper(
             self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
         )
 
     #
     # NTM starting from HLM going backward, and then again to HLM
     #
-    def test_TC_14040(self):
-        tc_no = "14040"
+    def test_TC_141400(self):
+        tc_no = "141400"
         llm = self.llm
         hlm = self.hlm
         startpos = hlm
         firstVal = llm
         pointOfReturnPos = (llm + hlm) / 2
-        moveVALnewRBVnewVal(
+        moveVALnewRBVnewValWrapper(
             self, tc_no, startpos, firstVal, pointOfReturnPos, startpos
         )
