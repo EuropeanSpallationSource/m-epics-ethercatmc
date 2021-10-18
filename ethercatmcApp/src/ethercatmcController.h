@@ -128,6 +128,7 @@ extern "C" {
     int            axisNo;      /* 0 is the controller */
     unsigned       inputOffset; /* offset inside the "plc memory bytes" */
     unsigned       outputOffset; /* offset inside the "plc memory bytes" */
+    unsigned       statusOffset; /* offset inside the "plc memory bytes" */
     unsigned       lenInPLC;    /* len  inside the "plc memory bytes" */
     int            function;    /* asyn: "function" */
     asynParamType  myEPICSParamType; /* asynParamType.h */
@@ -393,6 +394,7 @@ public:
                          unsigned      lenInPLC,
                          unsigned      inputOffset,
                          unsigned      outputOffset,
+                         unsigned      statusOffset,
                          asynParamType myEPICSParamType,
                          unsigned      iTypCode);
 

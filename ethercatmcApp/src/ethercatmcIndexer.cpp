@@ -1383,6 +1383,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
                                             unsigned      lenInPLC,
                                             unsigned      inputOffset,
                                             unsigned      outputOffset,
+                                            unsigned      statusOffset,
                                             asynParamType myEPICSParamType,
                                             unsigned      iTypCode)
 {
@@ -1404,13 +1405,14 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   }
 
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-            "%s%s axisNo=%i \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u"
+            "%s%s axisNo=%i \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
             " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
             modNamEMC, functionName, axisNo,
             paramName,
             lenInPLC,
             inputOffset,
             outputOffset,
+            statusOffset,
             stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
             iTypCode);
   if (!strcmp(paramName, "encoderRaw")) {
@@ -1449,6 +1451,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->lenInPLC         = lenInPLC;
   pPilsAsynDevInfo->inputOffset      = inputOffset;
   pPilsAsynDevInfo->outputOffset     = outputOffset;
+  pPilsAsynDevInfo->statusOffset     = statusOffset;
   pPilsAsynDevInfo->myEPICSParamType = myEPICSParamType;
   pPilsAsynDevInfo->iTypCode         = iTypCode;
   pPilsAsynDevInfo->function         = function;
@@ -1474,6 +1477,7 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
   unsigned      lenInPLC          = 0;
   unsigned      inputOffset       = 0;
   unsigned      outputOffset      = 0;
+  unsigned      statusOffset = 0;
   asynParamType myAsynParamType = asynParamNotDefined;
   struct {
     char     name[80];      /* 34 + some spare */
@@ -1541,6 +1545,20 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       outputOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamInt32;
       break;
+    case 0x1A02:
+      lenInPLC = 2;
+      /* 1A02 has "current value, followed by status word */
+      inputOffset = indexOffset;
+      statusOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamInt32;
+      break;
+    case 0x1A04:
+      lenInPLC = 4;
+      /* 1A04 has "current value, followed by extended status word */
+      inputOffset = indexOffset;
+      statusOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamInt32;
+      break;
   }
   if (!lenInPLC) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
@@ -1554,6 +1572,7 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
                              lenInPLC,
                              inputOffset,
                              outputOffset,
+                             statusOffset,
                              myAsynParamType,
                              iTypCode);
   } else {
@@ -1628,15 +1647,24 @@ asynStatus ethercatmcController::indexerPoll(void)
         pilsAsynDevInfo_type *pPilsAsynDevInfo
           = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
-        if (!pPilsAsynDevInfo->inputOffset) continue;
-
         unsigned inputOffset = pPilsAsynDevInfo->inputOffset;
-        /* Each axis has it's own parameters.
-           axisNo == 0 is no special axis, parameters
-           for "the controller", additional IO, PTP info */
+        unsigned statusOffset = pPilsAsynDevInfo->statusOffset;
         int axisNo = pPilsAsynDevInfo->axisNo;
         int function = pPilsAsynDevInfo->function;
         void *pDataInPlc = &ctrlLocal.pIndexerProcessImage[inputOffset];
+        asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+                  "%sindexerPoll(%d) numPilsAsynDevInfo=%u inputOffset=%u\n",
+                  modNamEMC, axisNo,
+                  numPilsAsynDevInfo, inputOffset);
+        if (statusOffset) {
+          ; /* TODO */
+        }
+        if (!inputOffset) continue;
+
+
+        /* Each axis has it's own parameters.
+           axisNo == 0 is no special axis, parameters
+           for "the controller", additional IO, PTP info */
         switch (pPilsAsynDevInfo->myEPICSParamType) {
         case asynParamInt32:
           {
@@ -1686,12 +1714,19 @@ asynStatus ethercatmcController::indexerPoll(void)
             case 0x1202:
             case 0x1602:
             case 0x1604:
+            case 0x1A02:
+            case 0x1A04:
               newValue = (double)(epicsInt64)netToSint(pDataInPlc, lenInPLC);
               break;
             case 0x1204:
+            case 0x1A08:
               newValue = (double)(epicsInt64)netToSint64(pDataInPlc, lenInPLC);
               break;
             default:
+              asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+                        "%sindexerPoll(%d) ERROR: newValueValid = 0 function=%s(%d)\n",
+                        modNamEMC, axisNo,
+                        paramName, function);
               newValueValid = 0;
             }
             getParamName(axisNo, function, &paramName);
