@@ -69,6 +69,14 @@ echo =====
 # start simulator
 (cd .. && ./run-ethercatmc-simulator.sh ) &
 SIMULATOR_PID=$!
+
+XXPVNAME=$(echo $1 | sed -e 's!.*://\(.*\)!\1!')
+echo XXPVNAME=$XXPVNAME
+if caget $XXPVNAME >/dev/null; then
+  echo >&2 "Process variable $XXPVNAME online before starting the IOC, aborting"
+  exitCode=2
+  exit $exitCode
+fi
 sleep 5
 
 #build ioc
