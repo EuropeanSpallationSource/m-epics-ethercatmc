@@ -54,6 +54,8 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "Velo illegal";
   case 0x4223:
     return "Axis pos en";
+  case 0x4225:
+    return "Drv not en";
   case 0x4450:
   case 0x4451:
     return "Follow err";
