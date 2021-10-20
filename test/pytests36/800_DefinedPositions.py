@@ -30,21 +30,7 @@ class Test(unittest.TestCase):
     # Make sure that motor is homed
     def test_TC_8001(self):
         tc_no = tc_no_base + 1
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
-        msta = int(self.axisCom.get(".MSTA"))
-        if not (msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.powerOnHomeAxis(tc_no)
-            msta = int(self.axisCom.get(".MSTA"))
-            passed = (msta & self.axisMr.MSTA_BIT_HOMED) != 0
-            if not passed:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
-                self.assertEqual(
-                    passed,
-                    True,
-                    "MSTA.homed (Axis is not homed)",
-                )
-            else:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisMr.powerOnHomeAxis(tc_no)
 
     # calculate values
     def test_TC_8002(self):
@@ -64,7 +50,7 @@ class Test(unittest.TestCase):
                 pvname = "-DefPosVAL" + chr(ord("A") + step)
                 if step == 0:
                     destination = self.llm
-                elif step == steps -1:
+                elif step == steps - 1:
                     destination = self.hlm
                 else:
                     destination = (

@@ -97,7 +97,6 @@ class Test(unittest.TestCase):
         )
         assert testPassed
 
-
     def test_TC_9602(self):
         tc_no = 9602
 

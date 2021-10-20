@@ -121,9 +121,7 @@ def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
                 break
 
     # Re-home if needed
-    msta = int(self.axisCom.get(".MSTA"))
-    if not (msta & self.axisMr.MSTA_BIT_HOMED):
-        self.axisMr.powerOnHomeAxis(tc_no)
+    self.axisMr.powerOnHomeAxis(tc_no)
 
     # Restore the values we had before this test started
     self.axisCom.put(".CNEN", self.saved_CNEN)
@@ -165,22 +163,15 @@ class Test(unittest.TestCase):
     # Assert that motor is homed
     def test_TC_2011(self):
         tc_no = "2011"
-        if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.powerOnHomeAxis(tc_no)
-            self.msta = int(self.axisCom.get(".MSTA"))
-            self.assertNotEqual(
-                0,
-                self.msta & self.axisMr.MSTA_BIT_HOMED,
-                "MSTA.homed (Axis is not homed)",
-            )
+        self.axisMr.powerOnHomeAxis(tc_no)
 
-#    # Jog, wait for start, power off, check for no error, reset error if needed
-#    def test_TC_2012(self):
-#        tc_no = "2012"
-#        # startpos = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
-#        startpos = self.saved_LLM
-#        testPassed = startAndPowerOff(self, tc_no, startpos, ".JOGF", 1)
-#        assert testPassed
+    #    # Jog, wait for start, power off, check for no error, reset error if needed
+    #    def test_TC_2012(self):
+    #        tc_no = "2012"
+    #        # startpos = (1 * self.saved_HLM + 9 * self.saved_LLM) / 10
+    #        startpos = self.saved_LLM
+    #        testPassed = startAndPowerOff(self, tc_no, startpos, ".JOGF", 1)
+    #        assert testPassed
 
     # Move, wait for start, power off, check for no error, reset error if needed
     def test_TC_2013(self):
@@ -195,12 +186,12 @@ class Test(unittest.TestCase):
         self.axisCom.put(".SYNC", 1)
         assert testPassed
 
-#    # Home, wait for start, power off, check for no error, reset error if needed
-#    def test_TC_2014(self):
-#        tc_no = "2014"
-#        startpos = (self.saved_HLM + self.saved_LLM) / 2.0
-#        testPassed = startAndPowerOff(self, tc_no, startpos, ".HOMF", 1)
-#        assert testPassed
+    #    # Home, wait for start, power off, check for no error, reset error if needed
+    #    def test_TC_2014(self):
+    #        tc_no = "2014"
+    #        startpos = (self.saved_HLM + self.saved_LLM) / 2.0
+    #        testPassed = startAndPowerOff(self, tc_no, startpos, ".HOMF", 1)
+    #        assert testPassed
 
     ###############################
     # power off, try to jog, check for error, reset error if needed

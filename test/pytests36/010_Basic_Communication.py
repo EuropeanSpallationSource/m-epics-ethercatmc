@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
         url_string = self.url_string
         axisCom = self.axisCom
         # Don't do this here:
-        #axisMr = AxisMr(axisCom) # Use 30 seconds retry in AxisMr, if needed
+        # axisMr = AxisMr(axisCom) # Use 30 seconds retry in AxisMr, if needed
 
         tc_no = "TC-01001"
         rbv = None
@@ -42,9 +42,9 @@ class Test(unittest.TestCase):
                 rbv = axisCom.get(".RBV")
                 enabled = axisCom.get(".CNEN")
             except:
-                wait_for -= 1 # Next loop
+                wait_for -= 1  # Next loop
             if rbv != None or enabled != None:
-                wait_for = -1 # Finished
+                wait_for = -1  # Finished
 
         print(f"{tc_no}/{url_string} rbv={rbv} enabled={int(enabled)}")
 

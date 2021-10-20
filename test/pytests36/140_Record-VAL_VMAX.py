@@ -52,14 +52,7 @@ class Test(unittest.TestCase):
 
     def test_TC_1400(self):
         tc_no = "1400"
-        if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.powerOnHomeAxis(tc_no)
-            self.msta = int(self.axisCom.get(".MSTA"))
-            self.assertNotEqual(
-                0,
-                self.msta & self.axisMr.MSTA_BIT_HOMED,
-                "MSTA.homed (Axis is not homed)",
-            )
+        self.axisMr.powerOnHomeAxis(tc_no)
 
     def test_TC_1401(self):
         tc_no = "1401"

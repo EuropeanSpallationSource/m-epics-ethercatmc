@@ -912,9 +912,7 @@ class AxisMr:
                 self.axisCom.put(".HOMF", 1)
                 self.waitForStartAndDone(tc_no, time_to_wait)
             msta = int(self.axisCom.get(".MSTA"))
-            self.assertNotEqual(
-                0, msta & self.MSTA_BIT_HOMED, "MSTA.homed (Axis is not homed)"
-            )
+            assert(msta & self.MSTA_BIT_HOMED)
 
     def verifyRBVinsideRDBD(self, tc_no, position):
         """"""

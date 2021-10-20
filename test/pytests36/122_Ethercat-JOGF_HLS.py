@@ -27,21 +27,7 @@ class Test(unittest.TestCase):
     # Make sure that motor is homed
     def test_TC_1221(self):
         tc_no = tc_no_base + 1
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
-        msta = int(self.axisCom.get(".MSTA"))
-        if not (msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.powerOnHomeAxis(tc_no)
-            msta = int(self.axisCom.get(".MSTA"))
-            passed = (msta & self.axisMr.MSTA_BIT_HOMED) != 0
-            if not passed:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
-                self.assertEqual(
-                    passed,
-                    True,
-                    "MSTA.homed (Axis is not homed)",
-                )
-            else:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        self.axisMr.powerOnHomeAxis(tc_no)
 
     # high limit switch
     def test_TC_1222(self):
@@ -65,7 +51,9 @@ class Test(unittest.TestCase):
         msta = int(self.axisCom.get(".MSTA"))
         if msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
-            passed = self.axisMr.moveIntoLS(tc_no=tc_no, direction=direction, paramWhileMove=True)
+            passed = self.axisMr.moveIntoLS(
+                tc_no=tc_no, direction=direction, paramWhileMove=True
+            )
             if passed:
                 self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
             else:

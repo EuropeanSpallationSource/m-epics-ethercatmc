@@ -33,15 +33,7 @@ class Test(unittest.TestCase):
     # Make sure that motor is homed
     def test_TC_2401(self):
         tc_no = "2401"
-
-        if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.powerOnHomeAxis(tc_no)
-            self.msta = int(self.axisCom.get(".MSTA"))
-            self.assertNotEqual(
-                0,
-                self.msta & self.axisMr.MSTA_BIT_HOMED,
-                "MSTA.homed (Axis is not homed)",
-            )
+        self.axisMr.powerOnHomeAxis(tc_no)
 
     # Jog, wait for start, stop behind MR
     def test_TC_2402(self):

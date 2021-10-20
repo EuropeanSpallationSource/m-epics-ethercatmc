@@ -41,14 +41,7 @@ class Test(unittest.TestCase):
     # Assert that motor is homed
     def test_TC_1231(self):
         tc_no = "1231"
-        if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.powerOnHomeAxis(tc_no)
-            self.msta = int(self.axisCom.get(".MSTA"))
-            self.assertNotEqual(
-                0,
-                self.msta & self.axisMr.MSTA_BIT_HOMED,
-                "MSTA.homed (Axis is not homed)",
-            )
+        self.axisMr.powerOnHomeAxis(tc_no)
 
     # per90 UserPosition
     def test_TC_1232(self):
