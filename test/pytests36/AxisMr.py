@@ -291,7 +291,8 @@ class AxisMr:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV")
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
+            val = self.axisCom.get(".VAL")
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} val={val} rbv={rbv:.2f}"
             print(debug_text)
             if movn and not dmov:
                 return
@@ -388,7 +389,7 @@ class AxisMr:
             inrange = self.calcAlmostEqual(
                 tc_no, expVal, actVal, maxDelta, doPrint=False
             )
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal} actVal={actVal} maxDelta={maxDelta} inrange={inrange}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal:.2f} actVal={actVal:.2f} maxDelta={maxDelta:.2f} inrange={inrange}"
             print(debug_text)
             if inrange:
                 return True
@@ -890,24 +891,30 @@ class AxisMr:
 
     def powerOnHomeAxis(self, tc_no):
         self.setCNENandWait(tc_no, 1)
-        # Get values to be able calculate a timeout
-        range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
-        hvel = self.axisCom.get(".HVEL")
-        accl = self.axisCom.get(".ACCL")
         msta = int(self.axisCom.get(".MSTA"))
+        if not (msta & self.MSTA_BIT_HOMED):
+            # Get values to be able calculate a timeout
+            range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
+            hvel = self.axisCom.get(".HVEL")
+            accl = self.axisCom.get(".ACCL")
+            msta = int(self.axisCom.get(".MSTA"))
 
-        # Calculate the timeout, based on the driving range
-        if range_postion > 0 and hvel > 0:
-            time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
-        else:
-            time_to_wait = 180
+            # Calculate the timeout, based on the driving range
+            if range_postion > 0 and hvel > 0:
+                time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
+            else:
+                time_to_wait = 180
 
-        # If we are sitting on the High limit switch, use HOMR
-        if msta & self.MSTA_BIT_PLUS_LS:
-            self.axisCom.put(".HOMR", 1)
-        else:
-            self.axisCom.put(".HOMF", 1)
-        self.waitForStartAndDone(tc_no, time_to_wait)
+            # If we are sitting on the High limit switch, use HOMR
+            if msta & self.MSTA_BIT_PLUS_LS:
+                self.axisCom.put(".HOMR", 1)
+            else:
+                self.axisCom.put(".HOMF", 1)
+                self.waitForStartAndDone(tc_no, time_to_wait)
+            msta = int(self.axisCom.get(".MSTA"))
+            self.assertNotEqual(
+                0, msta & self.MSTA_BIT_HOMED, "MSTA.homed (Axis is not homed)"
+            )
 
     def verifyRBVinsideRDBD(self, tc_no, position):
         """"""
