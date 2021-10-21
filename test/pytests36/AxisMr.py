@@ -302,7 +302,6 @@ class AxisMr:
 
     def waitForStop(self, tc_no, wait_for_stop):
         while wait_for_stop > 0:
-            wait_for_stop -= polltime
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
@@ -428,7 +427,7 @@ class AxisMr:
         # TODO: add JAR to the calculation
         time_to_wait = delta / jvel + 2 * accl + 2.0
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogDirection={direction} rbv={rbv} delta={delta} time_to_wait={time_to_wait}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogCalcTimeout jogDirection={direction} rbv={rbv:.2f} delta={delta:.2f} jvel={jvel:.2f} time_to_wait={time_to_wait:.2f}"
         )
         return time_to_wait
 
@@ -771,8 +770,12 @@ class AxisMr:
         )
         print(f"setSoftLimitsOff hlm={actDHLM} llm={actDLLM}")
         # switch off the controller soft limits
-        self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-        self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+        if direction == 0:
+            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+        else:
+            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
 
         maxTime = 10  # seconds maximum to let read only parameters ripple through
         maxDelta = 0.05  # 5 % error tolerance margin
@@ -912,7 +915,7 @@ class AxisMr:
                 self.axisCom.put(".HOMF", 1)
                 self.waitForStartAndDone(tc_no, time_to_wait)
             msta = int(self.axisCom.get(".MSTA"))
-            assert(msta & self.MSTA_BIT_HOMED)
+            assert msta & self.MSTA_BIT_HOMED
 
     def verifyRBVinsideRDBD(self, tc_no, position):
         """"""
@@ -1005,7 +1008,16 @@ class AxisMr:
                 wait_for_start = 2
                 self.waitForStart(tc_no, wait_for_start)
                 self.setSoftLimitsOff(tc_no, direction=direction)
-                self.waitForStop(tc_no, wait_for_stop)
+                try:
+                    self.waitForStop(tc_no, wait_for_stop)
+                except Exception as ex:
+                    self.axisCom.put(".STOP", 1)
+                    try:
+                        self.waitForStop(tc_no, 2.0)
+                    except Exception as ex:
+                        print(
+                            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} ex={ex}"
+                        )
                 if direction > 0:
                     self.axisCom.put(".JOGF", 0)
                 else:
@@ -1042,7 +1054,7 @@ class AxisMr:
 
         if (mstaE & ls_to_be_activated) == 0:
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wrong LS activated"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} LS was not activated"
             )
             passed = False
 
