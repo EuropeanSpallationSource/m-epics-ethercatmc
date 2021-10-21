@@ -20,6 +20,21 @@ def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 
+# Calculate a (small) range to let us travel max 6 seconds
+# For "fast" motors this may be the whole distance between LLM and HLM
+# for "slow" motors this is less to travel
+def calcDistanceMax4Seconds(llm, hlm, velo, fourSeconds):
+    distanceMax6Seconds = fourSeconds * velo
+    travelRange = hlm - llm
+    if travelRange > 0.0 and travelRange > distanceMax6Seconds:
+        travelRange = distanceMax6Seconds
+    #    print(
+    #        f"{filnam} calcDistanceMax4Seconds llm={llm} hlm={hlm} travelRange={travelRange}"
+    #    )
+
+    return travelRange
+
+
 def moveVALnewRBVnewValNtmRtryDly(
     self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm, rtry, dly
 ):
@@ -142,29 +157,21 @@ class Test(unittest.TestCase):
     velo = axisCom.get(".VELO")
     vmax = axisCom.get(".VMAX")
     msta = int(axisCom.get(".MSTA"))
+    travelDistance = calcDistanceMax4Seconds(llm, hlm, velo, 4.0)
 
     def test_TC_14100(self):
         tc_no = "14100"
-        if not (self.msta & self.axisMr.MSTA_BIT_HOMED):
-            self.axisMr.powerOnHomeAxis(tc_no)
-            self.msta = int(self.axisCom.get(".MSTA"))
-            self.assertNotEqual(
-                0,
-                self.msta & self.axisMr.MSTA_BIT_HOMED,
-                "MSTA.homed (Axis is not homed)",
-            )
+        self.axisMr.powerOnHomeAxis(tc_no)
 
     #
     # NTM starting from LLm going forward
     #
     def test_TC_141100(self):
         tc_no = "141100"
-        llm = self.llm
-        hlm = self.hlm
-        startpos = llm
-        firstVal = hlm
-        pointOfReturnPos = (llm + hlm) / 2
-        secondVal = (3 * llm + 1 * hlm) / 4
+        startpos = self.llm
+        firstVal = startpos + self.travelDistance
+        pointOfReturnPos = startpos + self.travelDistance * 0.5
+        secondVal = startpos + self.travelDistance * 0.75
         moveVALnewRBVnewValWrapper(
             self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
         )
@@ -174,11 +181,9 @@ class Test(unittest.TestCase):
     #
     def test_TC_141200(self):
         tc_no = "141200"
-        llm = self.llm
-        hlm = self.hlm
-        startpos = llm
-        firstVal = hlm
-        pointOfReturnPos = (llm + hlm) / 2
+        startpos = self.llm
+        firstVal = startpos + self.travelDistance
+        pointOfReturnPos = startpos + self.travelDistance * 0.5
         moveVALnewRBVnewValWrapper(
             self, tc_no, startpos, firstVal, pointOfReturnPos, startpos
         )
@@ -188,12 +193,10 @@ class Test(unittest.TestCase):
     #
     def test_TC_141300(self):
         tc_no = "141300"
-        llm = self.llm
-        hlm = self.hlm
-        startpos = hlm
-        firstVal = llm
-        pointOfReturnPos = (llm + hlm) / 2
-        secondVal = (1 * llm + 3 * hlm) / 4
+        startpos = self.hlm
+        firstVal = startpos - self.travelDistance
+        pointOfReturnPos = startpos - self.travelDistance * 0.5
+        secondVal = startpos - self.travelDistance * 0.75
         moveVALnewRBVnewValWrapper(
             self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
         )
@@ -203,11 +206,10 @@ class Test(unittest.TestCase):
     #
     def test_TC_141400(self):
         tc_no = "141400"
-        llm = self.llm
-        hlm = self.hlm
-        startpos = hlm
-        firstVal = llm
-        pointOfReturnPos = (llm + hlm) / 2
+        startpos = self.hlm
+        firstVal = startpos - self.travelDistance
+        pointOfReturnPos = startpos - self.travelDistance * 0.5
+
         moveVALnewRBVnewValWrapper(
             self, tc_no, startpos, firstVal, pointOfReturnPos, startpos
         )
