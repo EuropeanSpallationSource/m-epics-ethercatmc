@@ -4546,7 +4546,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>70</width>
+    <width>82</width>
     <border_style>0</border_style>
     <selected_color>
       <color red="255" green="255" blue="255" />
