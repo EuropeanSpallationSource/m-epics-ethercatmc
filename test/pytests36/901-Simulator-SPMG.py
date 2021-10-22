@@ -41,8 +41,8 @@ def spmgValChanged(self, tc_no, val, spmg=-1, jitteringPos=0.0):
     timeout = 3.0
     self.axisMr.waitForValueChanged(tc_no, ".RBV", jitteringPos, maxdelta, timeout)
     testPassed = True
-    dmov = self.axisCom.get(".DMOV", use_monitor=False)
-    miss = self.axisCom.get(".MISS", use_monitor=False)
+    dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
+    miss = int(self.axisCom.get(".MISS", use_monitor=False))
     self.axisCom.put(".SPMG", motorSPMG_Go)
 
     self.axisMr.waitForValueChanged(tc_no, ".RBV", val, maxdelta, timeout)
@@ -50,13 +50,15 @@ def spmgValChanged(self, tc_no, val, spmg=-1, jitteringPos=0.0):
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} dmov={dmov} miss={miss}"
     )
+    debug_text = f"miss={miss} dmov={dmov}"
+    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
     if miss or dmov:
         testPassed = False
 
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
