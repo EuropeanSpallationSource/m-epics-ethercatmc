@@ -1090,7 +1090,7 @@ static void motorHandleOneArg(const char *myarg_1)
                 myarg);
 }
 
-void cmd_EAT(int argc, const char *argv[])
+int cmd_EAT(int argc, const char *argv[])
 {
   const char *myargline = (argc > 0) ? argv[0] : "";
   int is_indexer_cmd = 0;
@@ -1123,5 +1123,6 @@ void cmd_EAT(int argc, const char *argv[])
     argv++;
   } /* while argc > 0 */
   cmd_buf_printf("%s", "\n");
+  return 0;
 }
 /******************************************************************************/

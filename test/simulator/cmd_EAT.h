@@ -1,7 +1,7 @@
 #ifndef CMD_EAT_H
 #define CMD_EAT_H
 
-void cmd_EAT(int argc, const char *argv[]);
+int cmd_EAT(int argc, const char *argv[]);
 int motorHandleADS_ADR_getInt(unsigned adsport,
                               unsigned indexGroup,
                               unsigned indexOffset,

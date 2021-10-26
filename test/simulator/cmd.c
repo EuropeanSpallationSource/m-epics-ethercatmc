@@ -210,7 +210,7 @@ int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int 
   } else if (!strncmp(argv1, sim_str_s, strlen(sim_str_s))) {
     retval = cmd_Sim(argc, my_argv);
   } else if (is_EAT_cmd) {
-    cmd_EAT(argc, my_argv);
+    retval = cmd_EAT(argc, my_argv);
   }
   else if ((argc > 1) && (0 == strcmp(argv1, "bye"))) {
     fprintf(stdlog, "%s/%s:%d bye\n", __FILE__, __FUNCTION__, __LINE__);
