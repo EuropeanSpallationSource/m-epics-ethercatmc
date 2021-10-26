@@ -50,6 +50,8 @@ double ethercatmcgetNowTimeSecs(void)
 extern "C" const char *errStringFromErrId(int nErrorId)
 {
   switch(nErrorId) {
+  case 0x0707:
+    return "Dev notrdyST";
   case 0x4221:
     return "Velo illegal";
   case 0x4223:
@@ -89,6 +91,8 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "DrvHW notrdy";
   case 0x4655:
     return "Inv IO data";
+  case 0x4B07:
+    return "Timo axis FB";
   case 0x4B09:
     return "Axis not rdy";
   case 0x4B0A:
