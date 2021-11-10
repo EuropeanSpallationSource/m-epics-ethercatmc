@@ -894,13 +894,15 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
                                        RBV_UTCstatus);
     {
       /* encoder act in UTC */
-      double ethercatmcEncAct;
+      double ethercatmcEncAct = 0.0;
+      asynStatus EncAct_UTCstatus = asynDisabled;
       if (!pC_->getDoubleParam(axisNo_, pC_->ethercatmcEncAct_,
                                &ethercatmcEncAct)) {
-        setDoubleParam(pC_->ethercatmcEncActUTC_, ethercatmcEncAct);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcEncActUTC_,
-                                           asynSuccess);
+        EncAct_UTCstatus = asynSuccess;
       }
+      setDoubleParam(pC_->ethercatmcEncActUTC_, ethercatmcEncAct);
+      pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcEncActUTC_,
+                                         EncAct_UTCstatus);
     }
   }
 
