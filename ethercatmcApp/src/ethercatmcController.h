@@ -408,6 +408,7 @@ public:
                                                 asynParamType myEPICSParamType);
 
   struct {
+    uint64_t     systemUTCtimeNsec;
     uint8_t      *pIndexerProcessImage;
     asynStatus   oldStatus;
     unsigned int cntADSstatus;

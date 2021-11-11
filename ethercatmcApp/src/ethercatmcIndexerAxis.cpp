@@ -589,6 +589,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   unsigned idxAuxBits = 0;
   int pollReadBackInBackGround = 1;
   int homed = 0;
+  asynStatus VelActStatus = asynDisabled;
 
   /* Don't leave *moving un-initialized, if we return early */
   *moving = false;
@@ -795,23 +796,88 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
   }
   *moving = nowMoving;
   if (positionValid) {
-    double oldPositionValue;
-    asynStatus oldPositionStatus;
-    oldPositionStatus = pC_->getDoubleParam(axisNo_,
-                                            pC_->motorPosition_,
-                                            &oldPositionValue);
-    if (oldPositionStatus == asynSuccess) {
-      /* Use previous fActPosition and
-         current fActPosition to calculate direction.*/
-      if (actPosition > oldPositionValue) {
-        setIntegerParam(pC_->motorStatusDirection_, 1);
-      } else if (actPosition < oldPositionValue) {
-        setIntegerParam(pC_->motorStatusDirection_, 0);
-      }
+    double newVelAct = 0.0;
+    int veryOldDirection =  0;
+    int oldDirection = 0;
+    if (drvlocal.oldPosition > drvlocal.veryOldPosition) {
+      veryOldDirection = 1;
+    } else if (drvlocal.oldPosition < drvlocal.veryOldPosition) {
+      veryOldDirection = -1;
     }
+    if (actPosition > drvlocal.oldPosition) {
+      oldDirection = 1;
+    } else  if (actPosition < drvlocal.oldPosition) {
+      oldDirection = -1;
+    }
+    /*
+     * now we have 2 measurements of the travelling direction:
+     * "old" position vs "veryOld" position
+     * "actual" position vs "old" position
+     * we have 9 combinations:
+       old veryOld
+        0    0          really standing still
+        0   -1          moving backwards, may have stopped, wait one cycle
+        0   +1          moving forwards, may have stopped, wait one cycle
+       +1    0          moving forwards
+       +1   -1          flickering encoder
+       +1   +1          moving forwards
+       -1    0          moving backwards
+       -1   -1          moving backwards
+       -1   +1          flickering encoder
+     */
+    int newDirection = veryOldDirection + oldDirection;
+
+    if (newDirection > 0) {
+      setIntegerParam(pC_->motorStatusDirection_, 1);
+    } else if (newDirection < 0) {
+      setIntegerParam(pC_->motorStatusDirection_, 0);
+    }
+    if (newDirection) {
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
+                "%spoll(%d) actPosition=%f oldPosition=%f veryOldPosition=%f veryOldDirection=%d oldDirection=%d\n",
+                modNamEMC, axisNo_,
+                actPosition, drvlocal.oldPosition, drvlocal.veryOldPosition,
+                veryOldDirection, oldDirection);
+    }
+    double newTimeSecs = ethercatmcgetNowTimeSecs();
+    if ((!veryOldDirection && !oldDirection) || newDirection == 2 || newDirection == -2) {
+      double deltaTimeSecs = 0;
+      if (drvlocal.oldSystemUTCtimeNsec &&
+          pC_->ctrlLocal.systemUTCtimeNsec > drvlocal.oldSystemUTCtimeNsec) {
+        deltaTimeSecs = (double)(pC_->ctrlLocal.systemUTCtimeNsec - drvlocal.oldSystemUTCtimeNsec);
+        deltaTimeSecs = deltaTimeSecs * 0.000000001;
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
+                  "%spoll(%d) oldSystemUTCtimeNsec=%" PRIu64 " systemUTCtimeNsec=%" PRIu64 " deltaTimeSec=%f\n",
+                  modNamEMC, axisNo_,
+                  drvlocal.oldSystemUTCtimeNsec,
+                  pC_->ctrlLocal.systemUTCtimeNsec,
+                  deltaTimeSecs);
+      } else {
+        deltaTimeSecs = newTimeSecs - drvlocal.oldTimeSecs;
+      }
+      if (deltaTimeSecs > 0.0) {
+        double deltaPosition = actPosition - drvlocal.oldPosition;
+        newVelAct = deltaPosition / deltaTimeSecs;
+      }
+      if (newVelAct) {
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW | ASYN_TRACE_INFO,
+                  "%spoll(%d) newVelAct=%f newDirection=%d\n",
+                  modNamEMC, axisNo_,
+                  newVelAct, newDirection);
+      }
+      setDoubleParam(pC_->ethercatmcVelAct_, newVelAct);
+    }
+    drvlocal.oldTimeSecs = newTimeSecs;
+    drvlocal.oldSystemUTCtimeNsec = pC_->ctrlLocal.systemUTCtimeNsec;
+    VelActStatus = asynSuccess;
     setDoubleParam(pC_->motorPosition_, actPosition);
     setDoubleParam(pC_->motorEncoderPosition_, actPosition);
+    drvlocal.veryOldPosition = drvlocal.oldPosition;
+    drvlocal.oldPosition = actPosition;
   }
+  pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcVelAct_,
+                                     VelActStatus);
+
   if (statusValid) {
     int hls = idxReasonBits & 0x8 ? 1 : 0;
     int lls = idxReasonBits & 0x4 ? 1 : 0;

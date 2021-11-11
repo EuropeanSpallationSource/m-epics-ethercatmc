@@ -77,6 +77,7 @@ private:
   ethercatmcController *pC_;
 
   struct {
+    uint64_t   oldSystemUTCtimeNsec;
     const char *externalEncoderStr;
     struct {
       int          old_ErrorId;
@@ -85,6 +86,9 @@ private:
       unsigned int initialPollNeeded :1;
       unsigned idxStatusCode;
     }  dirty;
+    double oldPosition;
+    double veryOldPosition;
+    double oldTimeSecs;
     double old_paramValue;
     unsigned pollNowIdx;
     unsigned iTypCode;

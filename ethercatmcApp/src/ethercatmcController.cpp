@@ -44,7 +44,7 @@ double ethercatmcgetNowTimeSecs(void)
 {
     epicsTimeStamp nowTime;
     epicsTimeGetCurrent(&nowTime);
-    return nowTime.secPastEpoch + (nowTime.nsec * 0.000000001);
+    return (double)nowTime.secPastEpoch + (nowTime.nsec * 0.000000001);
 }
 
 extern "C" const char *errStringFromErrId(int nErrorId)

@@ -1788,14 +1788,13 @@ asynStatus ethercatmcController::indexerPoll(void)
           ;
         }
         if (pPilsAsynDevInfo->isSystemUTCtime) {
-          uint64_t nSec;
           epicsTimeStamp timeStamp;
           unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
-          nSec = netToUint64(pDataInPlc, lenInPLC);
-          UTCtimeToEpicsTimeStamp(nSec, &timeStamp);
+          ctrlLocal.systemUTCtimeNsec = netToUint64(pDataInPlc, lenInPLC);
+          UTCtimeToEpicsTimeStamp(ctrlLocal.systemUTCtimeNsec, &timeStamp);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
                     "%sindexerPoll SystemUTCtime nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
-                    modNamEMC, nSec,
+                    modNamEMC, ctrlLocal.systemUTCtimeNsec,
                     timeStamp.secPastEpoch, timeStamp.nsec);
           setTimeStamp(&timeStamp);
           callBacksNeeded = 1;
