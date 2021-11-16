@@ -559,6 +559,23 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,
   return setIntegerParam(function, newValue);
 }
 
+/**
+ * helper to calculate the raw (=step) actual velocity
+ */
+void ethercatmcIndexerAxis::calcRawVelAact(bool nowMoving)
+{
+  double ethercatmcEncAct;
+  if (!nowMoving) {
+  }
+  //pC_->ctrlLocal.systemUTCtimeNsec;
+  if (!pC_->getDoubleParam(axisNo_, pC_->ethercatmcEncAct_,
+                           &ethercatmcEncAct)) {
+    return;
+  }
+
+}
+
+
 /** Polls the axis.
  * This function reads the motor position, the limit status, the home status,
  * the moving status,
@@ -799,6 +816,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     double newVelAct = 0.0;
     int veryOldDirection =  0;
     int oldDirection = 0;
+    calcRawVelAact(nowMoving);
     if (drvlocal.oldPosition > drvlocal.veryOldPosition) {
       veryOldDirection = 1;
     } else if (drvlocal.oldPosition < drvlocal.veryOldPosition) {

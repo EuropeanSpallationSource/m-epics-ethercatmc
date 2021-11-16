@@ -78,6 +78,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcEnc_ActString              "EncAct"
 #define ethercatmcEnc_ActUTCString           "EncAct-UTC"
 #define ethercatmcErrRstString               "ErrRst"
+#define ethercatmcRawVelActString            "RawVelAct"
 #define ethercatmcVelActString               "VelAct"
 #define ethercatmcVel_RBString               "Vel-RB"
 #define ethercatmcAcc_RBString               "Acc-RB"
@@ -493,6 +494,7 @@ public:
   int ethercatmcDbgStrToMcu_;
   int ethercatmcDbgStrToLog_;
   int ethercatmcDbgStrToNC_;
+  int ethercatmcRawVelAct_;
   int ethercatmcVelAct_;
   int ethercatmcVel_RB_;
   int ethercatmcAcc_RB_;

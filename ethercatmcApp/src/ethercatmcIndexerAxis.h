@@ -65,6 +65,7 @@ public:
   void addPollNowParam(uint8_t paramIndex);
   void       setAxisID(unsigned axisID);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
+  void       calcRawVelAact (bool nowMoving);
   asynStatus poll(bool *moving);
   asynStatus resetAxis(void);
   asynStatus setClosedLoop(bool closedLoop);

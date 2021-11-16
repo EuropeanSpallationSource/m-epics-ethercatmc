@@ -69,6 +69,14 @@ record(bi, "$(PREFIX)$(MOTOR_NAME)-Err")
     field(OSV,  "MINOR")
 }
 
+record(ai, "$(PREFIX)$(MOTOR_NAME)-RawVelAct")
+{
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))RawVelAct")
+    field(SCAN, "I/O Intr")
+}
+
 record(ai, "$(PREFIX)$(MOTOR_NAME)-VelAct")
 {
     field(DTYP, "asynFloat64")
