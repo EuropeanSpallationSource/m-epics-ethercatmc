@@ -118,8 +118,8 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #ifdef  motorNotHomedProblemString
   setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-  setStringParam(pC_->ethercatmcNamBit25_, "Dynamic problem, timeout");
-  setStringParam(pC_->ethercatmcNamBit24_, "Static problem, inhibit");
+  setStringParam(pC_->ethercatmcNamBit25_, "Dynamic_problem_timeout");
+  setStringParam(pC_->ethercatmcNamBit24_, "Static_problem_inhibit");
 
   /* Set the module name to "" if we have FILE/LINE enabled by asyn */
   if (pasynTrace->getTraceInfoMask(pC_->pasynUserController_) &
@@ -670,7 +670,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
 
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
-    idxAuxBits    =  statusReasonAux  & 0x0FFFFFF;
+    idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
   } else {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) iTypCode=0x%X\n",
@@ -700,11 +700,13 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     drvlocal.dirty.old_ErrorId = errorID;
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
-    char changedNames[MAX_AUX_BIT_SHOWN][36];
+    /* Show even bit 24 and 25, which are reson bits, here */
+#define MAX_REASON_AUX_BIT_SHOW (MAX_AUX_BIT_SHOWN+2)
+    char changedNames[MAX_REASON_AUX_BIT_SHOW][36];
     unsigned changed = idxAuxBits ^ drvlocal.old_idxAuxBits;
     unsigned auxBitIdx;
     memset(&changedNames, 0, sizeof(changedNames));
-    for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_SHOWN; auxBitIdx++) {
+    for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
       if ((changed >> auxBitIdx) & 0x01) {
         asynStatus status;
         int function = (int)(pC_->ethercatmcNamAux0_ + auxBitIdx);
@@ -727,7 +729,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       }
     }
     asynPrint(pC_->pasynUserController_, traceMask,
-              "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
+              "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
               modNamEMC, axisNo_, drvlocal.old_idxAuxBits, idxAuxBits,
               changedNames[0],
               changedNames[1],
@@ -753,6 +755,8 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
               changedNames[21],
               changedNames[22],
               changedNames[23],
+              changedNames[24],
+              changedNames[25],
               actPosition);
   }
   switch (idxStatusCode) {
@@ -821,7 +825,7 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     setIntegerParam(pC_->motorStatusDone_, !nowMoving);
     pC_->setUIntDigitalParam(axisNo_, pC_->ethercatmcStatusBits_,
                              (epicsUInt32)statusReasonAux,
-                             0x0FFFFFF, 0x0FFFFFF);
+                             0x03FFFFFF, 0x03FFFFFF);
     setIntegerParam(pC_->ethercatmcErr_, hasError);
     if (drvlocal.auxBitsNotHomedMask) {
       homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
