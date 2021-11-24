@@ -5,6 +5,12 @@ export APPXX
 EPICS_EEE_E3=n
 DOLOG=
 
+if test -n "$SM_PREFIX"; then
+  XX_TXT=xx-$(echo $SM_PREFIX | sed -e "s/:$//g" | tr ":" "-" ).txt
+else
+  XX_TXT=xx.txt
+fi
+export XX_TXT
 uname_s=$(uname -s 2>/dev/null || echo unknown)
 uname_m=$(uname -m 2>/dev/null || echo unknown)
 
@@ -49,12 +55,12 @@ if test -z "$EPICS_HOST_ARCH"; then
 fi
 
 if test "$1" = "-l"; then
-  if test -f xx.txt; then
+  if test -f $XX_TXT; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
     mkdir -p ../logs/ &&
-    mv xx.txt ../logs/$timestamp.txt || exit 1
+    mv $XX_TXT ../logs/$timestamp.txt || exit 1
   fi
-  DOLOG=" 2>&1 | tee $PWD/xx.txt"
+  DOLOG=" 2>&1 | tee $PWD/$XX_TXT"
   shift
 fi
 if test "$1" = "--no-make"; then
@@ -98,12 +104,12 @@ echo MOTORCFG=$MOTORCFG
 
 shift
 if test "$1" = "-l"; then
-  if test -f xx.txt; then
+  if test -f $XX_TXT; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
     mkdir -p ../logs/ &&
-    mv xx.txt ../logs/$timestamp.txt || exit 1
+    mv $XX_TXT ../logs/$timestamp.txt || exit 1
   fi
-  DOLOG=" 2>&1 | tee $PWD/xx.txt"
+  DOLOG=" 2>&1 | tee $PWD/$XX_TXT"
   shift
 fi
 export DOLOG
@@ -164,12 +170,12 @@ fi
 export LOCALAMSNETID REMOTEAMSNETID
 
 if test "$1" = "-l"; then
-  if test -f xx.txt; then
+  if test -f $XX_TXT; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
     mkdir -p ../logs/ &&
-    mv xx.txt ../logs/$timestamp.txt || exit 1
+    mv $XX_TXT ../logs/$timestamp.txt || exit 1
   fi
-  DOLOG=" 2>&1 | tee $PWD/xx.txt"
+  DOLOG=" 2>&1 | tee $PWD/$XX_TXT"
   shift
 fi
 export DOLOG
