@@ -52,13 +52,7 @@ def positionAndBacklash(self, tc_no, rmod, encRel, motorStartPos, motorEndPos):
     ###########
     self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
 
-    # TODO
-    if self.url_string.startswith("pva://"):
-        mot = self.url_string[6:]
-    elif self.url_string.startswith("ca://"):
-        mot = self.url_string[5:]
-    else:
-        mot = self.url_string
+    mot = self.axisCom.getMotorPvName()
     fileName = "/tmp/" + mot.replace(":", "-") + "-" + str(tc_no)
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"

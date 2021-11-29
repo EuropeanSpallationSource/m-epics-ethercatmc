@@ -45,14 +45,8 @@ def setMotorStartPos(self, tc_no, startpos):
 
 
 def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
-    # TODO
     self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
-    if self.url_string.startswith("pva://"):
-        mot = self.url_string[6:]
-    elif self.url_string.startswith("ca://"):
-        mot = self.url_string[5:]
-    else:
-        mot = self.url_string
+    mot = self.axisCom.getMotorPvName()
     fileName = "/tmp/" + mot.replace(":", "-") + "-" + str(tc_no)
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
