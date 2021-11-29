@@ -529,18 +529,17 @@ class AxisMr:
         tc_no,
         rmod,
         expFile,
-        maxcnt,
         frac,
         encRel,
         motorStartPos,
         motorEndPos,
     ):
-        cnt = 0
         if motorEndPos - motorStartPos > 0:
             directionOfMove = 1
         else:
             directionOfMove = -1
-        if self.myBDST > 0:
+        bdst = self.axisCom.get(".BDST", timeout=2.0, use_monitor=False)
+        if bdst > 0:
             directionOfBL = 1
         else:
             directionOfBL = -1
@@ -552,7 +551,10 @@ class AxisMr:
         if rmod == motorRMOD_I:
             maxcnt = 1  # motorRMOD_I means effecttivly "no retry"
             encRel = 0
+        else:
+            maxcnt = 1 + int(self.axisCom.get(".RTRY"))
 
+        cnt = 0
         if (
             abs(motorEndPos - motorStartPos) <= abs(self.myBDST)
             and directionOfMove == directionOfBL

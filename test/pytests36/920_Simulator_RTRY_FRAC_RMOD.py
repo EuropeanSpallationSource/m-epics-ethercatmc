@@ -75,12 +75,10 @@ def positionAndBacklash(self, tc_no, rmod, encRel, motorStartPos, motorEndPos):
     # - against the backlash direction -or- bigger than the backlash distance:
     #   two moves, first with moving, second with backlash parameters
 
-    cnt = 1 + int(self.axisCom.get(".RTRY"))
     self.axisMr.writeExpFileRMOD_X(
         tc_no,
         rmod,
         expFile,
-        cnt,
         myFRAC,
         encRel,
         motorStartPos,
