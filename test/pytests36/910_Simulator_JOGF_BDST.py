@@ -45,7 +45,7 @@ def setMotorStartPos(self, tc_no, startpos):
 
 
 def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
     mot = self.axisCom.getMotorPvName()
     fileName = "/tmp/" + mot.replace(":", "-") + "-" + str(tc_no)
     expFileName = fileName + ".exp"
@@ -83,9 +83,9 @@ def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
         tc_no, expFileName, actFileName
     )
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
@@ -106,11 +106,11 @@ class Test(unittest.TestCase):
 
     def test_TC_91000(self):
         tc_no = "91000"
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         self.axisMr.initializeMotorRecordSimulatorAxis(tc_no)
         self.axisMr.motorInitAllForBDST(tc_no)
         self.axisCom.put(".SPAM", 255)
-        self.axisCom.put("-DbgStrToLOG", "Finish " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Finish " + str(tc_no), wait=True)
 
     # JOG forward & backlash compensation, absolute
     def test_TC_91011(self):

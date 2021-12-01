@@ -35,12 +35,12 @@ class Test(unittest.TestCase):
         direction = 0
         msta = int(self.axisCom.get(".MSTA"))
         if msta & self.axisMr.MSTA_BIT_HOMED:
-            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
+            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)), wait=True)
             passed = self.axisMr.moveIntoLS(tc_no=tc_no, direction=direction)
             if passed:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
             else:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
             assert passed
 
     # low limit switch, disabling softlimts after the JOG
@@ -50,14 +50,14 @@ class Test(unittest.TestCase):
         direction = 0
         msta = int(self.axisCom.get(".MSTA"))
         if msta & self.axisMr.MSTA_BIT_HOMED:
-            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
+            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)), wait=True)
             passed = self.axisMr.moveIntoLS(
                 tc_no=tc_no, direction=direction, paramWhileMove=True
             )
             if passed:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
             else:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
             assert passed
         else:
-            self.axisCom.put("-DbgStrToLOG", "Skipped " + str(tc_no))
+            self.axisCom.put("-DbgStrToLOG", "Skipped " + str(tc_no), wait=True)

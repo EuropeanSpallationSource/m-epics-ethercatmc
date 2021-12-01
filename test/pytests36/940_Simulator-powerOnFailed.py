@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
-    axisCom.put("-DbgStrToLOG", "Start " + os.path.basename(__file__)[0:20])
+    axisCom.put("-DbgStrToLOG", "Start " + os.path.basename(__file__)[0:20], wait=True)
     saved_CNEN = axisCom.get(".CNEN")
     saved_PwrAuto = axisCom.get("-PwrAuto")
 

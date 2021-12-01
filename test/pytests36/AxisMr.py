@@ -859,7 +859,7 @@ class AxisMr:
     def setCNENandWait(self, tc_no, cnen):
         wait_for_power_changed = 6.0
         # capv_self.axisMr.capvput(
-        #     + "-DbgStrToLOG", "CNEN=" + str(cnen) + " " + tc_no[0:20]
+        #     + "-DbgStrToLOG", "CNEN=" + str(cnen) + " " + tc_no[0:20], wait=True
         # )
         self.axisCom.put(".CNEN", cnen)
         while wait_for_power_changed > 0:

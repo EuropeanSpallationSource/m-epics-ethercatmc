@@ -24,7 +24,7 @@ def restorePwrSettings(self, tc_no, pwrAuto, pwrOnDly, pwrOffDly):
 
 
 def do_220_autopower(self, tc_no, autopower):
-    self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20])
+    self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20], wait=True)
     self.axisMr.setCNENandWait(tc_no, 0)
     self.axisCom.put("-PwrAuto", autopower)
     self.axisCom.put("-PwrOnDly", PwrOnDly)
@@ -64,9 +64,9 @@ def do_220_autopower(self, tc_no, autopower):
         testPassed = False
 
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
@@ -79,8 +79,8 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
 
-    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
-    # self.axisCom.put('-DbgStrToLOG', "Start of " + os.path.basename(__file__)[0:20])
+    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20], wait=True)
+    # self.axisCom.put('-DbgStrToLOG', "Start of " + os.path.basename(__file__)[0:20], wait=True)
     saved_LLM = axisCom.get(".LLM")
     saved_CNEN = axisCom.get(".CNEN")
     saved_PwrAuto = axisCom.get("-PwrAuto")
@@ -91,7 +91,7 @@ class Test(unittest.TestCase):
         tc_no = "2201-Enable_goto_LLM"
 
         # Enable power
-        self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20])
+        self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20], wait=True)
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Enable drive and move to LLM"
         )
@@ -107,7 +107,7 @@ class Test(unittest.TestCase):
             self.saved_PwrOnDly,
             self.saved_PwrOffDly,
         )
-        self.axisCom.put("-DbgStrToLOG", "End   " + tc_no[0:20])
+        self.axisCom.put("-DbgStrToLOG", "End   " + tc_no[0:20], wait=True)
 
     def test_TC_2201(self):
         tc_no = "2201-Auto_pwr_1"

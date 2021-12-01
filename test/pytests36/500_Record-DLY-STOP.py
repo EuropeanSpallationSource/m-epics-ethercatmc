@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
 
-    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
+    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20], wait=True)
     # 10% dialPosition
     def test_TC_501(self):
         tc_no = "TC_501-10-percent-dialPosition"

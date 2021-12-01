@@ -41,7 +41,7 @@ class Test(unittest.TestCase):
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
 
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20])
+            self.axisCom.put("-DbgStrToLOG", "Start " + tc_no[0:20], wait=True)
             self.axisCom.put(".DLY", 0)
             destination = self.per10_UserPosition
             self.axisMr.moveWait(tc_no, destination)
@@ -63,6 +63,6 @@ class Test(unittest.TestCase):
             res4 = self.axisMr.verifyRBVinsideRDBD(tc_no, val)
 
             self.axisCom.put(".DLY", self.saved_DLY)
-            self.axisCom.put("-DbgStrToLOG", "End " + tc_no[0:20])
+            self.axisCom.put("-DbgStrToLOG", "End " + tc_no[0:20], wait=True)
 
             self.assertEqual(True, res4, "VAL synched with RBV")

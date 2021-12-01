@@ -18,7 +18,7 @@ polltime = 0.2
 
 def startAndSoftLimitsOff(self, tc_no, startpos, field_name, field_value):
     print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
     self.axisMr.moveWait(tc_no, startpos)
 
     self.axisCom.put(field_name, field_value)
@@ -72,9 +72,9 @@ def startAndSoftLimitsOff(self, tc_no, startpos, field_name, field_value):
     )
     testPassed = int(bError_1) == 0 and homed == 1
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
     return testPassed
 
 
@@ -112,7 +112,7 @@ class Test(unittest.TestCase):
         direction = 1
         msta = int(self.axisCom.get(".MSTA"))
         if msta & self.axisMr.MSTA_BIT_HOMED:
-            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
+            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)), wait=True)
             passed = self.axisMr.moveIntoLS(
                 tc_no=tc_no,
                 direction=direction,
@@ -120,9 +120,9 @@ class Test(unittest.TestCase):
                 doSetSoftLimitsOn=False,
             )
             if passed:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
             else:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
             assert passed
 
     # low limit switch
@@ -131,7 +131,7 @@ class Test(unittest.TestCase):
         direction = 0
         msta = int(self.axisCom.get(".MSTA"))
         if msta & self.axisMr.MSTA_BIT_HOMED:
-            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)))
+            self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)), wait=True)
             passed = self.axisMr.moveIntoLS(
                 tc_no=tc_no,
                 direction=direction,
@@ -139,9 +139,9 @@ class Test(unittest.TestCase):
                 doSetSoftLimitsOn=False,
             )
             if passed:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
             else:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
             assert passed
 
     def test_TC_2034(self):

@@ -22,7 +22,7 @@ def getAccEGUfromMCU(self, tc_no):
 
 
 def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAccEGU):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
 
     # Put the values which the test case wanted
     if vbas > -1:
@@ -59,9 +59,9 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} accOK={accOK} acclOK={acclOK} accsOK={accsOK}"
     )
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
     assert testPassed
 
 

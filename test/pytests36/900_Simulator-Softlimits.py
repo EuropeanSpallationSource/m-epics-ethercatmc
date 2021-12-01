@@ -89,7 +89,7 @@ def InitLimitsNoROlimits(self, tc_no):
     self.axisCom.put("-CfgDLLM-En", 0, wait=True)
     self.axisCom.put("-CfgDHLM-En", 0, wait=True)
 
-    ## XXX self.axisCom.put("-DbgStrToLOG", "initLim " + str(tc_no)[0:20])
+    ## XXX self.axisCom.put("-DbgStrToLOG", "initLim " + str(tc_no)[0:20], wait=True)
     maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
     maxDelta = 0.05  # 5 % error tolerance margin
     while maxTime > 0:
@@ -130,7 +130,7 @@ def InitLimitsWithROlimits(self, tc_no):
         expDHLM = myCfgDHLM * mres
         expDLLM = myCfgDLLM * mres
 
-    ## XXX self.axisCom.put("-DbgStrToLOG", "initLim " + str(tc_no)[0:20])
+    ## XXX self.axisCom.put("-DbgStrToLOG", "initLim " + str(tc_no)[0:20], wait=True)
     maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
     maxDelta = 0.05  # 5 % error tolerance margin
     self.axisCom.put("-CfgDLLM-En", 0, wait=True)
@@ -205,7 +205,7 @@ def setLimit(
     expM3rhlm,
     expM3rllm,
 ):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
     oldDHLM = self.axisCom.get(".DHLM", use_monitor=False)
     oldDLLM = self.axisCom.get(".DLLM", use_monitor=False)
 
@@ -224,9 +224,9 @@ def setLimit(
 
     testPassed = okDHLM and okDLLM and okHLM and okLLM and okM3rhlm and okM3rllm
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
@@ -242,7 +242,7 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
-    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
+    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20], wait=True)
     vers = float(axisCom.get(".VERS"))
     if vers >= 6.94 and vers <= 7.09:
         hasROlimit = 1
@@ -255,14 +255,14 @@ class Test(unittest.TestCase):
 
     def test_TC_90000(self):
         tc_no = 90000
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         self.axisMr.motorInitAllForBDST(tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
 
     def test_TC_90010(self):
         tc_no = 90010
         encRel = 0
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         # vers = float(self.axisCom.get("(self. + '.VERS'))
         # print('%s vers=%g' %  (tc_no, vers))
         # self.assertEqual(0, 1, '1 != 0')
@@ -275,9 +275,9 @@ class Test(unittest.TestCase):
         setMresDirOff(self, tc_no, mres, dir, off)
         InitLimitsNoROlimits(self, tc_no)
         if testPassed:
-            self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+            self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
         else:
-            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
         assert testPassed
 
     def test_TC_90011(self):
@@ -304,7 +304,7 @@ class Test(unittest.TestCase):
     # Invert mres
     def test_TC_90020(self):
         tc_no = 90020
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         encRel = 0
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
         InitVeloAcc(self, tc_no, encRel)
@@ -313,7 +313,7 @@ class Test(unittest.TestCase):
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
         InitLimitsNoROlimits(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
 
     def test_TC_90021(self):
         tc_no = 90021
@@ -340,7 +340,7 @@ class Test(unittest.TestCase):
     def test_TC_90030(self):
         tc_no = 90030
         encRel = 0
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
         InitVeloAcc(self, tc_no, encRel)
         mres = 0.1
@@ -348,7 +348,7 @@ class Test(unittest.TestCase):
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
         InitLimitsNoROlimits(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
 
     def test_TC_90031(self):
         tc_no = 90031
@@ -375,7 +375,7 @@ class Test(unittest.TestCase):
     def test_TC_90040(self):
         tc_no = 90040
         encRel = 0
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
         InitVeloAcc(self, tc_no, encRel)
         mres = -0.1
@@ -383,7 +383,7 @@ class Test(unittest.TestCase):
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
         InitLimitsNoROlimits(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
 
     def test_TC_90041(self):
         tc_no = 90041
@@ -410,7 +410,7 @@ class Test(unittest.TestCase):
     def test_TC_90050(self):
         tc_no = 90050
         encRel = 0
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
 
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} vers={self.vers:g} hasROlimit={int(self.hasROlimit)}"
@@ -424,7 +424,7 @@ class Test(unittest.TestCase):
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
         InitLimitsWithROlimits(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
 
     def test_TC_90051(self):
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
@@ -454,7 +454,7 @@ class Test(unittest.TestCase):
     def test_TC_90060(self):
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
         tc_no = 90060
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         encRel = 0
 
         InitVeloAcc(self, tc_no, encRel)
@@ -463,7 +463,7 @@ class Test(unittest.TestCase):
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
         InitLimitsWithROlimits(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
 
     def test_TC_90061(self):
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
@@ -494,7 +494,7 @@ class Test(unittest.TestCase):
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
         tc_no = 90070
         encRel = 0
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
         InitVeloAcc(self, tc_no, encRel)
         mres = 0.1
@@ -502,7 +502,7 @@ class Test(unittest.TestCase):
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
         InitLimitsWithROlimits(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
 
     def test_TC_90071(self):
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
@@ -532,7 +532,7 @@ class Test(unittest.TestCase):
     def test_TC_90080(self):
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
         tc_no = 90080
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         encRel = 0
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
         InitVeloAcc(self, tc_no, encRel)
@@ -541,7 +541,7 @@ class Test(unittest.TestCase):
         off = 0.5
         setMresDirOff(self, tc_no, mres, dir, off)
         InitLimitsWithROlimits(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
 
     def test_TC_90081(self):
         self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")

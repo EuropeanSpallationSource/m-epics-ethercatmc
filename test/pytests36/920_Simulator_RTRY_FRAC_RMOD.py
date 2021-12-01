@@ -50,7 +50,7 @@ def setMotorStartPos(self, tc_no, startpos):
 
 def positionAndBacklash(self, tc_no, rmod, encRel, motorStartPos, motorEndPos):
     ###########
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no))
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
 
     mot = self.axisCom.getMotorPvName()
     fileName = "/tmp/" + mot.replace(":", "-") + "-" + str(tc_no)
@@ -97,9 +97,9 @@ def positionAndBacklash(self, tc_no, rmod, encRel, motorStartPos, motorEndPos):
         tc_no, expFileName, actFileName
     )
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no))
+        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
