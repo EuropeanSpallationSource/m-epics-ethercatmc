@@ -109,7 +109,7 @@ class Test(unittest.TestCase):
         self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
         self.axisMr.initializeMotorRecordSimulatorAxis(tc_no)
         self.axisMr.motorInitAllForBDST(tc_no)
-        self.axisCom.put(".SPAM", 255)
+        self.axisMr.setFieldSPAM(tc_no, 255)
         self.axisCom.put("-DbgStrToLOG", "Finish " + str(tc_no), wait=True)
 
     # JOG forward & backlash compensation, absolute
