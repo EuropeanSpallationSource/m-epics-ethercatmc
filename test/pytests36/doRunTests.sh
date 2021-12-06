@@ -40,6 +40,11 @@ while test -n "$1" && test -f "$1"; do
     shift 1
 done
 
+if test "$1" = "-k" && test "$2" != ""; then
+    MOREARGS="-k $2"
+    shift 2
+fi
+
 if test -n "$1" && test "$1" -ne 0; then
     numruns=$1
     shift 1
@@ -67,14 +72,14 @@ while test $numruns -gt 0; do
     echo files=$files
     for file in $files; do
       echo file=$file
-      run_pytest "$@" $file || exit 1
+      run_pytest "$@" $file $MOREARGS || exit 1
     done
   else
     py=$(echo *.py | sort)
     echo py=$py
     for p in $py
     do
-      run_pytest "$@" $p || exit 1
+      run_pytest "$@" $p $MOREARGS || exit 1
     done
   fi
   echo Runs left=$numruns
