@@ -8,6 +8,7 @@ import datetime
 import unittest
 import os
 import sys
+import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
@@ -15,6 +16,7 @@ filnam = "100xx.py"
 
 ###
 
+polltime = 0.2
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
@@ -33,10 +35,11 @@ class Test(unittest.TestCase):
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
         )
+        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
 
         # Get values to be able calculate a timeout
         range_postion = axisCom.get(".HLM") - axisCom.get(".LLM")
-        hvel = axisCom.get(".HVEL")
+        hvel = float(axisCom.get(".HVEL"))
         accl = axisCom.get(".ACCL")
         msta = int(axisCom.get(".MSTA"))
 
@@ -46,6 +49,7 @@ class Test(unittest.TestCase):
             time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
         else:
             time_to_wait = 180
+        print(f"range_postion={range_postion} hvel={hvel} time_to_wait={time_to_wait}")
 
         # If we are sitting on the High limit switch, use HOMR
         if msta & axisMr.MSTA_BIT_PLUS_LS:
@@ -54,7 +58,19 @@ class Test(unittest.TestCase):
             axisCom.put(".HOMF", 1)
         axisMr.waitForStartAndDone(tc_no, time_to_wait)
 
-        msta = int(axisCom.get(".MSTA"))
-        self.assertNotEqual(
-            0, msta & axisMr.MSTA_BIT_HOMED, "MSTA.homed (Axis has been homed)"
-        )
+        # Wait a little bit, motor/master reports "done" already when hitting a limit switch
+        # Give the "homed" bit a chance to ripple through the poller
+        while time_to_wait > 0:
+            msta = int(axisCom.get(".MSTA"))
+            print(f"msta={self.axisMr.getMSTAtext(msta)}")
+            time.sleep(polltime)
+            time_to_wait -= polltime
+            if msta & axisMr.MSTA_BIT_HOMED:
+                time_to_wait = 0
+        testPassed =  msta & axisMr.MSTA_BIT_HOMED
+        if testPassed:
+            self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        else:
+            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        assert testPassed
+
