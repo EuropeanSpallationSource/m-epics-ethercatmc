@@ -528,9 +528,13 @@ class AxisMr:
         if self.axisCom.get(".BACC") !=  self.myBACC:
             init_needed = init_needed + 128
         if self.axisCom.get(".RTRY") !=  self.myRTRY:
-            init_needed = init_needed + 256
+            self.axisCom.put(".RTRY", self.myRTRY)
         if self.axisCom.get(".DLY") != self.myDLY:
+            init_needed = init_needed + 256
+        if self.axisCom.get(".HLM") != 0.0:
             init_needed = init_needed + 512
+        if self.axisCom.get(".LLM") != 0.0:
+            init_needed = init_needed + 1024
         if init_needed == 0:
             return
         debug_text = f"{tc_no}#{lineno()} init_needed=0x{init_needed:X}"
