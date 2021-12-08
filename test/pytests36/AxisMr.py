@@ -44,6 +44,13 @@ class AxisMr:
             # Dummy read to give the IOC time to start
             try:
                 msta = int(axisCom.get(".MSTA", timeout=2.0, use_monitor=False))
+                vers = float(self.axisCom.get(".VERS"))
+                if vers >= 6.94 and vers <= 7.09:
+                    self.hasFieldSPAM = True
+                    self.isMotorMasterAxis = False
+                else:
+                    self.hasFieldSPAM = False
+                    self.isMotorMasterAxis = True
                 return
             except:
                 pass
@@ -135,6 +142,12 @@ class AxisMr:
         if self.hasFieldSPAM == True:
             return self.axisCom.get(".SPAM")
         return None
+
+    def getIsMotorMaster(
+        self,
+        tc_no,
+    ):
+        return self.isMotorMasterAxis
 
     def initializeMotorRecordOneField(self, tc_no, field_name, value):
         oldVal = self.axisCom.get(field_name)
