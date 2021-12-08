@@ -529,6 +529,8 @@ class AxisMr:
             init_needed = init_needed + 128
         if self.axisCom.get(".RTRY") !=  self.myRTRY:
             self.axisCom.put(".RTRY", self.myRTRY)
+        if self.axisCom.get(".BDST") !=  self.myBDST:
+            self.axisCom.put(".BDST", self.myBDST)
         if self.axisCom.get(".DLY") != self.myDLY:
             init_needed = init_needed + 256
         if self.axisCom.get(".HLM") != 0.0:

@@ -205,9 +205,16 @@ class Test(unittest.TestCase):
         if isMotorMaster:
             maxcnt = 1 + int(self.axisCom.get(".RTRY"))
             myFRAC = withFRAC
+            # Workaround: need to reset the .RCNT field
+            self.axisCom.put(".FRAC", 1.0)
+            self.axisCom.put(".BDST", 0.0)
+            myPos = (self.myPOSlow + self.myPOSmid) / 2.0
+            self.axisCom.put(".VAL", myPos, wait=True)
         else:
             maxcnt = 1
             myFRAC = noFRAC
+        debug_text = f"{tc_no}#{lineno()} maxcnt={maxcnt} myFRAC={myFRAC}"
+        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
         jogAndBacklash(
             self,
             91041,
