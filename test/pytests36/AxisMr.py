@@ -11,6 +11,7 @@ import time
 import os
 import filecmp
 import time
+import inspect
 
 from AxisCom import AxisCom
 
@@ -25,6 +26,8 @@ motorRMOD_I = 3  # "In-Position"
 
 polltime = 0.2
 
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 class AxisMr:
     def __init__(self, axisCom, url_string=None):
@@ -490,6 +493,37 @@ class AxisMr:
             debug_text = f"stat={stat} sevr={sevr}"
             raise Exception(debug_text)
 
+
+    def motorInitAllForBDSTIfNeeded(self, tc_no):
+        init_needed = 0
+        if self.axisCom.get(".MRES") !=  self.myMRES:
+            init_needed = init_needed + 1
+        if self.axisCom.get(".DIR") != self.myDIR:
+            init_needed = init_needed + 2
+        if self.axisCom.get(".OFF") != self.myOFF:
+            init_needed = init_needed + 1
+        if self.axisCom.get(".VELO") !=  self.myVELO:
+            init_needed = init_needed + 4
+        if self.axisCom.get(".ACCL") !=  self.myACCL:
+            init_needed = init_needed + 8
+        if self.axisCom.get(".JVEL") !=  self.myJVEL:
+            init_needed = init_needed + 16
+        if self.axisCom.get(".JAR") != self.myJAR:
+            init_needed = init_needed + 32
+        if self.axisCom.get(".BVEL") !=  self.myBVEL:
+            init_needed = init_needed + 64
+        if self.axisCom.get(".BACC") !=  self.myBACC:
+            init_needed = init_needed + 128
+        if self.axisCom.get(".RTRY") !=  self.myRTRY:
+            init_needed = init_needed + 256
+        if self.axisCom.get(".DLY") != self.myDLY:
+            init_needed = init_needed + 512
+        if init_needed == 0:
+            return
+        debug_text = f"{tc_no}#{lineno()} init_needed=0x{init_needed:X}"
+        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+        self.motorInitAllForBDST(tc_no)
+
     def motorInitAllForBDST(self, tc_no):
         startPos = 0.0
         # The next is needed to change MRES_23/24 further down
@@ -547,6 +581,15 @@ class AxisMr:
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: writeExpFileRMOD_X encRel={encRel} motorStartPos={motorStartPos} motorEndPos={motorEndPos} directionOfMove{directionOfMove} directionOfBL={directionOfBL}"
         )
+        vers = float(self.axisCom.get(".VERS"))
+
+        need_007_017_tweak = False
+        if 92007 == tc_no or 92017 == tc_no:
+            need_007_017_tweak = True
+
+        motor_master = False
+        if vers > 7.19:
+            motor_master = True
 
         if rmod == motorRMOD_I:
             maxcnt = 1  # motorRMOD_I means effecttivly "no retry"
@@ -555,91 +598,140 @@ class AxisMr:
             maxcnt = 1 + int(self.axisCom.get(".RTRY"))
 
         cnt = 0
-        if (
-            abs(motorEndPos - motorStartPos) <= abs(self.myBDST)
-            and directionOfMove == directionOfBL
-        ):
-            while cnt < maxcnt:
+        # motorRecord uses a margin: one step
+        rbdst1 = abs(self.myBDST) + 1.0 / abs(self.myMRES)
+        debug_text = f"{tc_no}#{lineno()} Start={motorStartPos} End={motorEndPos} rbdst1={rbdst1}"
+        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+        debug_text = f"{tc_no}#{lineno()} dirMove={directionOfMove} dirBL={directionOfBL} BDST={self.myBDST}"
+        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+        while cnt < maxcnt:
+            line1 = ""
+            line2 = ""
+            factor = 1.0
+            if cnt > 1:
+                if encRel:
+                    if rmod == motorRMOD_A:
+                        # From motorRecord.cc:
+                        # factor = (pmr->rtry - pmr->rcnt + 1.0) / pmr->rtry;
+                        factor = 1.0 * (self.myRTRY - cnt + 1.0) / self.myRTRY
+                    elif rmod == motorRMOD_G:
+                        # factor = 1 / pow(2.0, (pmr->rcnt - 1));
+                        rcnt_1 = cnt - 1
+                        factor = 1.0
+                        while rcnt_1 > 0:
+                            factor = factor / 2.0
+                            rcnt_1 -= 1
+            if (
+                    abs(motorEndPos - motorStartPos) < rbdst1
+                    and directionOfMove == directionOfBL
+            ):
+                moveWithBL = True
+            else:
+                moveWithBL = False
+            debug_text = f"{tc_no}#{lineno()} moveWithBL={moveWithBL}"
+            self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+            if moveWithBL:
                 # calculate the delta to move
                 # The calculated delta is the scaled, and used for both absolute and relative
                 # movements
                 delta = motorEndPos - motorStartPos
+                debug_text = f"{tc_no}#{lineno()} delta={delta}"
+                self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
                 if cnt > 1:
                     if rmod == motorRMOD_A:
-                        # From motorRecord.cc:
-                        # factor = (pmr->rtry - pmr->rcnt + 1.0) / pmr->rtry;
-                        factor = 1.0 * (self.myRTRY - cnt + 1.0) / self.myRTRY
                         delta = delta * factor
                     elif rmod == motorRMOD_G:
-                        # factor = 1 / pow(2.0, (pmr->rcnt - 1));
-                        rcnt_1 = cnt - 1
-                        factor = 1.0
-                        while rcnt_1 > 0:
-                            factor = factor / 2.0
-                            rcnt_1 -= 1
                         delta = delta * factor
 
                 if encRel:
                     line1 = (
-                        "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                        "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
                         % (delta * frac, self.myBVEL, self.myBAR, motorStartPos)
                     )
                 else:
-                    line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g" % (
-                        motorStartPos + delta,
+                    if motor_master:
+                        deltaFrac = delta * frac
+                    else:
+                        deltaFrac = delta
+                    line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n" % (
+                        motorStartPos + deltaFrac,
                         self.myBVEL,
                         self.myBAR,
                         motorStartPos,
                     )
-                expFile.write(f"{line1}\n")
+                    # The way the simulation is written,
+                    # the motor/master re-tries and moves from startpos to startpos
+                    # But not in the last round
+                    if motor_master and (cnt < maxcnt - 1):
+                        line2 = (
+                            "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
+                            % (motorStartPos, self.myVELO, self.myAR, motorStartPos))
+
+
+                expFile.write(f"{line1}{line2}")
                 cnt += 1
-        else:
-            # As we don't move the motor (it is simulated, we both times start at motorStartPos
-            while cnt < maxcnt:
+            else:
+                # As we don't move the motor (it is simulated, we both times start at motorStartPos
                 # calculate the delta to move
                 # The calculated delta is the scaled, and used for both absolute and relative
                 # movements
-                delta = motorEndPos - motorStartPos - self.myBDST
-                if cnt > 1:
-                    if rmod == motorRMOD_A:
-                        # From motorRecord.cc:
-                        # factor = (pmr->rtry - pmr->rcnt + 1.0) / pmr->rtry;
-                        factor = 1.0 * (self.myRTRY - cnt + 1.0) / self.myRTRY
-                        delta = delta * factor
-                    elif rmod == motorRMOD_G:
-                        # factor = 1 / pow(2.0, (pmr->rcnt - 1));
-                        rcnt_1 = cnt - 1
-                        factor = 1.0
-                        while rcnt_1 > 0:
-                            factor = factor / 2.0
-                            rcnt_1 -= 1
-                        delta = delta * factor
-
+                deltaPos1 = motorEndPos - motorStartPos - bdst
+                deltaToMov1 = deltaPos1 * factor
+                delta = motorEndPos - motorStartPos
+                debug_text = f"{tc_no}#{lineno()} deltaToMov1={deltaToMov1}"
+                self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
                 if encRel:
-                    line1 = (
-                        "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                        % (delta * frac, self.myVELO, self.myAR, motorStartPos)
-                    )
+                    # Do not move relative 0
+                    if deltaToMov1 != 0:
+                        line1 = (
+                            "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
+                            % (deltaToMov1, self.myVELO, self.myAR, motorStartPos)
+                        )
                     # Move forward with backlash parameters
-                    # Note: This should be self.myBDST, but since we don't move the motor AND
+                    # Note: This should be bdst, but since we don't move the motor AND
                     # the record uses the readback value, use "motorEndPos - motorStartPos"
                     delta = motorEndPos - motorStartPos
+                    deltaToMov2 = delta * frac
+                    debug_text = f"{tc_no}#{lineno()} line2 deltaToMov2={deltaToMov2}"
+                    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
                     line2 = (
-                        "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                        % (delta * frac, self.myBVEL, self.myBAR, motorStartPos)
+                        "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
+                        % (deltaToMov2, self.myBVEL, self.myBAR, motorStartPos)
                     )
                 else:
-                    line1 = (
-                        "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                        % (motorStartPos + delta, self.myVELO, self.myAR, motorStartPos)
+                    # Do not move relative 0
+                    if deltaToMov1 != 0:
+                        line1 = (
+                            "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
+                            % (motorStartPos + deltaToMov1, self.myVELO, self.myAR, motorStartPos)
                     )
+                    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
                     # Move forward with backlash parameters
-                    line2 = (
-                        "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                        % (motorEndPos, self.myBVEL, self.myBAR, motorStartPos)
-                    )
+                    # motor/master moves too far after the motor had gone stuck
+                    ## motor/master uses frac for backlash. motorRecord uses mres when talking to hardware
+                    # double bpos = (pmr->dval - pmr->bdst) / pmr->mres;
+                    # double currpos = pmr->dval / pmr->mres;
+                    # double newpos = bpos + pmr->frac * (currpos - bpos);
+                    bpos = motorEndPos - bdst
+                    if motor_master:
+                        destPos2 = bpos + frac * (motorEndPos -bpos)
+                    else:
+                        destPos2 = motorEndPos
+                    debug_text = f"{tc_no}#{lineno()} bpos={bpos} motorEndPos={motorEndPos}"
+                    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
 
-                expFile.write(f"{line1}\n{line2}\n")
+                    debug_text = f"{tc_no}#{lineno()} destPos2={destPos2}"
+                    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+
+                    line2 = (
+                        "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
+                        % (destPos2, self.myBVEL, self.myBAR, motorStartPos)
+                    )
+                if need_007_017_tweak and cnt == 0 :
+                    # No retry yet
+                    expFile.write(f"{line2}")
+                else:
+                    expFile.write(f"{line1}{line2}")
                 cnt += 1
         expFile.write("EOF\n")
         expFile.close()
@@ -654,6 +746,14 @@ class AxisMr:
         motorStartPos,
         motorEndPos,
     ):
+        vers = float(self.axisCom.get(".VERS"))
+        motor_master = False
+        if vers > 7.19:
+            motor_master = True
+
+        bdst = float(self.axisCom.get(".BDST", timeout=2.0, use_monitor=False))
+        debug_text = f"{tc_no}#{lineno()} Start={motorStartPos} End={motorEndPos} bdst={bdst} encRel={encRel}"
+        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
         # Create a "expected" file
         expFile = open(expFileName, "w")
 
@@ -662,7 +762,7 @@ class AxisMr:
             "move velocity direction=%d max_velocity=%g acceleration=%g motorPosNow=%g"
             % (myDirection, self.myJVEL, self.myJAR, motorStartPos)
         )
-        deltaForth = self.myBDST * frac
+        deltaForth = bdst
         # The record tells us to go "delta * frac". Once we have travelled, we are too far
         # The record will read that we are too far, and ask to go back "too far", overcompensated
         # again with frac
@@ -686,7 +786,7 @@ class AxisMr:
                 # motorRecord will do retries.
                 motorPosNow = motorPosNow + deltaBack
                 # Backlash is DVAL - BDST (with DVAL == motorEndPos)
-                newMotorPos = motorEndPos - self.myBDST
+                newMotorPos = motorEndPos - bdst
                 commandedDelta = (newMotorPos - motorPosNow) * frac
                 line4 = (
                     "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
@@ -708,12 +808,19 @@ class AxisMr:
             # Move back in positioning mode
             line2 = (
                 "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                % (motorEndPos - self.myBDST, self.myVELO, self.myAR, motorEndPos)
+                % (motorEndPos - bdst, self.myVELO, self.myAR, motorEndPos)
             )
-            # Move forward with backlash parameters
+            # Move forward with backlash parameters times frac
+            #double currpos = pmr->dval / pmr->mres;
+            #double newpos = bpos + pmr->frac * (currpos - bpos);
+            posNow =  motorEndPos - bdst
+            if motor_master:
+                deltaToMove = bdst * frac
+            else:
+                deltaToMove = bdst
             line3 = (
                 "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                % (motorEndPos, self.myBVEL, self.myBAR, motorEndPos - self.myBDST)
+                % (posNow + deltaToMove, self.myBVEL, self.myBAR, posNow)
             )
             expFile.write(f"{line1}\n{line2}\n{line3}\n")
 
