@@ -28,31 +28,25 @@ noFRAC = 1.0
 withFRAC = 1.5
 
 
-def motorInitTC(self, tc_no, frac, encRel):
+def jogAndBacklash(self, tc_no, frac, encRel, maxcnt, StartPos, EndPos, myJOGX):
+    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisMr.motorInitAllForBDSTIfNeeded(tc_no)
     self.axisCom.put(".FRAC", frac)
     self.axisCom.put(".UEIP", encRel)
     self.axisCom.put(".RTRY", 1)
-    msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-    print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} motorInitTC msta={self.axisMr.getMSTAtext(msta)}"
-    )
 
-
-def setMotorStartPos(self, tc_no, startpos):
-    self.axisMr.setValueOnSimulator(tc_no, "fActPosition", startpos)
-    # Run a status update and a sync
-    self.axisMr.doSTUPandSYNC(tc_no)
-
-
-def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
     mot = self.axisCom.getMotorPvName()
     fileName = "/tmp/" + mot.replace(":", "-") + "-" + str(tc_no)
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
 
-    motorInitTC(self, tc_no, frac, encRel)
-    setMotorStartPos(self, tc_no, StartPos)
+    self.axisMr.setFieldSPAM(tc_no, -1)
+    testPassed = self.axisMr.setMotorStartPos(tc_no, StartPos)
+
+    if not testPassed:
+        self.axisCom.put("-DbgStrToLOG", "FailedX " + str(tc_no), wait=True)
+    assert testPassed
+
     self.axisMr.setValueOnSimulator(tc_no, "log", actFileName)
     if myJOGX == "JOGF":
         myDirection = 1
@@ -66,6 +60,7 @@ def jogAndBacklash(self, tc_no, frac, encRel, StartPos, EndPos, myJOGX):
         myDirection,
         frac,
         encRel,
+        maxcnt,
         StartPos,
         EndPos,
     )
@@ -119,6 +114,7 @@ class Test(unittest.TestCase):
             91011,
             noFRAC,
             use_abs,
+            1,
             self.myPOSlow,
             self.myPOSmid,
             "JOGF",
@@ -131,6 +127,7 @@ class Test(unittest.TestCase):
             91012,
             noFRAC,
             use_rel,
+            1,
             self.myPOSmid,
             self.myPOSlow,
             "JOGF",
@@ -143,6 +140,7 @@ class Test(unittest.TestCase):
             91021,
             noFRAC,
             use_abs,
+            1,
             self.myPOSlow,
             self.myPOSmid,
             "JOGR",
@@ -155,6 +153,7 @@ class Test(unittest.TestCase):
             91022,
             noFRAC,
             use_rel,
+            1,
             self.myPOSmid,
             self.myPOSlow,
             "JOGR",
@@ -162,11 +161,13 @@ class Test(unittest.TestCase):
 
     # JOG forward & backlash compensation, absolute
     def test_TC_91031(self):
+        maxcnt = 1 + int(self.axisCom.get(".RTRY"))
         jogAndBacklash(
             self,
             91031,
             withFRAC,
             use_abs,
+            maxcnt,
             self.myPOSlow,
             self.myPOSmid,
             "JOGF",
@@ -177,8 +178,9 @@ class Test(unittest.TestCase):
         jogAndBacklash(
             self,
             91032,
-            withFRAC,
+            noFRAC, ##withFRAC,
             use_rel,
+            1,
             self.myPOSmid,
             self.myPOSlow,
             "JOGF",
@@ -186,11 +188,13 @@ class Test(unittest.TestCase):
 
     # JOG backward & backlash compensation, absolute
     def test_TC_91041(self):
+        maxcnt = 1 + int(self.axisCom.get(".RTRY"))
         jogAndBacklash(
             self,
             91041,
             withFRAC,
             use_abs,
+            maxcnt,
             self.myPOSlow,
             self.myPOSmid,
             "JOGR",
@@ -201,8 +205,9 @@ class Test(unittest.TestCase):
         jogAndBacklash(
             self,
             91042,
-            withFRAC,
+            noFRAC, ##withFRAC,
             use_rel,
+            1,
             self.myPOSmid,
             self.myPOSlow,
             "JOGR",

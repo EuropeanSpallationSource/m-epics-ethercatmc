@@ -743,13 +743,14 @@ class AxisMr:
         myDirection,
         frac,
         encRel,
+        maxcnt,
         motorStartPos,
         motorEndPos,
     ):
-        vers = float(self.axisCom.get(".VERS"))
-        motor_master = False
-        if vers > 7.19:
-            motor_master = True
+        #vers = float(self.axisCom.get(".VERS"))
+        #motor_master = False
+        #if vers > 7.19:
+        #    motor_master = True
 
         bdst = float(self.axisCom.get(".BDST", timeout=2.0, use_monitor=False))
         debug_text = f"{tc_no}#{lineno()} Start={motorStartPos} End={motorEndPos} bdst={bdst} encRel={encRel}"
@@ -805,24 +806,28 @@ class AxisMr:
                 rtry = rtry - 1
 
         else:
+            expFile.write(f"{line1}\n")
+            startPosLine2 = motorEndPos
             # Move back in positioning mode
-            line2 = (
-                "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                % (motorEndPos - bdst, self.myVELO, self.myAR, motorEndPos)
-            )
-            # Move forward with backlash parameters times frac
-            #double currpos = pmr->dval / pmr->mres;
-            #double newpos = bpos + pmr->frac * (currpos - bpos);
-            posNow =  motorEndPos - bdst
-            if motor_master:
+            while maxcnt > 0:
+                line2 = (
+                    "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                    % (motorEndPos - bdst, self.myVELO, self.myAR, startPosLine2)
+                )
+                # Move forward with backlash parameters times frac
+                #double currpos = pmr->dval / pmr->mres;
+                #double newpos = bpos + pmr->frac * (currpos - bpos);
+                posNow =  motorEndPos - bdst
                 deltaToMove = bdst * frac
-            else:
-                deltaToMove = bdst
-            line3 = (
-                "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                % (posNow + deltaToMove, self.myBVEL, self.myBAR, posNow)
-            )
-            expFile.write(f"{line1}\n{line2}\n{line3}\n")
+                endPosLine3 = posNow + deltaToMove
+                line3 = (
+                    "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                    % (endPosLine3, self.myBVEL, self.myBAR, posNow)
+                )
+                startPosLine2 = endPosLine3
+                expFile.write(f"{line2}\n{line3}\n")
+                maxcnt = maxcnt - 1
+
 
         expFile.write("EOF\n")
         expFile.close()
