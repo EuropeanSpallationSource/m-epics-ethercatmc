@@ -161,11 +161,20 @@ class Test(unittest.TestCase):
 
     # JOG forward & backlash compensation, absolute
     def test_TC_91031(self):
-        maxcnt = 1 + int(self.axisCom.get(".RTRY"))
+        tc_no = 91031
+        # motor/master: Uses FRAC for absolute (which is wrong, I think)
+        # and ends up in a retry.
+        isMotorMaster = self.axisMr.getIsMotorMaster(tc_no)
+        if isMotorMaster:
+            maxcnt = 1 + int(self.axisCom.get(".RTRY"))
+            myFRAC = withFRAC
+        else:
+            maxcnt = 1
+            myFRAC = noFRAC
         jogAndBacklash(
             self,
-            91031,
-            withFRAC,
+            tc_no,
+            myFRAC,
             use_abs,
             maxcnt,
             self.myPOSlow,
@@ -189,10 +198,20 @@ class Test(unittest.TestCase):
     # JOG backward & backlash compensation, absolute
     def test_TC_91041(self):
         maxcnt = 1 + int(self.axisCom.get(".RTRY"))
+        tc_no = 91031
+        # motor/master: Uses FRAC for absolute (which is wrong, I think)
+        # and ends up in a retry.
+        isMotorMaster = self.axisMr.getIsMotorMaster(tc_no)
+        if isMotorMaster:
+            maxcnt = 1 + int(self.axisCom.get(".RTRY"))
+            myFRAC = withFRAC
+        else:
+            maxcnt = 1
+            myFRAC = noFRAC
         jogAndBacklash(
             self,
             91041,
-            withFRAC,
+            myFRAC,
             use_abs,
             maxcnt,
             self.myPOSlow,
