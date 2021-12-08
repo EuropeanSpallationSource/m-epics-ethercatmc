@@ -867,6 +867,22 @@ class AxisMr:
 
         return sameContent
 
+    def setMotorStartPos(self, tc_no, startpos):
+        self.setValueOnSimulator(tc_no, "fActPosition", startpos)
+        # Run a status update and a sync
+        self.doSTUPandSYNC(tc_no)
+        maxDelta = 0.1
+        timeout = 2.0
+        valueRBVok = self.waitForValueChanged(
+            tc_no, ".RBV", startpos, maxDelta, timeout
+        )
+        self.doSTUPandSYNC(tc_no)
+        valueVALok = self.waitForValueChanged(
+            tc_no, ".VAL", startpos, maxDelta, timeout
+        )
+        return valueRBVok and valueVALok
+
+
     def setSoftLimitsOff(self, tc_no, direction=-1):
         """
         Switch off the soft limits

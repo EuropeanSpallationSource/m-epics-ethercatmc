@@ -42,22 +42,6 @@ def motorInitTC(self, tc_no, rmod, encRel):
     self.axisCom.put(".UEIP", encRel)
 
 
-def setMotorStartPos(self, tc_no, startpos):
-    self.axisMr.setValueOnSimulator(tc_no, "fActPosition", startpos)
-    # Run a status update and a sync
-    self.axisMr.doSTUPandSYNC(tc_no)
-    maxDelta = 0.1
-    timeout = 2.0
-    valueRBVok = self.axisMr.waitForValueChanged(
-        tc_no, ".RBV", startpos, maxDelta, timeout
-    )
-    self.axisMr.doSTUPandSYNC(tc_no)
-    valueVALok = self.axisMr.waitForValueChanged(
-        tc_no, ".VAL", startpos, maxDelta, timeout
-    )
-    return valueRBVok and valueVALok
-
-
 def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEndPos):
     ###########
     self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
@@ -72,7 +56,7 @@ def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEnd
 
     motorInitTC(self, tc_no, rmod, encRel)
     self.axisMr.setFieldSPAM(tc_no, -1)
-    testPassed = setMotorStartPos(self, tc_no, motorStartPos)
+    testPassed = self.axisMr.setMotorStartPos(tc_no, motorStartPos)
 
     if not testPassed:
         self.axisCom.put("-DbgStrToLOG", "FailedX " + str(tc_no), wait=True)
