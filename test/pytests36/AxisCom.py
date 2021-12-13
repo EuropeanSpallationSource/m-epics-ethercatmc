@@ -111,5 +111,19 @@ class AxisCom:
             if caput_ret != 1:
                 raise Exception(f"caput({pvname},{value}) returned error {caput_ret}")
 
+    def putDbgStrToLOG(
+            self,
+            value,
+            wait=True,
+            timeout=5.0
+    ):
+        pvsuf = "-DbgStrToLOG"
+        try:
+            self.put(pvsuf, value, wait=wait, timeout=timeout)
+        except Exception as ex:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {pvsuf} value={value} ex={ex}"
+            )
+
     def getMotorPvName(self):
         return self.pvpfx

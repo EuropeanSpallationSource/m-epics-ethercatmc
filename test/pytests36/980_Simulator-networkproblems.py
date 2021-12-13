@@ -37,7 +37,7 @@ def lineno():
 
 def simulateNetworkProblem(self, tc_no, simulatedNetworkProblem):
     myHighHardLimitPos = tc_no
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisMr.setValueOnSimulator(tc_no, "fHighHardLimitPos", myHighHardLimitPos)
     self.axisMr.setValueOnSimulator(
         tc_no, "ads.simulatedNetworkProblem", simulatedNetworkProblem
@@ -46,15 +46,15 @@ def simulateNetworkProblem(self, tc_no, simulatedNetworkProblem):
         tc_no, "-CfgPMAX-RB", myHighHardLimitPos, maxDelta, timeout
     )
     if passed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert passed
 
 
 def invalidNetworkProblem(self, tc_no, simulatedNetworkProblem):
     myHighHardLimitPos = tc_no
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisMr.setValueOnSimulator(tc_no, "fHighHardLimitPos", myHighHardLimitPos)
     passed = False
     try:
@@ -71,9 +71,9 @@ def invalidNetworkProblem(self, tc_no, simulatedNetworkProblem):
             passed = True
 
     if passed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert passed
 
 

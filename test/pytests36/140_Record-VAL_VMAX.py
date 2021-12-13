@@ -11,7 +11,7 @@ from AxisCom import AxisCom
 
 
 def motorPositionTC(self, tc_no, destination, velocity):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     msta = int(self.axisCom.get(".MSTA"))
     if msta & self.axisMr.MSTA_BIT_HOMED:
         # self.axisCom.put('-DbgStrToLOG', "Start TC " + tc_no[0:20], wait=True);
@@ -26,9 +26,9 @@ def motorPositionTC(self, tc_no, destination, velocity):
         print(f"{tc_no} postion={UserPosition:f} destination={destination:f}")
         testPassed = self.axisMr.postMoveCheck(tc_no)
         if testPassed:
-            self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
         else:
-            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
         assert testPassed
 
 

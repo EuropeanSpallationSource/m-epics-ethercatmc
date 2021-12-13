@@ -38,7 +38,7 @@ def calcDistanceMax4Seconds(llm, hlm, velo, fourSeconds):
 def moveVALnewRBVnewValNtmRtryDly(
     self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm, rtry, dly
 ):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     # Go to start
     oldDLY = self.axisCom.get(".DLY")
     oldNTM = self.axisCom.get(".NTM")
@@ -68,7 +68,7 @@ def moveVALnewRBVnewValNtmRtryDly(
 
     # Extra long timeout: The motor may overshoot, kind of
     timeout = 2 * self.axisMr.calcTimeOut(secondVal, velo)
-    self.axisCom.put("-DbgStrToLOG", "NewVAL " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("NewVAL " + str(tc_no), wait=True)
     self.axisCom.put(".VAL", secondVal)
 
     rdbd = self.axisCom.get(".RDBD")
@@ -87,9 +87,9 @@ def moveVALnewRBVnewValNtmRtryDly(
     self.axisCom.put(".RTRY", oldRTRY)
     self.axisCom.put(".SPAM", oldSPAM)
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert testPassed
 
 

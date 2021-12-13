@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
         )
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
 
         # Get values to be able calculate a timeout
         range_postion = axisCom.get(".HLM") - axisCom.get(".LLM")
@@ -69,8 +69,8 @@ class Test(unittest.TestCase):
                 time_to_wait = 0
         testPassed =  msta & axisMr.MSTA_BIT_HOMED
         if testPassed:
-            self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
         else:
-            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
         assert testPassed
 

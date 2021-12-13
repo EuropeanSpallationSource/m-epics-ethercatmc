@@ -49,10 +49,10 @@ def readBackParamVerify(self, tc_no, field_name, expVal):
 def writeReadMotorFlag(self, tc_no, field_name="invalid_field_name", bit_mask=0):
     mflg_orig = int(self.axisCom.get(".MFLG"))
     field_sevr = self.axisCom.get(field_name + ".SEVR")
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     print(f"field_name={field_name} bit_mask={bit_mask} field_sevr={field_sevr}")
     if field_sevr != 0:
-        self.axisCom.put("-DbgStrToLOG", "Skipped " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Skipped " + str(tc_no), wait=True)
         return True
 
     if (mflg_orig & bit_mask) != 0:
@@ -72,9 +72,9 @@ def writeReadMotorFlag(self, tc_no, field_name="invalid_field_name", bit_mask=0)
 
     testPassed = testPassedFirst and testPassedLast
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     return testPassed
 
 

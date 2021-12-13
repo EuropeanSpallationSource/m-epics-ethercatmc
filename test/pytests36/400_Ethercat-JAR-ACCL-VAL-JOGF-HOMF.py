@@ -46,15 +46,15 @@ class Test(unittest.TestCase):
     # 10% dialPosition
     def test_TC_4002(self):
         tc_no = "4002"
-        self.axisCom.put("-DbgStrToLOG", "Start " + tc_no, wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + tc_no, wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             self.axisMr.moveWait(tc_no, self.per10_UserPosition)
-        self.axisCom.put("-DbgStrToLOG", "End " + tc_no, wait=True)
+        self.axisCom.putDbgStrToLOG("End " + tc_no, wait=True)
 
     # 20% dialPosition
     def test_TC_4003(self):
         tc_no = "4003"
-        self.axisCom.put("-DbgStrToLOG", "Start " + tc_no, wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + tc_no, wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             saved_ACCL = float(self.axisCom.get(".ACCL"))
             saved_VELO = float(self.axisCom.get(".VELO"))
@@ -69,19 +69,19 @@ class Test(unittest.TestCase):
                 f"{tc_no} ACCL={used_ACCL:f} expacc={expacc:f} resacc={resacc:f} testPassed=[testPassed]"
             )
             if testPassed:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+                self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
             else:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
             assert testPassed
         else:
-            self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
     # JOGR
     def test_TC_4004(self):
         tc_no = "4004"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
             accl = float(self.axisCom.get(".ACCL"))
             jvel = float(self.axisCom.get(".JVEL"))
             saved_JAR = float(self.axisCom.get(".JAR"))
@@ -102,9 +102,9 @@ class Test(unittest.TestCase):
                 f"{tc_no} JAR={used_JAR:f} expacc={expacc:f} resacc={resacc:f} testPassed={testPassed}"
             )
             if testPassed:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+                self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
             else:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
             assert testPassed
         else:
-            self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)

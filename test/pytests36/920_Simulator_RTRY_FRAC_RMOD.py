@@ -44,7 +44,7 @@ def motorInitTC(self, tc_no, rmod, encRel):
 
 def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEndPos):
     ###########
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisMr.motorInitAllForBDSTIfNeeded(tc_no)
     self.axisCom.put(".FRAC", myFRAC)
     self.axisCom.put(".BDST", bdst)
@@ -59,7 +59,7 @@ def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEnd
     testPassed = self.axisMr.setMotorStartPos(tc_no, motorStartPos)
 
     if not testPassed:
-        self.axisCom.put("-DbgStrToLOG", "FailedX " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("FailedX " + str(tc_no), wait=True)
     assert testPassed
 
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
@@ -100,9 +100,9 @@ def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEnd
         tc_no, expFileName, actFileName
     )
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert testPassed
 
 

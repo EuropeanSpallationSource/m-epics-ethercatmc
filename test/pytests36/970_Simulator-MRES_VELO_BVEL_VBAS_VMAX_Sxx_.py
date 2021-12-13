@@ -88,7 +88,7 @@ def checkAllVelocities(self, tc_no, expVELO):
 
 
 def changeResolutionCheckVelocities(self, tc_no, field_name, drvUseEGU=0):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     expVELO = self.axisCom.get(".VELO")
     oldFieldValue = self.axisCom.get(field_name)
 
@@ -105,12 +105,12 @@ def changeResolutionCheckVelocities(self, tc_no, field_name, drvUseEGU=0):
     self.axisCom.put(field_name, oldFieldValue)
     testPassed3 = checkAllVelocities(self, tc_no, expVELO)
     testPassed = testPassed1 and testPassed2 and testPassed3
-    self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
 
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
@@ -134,9 +134,9 @@ class Test(unittest.TestCase):
 
     def test_TC_97000(self):
         tc_no = 97000
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         InitVelocities(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
     # Change UREV VELO must change
     def test_TC_97010(self):
@@ -151,7 +151,7 @@ class Test(unittest.TestCase):
     # Change drvUseEGU = 1
     def test_TC_97030(self):
         tc_no = 97030
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         if self.drvUseEGU_RB != None:
             mflg = int(self.axisCom.get(".MFLG"))
             drvUseEGU = 1
@@ -159,12 +159,12 @@ class Test(unittest.TestCase):
             expMFLG = mflg | 8  # Bit 3
             testPassed = readBackParamVerify(self, tc_no, ".MFLG", expMFLG)
             if testPassed:
-                self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+                self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
             else:
-                self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
             assert testPassed
         else:
-            self.axisCom.put("-DbgStrToLOG", "Skipped " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Skipped " + str(tc_no), wait=True)
 
     # Change UREV VELO must not change
     def test_TC_97040(self):

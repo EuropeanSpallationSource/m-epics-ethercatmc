@@ -87,7 +87,7 @@ def InitLimitsNoROlimits(self, tc_no):
     self.axisCom.put("-CfgDLLM-En", 0, wait=True)
     self.axisCom.put("-CfgDHLM-En", 0, wait=True)
 
-    ## XXX self.axisCom.put("-DbgStrToLOG", "initLim " + str(tc_no)[0:20], wait=True)
+    ## XXX self.axisCom.putDbgStrToLOG("initLim " + str(tc_no)[0:20], wait=True)
     maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
     maxDelta = 0.05  # 5 % error tolerance margin
     while maxTime > 0:
@@ -131,7 +131,7 @@ def jogTheMotorToLS(
     hls=-1,
     lls=-1,
 ):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.assertNotEqual(0, mres, str(tc_no) + "mres must not be 0")
     self.assertNotEqual(-1, dir, str(tc_no) + "dir must not be -1")
     self.assertNotEqual(0, jogX, str(tc_no) + "jogx must not be 0")
@@ -226,9 +226,9 @@ def jogTheMotorToLS(
         and (dlls == actDLLS)
     )
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
@@ -241,7 +241,7 @@ def jogTheMotorChangeJVEL(
     velRB=0,
     accRB=0,
 ):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.assertNotEqual(0, jogX, str(tc_no) + "jogx must not be 0")
     self.assertNotEqual(0, jvel, str(tc_no) + "jvel must not be 0")
     self.assertNotEqual(0, jar, str(tc_no) + "jar must not be 0")
@@ -285,9 +285,9 @@ def jogTheMotorChangeJVEL(
     self.axisMr.waitForStop(tc_no, wait_for_stop)
 
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
@@ -441,10 +441,10 @@ class Test(unittest.TestCase):
     # Initialize
     def test_TC_9500000(self):
         tc_no = 9500000
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         self.axisCom.put(".SPAM", 255)
         InitAllFor950(self, tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
     # DIR = 0
     def test_TC_9500010(self):

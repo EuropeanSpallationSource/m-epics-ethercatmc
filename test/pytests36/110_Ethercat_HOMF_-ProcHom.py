@@ -24,7 +24,7 @@ START_FROM_HLS = 1
 
 
 def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     old_high_limit = self.axisCom.get(".HLM")
     old_low_limit = self.axisCom.get(".LLM")
     old_HomProc = self.axisCom.get("-HomProc")
@@ -122,7 +122,7 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
         tc_no + "MSTA.no MSTA_BIT_SLIP_STALL",
     )
     self.assertNotEqual(0, homed, tc_no + "MSTA.homed (Axis has been homed)")
-    self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
 
 
 class Test(unittest.TestCase):

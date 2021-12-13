@@ -18,7 +18,7 @@ polltime = 0.2
 
 def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
     print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisCom.put(".CNEN", 1)
     self.axisMr.waitForPowerOn(tc_no, 8.0)
     self.axisMr.moveWait(tc_no, startpos)
@@ -73,15 +73,15 @@ def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
     )
     testPassed = int(bError_1) == 0
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     return testPassed
 
 
 def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
     print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisCom.put(".CNEN", 1)
     self.axisMr.waitForPowerOn(tc_no, 8.0)
     self.axisMr.moveWait(tc_no, startpos)
@@ -138,9 +138,9 @@ def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
     )
     testPassed = int(bError_1) != 0
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     return testPassed
 
 

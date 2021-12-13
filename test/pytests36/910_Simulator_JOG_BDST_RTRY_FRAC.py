@@ -29,7 +29,7 @@ withFRAC = 1.5
 
 
 def jogAndBacklash(self, tc_no, frac, encRel, maxcnt, StartPos, EndPos, myJOGX):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisMr.motorInitAllForBDSTIfNeeded(tc_no)
     self.axisCom.put(".FRAC", frac)
     self.axisCom.put(".UEIP", encRel)
@@ -44,7 +44,7 @@ def jogAndBacklash(self, tc_no, frac, encRel, maxcnt, StartPos, EndPos, myJOGX):
     testPassed = self.axisMr.setMotorStartPos(tc_no, StartPos)
 
     if not testPassed:
-        self.axisCom.put("-DbgStrToLOG", "FailedX " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("FailedX " + str(tc_no), wait=True)
     assert testPassed
 
     self.axisMr.setValueOnSimulator(tc_no, "log", actFileName)
@@ -78,9 +78,9 @@ def jogAndBacklash(self, tc_no, frac, encRel, maxcnt, StartPos, EndPos, myJOGX):
         tc_no, expFileName, actFileName
     )
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
@@ -101,11 +101,11 @@ class Test(unittest.TestCase):
 
     def test_TC_91000(self):
         tc_no = "91000"
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         self.axisMr.initializeMotorRecordSimulatorAxis(tc_no)
         self.axisMr.motorInitAllForBDST(tc_no)
         self.axisMr.setFieldSPAM(tc_no, 255)
-        self.axisCom.put("-DbgStrToLOG", "Finish " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Finish " + str(tc_no), wait=True)
 
     # JOG forward & backlash compensation, absolute
     def test_TC_91011(self):
@@ -214,7 +214,7 @@ class Test(unittest.TestCase):
             maxcnt = 1
             myFRAC = noFRAC
         debug_text = f"{tc_no}#{lineno()} maxcnt={maxcnt} myFRAC={myFRAC}"
-        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+        self.axisCom.putDbgStrToLOG(debug_text, wait=True)
         jogAndBacklash(
             self,
             91041,

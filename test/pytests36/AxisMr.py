@@ -540,7 +540,7 @@ class AxisMr:
         if init_needed == 0:
             return
         debug_text = f"{tc_no}#{lineno()} init_needed=0x{init_needed:X}"
-        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+        self.axisCom.putDbgStrToLOG(debug_text, wait=True)
         self.motorInitAllForBDST(tc_no)
 
     def motorInitAllForBDST(self, tc_no):
@@ -620,9 +620,9 @@ class AxisMr:
         # motorRecord uses a margin: one step
         rbdst1 = abs(self.myBDST) + 1.0 / abs(self.myMRES)
         debug_text = f"{tc_no}#{lineno()} Start={motorStartPos} End={motorEndPos} rbdst1={rbdst1}"
-        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+        self.axisCom.putDbgStrToLOG(debug_text, wait=True)
         debug_text = f"{tc_no}#{lineno()} dirMove={directionOfMove} dirBL={directionOfBL} BDST={self.myBDST}"
-        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+        self.axisCom.putDbgStrToLOG(debug_text, wait=True)
         while cnt < maxcnt:
             line1 = ""
             line2 = ""
@@ -648,14 +648,14 @@ class AxisMr:
             else:
                 moveWithBL = False
             debug_text = f"{tc_no}#{lineno()} moveWithBL={moveWithBL}"
-            self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+            self.axisCom.putDbgStrToLOG(debug_text, wait=True)
             if moveWithBL:
                 # calculate the delta to move
                 # The calculated delta is the scaled, and used for both absolute and relative
                 # movements
                 delta = motorEndPos - motorStartPos
                 debug_text = f"{tc_no}#{lineno()} delta={delta}"
-                self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+                self.axisCom.putDbgStrToLOG(debug_text, wait=True)
                 if cnt > 1:
                     if rmod == motorRMOD_A:
                         delta = delta * factor
@@ -698,7 +698,7 @@ class AxisMr:
                 deltaToMov1 = deltaPos1 * factor
                 delta = motorEndPos - motorStartPos
                 debug_text = f"{tc_no}#{lineno()} deltaToMov1={deltaToMov1}"
-                self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+                self.axisCom.putDbgStrToLOG(debug_text, wait=True)
                 if encRel:
                     # Do not move relative 0
                     if deltaToMov1 != 0:
@@ -712,7 +712,7 @@ class AxisMr:
                     delta = motorEndPos - motorStartPos
                     deltaToMov2 = delta * frac
                     debug_text = f"{tc_no}#{lineno()} line2 deltaToMov2={deltaToMov2}"
-                    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+                    self.axisCom.putDbgStrToLOG(debug_text, wait=True)
                     line2 = (
                         "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
                         % (deltaToMov2, self.myBVEL, self.myBAR, motorStartPos)
@@ -724,7 +724,7 @@ class AxisMr:
                             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
                             % (motorStartPos + deltaToMov1, self.myVELO, self.myAR, motorStartPos)
                     )
-                    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+                    self.axisCom.putDbgStrToLOG(debug_text, wait=True)
                     # Move forward with backlash parameters
                     # motor/master moves too far after the motor had gone stuck
                     ## motor/master uses frac for backlash. motorRecord uses mres when talking to hardware
@@ -737,10 +737,10 @@ class AxisMr:
                     else:
                         destPos2 = motorEndPos
                     debug_text = f"{tc_no}#{lineno()} bpos={bpos} motorEndPos={motorEndPos}"
-                    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+                    self.axisCom.putDbgStrToLOG(debug_text, wait=True)
 
                     debug_text = f"{tc_no}#{lineno()} destPos2={destPos2}"
-                    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+                    self.axisCom.putDbgStrToLOG(debug_text, wait=True)
 
                     line2 = (
                         "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
@@ -773,7 +773,7 @@ class AxisMr:
 
         bdst = float(self.axisCom.get(".BDST", timeout=2.0, use_monitor=False))
         debug_text = f"{tc_no}#{lineno()} Start={motorStartPos} End={motorEndPos} bdst={bdst} encRel={encRel}"
-        self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+        self.axisCom.putDbgStrToLOG(debug_text, wait=True)
         # Create a "expected" file
         expFile = open(expFileName, "w")
 

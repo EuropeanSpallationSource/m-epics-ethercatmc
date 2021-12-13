@@ -101,7 +101,7 @@ def waitForStop(self, tc_no, wait_for_stop, direction, oldRBV, TweakValue):
 
 
 def tweakToLimit(self, tc_no, direction):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     assert direction
     old_DHLM = self.axisCom.get(".DHLM", timeout=5)
     old_DLLM = self.axisCom.get(".DLLM", timeout=5)
@@ -198,12 +198,12 @@ def tweakToLimit(self, tc_no, direction):
     # Check if we reached the limit switch, prepare to move away from it
     if direction > 0:
         if not hls:
-            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
             self.assertEqual(True, hls, "hls should be active")
         newPos = rbv - deltaToMove
     else:
         if not lls:
-            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
             self.assertEqual(True, lls, "lls should be active")
         newPos = rbv + deltaToMove
 
@@ -212,11 +212,11 @@ def tweakToLimit(self, tc_no, direction):
     self.axisMr.resetAxis(tc_no)
     print(f"{tc_no}:{int(lineno())} CNEN={int(self.old_Enable)}")
     self.axisMr.setCNENandWait(tc_no, self.old_Enable)
-    self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
 
     # Move away from the limit switch
     self.axisCom.put(".VAL", rbv)
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
 
 
 class Test(unittest.TestCase):
@@ -232,7 +232,7 @@ class Test(unittest.TestCase):
     def test_TC_09001(self):
         tc_no = "09001"
         print(f"{tc_no}")
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         self.axisMr.resetAxis(tc_no)
         print(f"{tc_no}:{int(lineno())} .CNEN=1")
         self.axisMr.setCNENandWait(tc_no, 1)
@@ -281,9 +281,9 @@ class Test(unittest.TestCase):
             tc_no, destination, ReadBackValue, maxdelta
         )
         if passed:
-            self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
         else:
-            self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+            self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
         assert passed
 
     def test_TC_09002(self):

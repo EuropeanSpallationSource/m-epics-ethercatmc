@@ -32,7 +32,7 @@ maxdelta = 0.01
 
 
 def spmgValChanged(self, tc_no, val, spmg=-1, jitteringPos=0.0):
-    self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     oldSPAM = self.axisMr.getFieldSPAM(tc_no)
     self.axisMr.setFieldSPAM(tc_no, 2047)
     self.axisCom.put(".SPMG", spmg)
@@ -51,14 +51,14 @@ def spmgValChanged(self, tc_no, val, spmg=-1, jitteringPos=0.0):
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} dmov={dmov} miss={miss}"
     )
     debug_text = f"miss={miss} dmov={dmov}"
-    self.axisCom.put("-DbgStrToLOG", debug_text, wait=True)
+    self.axisCom.putDbgStrToLOG(debug_text, wait=True)
     if miss or dmov:
         testPassed = False
 
     if testPassed:
-        self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
-        self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
     assert testPassed
 
 
@@ -72,10 +72,10 @@ class Test(unittest.TestCase):
     # Make sure that simulator is initialized
     def test_TC_9011(self):
         tc_no = "9011"
-        self.axisCom.put("-DbgStrToLOG", "Start " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         self.axisCom.put(".SPMG", motorSPMG_Go)
         self.axisMr.motorInitAllForBDST(tc_no)
-        self.axisCom.put("-DbgStrToLOG", "End " + str(tc_no), wait=True)
+        self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
     # SPMG pause & VAL changed, no jitter
     def test_TC_9012(self):

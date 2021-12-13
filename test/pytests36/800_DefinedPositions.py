@@ -46,7 +46,7 @@ class Test(unittest.TestCase):
 
             while step < steps and passed:
                 tc_no = 100 * (tc_no_base + 2) + step
-                self.axisCom.put("-DbgStrToLOG", "Start " + str(int(tc_no)), wait=True)
+                self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
                 pvname = "-DefPosVAL" + chr(ord("A") + step)
                 if step == 0:
                     destination = self.llm
@@ -81,9 +81,9 @@ class Test(unittest.TestCase):
 
                 step = step + 1
                 if passed:
-                    self.axisCom.put("-DbgStrToLOG", "Passed " + str(tc_no), wait=True)
+                    self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
                 else:
-                    self.axisCom.put("-DbgStrToLOG", "Failed " + str(tc_no), wait=True)
+                    self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
 
             self.axisCom.put("-DefPosSEL", -1)
 
