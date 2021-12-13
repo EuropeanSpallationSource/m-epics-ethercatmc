@@ -893,18 +893,13 @@ class AxisMr:
 
     def setMotorStartPos(self, tc_no, startpos):
         self.setValueOnSimulator(tc_no, "fActPosition", startpos)
-        # Run a status update and a sync
         self.doSTUPandSYNC(tc_no)
         maxDelta = 0.1
-        timeout = 2.0
-        valueRBVok = self.waitForValueChanged(
-            tc_no, ".RBV", startpos, maxDelta, timeout
-        )
-        self.doSTUPandSYNC(tc_no)
+        timeout = 3.0
         valueVALok = self.waitForValueChanged(
             tc_no, ".VAL", startpos, maxDelta, timeout
         )
-        return valueRBVok and valueVALok
+        return valueVALok
 
 
     def setSoftLimitsOff(self, tc_no, direction=-1):
@@ -975,29 +970,13 @@ class AxisMr:
 
     def doSTUPandSYNC(self, tc_no):
         self.waitForMipZero(tc_no, 2)
-        stup = self.axisCom.get(".STUP", use_monitor=False)
-        while stup != 0:
-            stup = self.axisCom.get(".STUP", use_monitor=False)
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC .STUP={stup}"
-            )
-            time.sleep(polltime)
-
+        self.waitForValueChanged(tc_no, ".STUP", 0, 0.0, 3.0)
         self.axisCom.put(".STUP", 1)
+        self.waitForValueChanged(tc_no, ".STUP", 0, 0.0, 3.0)
+
         self.axisCom.put(".SYNC", 1)
-        self.waitForMipZero(tc_no, 2)
         rbv = self.axisCom.get(".RBV", use_monitor=False)
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC .RBV={rbv:f} .STUP={stup}"
-        )
-        while stup != 0:
-            stup = self.axisCom.get(".STUP", use_monitor=False)
-            rbv = self.axisCom.get(".RBV", use_monitor=False)
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC.RBV={rbv:f} .STUP={stup}"
-            )
-            time.sleep(polltime)
-        self.waitForMipZero(tc_no, 2)
+        self.waitForValueChanged(tc_no, ".VAL", rbv, 0.1, 2.0)
         msta = int(self.axisCom.get(".MSTA", use_monitor=False))
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC msta={self.getMSTAtext(msta)}"
