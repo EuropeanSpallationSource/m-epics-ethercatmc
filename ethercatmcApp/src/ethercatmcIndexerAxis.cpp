@@ -109,8 +109,10 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
   setIntegerParam(pC_->motorFlagsPwrWaitForOn_, 1);
 #endif
 
+#if 0
 #ifdef motorShowPowerOffString
   setIntegerParam(pC_->motorShowPowerOff_, 1);
+#endif
 #endif
 #ifdef motorFlagsHomeOnLsString
   setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
@@ -841,19 +843,20 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     if (drvlocal.auxBitsEnabledMask) {
       powerIsOn = idxAuxBits & drvlocal.auxBitsEnabledMask ? 1 : 0;
     }
-    if (!powerIsOn) {
-      /*
-       * It is more important to know, if the motor can be disconnected
-       * on e.g. a sample stage.
-       * Let the generic driver write PowerOff and hide the error text so long
-       * The error LED is still there
-       */
-      hasError = 0;
-    } else if (hasError) {
+    if (hasError) {
       char sErrorMessage[40];
       const char *errIdString = errStringFromErrId(errorID);
       memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
-      if (errIdString[0]) {
+      if (!powerIsOn) {
+        /*
+         * It is important to know, if the motor can be disconnected
+         * on e.g. a sample stage.
+         * Let the generic driver write PowerOff and hide the error text so long
+         * The error LED is still there
+         */
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                 "E: (PowerOff) %X", errorID);
+      } else if (errIdString[0]) {
         snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %X",
                  errIdString, errorID);
       } else {
