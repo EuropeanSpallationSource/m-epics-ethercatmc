@@ -210,6 +210,16 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcVelActString,        asynParamFloat64,     &ethercatmcVelAct_);
   createParam(ethercatmcVel_RBString,        asynParamFloat64,     &ethercatmcVel_RB_);
   createParam(ethercatmcAcc_RBString,        asynParamFloat64,     &ethercatmcAcc_RB_);
+  createParam(ethercatmcPTPStateString,       asynParamInt32,       &ethercatmcPTPState_);
+  createParam(ethercatmcPTPOffsetString,      asynParamInt32,       &ethercatmcPTPOffset_);
+  createParam(ethercatmcPTPSyncSeqNumString,  asynParamInt32,       &ethercatmcPTPSyncSeqNum_);
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+  createParam(ethercatmcSystemUTCtimeString,  asynParamInt64,       &ethercatmcSystemUTCtime_);
+  createParam(ethercatmcDCTIMEString,         asynParamInt64,       &ethercatmcDCTIME_);
+#else
+  createParam(ethercatmcSystemUTCtimeString,  asynParamFloat64,     &ethercatmcSystemUTCtime_);
+  createParam(ethercatmcDCTIMEString,         asynParamFloatt64,    &ethercatmcDCTIME_);
+#endif
   createParam(ethercatmcRBV_UTCString,       asynParamFloat64,     &ethercatmcRBV_UTC_);
   createParam(ethercatmcNamAux0_String,      asynParamOctet,       &ethercatmcNamAux0_);
   createParam(ethercatmcNamAux1_String,      asynParamOctet,       &ethercatmcNamAux1_);
