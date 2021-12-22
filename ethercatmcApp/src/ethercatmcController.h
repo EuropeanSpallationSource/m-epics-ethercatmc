@@ -75,8 +75,9 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVelToHomString             "VelToHom"
 #define ethercatmcVelFrmHomString            "VelFrmHom"
 #define ethercatmcAccHomString               "AccHom"
-#define ethercatmcEnc_ActString              "EncAct"
-#define ethercatmcEnc_ActUTCString           "EncAct-UTC"
+#define ethercatmcRawEncStepString           "RawEncStep"
+#define ethercatmcRawMtrStepString           "RawMtrStep"
+#define ethercatmcRawMtrVeloString           "RawMtrVelo"
 #define ethercatmcErrRstString               "ErrRst"
 #define ethercatmcVelActString               "VelAct"
 #define ethercatmcVel_RBString               "Vel-RB"
@@ -86,7 +87,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcPTPSyncSeqNumString        "PTPSyncSeqNum"
 #define ethercatmcSystemUTCtimeString        "SystemUTCtime"
 #define ethercatmcDCTIMEString               "DCTIME"
-#define ethercatmcRBV_UTCString              "RBV-UTC"
+#define ethercatmcRBV_TSEString              "RBV-TSE"
 #define ethercatmcCfgAxisID_RBString         "CfgAxisID-RB"
 #define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
@@ -482,8 +483,9 @@ public:
   int ethercatmcVelToHom_;
   int ethercatmcVelFrmHom_;
   int ethercatmcAccHom_;
-  int ethercatmcEncAct_;
-  int ethercatmcEncActUTC_;
+  int ethercatmcRawEncStep_;
+  int ethercatmcRawMtrStep_;
+  int ethercatmcRawMtrVelo_;
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
   int motorRecResolution_;
@@ -505,7 +507,7 @@ public:
   int ethercatmcPTPSyncSeqNum_;
   int ethercatmcSystemUTCtime_;
   int ethercatmcDCTIME_;
-  int ethercatmcRBV_UTC_;
+  int ethercatmcRBV_TSE_;
   int ethercatmcCfgAxisID_RB_;
   int ethercatmcCfgVELO_RB_;
   int ethercatmcCfgVMAX_RB_;

@@ -1,0 +1,102 @@
+record(longin, "$(PREFIX)$(MOTOR_NAME)-RawMtrStep")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "RawMtrStep")
+    field(EGU,  "step")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))RawMtrStep")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(PREFIX)$(MOTOR_NAME)-RawMtrVelo")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "MtrStepSTM_Velocity")
+    field(EGU,  "steps/time")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))RawMtrVelo")
+    field(SCAN, "I/O Intr")
+}
+
+
+record(longin, "$(PREFIX)$(MOTOR_NAME)-RawEncStep-TSE")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "RawEncStep-TSE")
+    field(EGU,  "steps")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))RawEncStep")
+    field(SCAN, "I/O Intr")
+    field(TSE,  -2)
+}
+
+
+record(longin, "$(PREFIX)$(MOTOR_NAME)-RawMtrStep-TSE")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "RawMtrStep-TSE")
+    field(EGU,  "steps")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))RawMtrStep")
+    field(SCAN, "I/O Intr")
+    field(TSE,  -2)
+}
+
+
+record(longin, "$(PREFIX)$(MOTOR_NAME)-RawMtrVelo-TSE")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "MtrStepSTM_Velocity-TSE")
+    field(EGU,  "steps/time")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))RawMtrVelo")
+    field(SCAN, "I/O Intr")
+    field(TSE,  -2)
+}
+
+record(mbbiDirect, "$(PREFIX)$(MOTOR_NAME)-StatusBits-TSE")
+{
+    field(DTYP, "asynUInt32Digital")
+    field(DESC, "StatusBits")
+    field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO) 0x3FFFFFF)StatusBits")
+    field(SCAN, "I/O Intr")
+    field(TSE,  -2)
+}
+
+record(mbbi,"$(PREFIX)$(MOTOR_NAME)-StatusCode-TSE") {
+    field(DESC,"StatusCode")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))StatusCode")
+    field(SCAN, "I/O Intr")
+    field(ZRVL,  "0")
+    field(ONVL,  "1")
+    field(TWVL,  "2")
+    field(THVL,  "3")
+    field(FRVL,  "4")
+    field(FVVL,  "5")
+    field(SXVL,  "6")
+    field(SVVL,  "7")
+    field(EIVL,  "8")
+    field(NIVL,  "9")
+    field(TEVL, "10")
+    field(ELVL, "11")
+    field(TVVL, "12")
+    field(TTVL, "13")
+    field(FTVL, "14")
+    field(FFVL, "15")
+
+    field(ZRST, "RESET")
+    field(ONST, "IDLE")
+    field(TWST, "DISABLED")
+    field(THST, "WARN")
+    field(FRST, "ERR-4")
+    field(FVST, "START")
+    field(SXST, "BUSY")
+    field(SVST, "STOP")
+    field(EIST, "ERROR")
+    field(NIST, "ERR-9")
+    field(TEST, "ERR-A")
+    field(ELST, "ERR-B")
+    field(TVST, "ERR-C")
+    field(TTST, "ERR-D")
+    field(FTST, "ERR-E")
+    field(FFST, "ERR-F")
+    field(TSE,  -2)
+}
+
+

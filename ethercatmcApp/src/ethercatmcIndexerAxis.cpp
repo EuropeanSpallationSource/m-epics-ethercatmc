@@ -884,33 +884,21 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
     /* Motor position in "user coordinates" with UTC time from PTP */
     double motorRecOffset;
     int motorRecDirection;
-    asynStatus RBV_UTCstatus = asynDisabled;
-    double ethercatmcRBV_UTC = 0.0;
+    asynStatus RBV_TSEstatus = asynDisabled;
+    double ethercatmcRBV_TSE = 0.0;
     if (homed &&
         (!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
                               &motorRecOffset)) &&
         (!pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
                                &motorRecDirection))) {
-      RBV_UTCstatus = asynSuccess;
+      RBV_TSEstatus = asynSuccess;
       /* direction == 1 means "negative" */
       motorRecDirection = motorRecDirection ? -1 : 1;
-      ethercatmcRBV_UTC = actPosition *  motorRecDirection + motorRecOffset;
+      ethercatmcRBV_TSE = actPosition *  motorRecDirection + motorRecOffset;
     }
-    setDoubleParam(pC_->ethercatmcRBV_UTC_, ethercatmcRBV_UTC);
-    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcRBV_UTC_,
-                                       RBV_UTCstatus);
-    {
-      /* encoder act in UTC */
-      double ethercatmcEncAct = 0.0;
-      asynStatus EncAct_UTCstatus = asynDisabled;
-      if (!pC_->getDoubleParam(axisNo_, pC_->ethercatmcEncAct_,
-                               &ethercatmcEncAct)) {
-        EncAct_UTCstatus = asynSuccess;
-      }
-      setDoubleParam(pC_->ethercatmcEncActUTC_, ethercatmcEncAct);
-      pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcEncActUTC_,
-                                         EncAct_UTCstatus);
-    }
+    setDoubleParam(pC_->ethercatmcRBV_TSE_, ethercatmcRBV_TSE);
+    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcRBV_TSE_,
+                                       RBV_TSEstatus);
   }
 
   if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {

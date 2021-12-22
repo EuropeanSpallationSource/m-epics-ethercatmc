@@ -23,23 +23,23 @@ record(stringout, "$(PREFIX)$(MOTOR_NAME)-EGU_") {
     field(OMSL, "closed_loop")
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-RBV-UTC") {
-    field(DESC, "Position UTC timestamped")
+record(ai,"$(PREFIX)$(MOTOR_NAME)-RBV-TSE") {
+    field(DESC, "Position PLC timestamped")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))RBV-UTC")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))RBV-TSE")
     field(SCAN, "I/O Intr")
     field(TSE, -2)
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-EncAct-UTC") {
-    field(DESC, "Encoder UTC timestamped")
+record(ai,"$(PREFIX)$(MOTOR_NAME)-EncAct-TSE") {
+    field(DESC, "Encoder PLC timestamped")
     field(DTYP, "asynFloat64")
     field(PREC, "0")
     field(EGU,  "Steps")
     field(ADEL, "$(ADEL=1)")
     field(MDEL, "$(MDEL=1)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct-UTC")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct-TSE")
     field(SCAN, "I/O Intr")
     field(TSE, -2)
 }

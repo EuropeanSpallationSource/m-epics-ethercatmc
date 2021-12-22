@@ -1301,10 +1301,10 @@ asynStatus ethercatmcAxis::poll(bool *moving)
   if (drvlocal.externalEncoderStr) {
     comStatus = getValueFromController(drvlocal.externalEncoderStr,
                                        &st_axis_status.encoderRaw);
-    if (!comStatus) setDoubleParam(pC_->ethercatmcEncAct_,
-                                   st_axis_status.encoderRaw);
+    if (!comStatus) setIntegerParam(pC_->ethercatmcRawEncStep_,
+                                    st_axis_status.encoderRaw);
   } else if (pC_->features_ & FEATURE_BITS_V2) {
-    setDoubleParam(pC_->ethercatmcEncAct_, st_axis_status.encoderRaw);
+    setIntegerParam(pC_->ethercatmcRawEncStep_, st_axis_status.encoderRaw);
   }
 
   if (drvlocal.old_st_axis_status.bHomed != st_axis_status.bHomed) {

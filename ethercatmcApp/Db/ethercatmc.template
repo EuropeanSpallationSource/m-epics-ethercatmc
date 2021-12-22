@@ -79,6 +79,15 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-VelAct")
 
 record(ai, "$(PREFIX)$(MOTOR_NAME)-PosAct")
 {
+    field(DESC, "actual Pos")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_ENCODER_POSITION")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(PREFIX)$(MOTOR_NAME)-PosAct-TSE")
+{
     field(DESC, "actual Pos MCU timestamped")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -103,15 +112,14 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-Acc-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(PREFIX)$(MOTOR_NAME)-EncAct")
+record(longin, "$(PREFIX)$(MOTOR_NAME)-RawEncStep")
 {
-    field(DESC, "Raw value of encoder ticks")
-    field(DTYP, "asynFloat64")
-    field(PREC, "0")
-    field(EGU,  "Steps")
+    field(DTYP, "asynInt32")
+    field(DESC, "RawEncStep")
+    field(EGU,  "steps")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))RawEncStep")
     field(ADEL, "$(ADEL=1)")
     field(MDEL, "$(MDEL=1)")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct")
     field(SCAN, "I/O Intr")
 }
 

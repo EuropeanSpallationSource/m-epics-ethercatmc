@@ -25,11 +25,15 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
+
+# Raw steps and velocity
+< ethercatmcRawMtrEnc.iocsh
+
 # Predefined Positions
 epicsEnvSet("NVL",           "")
 epicsEnvSet("EGU",           "")
 < ethercatmcDefPos.iocsh
-
+< ethercatmcRawMtrEnc.iocsh
 
 
 #####################################################
@@ -47,6 +51,6 @@ epicsEnvSet("CHNO",     "0")
 #
 # Start polling, values are in millisconds
 #
-epicsEnvSet("MOVINGPOLLPERIOD", "100")
+epicsEnvSet("MOVINGPOLLPERIOD", "50")
 epicsEnvSet("IDLEPOLLPERIOD",   "100")
 ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

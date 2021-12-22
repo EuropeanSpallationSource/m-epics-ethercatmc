@@ -1415,11 +1415,6 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
             statusOffset,
             stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
             iTypCode);
-  if (!strcmp(paramName, "encoderRaw")) {
-      paramName = "EncAct";
-      /* Special handling for encoderRaw */
-      myEPICSParamType = asynParamFloat64;
-  }
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
             "%s%s(%u) \"%s\" EPICSParamType=%s(%i)\n",
             modNamEMC, functionName, axisNo,
