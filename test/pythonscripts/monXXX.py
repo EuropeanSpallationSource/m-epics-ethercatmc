@@ -78,7 +78,34 @@ RE_MATCH_RAWENCSTEP = re.compile(r".*-RawEncStep(-TSE)?$")
 
 ##############################################################
 global auxbitnames
-auxbitnames = {}
+auxbitnames = {0:'AUXbit0',
+               1:'AUXbit1',
+               2:'AUXbit2',
+               3:'AUXbit3',
+               4:'AUXbit4',
+               5:'AUXbit5',
+               6:'AUXbit6',
+               7:'AUXbit7',
+               8:'AUXbit8',
+               9:'AUXbit9',
+               10:'AUXbit10',
+               11:'AUXbit11',
+               12:'AUXbit12',
+               13:'AUXbit13',
+               14:'AUXbit14',
+               15:'AUXbit15',
+               16:'AUXbit16',
+               17:'AUXbit17',
+               18:'AUXbit18',
+               19:'AUXbit19',
+               20:'AUXbit20',
+               21:'AUXbit21',
+               22:'AUXbit22',
+               23:'AUXbit23',
+               24:'AUXbit24',
+               25:'AUXbit25',
+               26:'AUXbit26'}
+
 
 old_auxbits = 0
 
