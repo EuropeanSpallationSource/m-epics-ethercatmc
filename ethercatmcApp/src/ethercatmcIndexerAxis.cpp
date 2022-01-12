@@ -109,10 +109,8 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
   setIntegerParam(pC_->motorFlagsPwrWaitForOn_, 1);
 #endif
 
-#if 0
 #ifdef motorShowPowerOffString
   setIntegerParam(pC_->motorShowPowerOff_, 1);
-#endif
 #endif
 #ifdef motorFlagsHomeOnLsString
   setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
