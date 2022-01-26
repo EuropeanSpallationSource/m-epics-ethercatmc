@@ -26,8 +26,10 @@ motorRMOD_I = 3  # "In-Position"
 
 polltime = 0.2
 
+
 def lineno():
     return inspect.currentframe().f_back.f_lineno
+
 
 class AxisMr:
     def __init__(self, axisCom, url_string=None):
@@ -506,30 +508,29 @@ class AxisMr:
             debug_text = f"stat={stat} sevr={sevr}"
             raise Exception(debug_text)
 
-
     def motorInitAllForBDSTIfNeeded(self, tc_no):
         init_needed = 0
-        if self.axisCom.get(".MRES") !=  self.myMRES:
+        if self.axisCom.get(".MRES") != self.myMRES:
             init_needed = init_needed + 1
         if self.axisCom.get(".DIR") != self.myDIR:
             init_needed = init_needed + 2
         if self.axisCom.get(".OFF") != self.myOFF:
             init_needed = init_needed + 1
-        if self.axisCom.get(".VELO") !=  self.myVELO:
+        if self.axisCom.get(".VELO") != self.myVELO:
             init_needed = init_needed + 4
-        if self.axisCom.get(".ACCL") !=  self.myACCL:
+        if self.axisCom.get(".ACCL") != self.myACCL:
             init_needed = init_needed + 8
-        if self.axisCom.get(".JVEL") !=  self.myJVEL:
+        if self.axisCom.get(".JVEL") != self.myJVEL:
             init_needed = init_needed + 16
         if self.axisCom.get(".JAR") != self.myJAR:
             init_needed = init_needed + 32
-        if self.axisCom.get(".BVEL") !=  self.myBVEL:
+        if self.axisCom.get(".BVEL") != self.myBVEL:
             init_needed = init_needed + 64
-        if self.axisCom.get(".BACC") !=  self.myBACC:
+        if self.axisCom.get(".BACC") != self.myBACC:
             init_needed = init_needed + 128
-        if self.axisCom.get(".RTRY") !=  self.myRTRY:
+        if self.axisCom.get(".RTRY") != self.myRTRY:
             self.axisCom.put(".RTRY", self.myRTRY)
-        if self.axisCom.get(".BDST") !=  self.myBDST:
+        if self.axisCom.get(".BDST") != self.myBDST:
             self.axisCom.put(".BDST", self.myBDST)
         if self.axisCom.get(".DLY") != self.myDLY:
             init_needed = init_needed + 256
@@ -641,8 +642,8 @@ class AxisMr:
                             factor = factor / 2.0
                             rcnt_1 -= 1
             if (
-                    abs(motorEndPos - motorStartPos) < rbdst1
-                    and directionOfMove == directionOfBL
+                abs(motorEndPos - motorStartPos) < rbdst1
+                and directionOfMove == directionOfBL
             ):
                 moveWithBL = True
             else:
@@ -684,8 +685,8 @@ class AxisMr:
                     if motor_master and (cnt < maxcnt - 1):
                         line2 = (
                             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-                            % (motorStartPos, self.myVELO, self.myAR, motorStartPos))
-
+                            % (motorStartPos, self.myVELO, self.myAR, motorStartPos)
+                        )
 
                 expFile.write(f"{line1}{line2}")
                 cnt += 1
@@ -720,10 +721,12 @@ class AxisMr:
                 else:
                     # Do not move relative 0
                     if deltaToMov1 != 0:
-                        line1 = (
-                            "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-                            % (motorStartPos + deltaToMov1, self.myVELO, self.myAR, motorStartPos)
-                    )
+                        line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n" % (
+                            motorStartPos + deltaToMov1,
+                            self.myVELO,
+                            self.myAR,
+                            motorStartPos,
+                        )
                     self.axisCom.putDbgStrToLOG(debug_text, wait=True)
                     # Move forward with backlash parameters
                     # motor/master moves too far after the motor had gone stuck
@@ -733,10 +736,12 @@ class AxisMr:
                     # double newpos = bpos + pmr->frac * (currpos - bpos);
                     bpos = motorEndPos - bdst
                     if motor_master:
-                        destPos2 = bpos + frac * (motorEndPos -bpos)
+                        destPos2 = bpos + frac * (motorEndPos - bpos)
                     else:
                         destPos2 = motorEndPos
-                    debug_text = f"{tc_no}#{lineno()} bpos={bpos} motorEndPos={motorEndPos}"
+                    debug_text = (
+                        f"{tc_no}#{lineno()} bpos={bpos} motorEndPos={motorEndPos}"
+                    )
                     self.axisCom.putDbgStrToLOG(debug_text, wait=True)
 
                     debug_text = f"{tc_no}#{lineno()} destPos2={destPos2}"
@@ -746,7 +751,7 @@ class AxisMr:
                         "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
                         % (destPos2, self.myBVEL, self.myBAR, motorStartPos)
                     )
-                if need_007_017_tweak and cnt == 0 :
+                if need_007_017_tweak and cnt == 0:
                     # No retry yet
                     expFile.write(f"{line2}")
                 else:
@@ -766,9 +771,9 @@ class AxisMr:
         motorStartPos,
         motorEndPos,
     ):
-        #vers = float(self.axisCom.get(".VERS"))
-        #motor_master = False
-        #if vers > 7.19:
+        # vers = float(self.axisCom.get(".VERS"))
+        # motor_master = False
+        # if vers > 7.19:
         #    motor_master = True
 
         bdst = float(self.axisCom.get(".BDST", timeout=2.0, use_monitor=False))
@@ -834,9 +839,9 @@ class AxisMr:
                     % (motorEndPos - bdst, self.myVELO, self.myAR, startPosLine2)
                 )
                 # Move forward with backlash parameters times frac
-                #double currpos = pmr->dval / pmr->mres;
-                #double newpos = bpos + pmr->frac * (currpos - bpos);
-                posNow =  motorEndPos - bdst
+                # double currpos = pmr->dval / pmr->mres;
+                # double newpos = bpos + pmr->frac * (currpos - bpos);
+                posNow = motorEndPos - bdst
                 deltaToMove = bdst * frac
                 endPosLine3 = posNow + deltaToMove
                 line3 = (
@@ -846,7 +851,6 @@ class AxisMr:
                 startPosLine2 = endPosLine3
                 expFile.write(f"{line2}\n{line3}\n")
                 maxcnt = maxcnt - 1
-
 
         expFile.write("EOF\n")
         expFile.close()
@@ -900,7 +904,6 @@ class AxisMr:
             tc_no, ".VAL", startpos, maxDelta, timeout
         )
         return valueVALok
-
 
     def setSoftLimitsOff(self, tc_no, direction=-1):
         """
@@ -1087,16 +1090,28 @@ class AxisMr:
         )
 
     # move into limit switch
+    # We need different combinations (WIP)
+    # - The direction (hit HLS or LLS)
+    # - "switch soft limits off" -or- set a very high/low soft limit instead
+    #    (or do nothing)
+    # - Use motorRecords JOG or use model 3 moveVel/moveAbs
+    # - Change the parameter from above before or after the movement started
+    #
     def moveIntoLS(
         self,
         tc_no=0,
         direction=-1,
-        doSetSoftLimitsOff=True,
-        doSetSoftLimitsOn=True,
+        doDisableSoftLimit=True,
+        setInfiniteSoftLimit=False,
+        movingMethod="JOG",
         paramWhileMove=False,
     ):
         assert tc_no != 0
         assert direction >= 0
+        old_VELO = self.axisCom.get(".VELO")
+        vmax = self.axisCom.get(".VMAX")
+        if vmax == 0.0:
+            vmax = old_VELO
         jvel = self.axisCom.get(".JVEL")
         rdbd = self.axisCom.get(".RDBD")
         old_DHLM = self.axisCom.get("-CfgDHLM")
@@ -1104,35 +1119,57 @@ class AxisMr:
         margin = 1.1
         if paramWhileMove:
             margin = margin + 2
+        if movingMethod == "MoveVel":
+            movingFieldName = "-MoveVel"
         if direction > 0:
+            softlimitFieldName = "-CfgDHLM"
+            nearly_infinite = 999999.0
             soft_limit_pos = old_DHLM
             jog_start_pos = soft_limit_pos - jvel - margin
             ls_to_be_activated = self.MSTA_BIT_PLUS_LS
             ls_not_to_be_activated = self.MSTA_BIT_MINUS_LS
+            if movingMethod == "JOG":
+                movingFieldName = ".JOGF"
+                movingFieldValue = 1
+            elif movingMethod == "MoveVel":
+                movingFieldValue = jvel
         else:
+            softlimitFieldName = "-CfgDLLM"
+            nearly_infinite = -999999.0
             soft_limit_pos = old_DLLM
             jog_start_pos = soft_limit_pos + jvel + margin
             ls_to_be_activated = self.MSTA_BIT_MINUS_LS
             ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
+            if movingMethod == "JOG":
+                movingFieldName = ".JOGR"
+                movingFieldValue = 1
+            elif movingMethod == "MoveVel":
+                movingFieldValue = 0 - jvel
+            elif movingMethod == "MoveAbs":
+                movingFieldValue = 0 - jvel
+
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} paramWhileMove={paramWhileMove} margin={margin}"
         )
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} direction={direction } jog_start_pos={jog_start_pos:f}"
         )
-        self.axisCom.put(".STOP", 1)
+        dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
+        if dmov != 1:
+            self.axisCom.put(".STOP", 1)
         # Go away from limit switch
         self.moveWait(tc_no, jog_start_pos)
+        if movingMethod == "MoveAbs":
+            movingFieldName = ".DVAL"
+            self.axisCom.put(".VELO", jvel)
+            movingFieldValue = nearly_infinite
 
-        if doSetSoftLimitsOff:
+        if doDisableSoftLimit:
             if paramWhileMove:
                 # Start jogging, switch soft limit off while jogging
                 #
                 wait_for_stop = self.jogCalcTimeout(tc_no, direction)
-                if direction > 0:
-                    self.axisCom.put(".JOGF", 1)
-                else:
-                    self.axisCom.put(".JOGR", 1)
+                self.axisCom.put(movingFieldName, movingFieldValue)
                 wait_for_start = 2
                 self.waitForStart(tc_no, wait_for_start)
                 self.setSoftLimitsOff(tc_no, direction=direction)
@@ -1152,21 +1189,33 @@ class AxisMr:
                     self.axisCom.put(".JOGR", 0)
             else:
                 self.setSoftLimitsOff(tc_no, direction=direction)
-                self.jogDirection(tc_no, direction)
+                time_to_wait = self.jogCalcTimeout(tc_no, direction)
+                self.axisCom.put(movingFieldName, movingFieldValue)
+                self.waitForStartAndDone(str(tc_no), 30 + time_to_wait + 3.0)
         else:
-            self.jogDirection(tc_no, direction)
+            if setInfiniteSoftLimit:
+                oldSoftLimitValue = self.axisCom.get(softlimitFieldName)
+                self.axisCom.put(softlimitFieldName, nearly_infinite)
+
+            time_to_wait = self.jogCalcTimeout(tc_no, direction)
+            self.axisCom.put(movingFieldName, movingFieldValue)
+            self.waitForStartAndDone(str(tc_no), 30 + time_to_wait + 3.0)
 
         # Get values, check them later
         lvio = int(self.axisCom.get(".LVIO"))
         mstaE = int(self.axisCom.get(".MSTA"))
         # Go away from limit switch
         self.moveWait(tc_no, jog_start_pos)
+        self.axisCom.put(".VELO", old_VELO)
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}"
         )
 
-        if doSetSoftLimitsOn:
+        if doDisableSoftLimit:
             self.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM, direction=direction)
+        if setInfiniteSoftLimit:
+            self.axisCom.put(softlimitFieldName, oldSoftLimitValue)
+
         passed = True
         if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
             print(
