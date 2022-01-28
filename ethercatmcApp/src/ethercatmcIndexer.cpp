@@ -632,8 +632,8 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
 
     if (counter >= 1) {
       asynPrint(pasynUserController_, traceMask,
-                "%sindexerParamWrite(%d) paramIndex=%s(%u 0x%02X) value=%02g "
-                "counter=%u cmdSubParamIndexRB=%s (0x%04X)\n",
+                "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
+                "counter=%u RB=%s (0x%04X)\n",
                 modNamEMC, axisNo,
                 plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                 value, counter,
