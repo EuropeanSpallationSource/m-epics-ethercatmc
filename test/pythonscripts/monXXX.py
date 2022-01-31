@@ -34,9 +34,9 @@ class WrappingStepCounter:
 
         if self.old_steps != None:
             wrap_so_much = 65536
-            if self.old_steps < 15000 and steps >= 15000:
+            if self.old_steps < -15000 and steps >= 15000:
                 self.wrap_around_offset = self.wrap_around_offset - wrap_so_much
-            elif self.old_steps > 15000 and steps <= 15000:
+            elif self.old_steps > 15000 and steps <= -15000:
                 self.wrap_around_offset = self.wrap_around_offset + wrap_so_much
         self.old_steps = steps
         self.unwrapped_steps = steps + self.wrap_around_offset

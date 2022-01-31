@@ -1,7 +1,10 @@
 #!/bin/sh
 
 # Our motor to work against
-export P=LabS-MCAG:MC-MCU-07:
+if test -n "$P" ; then
+  export P=LabS-MCAG:MC-MCU-07:
+fi
+export P=IOC:
 export M=m1
 
 
@@ -84,6 +87,7 @@ camonitor \
   ${P}${M}-CfgSREV-RB \
   ${P}${M}-CfgUREV-RB \
   ${P}${M}-PosAct${TSE} \
+  ${P}${M}-VelAct${TSE} \
   ${P}${M}-StatusCode${TSE} \
   ${P}${M}-StatusBits${TSE} \
   ${P}${M}-RawEncStep${TSE} \
