@@ -11,6 +11,7 @@ epicsEnvSet("SM_NOAXES",     "2")
 epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=REMOTEAMSNETIDXX;amsNetIdLocal=LOCALAMSNETIDXX"
 
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "100")
 < ethercatmcController.iocsh
 
 
@@ -26,6 +27,8 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
 
+# Raw steps and velocity
+< ethercatmcRawMtrEnc.iocsh
 
 #
 # Axis 2
