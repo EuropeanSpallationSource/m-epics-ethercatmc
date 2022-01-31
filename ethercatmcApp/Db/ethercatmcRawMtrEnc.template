@@ -49,6 +49,15 @@ record(longin, "$(PREFIX)$(MOTOR_NAME)-RawMtrVelo-TSE")
     field(TSE,  -2)
 }
 
+record(ai, "$(PREFIX)$(MOTOR_NAME)-VelAct-TSE")
+{
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))VelAct")
+    field(SCAN, "I/O Intr")
+    field(TSE,  -2)
+}
+
 record(mbbiDirect, "$(PREFIX)$(MOTOR_NAME)-StatusBits-TSE")
 {
     field(DTYP, "asynUInt32Digital")
