@@ -1231,7 +1231,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 == 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M1).OMSL</pv>
+        <pv trig="true">$(P)$(M).OMSL</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1295,7 +1295,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 == 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M1).OMSL</pv>
+        <pv trig="true">$(P)$(M).OMSL</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1360,7 +1360,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 == 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M1).OMSL</pv>
+        <pv trig="true">$(P)$(M).OMSL</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1427,7 +1427,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M1).OMSL</pv>
+        <pv trig="true">$(P)$(M).OMSL</pv>
       </rule>
     </rules>
     <scale_options>
