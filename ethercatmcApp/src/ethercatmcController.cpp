@@ -59,8 +59,9 @@ extern "C" const char *errStringFromErrId(int nErrorId)
   case 0x4225:
     return "Drv not en";
   case 0x4450:
+    return "Enc undeflw";
   case 0x4451:
-    return "Follow err";
+    return "Enc overflw";
   case 0x4260:
     return "Amplifie off";
   case 0x4263:
