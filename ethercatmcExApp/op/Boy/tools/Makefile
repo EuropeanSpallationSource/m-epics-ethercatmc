@@ -9,6 +9,7 @@ GNERATEDOPIS = \
   ../motor-3.opi \
   ../motor-3-ptp.opi \
   ../motor-4.opi \
+  ../motor-4-ptp.opi \
   ../motor-5.opi \
   ../motor-6.opi  \
   ../motor-4x3.opi \
@@ -63,6 +64,8 @@ AUXBITS="17 18 19 20 0 1 2 3 4"
 ../motor-4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh $@ 4
 
+../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	TITLEH=$(TITLEH) ./genXY.sh $@ ptp 4
 
 ../motor-5.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genXY.sh $@ 5
