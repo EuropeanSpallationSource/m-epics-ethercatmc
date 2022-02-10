@@ -42,5 +42,6 @@ eval $cmd <$BASENAME.mid >>$$
       eval $cmd <ethercatmcaxisAuxBit.mid >>$$
   done
   cat $BASENAME.end  >>$$ &&
-  mv -f $$ $FILE
+  mv -f $$ $FILE &&
+  chmod -w $FILE
 
