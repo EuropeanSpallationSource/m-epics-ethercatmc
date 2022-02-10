@@ -1014,7 +1014,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 == 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M1).OMSL</pv>
+        <pv trig="true">$(P)$(M).OMSL</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1078,7 +1078,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 == 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M1).OMSL</pv>
+        <pv trig="true">$(P)$(M).OMSL</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1143,7 +1143,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 == 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M1).OMSL</pv>
+        <pv trig="true">$(P)$(M).OMSL</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1210,7 +1210,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M1).OMSL</pv>
+        <pv trig="true">$(P)$(M).OMSL</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2384,7 +2384,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-EncAct</pv_name>
+    <pv_name>$(P)$(M)-RawEncStep</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <scale_options>
@@ -2393,14 +2393,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <rules>
-      <rule name="EncAct-Visible" prop_id="visible" out_exp="false">
+      <rule name="RawEncStep-Visible" prop_id="visible" out_exp="false">
         <exp bool_exp="pv0==3">
           <value>false</value>
         </exp>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)EncAct.SEVR</pv>
+        <pv trig="true">$(P)$(R)RawEncStep.SEVR</pv>
       </rule>
     </rules>
     <scripts />
