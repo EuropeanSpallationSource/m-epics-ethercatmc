@@ -24,14 +24,10 @@ FILENAME... ethercatmcController.cpp
 const char *modNamEMC = "ethercatmc:: ";
 
 const static char *const strethercatmcCreateController = "ethercatmcCreateController";
-const static char *const strethercatmcConfigController = "ethercatmcConfigController";
-const static char *const strethercatmcConfigOrDie      = "ethercatmcConfigOrDie";
-const static char *const strethercatmcReadController   = "ethercatmcReadController";
 const static char *const strethercatmcCreateAxisDef    = "ethercatmcCreateAxis";
 const static char *const strethercatmcCreateIndexerAxisDef = "ethercatmcCreateIndexerAxis";
 const static char *const strethercatmcCreateAsynParamDef = "ethercatmcCreateAsynParam";
 const static char *const strethercatmcStartPollerDef   = "ethercatmcStartPoller";
-const static char *const strCtrlReset = ".ctrl.ErrRst";
 
 const static char *const modulName = "ethercatmcAxis::";
 
@@ -427,77 +423,6 @@ extern "C" int ethercatmcCreateController(const char *portName,
                            optionStr);
   return(asynSuccess);
 }
-
-/** Writes a string to the controller and reads a response.
-  * Disconnects in case of error
-  */
-extern "C" int ethercatmcConfigController(int needOkOrDie, const char *portName,
-                                          const char *configStr)
-{
-  ethercatmcController *pC;
-
-  if (!portName || !configStr)  {
-    printf("%sNULL parameter\n", strethercatmcConfigController);
-    return asynError;
-  }
-  pC = (ethercatmcController*) findAsynPortDriver(portName);
-  if (!pC) {
-    printf("%s:%s: Error port %s not found\n",
-           __FILE__, __FUNCTION__, portName);
-    return asynError;
-  }
-  return pC->configController(needOkOrDie, configStr);
-}
-
-asynStatus ethercatmcController::configController(int needOkOrDie, const char *value)
-{
-  char inString[MAX_CONTROLLER_STRING_SIZE];
-  size_t configStrLen = strlen(value);
-  asynStatus status = asynError;
-
-  if (!strcmp(value, strCtrlReset)) {
-    ctrlLocal.hasConfigError = 0;
-    setMCUErrMsg("OK");
-    return asynSuccess;
-  }
-  if (ctrlLocal.hasConfigError) {
-    printf("port %s has errors. To reset use\n %s %s %s \n",
-           portName, strethercatmcConfigController, portName, strCtrlReset);
-    return asynError;
-  }
-
-  status = writeReadOnErrorDisconnect_C(pasynUserController_,
-                                        value, configStrLen,
-                                        inString, sizeof(inString));
-  inString[sizeof(inString) -1] = '\0';
-  if (status) {
-    ;
-  } else if (needOkOrDie) {
-    status = checkACK(value, configStrLen, inString);
-    if (status) {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                "%s out=%s in=\"%s\" return=%s (%d)\n",
-                modulName, value, inString,
-                ethercatmcstrStatus(status), (int)status);
-      if (needOkOrDie < 0) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s Aborting IOC\n",
-                  modulName);
-        epicsExit(EXIT_FAILURE);
-      }
-      ctrlLocal.hasConfigError = 1;
-      (void)setMCUErrMsg(inString);
-    } else {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_INFO,
-                "%s out=%s in=\"%s\"\n",
-                modulName, value, inString);
-    }
-  } /* needOkOrDie */
-
-  printf("%s\n", inString);
-  return status;
-}
-
 
 asynStatus
 ethercatmcController::ethercatmcCreateParam(const char *paramName,
@@ -1098,38 +1023,6 @@ static void ethercatmcCreateContollerCallFunc(const iocshArgBuf *args)
                              args[3].ival, args[4].ival, args[5].sval);
 }
 
-/* ethercatmcConfigController */
-static const iocshArg ethercatmcConfigControllerArg0 = {"Controller port name", iocshArgString};
-static const iocshArg ethercatmcConfigControllerArg1 = {"ConfigString",         iocshArgString};
-static const iocshArg * const ethercatmcConfigControllerArgs[] = {&ethercatmcConfigControllerArg0,
-                                                                  &ethercatmcConfigControllerArg1};
-static const iocshFuncDef ethercatmcConfigControllerDef = {strethercatmcConfigController, 2,
-                                                           ethercatmcConfigControllerArgs};
-static const iocshFuncDef ethercatmcConfigOrDieDef = {strethercatmcConfigOrDie, 2,
-                                                      ethercatmcConfigControllerArgs};
-static const iocshFuncDef ethercatmcReadControllerDef = {strethercatmcReadController, 2,
-                                                         ethercatmcConfigControllerArgs};
-
-static void ethercatmcConfigContollerCallFunc(const iocshArgBuf *args)
-{
-  int needOkOrDie = 1;
-  ethercatmcConfigController(needOkOrDie, args[0].sval, args[1].sval);
-}
-
-static void ethercatmcConfigOrDieCallFunc(const iocshArgBuf *args)
-{
-  int needOkOrDie = -1;
-  ethercatmcConfigController(needOkOrDie, args[0].sval, args[1].sval);
-}
-
-static void ethercatmcReadContollerCallFunc(const iocshArgBuf *args)
-{
-  int needOkOrDie = 0;
-  ethercatmcConfigController(needOkOrDie, args[0].sval, args[1].sval);
-}
-
-
-
 /* ethercatmcCreateAxis */
 static const iocshArg ethercatmcCreateAxisArg0 = {"Controller port name", iocshArgString};
 static const iocshArg ethercatmcCreateAxisArg1 = {"Axis number", iocshArgInt};
@@ -1193,9 +1086,6 @@ static void ethercatmcStartPollerCallFunc(const iocshArgBuf *args)
 static void ethercatmcControllerRegister(void)
 {
   iocshRegister(&ethercatmcCreateControllerDef, ethercatmcCreateContollerCallFunc);
-  iocshRegister(&ethercatmcConfigOrDieDef,      ethercatmcConfigOrDieCallFunc);
-  iocshRegister(&ethercatmcConfigControllerDef, ethercatmcConfigContollerCallFunc);
-  iocshRegister(&ethercatmcReadControllerDef,   ethercatmcReadContollerCallFunc);
   iocshRegister(&ethercatmcCreateAxisDef,       ethercatmcCreateAxisCallFunc);
   iocshRegister(&ethercatmcCreateIndexerAxisDef,ethercatmcCreateIndexerAxisCallFunc);
   iocshRegister(&ethercatmcCreateAsynParamDef,  ethercatmcCreateAsynParamCallFunc);
