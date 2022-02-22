@@ -118,7 +118,6 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcMCUErrMsgString            "MCUErrMsg"
 #define ethercatmcDbgStrToMcuString          "StrToMCU"
 #define ethercatmcDbgStrToLogString          "StrToLOG"
-#define ethercatmcDbgStrToNCString           "StrToNC"
 
 #define HOMPROC_MANUAL_SETPOS    15
 
@@ -229,10 +228,6 @@ public:
                        int numAxes, double movingPollPeriod,
                        double idlePollPeriod,
                        const char *optionStr);
-  /* Special for Streamdevice */
-  asynStatus readOctet(asynUser *pasynUser,
-                       char *value, size_t maxChars, size_t *nActual,
-                       int *eomReason);
   /* Note: the motor/master version does not have it, so we need it here */
   asynStatus writeOctet(asynUser *pasynUser, const char *value,
                         size_t nChars, size_t *nActual);
@@ -495,7 +490,6 @@ public:
   int ethercatmcMCUErrMsg_;         /* error message; needs to be reviewed */
   int ethercatmcDbgStrToMcu_;       /* Messages to the simulator or MCU ?. To be reviewed */
   int ethercatmcDbgStrToLog_;       /* Message to show up in the IOC log, test and debug only */
-  int ethercatmcDbgStrToNC_;        /* Messages to the simulator or MCU ?. To be reviewed */
   int ethercatmcVelAct_;            /* Actual velocity. Measured in the MCU (typically with Jitter */
   int ethercatmcVel_RB_;            /* Velocity used in MCU */
   int ethercatmcAcc_RB_;            /* Acceleration used in MCU */
