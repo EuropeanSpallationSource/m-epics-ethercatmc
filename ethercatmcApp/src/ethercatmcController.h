@@ -74,7 +74,6 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcHomPosString               "HomPos"
 #define ethercatmcVelToHomString             "VelToHom"
 #define ethercatmcVelFrmHomString            "VelFrmHom"
-#define ethercatmcAccHomString               "AccHom"
 #define ethercatmcRawEncStepString           "RawEncStep"
 #define ethercatmcRawMtrStepString           "RawMtrStep"
 #define ethercatmcRawMtrVeloString           "RawMtrVelo"
@@ -482,7 +481,6 @@ public:
   int ethercatmcHomPos_;
   int ethercatmcVelToHom_;
   int ethercatmcVelFrmHom_;
-  int ethercatmcAccHom_;
   int ethercatmcRawEncStep_;
   int ethercatmcRawMtrStep_;
   int ethercatmcRawMtrVelo_;

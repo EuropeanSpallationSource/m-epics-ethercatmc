@@ -679,7 +679,6 @@ asynStatus ethercatmcAxis::home(double minVelocity, double maxVelocity, double a
   if (pC_->features_ & FEATURE_BITS_ECMC) {
     double velToHom;
     double velFrmHom;
-    double accHom;
     if (!status) status = stopAxisInternal(__FUNCTION__, 0);
     if (!status) status = setValueOnAxis("fHomePosition", homPos);
     if (!status) status = pC_->getDoubleParam(axisNo_,
@@ -688,15 +687,12 @@ asynStatus ethercatmcAxis::home(double minVelocity, double maxVelocity, double a
     if (!status) status = pC_->getDoubleParam(axisNo_,
                                               pC_->ethercatmcVelFrmHom_,
                                               &velFrmHom);
-    if (!status) status = pC_->getDoubleParam(axisNo_,
-                                              pC_->ethercatmcAccHom_,
-                                              &accHom);
     if (!status) status = setSAFValueOnAxis(0x4000, 0x6,
                                             velToHom);
     if (!status) status = setSAFValueOnAxis(0x4000, 0x7,
                                             velFrmHom);
-    if (!status)  status = setValuesOnAxis("fAcceleration", accHom,
-                                           "fDeceleration", accHom);
+    if (!status)  status = setValuesOnAxis("fAcceleration", acceleration,
+                                           "fDeceleration", acceleration);
     if (!status) status = setValueOnAxis("nCommand", nCommand );
     if (!status) status = setValueOnAxis("nCmdData", homProc);
     if (!status) status = setValueOnAxis("bExecute", 1);

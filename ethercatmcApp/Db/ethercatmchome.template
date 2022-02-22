@@ -34,10 +34,3 @@ record(ao,"$(PREFIX)$(MOTOR_NAME)-VelFrmHom") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))VelFrmHom")
 }
 
-record(ao,"$(PREFIX)$(MOTOR_NAME)-AccHom") {
-    field(DESC, "Homing Acceleration EGU/s^2")
-    field(VAL, "$(HOMEACC=0)")
-    field(DTYP, "asynFloat64")
-    field(PINI, "YES")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))AccHom")
-}
