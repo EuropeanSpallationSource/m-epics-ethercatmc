@@ -536,15 +536,6 @@ asynStatus ethercatmcIndexerAxis::stop(double acceleration )
   return stopAxisInternal(__FUNCTION__, acceleration);
 }
 
-void ethercatmcIndexerAxis::setAxisID(unsigned axisID)
-{
-  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%ssetAxisID(%u) %d\n",
-            modNamEMC, axisNo_, axisID);
-  drvlocal.axisID = axisID;
-  setIntegerParamLog(pC_->ethercatmcCfgAxisID_RB_, drvlocal.axisID,"axisID");
-}
-
 asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,
                                                      int newValue,
                                                      const char *name)

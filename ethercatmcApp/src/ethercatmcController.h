@@ -87,7 +87,6 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcSystemUTCtimeString        "SystemUTCtime"
 #define ethercatmcDCTIMEString               "DCTIME"
 #define ethercatmcRBV_TSEString              "RBV-TSE"
-#define ethercatmcCfgAxisID_RBString         "CfgAxisID-RB"
 #define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
 #define ethercatmcCfgJVEL_RBString           "CfgJVEL-RB"
@@ -506,7 +505,6 @@ public:
   int ethercatmcSystemUTCtime_;
   int ethercatmcDCTIME_;
   int ethercatmcRBV_TSE_;
-  int ethercatmcCfgAxisID_RB_;
   int ethercatmcCfgVELO_RB_;
   int ethercatmcCfgVMAX_RB_;
   int ethercatmcCfgJVEL_RB_;

@@ -250,7 +250,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcNamAux23_String,     asynParamOctet,       &ethercatmcNamAux23_);
   createParam(ethercatmcNamBit24_String,     asynParamOctet,       &ethercatmcNamBit24_);
   createParam(ethercatmcNamBit25_String,     asynParamOctet,       &ethercatmcNamBit25_);
-  createParam(ethercatmcCfgAxisID_RBString,  asynParamInt32,       &ethercatmcCfgAxisID_RB_);
   createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &ethercatmcCfgVELO_RB_);
   createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &ethercatmcCfgVMAX_RB_);
   createParam(ethercatmcCfgJVEL_RBString,    asynParamFloat64,     &ethercatmcCfgJVEL_RB_);
@@ -1105,10 +1104,6 @@ asynStatus ethercatmcController::writeOctet(asynUser *pasynUser,
       int      axisAxisID = 0;
       asynMotorAxis *pAxis = getAxis(requestedAxisID);
       status = pAxis ? asynSuccess : asynError;
-      if (!status) {
-        getIntegerParam(requestedAxisID, ethercatmcCfgAxisID_RB_, &axisAxisID);
-        if ((unsigned)axisAxisID != requestedAxisID) status = asynError;
-      }
       if (status) {
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s Bad idxGrp requestedAxisID=%u pAxis=%p axisAxisID=%d\n",

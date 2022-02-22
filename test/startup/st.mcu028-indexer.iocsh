@@ -23,7 +23,6 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 
-epicsEnvSet("AXISCONFIG",    "axisID=1")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
