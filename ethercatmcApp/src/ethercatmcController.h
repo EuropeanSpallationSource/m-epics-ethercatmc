@@ -443,10 +443,10 @@ public:
 
 
   /* First parameter */
-  int ethercatmcMcuErr_;
-  int ethercatmcStatusCode_;
-  int ethercatmcStatusBits_;
-  int ethercatmcNamAux0_;
+  int ethercatmcMcuErr_;            /* Motion Control Unit reports an error */
+  int ethercatmcStatusCode_;        /* PILS status code (BUSY/START/IDLE...) */
+  int ethercatmcStatusBits_;        /* PILS Bit 25+24 and Aux bits 23..0 */
+  int ethercatmcNamAux0_;           /* Name of the AUX bits */
   int ethercatmcNamAux1_;
   int ethercatmcNamAux2_;
   int ethercatmcNamAux3_;
@@ -472,17 +472,17 @@ public:
   int ethercatmcNamAux23_;
   int ethercatmcNamBit24_;
   int ethercatmcNamBit25_;
-  int ethercatmcFoffVis_;
-  int ethercatmcHomeVis_;
-  int ethercatmcHomProc_RB_;
-  int ethercatmcHomPos_RB_;
-  int ethercatmcHomProc_;
-  int ethercatmcHomPos_;
-  int ethercatmcVelToHom_;
-  int ethercatmcVelFrmHom_;
-  int ethercatmcRawEncStep_;
-  int ethercatmcRawMtrStep_;
-  int ethercatmcRawMtrVelo_;
+  int ethercatmcFoffVis_;           /* FOFF visible in GUI: motor can be calibrated with setPosition() */
+  int ethercatmcHomeVis_;           /* HOMF/HOMR visible in GUI (motor can be calibrated with a homing sequence */
+  int ethercatmcHomProc_RB_;        /* Homing procedure (even called homing sequence) from MCU */
+  int ethercatmcHomPos_RB_;         /* Position of home sensor/switch, debug only */
+  int ethercatmcHomProc_;           /* Homing procedure towards the MCU, for testing only, to be removed ? */
+  int ethercatmcHomPos_;            /* Homing position towards the MCU, for testing only, to be removed ?  */
+  int ethercatmcVelToHom_;          /* Homing velocity towards CAM, ethercatmcAxis only, to be removed ? */
+  int ethercatmcVelFrmHom_;         /* Homing velocity from CAM, ethercatmcAxis only, to be removed ? */
+  int ethercatmcRawEncStep_;        /* Raw encoder steps on the terminal, debug only */
+  int ethercatmcRawMtrStep_;        /* Raw motor steps on the terminal, debug only */
+  int ethercatmcRawMtrVelo_;        /* Raw motor veloclty on the terminal, debug only */
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
   int motorRecResolution_;
@@ -491,21 +491,21 @@ public:
 #endif
 
   /* Add parameters here */
-  int ethercatmcErrRst_;
-  int ethercatmcMCUErrMsg_;
-  int ethercatmcDbgStrToMcu_;
-  int ethercatmcDbgStrToLog_;
-  int ethercatmcDbgStrToNC_;
-  int ethercatmcVelAct_;
-  int ethercatmcVel_RB_;
-  int ethercatmcAcc_RB_;
-  int ethercatmcPTPState_;
+  int ethercatmcErrRst_;            /* Soft reset of an axis */
+  int ethercatmcMCUErrMsg_;         /* error message; needs to be reviewed */
+  int ethercatmcDbgStrToMcu_;       /* Messages to the simulator or MCU ?. To be reviewed */
+  int ethercatmcDbgStrToLog_;       /* Message to show up in the IOC log, test and debug only */
+  int ethercatmcDbgStrToNC_;        /* Messages to the simulator or MCU ?. To be reviewed */
+  int ethercatmcVelAct_;            /* Actual velocity. Measured in the MCU (typically with Jitter */
+  int ethercatmcVel_RB_;            /* Velocity used in MCU */
+  int ethercatmcAcc_RB_;            /* Acceleration used in MCU */
+  int ethercatmcPTPState_;          /* PTP */
   int ethercatmcPTPOffset_;
   int ethercatmcPTPSyncSeqNum_;
   int ethercatmcSystemUTCtime_;
-  int ethercatmcDCTIME_;
-  int ethercatmcRBV_TSE_;
-  int ethercatmcCfgVELO_RB_;
+  int ethercatmcDCTIME_;            /* "Distributed Clock time" */
+  int ethercatmcRBV_TSE_;           /* motor position (RBV in motorRecord) MCU time stamped */
+  int ethercatmcCfgVELO_RB_;        /* configuration values from the MCU */
   int ethercatmcCfgVMAX_RB_;
   int ethercatmcCfgJVEL_RB_;
   int ethercatmcCfgHVEL_RB_;
