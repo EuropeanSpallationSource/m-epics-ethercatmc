@@ -36,7 +36,7 @@ FILENAME...   ethercatmcController.h
 #define motorRecResolutionString        "MOTOR_REC_RESOLUTION"
 #endif
 
-#define ethercatmcErrString                  "MCUErr"
+#define ethercatmcMcuErrString               "MCUErr"
 #define ethercatmcErrIdString                "ErrorID"
 #define ethercatmcStatusCodeString           "StatusCode"
 #define ethercatmcStatusBitsString           "StatusBits"
@@ -443,7 +443,7 @@ public:
 
 
   /* First parameter */
-  int ethercatmcErr_;
+  int ethercatmcMcuErr_;
   int ethercatmcStatusCode_;
   int ethercatmcStatusBits_;
   int ethercatmcNamAux0_;

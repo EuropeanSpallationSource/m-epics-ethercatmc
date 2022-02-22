@@ -789,17 +789,17 @@ asynStatus ethercatmcAxis::setPosition(double value)
 asynStatus ethercatmcAxis::resetAxis(void)
 {
   asynStatus status = asynSuccess;
-  int ethercatmcErr;
+  int ethercatmcMcuErr;
   bool moving;
   /* Reset command error, if any */
   drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   drvlocal.cmdErrorMessage[0] = 0;
-  status = pC_->getIntegerParam(axisNo_, pC_->ethercatmcErr_, &ethercatmcErr);
+  status = pC_->getIntegerParam(axisNo_, pC_->ethercatmcMcuErr_, &ethercatmcMcuErr);
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%sresetAxis(%d status=%d ethercatmcErr)=%d\n",
-            modNamEMC, axisNo_, (int)status, ethercatmcErr);
+            "%sresetAxis(%d status=%d ethercatmcMcuErr)=%d\n",
+            modNamEMC, axisNo_, (int)status, ethercatmcMcuErr);
 
-  if (ethercatmcErr) {
+  if (ethercatmcMcuErr) {
     /* Soft reset of the axis */
     status = setValueOnAxis("bExecute", 0);
     if (status) goto resetAxisReturn;
@@ -997,7 +997,7 @@ void ethercatmcAxis::callParamCallbacksUpdateError()
     setIntegerParam(pC_->motorStatusProblem_,
                     drvlocal.eeAxisError != eeAxisErrorNoError);
     /* MCU has a problem: set the red light in CSS */
-    setIntegerParam(pC_->ethercatmcErr_,
+    setIntegerParam(pC_->ethercatmcMcuErr_,
                     drvlocal.eeAxisError == eeAxisErrorMCUError);
     setIntegerParam(pC_->ethercatmcErrId_, EPICS_nErrorId);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,

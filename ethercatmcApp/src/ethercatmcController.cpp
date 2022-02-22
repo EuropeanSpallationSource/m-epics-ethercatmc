@@ -193,7 +193,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcDbgStrToNCString,    asynParamOctet,       &ethercatmcDbgStrToNC_);
 
   /* Per axis */
-  createParam(ethercatmcErrString,           asynParamInt32,       &ethercatmcErr_);
+  createParam(ethercatmcMcuErrString,        asynParamInt32,       &ethercatmcMcuErr_);
   createParam(ethercatmcErrIdString,         asynParamInt32,       &ethercatmcErrId_);
 
   createParam(ethercatmcRawEncStepString,    asynParamInt32,       &ethercatmcRawEncStep_);
