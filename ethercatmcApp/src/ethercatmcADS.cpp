@@ -326,42 +326,58 @@ ethercatmcController::writeReadControllerADS(asynUser *pasynUser,
     /* The length to read is inside the AMS/TCP header */
     const AmsHdrType *amsHdr_p = (const AmsHdrType *)indata;
     uint32_t toread = NETTOUINT(amsHdr_p->amsTcpHdr.net_len);
-
-    /* Read the rest into indata */
-    status = pasynOctetSyncIO->read(pasynUser,
-                                    indata + part_1_len,
-                                    toread,
-                                    DEFAULT_CONTROLLER_TIMEOUT,
-                                    &nread2, &eomReason);
-    if (status) errorProblem |= 1;
-    if (!nread2) errorProblem |= 2;
-    if (eomReason & ASYN_EOM_END) errorProblem |= 4;
-    if (errorProblem) tracelevel |= ASYN_TRACE_ERROR;
-    asynPrint(pasynUser, tracelevel,
-              "%s:%d IN2 toread=0x%x %u nread2=%lu eomReason=%x (%s%s%s) status=%s (%d)\n",
-              fileName, lineNo,
-              (unsigned)toread, (unsigned)toread,
-              (unsigned long)nread2,
-              eomReason,
-              eomReason & ASYN_EOM_CNT ? "CNT" : "",
-              eomReason & ASYN_EOM_EOS ? "EOS" : "",
-              eomReason & ASYN_EOM_END ? "END" : "",
-              ethercatmcstrStatus(status), status);
-    if (eomReason & ASYN_EOM_END) status = asynError;
-    *pnread = nread1 + nread2;
+    if (toread > inlen) {
+      /*
+       * We should read more that we asked for ?
+       * Avoid writing outside the allocated buffer length
+       */
+      errorProblem |= 8;
+      tracelevel |= ASYN_TRACE_ERROR;
+      asynPrint(pasynUser, tracelevel,
+                "%s:%d IN1 toread=0x%x %u inlen=%lu Should read more than asked for\n",
+                fileName, lineNo,
+                (unsigned)toread, (unsigned)toread,
+                (unsigned long)inlen);
+    } else {
+      /* Read the rest into indata */
+      status = pasynOctetSyncIO->read(pasynUser,
+                                      indata + part_1_len,
+                                      toread,
+                                      DEFAULT_CONTROLLER_TIMEOUT,
+                                      &nread2, &eomReason);
+      if (status) errorProblem |= 1;
+      if (!nread2) errorProblem |= 2;
+      if (eomReason & ASYN_EOM_END) errorProblem |= 4;
+      if (errorProblem) tracelevel |= ASYN_TRACE_ERROR;
+      asynPrint(pasynUser, tracelevel,
+                "%s:%d IN2 toread=0x%x %u nread2=%lu eomReason=%x (%s%s%s) status=%s (%d)\n",
+                fileName, lineNo,
+                (unsigned)toread, (unsigned)toread,
+                (unsigned long)nread2,
+                eomReason,
+                eomReason & ASYN_EOM_CNT ? "CNT" : "",
+                eomReason & ASYN_EOM_EOS ? "EOS" : "",
+                eomReason & ASYN_EOM_END ? "END" : "",
+                ethercatmcstrStatus(status), status);
+      if (eomReason & ASYN_EOM_END) status = asynError;
+      *pnread = nread1 + nread2;
+    }
   }
   EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
   ethercatmcamsdump(pasynUser, tracelevel, "OUT", outdata);
   ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
+  ethercatmcamsdump(pasynUser, tracelevel, "IN1 ", indata);
+  ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1);
   if (nread2) {
-    ethercatmcamsdump(pasynUser, tracelevel, "IN1 ", indata);
-    ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1);
     ethercatmchexdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2);
   }
-
-  if (status == asynTimeout) {
+  if ((status == asynTimeout) || (errorProblem & 8)) {
     asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s status == asynTimeout: calling disconnect_C\n", modNamEMC);
+              "%s status=%s errorProblem=%d: calling disconnect_C\n",
+              modNamEMC,
+              ethercatmcstrStatus(status),
+              errorProblem);
+    status = asynError;
     disconnect_C(pasynUser);
   }
   return status ? asynError : asynSuccess;
