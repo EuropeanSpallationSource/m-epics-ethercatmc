@@ -1,0 +1,35 @@
+require EthercatMC,USER
+
+epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.38.13)")
+#epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
+#epicsEnvSet("PREFIX",        "$(SM_PREFIX=YMIR-SE:MC-MCU-02:)")
+epicsEnvSet("PREFIX",        "$(SM_PREFIX=SES-SCAN:MC-MCU-001:)")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",     "3")
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.79.68.216.1.1;amsNetIdLocal=172.30.38.12.1.1"
+
+# No poller yet, see ethercatmcStartPoller at the end of the script
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
+< ethercatmcController.iocsh
+
+#
+# Axis 1
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
+# Start polling, values are in millisconds
+#
+epicsEnvSet("MOVINGPOLLPERIOD", "200")
+epicsEnvSet("IDLEPOLLPERIOD",   "500")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

@@ -1,0 +1,3 @@
+ethercatmcCreateIndexerAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
+
+dbLoadRecords("ethercatmcShutter.template", "PREFIX=$(PREFIX), R=$(R), DESC=$(DESC), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")

@@ -5,12 +5,6 @@ export APPXX
 EPICS_EEE_E3=n
 DOLOG=
 
-if test -n "$SM_PREFIX"; then
-  XX_TXT=xx-$(echo $SM_PREFIX | sed -e "s/:$//g" | tr ":" "-" ).txt
-else
-  XX_TXT=xx.txt
-fi
-export XX_TXT
 uname_s=$(uname -s 2>/dev/null || echo unknown)
 uname_m=$(uname -m 2>/dev/null || echo unknown)
 
@@ -54,15 +48,6 @@ if test -z "$EPICS_HOST_ARCH"; then
   exit 1
 fi
 
-if test "$1" = "-l"; then
-  if test -f $XX_TXT; then
-    timestamp=$(date "+%y-%m-%d-%H.%M.%S")
-    mkdir -p ../logs/ &&
-    mv $XX_TXT ../logs/$timestamp.txt || exit 1
-  fi
-  DOLOG=" 2>&1 | tee $PWD/$XX_TXT"
-  shift
-fi
 if test "$1" = "--no-make"; then
   NOMAKE=y
   shift
@@ -103,16 +88,6 @@ echo MOTORCFG=$MOTORCFG
 ) || exit 1
 
 shift
-if test "$1" = "-l"; then
-  if test -f $XX_TXT; then
-    timestamp=$(date "+%y-%m-%d-%H.%M.%S")
-    mkdir -p ../logs/ &&
-    mv $XX_TXT ../logs/$timestamp.txt || exit 1
-  fi
-  DOLOG=" 2>&1 | tee $PWD/$XX_TXT"
-  shift
-fi
-export DOLOG
 
 MOTORIP=127.0.0.1
 
@@ -126,7 +101,8 @@ case $MOTORCFG in
     ;;
 esac
 
-if test -n "$1"; then
+
+if test -n "$1" && test "$1" != "-l"; then
   # allow doit.sh host:port
   PORT=${1##*:}
   HOST=${1%:*}
@@ -169,11 +145,18 @@ if test "$MOTORPORT" = 48898; then
 fi
 export LOCALAMSNETID REMOTEAMSNETID
 
+# log/tee to file
 if test "$1" = "-l"; then
+    if test -n "$SM_PREFIX"; then
+        XX_TXT=xx-$(echo $SM_PREFIX | sed -e "s/:$//g" | tr ":" "-" ).txt
+    else
+        XX_TXT=xx-$MOTORCFG.txt
+    fi
+    export XX_TXT
   if test -f $XX_TXT; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
     mkdir -p ../logs/ &&
-    mv $XX_TXT ../logs/$timestamp.txt || exit 1
+    mv $XX_TXT ../logs/$timestamp-$MOTORCFG.txt || exit 1
   fi
   DOLOG=" 2>&1 | tee $PWD/$XX_TXT"
   shift
@@ -205,7 +188,7 @@ if test "$NOMAKE" != "y"; then
             mkdir -p dbmotor &&
             for src in db/*template; do
               dst=dbmotor/${src##*/}
-              echo sed PWD=$PWD src=$src dst=$dst
+              #echo sed PWD=$PWD src=$src dst=$dst
               sed <"$src" >"$dst" \
                   -e "s%record(axis%record(motor%" \
                   -e "s%asynAxis%asynMotor%"
@@ -287,7 +270,7 @@ if test "$NOMAKE" != "y"; then
           # All patched files are under IOCDIR=../iocBoot/ioc${APPXX}
           for src in ../../test/startup/*iocsh  ../../iocsh/*iocsh; do
               dst=${src##*/}
-              echo sed PWD=$PWD src=$src dst=$dst
+              #echo sed PWD=$PWD src=$src dst=$dst
               sed <"$src" >"$dst" \
                   -e "s%dbLoadRecords(\"%dbLoadRecords(\"./$DBMOTOR/%" \
                   -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
@@ -307,12 +290,14 @@ dbLoadDatabase "dbd/${APPXX}.dbd"
 ${APPXX}_registerRecordDeviceDriver pdbbase
 EOF
    # Side note: st.${MOTORCFG}.iocsh needs extra patching
-          echo sed PWD=$PWD "<../../startup/st.${MOTORCFG}.iocsh >>$stcmddst"
+          #echo sed PWD=$PWD "<../../startup/st.${MOTORCFG}.iocsh >>$stcmddst"
           sed <../../test/startup/st.${MOTORCFG}.iocsh  \
               -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
               -e "s/5000/$MOTORPORT/" \
               -e "s/127.0.0.1/$MOTORIP/" \
+              -e "s/172\.[0-9]*\.[0-9]*.[0-9]*/$MOTORIP/" \
               -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
+              -e "s/amsNetIdRemote=[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/amsNetIdRemote=$REMOTEAMSNETID/" \
               -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
               -e "s%cfgFile=./%cfgFile=./test/startup/%"    \
               -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \

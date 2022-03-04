@@ -506,11 +506,11 @@ asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
   size_t lenInPLCparamIf = sizeof(paramIf_from_MCU.paramCtrl) + lenInPlcPara;
   unsigned counter = 0;
 
-  if (paramIndex > 0xFF ||
+  if (!paramIfOffset || paramIndex > 0xFF ||
       lenInPlcPara > sizeof(paramIf_from_MCU.paramValueRaw)) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s paramIndex=%u lenInPlcPara=%u\n",
-              modNamEMC, paramIndex, lenInPlcPara);
+              "%s paramIndex=%u lenInPlcPara=%u paramIfOffset=%u\n",
+              modNamEMC, paramIndex, lenInPlcPara, paramIfOffset);
     return asynDisabled;
   }
   while (counter < MAX_COUNTER) {
@@ -591,19 +591,17 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
   unsigned counter = 0;
   int has_written = 0;
 
-  if (pAxis) {
-    if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermRead) {
-      return asynParamWrongType;
-    } else if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermNone) {
-      return asynParamBadIndex;
-    }
-  }
-  if (paramIndex > 0xFF ||
+  if (!pAxis || !paramIfOffset || (paramIndex > 0xFF) ||
       lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s paramIndex=%u lenInPlcPara=%u\n",
-              modNamEMC, paramIndex, lenInPlcPara);
+              "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u\n",
+              modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset);
     return asynDisabled;
+  }
+  if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermRead) {
+    return asynParamWrongType;
+  } else if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermNone) {
+    return asynParamBadIndex;
   }
   memset(&paramIf_to_MCU, 0, sizeof(paramIf_to_MCU));
   memset(&paramIf_from_MCU, 0, sizeof(paramIf_from_MCU));
@@ -1229,6 +1227,7 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
                                    descVersAuthors.author2,
                                    sizeof(descVersAuthors.author2));
     switch (iTypCode) {
+      case 0x1E04:
       case 0x5008:
       case 0x500C:
       case 0x5010:
@@ -1295,6 +1294,7 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 #endif
     }
     switch (iTypCode) {
+    case 0x1E04:
     case 0x5008:
     case 0x500C:
     case 0x5010:

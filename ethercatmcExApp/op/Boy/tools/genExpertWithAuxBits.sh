@@ -10,6 +10,19 @@ shift
 BASENAME=$1
 shift
 
+case $BASENAME in
+  ethercatmcShutter)
+    yaux=298
+    ;;
+  ethercatmcaxisExpert)
+    yaux=y=416
+    ;;
+  *)
+    echo >&2 "invalid: $BASENAME"
+    exit 1
+    ;;
+esac
+
 # ptp version or not
 if test "$1" = "ptp"; then
   shift
@@ -22,6 +35,7 @@ export HAS_PTP
 
 echo "Creating $FILE" &&
 cat $BASENAME.start >$$ &&
+cat plcName.mid  >>$$ &&
 if test "$HAS_PTP" != ""; then
   cat ptp.mid  >>$$
 fi &&
@@ -34,10 +48,9 @@ echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
 cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
 echo cmd=$cmd
 eval $cmd <$BASENAME.mid >>$$
-  y=416 #start here
   for n in $@; do
-      y=$(($y + 20))
-      cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $y)
+      yaux=$(($yaux + 20))
+      cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
       echo cmd=$cmd
       eval $cmd <ethercatmcaxisAuxBit.mid >>$$
   done

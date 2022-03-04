@@ -24,7 +24,7 @@ epicsEnvSet("NUMAXES", "$(ECM_NUMAXES=8)")
 epicsEnvSet("ADSPORT", "$(ECM_ADSPORT=852)")
 
 # Default OPTIONS
-epicsEnvSet("ECC_OPTIONS", "$(ECM_OPTIONS=;)")
+epicsEnvSet("ECC_OPTIONS", "$(ECM_OPTIONS=);ipaddr=$(IPADDR);ipport=$(IPPORT)")
 
 # movingPollPeriod, idlePollPeriod
 epicsEnvSet("MOVINGPOLLPERIOD", "$(ECM_MOVINGPOLLPERIOD=200)")
@@ -66,5 +66,8 @@ asynSetTraceInfoMask("$(ASYN_PORT)", -1, 5)
 
 ethercatmcCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)", "$(ECC_OPTIONS)")
 
+dbLoadRecords("ethercatmcPlcName.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT)")
+
 asynSetOption $(ASYN_PORT) -1 disconnectOnReadTimeout Y
 asynShowOption $(ASYN_PORT) -1 disconnectOnReadTimeout
+

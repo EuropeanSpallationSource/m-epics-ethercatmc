@@ -40,6 +40,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcErrIdString                "ErrorID"
 #define ethercatmcStatusCodeString           "StatusCode"
 #define ethercatmcStatusBitsString           "StatusBits"
+#define ethercatmcAuxBits07_String           "AuxBits07"
 #define ethercatmcNamAux0_String             "NamAuxBit0"
 #define ethercatmcNamAux1_String             "NamAuxBit1"
 #define ethercatmcNamAux2_String             "NamAuxBit2"
@@ -87,6 +88,13 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcSystemUTCtimeString        "SystemUTCtime"
 #define ethercatmcDCTIMEString               "DCTIME"
 #define ethercatmcRBV_TSEString              "RBV-TSE"
+#define pilsLonginActualString               "pilsLonginActual"
+#define pilsLonginTargetString               "pilsLonginTarget"
+#define pilsLongoutRecordString              "pilsLongoutRecord"
+#define pilsBoMinMaxString                   "pilsBoMinMax"
+#define pilsBiAtMaxString                    "pilsBiAtMax"
+#define pilsBiAtMinString                    "pilsBiAtMin"
+#define ethercatmcCfgAxisID_RBString         "CfgAxisID-RB"
 #define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
 #define ethercatmcCfgJVEL_RBString           "CfgJVEL-RB"
@@ -232,7 +240,6 @@ public:
   asynStatus writeOctet(asynUser *pasynUser, const char *value,
                         size_t nChars, size_t *nActual);
   void report(FILE *fp, int level);
-  asynStatus setMCUErrMsg(const char *value);
   asynStatus configController(int needOk, const char *value);
   asynStatus ethercatmcCreateParam(const char *paramName,
                                    asynParamType myEPICSParamType,
@@ -441,6 +448,7 @@ public:
   int ethercatmcMcuErr_;            /* Motion Control Unit reports an error */
   int ethercatmcStatusCode_;        /* PILS status code (BUSY/START/IDLE...) */
   int ethercatmcStatusBits_;        /* PILS Bit 25+24 and Aux bits 23..0 */
+  int ethercatmcAuxBits07_;
   int ethercatmcNamAux0_;           /* Name of the AUX bits */
   int ethercatmcNamAux1_;
   int ethercatmcNamAux2_;
@@ -487,7 +495,6 @@ public:
 
   /* Add parameters here */
   int ethercatmcErrRst_;            /* Soft reset of an axis */
-  int ethercatmcMCUErrMsg_;         /* error message; needs to be reviewed */
   int ethercatmcDbgStrToMcu_;       /* Messages to the simulator or MCU ?. To be reviewed */
   int ethercatmcDbgStrToLog_;       /* Message to show up in the IOC log, test and debug only */
   int ethercatmcVelAct_;            /* Actual velocity. Measured in the MCU (typically with Jitter */
@@ -499,6 +506,12 @@ public:
   int ethercatmcSystemUTCtime_;
   int ethercatmcDCTIME_;            /* "Distributed Clock time" */
   int ethercatmcRBV_TSE_;           /* motor position (RBV in motorRecord) MCU time stamped */
+  int pilsLonginActual_;
+  int pilsLonginTarget_;
+  int pilsLongoutRecord_;
+  int pilsBoMinMax_;                /* bo record: Binary Out, driving to minimum/maximum */
+  int pilsBiAtMax_;                 /* bi record: Binary In, is at the maximum (e.g. shutter) */
+  int pilsBiAtMin_;                 /* bi record: Binary In, is at the minimum (e.g. shutter) */
   int ethercatmcCfgVELO_RB_;        /* configuration values from the MCU */
   int ethercatmcCfgVMAX_RB_;
   int ethercatmcCfgJVEL_RB_;
@@ -506,8 +519,8 @@ public:
   int ethercatmcCfgACCS_RB_;
   int ethercatmcCfgSREV_RB_;
   int ethercatmcCfgUREV_RB_;
-  int ethercatmcCfgPMIN_RB_;
-  int ethercatmcCfgPMAX_RB_;
+  int ethercatmcCfgPMIN_RB_;        /* "PILS Min", AKA AbsMin */
+  int ethercatmcCfgPMAX_RB_;        /* "PILS Max", AKA AbsMax */
   int ethercatmcCfgSPDB_RB_;
   int ethercatmcCfgRDBD_RB_;
   int ethercatmcCfgRDBD_Tim_RB_;

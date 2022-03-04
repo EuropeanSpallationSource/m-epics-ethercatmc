@@ -162,12 +162,13 @@ ethercatmcController::ethercatmcController(const char *portName,
   :  asynMotorController(portName, numAxes,
                          0, // Olbsolete: Fixed number of additional asyn parameters
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
-                         asynInt64Mask | asynUInt32DigitalMask | asynParamMetaMask, // additional interface
-                         asynInt64Mask | asynUInt32DigitalMask | asynParamMetaMask, // additional callback interface
-#else
-                         asynParamMetaMask | asynUInt32DigitalMask,
-                         asynParamMetaMask | asynUInt32DigitalMask,
+                         asynInt64Mask |
 #endif
+                         asynParamMetaMask | asynUInt32DigitalMask | asynEnumMask,
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+                         asynInt64Mask |
+#endif
+                         asynParamMetaMask | asynUInt32DigitalMask | asynEnumMask,
                          ASYN_CANBLOCK | ASYN_MULTIDEVICE,
                          1, // autoconnect
                          0, 0)  // Default priority and stack size
@@ -179,11 +180,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   ctrlLocal.oldStatus = asynError; //asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
   features_ = 0;
-#ifndef motorMessageTextString
-  createParam("MOTOR_MESSAGE_TEXT",          asynParamOctet,       &ethercatmcMCUErrMsg_);
-#else
-  createParam(ethercatmcMCUErrMsgString,     asynParamOctet,       &ethercatmcMCUErrMsg_);
-#endif
   createParam(ethercatmcDbgStrToMcuString,   asynParamOctet,       &ethercatmcDbgStrToMcu_);
   createParam(ethercatmcDbgStrToLogString,   asynParamOctet,       &ethercatmcDbgStrToLog_);
 
@@ -219,6 +215,13 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcDCTIMEString,        asynParamFloat64,     &ethercatmcDCTIME_);
 #endif
   createParam(ethercatmcRBV_TSEString,       asynParamFloat64,     &ethercatmcRBV_TSE_);
+  createParam(pilsLonginActualString,        asynParamInt32,       &pilsLonginActual_);
+  createParam(pilsLonginTargetString,        asynParamInt32,       &pilsLonginTarget_);
+  createParam(pilsLongoutRecordString,       asynParamInt32,       &pilsLongoutRecord_);
+  createParam(pilsBoMinMaxString,            asynParamInt32,       &pilsBoMinMax_);
+  createParam(pilsBiAtMaxString,             asynParamInt32,       &pilsBiAtMax_);
+  createParam(pilsBiAtMinString,             asynParamInt32,       &pilsBiAtMin_);
+  createParam(ethercatmcAuxBits07_String,    asynParamInt32,       &ethercatmcAuxBits07_);
   createParam(ethercatmcNamAux0_String,      asynParamOctet,       &ethercatmcNamAux0_);
   createParam(ethercatmcNamAux1_String,      asynParamOctet,       &ethercatmcNamAux1_);
   createParam(ethercatmcNamAux2_String,      asynParamOctet,       &ethercatmcNamAux2_);
@@ -294,6 +297,8 @@ ethercatmcController::ethercatmcController(const char *portName,
     const char * const adsPort_str        = "adsPort=";
     const char * const amsNetIdRemote_str = "amsNetIdRemote=";
     const char * const amsNetIdLocal_str  = "amsNetIdLocal=";
+    const char * const ipaddr_str = "ipaddr=";
+    //const char * const ipport_str = "ipport=";
     char *pOptions = strdup(optionStr);
     char *pThisOption = pOptions;
     char *pNextOption = pOptions;
@@ -314,16 +319,28 @@ ethercatmcController::ethercatmcController(const char *portName,
       } else if (!strncmp(pThisOption, amsNetIdRemote_str,
                           strlen(amsNetIdRemote_str))) {
         AmsNetidAndPortType ams_netid_port;
+        unsigned amsRemotePort = ctrlLocal.adsport;
         int nvals;
         memset(&ams_netid_port, 0, sizeof(ams_netid_port));
         pThisOption += strlen(amsNetIdRemote_str);
-        nvals = sscanf(pThisOption, "%hhu.%hhu.%hhu.%hhu.%hhu.%hhu",
+        nvals = sscanf(pThisOption, "%hhu.%hhu.%hhu.%hhu.%hhu.%hhu:%u",
                        &ams_netid_port.netID[0],
                        &ams_netid_port.netID[1],
                        &ams_netid_port.netID[2],
                        &ams_netid_port.netID[3],
                        &ams_netid_port.netID[4],
-                       &ams_netid_port.netID[5]);
+                       &ams_netid_port.netID[5],
+                       &amsRemotePort);
+        if (nvals == 7) {
+          /* overwrite the adsPort= statement */
+          ctrlLocal.adsport = amsRemotePort;
+        }
+        if (nvals >= 6) {
+          hasRemoteAmsNetId = 1;
+          ams_netid_port.port_low  = (uint8_t)ctrlLocal.adsport;
+          ams_netid_port.port_high = (uint8_t)(ctrlLocal.adsport >> 8);
+          memcpy(&ctrlLocal.remote, &ams_netid_port, sizeof(ctrlLocal.remote));
+        }
         printf("%s:%d %s amsNetIdRemote=%u.%u.%u.%u.%u.%u:%u\n",
                __FILE__, __LINE__,
                modulName,
@@ -331,12 +348,6 @@ ethercatmcController::ethercatmcController(const char *portName,
                ams_netid_port.netID[2], ams_netid_port.netID[3],
                ams_netid_port.netID[4], ams_netid_port.netID[5],
                ctrlLocal.adsport);
-        if (nvals == 6) {
-          hasRemoteAmsNetId = 1;
-          ams_netid_port.port_low  = (uint8_t)ctrlLocal.adsport;
-          ams_netid_port.port_high = (uint8_t)(ctrlLocal.adsport >> 8);
-          memcpy(&ctrlLocal.remote, &ams_netid_port, sizeof(ctrlLocal.remote));
-        }
       } else if (!strncmp(pThisOption, amsNetIdLocal_str,
                           strlen(amsNetIdLocal_str))) {
         AmsNetidAndPortType ams_netid_port;
@@ -363,6 +374,12 @@ ethercatmcController::ethercatmcController(const char *portName,
           ams_netid_port.port_high = (uint8_t)(ctrlLocal.adsport >> 8);
           memcpy(&ctrlLocal.local, &ams_netid_port, sizeof(ctrlLocal.local));
         }
+      } else if (!strncmp(pThisOption, ipaddr_str,
+                          strlen(ipaddr_str))) {
+        char buf[128];
+        pThisOption += strlen(ipaddr_str);
+        snprintf(buf, sizeof(buf), "Connecting %s", pThisOption);
+        (void)setStringParam(motorMessageText_, buf);
       }
       pThisOption = pNextOption;
     }
@@ -392,6 +409,7 @@ ethercatmcController::ethercatmcController(const char *portName,
                 ethercatmcstrStatus(status), (int)status);
     }
   } else {
+    setAlarmStatusSeverityAllReadbacks(asynDisconnected);
     if (movingPollPeriod && idlePollPeriod) {
       /*  Find additional devices/asynParams */
       poll();
@@ -678,13 +696,6 @@ asynStatus ethercatmcController::writeReadACK(int traceMask)
   return status;
 }
 
-asynStatus ethercatmcController::setMCUErrMsg(const char *value)
-{
-  asynStatus status = setStringParam(ethercatmcMCUErrMsg_, value);
-  if (!status) status = callParamCallbacks();
-  return status;
-}
-
 void ethercatmcController::udateMotorLimitsRO(int axisNo)
 {
   double fValueHigh = 0.0, fValueLow = 0.0;
@@ -774,7 +785,29 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
       /* Keep bits that are specified via options,
          clear bits that are fetched from the controller */
       features_ &= ~reportedFeatureBits;
-      setMCUErrMsg("MCU Disconnected");
+#ifdef motorMessageTextString
+      const char *pErrorMessage = "MCU Disconnected";
+      if (pasynUserController_ && pasynUserController_->errorMessage[0]) {
+        const char *pLastColon = pasynUserController_->errorMessage;
+        while (pLastColon) {
+          asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+                    "%sDisconnected pErrorMessage=\"%s\" pLastColon=\"%s\"\n",
+                    modNamEMC,
+                    pErrorMessage ? pErrorMessage : "null",
+                    pLastColon ? pLastColon : "null");
+          pLastColon = strchr(pLastColon, ':');
+          if (pLastColon) {
+            pLastColon++; // Jump over ':'
+            pErrorMessage = pLastColon;
+          }
+        }
+        while (pErrorMessage && pErrorMessage[0] == ' ') {
+          pErrorMessage++;
+        }
+      }
+      setIntegerParam(motorMessageIsFromDriver_, 1);
+      (void)setStringParam(motorMessageText_, pErrorMessage);
+#endif
       for (axisNo=0; axisNo<numAxes_; axisNo++) {
         asynMotorAxis *pAxis=getAxis(axisNo);
         if (!pAxis) continue;
@@ -785,11 +818,15 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
       }
     } else {
       /* Disconnected -> Connected */
-      setMCUErrMsg("MCU Cconnected");
       ctrlLocal.cntADSstatus = 0;
+#ifdef motorMessageTextString
+      setAlarmStatusSeverityAllAxes(motorMessageText_, asynSuccess);
+#endif
+
     }
     ctrlLocal.oldStatus = status;
   }
+  callParamCallbacks();
 }
 
 asynStatus ethercatmcController::poll(void)
@@ -1128,6 +1165,9 @@ void ethercatmcController::setAlarmStatusSeverityAllReadbacks(asynStatus status)
   setAlarmStatusSeverityAllAxes(ethercatmcCfgJVEL_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcCfgHVEL_RB_, status);
   setAlarmStatusSeverityAllAxes(ethercatmcCfgACCS_RB_, status);
+#ifdef motorMessageTextString
+  setAlarmStatusSeverityAllAxes(motorMessageText_, status);
+#endif
 
 }
 

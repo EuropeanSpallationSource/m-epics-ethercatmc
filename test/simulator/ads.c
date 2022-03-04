@@ -127,7 +127,7 @@ void handleADSwrite(int fd, ams_hdr_type *ams_hdr_p)
   LOGINFO7("%s/%s:%d ADS_Writecmd adsport=%u indexGroup=0x%x indexOffset=%u len_in_PLC=%u\n",
            __FILE__,__FUNCTION__, __LINE__,
            adsport, indexGroup, indexOffset,len_in_PLC);
-  if (adsport == 851 && indexGroup == 0x4020) {
+  if (adsport == 852 && indexGroup == 0x4020) {
     if (len_in_PLC == 2) {
       uint8_t *data_ptr = (uint8_t *)ADS_Write_req_p + sizeof(*ADS_Write_req_p);
       unsigned value;
@@ -166,9 +166,10 @@ void handleADSwrite(int fd, ams_hdr_type *ams_hdr_p)
              adsport, indexGroup, indexOffset, fValue, len_in_PLC, ret);
     send_ams_reply(fd, ams_hdr_p, sizeof(ADS_Write_rep_type));
   } else {
-    LOGERR("%s/%s:%d ADS_Writecmd adsport=%u indexGroup=0x%x indexOffset=%u len_in_PLC=%u\n",
+    LOGERR("%s/%s:%d Error: illegal combination adsport=%u indexGroup=0x%x indexOffset=%u len_in_PLC=%u\n",
            __FILE__,__FUNCTION__, __LINE__,
            adsport, indexGroup, indexOffset,len_in_PLC);
+    if (DIE_ON_ERROR_BIT1())  exit(2);
   }
 }
 

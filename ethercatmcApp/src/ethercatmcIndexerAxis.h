@@ -65,8 +65,10 @@ public:
   void addPollNowParam(uint8_t paramIndex);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
   asynStatus poll(bool *moving);
+  void       readAuxBitNamesEnums(void);
   asynStatus resetAxis(void);
   asynStatus setClosedLoop(bool closedLoop);
+  asynStatus setGenericIntegerParam(int function, int value);
   asynStatus setIntegerParam(int function, int value);
   asynStatus setDoubleParam(int function, double value);
   asynStatus setStringParamDbgStrToMcu(const char *value);

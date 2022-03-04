@@ -1,0 +1,34 @@
+require EthercatMC,USER
+epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.41.16)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
+
+epicsEnvSet("PREFIX",       "$(SM_PREFIX=Labs-MCAG:MC-MCU-032:)")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",     "3")
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=10.0.7.5.1.1:852;amsNetIdLocal=172.30.38.12.1.1"
+
+# No poller yet, see ethercatmcStartPoller at the end of the script
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
+< ethercatmcController.iocsh
+
+#
+# Axis 1, Shutter
+#
+epicsEnvSet("AXISCONFIG",    "")
+#epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Shutter)")
+epicsEnvSet("AXIS_NO",       "1")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("R",             "Shutter-")
+< ethercatmcShutter.iocsh
+
+
+# Start polling, values are in millisconds
+#
+epicsEnvSet("MOVINGPOLLPERIOD", "200")
+epicsEnvSet("IDLEPOLLPERIOD",   "500")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

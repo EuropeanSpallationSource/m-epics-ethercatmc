@@ -16,6 +16,8 @@ GNERATEDOPIS = \
   ../motor-4x4.opi \
   ../ethercatmcaxisExpert.opi \
   ../ethercatmcaxisExpert-ptp.opi \
+  ../ethercatmcShutter.opi \
+  ../shutter-1.opi \
 
 #Main target:
 all: checkwhitespace $(GNERATEDOPIS)
@@ -25,69 +27,96 @@ clean:
 
 # Depencies, when do we need to revuild a .opi file
 DEPENDENCIES_FOR_MOTOR_OPI = Makefile
-DEPENDENCIES_FOR_MOTOR_OPI += genXY.sh
+DEPENDENCIES_FOR_MOTOR_OPI += genMotorShutter.sh
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.start
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcName.mid
 DEPENDENCIES_FOR_MOTOR_OPI += ptp.mid
-DEPENDENCIES_FOR_MOTOR_OPI += motorx.end 
+DEPENDENCIES_FOR_MOTOR_OPI += motorx.end
+
+DEPENDENCIES_FOR_SHUTTER_OPI = Makefile
+DEPENDENCIES_FOR_SHUTTER_OPI += genMotorShutter.sh
+DEPENDENCIES_FOR_SHUTTER_OPI += shutterx.start
+DEPENDENCIES_FOR_SHUTTER_OPI += shutterx.mid
+DEPENDENCIES_FOR_SHUTTER_OPI += plcName.mid
+DEPENDENCIES_FOR_SHUTTER_OPI += ptp.mid
+DEPENDENCIES_FOR_SHUTTER_OPI += shutterx.end
 
 
-DEPENDENCIES_FOR_EXPERT_OPI = Makefile
-DEPENDENCIES_FOR_EXPERT_OPI += genY.sh
-DEPENDENCIES_FOR_EXPERT_OPI += genExpertWithAuxBits.sh
-DEPENDENCIES_FOR_EXPERT_OPI += genExpertWithAuxBits.py
-DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.start
-DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.mid
-DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
-DEPENDENCIES_FOR_EXPERT_OPI += ptp.mid
-DEPENDENCIES_FOR_EXPERT_OPI += ethercatmcaxisExpert.end
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI = Makefile
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.sh
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.py
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.start
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ptp.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.end
+
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI = Makefile
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += genExpertWithAuxBits.sh
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += genExpertWithAuxBits.py
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += ethercatmcShutter.start
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += plcName.mid
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += ethercatmcShutter.mid
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += ethercatmcaxisAuxBit.mid
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += ptp.mid
+DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += ethercatmcShutter.end
 
 
-AUXBITS="17 18 19 20 0 1 2 3 4"
+AUXBITS_EXPERT="20 19 18 17 16 15 14 13 0 1"
+AUXBITS_SHUTTER="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
 
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ 1
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 1
 
 ../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ ptp 1
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ ptp 1
 
-../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) 
-	TITLEH=$(TITLEH) ./genXY.sh $@ 2
+../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 2
 
 ../motor-3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ 3
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 3
 
 ../motor-3-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ ptp 3
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ ptp 3
 
 ../motor-4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ 4
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 4
 
 ../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ ptp 4
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ ptp 4
 
 ../motor-5.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ 5
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 5
 
 
 ../motor-6.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ 6
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 6
 
 
 ../motor-4x3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ 4 x 3
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 4 x 3
 
 ../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genXY.sh $@ 4 x 4
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 4 x 4
 
 # Generate ethercatmcaxisExpert*.opi out of
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
-../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_EXPERT_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert $(AUXBITS)
+../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
+	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert $(AUXBITS_EXPERT)
 
-../ethercatmcaxisExpert-ptp.opi: $(DEPENDENCIES_FOR_EXPERT_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert ptp $(AUXBITS)
+../ethercatmcaxisExpert-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
+	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert ptp $(AUXBITS_EXPERT)
+
+# Generate ethercatmcShutter*.opi out of
+#   ethercatmcShutter.mid and ethercatmcShutter.end
+../ethercatmcShutter.opi: $(DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI)
+	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcShutter $(AUXBITS_SHUTTER)
+
+../shutter-1.opi: $(DEPENDENCIES_FOR_SHUTTER_OPI)
+	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ s 1
+
 
 checkwhitespace:
 	../../../../checkws.sh

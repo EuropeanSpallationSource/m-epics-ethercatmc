@@ -1627,10 +1627,6 @@ asynStatus ethercatmcAxis::setStringParam(int function, const char *value)
 #ifndef motorMessageTextString
 void ethercatmcAxis::updateMsgTxtFromDriver(const char *value)
 {
-  if (value && value[0]) {
-    setStringParam(pC_->ethercatmcMCUErrMsg_,value);
-  } else {
-    setStringParam(pC_->ethercatmcMCUErrMsg_, "");
-  }
+  (void)value;
 }
 #endif
