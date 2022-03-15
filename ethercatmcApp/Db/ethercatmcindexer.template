@@ -32,14 +32,3 @@ record(ai,"$(PREFIX)$(MOTOR_NAME)-RBV-TSE") {
     field(TSE, -2)
 }
 
-record(ai,"$(PREFIX)$(MOTOR_NAME)-EncAct-TSE") {
-    field(DESC, "Encoder PLC timestamped")
-    field(DTYP, "asynFloat64")
-    field(PREC, "0")
-    field(EGU,  "Steps")
-    field(ADEL, "$(ADEL=1)")
-    field(MDEL, "$(MDEL=1)")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))EncAct-TSE")
-    field(SCAN, "I/O Intr")
-    field(TSE, -2)
-}
