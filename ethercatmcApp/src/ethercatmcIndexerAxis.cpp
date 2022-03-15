@@ -1096,6 +1096,37 @@ asynStatus ethercatmcIndexerAxis::resetAxis(void)
 {
   return writeCmdRegisster(idxStatusCodeRESET);
 }
+bool ethercatmcIndexerAxis::pollPowerIsOn(void)
+{
+  if (!drvlocal.auxBitsEnabledMask) {
+    return false;
+  }
+  if (drvlocal.iTypCode != 0x5010) {
+    return false;
+  }
+  /* Note: We could write and use a function called readCmdRegisster()
+   * similar to writeCmdRegisster().
+   * For the moment keep the code simple and just get the whole readback
+   */
+  if (drvlocal.iTypCode == 0x5010) {
+    struct {
+      uint8_t   actPos[8];
+      uint8_t   targtPos[8];
+      uint8_t   statReasAux[4];
+      uint8_t   errorID[2];
+      uint8_t   paramCtrl[2];
+      uint8_t   paramValue[8];
+    } readback;
+    asynStatus status = pC_->getPlcMemoryViaADS(drvlocal.iOffset,
+                                                &readback,
+                                                sizeof(readback));
+    if (status) return false;
+    unsigned statusReasonAux = NETTOUINT(readback.statReasAux);
+    unsigned idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
+    return idxAuxBits & drvlocal.auxBitsEnabledMask ? true : false;
+  }
+  return false;
+}
 
 /** Set the motor closed loop status
  * \param[in] closedLoop true = close loop, false = open looop. */

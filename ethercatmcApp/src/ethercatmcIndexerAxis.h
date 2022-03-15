@@ -67,6 +67,7 @@ public:
   asynStatus poll(bool *moving);
   void       readAuxBitNamesEnums(void);
   asynStatus resetAxis(void);
+  bool       pollPowerIsOn(void);
   asynStatus setClosedLoop(bool closedLoop);
   asynStatus setGenericIntegerParam(int function, int value);
   asynStatus setIntegerParam(int function, int value);
