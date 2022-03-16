@@ -17,7 +17,9 @@ PwrOnDly = 6.0
 PwrOffDly = 3.0
 
 
-def restorePwrSettings(self, tc_no, pwrAuto, pwrOnDly, pwrOffDly):
+def restorePwrSettings(self, tc_no, dly, bdst, pwrAuto, pwrOnDly, pwrOffDly):
+    self.axisCom.put(".DLY", dly)
+    self.axisCom.put(".BDST", bdst)
     self.axisCom.put("-PwrAuto", pwrAuto)
     self.axisCom.put("-PwrOnDly", pwrOnDly)
     self.axisCom.put("-PwrOffDly", pwrOffDly)
@@ -32,7 +34,7 @@ def do_220_autopower(self, tc_no, autopower):
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Enable move to LLM +10"
     )
-    destination = self.saved_LLM + 10 + 2 * autopower
+    destination = self.saved_LLM + self.saved_BDST + 1 + 10 + 2 * autopower
     self.axisMr.moveWait(tc_no, destination)
 
     # Make sure drive is still enabled
@@ -49,6 +51,8 @@ def do_220_autopower(self, tc_no, autopower):
     restorePwrSettings(
         self,
         tc_no,
+        self.saved_DLY,
+        self.saved_BDST,
         self.saved_PwrAuto,
         self.saved_PwrOnDly,
         self.saved_PwrOffDly,
@@ -81,14 +85,20 @@ class Test(unittest.TestCase):
 
     # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20], wait=True)
     # self.axisCom.put('-DbgStrToLOG', "Start of " + os.path.basename(__file__)[0:20], wait=True)
+    saved_DLY = axisCom.get(".DLY")
+    saved_BDST = axisCom.get(".BDST")
     saved_LLM = axisCom.get(".LLM")
     saved_CNEN = axisCom.get(".CNEN")
     saved_PwrAuto = axisCom.get("-PwrAuto")
     saved_PwrOnDly = axisCom.get("-PwrOnDly")
     saved_PwrOffDly = axisCom.get("-PwrOffDly")
 
-    def test_TC_2200(self):
-        tc_no = "2201-Enable_goto_LLM"
+    def test_TC_2000(self):
+        tc_no = "2000"
+        self.axisMr.powerOnHomeAxis(tc_no)
+
+    def test_TC_2201(self):
+        tc_no = "2201"
 
         # Enable power
         self.axisCom.putDbgStrToLOG("Start " + tc_no[0:20], wait=True)
@@ -98,28 +108,33 @@ class Test(unittest.TestCase):
         self.axisCom.put("-PwrAuto", 2)
         self.axisCom.put("-PwrOnDly", PwrOnDly)
         self.axisMr.setCNENandWait(tc_no, 1)
-        destination = self.saved_LLM
+        destination = self.saved_LLM + self.saved_BDST + 1
         self.axisMr.moveWait(tc_no, destination)
         restorePwrSettings(
             self,
             tc_no,
+            self.saved_DLY,
+            self.saved_BDST,
             self.saved_PwrAuto,
             self.saved_PwrOnDly,
             self.saved_PwrOffDly,
         )
         self.axisCom.putDbgStrToLOG("End   " + tc_no[0:20], wait=True)
 
-    def test_TC_2201(self):
-        tc_no = "2201-Auto_pwr_1"
+    def test_TC_2202(self):
+        tc_no = "2202"
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} autopower "
         )
         do_220_autopower(self, tc_no, 1)
 
-    def test_TC_2202(self):
-        tc_no = "2202-Auto_pwr_2"
+    def test_TC_2203(self):
+        tc_no = "2203"
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} autopower "
         )
         do_220_autopower(self, tc_no, 2)
+
+    def test_TC_2204(self):
+        tc_no = "2204"
         self.axisMr.setCNENandWait(tc_no, self.saved_CNEN)
