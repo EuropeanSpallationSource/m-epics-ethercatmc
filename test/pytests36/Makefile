@@ -30,7 +30,7 @@ RECORD-CA = \
   131_Record-JOGR_DIR_DLY_LLM.log-ca-m1\
   140_Record-VAL_VMAX.log-ca-m1\
   141_Record_NTM.log-ca-m1\
-  220_Record_auto_power.log-ca-m1\
+  220_Ethercat-auto-power.log-ca-m1\
   500_Record-DLY-STOP.log-ca-m1\
 
 
@@ -69,7 +69,7 @@ RECORD-PVA = \
   131_Record-JOGR_DIR_DLY_LLM.log-pva-m1\
   140_Record-VAL_VMAX.log-pva-m1\
   141_Record_NTM.log-pva-m1\
-  220_Record_auto_power.log-pva-m1\
+  220_Ethercat-auto-power.log-pva-m1\
   500_Record-DLY-STOP.log-pva-m1\
 
 
