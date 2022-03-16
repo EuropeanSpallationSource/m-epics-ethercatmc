@@ -572,15 +572,33 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,
   return setIntegerParam(function, newValue);
 }
 
+/**
+ * Called from the poller.
+ * Before this axis-related method is called, the controller has
+ * read the process image, and getPlcMemoryFromProcessImage()
+ * can be used.
+ * At the it it calls callParamCallbacks()
+ */
+asynStatus ethercatmcIndexerAxis::poll(bool *moving)
+{
+  bool cached = true;
+  asynStatus status = ethercatmcIndexerAxis::doThePoll(cached, moving);
+  if (status) {
+    return status;
+  }
+  callParamCallbacks();
+  return status;
+}
+
+
 /** Polls the axis.
  * This function reads the motor position, the limit status, the home status,
  * the moving status,
  * and the drive power-on status.
- * It calls setIntegerParam() and setDoubleParam() for each item that it polls,
- * and then calls callParamCallbacks() at the end.
+ * It calls setIntegerParam() and setDoubleParam() for each item that it polls.
  * \param[out] moving A flag that is set indicating that the axis is moving
  * (true) or done (false). */
-asynStatus ethercatmcIndexerAxis::poll(bool *moving)
+asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 {
   asynStatus status = asynSuccess;
   unsigned traceMask = ASYN_TRACE_INFO;
@@ -637,9 +655,15 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       uint8_t   paramValue[4];
     } readback;
     uint16_t statusReasonAux16;
-    status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
-                                               &readback,
-                                               sizeof(readback));
+    if (cached) {
+      status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                                 &readback,
+                                                 sizeof(readback));
+    } else {
+      status = pC_->getPlcMemoryViaADS(drvlocal.iOffset,
+                                       &readback,
+                                       sizeof(readback));
+    }
     if (status) {
       return status;
     }
@@ -670,9 +694,15 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
       uint8_t   paramCtrl[2];
       uint8_t   paramValue[8];
     } readback;
-    status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
-                                               &readback,
-                                               sizeof(readback));
+    if (cached) {
+      status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                                 &readback,
+                                                 sizeof(readback));
+    } else {
+      status = pC_->getPlcMemoryViaADS(drvlocal.iOffset,
+                                       &readback,
+                                       sizeof(readback));
+    }
     if (status) {
       return status;
     }
@@ -700,9 +730,15 @@ asynStatus ethercatmcIndexerAxis::poll(bool *moving)
 #if 0
     memset(&readback, 0, sizeof(readback));
 #endif
-    status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
-                                               &readback,
-                                               sizeof(readback));
+    if (cached) {
+      status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                                 &readback,
+                                                 sizeof(readback));
+    } else {
+      status = pC_->getPlcMemoryViaADS(drvlocal.iOffset,
+                                       &readback,
+                                       sizeof(readback));
+    }
 #if 0
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
               "%spoll(%d) curr=0x%02X 0x%02X tgt=0x%02X 0x%02X  statReasAux=0x%02X 0x%02X 0x%02X 0x%02X\n",
@@ -1098,34 +1134,15 @@ asynStatus ethercatmcIndexerAxis::resetAxis(void)
 }
 bool ethercatmcIndexerAxis::pollPowerIsOn(void)
 {
-  if (!drvlocal.auxBitsEnabledMask) {
+  bool cached = false;
+  bool moving;
+  asynStatus status = doThePoll(cached, &moving);
+  if (status) {
     return false;
   }
-  if (drvlocal.iTypCode != 0x5010) {
-    return false;
-  }
-  /* Note: We could write and use a function called readCmdRegisster()
-   * similar to writeCmdRegisster().
-   * For the moment keep the code simple and just get the whole readback
-   */
-  if (drvlocal.iTypCode == 0x5010) {
-    struct {
-      uint8_t   actPos[8];
-      uint8_t   targtPos[8];
-      uint8_t   statReasAux[4];
-      uint8_t   errorID[2];
-      uint8_t   paramCtrl[2];
-      uint8_t   paramValue[8];
-    } readback;
-    asynStatus status = pC_->getPlcMemoryViaADS(drvlocal.iOffset,
-                                                &readback,
-                                                sizeof(readback));
-    if (status) return false;
-    unsigned statusReasonAux = NETTOUINT(readback.statReasAux);
-    unsigned idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
-    return idxAuxBits & drvlocal.auxBitsEnabledMask ? true : false;
-  }
-  return false;
+  int powerIsOn = 0;
+  pC_->getIntegerParam(axisNo_, pC_->motorStatusPowerOn_, &powerIsOn);
+  return powerIsOn ? true : false;
 }
 
 /** Set the motor closed loop status

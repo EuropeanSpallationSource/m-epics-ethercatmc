@@ -65,6 +65,7 @@ public:
   void addPollNowParam(uint8_t paramIndex);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
   asynStatus poll(bool *moving);
+  asynStatus doThePoll(bool cached, bool *moving);
   void       readAuxBitNamesEnums(void);
   asynStatus resetAxis(void);
   bool       pollPowerIsOn(void);
