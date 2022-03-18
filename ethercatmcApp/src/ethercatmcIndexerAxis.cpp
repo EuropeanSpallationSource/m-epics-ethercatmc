@@ -761,8 +761,12 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     actPosition = (double)NETTOUINT(readback.currentValue);
     setIntegerParam(pC_-> pilsLonginActual_,
                     NETTOUINT(readback.currentValue));
+    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->pilsLonginActual_,
+                                       asynSuccess);
     setIntegerParam(pC_-> pilsLonginTarget_,
                     NETTOUINT(readback.targetValue));
+    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->pilsLonginTarget_,
+                                       asynSuccess);
 
     statusReasonAux = NETTOUINT(readback.statReasAux);
     setIntegerParam(pC_->ethercatmcAuxBits07_, statusReasonAux & 0xFF);
@@ -1324,6 +1328,8 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     }
   } else {
     status = setGenericIntegerParam(function, value);
+  }
+  if (function == pC_->pilsLonginActual_ || function == pC_->pilsLonginTarget_) {
   }
   // Update the parameter in the base class
   (void)asynMotorAxis::setIntegerParam(function, value);
