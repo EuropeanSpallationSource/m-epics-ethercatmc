@@ -180,27 +180,30 @@ ethercatmcController::ethercatmcController(const char *portName,
   ctrlLocal.oldStatus = asynError; //asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
   features_ = 0;
+  /* Outputs */
   createParam(ethercatmcDbgStrToMcuString,   asynParamOctet,       &ethercatmcDbgStrToMcu_);
   createParam(ethercatmcDbgStrToLogString,   asynParamOctet,       &ethercatmcDbgStrToLog_);
+  createParam(ethercatmcHomProcString,       asynParamInt32,       &ethercatmcHomProc_);
+  createParam(ethercatmcHomPosString,        asynParamFloat64,     &ethercatmcHomPos_);
+  createParam(ethercatmcVelToHomString,      asynParamFloat64,     &ethercatmcVelToHom_);
+  createParam(ethercatmcVelFrmHomString,     asynParamFloat64,     &ethercatmcVelFrmHom_);
+  createParam(pilsLongoutRecordString,       asynParamInt32,       &pilsLongoutRecord_);
+  createParam(pilsBoMinMaxString,            asynParamInt32,       &pilsBoMinMax_);
+  createParam(ethercatmcErrRstString,        asynParamInt32,       &ethercatmcErrRst_);
 
-  /* Per axis */
+  /* inputs: do not change too much without updating setAlarmStatusSeverityAllReadbacks() */
   createParam(ethercatmcMcuErrString,        asynParamInt32,       &ethercatmcMcuErr_);
   createParam(ethercatmcErrIdString,         asynParamInt32,       &ethercatmcErrId_);
 
   createParam(ethercatmcRawEncStepString,    asynParamInt32,       &ethercatmcRawEncStep_);
   createParam(ethercatmcRawMtrStepString,    asynParamInt32,       &ethercatmcRawMtrStep_);
   createParam(ethercatmcRawMtrVeloString,    asynParamInt32,       &ethercatmcRawMtrVelo_);
-  createParam(ethercatmcHomProcString,       asynParamInt32,       &ethercatmcHomProc_);
-  createParam(ethercatmcHomPosString,        asynParamFloat64,     &ethercatmcHomPos_);
   createParam(ethercatmcStatusCodeString,    asynParamInt32,       &ethercatmcStatusCode_);
   createParam(ethercatmcStatusBitsString,    asynParamUInt32Digital, &ethercatmcStatusBits_);
   createParam(ethercatmcFoffVisString,       asynParamInt32,       &ethercatmcFoffVis_);
   createParam(ethercatmcHomeVisString,       asynParamInt32,       &ethercatmcHomeVis_);
   createParam(ethercatmcHomProc_RBString,    asynParamInt32,       &ethercatmcHomProc_RB_);
   createParam(ethercatmcHomPos_RBString,     asynParamFloat64,     &ethercatmcHomPos_RB_);
-  createParam(ethercatmcVelToHomString,      asynParamFloat64,     &ethercatmcVelToHom_);
-  createParam(ethercatmcVelFrmHomString,     asynParamFloat64,     &ethercatmcVelFrmHom_);
-  createParam(ethercatmcErrRstString,        asynParamInt32,       &ethercatmcErrRst_);
   createParam(ethercatmcVelActString,        asynParamFloat64,     &ethercatmcVelAct_);
   createParam(ethercatmcVel_RBString,        asynParamFloat64,     &ethercatmcVel_RB_);
   createParam(ethercatmcAcc_RBString,        asynParamFloat64,     &ethercatmcAcc_RB_);
@@ -217,8 +220,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcRBV_TSEString,       asynParamFloat64,     &ethercatmcRBV_TSE_);
   createParam(pilsLonginActualString,        asynParamInt32,       &pilsLonginActual_);
   createParam(pilsLonginTargetString,        asynParamInt32,       &pilsLonginTarget_);
-  createParam(pilsLongoutRecordString,       asynParamInt32,       &pilsLongoutRecord_);
-  createParam(pilsBoMinMaxString,            asynParamInt32,       &pilsBoMinMax_);
   createParam(pilsBiAtMaxString,             asynParamInt32,       &pilsBiAtMax_);
   createParam(pilsBiAtMinString,             asynParamInt32,       &pilsBiAtMin_);
   createParam(ethercatmcAuxBits07_String,    asynParamInt32,       &ethercatmcAuxBits07_);
@@ -276,6 +277,7 @@ ethercatmcController::ethercatmcController(const char *portName,
 
   createParam(ethercatmcCfgDESC_RBString,    asynParamOctet,       &ethercatmcCfgDESC_RB_);
   createParam(ethercatmcCfgEGU_RBString,     asynParamOctet,       &ethercatmcCfgEGU_RB_);
+  /* No more to be included in setAlarmStatusSeverityAllReadbacks() */
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
   /* Latest asynMotorController does this, but not the version in 6.81 (or 6.9x) */
@@ -379,7 +381,9 @@ ethercatmcController::ethercatmcController(const char *portName,
         char buf[128];
         pThisOption += strlen(ipaddr_str);
         snprintf(buf, sizeof(buf), "Connecting %s", pThisOption);
+#ifdef motorMessageTextString
         (void)setStringParam(motorMessageText_, buf);
+#endif
       }
       pThisOption = pNextOption;
     }
@@ -1135,36 +1139,10 @@ extern "C" {
 
 void ethercatmcController::setAlarmStatusSeverityAllReadbacks(asynStatus status)
 {
-  setAlarmStatusSeverityAllAxes(ethercatmcRawEncStep_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcRawMtrStep_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcRawMtrVelo_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcHomProc_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcHomPos_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcVel_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcAcc_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcRBV_TSE_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgDHLM_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgDLLM_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgDHLM_En_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgDLLM_En_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgSREV_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgUREV_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgPMIN_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgPMAX_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgSPDB_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgRDBD_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgRDBD_Tim_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgRDBD_En_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgPOSLAG_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgPOSLAG_Tim_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgPOSLAG_En_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgDESC_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgEGU_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgVELO_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgVMAX_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgJVEL_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgHVEL_RB_, status);
-  setAlarmStatusSeverityAllAxes(ethercatmcCfgACCS_RB_, status);
+  int function;
+  for (function = ethercatmcMcuErr_; function < ethercatmcCfgEGU_RB_; function++) {
+    setAlarmStatusSeverityAllAxes(function, status);
+  }
 #ifdef motorMessageTextString
   setAlarmStatusSeverityAllAxes(motorMessageText_, status);
 #endif
