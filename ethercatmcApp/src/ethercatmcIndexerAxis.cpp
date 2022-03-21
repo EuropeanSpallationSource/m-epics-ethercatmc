@@ -770,6 +770,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 
     statusReasonAux = NETTOUINT(readback.statReasAux);
     setIntegerParam(pC_->ethercatmcAuxBits07_, statusReasonAux & 0xFF);
+    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcAuxBits07_,
+                                       asynSuccess);
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
