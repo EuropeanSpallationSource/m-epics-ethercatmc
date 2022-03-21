@@ -454,13 +454,16 @@ asynStatus ethercatmcController::writeReadAds(asynUser *pasynUser,
           tracelevel |= ASYN_TRACE_ERROR;
           ctrlLocal.cntADSstatus++;
         }
-
+        epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                      "ams_errorCode=0x%04X", ams_errorCode);
         const char *outdata = (const char *)ams_req_hdr_p;
         #define ERR_TARGETPORTNOTFOUND 6
         #define ERR_TARGETMACHINENOTFOUND 7
         switch (ams_errorCode) {
         case ERR_TARGETPORTNOTFOUND:
         case ERR_TARGETMACHINENOTFOUND:
+          epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
+                        "ADS not found 0x%X", ams_errorCode);
           asynPrint(pasynUser, tracelevel,
                     "%s:%d Error: MACHINE/PORT not found ams_errorCode=0x%x\n",
                     fileName, lineNo,

@@ -1147,7 +1147,15 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
   }
 #endif
   status = getPlcMemoryUint(0, &iTmpVer, sizeof(iTmpVer));
-  if (status) return status;
+  if (status) {
+#ifdef motorMessageTextString
+    if (pasynUserController_) {
+      asynUser *pasynUser = pasynUserController_;
+      setStringParam(0, motorMessageText_, pasynUser->errorMessage);
+    }
+#endif
+    return status;
+  }
 
   if (iTmpVer == 0x44fbe0a4) {
     version = 2015.02;
@@ -1289,6 +1297,10 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
       }
     } else {
 #ifdef motorMessageTextString
+      if (pasynUserController_) {
+        asynUser *pasynUser = pasynUserController_;
+        pasynUser->errorMessage[0] = '\0';
+      }
       /* We find the name of the MCU here */
       setStringParam(0, motorMessageText_, descVersAuthors.desc);
 #endif
