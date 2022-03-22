@@ -1,0 +1,67 @@
+require ethercatmc,USER
+
+epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.41.141)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-MCAG:MC-MCU-24:)")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",     "4")
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=169.254.61.196.1.1;amsNetIdLocal=172.30.38.12.1.1"
+
+< ethercatmcController.iocsh
+
+
+#
+# Axis 1
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
+
+# Predefined Positions
+# NVL: Input Value Location (INLINK)
+epicsEnvSet("NVL",           "")
+epicsEnvSet("EGU",           "")
+< ethercatmcDefPos.iocsh
+
+#
+# Axis 2
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
+
+#
+# Axis 3
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
+
+#
+# Axis 4
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
+
