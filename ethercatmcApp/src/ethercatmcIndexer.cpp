@@ -1164,7 +1164,14 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
             "%sadsport=%u version=%f\n",
             modNamEMC, ctrlLocal.adsport, version);
 
-  if (!version) status = asynDisabled;
+  if (!version) {
+#ifdef motorMessageTextString
+    char buf[64];
+    snprintf(buf, sizeof(buf), "IndexerVers 0x%08X", iTmpVer);
+    (void)setStringParam(motorMessageText_, buf);
+#endif
+    status = asynDisabled;
+  }
   if (status) goto endPollIndexer;
 
   status = getPlcMemoryUint(ctrlLocal.indexerOffset,
