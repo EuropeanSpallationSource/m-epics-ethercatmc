@@ -73,7 +73,7 @@ echo MOTORCFG=$MOTORCFG
     for cmd in $CMDS; do
       case $cmd in
         *sim-indexer)
-          echo >&2 $0 " $cmd" " 127.0.0.1:48898 127.0.0.1.1.1 127.0.0.2.1.1 "
+          echo >&2 $0 " $cmd"
           ;;
         *-indexer)
           echo >&2 $0 " $cmd" " <ip>:48898"
@@ -93,6 +93,8 @@ MOTORIP=127.0.0.1
 
 # motor port is different for indexer
 case $MOTORCFG in
+  *sim-indexer)
+    ;;
   *indexer)
     MOTORPORT=48898
     ;;
