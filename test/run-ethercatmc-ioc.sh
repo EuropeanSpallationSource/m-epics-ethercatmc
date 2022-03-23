@@ -163,6 +163,11 @@ if test "$1" = "-l"; then
 fi
 export DOLOG
 
+if test -n "$1"; then
+  echo >&2 unsupported additional parameters: $@
+  exit 1
+fi
+
 if test "$NOMAKE" != "y"; then
 (
   if test -x ../checkws.sh; then
