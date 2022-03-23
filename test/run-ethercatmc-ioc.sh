@@ -126,7 +126,7 @@ if test "$MOTORPORT" = 48898; then
   if test -z "$2"; then
     if which ifconfig >/dev/null 2>&1; then
       LOCALIPS=$(ifconfig | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g" -e "s/ netmask.*//")
-    else
+    elif which ip >/dev/null 2>&1; then
        LOCALIPS=$(ip addr | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g"  -e "s%/.*%%g")
     fi
     #echo LOCALIP=$LOCALIP
