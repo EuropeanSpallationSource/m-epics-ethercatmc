@@ -4,6 +4,10 @@ TOP=$(echo $PWD/.. | sed -e "s%/test/\.\.$%%")
 export APPXX
 EPICS_EEE_E3=n
 DOLOG=
+HOST=""
+MOTORPORT=""
+REMOTEAMSNETID=""
+LOCALAMSNETID=""
 
 uname_s=$(uname -s 2>/dev/null || echo unknown)
 uname_m=$(uname -m 2>/dev/null || echo unknown)
@@ -261,10 +265,6 @@ if test "$NOMAKE" != "y"; then
               -e "s/require motor,USER/require motor,$USER/" \
               -e "s/require ethercatmc,USER/require ethercatmc,$USER/" \
               -e "s/^cd /#cd /" \
-              -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
-              -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
-              -e "s/127.0.0.1/$MOTORIP/" \
-              -e "s/5000/$MOTORPORT/" |
           grep -v '^  *#' >$stcmddst || {
               echo >&2 can not create stcmddst $stcmddst
               exit 1
@@ -300,8 +300,6 @@ EOF
           #echo sed PWD=$PWD "<../../startup/st.${MOTORCFG}.iocsh >>$stcmddst"
           sed <../../test/startup/st.${MOTORCFG}.iocsh  \
               -e "s/__EPICS_HOST_ARCH/$EPICS_HOST_ARCH/" \
-              -e "s/5000/$MOTORPORT/" \
-              -e "s/127.0.0.1/$MOTORIP/" \
               -e "s%cfgFile=./%cfgFile=./test/startup/%"    \
               -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
               -e "s%require%#require%" \
@@ -328,21 +326,37 @@ EOF
               -e "s/require ethercatmc,USER/require ethercatmc,3.0.2/" \
               -e "s%require asyn%#require assyn%" \
               -e "s/^cd /#cd /" \
-              -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
-              -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" \
-              -e "s/127.0.0.1/$MOTORIP/" \
-              -e "s/5000/$MOTORPORT/" |
           grep -v '^  *#' >$stcmddst || {
               echo >&2 can not create stcmddst $stcmddst
               exit 1
           }
-          chmod +x $stcmddst
           ;;
       *)
           echo >&2 invalid2 EPICS_EEE_E3 $EPICS_EEE_E3
           exit 1
           ;;
   esac
+  # Post-process of stcmddst
+  if test -n "$HOST" ; then
+    sed < $stcmddst -e "s/172\.[0-9]*\.[0-9]*.[0-9]*/$MOTORIP/" >/tmp/$$ &&
+      mv -f /tmp/$$ $stcmddst
+  fi
+  if test -n "$MOTORPORT" ; then
+    sed < $stcmddst -e -e "s/5000/$MOTORPORT/" >/tmp/$$ &&
+      mv -f /tmp/$$ $stcmddst
+  fi
+  if test -n "$REMOTEAMSNETID" ; then
+    sed < $stcmddst \
+        -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
+        -e "s/amsNetIdRemote=[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/amsNetIdRemote=$REMOTEAMSNETID/" >/tmp/$$ &&
+      mv -f /tmp/$$ $stcmddst
+  fi
+  if test -n "$LOCALAMSNETID" ; then
+    sed < $stcmddst \
+        -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/"  >/tmp/$$ &&
+      mv -f /tmp/$$ $stcmddst
+  fi
+  chmod +x $stcmddst
 ) || exit
 fi
 if test "$NORUN" != "y"; then
