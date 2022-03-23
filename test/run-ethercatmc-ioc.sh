@@ -93,8 +93,6 @@ echo MOTORCFG=$MOTORCFG
 
 shift
 
-MOTORIP=127.0.0.1
-
 # motor port is different for indexer
 case $MOTORCFG in
   *sim-indexer)
@@ -115,6 +113,8 @@ if test -n "$1" && test "$1" != "-l"; then
   echo HOST=$HOST PORT=$PORT
   if test "$PORT" != "$HOST"; then
     MOTORPORT=$PORT
+  else
+    MOTORPORT=5000
   fi
   echo HOST=$HOST MOTORPORT=$MOTORPORT
   MOTORIP=$HOST
@@ -338,11 +338,13 @@ EOF
   esac
   # Post-process of stcmddst
   if test -n "$HOST" ; then
-    sed < $stcmddst -e "s/172\.[0-9]*\.[0-9]*.[0-9]*/$MOTORIP/" >/tmp/$$ &&
+    sed < $stcmddst \
+        -e "s/172\.[0-9]*\.[0-9]*.[0-9]*/$MOTORIP/" \
+        -e "s/127.0.0.1/$MOTORIP/" >/tmp/$$ &&
       mv -f /tmp/$$ $stcmddst
   fi
   if test -n "$MOTORPORT" ; then
-    sed < $stcmddst -e -e "s/5000/$MOTORPORT/" >/tmp/$$ &&
+    sed < $stcmddst -e "s/5000/$MOTORPORT/" >/tmp/$$ &&
       mv -f /tmp/$$ $stcmddst
   fi
   if test -n "$REMOTEAMSNETID" ; then
