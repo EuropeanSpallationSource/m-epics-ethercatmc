@@ -20,11 +20,6 @@ ifneq (,$(findstring /,$(ADS)))
   ethercatmc_DBD  +=  ads.dbd
   ethercatmc_LIBS += ads
 endif
-ifneq (,$(findstring /,$(AXIS)))
-  ethercatmc_DBD += axisSupport.dbd
-  ethercatmc_LIBS += axis
-  USR_CPPFLAGS += -DAXISNOTMOTOR=1
-endif
 ifneq (,$(findstring /,$(CALC)))
   ethercatmc_DBD += calcSupport.dbd
   ethercatmc_LIBS += calc
@@ -32,7 +27,6 @@ endif
 ifneq (,$(findstring /,$(MOTOR)))
   ethercatmc_DBD += motorSupport.dbd
   ethercatmc_DBD += devSoftMotor.dbd
-  USR_CPPFLAGS += -DMOTORNOTAXIS=1
   ethercatmc_LIBS += motor
   ethercatmc_LIBS += softMotor
 endif
@@ -58,13 +52,10 @@ ethercatmc_SRCS_DEFAULT += ethercatmcMain.cpp
 #add a definition for each support application used by this application
 ethercatmc_LIBS += asyn
 
-ifneq (,$(findstring /,$(AXIS)))
-ethercatmc_LIBS += axis
-endif
 ifneq (,$(findstring /,$(CALC)))
 ethercatmc_LIBS += calc
-
 endif
+
 ifneq (,$(findstring /,$(MOTOR)))
 ethercatmc_LIBS += motor
 ethercatmc_LIBS += softMotor

@@ -27,9 +27,6 @@ ethercatmcSupport_LIBS += asyn
 ifneq (,$(findstring /,$(ADS)))
 ethercatmcSupport_LIBS += ads
 endif
-ifneq (,$(findstring /,$(AXIS)))
-ethercatmcSupport_LIBS += axis
-endif
 ifneq (,$(findstring /,$(CALC)))
 ethercatmcSupport_LIBS += calc
 endif
