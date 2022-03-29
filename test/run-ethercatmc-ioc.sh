@@ -195,16 +195,6 @@ if test "$NOMAKE" != "y"; then
           echo >&2 make ../motor install failed
           exit 1
         }
-        (cd .. &&
-            mkdir -p dbmotor &&
-            for src in db/*template; do
-              dst=dbmotor/${src##*/}
-              #echo sed PWD=$PWD src=$src dst=$dst
-              sed <"$src" >"$dst" \
-                  -e "s%record(axis%record(motor%" \
-                  -e "s%asynAxis%asynMotor%"
-            done
-        )
       fi &&
       if test -d ../../motor; then
         (cd ../../motor &&
