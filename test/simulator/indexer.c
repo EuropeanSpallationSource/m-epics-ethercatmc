@@ -1,5 +1,5 @@
 /* Implementation of the indexer
-   https://forge.frm2.tum.de/public/doc/plc/master/singlehtml/index.html#devices
+   https://forge.frm2.tum.de/public/doc/plc/v2.0/singlehtml/
 */
 
 #include <inttypes.h>
