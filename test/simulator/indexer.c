@@ -415,11 +415,11 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
       UNITCODE_NONE, 1,
       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "openClutch",
+      "openClutch#1",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
-      0.0, 0.0
+      0.0, 1.0
     },
 #endif
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
@@ -495,11 +495,11 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
       UNITCODE_NONE, 2,
       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "openClutch",
+      "openClutch#2",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
-      0.0, 0.0
+      0.0, 1.0
     },
 #endif
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
@@ -575,11 +575,11 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
       UNITCODE_NONE, 3,
       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "openClutch",
+      "openClutch#3",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
-      0.0, 0.0
+      0.0, 1.0
     },
 #endif
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
@@ -655,11 +655,11 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
       UNITCODE_NONE, 4,
       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "openClutch",
+      "openClutch#4",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
-      0.0, 0.0
+      0.0, 1.0
     }
 #endif
 #ifdef HAS_1E04_SHUTTER
@@ -1563,6 +1563,7 @@ static int indexerHandleIndexerCmd(unsigned offset,
   unsigned devNum = uValue & 0xFF;
   unsigned infoType = (uValue >> 8) & 0x7F;
   unsigned maxDevNum = NUM_DEVICES - 1;
+  unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
   LOGINFO6("%s/%s:%d offset=%u lenInPlc=%u uValue=0x%x devNum=%u maxDevNum=%u infoType=%u\n",
            __FILE__, __FUNCTION__, __LINE__,
            offset, lenInPlc,
@@ -1595,13 +1596,14 @@ static int indexerHandleIndexerCmd(unsigned offset,
       unsigned auxIdx;
       unsigned flags = 0;
       unsigned maxAuxIdx;
-      unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
       if (axisNo) {
         init_axis((int)axisNo);
-        DOUBLETONET(getLowHardLimitPos((int)axisNo),
-                    netData.memoryStruct.indexer.infoType0.absMin);
-        DOUBLETONET(getHighHardLimitPos((int)axisNo),
-                    netData.memoryStruct.indexer.infoType0.absMax);
+        if (indexerDeviceAbsStraction[devNum].typeCode == 0x5010) {
+          DOUBLETONET(getLowHardLimitPos((int)axisNo),
+                      netData.memoryStruct.indexer.infoType0.absMin);
+          DOUBLETONET(getHighHardLimitPos((int)axisNo),
+                      netData.memoryStruct.indexer.infoType0.absMax);
+        }
       }
       maxAuxIdx = sizeof(indexerDeviceAbsStraction[devNum].auxName) /
         sizeof(indexerDeviceAbsStraction[devNum].auxName[0]);
@@ -1636,9 +1638,9 @@ static int indexerHandleIndexerCmd(unsigned offset,
         UINTTONET(offset, netData.memoryStruct.indexer.infoType0.offset);
       }
     }
-    LOGINFO6("%s/%s:%d devNum=%u netData=%p indexer=%p delta=%u typeCode=%x sizeW=%u offsetW=%u flagsLow=0x%x ack=0x%x\n",
+    LOGINFO6("%s/%s:%d devNum=%u axisNo=%u netData=%p indexer=%p delta=%u typeCode=%x sizeW=%u offsetW=%u flagsLow=0x%x ack=0x%x\n",
              __FILE__, __FUNCTION__, __LINE__,
-             devNum, &netData, &netData.memoryStruct.indexer,
+             devNum, axisNo, &netData, &netData.memoryStruct.indexer,
              (unsigned)((void*)&netData.memoryStruct.indexer - (void*)&netData),
              NETTOUINT(netData.memoryStruct.indexer.infoType0.typeCode),
              NETTOUINT(netData.memoryStruct.indexer.infoType0.size),
