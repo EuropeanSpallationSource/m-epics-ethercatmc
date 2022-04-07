@@ -131,6 +131,49 @@ FILENAME...   ethercatmcController.h
 
 extern const char *modNamEMC;
 
+
+/**********************************************************************/
+#define ethercatmchexdump(pasynUser, tracelevel, help_txt, bufptr, buflen)\
+{\
+  const void* buf = (const void*)bufptr;\
+  int len = (int)buflen;\
+  uint8_t *data = (uint8_t *)buf;\
+  int count;\
+  unsigned pos = 0;\
+  while (len > 0) {\
+    struct {\
+      char asc_txt[8];\
+      char space[2];\
+      char hex_txt[8][3];\
+      char nul;\
+    } print_buf;\
+    memset(&print_buf, ' ', sizeof(print_buf));\
+    print_buf.nul = '\0';\
+    for (count = 0; count < 8; count++) {\
+      if (count < len) {\
+        unsigned char c = (unsigned char)data[count];\
+        if (c >= 0x20 && c < 0x7F)\
+          print_buf.asc_txt[count] = c;\
+        else\
+          print_buf.asc_txt[count] = '.';\
+        snprintf((char*)&print_buf.hex_txt[count],\
+                 sizeof(print_buf.hex_txt[count]),\
+                 "%02x", c);\
+        /* Replace NUL with ' ' after snprintf */\
+        print_buf.hex_txt[count][2] = ' ';\
+      }\
+    }\
+    asynPrint(pasynUser, tracelevel,\
+              "%s%s [%02x]%s\n",\
+              modNamEMC, help_txt, pos, (char*)&print_buf);\
+    len -= 8;\
+    data += 8;\
+    pos += 8;\
+  }\
+}\
+/**********************************************************************/
+
+
 extern "C" {
   /* Struct to handle additional (PILS) devices.
      Create a conversion table, to map the PILS devices
@@ -177,11 +220,19 @@ extern "C" {
   const char *ethercatmcstrStatus(asynStatus status);
   const char *errStringFromErrId(int nErrorId);
   const char *stringFromAsynParamType(asynParamType);
+  double calcSleep(int counter);
+  int paramIndexIsReadLaterInBackground(unsigned paramIndex);
 }
 #define NETTOUINT(n)       netToUint((const void*)&n, sizeof(n))
 #define NETTODOUBLE(n)     netToDouble((const void*)&n, sizeof(n))
 #define UINTTONET(val,n)   uintToNet((val), (&n), sizeof(n))
 #define DOUBLETONET(val,n) doubleToNet((val), (&n), sizeof(n))
+
+
+extern "C" {
+  extern const char *plcUnitTxtFromUnitCode(unsigned unitCode);
+  extern const char *plcUnitPrefixTxt(int prefixCode);
+}
 
 class ethercatmcIndexerAxis;
 
@@ -340,6 +391,26 @@ public:
                                  const char *fileName,
                                  int lineNo);
 #define readDeviceIndexer(a,b) readDeviceIndexerFL(a,b,__FILE__, __LINE__)
+  asynStatus readMailboxV3FL(unsigned mbxNum, void *bufptr, size_t buflen,
+                             const char *fileName, int lineNo);
+#define readMailboxV3(a,b,c) readMailboxV3FL(a,b,c, __FILE__, __LINE__)
+  asynStatus indexerV3readParameterDescriptors(ethercatmcIndexerAxis *pAxis,
+                                               unsigned descID);
+  asynStatus indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
+                                  unsigned descID);
+  asynStatus indexerV3addDevice(unsigned devNum,
+                                int axisNo,
+                                unsigned iOffsBytes,
+                                unsigned string_description_id,
+                                unsigned target_param_descriptor_id,
+                                unsigned auxbits_bitfield_flag_descriptor_id,
+                                unsigned parameters_descriptor_id,
+                                unsigned enum_errorId_descriptor_id,
+                                unsigned type_code,
+                                unsigned device_offset,
+                                unsigned device_flags,
+                                const char *device_name);
+
   void parameterFloatReadBack(unsigned axisNo,
                               int initial,
                               unsigned paramIndex,
@@ -348,19 +419,29 @@ public:
                                        unsigned devNum,
                                        unsigned iOffset,
                                        unsigned lenInPlcPara);
+  asynStatus indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
+                                         unsigned devNum,
+                                         unsigned iOffset,
+                                         unsigned lenInPlcPara);
   asynStatus poll(void);
-  asynStatus newIndexerAxis(ethercatmcIndexerAxis *pAxis,
-                            unsigned devNum,
-                            unsigned iAllFlags,
-                            double   fAbsMin,
-                            double   fAbsMax,
-                            unsigned iOffset);
+  asynStatus newIndexerAxisV2(ethercatmcIndexerAxis *pAxis,
+                              unsigned devNum,
+                              unsigned iAllFlags,
+                              double   fAbsMin,
+                              double   fAbsMax,
+                              unsigned iOffset);
+  asynStatus newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
+                              unsigned target_param_descriptor_id,
+                              unsigned auxbits_bitfield_flag_descriptor_id,
+                              unsigned parameters_descriptor_id);
   asynStatus updateCfgValue(int axisNo_, int function,
                             double newValue, const char *name);
   asynStatus updateCfgValue(int axisNo_, int function,
                             int newValue, const char *name);
   asynStatus getFeatures(int *pRet);
   asynStatus indexerInitialPoll(void);
+  asynStatus indexerInitialPollv2(void);
+  asynStatus indexerInitialPollv3(void);
   asynStatus indexerPoll(void);
   void        indexerDisconnected(void);
   asynStatus writeReadControllerPrint(int traceMask);
@@ -437,6 +518,8 @@ public:
       unsigned int bSIM             :1;
       unsigned int bECMC            :1;
       unsigned int bADS             :1;
+      unsigned int bPILSv2          :1;
+      unsigned int bPILSv3          :1;
     } supported;
     pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
     unsigned numPilsAsynDevInfo;

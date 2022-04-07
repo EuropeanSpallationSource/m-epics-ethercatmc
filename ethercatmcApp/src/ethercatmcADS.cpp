@@ -18,46 +18,6 @@
 static uint32_t invokeID;
 static int deftracelevel = ASYN_TRACE_DEBUG;
 
-#define ethercatmchexdump(pasynUser, tracelevel, help_txt, bufptr, buflen)\
-{\
-  const void* buf = (const void*)bufptr;\
-  int len = (int)buflen;\
-  uint8_t *data = (uint8_t *)buf;\
-  int count;\
-  unsigned pos = 0;\
-  while (len > 0) {\
-    struct {\
-      char asc_txt[8];\
-      char space[2];\
-      char hex_txt[8][3];\
-      char nul;\
-    } print_buf;\
-    memset(&print_buf, ' ', sizeof(print_buf));\
-    print_buf.nul = '\0';\
-    for (count = 0; count < 8; count++) {\
-      if (count < len) {\
-        unsigned char c = (unsigned char)data[count];\
-        if (c >= 0x20 && c < 0x7F)\
-          print_buf.asc_txt[count] = c;\
-        else\
-          print_buf.asc_txt[count] = '.';\
-        snprintf((char*)&print_buf.hex_txt[count],\
-                 sizeof(print_buf.hex_txt[count]),\
-                 "%02x", c);\
-        /* Replace NUL with ' ' after snprintf */\
-        print_buf.hex_txt[count][2] = ' ';\
-      }\
-    }\
-    asynPrint(pasynUser, tracelevel,\
-              "%s%s [%02x]%s\n",\
-              modNamEMC, help_txt, pos, (char*)&print_buf);\
-    len -= 8;\
-    data += 8;\
-    pos += 8;\
-  }\
-}\
-
-
 #define ethercatmcamsdump(pasynUser, tracelevel, help_txt, ams_headdr_p)\
 {\
   const AmsHdrType *amsHdr_p = (const AmsHdrType *)(ams_headdr_p);\
@@ -128,7 +88,9 @@ extern "C" unsigned netToUint(const void *data, size_t lenInPlc)
 {
   const uint8_t *src = (const uint8_t*)data;
   unsigned uRes;
-  if (lenInPlc == 2) {
+  if (lenInPlc == 1) {
+    return (unsigned)src[0];
+  } else if (lenInPlc == 2) {
     uRes = (unsigned)src[0] + ((unsigned)src[1] << 8);
     return uRes;
   } else if ((lenInPlc == 4) || (lenInPlc == 8)) {
@@ -144,7 +106,10 @@ extern "C" unsigned netToUint(const void *data, size_t lenInPlc)
 extern "C" int netToSint(const void *data, size_t lenInPlc)
 {
   const uint8_t *src = (const uint8_t*)data;
-  if (lenInPlc == 2) {
+  if (lenInPlc == 1) {
+    const int8_t *isrc = (const int8_t*)data;
+    return (int)isrc[0];
+  } else if (lenInPlc == 2) {
     int16_t uRes16;
     uRes16 = (unsigned)src[0] + ((unsigned)src[1] << 8);
     return (int)(int16_t)uRes16; /* sign extend */
@@ -243,7 +208,9 @@ extern "C" void uintToNet(const unsigned value, void *data, size_t lenInPlc)
 {
   uint8_t *dst = (uint8_t*)data;
   memset(data, 0, lenInPlc);
-  if (lenInPlc == 2) {
+  if (lenInPlc == 1) {
+    dst[0] = (uint8_t)value;
+  } else if (lenInPlc == 2) {
     dst[0] = (uint8_t)value;
     dst[1] = (uint8_t)(value >> 8);
   } else if ((lenInPlc == 4) || (lenInPlc == 8)) {
