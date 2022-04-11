@@ -180,6 +180,7 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
 #endif
     }
     switch (iTypCode) {
+    case 0x1802:
     case 0x1E04:
     case 0x5008:
     case 0x500C:

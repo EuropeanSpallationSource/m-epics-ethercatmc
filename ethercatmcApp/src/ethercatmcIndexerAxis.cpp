@@ -194,6 +194,9 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
   } else if (drvlocal.iTypCode == 0x5010) {
     drvlocal.lenInPlcPara = 8;
     drvlocal.paramIfOffset = drvlocal.iOffset + 22;
+  } else if (drvlocal.iTypCode == 0x1802) {
+    drvlocal.lenInPlcPara = 0;
+    drvlocal.paramIfOffset = 0;
   } else if (drvlocal.iTypCode == 0x1E04) {
     drvlocal.lenInPlcPara = 2;
     drvlocal.paramIfOffset = 0;
@@ -630,13 +633,20 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   if (!drvlocal.iOffset) return asynSuccess;
 
   if (drvlocal.dirty.initialPollNeeded) {
-    if (drvlocal.iTypCode == 0x1E04) {
-      readAuxBitNamesEnums();
+    switch (drvlocal.iTypCode) {
+    case 0x1E04:
+        readAuxBitNamesEnums();
+        status = asynSuccess;
+      break;
+    case 0x5008:
+    case 0x5010:
+        status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
+                                                drvlocal.iOffset,
+                                                drvlocal.lenInPlcPara);
+      break;
+    default:
       status = asynSuccess;
-    } else {
-      status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
-                                              drvlocal.iOffset,
-                                              drvlocal.lenInPlcPara);
+      break;
     }
     if (!status) {
       drvlocal.dirty.initialPollNeeded = 0;
@@ -720,6 +730,21 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
+  } else if (drvlocal.iTypCode == 0x1802) {
+    struct {
+      uint8_t   statReasAux[4];
+    } readback;
+    status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                               &readback,
+                                               sizeof(readback));
+    statusReasonAux = NETTOUINT(readback.statReasAux);
+    idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
+    idxReasonBits = (statusReasonAux >> 24) & 0x0F;
+    idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%spoll(%d) iTypCode=0x%X drvlocal.iOffset=%u statusReasonAux=%08x\n",
+              modNamEMC, axisNo_, drvlocal.iTypCode, drvlocal.iOffset,
+              statusReasonAux);
   } else if (drvlocal.iTypCode == 0x1E04) {
     readAuxBitNamesEnums();
     struct {
