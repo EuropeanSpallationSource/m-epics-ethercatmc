@@ -17,6 +17,7 @@ GNERATEDOPIS = \
   ../ethercatmcaxisExpert.opi \
   ../ethercatmcaxisExpert-ptp.opi \
   ../ethercatmcShutter.opi \
+  ../ethercatmcStatusWord1802.opi \
   ../shutter-1.opi \
 
 #Main target:
@@ -43,6 +44,14 @@ DEPENDENCIES_FOR_SHUTTER_OPI += ptp.mid
 DEPENDENCIES_FOR_SHUTTER_OPI += shutterx.end
 
 
+DEPENDENCIES_FOR_STATUSWORD_OPI = Makefile
+DEPENDENCIES_FOR_STATUSWORD_OPI += genExpertWithAuxBits.sh
+DEPENDENCIES_FOR_STATUSWORD_OPI += genExpertWithAuxBits.py
+DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcStatusWord1802.start
+DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcStatusWord1802.mid
+DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcaxisAuxBit.mid
+DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcStatusWord1802.end
+
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI = Makefile
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.sh
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.py
@@ -65,6 +74,7 @@ DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += ethercatmcShutter.end
 
 AUXBITS_EXPERT="20 19 18 17 16 15 14 13 0 1"
 AUXBITS_SHUTTER="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
+AUXBITS_STATUSWORD="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
 
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 1
@@ -113,6 +123,11 @@ AUXBITS_SHUTTER="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
 #   ethercatmcShutter.mid and ethercatmcShutter.end
 ../ethercatmcShutter.opi: $(DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI)
 	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcShutter $(AUXBITS_SHUTTER)
+
+# Generate ethercatmcStatusWord1802*.opi out of
+#   ethercatmcStatusWord1802.mid and ethercatmcStatusWord1802.end
+../ethercatmcStatusWord1802.opi: $(DEPENDENCIES_FOR_STATUSWORD_OPI)
+	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcStatusWord1802 $(AUXBITS_STATUSWORD)
 
 ../shutter-1.opi: $(DEPENDENCIES_FOR_SHUTTER_OPI)
 	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ s 1
