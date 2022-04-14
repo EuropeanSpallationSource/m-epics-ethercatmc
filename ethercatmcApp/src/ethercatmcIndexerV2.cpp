@@ -113,6 +113,13 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
                                    descVersAuthors.author2,
                                    sizeof(descVersAuthors.author2));
     switch (iTypCode) {
+      case 0x1802:
+        /* The first axisNo goes to axis#0, which is not used for axes
+           all others need their own axis numbers */
+        if (axisNo) {
+          axisNo++;
+        }
+        break;
       case 0x1E04:
       case 0x5008:
       case 0x500C:
@@ -183,7 +190,11 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
     case 0x1802:
       {
         const char *paramName = descVersAuthors.desc;
-        (void)newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, paramName);
+        int function = newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, paramName);
+        if (function < 0) {
+          status = asynError;
+          goto endPollIndexer;
+        }
         status = newIndexerAxisAuxBitsV2(NULL, /* pAxis */
                                          axisNo,
                                          devNum,
@@ -191,7 +202,6 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
                                          fAbsMin,
                                          fAbsMax,
                                          iOffsBytes);
-
       }
       break;
     case 0x1E04:

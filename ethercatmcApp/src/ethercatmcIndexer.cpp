@@ -1195,13 +1195,17 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
                    &splitedParamNameNumber.name[0],
                    &splitedParamNameNumber.axisNoOrIndex);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
-              modNamEMC, functionName, nvals,
+              "%s%s axisNo=%d iTypCode=0x%04X nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
+              modNamEMC, functionName, axisNo, iTypCode, nvals,
               &splitedParamNameNumber.name[0],
               splitedParamNameNumber.axisNoOrIndex);
     if (nvals == 2) {
+      int newAxisNo = (int)splitedParamNameNumber.axisNoOrIndex;
       paramName = &splitedParamNameNumber.name[0];
-      axisNo = (int)splitedParamNameNumber.axisNoOrIndex;
+      if (iTypCode == 0x1802 && newAxisNo != axisNo) {
+        return -1;
+      }
+      axisNo = newAxisNo;
     }
   }
 
