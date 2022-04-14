@@ -424,12 +424,13 @@ public:
                                          unsigned iOffset,
                                          unsigned lenInPlcPara);
   asynStatus poll(void);
-  asynStatus newIndexerAxisV2(ethercatmcIndexerAxis *pAxis,
-                              unsigned devNum,
-                              unsigned iAllFlags,
-                              double   fAbsMin,
-                              double   fAbsMax,
-                              unsigned iOffset);
+  asynStatus newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
+                                     unsigned axisNo,
+                                     unsigned devNum,
+                                     unsigned iAllFlags,
+                                     double   fAbsMin,
+                                     double   fAbsMax,
+                                     unsigned iOffset);
   asynStatus newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
                               unsigned target_param_descriptor_id,
                               unsigned auxbits_bitfield_flag_descriptor_id,
