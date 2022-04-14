@@ -1251,7 +1251,8 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
     case 0x1802:
       lenInPLC = 4;
       /* 1802 has only a 32 bit status word */
-      inputOffset = indexOffset;
+      paramName = ethercatmcStatusBitsString;
+      //inputOffset = indexOffset;
       statusOffset = indexOffset;
       myAsynParamType = asynParamInt32;
       break;

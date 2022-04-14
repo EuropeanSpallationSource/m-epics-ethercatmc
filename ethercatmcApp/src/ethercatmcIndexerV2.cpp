@@ -181,6 +181,11 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
     }
     switch (iTypCode) {
     case 0x1802:
+      {
+        const char *paramName = descVersAuthors.desc;
+        (void)newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, paramName);
+      }
+      break;
     case 0x1E04:
     case 0x5008:
     case 0x500C:
