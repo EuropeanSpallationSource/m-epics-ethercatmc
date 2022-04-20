@@ -1334,32 +1334,32 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
 }
 
 void
-ethercatmcController::changedNames_to_ASCII(int         axisNo,
-                                            epicsUInt32 statusReasonAux,
-                                            epicsUInt32 oldStatusReasonAux)
+ethercatmcController::changedAuxBits_to_ASCII(int         axisNo,
+                                              epicsUInt32 statusReasonAux,
+                                              epicsUInt32 oldStatusReasonAux)
 {
   /* Show even bit 24 and 25, which are reson bits, here */
   epicsUInt32 changed = statusReasonAux ^ oldStatusReasonAux;
   epicsUInt32 auxBitIdx;
-  memset(&ctrlLocal.changedNames, 0, sizeof(ctrlLocal.changedNames));
+  memset(&ctrlLocal.changedAuxBits, 0, sizeof(ctrlLocal.changedAuxBits));
   for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
     if ((changed >> auxBitIdx) & 0x01) {
       asynStatus status;
       int function = (int)(ethercatmcNamAux0_ + auxBitIdx);
       /* Leave the first character for '+' or '-',
          leave one byte for '\0' */
-      int length = (int)sizeof(ctrlLocal.changedNames[auxBitIdx]) - 2;
+      int length = (int)sizeof(ctrlLocal.changedAuxBits[auxBitIdx]) - 2;
       status = getStringParam(axisNo,
                               function,
                               length,
-                              &ctrlLocal.changedNames[auxBitIdx][1]);
+                              &ctrlLocal.changedAuxBits[auxBitIdx][1]);
       if (status == asynSuccess) {
         /* the name of "aux bits without a name" is never written,
            so that we don't show it here */
         if ((statusReasonAux >> auxBitIdx) & 0x01) {
-          ctrlLocal.changedNames[auxBitIdx][0] = '+';
+          ctrlLocal.changedAuxBits[auxBitIdx][0] = '+';
         } else {
-          ctrlLocal.changedNames[auxBitIdx][0] = '-';
+          ctrlLocal.changedAuxBits[auxBitIdx][0] = '-';
         }
       }
     }
@@ -1417,36 +1417,23 @@ asynStatus ethercatmcController::indexerPoll(void)
                               &oldStatusReasonAux, maskStatusReasonAux);
 
           if (statusReasonAux != oldStatusReasonAux) {
-            changedNames_to_ASCII(axisNo, statusReasonAux, oldStatusReasonAux);
+            changedAuxBits_to_ASCII(axisNo, statusReasonAux, oldStatusReasonAux);
             asynPrint(pasynUserController_, traceMask,
                       "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
                       modNamEMC, axisNo, oldStatusReasonAux, statusReasonAux,
-                      ctrlLocal.changedNames[0],
-                      ctrlLocal.changedNames[1],
-                      ctrlLocal.changedNames[2],
-                      ctrlLocal.changedNames[3],
-                      ctrlLocal.changedNames[4],
-                      ctrlLocal.changedNames[5],
-                      ctrlLocal.changedNames[6],
-                      ctrlLocal.changedNames[7],
-                      ctrlLocal.changedNames[8],
-                      ctrlLocal.changedNames[9],
-                      ctrlLocal.changedNames[10],
-                      ctrlLocal.changedNames[11],
-                      ctrlLocal.changedNames[12],
-                      ctrlLocal.changedNames[13],
-                      ctrlLocal.changedNames[14],
-                      ctrlLocal.changedNames[15],
-                      ctrlLocal.changedNames[16],
-                      ctrlLocal.changedNames[17],
-                      ctrlLocal.changedNames[18],
-                      ctrlLocal.changedNames[19],
-                      ctrlLocal.changedNames[20],
-                      ctrlLocal.changedNames[21],
-                      ctrlLocal.changedNames[22],
-                      ctrlLocal.changedNames[23],
-                      ctrlLocal.changedNames[24],
-                      ctrlLocal.changedNames[25]);
+                      ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
+                      ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
+                      ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
+                      ctrlLocal.changedAuxBits[6],  ctrlLocal.changedAuxBits[7],
+                      ctrlLocal.changedAuxBits[8],  ctrlLocal.changedAuxBits[9],
+                      ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
+                      ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
+                      ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
+                      ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
+                      ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
+                      ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
+                      ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
+                      ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
             setUIntDigitalParam(axisNo, ethercatmcStatusBits_,
                                 (epicsUInt32)statusReasonAux,
                                 maskStatusReasonAux, maskStatusReasonAux);

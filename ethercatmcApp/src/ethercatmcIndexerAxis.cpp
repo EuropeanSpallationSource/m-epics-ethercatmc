@@ -833,23 +833,23 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     drvlocal.dirty.old_ErrorId = errorID;
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
-    pC_->changedNames_to_ASCII(axisNo_, idxAuxBits, drvlocal.old_idxAuxBits);
+    pC_->changedAuxBits_to_ASCII(axisNo_, idxAuxBits, drvlocal.old_idxAuxBits);
     asynPrint(pC_->pasynUserController_, traceMask,
               "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
               modNamEMC, axisNo_, drvlocal.old_idxAuxBits, idxAuxBits,
-              pC_->ctrlLocal.changedNames[0],  pC_->ctrlLocal.changedNames[1],
-              pC_->ctrlLocal.changedNames[2],  pC_->ctrlLocal.changedNames[3],
-              pC_->ctrlLocal.changedNames[4],  pC_->ctrlLocal.changedNames[5],
-              pC_->ctrlLocal.changedNames[6],  pC_->ctrlLocal.changedNames[7],
-              pC_->ctrlLocal.changedNames[8],  pC_->ctrlLocal.changedNames[9],
-              pC_->ctrlLocal.changedNames[10], pC_->ctrlLocal.changedNames[11],
-              pC_->ctrlLocal.changedNames[12], pC_->ctrlLocal.changedNames[13],
-              pC_->ctrlLocal.changedNames[14], pC_->ctrlLocal.changedNames[15],
-              pC_->ctrlLocal.changedNames[16], pC_->ctrlLocal.changedNames[17],
-              pC_->ctrlLocal.changedNames[18], pC_->ctrlLocal.changedNames[19],
-              pC_->ctrlLocal.changedNames[20], pC_->ctrlLocal.changedNames[21],
-              pC_->ctrlLocal.changedNames[22], pC_->ctrlLocal.changedNames[23],
-              pC_->ctrlLocal.changedNames[24], pC_->ctrlLocal.changedNames[25],
+              pC_->ctrlLocal.changedAuxBits[0],  pC_->ctrlLocal.changedAuxBits[1],
+              pC_->ctrlLocal.changedAuxBits[2],  pC_->ctrlLocal.changedAuxBits[3],
+              pC_->ctrlLocal.changedAuxBits[4],  pC_->ctrlLocal.changedAuxBits[5],
+              pC_->ctrlLocal.changedAuxBits[6],  pC_->ctrlLocal.changedAuxBits[7],
+              pC_->ctrlLocal.changedAuxBits[8],  pC_->ctrlLocal.changedAuxBits[9],
+              pC_->ctrlLocal.changedAuxBits[10], pC_->ctrlLocal.changedAuxBits[11],
+              pC_->ctrlLocal.changedAuxBits[12], pC_->ctrlLocal.changedAuxBits[13],
+              pC_->ctrlLocal.changedAuxBits[14], pC_->ctrlLocal.changedAuxBits[15],
+              pC_->ctrlLocal.changedAuxBits[16], pC_->ctrlLocal.changedAuxBits[17],
+              pC_->ctrlLocal.changedAuxBits[18], pC_->ctrlLocal.changedAuxBits[19],
+              pC_->ctrlLocal.changedAuxBits[20], pC_->ctrlLocal.changedAuxBits[21],
+              pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
+              pC_->ctrlLocal.changedAuxBits[24], pC_->ctrlLocal.changedAuxBits[25],
               actPosition);
   }
   switch (idxStatusCode) {
