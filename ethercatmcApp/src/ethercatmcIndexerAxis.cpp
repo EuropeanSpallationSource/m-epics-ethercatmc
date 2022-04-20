@@ -833,63 +833,23 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     drvlocal.dirty.old_ErrorId = errorID;
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
-    /* Show even bit 24 and 25, which are reson bits, here */
-#define MAX_REASON_AUX_BIT_SHOW (MAX_AUX_BIT_SHOWN+2)
-    char changedNames[MAX_REASON_AUX_BIT_SHOW][36];
-    unsigned changed = idxAuxBits ^ drvlocal.old_idxAuxBits;
-    unsigned auxBitIdx;
-    memset(&changedNames, 0, sizeof(changedNames));
-    for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
-      if ((changed >> auxBitIdx) & 0x01) {
-        asynStatus status;
-        int function = (int)(pC_->ethercatmcNamAux0_ + auxBitIdx);
-        /* Leave the first character for '+' or '-',
-           leave one byte for '\0' */
-        int length = (int)sizeof(changedNames[auxBitIdx]) - 2;
-        status = pC_->getStringParam(axisNo_,
-                                     function,
-                                     length,
-                                     &changedNames[auxBitIdx][1]);
-        if (status == asynSuccess) {
-          /* the name of "aux bits without a name" is never written,
-             so that we don't show it here */
-          if ((idxAuxBits >> auxBitIdx) & 0x01) {
-            changedNames[auxBitIdx][0] = '+';
-          } else {
-            changedNames[auxBitIdx][0] = '-';
-          }
-        }
-      }
-    }
+    pC_->changedNames_to_ASCII(axisNo_, idxAuxBits, drvlocal.old_idxAuxBits);
     asynPrint(pC_->pasynUserController_, traceMask,
               "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
               modNamEMC, axisNo_, drvlocal.old_idxAuxBits, idxAuxBits,
-              changedNames[0],
-              changedNames[1],
-              changedNames[2],
-              changedNames[3],
-              changedNames[4],
-              changedNames[5],
-              changedNames[6],
-              changedNames[7],
-              changedNames[8],
-              changedNames[9],
-              changedNames[10],
-              changedNames[11],
-              changedNames[12],
-              changedNames[13],
-              changedNames[14],
-              changedNames[15],
-              changedNames[16],
-              changedNames[17],
-              changedNames[18],
-              changedNames[19],
-              changedNames[20],
-              changedNames[21],
-              changedNames[22],
-              changedNames[23],
-              changedNames[24],
-              changedNames[25],
+              pC_->ctrlLocal.changedNames[0],  pC_->ctrlLocal.changedNames[1],
+              pC_->ctrlLocal.changedNames[2],  pC_->ctrlLocal.changedNames[3],
+              pC_->ctrlLocal.changedNames[4],  pC_->ctrlLocal.changedNames[5],
+              pC_->ctrlLocal.changedNames[6],  pC_->ctrlLocal.changedNames[7],
+              pC_->ctrlLocal.changedNames[8],  pC_->ctrlLocal.changedNames[9],
+              pC_->ctrlLocal.changedNames[10], pC_->ctrlLocal.changedNames[11],
+              pC_->ctrlLocal.changedNames[12], pC_->ctrlLocal.changedNames[13],
+              pC_->ctrlLocal.changedNames[14], pC_->ctrlLocal.changedNames[15],
+              pC_->ctrlLocal.changedNames[16], pC_->ctrlLocal.changedNames[17],
+              pC_->ctrlLocal.changedNames[18], pC_->ctrlLocal.changedNames[19],
+              pC_->ctrlLocal.changedNames[20], pC_->ctrlLocal.changedNames[21],
+              pC_->ctrlLocal.changedNames[22], pC_->ctrlLocal.changedNames[23],
+              pC_->ctrlLocal.changedNames[24], pC_->ctrlLocal.changedNames[25],
               actPosition);
   }
   switch (idxStatusCode) {
