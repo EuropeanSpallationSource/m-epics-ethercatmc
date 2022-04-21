@@ -232,6 +232,8 @@ extern "C" {
 extern "C" {
   extern const char *plcUnitTxtFromUnitCode(unsigned unitCode);
   extern const char *plcUnitPrefixTxt(int prefixCode);
+  extern void parameter_type_to_ASCII_V3(char *buf, size_t len,
+                                         unsigned parameter_type);
 }
 
 class ethercatmcIndexerAxis;

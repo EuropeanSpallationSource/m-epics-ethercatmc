@@ -227,6 +227,36 @@ ethercatmcController::newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
   return status;
 }
 
+extern "C" void parameter_type_to_ASCII_V3(char *buf, size_t len,
+                                           unsigned parameter_type)
+{
+  const char *unsigned_float_enum_int_str = "hurx";
+  const char *function_parameter_str = "hury";
+  const char *bit_with_str = "hurz";
+  switch (parameter_type & 0xC000) {
+    case 0x0000: unsigned_float_enum_int_str = "uint"; break;
+    case 0x4000: unsigned_float_enum_int_str = "float"; break;
+    case 0x8000: unsigned_float_enum_int_str = "enum"; break;
+    case 0xC000: unsigned_float_enum_int_str = "sint"; break;
+  }
+  switch (parameter_type & 0x3000) {
+    case 0x0000: function_parameter_str = "fn"; break;
+    case 0x1000: function_parameter_str = "rw"; break;
+    case 0x2000: function_parameter_str = "rd"; break;
+    case 0x3000: function_parameter_str = "rf"; break;
+  }
+  switch (parameter_type & 0x0C00) {
+    case 0x0000: bit_with_str = "main"; break;
+    case 0x0400: bit_with_str = "16"; break;
+    case 0x0800: bit_with_str = "32"; break;
+    case 0x0C00: bit_with_str = "64"; break;
+  }
+  snprintf(buf, len, "%s %s %s",
+           unsigned_float_enum_int_str,
+           function_parameter_str,
+           bit_with_str);
+}
+
 asynStatus
 ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *pAxis,
                                                         unsigned descID)
@@ -245,15 +275,22 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
       {
         unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.parameterDescriptor.prev_descriptor_id);
         unsigned parameter_index = NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_index);
+        unsigned parameter_type = NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_type);
         int index_in_range = parameter_index < (sizeof(pAxis->drvlocal.PILSparamPerm) /
                                                 sizeof(pAxis->drvlocal.PILSparamPerm[0]));
+        char parameter_type_ascii[32];
+        parameter_type_to_ASCII_V3(parameter_type_ascii,
+                                   sizeof(parameter_type_ascii),
+                                   parameter_type);
+
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X parameter_index=%u index_in_range=%d type=0x%X parameterDescriptor prev=0x%04X string=0x%04X type=0x%04X unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
+                  "%s%s descID=0x%04X parameter_index=%u index_in_range=%d type=0x%X parameterDescriptor"
+                  " prev=0x%04X string=0x%04X param_type=0x%04X (%s) unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID, parameter_index, index_in_range,
                   NETTOUINT(tmpDescriptor.parameterDescriptor.descriptor_type_0x6114),
                   prev_descriptor_id,
                   NETTOUINT(tmpDescriptor.parameterDescriptor.string_description_id),
-                  NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_type),
+                  parameter_type, parameter_type_ascii,
                   NETTOUINT(tmpDescriptor.parameterDescriptor.unit),
                   NETTODOUBLE(tmpDescriptor.parameterDescriptor.min_value),
                   NETTODOUBLE(tmpDescriptor.parameterDescriptor.max_value),
@@ -274,18 +311,23 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
       {
         unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.enumparamDescriptor.prev_descriptor_id);
         unsigned parameter_index = NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_index);
+        unsigned parameter_type = NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_type);
         int index_in_range = parameter_index < (sizeof(pAxis->drvlocal.PILSparamPerm) /
                                                 sizeof(pAxis->drvlocal.PILSparamPerm[0]));
+        char parameter_type_ascii[32];
+        parameter_type_to_ASCII_V3(parameter_type_ascii,
+                                   sizeof(parameter_type_ascii),
+                                   parameter_type);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X enumparam_index=%u index_in_range=%d type=0x%X enumparamDescriptor"
-                  " prev=0x%04X string=0x%04X  read_id=0x%x write_id=0x%x fun_idx=%d utf8_string=\"%s\"\n",
+                  "%s%s descID=0x%04X parameter_index=%u index_in_range=%d type=0x%X enumparamDescriptor"
+                  " prev=0x%04X string=0x%04X  read_id=0x%x write_id=0x%x param_type=0x%X (%s) utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID, parameter_index, index_in_range,
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.descriptor_type_0x620e),
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.prev_descriptor_id),
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.string_description_id),
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_read_id),
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_write_id),
-                  NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_index),
+                  parameter_type, parameter_type_ascii,
                   tmpDescriptor.enumparamDescriptor.enumparam_name);
         if (index_in_range) {
           if (parameter_index == PARAM_IDX_OPMODE_AUTO_UINT) {
@@ -326,7 +368,6 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
           }
         }
         descID = prev_descriptor_id;
-
       }
       break;
     default:
