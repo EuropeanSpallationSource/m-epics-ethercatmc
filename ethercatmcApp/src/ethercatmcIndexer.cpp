@@ -590,16 +590,20 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
 
   if (!pAxis || !paramIfOffset || (paramIndex > 0xFF) ||
       lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
-    asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u\n",
-              modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset);
-    return asynDisabled;
-  }
-  if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermRead) {
-    return asynParamWrongType;
+    status = asynDisabled;
+  } else if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermRead) {
+    status = asynParamWrongType;
   } else if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermNone) {
-    return asynParamBadIndex;
+    status = asynParamBadIndex;
   }
+  if (status != asynSuccess) {
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+              "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u status=%s (%d)\n",
+              modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
+              ethercatmcstrStatus(status), (int)status);
+    return status;
+  }
+
   memset(&paramIf_to_MCU, 0, sizeof(paramIf_to_MCU));
   memset(&paramIf_from_MCU, 0, sizeof(paramIf_from_MCU));
   if (paramIndexIsInteger(paramIndex))

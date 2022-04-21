@@ -227,6 +227,11 @@ ethercatmcController::newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
   return status;
 }
 
+extern int parameter_is_rw_V3(unsigned parameter_type)
+{
+  return !!((parameter_type & 0x3000) == 0x1000);
+}
+
 extern "C" void parameter_type_to_ASCII_V3(char *buf, size_t len,
                                            unsigned parameter_type)
 {
@@ -269,24 +274,24 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
     status = readMailboxV3(descID,
                            &tmpDescriptor, sizeof(tmpDescriptor));
     unsigned descriptor_type_XXXX = NETTOUINT(tmpDescriptor.genericDescriptor.descriptor_type);
+    unsigned parameter_index = 0;
+    unsigned parameter_type = 0;
     NETTOUINT(tmpDescriptor.deviceDescriptor.prev_descriptor_id);
     switch (descriptor_type_XXXX) {
     case 0x6114:
       {
         unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.parameterDescriptor.prev_descriptor_id);
-        unsigned parameter_index = NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_index);
-        unsigned parameter_type = NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_type);
-        int index_in_range = parameter_index < (sizeof(pAxis->drvlocal.PILSparamPerm) /
-                                                sizeof(pAxis->drvlocal.PILSparamPerm[0]));
+        parameter_index = NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_index);
+        parameter_type = NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_type);
         char parameter_type_ascii[32];
         parameter_type_to_ASCII_V3(parameter_type_ascii,
                                    sizeof(parameter_type_ascii),
                                    parameter_type);
 
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X parameter_index=%u index_in_range=%d type=0x%X parameterDescriptor"
+                  "%s%s descID=0x%04X parameter_index=%u type=0x%X parameterDescriptor"
                   " prev=0x%04X string=0x%04X param_type=0x%04X (%s) unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
-                  modNamEMC, c_function_name, descID, parameter_index, index_in_range,
+                  modNamEMC, c_function_name, descID, parameter_index,
                   NETTOUINT(tmpDescriptor.parameterDescriptor.descriptor_type_0x6114),
                   prev_descriptor_id,
                   NETTOUINT(tmpDescriptor.parameterDescriptor.string_description_id),
@@ -296,32 +301,22 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
                   NETTODOUBLE(tmpDescriptor.parameterDescriptor.max_value),
                   tmpDescriptor.parameterDescriptor.parameter_name);
 
-        if (index_in_range) {
-          if (parameter_index == PARAM_IDX_OPMODE_AUTO_UINT) {
-            /* Special case for EPICS: We d not poll it in background */
-            pAxis->setIntegerParam(motorStatusGainSupport_, 1);
-          } else {
-            pAxis->drvlocal.PILSparamPerm[parameter_index] = PILSparamPermWrite;
-          }
-        }
         descID = prev_descriptor_id;
       }
       break;
     case 0x620E:
       {
         unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.enumparamDescriptor.prev_descriptor_id);
-        unsigned parameter_index = NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_index);
-        unsigned parameter_type = NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_type);
-        int index_in_range = parameter_index < (sizeof(pAxis->drvlocal.PILSparamPerm) /
-                                                sizeof(pAxis->drvlocal.PILSparamPerm[0]));
+        parameter_index = NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_index);
+        parameter_type = NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_type);
         char parameter_type_ascii[32];
         parameter_type_to_ASCII_V3(parameter_type_ascii,
                                    sizeof(parameter_type_ascii),
                                    parameter_type);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X parameter_index=%u index_in_range=%d type=0x%X enumparamDescriptor"
+                  "%s%s descID=0x%04X parameter_index=%u type=0x%X enumparamDescriptor"
                   " prev=0x%04X string=0x%04X  read_id=0x%x write_id=0x%x param_type=0x%X (%s) utf8_string=\"%s\"\n",
-                  modNamEMC, c_function_name, descID, parameter_index, index_in_range,
+                  modNamEMC, c_function_name, descID, parameter_index,
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.descriptor_type_0x620e),
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.prev_descriptor_id),
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.string_description_id),
@@ -329,27 +324,17 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
                   NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_write_id),
                   parameter_type, parameter_type_ascii,
                   tmpDescriptor.enumparamDescriptor.enumparam_name);
-        if (index_in_range) {
-          if (parameter_index == PARAM_IDX_OPMODE_AUTO_UINT) {
-            /* Special case for EPICS: We d not poll it in background */
-            pAxis->setIntegerParam(motorStatusGainSupport_, 1);
-          } else {
-            pAxis->drvlocal.PILSparamPerm[parameter_index] = PILSparamPermWrite;
-          }
-        }
         descID = prev_descriptor_id;
       }
       break;
     case 0x680E:
       {
         unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.functionDescriptor.prev_descriptor_id);
-        unsigned parameter_index = NETTOUINT(tmpDescriptor.functionDescriptor.function_index);
-        int index_in_range = parameter_index < (sizeof(pAxis->drvlocal.PILSparamPerm) /
-                                                sizeof(pAxis->drvlocal.PILSparamPerm[0]));
+        parameter_index = NETTOUINT(tmpDescriptor.functionDescriptor.function_index);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X parameter_index=%u index_in_range=%d type=0x%X functionDescriptor"
+                  "%s%s descID=0x%04X parameter_index=%u type=0x%X functionDescriptor"
                   " prev=0x%04X string=0x%04X  arg_id=0x%x res_id=0x%x fun_idx=%d flags=%x utf8_string=\"%s\"\n",
-                  modNamEMC, c_function_name, descID, parameter_index, index_in_range,
+                  modNamEMC, c_function_name, descID, parameter_index,
                   NETTOUINT(tmpDescriptor.functionDescriptor.descriptor_type_0x680e),
                   prev_descriptor_id,
                   NETTOUINT(tmpDescriptor.functionDescriptor.string_description_id),
@@ -358,15 +343,6 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
                   NETTOUINT(tmpDescriptor.functionDescriptor.function_index),
                   NETTOUINT(tmpDescriptor.functionDescriptor.function_flags),
                   tmpDescriptor.functionDescriptor.function_name);
-
-        if (index_in_range) {
-          if (parameter_index == PARAM_IDX_OPMODE_AUTO_UINT) {
-            /* Special case for EPICS: We d not poll it in background */
-            pAxis->setIntegerParam(motorStatusGainSupport_, 1);
-          } else {
-            pAxis->drvlocal.PILSparamPerm[parameter_index] = PILSparamPermWrite;
-          }
-        }
         descID = prev_descriptor_id;
       }
       break;
@@ -379,6 +355,24 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
         descID = 0;
       }
       break;
+    }
+    if (parameter_index) {
+      int index_in_range;
+      index_in_range = parameter_index < (sizeof(pAxis->drvlocal.PILSparamPerm) /
+                                          sizeof(pAxis->drvlocal.PILSparamPerm[0]));
+      if (index_in_range) {
+        int parameter_is_rw = parameter_is_rw_V3(parameter_type);
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s parameter_index=%u parameter_type=0x%X parameter_is_rw=%d\n",
+                  modNamEMC, c_function_name, parameter_index,
+                  parameter_type, parameter_is_rw);
+        if (parameter_index == PARAM_IDX_OPMODE_AUTO_UINT) {
+          /* Special case for EPICS: We d not poll it in background */
+          pAxis->setIntegerParam(motorStatusGainSupport_, 1);
+        }
+        pAxis->drvlocal.PILSparamPerm[parameter_index] =
+          parameter_is_rw ? PILSparamPermWrite : PILSparamPermRead;
+      }
     }
   }
   return status;

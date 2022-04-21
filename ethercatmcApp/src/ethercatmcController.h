@@ -232,6 +232,7 @@ extern "C" {
 extern "C" {
   extern const char *plcUnitTxtFromUnitCode(unsigned unitCode);
   extern const char *plcUnitPrefixTxt(int prefixCode);
+  extern int parameter_is_rw_V3(unsigned parameter_type);
   extern void parameter_type_to_ASCII_V3(char *buf, size_t len,
                                          unsigned parameter_type);
 }
