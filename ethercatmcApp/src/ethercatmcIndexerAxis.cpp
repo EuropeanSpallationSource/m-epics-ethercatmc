@@ -641,6 +641,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     if (!status) {
       drvlocal.dirty.initialPollNeeded = 0;
       setIntegerParam(pC_->motorStatusCommsError_, 0);
+      pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcStatusCode_,
+                                         asynSuccess);
       updateMsgTxtFromDriver(NULL);
     }
   }
