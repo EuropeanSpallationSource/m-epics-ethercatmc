@@ -331,6 +331,7 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
       {
         unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.functionDescriptor.prev_descriptor_id);
         parameter_index = NETTOUINT(tmpDescriptor.functionDescriptor.function_index);
+        parameter_type = 0x1000; /* A function is writable */
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X parameter_index=%u type=0x%X functionDescriptor"
                   " prev=0x%04X string=0x%04X  arg_id=0x%x res_id=0x%x fun_idx=%d flags=%x utf8_string=\"%s\"\n",
