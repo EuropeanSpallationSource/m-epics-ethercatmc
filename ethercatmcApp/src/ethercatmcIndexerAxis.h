@@ -104,6 +104,8 @@ private:
     unsigned int hasProblem :1;
     uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
     PILSparamPermType PILSparamPerm[256];
+    uint8_t lenInPlcParaFloat[256];     /* 0 : not a float; 4: float; 8 : double */
+    uint8_t lenInPlcParaInteger[256];   /* 0 : not an integer; 2: uint16 4: uint_32 */
     } drvlocal;
 
 #ifndef motorMessageTextString

@@ -227,9 +227,25 @@ ethercatmcController::newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
   return status;
 }
 
+extern int parameter_is_floatV3(unsigned parameter_type)
+{
+  return !!((parameter_type & 0xC000) == 0x4000);
+}
+
 extern int parameter_is_rw_V3(unsigned parameter_type)
 {
   return !!((parameter_type & 0x3000) == 0x1000);
+}
+
+extern unsigned parameter_has_lenInPlcParaV3(unsigned parameter_type)
+{
+  switch (parameter_type & 0x0C00) {
+  case 0x0000: return 0;
+  case 0x0400: return 16;
+  case 0x0800: return 32;
+  case 0x0C00: return 64;
+  }
+  return 0;
 }
 
 extern "C" void parameter_type_to_ASCII_V3(char *buf, size_t len,
@@ -264,7 +280,8 @@ extern "C" void parameter_type_to_ASCII_V3(char *buf, size_t len,
 
 asynStatus
 ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *pAxis,
-                                                        unsigned descID)
+                                                        unsigned descID,
+                                                        unsigned defaultLenInPlcPara)
 {
   static const char * const c_function_name = "indexerV3readParameterDescriptors";
   asynStatus status = asynSuccess;
@@ -362,17 +379,27 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
       index_in_range = parameter_index < (sizeof(pAxis->drvlocal.PILSparamPerm) /
                                           sizeof(pAxis->drvlocal.PILSparamPerm[0]));
       if (index_in_range) {
+        int parameter_is_float = parameter_is_floatV3(parameter_type);
         int parameter_is_rw = parameter_is_rw_V3(parameter_type);
+        unsigned lenInPlcPara = parameter_has_lenInPlcParaV3(parameter_type);
+        if (!lenInPlcPara) {
+          lenInPlcPara = defaultLenInPlcPara;
+        }
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s parameter_index=%u parameter_type=0x%X parameter_is_rw=%d\n",
+                  "%s%s parameter_index=%u parameter_is_float=%d parameter_is_rw=%d lenInPlcPara=%u\n",
                   modNamEMC, c_function_name, parameter_index,
-                  parameter_type, parameter_is_rw);
+                  parameter_is_float, parameter_is_rw, lenInPlcPara);
         if (parameter_index == PARAM_IDX_OPMODE_AUTO_UINT) {
           /* Special case for EPICS: We d not poll it in background */
           pAxis->setIntegerParam(motorStatusGainSupport_, 1);
         }
         pAxis->drvlocal.PILSparamPerm[parameter_index] =
           parameter_is_rw ? PILSparamPermWrite : PILSparamPermRead;
+        if (parameter_is_float) {
+          pAxis->drvlocal.lenInPlcParaFloat[parameter_index] = lenInPlcPara;
+        } else {
+          pAxis->drvlocal.lenInPlcParaInteger[parameter_index] = lenInPlcPara;
+        }
       }
     }
   }
@@ -508,8 +535,11 @@ ethercatmcController::indexerV3addDevice(unsigned devNum,
           status = indexerV3readAuxbits(pAxis, descID);
         }
         if (!status) {
-          unsigned descID = parameters_descriptor_id;
-          status = indexerV3readParameterDescriptors(pAxis, descID);
+          if (type_code == 0x5010) {
+            unsigned descID = parameters_descriptor_id;
+            unsigned defaultLenInPlcPara = 8;
+            status = indexerV3readParameterDescriptors(pAxis, descID, defaultLenInPlcPara);
+          }
         }
       }
     }
