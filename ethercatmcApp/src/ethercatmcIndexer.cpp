@@ -598,8 +598,9 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
   }
   if (status != asynSuccess) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u status=%s (%d)\n",
+              "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u perm=%d status=%s (%d)\n",
               modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
+              (int)pAxis->drvlocal.PILSparamPerm[paramIndex],
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
@@ -686,14 +687,25 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
         } else if (paramIndexRB == paramIndex) {
           if (pAxis) {
             if (paramIfCmd == PARAM_IF_CMD_ERR_NO_IDX) {
-              pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermNone;
-              return asynParamBadIndex;
+              status = asynParamBadIndex;
             } else if (paramIfCmd == PARAM_IF_CMD_ERR_READONLY) {
-              pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermRead;
-              return asynParamWrongType;
+              if (ctrlLocal.supported.bPILSv2) {
+                // When PILS V2 "announces" a parameter, there is no
+                //   destinction between "read" and "write"
+                //   Change the permissions here
+                pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermRead;
+              }
+              status = asynParamWrongType;
             }
           }
-          return asynDisabled;
+          status = asynDisabled;
+        }
+        if (status != asynSuccess) {
+          asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
+                    "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u status=%s (%d)\n",
+                    modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
+                    ethercatmcstrStatus(status), (int)status);
+          return status;
         }
       }
       break;
