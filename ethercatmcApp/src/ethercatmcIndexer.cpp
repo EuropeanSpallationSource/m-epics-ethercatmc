@@ -488,7 +488,7 @@ asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
   return asynDisabled;
 }
 
-asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
+asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis,
                                                     unsigned paramIfOffset,
                                                     unsigned paramIndex,
                                                     unsigned lenInPlcPara,
@@ -500,7 +500,6 @@ asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
   unsigned traceMask = ASYN_TRACE_FLOW;
   asynStatus status;
   unsigned cmd      = PARAM_IF_CMD_DOREAD + paramIndex;
-  size_t lenInPLCparamIf = sizeof(paramIf_from_MCU.paramCtrl) + lenInPlcPara;
   unsigned counter = 0;
 
   if (!paramIfOffset || paramIndex > 0xFF ||
@@ -510,6 +509,16 @@ asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
               modNamEMC, paramIndex, lenInPlcPara, paramIfOffset);
     return asynDisabled;
   }
+  int paramIsInteger = paramIndexIsInteger(paramIndex);
+
+  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
+    paramIsInteger = 1;
+    lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
+  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
+    paramIsInteger = 0;
+    lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
+  }
+  size_t lenInPLCparamIf = sizeof(paramIf_from_MCU.paramCtrl) + lenInPlcPara;
   while (counter < MAX_COUNTER) {
     /* get the paraminterface "as is". It may be in DONE state as an answer
        to a write from a previous round */
@@ -521,7 +530,8 @@ asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
     unsigned cmdSubParamIndexRB = NETTOUINT(paramIf_from_MCU.paramCtrl);
     unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
     if (counter > 1) {
-      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
+      int axisNo = pAxis->axisNo_;
+      asynPrint(pasynUserController_, traceMask, /* | ASYN_TRACE_INFO, */
                 "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
                 "counter=%u cmdSubParamIndexRB=%s (0x%04X)\n",
                 fileName, lineNo, "indexerParamRead", axisNo, paramIfOffset,
@@ -534,13 +544,23 @@ asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
       if (paramIndexRB == paramIndex) {
         /* This is good, return */
         double fValue;
-        if (paramIndexIsInteger(paramIndex)) {
+        if (paramIsInteger) {
           fValue = (double)netToUint(&paramIf_from_MCU.paramValueRaw,
                                      lenInPlcPara);
         } else {
           fValue = netToDouble(&paramIf_from_MCU.paramValueRaw,
                                lenInPlcPara);
         }
+        asynPrint(pasynUserController_, traceMask /* | ASYN_TRACE_INFO */,
+                  "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
+                  "lenInPlcParaFloat=%u lenInPlcParaInteger=%u "
+                  "paramIsInteger=%d lenInPlcPara=%u value=%f\n",
+                  fileName, lineNo, "indexerParamRead", pAxis->axisNo_, paramIfOffset,
+                  plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
+                  pAxis->drvlocal.lenInPlcParaFloat[paramIndex],
+                  pAxis->drvlocal.lenInPlcParaInteger[paramIndex],
+                  paramIsInteger, lenInPlcPara, fValue);
+
         *value = fValue;
         return asynSuccess;
       }
@@ -571,20 +591,19 @@ asynStatus ethercatmcController::indexerParamReadFL(int axisNo,
   return asynError;
 }
 
-asynStatus ethercatmcController::indexerParamWrite(int axisNo,
+asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                                    unsigned paramIfOffset,
                                                    unsigned paramIndex,
                                                    unsigned lenInPlcPara,
                                                    double value,
                                                    double *pValueRB)
 {
-  ethercatmcIndexerAxis *pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
+  int axisNo = pAxis->axisNo_;
   paramIf_type paramIf_to_MCU;
   paramIf_type paramIf_from_MCU;
   unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status = asynSuccess;
   unsigned cmd      = PARAM_IF_CMD_DOWRITE + paramIndex;
-  size_t lenInPLCparamIf = sizeof(paramIf_to_MCU.paramCtrl) + lenInPlcPara;
   unsigned counter = 0;
   int has_written = 0;
 
@@ -604,10 +623,20 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
+  int paramIsInteger = paramIndexIsInteger(paramIndex);
+
+  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
+    paramIsInteger = 1;
+    lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
+  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
+    paramIsInteger = 0;
+    lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
+  }
+  size_t lenInPLCparamIf = sizeof(paramIf_to_MCU.paramCtrl) + lenInPlcPara;
 
   memset(&paramIf_to_MCU, 0, sizeof(paramIf_to_MCU));
   memset(&paramIf_from_MCU, 0, sizeof(paramIf_from_MCU));
-  if (paramIndexIsInteger(paramIndex))
+  if (paramIsInteger)
     uintToNet((int)value, &paramIf_to_MCU.paramValueRaw, lenInPlcPara);
   else
     doubleToNet(value, &paramIf_to_MCU.paramValueRaw, lenInPlcPara);
@@ -620,7 +649,7 @@ asynStatus ethercatmcController::indexerParamWrite(int axisNo,
     status = getPlcMemoryOnErrorStateChange(paramIfOffset,
                                             &paramIf_from_MCU,
                                             lenInPLCparamIf);
-    if (paramIndexIsInteger(paramIndex)) {
+    if (paramIsInteger) {
       valueRB = netToUint(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
     } else {
       valueRB = netToDouble(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
@@ -951,7 +980,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
            tell driver that the function exist
            But read 142, which becomes JVEL */
         if (!paramIndexIsReadLaterInBackground(paramIndex)) {
-          status = indexerParamRead(axisNo,
+          status = indexerParamRead(pAxis,
                                     paramIfOffset,
                                     paramIndex,
                                     lenInPlcPara,
@@ -967,19 +996,11 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                       ethercatmcstrStatus(status), (int)status);
             return status;
           }
-          if (paramIndexIsInteger(paramIndex)) {
-            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                      "%sparameters(%d) paramIdx=%s (%u) iValue=%i\n",
-                      modNamEMC, axisNo,
-                      plcParamIndexTxtFromParamIndex(paramIndex),
-                      paramIndex, (int)fValue);
-          } else {
-            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                      "%sparameters(%d) paramIdx=%s (%u) fValue=%f\n",
-                      modNamEMC, axisNo,
-                      plcParamIndexTxtFromParamIndex(paramIndex),
-                      paramIndex, fValue);
-          }
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                    "%sparameters(%d) paramIdx=%s (%u) value=%f\n",
+                    modNamEMC, axisNo,
+                    plcParamIndexTxtFromParamIndex(paramIndex),
+                    paramIndex, fValue);
         } else {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sparameters(%d) paramIdx=%s (%u) not polled in background\n",

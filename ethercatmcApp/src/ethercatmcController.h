@@ -465,7 +465,7 @@ public:
                                 double value, size_t lenInPlc);
 
   asynStatus indexerWaitSpecialDeviceIdle(unsigned indexOffset);
-  asynStatus indexerParamReadFL(int axisNo,
+  asynStatus indexerParamReadFL(ethercatmcIndexerAxis *pAxis,
                                 unsigned paramIfOffset,
                                 unsigned paramIndex,
                                 unsigned lenInPlcPara,
@@ -473,7 +473,7 @@ public:
                                 const char *fileName,
                                 int lineNo);
 #define indexerParamRead(a,b,c,d,e) indexerParamReadFL(a,b,c,d,e,__FILE__, __LINE__)
-  asynStatus indexerParamWrite(int axisNo,
+  asynStatus indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                unsigned paramIfOffset,
                                unsigned paramIndex,
                                unsigned lenInPlcPara,
