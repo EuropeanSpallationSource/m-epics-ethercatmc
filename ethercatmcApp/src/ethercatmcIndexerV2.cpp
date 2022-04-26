@@ -373,6 +373,11 @@ ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
       unsigned bitIsSet = parameters & (1 << bitIdx) ? 1 : 0;
       if (bitIsSet) {
         pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermWrite;
+        if (paramIndexIsIntegerV2(paramIndex)) {
+          pAxis->drvlocal.lenInPlcParaInteger[paramIndex] = lenInPlcPara;
+        } else {
+          pAxis->drvlocal.lenInPlcParaFloat[paramIndex] = lenInPlcPara;
+        }
       }
     }
   }

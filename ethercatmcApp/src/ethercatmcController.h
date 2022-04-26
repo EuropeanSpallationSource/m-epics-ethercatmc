@@ -214,7 +214,7 @@ extern "C" {
   asynStatus checkACK(const char *outdata, size_t outlen, const char *indata);
   const char *plcUnitTxtFromUnitCode(unsigned unitCode);
   const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex);
-  int paramIndexIsInteger(unsigned paramIndex);
+  int paramIndexIsIntegerV2(unsigned paramIndex);
   int paramIndexIsMovingFunction(unsigned paramIndex);
   int paramIndexIsParameterToPoll(unsigned paramIndex);
   const char *ethercatmcstrStatus(asynStatus status);

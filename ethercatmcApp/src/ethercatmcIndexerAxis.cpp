@@ -606,7 +606,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   //double targetPosition = 0.0;
   double actPosition = 0.0;
   double paramfValue = 0.0;
-  unsigned paramiValue = 0;
   unsigned statusReasonAux, paramCtrl = 0;
   int errorID = -1;
   bool nowMoving = false;
@@ -673,8 +672,17 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     //targetPosition = NETTODOUBLE(readback.targtPos);
     statusReasonAux16 = NETTOUINT(readback.statReasAux);
     paramCtrl = NETTOUINT(readback.paramCtrl);
-    paramfValue = NETTODOUBLE(readback.paramValue);
-    paramiValue = NETTOUINT(readback.paramValue);
+    {
+      unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+      unsigned lenInPlcPara = 0;
+      if (drvlocal.lenInPlcParaInteger[paramIndex]) {
+        lenInPlcPara = drvlocal.lenInPlcParaInteger[paramIndex];
+        paramfValue = (double)netToUint(&readback.paramValue, lenInPlcPara);
+      } else if (drvlocal.lenInPlcParaFloat[paramIndex]) {
+        lenInPlcPara = drvlocal.lenInPlcParaFloat[paramIndex];
+        paramfValue = netToDouble(&readback.paramValue, lenInPlcPara);
+      }
+    }
     /* Specific bit positions for 5008 */
     idxStatusCode = (idxStatusCodeType)(statusReasonAux16 >> 12);
     idxReasonBits = (statusReasonAux16 >> 8) & 0x0F;
@@ -712,8 +720,17 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     //targetPosition = NETTODOUBLE(readback.targtPos);
     statusReasonAux = NETTOUINT(readback.statReasAux);
     paramCtrl = NETTOUINT(readback.paramCtrl);
-    paramfValue = NETTODOUBLE(readback.paramValue);
-    paramiValue = NETTOUINT(readback.paramValue);
+    {
+      unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+      unsigned lenInPlcPara = 0;
+      if (drvlocal.lenInPlcParaInteger[paramIndex]) {
+        lenInPlcPara = drvlocal.lenInPlcParaInteger[paramIndex];
+        paramfValue = (double)netToUint(&readback.paramValue, lenInPlcPara);
+      } else if (drvlocal.lenInPlcParaFloat[paramIndex]) {
+        lenInPlcPara = drvlocal.lenInPlcParaFloat[paramIndex];
+        paramfValue = netToDouble(&readback.paramValue, lenInPlcPara);
+      }
+    }
 
     /* Specific for 5010 */
     errorID = (int)NETTOUINT(readback.errorID);
@@ -1044,9 +1061,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 
   if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
     unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
-    if (paramIndexIsInteger(paramIndex)) {
-      paramfValue = (double)paramiValue;
-    }
     asynPrint(pC_->pasynUserController_,
               ASYN_TRACE_FLOW,
               "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n",

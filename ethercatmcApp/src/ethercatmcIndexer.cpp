@@ -168,7 +168,7 @@ extern "C" {
 };
 
 extern "C" {
-  int paramIndexIsInteger(unsigned paramIndex)
+  int paramIndexIsIntegerV2(unsigned paramIndex)
   {
     if (paramIndex < 30) {
       /* parameters below 30 are unsigned integers in the PLC */
@@ -509,13 +509,9 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
               modNamEMC, paramIndex, lenInPlcPara, paramIfOffset);
     return asynDisabled;
   }
-  int paramIsInteger = paramIndexIsInteger(paramIndex);
-
   if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
-    paramIsInteger = 1;
     lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
   } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
-    paramIsInteger = 0;
     lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
   }
   size_t lenInPLCparamIf = sizeof(paramIf_from_MCU.paramCtrl) + lenInPlcPara;
@@ -543,23 +539,21 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
     case PARAM_IF_CMD_DONE:
       if (paramIndexRB == paramIndex) {
         /* This is good, return */
-        double fValue;
-        if (paramIsInteger) {
+        double fValue = -1; //NaN;
+        if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
           fValue = (double)netToUint(&paramIf_from_MCU.paramValueRaw,
                                      lenInPlcPara);
-        } else {
-          fValue = netToDouble(&paramIf_from_MCU.paramValueRaw,
-                               lenInPlcPara);
+        } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
+          fValue = netToDouble(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
         }
         asynPrint(pasynUserController_, traceMask /* | ASYN_TRACE_INFO */,
                   "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
-                  "lenInPlcParaFloat=%u lenInPlcParaInteger=%u "
-                  "paramIsInteger=%d lenInPlcPara=%u value=%f\n",
+                  "lenInPlcParaFloat=%u lenInPlcParaInteger=%u lenInPlcPara=%u value=%f\n",
                   fileName, lineNo, "indexerParamRead", pAxis->axisNo_, paramIfOffset,
                   plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                   pAxis->drvlocal.lenInPlcParaFloat[paramIndex],
                   pAxis->drvlocal.lenInPlcParaInteger[paramIndex],
-                  paramIsInteger, lenInPlcPara, fValue);
+                  lenInPlcPara, fValue);
 
         *value = fValue;
         return asynSuccess;
@@ -623,39 +617,36 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
-  int paramIsInteger = paramIndexIsInteger(paramIndex);
-
   if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
-    paramIsInteger = 1;
     lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
   } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
-    paramIsInteger = 0;
     lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
   }
   size_t lenInPLCparamIf = sizeof(paramIf_to_MCU.paramCtrl) + lenInPlcPara;
 
   memset(&paramIf_to_MCU, 0, sizeof(paramIf_to_MCU));
   memset(&paramIf_from_MCU, 0, sizeof(paramIf_from_MCU));
-  if (paramIsInteger)
+
+  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
     uintToNet((int)value, &paramIf_to_MCU.paramValueRaw, lenInPlcPara);
-  else
+  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
     doubleToNet(value, &paramIf_to_MCU.paramValueRaw, lenInPlcPara);
+  }
   UINTTONET(cmd, paramIf_to_MCU.paramCtrl);
 
   while (counter < MAX_COUNTER) {
-    double valueRB = -1.0;
     /* get the paraminterface "as is". It may be in DONE state as an answer
        to a write from a previous round */
     status = getPlcMemoryOnErrorStateChange(paramIfOffset,
                                             &paramIf_from_MCU,
                                             lenInPLCparamIf);
-    if (paramIsInteger) {
+    if (status) return status;
+    double valueRB = -1.0;
+    if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
       valueRB = netToUint(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
-    } else {
+    } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
       valueRB = netToDouble(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
     }
-
-    if (status) return status;
     unsigned cmdSubParamIndexRB = NETTOUINT(paramIf_from_MCU.paramCtrl);
     unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
 
