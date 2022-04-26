@@ -469,7 +469,6 @@ public:
                                 int lineNo);
 #define indexerParamRead(a,b,c,d) indexerParamReadFL(a,b,c,d,__FILE__, __LINE__)
   asynStatus indexerParamWrite(ethercatmcIndexerAxis *pAxis,
-                               unsigned paramIfOffset,
                                unsigned paramIndex,
                                double value,
                                double *pValueRB);

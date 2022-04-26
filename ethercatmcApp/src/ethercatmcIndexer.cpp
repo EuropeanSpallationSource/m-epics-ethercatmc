@@ -585,7 +585,6 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
 }
 
 asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
-                                                   unsigned paramIfOffset,
                                                    unsigned paramIndex,
                                                    double value,
                                                    double *pValueRB)
@@ -599,6 +598,8 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   unsigned counter = 0;
   int has_written = 0;
   unsigned lenInPlcPara = 0;
+  unsigned paramIfOffset = pAxis->drvlocal.paramIfOffset;
+
   if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
     lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
   } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
