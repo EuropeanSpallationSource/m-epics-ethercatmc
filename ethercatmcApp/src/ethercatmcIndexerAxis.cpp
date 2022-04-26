@@ -317,7 +317,6 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
       if ((status != asynParamUndefined) && (maxVelocity != oldValue)) {
         status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                         PARAM_IDX_SPEED_FLOAT,
-                                        drvlocal.lenInPlcPara,
                                         maxVelocity, &valueRB);
         if (status) {
           asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
@@ -339,7 +338,6 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
       if ((status != asynParamUndefined) && (acceleration != oldValue)) {
         status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                         PARAM_IDX_ACCEL_FLOAT,
-                                        drvlocal.lenInPlcPara,
                                         acceleration, &valueRB);
         if (status) {
           asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
@@ -428,7 +426,6 @@ asynStatus ethercatmcIndexerAxis::home(double minVelocity, double maxVelocity,
   (void)forwards;
   status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                   PARAM_IDX_FUN_REFERENCE,
-                                  drvlocal.lenInPlcPara,
                                   0.0, NULL);
   return status;
 }
@@ -466,7 +463,6 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
     if (acceleration != oldValue) {
       status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                       PARAM_IDX_ACCEL_FLOAT,
-                                      drvlocal.lenInPlcPara,
                                       acceleration, &valueRB);
       if (status) {
         asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
@@ -480,7 +476,6 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
   }
   status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                   PARAM_IDX_FUN_MOVE_VELOCITY,
-                                  drvlocal.lenInPlcPara,
                                   maxVelocity, &veloRB);
   asynPrint(pC_->pasynUserController_, traceMask,
             "%smoveVelocity (%d) veloRB=%f status=%s(%d)\n",
@@ -501,7 +496,6 @@ asynStatus ethercatmcIndexerAxis::setPosition(double value)
   if (drvlocal.paramIfOffset) {
     status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                     PARAM_IDX_FUN_SET_POSITION,
-                                    drvlocal.lenInPlcPara,
                                     value, NULL);
   }
   return status;
@@ -633,9 +627,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       readAuxBitNamesEnums();
       status = asynSuccess;
     } else {
-      status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
-                                              drvlocal.iOffset,
-                                              drvlocal.lenInPlcPara);
+      status = pC_->indexerReadAxisParameters(this, drvlocal.devNum);
     }
     if (!status) {
       drvlocal.dirty.initialPollNeeded = 0;
@@ -1177,7 +1169,6 @@ asynStatus ethercatmcIndexerAxis::setClosedLoop(bool closedLoop)
   double fValue = closedLoop ? 0.0 : 1.0; /* 1.0 means disable */
   return  pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                  PARAM_IDX_OPMODE_AUTO_UINT,
-                                 drvlocal.lenInPlcPara,
                                  fValue, NULL);
 }
 
@@ -1236,7 +1227,6 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     }
     status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                     paramIndex,
-                                    drvlocal.lenInPlcPara,
                                     value, &valueRB);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcHomProc)=%d  status=%s(%d)\n",
@@ -1265,7 +1255,6 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     }
     status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                     paramIndex,
-                                    drvlocal.lenInPlcPara,
                                     value, &valueRB);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcCfgDHLM_En)=%d  status=%s(%d)\n",
@@ -1283,7 +1272,6 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     }
     status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                     paramIndex,
-                                    drvlocal.lenInPlcPara,
                                     value, &valueRB);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d ethercatmcCfgDLLM_En)=%d status=%s(%d)\n",
@@ -1364,7 +1352,6 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
               "%ssetDoubleParam(%d ethercatmcHomPos_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                     paramIndex,
-                                    drvlocal.lenInPlcPara,
                                     value, &valueRB);
     if (status == asynSuccess) {
       int initial = 0;
@@ -1379,7 +1366,6 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
               "%ssetDoubleParam(%d ethercatmcCfgDHLM_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                     paramIndex,
-                                    drvlocal.lenInPlcPara,
                                     value, &valueRB);
     if (status == asynSuccess) {
       int initial = 0;
@@ -1394,7 +1380,6 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
               "%ssetDoubleParam(%d ethercatmcCfgDLLM_)=%g\n", modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(this, drvlocal.paramIfOffset,
                                     paramIndex,
-                                    drvlocal.lenInPlcPara,
                                     value, &valueRB);
     if (status == asynSuccess) {
       int initial = 0;

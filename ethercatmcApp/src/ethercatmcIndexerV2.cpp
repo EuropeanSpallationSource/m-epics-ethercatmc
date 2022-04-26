@@ -317,9 +317,7 @@ ethercatmcController::newIndexerAxisV2(ethercatmcIndexerAxis *pAxis,
 
 asynStatus
 ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
-                                                  unsigned devNum,
-                                                  unsigned iOffsBytes,
-                                                  unsigned lenInPlcPara)
+                                                  unsigned devNum)
 {
   unsigned axisNo = pAxis->axisNo_;
   unsigned infoType15 = 15;
@@ -374,9 +372,9 @@ ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
       if (bitIsSet) {
         pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermWrite;
         if (paramIndexIsIntegerV2(paramIndex)) {
-          pAxis->drvlocal.lenInPlcParaInteger[paramIndex] = lenInPlcPara;
+          pAxis->drvlocal.lenInPlcParaInteger[paramIndex] = 4; /* sizeof(int32) */
         } else {
-          pAxis->drvlocal.lenInPlcParaFloat[paramIndex] = lenInPlcPara;
+          pAxis->drvlocal.lenInPlcParaFloat[paramIndex] = 8; /* sizeof(double) */
         }
       }
     }

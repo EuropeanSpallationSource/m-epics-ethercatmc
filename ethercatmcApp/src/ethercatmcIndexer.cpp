@@ -491,7 +491,6 @@ asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(unsigned indexOffs
 asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis,
                                                     unsigned paramIfOffset,
                                                     unsigned paramIndex,
-                                                    unsigned lenInPlcPara,
                                                     double   *value,
                                                     const char *fileName,
                                                     int lineNo)
@@ -501,18 +500,18 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
   asynStatus status;
   unsigned cmd      = PARAM_IF_CMD_DOREAD + paramIndex;
   unsigned counter = 0;
-
-  if (!paramIfOffset || paramIndex > 0xFF ||
+  unsigned lenInPlcPara;
+  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
+    lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
+  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
+    lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
+  }
+  if (!paramIfOffset || paramIndex > 0xFF || !lenInPlcPara ||
       lenInPlcPara > sizeof(paramIf_from_MCU.paramValueRaw)) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s paramIndex=%u lenInPlcPara=%u paramIfOffset=%u\n",
               modNamEMC, paramIndex, lenInPlcPara, paramIfOffset);
     return asynDisabled;
-  }
-  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
-    lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
-  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
-    lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
   }
   size_t lenInPLCparamIf = sizeof(paramIf_from_MCU.paramCtrl) + lenInPlcPara;
   while (counter < MAX_COUNTER) {
@@ -588,7 +587,6 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
 asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                                    unsigned paramIfOffset,
                                                    unsigned paramIndex,
-                                                   unsigned lenInPlcPara,
                                                    double value,
                                                    double *pValueRB)
 {
@@ -600,7 +598,12 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   unsigned cmd      = PARAM_IF_CMD_DOWRITE + paramIndex;
   unsigned counter = 0;
   int has_written = 0;
-
+  unsigned lenInPlcPara = 0;
+  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
+    lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
+  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
+    lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
+  }
   if (!pAxis || !paramIfOffset || (paramIndex > 0xFF) ||
       lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
     status = asynDisabled;
@@ -616,11 +619,6 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
               (int)pAxis->drvlocal.PILSparamPerm[paramIndex],
               ethercatmcstrStatus(status), (int)status);
     return status;
-  }
-  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
-    lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
-  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
-    lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
   }
   size_t lenInPLCparamIf = sizeof(paramIf_to_MCU.paramCtrl) + lenInPlcPara;
 
@@ -925,16 +923,16 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
 
 asynStatus
 ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
-                                                unsigned devNum,
-                                                unsigned iOffsBytes,
-                                                unsigned lenInPlcPara)
+                                                unsigned devNum)
 {
   unsigned axisNo = pAxis->axisNo_;
   asynStatus status = asynError;
   /* Find out which parameters that exist for this device
      The result is stored in pAxis->drvlocal.PILSparamPerm[] */
+
+  unsigned paramIfOffset = pAxis->drvlocal.paramIfOffset;
   if (ctrlLocal.supported.bPILSv2) {
-    status = indexerReadAxisParametersV2(pAxis, devNum, iOffsBytes, lenInPlcPara);
+    status = indexerReadAxisParametersV2(pAxis, devNum);
   } else if (ctrlLocal.supported.bPILSv3) {
     status = asynSuccess; /* see indexerV3readParameterDescriptors() */
   }
@@ -942,21 +940,6 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
   /* loop through all parameters.
      PILS v2 and v3 use the same param interface logic */
   unsigned paramIndex;
-  unsigned paramIfOffset;
-  switch (lenInPlcPara) {
-  case 4:
-    paramIfOffset = iOffsBytes + 10;
-    break;
-  case 8:
-    paramIfOffset = iOffsBytes + 22;
-    break;
-  default:
-    asynPrint(pasynUserController_,
-              ASYN_TRACE_INFO,
-              "%sindexerReadAxisParameters(%d) asynError: lenInPlcPara=%u \n",
-              modNamEMC, axisNo, lenInPlcPara);
-    return asynError;
-  }
 
   for (paramIndex = 0; paramIndex < (sizeof(pAxis->drvlocal.PILSparamPerm) /
                                      sizeof(pAxis->drvlocal.PILSparamPerm[0]));
@@ -974,16 +957,15 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
           status = indexerParamRead(pAxis,
                                     paramIfOffset,
                                     paramIndex,
-                                    lenInPlcPara,
                                     &fValue);
           if (status) {
             asynPrint(pasynUserController_,
                       ASYN_TRACE_INFO,
                       "%sindexerReadAxisParameters(%d) paramIdx=%s (%u)"
-                      " lenInPlcPara=%u status=%s (%d)\n",
+                      " status=%s (%d)\n",
                       modNamEMC, axisNo,
                       plcParamIndexTxtFromParamIndex(paramIndex),
-                      paramIndex, lenInPlcPara,
+                      paramIndex,
                       ethercatmcstrStatus(status), (int)status);
             return status;
           }

@@ -422,13 +422,9 @@ public:
                               unsigned paramIndex,
                               double fValue);
   asynStatus indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
-                                       unsigned devNum,
-                                       unsigned iOffset,
-                                       unsigned lenInPlcPara);
+                                       unsigned devNum);
   asynStatus indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
-                                         unsigned devNum,
-                                         unsigned iOffset,
-                                         unsigned lenInPlcPara);
+                                         unsigned devNum);
   asynStatus poll(void);
   asynStatus newIndexerAxisV2(ethercatmcIndexerAxis *pAxis,
                               unsigned devNum,
@@ -468,15 +464,13 @@ public:
   asynStatus indexerParamReadFL(ethercatmcIndexerAxis *pAxis,
                                 unsigned paramIfOffset,
                                 unsigned paramIndex,
-                                unsigned lenInPlcPara,
                                 double *value,
                                 const char *fileName,
                                 int lineNo);
-#define indexerParamRead(a,b,c,d,e) indexerParamReadFL(a,b,c,d,e,__FILE__, __LINE__)
+#define indexerParamRead(a,b,c,d) indexerParamReadFL(a,b,c,d,__FILE__, __LINE__)
   asynStatus indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                unsigned paramIfOffset,
                                unsigned paramIndex,
-                               unsigned lenInPlcPara,
                                double value,
                                double *pValueRB);
 
