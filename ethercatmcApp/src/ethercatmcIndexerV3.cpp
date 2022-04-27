@@ -326,6 +326,8 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
         unsigned prev_descriptor_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.prev_descriptor_id);
         parameter_index = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_index);
         parameter_type = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_type);
+        unsigned enumparam_read_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_read_id);
+        unsigned enumparam_write_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_write_id);
         char parameter_type_ascii[32];
         parameter_type_to_ASCII_V3(parameter_type_ascii,
                                    sizeof(parameter_type_ascii),
@@ -337,11 +339,65 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
                   NETTOUINT(tmp1Descriptor.enumparamDescriptor.descriptor_type_0x620e),
                   NETTOUINT(tmp1Descriptor.enumparamDescriptor.prev_descriptor_id),
                   NETTOUINT(tmp1Descriptor.enumparamDescriptor.string_description_id),
-                  NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_read_id),
-                  NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_write_id),
+                  enumparam_read_id,
+                  enumparam_write_id,
                   parameter_type, parameter_type_ascii,
                   tmp1Descriptor.enumparamDescriptor.enumparam_name);
         descID = prev_descriptor_id;
+
+        if (enumparam_read_id && (enumparam_read_id == enumparam_write_id)) {
+          allDescriptors_type tmp2Descriptor;
+          #define MAX_VALUES_FOR_ENUM 16
+          /* asyn/asyn/devEpics/devAsynInt32.c */
+          #define MAX_ENUM_STRING_SIZE 26
+          struct {
+            char enumChars[MAX_VALUES_FOR_ENUM][MAX_ENUM_STRING_SIZE];
+            char *enumStrings[MAX_VALUES_FOR_ENUM];
+            int enumValues[MAX_VALUES_FOR_ENUM];
+            int enumSeverities[MAX_VALUES_FOR_ENUM];
+          } auxBitEnumsForAsyn;
+          unsigned auxBitIdx = 0;
+          unsigned enumDescID = enumparam_read_id;
+          memset (&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
+          size_t length = sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
+          while (!status && enumDescID && (auxBitIdx < MAX_VALUES_FOR_ENUM)) {
+            status = readMailboxV3(enumDescID,
+                                   &tmp2Descriptor, sizeof(tmp2Descriptor));
+            if (status) return status;
+            unsigned enum_value = NETTOUINT(tmp2Descriptor.enumDescriptor.enum_value);
+            enumDescID = NETTOUINT(tmp2Descriptor.enumDescriptor.prev_descriptor_id);
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%s%s descID=0x%04X type=0x%X enumDescriptor prev=0x%04X enum_value=%u utf8_string=\"%s\"\n",
+                      modNamEMC, c_function_name, descID,
+                      NETTOUINT(tmp2Descriptor.enumDescriptor.descriptor_type_0x4006),
+                      NETTOUINT(tmp2Descriptor.enumDescriptor.prev_descriptor_id),
+                      enum_value,
+                      tmp2Descriptor.enumDescriptor.enum_name);
+
+            strncpy(auxBitEnumsForAsyn.enumChars[auxBitIdx],
+                    tmp2Descriptor.enumDescriptor.enum_name,
+                    length);
+            auxBitEnumsForAsyn.enumStrings[auxBitIdx] = &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
+            auxBitEnumsForAsyn.enumValues[auxBitIdx] = enum_value;
+            auxBitIdx++;
+          }
+          if (parameter_index == PARAM_IDX_HOMPROC_FLOAT) {
+            for (unsigned i = 0; i < auxBitIdx; i++) {
+              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                        "%s%s(%i) [%u] enumString=\"%s\" enumValue=%i\n",
+                        modNamEMC, c_function_name, pAxis->axisNo_, i,
+                        auxBitEnumsForAsyn.enumStrings[i],
+                        auxBitEnumsForAsyn.enumValues[i]);
+
+            }
+            doCallbacksEnum(auxBitEnumsForAsyn.enumStrings,
+                            auxBitEnumsForAsyn.enumValues,
+                            auxBitEnumsForAsyn.enumSeverities,
+                            auxBitIdx,
+                            ethercatmcHomProc_RB_,  pAxis->axisNo_);
+            pAxis->callParamCallbacks();
+          }
+        }
       }
       break;
     case 0x680E:
