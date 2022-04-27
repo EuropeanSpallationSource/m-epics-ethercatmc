@@ -241,9 +241,9 @@ extern unsigned parameter_has_lenInPlcParaV3(unsigned parameter_type)
 {
   switch (parameter_type & 0x0C00) {
   case 0x0000: return 0;
-  case 0x0400: return 16;
-  case 0x0800: return 32;
-  case 0x0C00: return 64;
+  case 0x0400: return 2; // 16 Bit
+  case 0x0800: return 4; // 32 Bit
+  case 0x0C00: return 8; // 64 Bit
   }
   return 0;
 }
