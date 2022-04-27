@@ -568,7 +568,16 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
                                      (unsigned)sizeof(paramIf_from_MCU.paramCtrl));
         if (status) return status;
       } else {
-        return asynDisabled;
+        int axisNo = pAxis->axisNo_;
+        status = asynDisabled;
+        asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
+                  "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
+                  "cmdSubParamIndexRB=%s (0x%04X) status=%s (%d)\n",
+                  fileName, lineNo, "indexerParamRead", axisNo, paramIfOffset,
+                  plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
+                  paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB,
+                  ethercatmcstrStatus(status), (int)status);
+        return status;
       }
       break;
     case PARAM_IF_CMD_INVALID:
