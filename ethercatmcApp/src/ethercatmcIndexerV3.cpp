@@ -287,19 +287,19 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
   asynStatus status = asynSuccess;
 
   while (!status && descID) {
-    allDescriptors_type tmpDescriptor;
+    allDescriptors_type tmp1Descriptor;
     status = readMailboxV3(descID,
-                           &tmpDescriptor, sizeof(tmpDescriptor));
-    unsigned descriptor_type_XXXX = NETTOUINT(tmpDescriptor.genericDescriptor.descriptor_type);
+                           &tmp1Descriptor, sizeof(tmp1Descriptor));
+    unsigned descriptor_type_XXXX = NETTOUINT(tmp1Descriptor.genericDescriptor.descriptor_type);
     unsigned parameter_index = 0;
     unsigned parameter_type = 0;
-    NETTOUINT(tmpDescriptor.deviceDescriptor.prev_descriptor_id);
+    NETTOUINT(tmp1Descriptor.deviceDescriptor.prev_descriptor_id);
     switch (descriptor_type_XXXX) {
     case 0x6114:
       {
-        unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.parameterDescriptor.prev_descriptor_id);
-        parameter_index = NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_index);
-        parameter_type = NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_type);
+        unsigned prev_descriptor_id = NETTOUINT(tmp1Descriptor.parameterDescriptor.prev_descriptor_id);
+        parameter_index = NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_index);
+        parameter_type = NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_type);
         char parameter_type_ascii[32];
         parameter_type_to_ASCII_V3(parameter_type_ascii,
                                    sizeof(parameter_type_ascii),
@@ -309,58 +309,59 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
                   "%s%s descID=0x%04X parameter_index=%u type=0x%X parameterDescriptor"
                   " prev=0x%04X string=0x%04X param_type=0x%04X (%s) unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID, parameter_index,
-                  NETTOUINT(tmpDescriptor.parameterDescriptor.descriptor_type_0x6114),
+                  NETTOUINT(tmp1Descriptor.parameterDescriptor.descriptor_type_0x6114),
                   prev_descriptor_id,
-                  NETTOUINT(tmpDescriptor.parameterDescriptor.string_description_id),
+                  NETTOUINT(tmp1Descriptor.parameterDescriptor.string_description_id),
                   parameter_type, parameter_type_ascii,
-                  NETTOUINT(tmpDescriptor.parameterDescriptor.unit),
-                  NETTODOUBLE(tmpDescriptor.parameterDescriptor.min_value),
-                  NETTODOUBLE(tmpDescriptor.parameterDescriptor.max_value),
-                  tmpDescriptor.parameterDescriptor.parameter_name);
+                  NETTOUINT(tmp1Descriptor.parameterDescriptor.unit),
+                  NETTODOUBLE(tmp1Descriptor.parameterDescriptor.min_value),
+                  NETTODOUBLE(tmp1Descriptor.parameterDescriptor.max_value),
+                  tmp1Descriptor.parameterDescriptor.parameter_name);
 
         descID = prev_descriptor_id;
       }
       break;
     case 0x620E:
       {
-        unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.enumparamDescriptor.prev_descriptor_id);
-        parameter_index = NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_index);
-        parameter_type = NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_type);
+        unsigned prev_descriptor_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.prev_descriptor_id);
+        parameter_index = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_index);
+        parameter_type = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_type);
         char parameter_type_ascii[32];
         parameter_type_to_ASCII_V3(parameter_type_ascii,
                                    sizeof(parameter_type_ascii),
                                    parameter_type);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X parameter_index=%u type=0x%X enumparamDescriptor"
-                  " prev=0x%04X string=0x%04X  read_id=0x%x write_id=0x%x param_type=0x%X (%s) utf8_string=\"%s\"\n",
+                  " prev=0x%04X string=0x%04X  read_id=0x%04X write_id=0x04%x param_type=0x%X (%s) utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID, parameter_index,
-                  NETTOUINT(tmpDescriptor.enumparamDescriptor.descriptor_type_0x620e),
-                  NETTOUINT(tmpDescriptor.enumparamDescriptor.prev_descriptor_id),
-                  NETTOUINT(tmpDescriptor.enumparamDescriptor.string_description_id),
-                  NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_read_id),
-                  NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_write_id),
+                  NETTOUINT(tmp1Descriptor.enumparamDescriptor.descriptor_type_0x620e),
+                  NETTOUINT(tmp1Descriptor.enumparamDescriptor.prev_descriptor_id),
+                  NETTOUINT(tmp1Descriptor.enumparamDescriptor.string_description_id),
+                  NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_read_id),
+                  NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_write_id),
                   parameter_type, parameter_type_ascii,
-                  tmpDescriptor.enumparamDescriptor.enumparam_name);
+                  tmp1Descriptor.enumparamDescriptor.enumparam_name);
         descID = prev_descriptor_id;
       }
       break;
     case 0x680E:
       {
-        unsigned prev_descriptor_id = NETTOUINT(tmpDescriptor.functionDescriptor.prev_descriptor_id);
-        parameter_index = NETTOUINT(tmpDescriptor.functionDescriptor.function_index);
+        unsigned prev_descriptor_id = NETTOUINT(tmp1Descriptor.functionDescriptor.prev_descriptor_id);
+        unsigned function_argument_id = NETTOUINT(tmp1Descriptor.functionDescriptor.function_argument_id);
+        unsigned function_result_id = NETTOUINT(tmp1Descriptor.functionDescriptor.function_result_id);
+        parameter_index = NETTOUINT(tmp1Descriptor.functionDescriptor.function_index);
         parameter_type = 0x1000; /* A function is writable */
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X parameter_index=%u type=0x%X functionDescriptor"
                   " prev=0x%04X string=0x%04X  arg_id=0x%x res_id=0x%x fun_idx=%d flags=%x utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID, parameter_index,
-                  NETTOUINT(tmpDescriptor.functionDescriptor.descriptor_type_0x680e),
+                  NETTOUINT(tmp1Descriptor.functionDescriptor.descriptor_type_0x680e),
                   prev_descriptor_id,
-                  NETTOUINT(tmpDescriptor.functionDescriptor.string_description_id),
-                  NETTOUINT(tmpDescriptor.functionDescriptor.function_argument_id),
-                  NETTOUINT(tmpDescriptor.functionDescriptor.function_result_id),
-                  NETTOUINT(tmpDescriptor.functionDescriptor.function_index),
-                  NETTOUINT(tmpDescriptor.functionDescriptor.function_flags),
-                  tmpDescriptor.functionDescriptor.function_name);
+                  NETTOUINT(tmp1Descriptor.functionDescriptor.string_description_id),
+                  function_argument_id, function_result_id,
+                  NETTOUINT(tmp1Descriptor.functionDescriptor.function_index),
+                  NETTOUINT(tmp1Descriptor.functionDescriptor.function_flags),
+                  tmp1Descriptor.functionDescriptor.function_name);
         descID = prev_descriptor_id;
       }
       break;
@@ -415,35 +416,35 @@ ethercatmcController::indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
   asynStatus status = asynSuccess;
 
   while (!status && descID) {
-    allDescriptors_type tmpDescriptor;
+    allDescriptors_type tmp1Descriptor;
     unsigned prev_descriptor_id;
     status = readMailboxV3(descID,
-                           &tmpDescriptor, sizeof(tmpDescriptor));
-    unsigned descriptor_type_XXXX = NETTOUINT(tmpDescriptor.genericDescriptor.descriptor_type);
-    prev_descriptor_id = NETTOUINT(tmpDescriptor.deviceDescriptor.prev_descriptor_id);
+                           &tmp1Descriptor, sizeof(tmp1Descriptor));
+    unsigned descriptor_type_XXXX = NETTOUINT(tmp1Descriptor.genericDescriptor.descriptor_type);
+    prev_descriptor_id = NETTOUINT(tmp1Descriptor.deviceDescriptor.prev_descriptor_id);
     switch (descriptor_type_XXXX) {
     case 0x5008:
       {
-        prev_descriptor_id = NETTOUINT(tmpDescriptor.bitfieldDescriptor.prev_descriptor_id);
+        prev_descriptor_id = NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X type=0x%X bitfieldDescriptor prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID,
-                  NETTOUINT(tmpDescriptor.bitfieldDescriptor.descriptor_type_0x5008),
-                  NETTOUINT(tmpDescriptor.bitfieldDescriptor.prev_descriptor_id),
-                  NETTOUINT(tmpDescriptor.bitfieldDescriptor.last_descriptor_id),
-                  NETTOUINT(tmpDescriptor.bitfieldDescriptor.lowest_bit),
-                  NETTOUINT(tmpDescriptor.bitfieldDescriptor.bit_width),
-                  tmpDescriptor.bitfieldDescriptor.bitfield_name);
+                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.descriptor_type_0x5008),
+                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id),
+                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.last_descriptor_id),
+                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.lowest_bit),
+                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.bit_width),
+                  tmp1Descriptor.bitfieldDescriptor.bitfield_name);
         descID = prev_descriptor_id;
         // break the loop
-        //descID = 0; // NETTOUINT(tmpDescriptor.bitfieldDescriptor.last_descriptor_id);
+        //descID = 0; // NETTOUINT(tmp1Descriptor.bitfieldDescriptor.last_descriptor_id);
       }
       break;
     case 0x5105:
       {
-        prev_descriptor_id = NETTOUINT(tmpDescriptor.flagDescriptor.prev_descriptor_id);
-        unsigned bit_number = NETTOUINT(tmpDescriptor.flagDescriptor.bit_number);
-        const char *flag_name = &tmpDescriptor.flagDescriptor.flag_name[0];
+        prev_descriptor_id = NETTOUINT(tmp1Descriptor.flagDescriptor.prev_descriptor_id);
+        unsigned bit_number = NETTOUINT(tmp1Descriptor.flagDescriptor.bit_number);
+        const char *flag_name = &tmp1Descriptor.flagDescriptor.flag_name[0];
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X type=0x%X flagDescriptor prev=0x%04X bit_number=%u utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID,
@@ -556,48 +557,48 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
   unsigned firstDeviceStartOffset = (unsigned)-1; /* Will be decreased while we go */
   unsigned lastDeviceEndOffset = 0;  /* will be increased while we go */
   asynStatus status;
-  allDescriptors_type tmpDescriptor;
+  allDescriptors_type tmp1Descriptor;
   for (unsigned descID = 0; descID < 100; descID++) {
-    status = readMailboxV3(descID, &tmpDescriptor, sizeof(tmpDescriptor));
+    status = readMailboxV3(descID, &tmp1Descriptor, sizeof(tmp1Descriptor));
     if (status) goto endPollIndexer3;
-    unsigned descriptor_type_XXXX = NETTOUINT(tmpDescriptor.genericDescriptor.descriptor_type);
-    unsigned descriptor_prev_XXXX = 0x7FFF & NETTOUINT(tmpDescriptor.genericDescriptor.descriptor_prev);
+    unsigned descriptor_type_XXXX = NETTOUINT(tmp1Descriptor.genericDescriptor.descriptor_type);
+    unsigned descriptor_prev_XXXX = 0x7FFF & NETTOUINT(tmp1Descriptor.genericDescriptor.descriptor_prev);
     if (status) goto endPollIndexer3;
     switch (descriptor_type_XXXX) {
     case 0x1010:
-      numOfDevicesInPLC = NETTOUINT(tmpDescriptor.plcDescriptor.number_of_devices);
+      numOfDevicesInPLC = NETTOUINT(tmp1Descriptor.plcDescriptor.number_of_devices);
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s descID=0x%04X type=0x%04X  plcDescriptor last=0x%04X plcdesc=0x%04X plcvers=0x%04X plcauthor=0x%04X slot_size=%u num_of_devices=%u flags=0x%x name=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.plcDescriptor.descriptor_type_0x1010),
-                NETTOUINT(tmpDescriptor.plcDescriptor.last_descriptor_id),
-                NETTOUINT(tmpDescriptor.plcDescriptor.plc_description_id),
-                NETTOUINT(tmpDescriptor.plcDescriptor.plc_version_descriptor_id),
-                NETTOUINT(tmpDescriptor.plcDescriptor.plc_author_descriptor_id),
-                NETTOUINT(tmpDescriptor.plcDescriptor.descriptor_slot_size),
+                NETTOUINT(tmp1Descriptor.plcDescriptor.descriptor_type_0x1010),
+                NETTOUINT(tmp1Descriptor.plcDescriptor.last_descriptor_id),
+                NETTOUINT(tmp1Descriptor.plcDescriptor.plc_description_id),
+                NETTOUINT(tmp1Descriptor.plcDescriptor.plc_version_descriptor_id),
+                NETTOUINT(tmp1Descriptor.plcDescriptor.plc_author_descriptor_id),
+                NETTOUINT(tmp1Descriptor.plcDescriptor.descriptor_slot_size),
                 numOfDevicesInPLC,
-                NETTOUINT(tmpDescriptor.plcDescriptor.plc_flags),
-                tmpDescriptor.plcDescriptor.name_of_plc);
+                NETTOUINT(tmp1Descriptor.plcDescriptor.plc_flags),
+                tmp1Descriptor.plcDescriptor.name_of_plc);
 #ifdef motorMessageTextString
-      (void)setStringParam(motorMessageText_, tmpDescriptor.plcDescriptor.name_of_plc);
+      (void)setStringParam(motorMessageText_, tmp1Descriptor.plcDescriptor.name_of_plc);
 #endif
       break;
 
     case 0x2014:
       {
-        unsigned string_description_id = NETTOUINT(tmpDescriptor.deviceDescriptor.string_description_id);
-        unsigned target_param_descriptor_id = NETTOUINT(tmpDescriptor.deviceDescriptor.target_param_descriptor_id);
-        unsigned auxbits_bitfield_flag_descriptor_id = NETTOUINT(tmpDescriptor.deviceDescriptor.auxbits_bitfield_flag_descriptor_id);
-        unsigned parameters_descriptor_id = NETTOUINT(tmpDescriptor.deviceDescriptor.parameters_descriptor_id);
-        unsigned enum_errorId_descriptor_id = NETTOUINT(tmpDescriptor.deviceDescriptor.enum_errorId_descriptor_id);
-        unsigned type_code = NETTOUINT(tmpDescriptor.deviceDescriptor.type_code);
-        unsigned device_offset = NETTOUINT(tmpDescriptor.deviceDescriptor.device_offset);
-        unsigned device_flags = NETTOUINT(tmpDescriptor.deviceDescriptor.device_flags);
+        unsigned string_description_id = NETTOUINT(tmp1Descriptor.deviceDescriptor.string_description_id);
+        unsigned target_param_descriptor_id = NETTOUINT(tmp1Descriptor.deviceDescriptor.target_param_descriptor_id);
+        unsigned auxbits_bitfield_flag_descriptor_id = NETTOUINT(tmp1Descriptor.deviceDescriptor.auxbits_bitfield_flag_descriptor_id);
+        unsigned parameters_descriptor_id = NETTOUINT(tmp1Descriptor.deviceDescriptor.parameters_descriptor_id);
+        unsigned enum_errorId_descriptor_id = NETTOUINT(tmp1Descriptor.deviceDescriptor.enum_errorId_descriptor_id);
+        unsigned type_code = NETTOUINT(tmp1Descriptor.deviceDescriptor.type_code);
+        unsigned device_offset = NETTOUINT(tmp1Descriptor.deviceDescriptor.device_offset);
+        unsigned device_flags = NETTOUINT(tmp1Descriptor.deviceDescriptor.device_flags);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X type=0x%X deviceDescriptor prev=0x%04X string=0x%04X target=0x%04X auxbits=0x%04X paramters=0x%04X enum_errorID=0x%04X type_code=0x%04X offset=%u flags=0x%x name=\"%s\"\n",
                   modNamEMC, c_function_name, descID,
-                  NETTOUINT(tmpDescriptor.deviceDescriptor.descriptor_type_0x2014),
-                  NETTOUINT(tmpDescriptor.deviceDescriptor.prev_descriptor_id),
+                  NETTOUINT(tmp1Descriptor.deviceDescriptor.descriptor_type_0x2014),
+                  NETTOUINT(tmp1Descriptor.deviceDescriptor.prev_descriptor_id),
                   string_description_id,
                   target_param_descriptor_id,
                   auxbits_bitfield_flag_descriptor_id,
@@ -606,7 +607,7 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
                   type_code,
                   device_offset,
                   device_flags,
-                  tmpDescriptor.deviceDescriptor.device_name);
+                  tmp1Descriptor.deviceDescriptor.device_name);
         switch (type_code) {
         case 0x1E04:
         case 0x5008:
@@ -629,7 +630,7 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
                                     type_code,
                                     device_offset,
                                     device_flags,
-                                    tmpDescriptor.deviceDescriptor.device_name);
+                                    tmp1Descriptor.deviceDescriptor.device_name);
         if (status) goto endPollIndexer3;
         unsigned iSizeBytes = (type_code & 0XFF) * 2;
         unsigned endOffset = device_offset + iSizeBytes;
@@ -647,89 +648,89 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s descID=0x%04X type=0x%X stringDescriptor prev=0x%04X utf8_string=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.stringDescriptor.descriptor_type_0x3004),
-                NETTOUINT(tmpDescriptor.stringDescriptor.prev_descriptor_id),
-                tmpDescriptor.stringDescriptor.utf8_string);
+                NETTOUINT(tmp1Descriptor.stringDescriptor.descriptor_type_0x3004),
+                NETTOUINT(tmp1Descriptor.stringDescriptor.prev_descriptor_id),
+                tmp1Descriptor.stringDescriptor.utf8_string);
       break;
 
     case 0x4006:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s descID=0x%04X type=0x%X enumDescriptor prev=0x%04X enum_value=%u utf8_string=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.enumDescriptor.descriptor_type_0x4006),
-                NETTOUINT(tmpDescriptor.enumDescriptor.prev_descriptor_id),
-                NETTOUINT(tmpDescriptor.enumDescriptor.enum_value),
-                tmpDescriptor.enumDescriptor.enum_name);
+                NETTOUINT(tmp1Descriptor.enumDescriptor.descriptor_type_0x4006),
+                NETTOUINT(tmp1Descriptor.enumDescriptor.prev_descriptor_id),
+                NETTOUINT(tmp1Descriptor.enumDescriptor.enum_value),
+                tmp1Descriptor.enumDescriptor.enum_name);
       break;
     case 0x5008:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s descID=0x%04X type=0x%X bitfieldDescriptor prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.bitfieldDescriptor.descriptor_type_0x5008),
-                NETTOUINT(tmpDescriptor.bitfieldDescriptor.prev_descriptor_id),
-                NETTOUINT(tmpDescriptor.bitfieldDescriptor.last_descriptor_id),
-                NETTOUINT(tmpDescriptor.bitfieldDescriptor.lowest_bit),
-                NETTOUINT(tmpDescriptor.bitfieldDescriptor.bit_width),
-                tmpDescriptor.bitfieldDescriptor.bitfield_name);
+                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.descriptor_type_0x5008),
+                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id),
+                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.last_descriptor_id),
+                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.lowest_bit),
+                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.bit_width),
+                tmp1Descriptor.bitfieldDescriptor.bitfield_name);
       break;
     case 0x5105:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s descID=0x%04X type=0x%X flagDescriptor prev=0x%04X bit_number=%u utf8_string=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.flagDescriptor.descriptor_type_0x5105),
-                NETTOUINT(tmpDescriptor.flagDescriptor.prev_descriptor_id),
-                NETTOUINT(tmpDescriptor.flagDescriptor.bit_number),
-                tmpDescriptor.flagDescriptor.flag_name);
+                NETTOUINT(tmp1Descriptor.flagDescriptor.descriptor_type_0x5105),
+                NETTOUINT(tmp1Descriptor.flagDescriptor.prev_descriptor_id),
+                NETTOUINT(tmp1Descriptor.flagDescriptor.bit_number),
+                tmp1Descriptor.flagDescriptor.flag_name);
       break;
     case 0x6114:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s descID=0x%04X type=0x%X parameterDescriptor prev=0x%04X string=0x%04X index=%u type=0x%04X unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.parameterDescriptor.descriptor_type_0x6114),
-                NETTOUINT(tmpDescriptor.parameterDescriptor.prev_descriptor_id),
-                NETTOUINT(tmpDescriptor.parameterDescriptor.string_description_id),
-                NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_index),
-                NETTOUINT(tmpDescriptor.parameterDescriptor.parameter_type),
-                NETTOUINT(tmpDescriptor.parameterDescriptor.unit),
-                NETTODOUBLE(tmpDescriptor.parameterDescriptor.min_value),
-                NETTODOUBLE(tmpDescriptor.parameterDescriptor.max_value),
-                tmpDescriptor.parameterDescriptor.parameter_name);
+                NETTOUINT(tmp1Descriptor.parameterDescriptor.descriptor_type_0x6114),
+                NETTOUINT(tmp1Descriptor.parameterDescriptor.prev_descriptor_id),
+                NETTOUINT(tmp1Descriptor.parameterDescriptor.string_description_id),
+                NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_index),
+                NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_type),
+                NETTOUINT(tmp1Descriptor.parameterDescriptor.unit),
+                NETTODOUBLE(tmp1Descriptor.parameterDescriptor.min_value),
+                NETTODOUBLE(tmp1Descriptor.parameterDescriptor.max_value),
+                tmp1Descriptor.parameterDescriptor.parameter_name);
       break;
     case 0x620e:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s descID=0x%04X type=0x%X enumparamDescriptor prev=0x%04X string=0x%04X read=0x%04X write=0x%04X index=0x%04X type=0x%04X utf8_string=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.enumparamDescriptor.descriptor_type_0x620e),
-                NETTOUINT(tmpDescriptor.enumparamDescriptor.prev_descriptor_id),
-                NETTOUINT(tmpDescriptor.enumparamDescriptor.string_description_id),
-                NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_read_id),
-                NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_write_id),
-                NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_index),
-                NETTOUINT(tmpDescriptor.enumparamDescriptor.enumparam_type),
-                tmpDescriptor.enumparamDescriptor.enumparam_name);
+                NETTOUINT(tmp1Descriptor.enumparamDescriptor.descriptor_type_0x620e),
+                NETTOUINT(tmp1Descriptor.enumparamDescriptor.prev_descriptor_id),
+                NETTOUINT(tmp1Descriptor.enumparamDescriptor.string_description_id),
+                NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_read_id),
+                NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_write_id),
+                NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_index),
+                NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_type),
+                tmp1Descriptor.enumparamDescriptor.enumparam_name);
       break;
     case 0x680c:
     case 0x680e:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s functionDescriptor descID=0x%04X type=0x%X prev=0x%04X string=0x%04X argument=0x%04X result=0x%04X index=0x%04X flags=0x%x utf8_string=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.functionDescriptor.descriptor_type_0x680e),
-                NETTOUINT(tmpDescriptor.functionDescriptor.prev_descriptor_id),
-                NETTOUINT(tmpDescriptor.functionDescriptor.string_description_id),
-                NETTOUINT(tmpDescriptor.functionDescriptor.function_argument_id),
-                NETTOUINT(tmpDescriptor.functionDescriptor.function_result_id),
-                NETTOUINT(tmpDescriptor.functionDescriptor.function_index),
-                NETTOUINT(tmpDescriptor.functionDescriptor.function_flags),
-                tmpDescriptor.functionDescriptor.function_name);
+                NETTOUINT(tmp1Descriptor.functionDescriptor.descriptor_type_0x680e),
+                NETTOUINT(tmp1Descriptor.functionDescriptor.prev_descriptor_id),
+                NETTOUINT(tmp1Descriptor.functionDescriptor.string_description_id),
+                NETTOUINT(tmp1Descriptor.functionDescriptor.function_argument_id),
+                NETTOUINT(tmp1Descriptor.functionDescriptor.function_result_id),
+                NETTOUINT(tmp1Descriptor.functionDescriptor.function_index),
+                NETTOUINT(tmp1Descriptor.functionDescriptor.function_flags),
+                tmp1Descriptor.functionDescriptor.function_name);
       break;
     case 0x7FFF:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s descID=0x%04X type=0x%X debugDescriptor cycleCounter=0x%04X lengthOfDebugDescriptor=%u name=\"%s\"\n",
                 modNamEMC, c_function_name, descID,
-                NETTOUINT(tmpDescriptor.debugDescriptor.descriptor_type_0xFFFF),
-                NETTOUINT(tmpDescriptor.debugDescriptor.cycleCounter),
-                NETTOUINT(tmpDescriptor.debugDescriptor.lengthOfDebugDescriptor),
-                tmpDescriptor.debugDescriptor.message);
+                NETTOUINT(tmp1Descriptor.debugDescriptor.descriptor_type_0xFFFF),
+                NETTOUINT(tmp1Descriptor.debugDescriptor.cycleCounter),
+                NETTOUINT(tmp1Descriptor.debugDescriptor.lengthOfDebugDescriptor),
+                tmp1Descriptor.debugDescriptor.message);
       break;
     default:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
