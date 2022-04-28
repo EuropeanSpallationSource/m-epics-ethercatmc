@@ -399,6 +399,12 @@ public:
   asynStatus readMailboxV3FL(unsigned mbxNum, void *bufptr, size_t buflen,
                              const char *fileName, int lineNo);
 #define readMailboxV3(a,b,c) readMailboxV3FL(a,b,c, __FILE__, __LINE__)
+
+asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
+                                       unsigned parameter_index,
+                                       unsigned enumparam_read_id,
+                                       unsigned defaultLenInPlcPara);
+
   asynStatus indexerV3readParameterDescriptors(ethercatmcIndexerAxis *pAxis,
                                                unsigned descID,
                                                unsigned defaultLenInPlcPara);

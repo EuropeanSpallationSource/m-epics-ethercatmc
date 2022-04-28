@@ -621,8 +621,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       readAuxBitNamesEnums();
       status = asynSuccess;
     } else {
-      status = pC_->indexerReadAxisParameters(this, drvlocal.devNum);
-    }
+        status = pC_->indexerReadAxisParameters(this, drvlocal.devNum);
+      }
     if (!status) {
       drvlocal.dirty.initialPollNeeded = 0;
       setIntegerParam(pC_->motorStatusCommsError_, 0);
@@ -1075,6 +1075,28 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     if (!drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
       /* The list is 0 terminated */
       drvlocal.pollNowIdx = 0;
+      /* Take the chance to read the enums
+         In theory, this can be done earlier - but
+         the record may not have registered the callback yet
+      */
+      unsigned paramIndex;
+      for (paramIndex = 0; paramIndex < (sizeof(drvlocal.PILSparamPerm) /
+                                         sizeof(drvlocal.PILSparamPerm[0]));
+           paramIndex++) {
+        if (drvlocal.enumparam_read_id[paramIndex]) {
+          unsigned enumparam_read_id = drvlocal.enumparam_read_id[paramIndex];
+          if (!status) {
+            status = pC_->indexerV3readParameterEnums(this,
+                                                      paramIndex,
+                                                      enumparam_read_id,
+                                                      drvlocal.lenInPlcPara);
+          }
+          if (!status) {
+            /* Stop reading */
+            drvlocal.enumparam_read_id[paramIndex] = 0;
+          }
+        }
+      }
     }
     if (drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
       uint16_t paramIndex = drvlocal.pollNowParams[drvlocal.pollNowIdx];

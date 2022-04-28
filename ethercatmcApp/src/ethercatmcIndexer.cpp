@@ -954,6 +954,13 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
   for (paramIndex = 0; paramIndex < (sizeof(pAxis->drvlocal.PILSparamPerm) /
                                      sizeof(pAxis->drvlocal.PILSparamPerm[0]));
        paramIndex++) {
+
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+              "%sindexerReadAxisParameters(%d) paramIdx=%s (%u) perm=%d\n",
+              modNamEMC, axisNo,
+              plcParamIndexTxtFromParamIndex(paramIndex),
+              paramIndex,
+              (int)pAxis->drvlocal.PILSparamPerm[paramIndex]);
     if (pAxis->drvlocal.PILSparamPerm[paramIndex] != PILSparamPermNone) {
       // parameter is read or write
       double fValue = 0.0;
@@ -963,7 +970,19 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
         /* Some parameters are functions: Don't read them.
            tell driver that the function exist
            But read 142, which becomes JVEL */
-        if (!paramIndexIsReadLaterInBackground(paramIndex)) {
+        if (pAxis->drvlocal.enumparam_read_id[paramIndex]) {
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                    "%sparameters(%d) paramIdx=%s (%u) has enums\n",
+                    modNamEMC, axisNo,
+                    plcParamIndexTxtFromParamIndex(paramIndex),
+                    paramIndex);
+        } else if (paramIndexIsReadLaterInBackground(paramIndex)) {
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                    "%sparameters(%d) paramIdx=%s (%u) only polled in background\n",
+                    modNamEMC, axisNo,
+                    plcParamIndexTxtFromParamIndex(paramIndex),
+                    paramIndex);
+        } else {
           status = indexerParamRead(pAxis,
                                     paramIfOffset,
                                     paramIndex,
@@ -984,13 +1003,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex),
                     paramIndex, fValue);
-        } else {
-          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdx=%s (%u) not polled in background\n",
-                    modNamEMC, axisNo,
-                    plcParamIndexTxtFromParamIndex(paramIndex),
-                    paramIndex);
-          }
+        }
       }
       if (paramIndexIsParameterToPoll(paramIndex)) {
         pAxis->addPollNowParam(paramIndex);

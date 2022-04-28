@@ -279,6 +279,68 @@ extern "C" void parameter_type_to_ASCII_V3(char *buf, size_t len,
 }
 
 asynStatus
+ethercatmcController::indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
+                                                  unsigned parameter_index,
+                                                  unsigned enumparam_read_id,
+                                                  unsigned defaultLenInPlcPara)
+{
+  static const char * const c_function_name = "indexerV3readParameterEnums";
+  allDescriptors_type tmp2Descriptor;
+  asynStatus status = asynSuccess;
+
+#define MAX_VALUES_FOR_ENUM 16
+  /* asyn/asyn/devEpics/devAsynInt32.c */
+#define MAX_ENUM_STRING_SIZE 26
+  struct {
+    char enumChars[MAX_VALUES_FOR_ENUM][MAX_ENUM_STRING_SIZE];
+    char *enumStrings[MAX_VALUES_FOR_ENUM];
+    int enumValues[MAX_VALUES_FOR_ENUM];
+    int enumSeverities[MAX_VALUES_FOR_ENUM];
+  } auxBitEnumsForAsyn;
+  unsigned auxBitIdx = 0;
+  unsigned enumDescID = enumparam_read_id;
+  memset (&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
+  size_t length = sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
+  while (!status && enumDescID && (auxBitIdx < MAX_VALUES_FOR_ENUM)) {
+    status = readMailboxV3(enumDescID,
+                           &tmp2Descriptor, sizeof(tmp2Descriptor));
+    if (status) return status;
+    unsigned enum_value = NETTOUINT(tmp2Descriptor.enumDescriptor.enum_value);
+    enumDescID = NETTOUINT(tmp2Descriptor.enumDescriptor.prev_descriptor_id);
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s descID=0x%04X type=0x%X enumDescriptor prev=0x%04X enum_value=%u utf8_string=\"%s\"\n",
+              modNamEMC, c_function_name, enumDescID,
+              NETTOUINT(tmp2Descriptor.enumDescriptor.descriptor_type_0x4006),
+              NETTOUINT(tmp2Descriptor.enumDescriptor.prev_descriptor_id),
+              enum_value,
+              tmp2Descriptor.enumDescriptor.enum_name);
+    strncpy(auxBitEnumsForAsyn.enumChars[auxBitIdx],
+            tmp2Descriptor.enumDescriptor.enum_name,
+            length);
+    auxBitEnumsForAsyn.enumStrings[auxBitIdx] = &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
+    auxBitEnumsForAsyn.enumValues[auxBitIdx] = enum_value;
+    auxBitIdx++;
+  }
+  if (parameter_index == PARAM_IDX_HOMPROC_FLOAT) {
+    for (unsigned i = 0; i < auxBitIdx; i++) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s(%i) [%u] enumString=\"%s\" enumValue=%i\n",
+                modNamEMC, c_function_name, pAxis->axisNo_, i,
+                auxBitEnumsForAsyn.enumStrings[i],
+                auxBitEnumsForAsyn.enumValues[i]);
+    }
+    doCallbacksEnum(auxBitEnumsForAsyn.enumStrings,
+                    auxBitEnumsForAsyn.enumValues,
+                    auxBitEnumsForAsyn.enumSeverities,
+                    auxBitIdx,
+                    ethercatmcHomProc_RB_,  pAxis->axisNo_);
+    setIntegerParam(pAxis->axisNo_, ethercatmcHomProc_RB_ , -1);
+    pAxis->callParamCallbacks();
+  }
+  return status;
+}
+
+asynStatus
 ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *pAxis,
                                                         unsigned descID,
                                                         unsigned defaultLenInPlcPara)
@@ -293,6 +355,9 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
     unsigned descriptor_type_XXXX = NETTOUINT(tmp1Descriptor.genericDescriptor.descriptor_type);
     unsigned parameter_index = 0;
     unsigned parameter_type = 0;
+    unsigned enumparam_read_id = 0;
+    unsigned enumparam_write_id = 0;
+
     NETTOUINT(tmp1Descriptor.deviceDescriptor.prev_descriptor_id);
     switch (descriptor_type_XXXX) {
     case 0x6114:
@@ -326,8 +391,8 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
         unsigned prev_descriptor_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.prev_descriptor_id);
         parameter_index = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_index);
         parameter_type = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_type);
-        unsigned enumparam_read_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_read_id);
-        unsigned enumparam_write_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_write_id);
+        enumparam_read_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_read_id);
+        enumparam_write_id = NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_write_id);
         char parameter_type_ascii[32];
         parameter_type_to_ASCII_V3(parameter_type_ascii,
                                    sizeof(parameter_type_ascii),
@@ -344,60 +409,6 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
                   parameter_type, parameter_type_ascii,
                   tmp1Descriptor.enumparamDescriptor.enumparam_name);
         descID = prev_descriptor_id;
-
-        if (enumparam_read_id && (enumparam_read_id == enumparam_write_id)) {
-          allDescriptors_type tmp2Descriptor;
-          #define MAX_VALUES_FOR_ENUM 16
-          /* asyn/asyn/devEpics/devAsynInt32.c */
-          #define MAX_ENUM_STRING_SIZE 26
-          struct {
-            char enumChars[MAX_VALUES_FOR_ENUM][MAX_ENUM_STRING_SIZE];
-            char *enumStrings[MAX_VALUES_FOR_ENUM];
-            int enumValues[MAX_VALUES_FOR_ENUM];
-            int enumSeverities[MAX_VALUES_FOR_ENUM];
-          } auxBitEnumsForAsyn;
-          unsigned auxBitIdx = 0;
-          unsigned enumDescID = enumparam_read_id;
-          memset (&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
-          size_t length = sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
-          while (!status && enumDescID && (auxBitIdx < MAX_VALUES_FOR_ENUM)) {
-            status = readMailboxV3(enumDescID,
-                                   &tmp2Descriptor, sizeof(tmp2Descriptor));
-            if (status) return status;
-            unsigned enum_value = NETTOUINT(tmp2Descriptor.enumDescriptor.enum_value);
-            enumDescID = NETTOUINT(tmp2Descriptor.enumDescriptor.prev_descriptor_id);
-            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                      "%s%s descID=0x%04X type=0x%X enumDescriptor prev=0x%04X enum_value=%u utf8_string=\"%s\"\n",
-                      modNamEMC, c_function_name, descID,
-                      NETTOUINT(tmp2Descriptor.enumDescriptor.descriptor_type_0x4006),
-                      NETTOUINT(tmp2Descriptor.enumDescriptor.prev_descriptor_id),
-                      enum_value,
-                      tmp2Descriptor.enumDescriptor.enum_name);
-
-            strncpy(auxBitEnumsForAsyn.enumChars[auxBitIdx],
-                    tmp2Descriptor.enumDescriptor.enum_name,
-                    length);
-            auxBitEnumsForAsyn.enumStrings[auxBitIdx] = &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
-            auxBitEnumsForAsyn.enumValues[auxBitIdx] = enum_value;
-            auxBitIdx++;
-          }
-          if (parameter_index == PARAM_IDX_HOMPROC_FLOAT) {
-            for (unsigned i = 0; i < auxBitIdx; i++) {
-              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                        "%s%s(%i) [%u] enumString=\"%s\" enumValue=%i\n",
-                        modNamEMC, c_function_name, pAxis->axisNo_, i,
-                        auxBitEnumsForAsyn.enumStrings[i],
-                        auxBitEnumsForAsyn.enumValues[i]);
-
-            }
-            doCallbacksEnum(auxBitEnumsForAsyn.enumStrings,
-                            auxBitEnumsForAsyn.enumValues,
-                            auxBitEnumsForAsyn.enumSeverities,
-                            auxBitIdx,
-                            ethercatmcHomProc_RB_,  pAxis->axisNo_);
-            pAxis->callParamCallbacks();
-          }
-        }
       }
       break;
     case 0x680E:
@@ -456,6 +467,9 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
           pAxis->drvlocal.lenInPlcParaFloat[parameter_index] = lenInPlcPara;
         } else {
           pAxis->drvlocal.lenInPlcParaInteger[parameter_index] = lenInPlcPara;
+        }
+        if (enumparam_read_id && (enumparam_read_id == enumparam_write_id)) {
+          pAxis->drvlocal.enumparam_read_id[parameter_index] = enumparam_read_id;
         }
       }
     }
