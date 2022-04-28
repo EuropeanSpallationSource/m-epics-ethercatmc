@@ -296,11 +296,11 @@ ethercatmcController::indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     char *enumStrings[MAX_VALUES_FOR_ENUM];
     int enumValues[MAX_VALUES_FOR_ENUM];
     int enumSeverities[MAX_VALUES_FOR_ENUM];
-  } auxBitEnumsForAsyn;
+  } PILSenumsForAsyn;
   unsigned auxBitIdx = 0;
   unsigned enumDescID = enumparam_read_id;
-  memset (&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
-  size_t length = sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
+  memset (&PILSenumsForAsyn, 0, sizeof(PILSenumsForAsyn));
+  size_t length = sizeof(PILSenumsForAsyn.enumChars[auxBitIdx]) - 1;
   while (!status && enumDescID && (auxBitIdx < MAX_VALUES_FOR_ENUM)) {
     status = readMailboxV3(enumDescID,
                            &tmp2Descriptor, sizeof(tmp2Descriptor));
@@ -314,11 +314,11 @@ ethercatmcController::indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
               NETTOUINT(tmp2Descriptor.enumDescriptor.prev_descriptor_id),
               enum_value,
               tmp2Descriptor.enumDescriptor.enum_name);
-    strncpy(auxBitEnumsForAsyn.enumChars[auxBitIdx],
+    strncpy(PILSenumsForAsyn.enumChars[auxBitIdx],
             tmp2Descriptor.enumDescriptor.enum_name,
             length);
-    auxBitEnumsForAsyn.enumStrings[auxBitIdx] = &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
-    auxBitEnumsForAsyn.enumValues[auxBitIdx] = enum_value;
+    PILSenumsForAsyn.enumStrings[auxBitIdx] = &PILSenumsForAsyn.enumChars[auxBitIdx][0];
+    PILSenumsForAsyn.enumValues[auxBitIdx] = enum_value;
     auxBitIdx++;
   }
   if (parameter_index == PARAM_IDX_HOMPROC_FLOAT) {
@@ -326,12 +326,12 @@ ethercatmcController::indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s(%i) [%u] enumString=\"%s\" enumValue=%i\n",
                 modNamEMC, c_function_name, pAxis->axisNo_, i,
-                auxBitEnumsForAsyn.enumStrings[i],
-                auxBitEnumsForAsyn.enumValues[i]);
+                PILSenumsForAsyn.enumStrings[i],
+                PILSenumsForAsyn.enumValues[i]);
     }
-    doCallbacksEnum(auxBitEnumsForAsyn.enumStrings,
-                    auxBitEnumsForAsyn.enumValues,
-                    auxBitEnumsForAsyn.enumSeverities,
+    doCallbacksEnum(PILSenumsForAsyn.enumStrings,
+                    PILSenumsForAsyn.enumValues,
+                    PILSenumsForAsyn.enumSeverities,
                     auxBitIdx,
                     ethercatmcHomProc_RB_,  pAxis->axisNo_);
   }
