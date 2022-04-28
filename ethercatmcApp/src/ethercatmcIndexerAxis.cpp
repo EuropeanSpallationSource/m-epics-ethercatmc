@@ -1055,17 +1055,19 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
               paramCtrl, paramfValue);
     if ((paramCtrl != drvlocal.old_paramCtrl) ||
         (paramfValue != drvlocal.old_paramValue)) {
-      /* Only read real parameters, not functions */
-      if (paramIndexIsParameterToPoll(paramIndex)) {
+      /* The enums must have been read.
+         Only read real parameters, not functions */
+      if (!drvlocal.enumparam_read_id[paramIndex] &&
+          paramIndexIsParameterToPoll(paramIndex)) {
         int initial = 0;
         pC_->parameterFloatReadBack(axisNo_,
                                     initial,
                                     paramIndex,
                                     paramfValue);
       }
+      drvlocal.old_paramCtrl = paramCtrl;
+      drvlocal.old_paramValue = paramfValue;
     }
-    drvlocal.old_paramCtrl = paramCtrl;
-    drvlocal.old_paramValue = paramfValue;
   }
 
   /* Read back the parameters one by one */
@@ -1092,7 +1094,21 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                                                       drvlocal.lenInPlcPara);
           }
           if (!status) {
-            /* Stop reading */
+            double fValue = -1.0;
+            status = pC_->indexerParamRead(this,
+                                           drvlocal.paramIfOffset,
+                                           paramIndex,
+                                           &fValue);
+            if (!status) {
+              int initial = 1;
+              pC_->parameterFloatReadBack(axisNo_,
+                                          initial,
+                                          paramIndex,
+                                          paramfValue);
+            }
+          }
+          if (!status) {
+            /* Once read, do not read again */
             drvlocal.enumparam_read_id[paramIndex] = 0;
           }
         }

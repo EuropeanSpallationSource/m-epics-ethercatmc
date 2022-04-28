@@ -334,8 +334,6 @@ ethercatmcController::indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
                     auxBitEnumsForAsyn.enumSeverities,
                     auxBitIdx,
                     ethercatmcHomProc_RB_,  pAxis->axisNo_);
-    setIntegerParam(pAxis->axisNo_, ethercatmcHomProc_RB_ , -1);
-    pAxis->callParamCallbacks();
   }
   return status;
 }
