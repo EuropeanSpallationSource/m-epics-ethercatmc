@@ -362,2182 +362,6 @@ $(pv_value)</tooltip>
     <background_color>
       <color name="IO Background" red="235" green="235" blue="235" />
     </background_color>
-    <bit>23</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED23-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit23.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 23</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>38</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit23</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit23-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit23.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>38</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>22</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED22-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit22.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 22</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>58</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit22</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit22-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit22.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>58</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>21</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED21-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit21.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 21</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>78</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit21</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit21-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit21.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>78</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>20</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED20-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit20.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 20</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>98</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit20</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit20-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit20.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>98</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>19</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED19-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit19.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 19</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>118</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit19</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit19-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit19.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>118</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>18</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED18-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit18.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 18</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>138</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit18</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit18-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit18.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>138</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>17</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED17-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit17.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 17</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>158</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit17</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit17-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit17.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>158</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>16</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED16-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit16.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 16</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>178</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit16</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit16-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit16.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>178</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>15</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED15-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit15.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 15</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>198</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit15</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit15-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit15.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>198</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>14</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED14-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit14.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 14</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>218</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit14</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit14-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit14.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>218</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>13</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED13-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit13.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 13</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>238</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit13</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit13-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit13.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>238</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>5</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED5-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit5.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 5</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>258</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit5</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit5-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit5.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>258</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>4</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED4-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit4.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 4</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>278</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit4</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit4-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit4.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>278</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>3</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED3-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit3.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 3</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>298</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit3</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit3-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit3.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>298</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>2</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED2-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit2.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 2</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>318</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit2</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit2-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit2.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>318</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
-    <bit>1</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <bulb_border>3</bulb_border>
-    <bulb_border_color>
-      <color red="150" green="150" blue="150" />
-    </bulb_border_color>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>24</height>
-    <name>LED Template_51</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>pw</off_label>
-    <on_color>
-      <color red="0" green="0" blue="255" />
-    </on_color>
-    <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
-    <pv_value />
-    <rules>
-      <rule name="AuxBitLED1-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit1.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <square_led>false</square_led>
-    <tooltip>AUX 1</tooltip>
-    <visible>true</visible>
-    <widget_type>LED</widget_type>
-    <width>20</width>
-    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
-    <x>16</x>
-    <y>338</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="EXECUTE_CMD">
-        <command>camonitor -S</command>
-        <command_directory>$(user.home)</command_directory>
-        <wait_time>10</wait_time>
-        <description></description>
-      </action>
-    </actions>
-    <alarm_pulsing>true</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>4</format_type>
-    <height>18</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Text Input Template_52</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamAuxBit1</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-    <rules>
-      <rule name="AuxBit1-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)NamAuxBit1.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_units>false</show_units>
-    <text>#####</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>238</width>
-    <wrap_words>false</wrap_words>
-    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
-    <x>40</x>
-    <y>338</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Background" red="235" green="235" blue="235" />
-    </background_color>
     <bit>0</bit>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
@@ -2596,7 +420,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>358</y>
+    <y>38</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -2665,7 +489,3135 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
+    <y>38</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>1</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED1-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit1.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 1</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>58</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit1</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit1-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit1.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>58</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>2</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED2-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit2.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 2</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>78</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit2</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit2-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit2.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>78</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>3</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED3-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit3.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 3</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>98</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit3</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit3-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit3.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>98</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>4</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED4-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit4.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 4</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>118</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit4</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit4-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit4.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>118</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>5</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED5-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit5.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 5</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>138</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit5</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit5-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit5.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>138</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>6</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED6-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit6.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 6</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>158</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit6</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit6-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit6.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>158</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>7</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED7-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit7.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 7</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>178</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit7</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit7-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit7.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>178</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>8</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED8-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit8.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 8</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>198</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit8</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit8-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit8.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>198</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>9</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED9-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit9.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 9</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>218</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit9</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit9-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit9.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>218</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>10</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED10-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit10.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 10</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>238</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit10</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit10-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit10.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>238</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>11</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED11-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit11.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 11</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>258</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit11</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit11-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit11.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>258</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>12</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED12-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit12.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 12</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>278</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit12</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit12-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit12.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>278</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>13</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED13-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit13.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 13</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>298</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit13</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit13-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit13.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>298</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>14</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED14-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit14.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 14</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>318</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit14</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit14-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit14.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>318</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>15</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED15-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit15.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 15</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>338</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit15</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit15-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit15.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>338</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>16</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED16-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit16.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 16</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
     <y>358</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit16</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit16-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit16.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>358</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>17</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED17-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit17.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 17</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>378</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit17</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit17-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit17.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>378</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>18</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED18-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit18.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 18</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>398</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit18</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit18-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit18.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>398</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>19</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED19-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit19.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 19</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>418</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit19</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit19-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit19.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>418</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>20</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED20-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit20.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 20</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>438</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit20</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit20-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit20.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>438</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>21</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED21-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit21.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 21</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>458</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit21</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit21-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit21.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>458</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>22</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED22-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit22.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 22</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>478</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit22</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit22-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit22.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>478</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <bit>23</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="0" blue="255" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_value />
+    <rules>
+      <rule name="AuxBitLED23-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit23.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>AUX 23</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>20</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>16</x>
+    <y>498</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="EXECUTE_CMD">
+        <command>camonitor -S</command>
+        <command_directory>$(user.home)</command_directory>
+        <wait_time>10</wait_time>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>true</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>4</format_type>
+    <height>18</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <name>Text Input Template_52</name>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(R)NamAuxBit23</pv_name>
+    <pv_value />
+    <rotation_angle>0.0</rotation_angle>
+    <rules>
+      <rule name="AuxBit23-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)NamAuxBit23.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_units>false</show_units>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>238</width>
+    <wrap_words>false</wrap_words>
+    <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
+    <x>40</x>
+    <y>498</y>
   </widget>
 
 </display>
