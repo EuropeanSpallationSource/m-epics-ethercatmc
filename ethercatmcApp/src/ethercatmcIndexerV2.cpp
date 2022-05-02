@@ -113,6 +113,13 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
                                    descVersAuthors.author2,
                                    sizeof(descVersAuthors.author2));
     switch (iTypCode) {
+      case 0x1802:
+        /* The first axisNo goes to axis#0, which is not used for axes
+           all others need their own axis numbers */
+        if (axisNo) {
+          axisNo++;
+        }
+        break;
       case 0x1E04:
       case 0x5008:
       case 0x500C:
@@ -180,6 +187,23 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
 #endif
     }
     switch (iTypCode) {
+    case 0x1802:
+      {
+        const char *paramName = descVersAuthors.desc;
+        int function = newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, paramName);
+        if (function < 0) {
+          status = asynError;
+          goto endPollIndexer;
+        }
+        status = newIndexerAxisAuxBitsV2(NULL, /* pAxis */
+                                         axisNo,
+                                         devNum,
+                                         iAllFlags,
+                                         fAbsMin,
+                                         fAbsMax,
+                                         iOffsBytes);
+      }
+      break;
     case 0x1E04:
     case 0x5008:
     case 0x500C:
@@ -191,12 +215,13 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
           pAxis = new ethercatmcIndexerAxis(this, axisNo, 0, NULL);
         }
         /* Now we have an axis */
-        status = newIndexerAxisV2(pAxis,
-                                  devNum,
-                                  iAllFlags,
-                                  fAbsMin,
-                                  fAbsMax,
-                                  iOffsBytes);
+        status = newIndexerAxisAuxBitsV2(pAxis,
+                                         pAxis->axisNo_,
+                                         devNum,
+                                         iAllFlags,
+                                         fAbsMin,
+                                         fAbsMax,
+                                         iOffsBytes);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sTypeCode axisNo=%d iTypCode=%x pAxis=%p status=%s (%d)\n",
                   modNamEMC, axisNo, iTypCode, pAxis,
@@ -258,15 +283,15 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
 }
 
 asynStatus
-ethercatmcController::newIndexerAxisV2(ethercatmcIndexerAxis *pAxis,
-                                       unsigned devNum,
-                                       unsigned iAllFlags,
-                                       double   fAbsMin,
-                                       double   fAbsMax,
-                                       unsigned iOffsBytes)
+ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
+                                              unsigned axisNo,
+                                              unsigned devNum,
+                                              unsigned iAllFlags,
+                                              double   fAbsMin,
+                                              double   fAbsMax,
+                                              unsigned iOffsBytes)
 {
   asynStatus status = asynSuccess;
-  unsigned axisNo = pAxis->axisNo_;
   /* AUX bits */
   {
     unsigned auxBitIdx = 0;
@@ -286,10 +311,12 @@ ethercatmcController::newIndexerAxisV2(ethercatmcIndexerAxis *pAxis,
                   modNamEMC, axisNo, auxBitIdx, auxBitName);
         if (status) return status;
         if (function <= ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN) {
-          pAxis->setStringParam(function, auxBitName);
+          setStringParam(axisNo, function, auxBitName);
           setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
         }
-        if (!strcmp("notHomed", auxBitName)) {
+        if (!pAxis) {
+          ; /* Do nothing */
+        } else if (!strcmp("notHomed", auxBitName)) {
           pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
         } else if (!strcmp("enabled", auxBitName)) {
           pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
@@ -306,10 +333,12 @@ ethercatmcController::newIndexerAxisV2(ethercatmcIndexerAxis *pAxis,
   updateCfgValue(axisNo, ethercatmcCfgPMIN_RB_, fAbsMin, "CfgPMIN");
 
 #ifdef motorHighLimitROString
-  udateMotorLimitsRO(axisNo,
-                     (fAbsMin > fABSMIN && fAbsMax < fABSMAX),
-                     fAbsMax,
-                     fAbsMin);
+  if (pAxis) {
+    udateMotorLimitsRO(axisNo,
+                       (fAbsMin > fABSMIN && fAbsMax < fABSMAX),
+                       fAbsMax,
+                       fAbsMin);
+  }
 #endif
 
   return status;

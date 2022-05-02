@@ -16,6 +16,7 @@ include $(TOP)/configure/CONFIG
 # Create and install (or just install)
 # databases, templates, substitutions like this
 DB += ethercatmc.template
+DB += ethercatmcAuxBitsStatus.template
 DB += ethercatmcClutch.template
 DB += ethercatmcEL1252-OneChannel.template
 DB += ethercatmcEL3162-OneChannel.template

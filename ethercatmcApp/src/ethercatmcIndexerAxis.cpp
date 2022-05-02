@@ -194,6 +194,9 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
   } else if (drvlocal.iTypCode == 0x5010) {
     drvlocal.lenInPlcPara = 8;
     drvlocal.paramIfOffset = drvlocal.iOffset + 22;
+  } else if (drvlocal.iTypCode == 0x1802) {
+    drvlocal.lenInPlcPara = 0;
+    drvlocal.paramIfOffset = 0;
   } else if (drvlocal.iTypCode == 0x1E04) {
     drvlocal.lenInPlcPara = 2;
     drvlocal.paramIfOffset = 0;
@@ -630,13 +633,20 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   if (!drvlocal.iOffset) return asynSuccess;
 
   if (drvlocal.dirty.initialPollNeeded) {
-    if (drvlocal.iTypCode == 0x1E04) {
-      readAuxBitNamesEnums();
+    switch (drvlocal.iTypCode) {
+    case 0x1E04:
+        readAuxBitNamesEnums();
+        status = asynSuccess;
+      break;
+    case 0x5008:
+    case 0x5010:
+        status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
+                                                drvlocal.iOffset,
+                                                drvlocal.lenInPlcPara);
+      break;
+    default:
       status = asynSuccess;
-    } else {
-      status = pC_->indexerReadAxisParameters(this, drvlocal.devNum,
-                                              drvlocal.iOffset,
-                                              drvlocal.lenInPlcPara);
+      break;
     }
     if (!status) {
       drvlocal.dirty.initialPollNeeded = 0;
@@ -720,6 +730,21 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
+  } else if (drvlocal.iTypCode == 0x1802) {
+    struct {
+      uint8_t   statReasAux[4];
+    } readback;
+    status = pC_->getPlcMemoryFromProcessImage(drvlocal.iOffset,
+                                               &readback,
+                                               sizeof(readback));
+    statusReasonAux = NETTOUINT(readback.statReasAux);
+    idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
+    idxReasonBits = (statusReasonAux >> 24) & 0x0F;
+    idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%spoll(%d) iTypCode=0x%X drvlocal.iOffset=%u statusReasonAux=%08x\n",
+              modNamEMC, axisNo_, drvlocal.iTypCode, drvlocal.iOffset,
+              statusReasonAux);
   } else if (drvlocal.iTypCode == 0x1E04) {
     readAuxBitNamesEnums();
     struct {
@@ -808,63 +833,23 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     drvlocal.dirty.old_ErrorId = errorID;
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
-    /* Show even bit 24 and 25, which are reson bits, here */
-#define MAX_REASON_AUX_BIT_SHOW (MAX_AUX_BIT_SHOWN+2)
-    char changedNames[MAX_REASON_AUX_BIT_SHOW][36];
-    unsigned changed = idxAuxBits ^ drvlocal.old_idxAuxBits;
-    unsigned auxBitIdx;
-    memset(&changedNames, 0, sizeof(changedNames));
-    for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
-      if ((changed >> auxBitIdx) & 0x01) {
-        asynStatus status;
-        int function = (int)(pC_->ethercatmcNamAux0_ + auxBitIdx);
-        /* Leave the first character for '+' or '-',
-           leave one byte for '\0' */
-        int length = (int)sizeof(changedNames[auxBitIdx]) - 2;
-        status = pC_->getStringParam(axisNo_,
-                                     function,
-                                     length,
-                                     &changedNames[auxBitIdx][1]);
-        if (status == asynSuccess) {
-          /* the name of "aux bits without a name" is never written,
-             so that we don't show it here */
-          if ((idxAuxBits >> auxBitIdx) & 0x01) {
-            changedNames[auxBitIdx][0] = '+';
-          } else {
-            changedNames[auxBitIdx][0] = '-';
-          }
-        }
-      }
-    }
+    pC_->changedAuxBits_to_ASCII(axisNo_, idxAuxBits, drvlocal.old_idxAuxBits);
     asynPrint(pC_->pasynUserController_, traceMask,
               "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
               modNamEMC, axisNo_, drvlocal.old_idxAuxBits, idxAuxBits,
-              changedNames[0],
-              changedNames[1],
-              changedNames[2],
-              changedNames[3],
-              changedNames[4],
-              changedNames[5],
-              changedNames[6],
-              changedNames[7],
-              changedNames[8],
-              changedNames[9],
-              changedNames[10],
-              changedNames[11],
-              changedNames[12],
-              changedNames[13],
-              changedNames[14],
-              changedNames[15],
-              changedNames[16],
-              changedNames[17],
-              changedNames[18],
-              changedNames[19],
-              changedNames[20],
-              changedNames[21],
-              changedNames[22],
-              changedNames[23],
-              changedNames[24],
-              changedNames[25],
+              pC_->ctrlLocal.changedAuxBits[0],  pC_->ctrlLocal.changedAuxBits[1],
+              pC_->ctrlLocal.changedAuxBits[2],  pC_->ctrlLocal.changedAuxBits[3],
+              pC_->ctrlLocal.changedAuxBits[4],  pC_->ctrlLocal.changedAuxBits[5],
+              pC_->ctrlLocal.changedAuxBits[6],  pC_->ctrlLocal.changedAuxBits[7],
+              pC_->ctrlLocal.changedAuxBits[8],  pC_->ctrlLocal.changedAuxBits[9],
+              pC_->ctrlLocal.changedAuxBits[10], pC_->ctrlLocal.changedAuxBits[11],
+              pC_->ctrlLocal.changedAuxBits[12], pC_->ctrlLocal.changedAuxBits[13],
+              pC_->ctrlLocal.changedAuxBits[14], pC_->ctrlLocal.changedAuxBits[15],
+              pC_->ctrlLocal.changedAuxBits[16], pC_->ctrlLocal.changedAuxBits[17],
+              pC_->ctrlLocal.changedAuxBits[18], pC_->ctrlLocal.changedAuxBits[19],
+              pC_->ctrlLocal.changedAuxBits[20], pC_->ctrlLocal.changedAuxBits[21],
+              pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
+              pC_->ctrlLocal.changedAuxBits[24], pC_->ctrlLocal.changedAuxBits[25],
               actPosition);
   }
   switch (idxStatusCode) {

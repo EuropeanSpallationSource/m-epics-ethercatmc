@@ -1195,13 +1195,17 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
                    &splitedParamNameNumber.name[0],
                    &splitedParamNameNumber.axisNoOrIndex);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
-              modNamEMC, functionName, nvals,
+              "%s%s axisNo=%d iTypCode=0x%04X nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
+              modNamEMC, functionName, axisNo, iTypCode, nvals,
               &splitedParamNameNumber.name[0],
               splitedParamNameNumber.axisNoOrIndex);
     if (nvals == 2) {
+      int newAxisNo = (int)splitedParamNameNumber.axisNoOrIndex;
       paramName = &splitedParamNameNumber.name[0];
-      axisNo = (int)splitedParamNameNumber.axisNoOrIndex;
+      if (iTypCode == 0x1802 && newAxisNo != axisNo) {
+        return -1;
+      }
+      axisNo = newAxisNo;
     }
   }
 
@@ -1246,6 +1250,14 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       /* 1604 has "current value, followed by target value */
       inputOffset = indexOffset + lenInPLC;  // Look at the target value for readback
       outputOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamInt32;
+      break;
+    case 0x1802:
+      lenInPLC = 4;
+      /* We have a predefined name, no need to create a new asyn param */
+      paramName = ethercatmcStatusBitsString;
+      /* 1802 has only a 32 bit status word */
+      statusOffset = indexOffset;
       myAsynParamType = asynParamInt32;
       break;
     case 0x1A02:
@@ -1321,6 +1333,39 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
   return NULL;
 }
 
+void
+ethercatmcController::changedAuxBits_to_ASCII(int         axisNo,
+                                              epicsUInt32 statusReasonAux,
+                                              epicsUInt32 oldStatusReasonAux)
+{
+  /* Show even bit 24 and 25, which are reson bits, here */
+  epicsUInt32 changed = statusReasonAux ^ oldStatusReasonAux;
+  epicsUInt32 auxBitIdx;
+  memset(&ctrlLocal.changedAuxBits, 0, sizeof(ctrlLocal.changedAuxBits));
+  for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
+    if ((changed >> auxBitIdx) & 0x01) {
+      asynStatus status;
+      int function = (int)(ethercatmcNamAux0_ + auxBitIdx);
+      /* Leave the first character for '+' or '-',
+         leave one byte for '\0' */
+      int length = (int)sizeof(ctrlLocal.changedAuxBits[auxBitIdx]) - 2;
+      status = getStringParam(axisNo,
+                              function,
+                              length,
+                              &ctrlLocal.changedAuxBits[auxBitIdx][1]);
+      if (status == asynSuccess) {
+        /* the name of "aux bits without a name" is never written,
+           so that we don't show it here */
+        if ((statusReasonAux >> auxBitIdx) & 0x01) {
+          ctrlLocal.changedAuxBits[auxBitIdx][0] = '+';
+        } else {
+          ctrlLocal.changedAuxBits[auxBitIdx][0] = '-';
+        }
+      }
+    }
+  }
+}
+
 asynStatus ethercatmcController::indexerPoll(void)
 {
   int callBacksNeeded = 0;
@@ -1360,7 +1405,39 @@ asynStatus ethercatmcController::indexerPoll(void)
                   modNamEMC, axisNo,
                   numPilsAsynDevInfo, inputOffset);
         if (statusOffset) {
-          ; /* TODO */
+          /* Add a printout for the changed AUX bits.
+             currently the poller for the axis has simiar code */
+          const static epicsUInt32 maskStatusReasonAux = 0x03FFFFFF;
+          void *pStatusInPlc = &ctrlLocal.pIndexerProcessImage[statusOffset];
+          epicsUInt32 statusReasonAux, oldStatusReasonAux; /* We use only 32 bit status words here */
+          unsigned statusLenInPLC = sizeof(statusReasonAux);
+          statusReasonAux = netToUint(pStatusInPlc, statusLenInPLC);
+
+          getUIntDigitalParam(axisNo, ethercatmcStatusBits_,
+                              &oldStatusReasonAux, maskStatusReasonAux);
+
+          if (statusReasonAux != oldStatusReasonAux) {
+            changedAuxBits_to_ASCII(axisNo, statusReasonAux, oldStatusReasonAux);
+            asynPrint(pasynUserController_, traceMask,
+                      "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
+                      modNamEMC, axisNo, oldStatusReasonAux, statusReasonAux,
+                      ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
+                      ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
+                      ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
+                      ctrlLocal.changedAuxBits[6],  ctrlLocal.changedAuxBits[7],
+                      ctrlLocal.changedAuxBits[8],  ctrlLocal.changedAuxBits[9],
+                      ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
+                      ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
+                      ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
+                      ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
+                      ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
+                      ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
+                      ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
+                      ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
+            setUIntDigitalParam(axisNo, ethercatmcStatusBits_,
+                                (epicsUInt32)statusReasonAux,
+                                maskStatusReasonAux, maskStatusReasonAux);
+          }
         }
         if (!inputOffset) continue;
 

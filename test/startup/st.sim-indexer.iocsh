@@ -18,6 +18,14 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",    "100")
 
 < ethercatmcController.iocsh
 
+#
+# Health status
+#
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=PlcHealth)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=0)")
+epicsEnvSet("DESC",          "PlcHealth")
+epicsEnvSet("EGU",           "PlcHealth")
+< ethercatmcAuxBitsStatus.iocsh
 
 #
 # Axis 1
