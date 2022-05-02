@@ -112,7 +112,8 @@ if ! which conda >/dev/null 2>&1; then
 fi
 
 ########################################
-if ! which $MYVIRTUALENV; then
+if test -z "$MYVIRTUALENV"; then
+  echo no VIRTUALENV found, trying conda
   if which conda >/dev/null 2>&1; then
     if test -n "$CONDA_PYTHON_EXE" && test -x "$CONDA_PYTHON_EXE"; then
       echo "We use existing $CONDA_PYTHON_EXE"
@@ -216,4 +217,5 @@ if test -z "$PYEPICS_LIBCA"; then
     fi
   fi
 fi &&
+echo ./doRunTests.sh "$@"
 ./doRunTests.sh "$@"
