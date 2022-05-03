@@ -1,0 +1,72 @@
+require ethercatmc,USER
+
+epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.41.148)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-MCAG:MC-MCU-003:)")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",     "4")
+epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
+#epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=REMOTEAMSNETIDXX;amsNetIdLocal=LOCALAMSNETIDXX"
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=169.254.255.255.1.1:852;amsNetIdLocal=172.30.38.12.1.1"
+
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "100")
+< ethercatmcController.iocsh
+
+#
+# Health status
+#
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=PlcHealth)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=0)")
+epicsEnvSet("DESC",          "PlcHealth")
+epicsEnvSet("EGU",           "PlcHealth")
+< ethercatmcAuxBitsStatus.iocsh
+
+#
+# Axis 1
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
+
+# Raw steps and velocity
+< ethercatmcRawMtrEnc.iocsh
+
+#
+# Axis 2
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
+
+#
+# Axis 3
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
+
+#
+# Axis 4
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcAxishome.iocsh
