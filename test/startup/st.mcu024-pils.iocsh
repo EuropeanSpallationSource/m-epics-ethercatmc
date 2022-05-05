@@ -26,12 +26,6 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcAxisdebug.iocsh
 < ethercatmcAxishome.iocsh
 
-# Predefined Positions
-# NVL: Input Value Location (INLINK)
-epicsEnvSet("NVL",           "")
-epicsEnvSet("EGU",           "")
-< ethercatmcDefPos.iocsh
-
 #
 # Axis 2
 #
