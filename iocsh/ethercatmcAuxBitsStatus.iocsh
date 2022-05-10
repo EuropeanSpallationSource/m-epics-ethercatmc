@@ -1,0 +1,1 @@
+dbLoadRecords("ethercatmcAuxBitsStatus.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), AXIS_NO=$(AXIS_NO), R=$(MOTOR_NAME)-, MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) ")

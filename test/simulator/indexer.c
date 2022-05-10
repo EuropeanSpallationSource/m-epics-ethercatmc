@@ -28,6 +28,7 @@
 #define TYPECODE_SPECIALDEVICE_0518 0x0518
 #endif
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
+#define TYPECODE_STATUSWORD_1802 0x1802
 #define TYPECODE_DISCRETEOUTPUT_1604 0x1604
 //#define TYPECODE_PARAMDEVICE_5008 0x5008
 
@@ -39,6 +40,7 @@
 #define WORDS_SPECIALDEVICE_0518    0x18
 #define WORDS_DISCRETEINPUT_1202     0x2
 #define WORDS_DISCRETEOUTPUT_1604    0x4
+#define WORDS_STATUSWORD_1802         0x2
 //#define WORDS_PARAMDEVICE_5008       0x8
 #define WORDS_PARAMDEVICE_5010      0x10
 
@@ -53,6 +55,8 @@
 
 /* axis1 .. axis4 */
 #define  NUM_MOTORS5010     4
+
+#define NUM_1802 1
 
 #ifdef HAS_1604_OPEN_CLUTCH
 #define NUM_1604 NUM_MOTORS5010
@@ -84,7 +88,7 @@
 #endif
 
 #define  NUM_5010           4
-#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1E04)
+#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1802 + NUM_1E04)
 
 
 typedef enum {
@@ -257,6 +261,10 @@ typedef struct {
   uint8_t   targetValue[4];
 } netDevice1604interface_type;
 
+typedef struct {
+  uint8_t   statusReasonAux32[4];
+} netDevice1802interface_type;
+
 #ifdef HAS_1E04_SHUTTER
 typedef struct {
   uint8_t   actualValue[2];
@@ -326,6 +334,16 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
       "indexer",
       { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
+    /* special device */
+    { TYPECODE_STATUSWORD_1802, 2*WORDS_STATUSWORD_1802,
+      UNITCODE_NONE, AXISNO_NONE,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "SystemHealth#0",
+      { "Fuse", "Heater", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
@@ -700,6 +718,7 @@ static union {
       netInfoType4_type  infoType4;
       netInfoType15_type infoType15;
     } indexer;
+    netDevice1802interface_type statusWord1802[NUM_1802];
 #ifdef HAS_0518
     netDevice0518interface_type special0518; /* 42 bytes for ASCII to the simulator */
 #endif

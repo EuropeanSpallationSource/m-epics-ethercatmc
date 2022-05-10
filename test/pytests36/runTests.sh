@@ -112,16 +112,22 @@ if ! which conda >/dev/null 2>&1; then
 fi
 
 ########################################
-if ! which $MYVIRTUALENV; then
+if test -z "$MYVIRTUALENV"; then
+  echo no VIRTUALENV found, trying conda
   if which conda >/dev/null 2>&1; then
-    if test -n "$CONDA_PYTHON_EXE" && test -x "$CONDA_PYTHON_EXE"; then
-      echo "We use existing $CONDA_PYTHON_EXE"
+    if test -n "$CONDA_PROMPT_MODIFIER"; then
+      echo "We use activated $CONDA_PYTHON_EXE"
+      checkAndInstallPythonPackage pytest "conda install pyTest"
+      checkAndInstallPythonPackage epics  "conda install pyepics"
+      checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
     else
-      conda activate pyepicsPytestPVApy || {
-        echo >&2 conda activate pyepicsPytestPVApy failed
-        conda create -n  pyepicsPytestPVApy
-        exit 1
-      }
+      echo >&2 "run:"
+      if test -d ~/.conda/envs/pyepicsPytestPVApy; then
+        echo >&2 "conda activate pyepicsPytestPVApy"
+      else
+        echo >&2 "conda create -n pyepicsPytestPVApy"
+      fi
+      exit 1
     fi
   fi
 fi
@@ -182,12 +188,12 @@ if ! type pytest >/dev/null 2>&1 ; then
     checkAndInstallPythonPackage epics  "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
   fi
   checkAndInstallPythonPackage epics "pip3 install pyepics" "pip install pyepics" &&
-    checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST" || {
-      echo >&2 Installation problem:
-      echo >&2 pip not found
-      echo >&2 easy_install not found
-      exit 1
-      }
+  checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST" || {
+    echo >&2 Installation problem:
+    echo >&2 pip not found
+    echo >&2 easy_install not found
+    exit 1
+  }
 
   checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
 
@@ -216,4 +222,5 @@ if test -z "$PYEPICS_LIBCA"; then
     fi
   fi
 fi &&
+echo ./doRunTests.sh "$@"
 ./doRunTests.sh "$@"

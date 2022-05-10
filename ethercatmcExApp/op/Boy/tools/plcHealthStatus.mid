@@ -1,0 +1,55 @@
+<widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+  <border_alarm_sensitive>false</border_alarm_sensitive>
+  <visible>true</visible>
+  <actions_from_pv>false</actions_from_pv>
+  <wuid>39872d87:13e14015f61:d1a</wuid>
+  <scripts />
+  <height>20</height>
+  <name>Menu Button</name>
+  <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+  <scale_options>
+    <width_scalable>true</width_scalable>
+    <height_scalable>true</height_scalable>
+    <keep_wh_ratio>false</keep_wh_ratio>
+  </scale_options>
+  <transparent>false</transparent>
+  <pv_name></pv_name>
+  <background_color>
+    <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+  </background_color>
+  <foreground_color>
+    <color name="Gray_0" red="255" green="255" blue="255" />
+  </foreground_color>
+  <widget_type>Menu Button</widget_type>
+  <enabled>true</enabled>
+  <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+  <font>
+    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+  </font>
+  <width>120</width>
+  <border_style>6</border_style>
+  <label>HealthStatus</label>
+  <rules />
+  <pv_value />
+  <border_width>1</border_width>
+  <border_color>
+    <color red="0" green="0" blue="255" />
+  </border_color>
+  <y>174</y>
+  <actions hook="false" hook_all="false">
+    <action type="OPEN_DISPLAY">
+      <path>ethercatmcStatusWord1802.opi</path>
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+        <P>$(P)</P>
+        <R>PlcHealth-</R>
+      </macros>
+      <replace>0</replace>
+      <description>$(P) (HealthStatus)</description>
+    </action>
+  </actions>
+  <y>0</y>
+  <tooltip>$(pv_name)
+    $(pv_value)</tooltip>
+  <x>120</x>
+</widget>
