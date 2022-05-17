@@ -28,6 +28,7 @@ FILENAME...   ethercatmcController.h
 #define ETHERCATMC_ASYN_PARAMMETA
 #else
 #define asynParamMetaMask 0
+#define setParamMeta(a,b,c,d)
 #endif
 
 #ifndef motorRecResolutionString

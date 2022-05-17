@@ -328,12 +328,24 @@ ethercatmcController::indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
                 modNamEMC, c_function_name, pAxis->axisNo_, i,
                 PILSenumsForAsyn.enumStrings[i],
                 PILSenumsForAsyn.enumValues[i]);
+#ifdef ETHERCATMC_ASYN_PARAMMETA
+      char name_str[4];
+      epicsSnprintf(name_str, sizeof(name_str), "%u", i);
+      setParamMeta(pAxis->axisNo_, ethercatmcHomProc_RB_, name_str,
+                   PILSenumsForAsyn.enumStrings[i]);
+      setParamMeta(pAxis->axisNo_, ethercatmcHomProc_RB_, name_str,
+                   PILSenumsForAsyn.enumValues[i]);
+#endif
     }
+#ifdef ETHERCATMC_ASYN_PARAMMETA
+    pAxis->callParamCallbacks();
+#else
     doCallbacksEnum(PILSenumsForAsyn.enumStrings,
                     PILSenumsForAsyn.enumValues,
                     PILSenumsForAsyn.enumSeverities,
                     auxBitIdx,
                     ethercatmcHomProc_RB_,  pAxis->axisNo_);
+#endif
   }
   return status;
 }
