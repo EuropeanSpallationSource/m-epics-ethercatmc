@@ -31,6 +31,75 @@
 static const double fABSMIN = -3.0e+38;
 static const double fABSMAX =  3.0e+38;
 
+extern "C" {
+  const char *plcUnitTxtFromUnitCodeV2(unsigned unitCode)
+  {
+    const static char *const unitTxts[] = {
+      "",
+      "V",
+      "A",
+      "W",
+      "m",
+      "gr",
+      "Hz",
+      "T",
+      "K",
+      "C",
+      "F",
+      "bar",
+      "degree",
+      "Ohm",
+      "m/sec",
+      "m2/sec",
+      "m3/sec",
+      "s",
+      "counts",
+      "bar/sec",
+      "bar/sec2",
+      "F",
+      "H" };
+    if (unitCode < sizeof(unitTxts)/sizeof(unitTxts[0]))
+      return unitTxts[unitCode];
+
+    return "??";
+  }
+  const char *plcUnitPrefixTxtV2(int prefixCode)
+  {
+    if (prefixCode >= 0) {
+      switch (prefixCode) {
+      case 24:   return "Y";
+      case 21:   return "Z";
+      case 18:   return "E";
+      case 15:   return "P";
+      case 12:   return "T";
+      case 9:    return "G";
+      case 6:    return "M";
+      case 3:    return "k";
+      case 2:    return "h";
+      case 1:    return "da";
+      case 0:    return "";
+      default:
+        return "?";
+      }
+    } else {
+      switch (-prefixCode) {
+      case 1:   return "d";
+      case 2:   return "c";
+      case 3:   return "m";
+      case 6:   return "u";
+      case 9:   return "n";
+      case 12:  return "p";
+      case 15:  return "f";
+      case 18:  return "a";
+      case 21:  return "z";
+      case 24:  return "y";
+      default:
+        return "?";
+      }
+    }
+  }
+};
+
 asynStatus ethercatmcController::indexerInitialPollv2(void)
 {
   asynStatus status;
@@ -135,8 +204,8 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
               "SizeBytes=%u UnitCode=0x%X (%s%s) AllFlags=0x%X AbsMin=%e AbsMax=%e\n",
               modNamEMC, axisNo, devNum, descVersAuthors.desc, iTypCode, iOffsBytes,
               iSizeBytes, iUnit,
-              plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
-              plcUnitTxtFromUnitCode(iUnit & 0xFF),
+              plcUnitPrefixTxtV2(( (int8_t)((iUnit & 0xFF00)>>8))),
+              plcUnitTxtFromUnitCodeV2(iUnit & 0xFF),
               iAllFlags, fAbsMin, fAbsMax);
 
     asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
@@ -231,8 +300,8 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
         pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffsBytes, iTypCode);
         setStringParam(axisNo,  ethercatmcCfgDESC_RB_, descVersAuthors.desc);
         snprintf(unitCodeTxt, sizeof(unitCodeTxt), "%s%s",
-                 plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
-                 plcUnitTxtFromUnitCode(iUnit & 0xFF));
+                 plcUnitPrefixTxtV2(( (int8_t)((iUnit & 0xFF00)>>8))),
+                 plcUnitTxtFromUnitCodeV2(iUnit & 0xFF));
         setStringParam(axisNo,  ethercatmcCfgEGU_RB_, unitCodeTxt);
       }
       break;
@@ -263,8 +332,8 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
                      "TwinCAT_errorID");
           } else {
             snprintf(&metaValue[0], sizeof(metaValue) - 1, "%s%s",
-                     plcUnitPrefixTxt(( (int8_t)((iUnit & 0xFF00)>>8))),
-                     plcUnitTxtFromUnitCode(iUnit & 0xFF));
+                     plcUnitPrefixTxtV2(( (int8_t)((iUnit & 0xFF00)>>8))),
+                     plcUnitTxtFromUnitCodeV2(iUnit & 0xFF));
           }
           if (strlen(metaValue)) {
             asynPrint(pasynUserController_, ASYN_TRACE_INFO,

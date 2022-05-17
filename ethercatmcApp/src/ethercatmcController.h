@@ -232,8 +232,8 @@ extern "C" {
 
 
 extern "C" {
-  extern const char *plcUnitTxtFromUnitCode(unsigned unitCode);
-  extern const char *plcUnitPrefixTxt(int prefixCode);
+  extern const char *plcUnitTxtFromUnitCodeV2(unsigned unitCode);
+  extern const char *plcUnitPrefixTxtV2(int prefixCode);
   extern int parameter_is_floatV3(unsigned parameter_type);
   extern int parameter_is_rw_V3(unsigned parameter_type);
   extern unsigned parameter_has_lenInPlcParaV3(unsigned parameter_type);
