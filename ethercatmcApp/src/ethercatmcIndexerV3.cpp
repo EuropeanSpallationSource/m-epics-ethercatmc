@@ -25,6 +25,105 @@
 static const double fABSMIN = -3.0e+38;
 static const double fABSMAX =  3.0e+38;
 
+extern "C" {
+  const char *plcBaseUnitTxtFromUnitCodeV3(unsigned unitCode)
+  {
+    unsigned baseUnitCode = (unitCode & 0x3F);
+    const static char *const baseUnitTxts[] = {
+      "",
+      "device",
+      "bar",
+      "counts",
+      "degree",
+      "gr",
+      "m",
+      "m2",
+      "m3",
+      "sec",
+      "Ampere",
+      "Farad",
+      "Henry",
+      "°Kelvin",
+      "Ohm",
+      "Tesla",
+      "Volt",
+      "Watt",
+      "°Celsius",
+      "° Fahrenheit",
+      "bit",
+      "steps",
+      "???"};
+    if (baseUnitCode < sizeof(baseUnitTxts)/sizeof(baseUnitTxts[0]))
+      return baseUnitTxts[baseUnitCode];
+
+    return "??";
+  }
+
+  const char *plcTimeBaseTxtFromUnitCodeV3(unsigned unitCode)
+  {
+    unsigned timeBaseCode = (unitCode >> 6) & 0x1F;
+    const static char *const timeBaseTxts[] = {
+      "",
+      "??", //"1/",
+      "/sec",
+      "/sec2",
+      "/sec3",
+      "/min",
+      "/hour",
+      "/day",
+      "??" };
+    if (timeBaseCode < sizeof(timeBaseTxts)/sizeof(timeBaseTxts[0]))
+      return timeBaseTxts[timeBaseCode];
+
+    return "??";
+  }
+  const char *plcUnitExponentTxtV3(unsigned unitCode)
+  {
+    unsigned exponentCode = (unitCode >> 11) & 0x1F;
+    if (exponentCode < 0x10) {
+      /* we have 5 bits. The highest one is the sign */
+      switch (exponentCode) {
+      case 24:   return "Y";
+      case 21:   return "Z";
+      case 18:   return "E";
+      case 15:   return "P";
+      case 12:   return "T";
+      case 9:    return "G";
+      case 6:    return "M";
+      case 3:    return "k";
+      case 2:    return "h";
+      case 1:    return "da";
+      case 0:    return "";
+      default:
+        return "?";
+      }
+    } else {
+      switch (0x20 - exponentCode) {
+      case 1:   return "d";
+      case 2:   return "c";
+      case 3:   return "m";
+      case 6:   return "u";
+      case 9:   return "n";
+      case 12:  return "p";
+      case 15:  return "f";
+      case 18:  return "a";
+      case 21:  return "z";
+      case 24:  return "y";
+      default:
+        return "?";
+      }
+    }
+  }
+  void unitCodeToText(char *buf, size_t buflen, unsigned unitCode)
+  {
+    snprintf(buf, buflen, "%s %s %s",
+             plcUnitExponentTxtV3(unitCode),
+             plcBaseUnitTxtFromUnitCodeV3(unitCode),
+             plcTimeBaseTxtFromUnitCodeV3(unitCode));
+  }
+};
+
+
 /* Re-define calles without FILE and LINE */
 #define getPlcMemoryOnErrorStateChange(a,b,c)  getPlcMemoryOnErrorStateChangeFL(a,b,c,__FILE__, __LINE__)
 #define setPlcMemoryOnErrorStateChange(a,b,c)  setPlcMemoryOnErrorStateChangeFL(a,b,c,__FILE__, __LINE__)
@@ -376,19 +475,23 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
         parameter_index = NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_index);
         parameter_type = NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_type);
         char parameter_type_ascii[32];
+        unsigned unitCode = NETTOUINT(tmp1Descriptor.parameterDescriptor.unit);
+        char unitCodeTxt[40];
+        unitCodeToText(unitCodeTxt, sizeof(unitCodeTxt), unitCode);
+
         parameter_type_to_ASCII_V3(parameter_type_ascii,
                                    sizeof(parameter_type_ascii),
                                    parameter_type);
 
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X parameter_index=%u type=0x%X parameterDescriptor"
-                  " prev=0x%04X string=0x%04X param_type=0x%04X (%s) unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
+                  " prev=0x%04X string=0x%04X param_type=0x%04X (%s) unit=%s (0x%x) min=%f max=%f utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID, parameter_index,
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.descriptor_type_0x6114),
                   prev_descriptor_id,
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.string_description_id),
                   parameter_type, parameter_type_ascii,
-                  NETTOUINT(tmp1Descriptor.parameterDescriptor.unit),
+                  unitCodeTxt, unitCode,
                   NETTODOUBLE(tmp1Descriptor.parameterDescriptor.min_value),
                   NETTODOUBLE(tmp1Descriptor.parameterDescriptor.max_value),
                   tmp1Descriptor.parameterDescriptor.parameter_name);
@@ -599,7 +702,6 @@ ethercatmcController::indexerV3addDevice(unsigned devNum,
     case 0x5010:
       {
         ethercatmcIndexerAxis *pAxis;
-        char unitCodeTxt[40];
         pAxis = static_cast<ethercatmcIndexerAxis*>(asynMotorController::getAxis(axisNo));
         if (!pAxis) {
           pAxis = new ethercatmcIndexerAxis(this, axisNo, 0, NULL);
@@ -621,6 +723,10 @@ ethercatmcController::indexerV3addDevice(unsigned devNum,
             unsigned defaultLenInPlcPara = 8;
             status = indexerV3readParameterDescriptors(pAxis, descID, defaultLenInPlcPara);
           }
+        }
+        {
+          char unitCodeTxt[40];
+          setStringParam(axisNo,  ethercatmcCfgEGU_RB_, unitCodeTxt);
         }
       }
     }
@@ -763,18 +869,23 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
                 tmp1Descriptor.flagDescriptor.flag_name);
       break;
     case 0x6114:
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s descID=0x%04X type=0x%X parameterDescriptor prev=0x%04X string=0x%04X index=%u type=0x%04X unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.parameterDescriptor.descriptor_type_0x6114),
-                NETTOUINT(tmp1Descriptor.parameterDescriptor.prev_descriptor_id),
-                NETTOUINT(tmp1Descriptor.parameterDescriptor.string_description_id),
-                NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_index),
-                NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_type),
-                NETTOUINT(tmp1Descriptor.parameterDescriptor.unit),
-                NETTODOUBLE(tmp1Descriptor.parameterDescriptor.min_value),
-                NETTODOUBLE(tmp1Descriptor.parameterDescriptor.max_value),
-                tmp1Descriptor.parameterDescriptor.parameter_name);
+      {
+        unsigned unitCode = NETTOUINT(tmp1Descriptor.parameterDescriptor.unit);
+        char unitCodeTxt[40];
+        unitCodeToText(unitCodeTxt, sizeof(unitCodeTxt), unitCode);
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s descID=0x%04X type=0x%X parameterDescriptor prev=0x%04X string=0x%04X index=%u type=0x%04X unit=%s (0x%x) min=%f max=%f utf8_string=\"%s\"\n",
+                  modNamEMC, c_function_name, descID,
+                  NETTOUINT(tmp1Descriptor.parameterDescriptor.descriptor_type_0x6114),
+                  NETTOUINT(tmp1Descriptor.parameterDescriptor.prev_descriptor_id),
+                  NETTOUINT(tmp1Descriptor.parameterDescriptor.string_description_id),
+                  NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_index),
+                  NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_type),
+                  unitCodeTxt, unitCode,
+                  NETTODOUBLE(tmp1Descriptor.parameterDescriptor.min_value),
+                  NETTODOUBLE(tmp1Descriptor.parameterDescriptor.max_value),
+                  tmp1Descriptor.parameterDescriptor.parameter_name);
+      }
       break;
     case 0x620e:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
