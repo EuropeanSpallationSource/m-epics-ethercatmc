@@ -341,17 +341,17 @@ ethercatmcController::newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
   return status;
 }
 
-extern int parameter_is_floatV3(unsigned parameter_type)
+extern "C"  int parameter_is_floatV3(unsigned parameter_type)
 {
   return !!((parameter_type & 0xC000) == 0x4000);
 }
 
-extern int parameter_is_rw_V3(unsigned parameter_type)
+extern "C"  int parameter_is_rw_V3(unsigned parameter_type)
 {
   return !!((parameter_type & 0x3000) == 0x1000);
 }
 
-extern unsigned parameter_has_lenInPlcParaV3(unsigned parameter_type)
+extern "C" unsigned parameter_has_lenInPlcParaV3(unsigned parameter_type)
 {
   switch (parameter_type & 0x0C00) {
   case 0x0000: return 0;
