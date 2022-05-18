@@ -116,15 +116,16 @@ extern "C" {
   }
   void unitCodeToText(char *buf, size_t buflen, unsigned unitCode,
                       const char *mainBaseUnitTxt,
-                      const char *mainTimeBaseTxt)
+                      const char *mainUnitExponentTxt)
   {
     const char *plcBaseUnitTxt = getPlcBaseUnitTxtFromUnitCodeV3(unitCode);
     const char *plcTimeBaseTxt = getPlcTimeBaseTxtFromUnitCodeV3(unitCode);
     const char *plcUnitExponentTxt = getPlcUnitExponentTxtV3(unitCode);
 
+    /* if plcBaseUnitTxt == NULL, take both BaseUnit and UnitExponent from main */
     snprintf(buf, buflen, "%s%s%s",
-             plcUnitExponentTxt ? plcUnitExponentTxt : mainBaseUnitTxt,
-             plcBaseUnitTxt ? plcBaseUnitTxt : mainTimeBaseTxt,
+             plcBaseUnitTxt ? plcUnitExponentTxt : mainUnitExponentTxt,
+             plcBaseUnitTxt ? plcBaseUnitTxt : mainBaseUnitTxt,
              plcTimeBaseTxt);
   }
 };
@@ -318,7 +319,7 @@ ethercatmcController::newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
     double fAbsMax = NETTODOUBLE(tmp2Descriptor.parameterDescriptor.max_value);
     unsigned unitCode = NETTOUINT(tmp2Descriptor.parameterDescriptor.unit);
     char unitCodeTxt[40];
-    unitCodeToText(unitCodeTxt, sizeof(unitCodeTxt), unitCode, "?", "??");
+    unitCodeToText(unitCodeTxt, sizeof(unitCodeTxt), unitCode, "?", "?");
 
     setStringParam(axisNo,  ethercatmcCfgEGU_RB_, unitCodeTxt);
     setParamMeta(axisNo, ethercatmcCfgPMAX_RB_, "EGU", unitCodeTxt);
@@ -483,6 +484,13 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
   if (!mainTimeBaseTxt) mainTimeBaseTxt = "??";
   if (!mainUnitExponentTxt) mainUnitExponentTxt = "????";
 
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s%s descID=0x%04X target_param_descriptor_id=%u unit=\"%s%s%s\"\n",
+            modNamEMC, c_function_name, descID, target_param_descriptor_id,
+            mainBaseUnitTxt,
+            mainTimeBaseTxt,
+            mainUnitExponentTxt);
+
   while (!status && descID) {
     allDescriptors_type tmp1Descriptor;
     status = readMailboxV3(descID,
@@ -504,19 +512,22 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
         parameter_type = NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_type);
         char parameter_type_ascii[32];
         unitCode = NETTOUINT(tmp1Descriptor.parameterDescriptor.unit);
+        unitCodeToText(unitCodeTxt, sizeof(unitCodeTxt), unitCode,
+                       mainBaseUnitTxt, mainUnitExponentTxt);
+
         parameter_type_to_ASCII_V3(parameter_type_ascii,
                                    sizeof(parameter_type_ascii),
                                    parameter_type);
 
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X parameter_index=%u type=0x%X parameterDescriptor"
-                  " prev=0x%04X string=0x%04X param_type=0x%04X (%s) unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
+                  " prev=0x%04X string=0x%04X param_type=0x%04X (%s) unit=\"%s\" (0x%x) min=%f max=%f utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID, parameter_index,
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.descriptor_type_0x6114),
                   prev_descriptor_id,
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.string_description_id),
                   parameter_type, parameter_type_ascii,
-                  unitCode,
+                  unitCodeTxt, unitCode,
                   NETTODOUBLE(tmp1Descriptor.parameterDescriptor.min_value),
                   NETTODOUBLE(tmp1Descriptor.parameterDescriptor.max_value),
                   tmp1Descriptor.parameterDescriptor.parameter_name);
@@ -894,18 +905,15 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
     case 0x6114:
       {
         unsigned unitCode = NETTOUINT(tmp1Descriptor.parameterDescriptor.unit);
-        char unitCodeTxt[64];
-        unitCodeToText(unitCodeTxt, sizeof(unitCodeTxt), unitCode,
-                       mainBaseUnitTxt, mainTimeBaseTxt);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X type=0x%X parameterDescriptor prev=0x%04X string=0x%04X index=%u type=0x%04X unit=%s (0x%x) min=%f max=%f utf8_string=\"%s\"\n",
+                  "%s%s descID=0x%04X type=0x%X parameterDescriptor prev=0x%04X string=0x%04X index=%u type=0x%04X unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID,
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.descriptor_type_0x6114),
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.prev_descriptor_id),
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.string_description_id),
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_index),
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_type),
-                  unitCodeTxt, unitCode,
+                  unitCode,
                   NETTODOUBLE(tmp1Descriptor.parameterDescriptor.min_value),
                   NETTODOUBLE(tmp1Descriptor.parameterDescriptor.max_value),
                   tmp1Descriptor.parameterDescriptor.parameter_name);
