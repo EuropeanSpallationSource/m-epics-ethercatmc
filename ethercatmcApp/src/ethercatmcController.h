@@ -409,6 +409,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
 
   asynStatus indexerV3readParameterDescriptors(ethercatmcIndexerAxis *pAxis,
                                                unsigned descID,
+                                               unsigned target_param_descriptor_id,
                                                unsigned defaultLenInPlcPara);
   asynStatus indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
                                   unsigned descID);

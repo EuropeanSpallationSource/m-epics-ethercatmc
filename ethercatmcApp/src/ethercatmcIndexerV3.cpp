@@ -378,7 +378,7 @@ extern "C" void parameter_type_to_ASCII_V3(char *buf, size_t len,
     case 0x0000: function_parameter_str = "fn"; break;
     case 0x1000: function_parameter_str = "rw"; break;
     case 0x2000: function_parameter_str = "rd"; break;
-    case 0x3000: function_parameter_str = "rf"; break;
+    case 0x3000: function_parameter_str = "ro"; break;
   }
   switch (parameter_type & 0x0C00) {
     case 0x0000: bit_with_str = "main"; break;
@@ -603,9 +603,9 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
           lenInPlcPara = defaultLenInPlcPara;
         }
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s parameter_index=%u parameter_is_float=%d parameter_is_rw=%d lenInPlcPara=%u\n",
+                  "%s%s parameter_index=%u parameter_is_float=%d parameter_is_rw=%d unit=\"%s\" lenInPlcPara=%u\n",
                   modNamEMC, c_function_name, parameter_index,
-                  parameter_is_float, parameter_is_rw, lenInPlcPara);
+                  parameter_is_float, parameter_is_rw, unitCodeTxt, lenInPlcPara);
         if (parameter_index == PARAM_IDX_OPMODE_AUTO_UINT) {
           /* Special case for EPICS: We do not poll it in background */
           pAxis->setIntegerParam(motorStatusGainSupport_, 1);
