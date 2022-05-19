@@ -415,6 +415,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
                                 unsigned device_flags,
                                 const char *device_name);
 
+  int paramIndexToFunction(unsigned paramIndex);
   void parameterFloatReadBack(unsigned axisNo,
                               int initial,
                               unsigned paramIndex,

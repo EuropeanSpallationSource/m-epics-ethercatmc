@@ -723,6 +723,69 @@ ethercatmcController::getPlcMemoryFromProcessImage(unsigned indexOffset,
   return asynDisabled;
 }
 
+int ethercatmcController::paramIndexToFunction(unsigned paramIndex)
+{
+  switch(paramIndex) {
+  case PARAM_IDX_OPMODE_AUTO_UINT:
+    /* CNEN for EPICS */
+    return motorStatusGainSupport_;
+  case PARAM_IDX_MICROSTEPS_FLOAT:
+    return ethercatmcCfgSREV_RB_;
+  case PARAM_IDX_USR_MIN_FLOAT:
+    return ethercatmcCfgDLLM_RB_;
+  case PARAM_IDX_ABS_MIN_FLOAT:
+    return ethercatmcCfgPMIN_RB_;
+  case PARAM_IDX_ABS_MAX_FLOAT:
+   return ethercatmcCfgPMAX_RB_;
+  case PARAM_IDX_USR_MAX_FLOAT:
+    return ethercatmcCfgDHLM_RB_;
+  //case PARAM_IDX_WRN_MIN_FLOAT:
+  //case PARAM_IDX_WRN_MAX_FLOAT:
+  case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
+    return ethercatmcCfgPOSLAG_RB_;
+  case PARAM_IDX_HYTERESIS_FLOAT:
+    return ethercatmcCfgSPDB_RB_;
+    //return ethercatmcCfgRDBD_RB_;
+  case PARAM_IDX_REFSPEED_FLOAT:
+    return ethercatmcCfgHVEL_RB_;
+  case PARAM_IDX_SPEED_FLOAT:
+    return ethercatmcVel_RB_;
+  case PARAM_IDX_ACCEL_FLOAT:
+    return ethercatmcAcc_RB_;
+  //case PARAM_IDX_IDLE_CURRENT_FLOAT:
+  //case PARAM_IDX_MOVE_CURRENT_FLOAT:
+  //case PARAM_IDX_MICROSTEPS_UINT:
+  //case PARAM_IDX_STEPS_PER_UNIT_FLOAT:
+    return ethercatmcCfgUREV_RB_;
+  case PARAM_IDX_HOME_POSITION_FLOAT:
+    return ethercatmcHomPos_RB_;
+  //case PARAM_IDX_FUN_REFERENCE:
+  //case PARAM_IDX_FUN_SET_POSITION:
+  case PARAM_IDX_FUN_MOVE_VELOCITY:
+    return ethercatmcCfgJVEL_RB_;
+  case PARAM_IDX_USR_MIN_EN_UINT:
+    return ethercatmcCfgDLLM_En_RB_;
+  case PARAM_IDX_USR_MAX_EN_UINT:
+    return ethercatmcCfgDHLM_En_RB_;
+  case PARAM_IDX_HOMPROC_UINT:
+    return ethercatmcHomProc_RB_;
+  case PARAM_IDX_USR_MIN_EN_FLOAT:
+    return ethercatmcCfgDLLM_En_RB_;
+  case PARAM_IDX_USR_MAX_EN_FLOAT:
+    return ethercatmcCfgDHLM_En_RB_;
+  case PARAM_IDX_HOMPROC_FLOAT:
+    return ethercatmcHomProc_RB_;
+  case PARAM_IDX_UNITS_PER_REV_FLOAT:
+    return ethercatmcCfgUREV_RB_;
+  case PARAM_IDX_STEPS_PER_REV_FLOAT:
+    return ethercatmcCfgSREV_RB_;
+  case PARAM_IDX_MAX_VELO_FLOAT:
+    return ethercatmcCfgVMAX_RB_;
+  default:
+    return 0;
+  }
+}
+
 void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
                                                   int initial,
                                                   unsigned paramIndex,
