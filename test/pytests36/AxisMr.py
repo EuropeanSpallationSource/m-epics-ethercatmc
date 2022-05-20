@@ -1113,6 +1113,12 @@ class AxisMr:
         if vmax == 0.0:
             vmax = old_VELO
         jvel = self.axisCom.get(".JVEL")
+        if jvel == 0.0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} jvel={jvel}"
+            )
+            return False
+
         rdbd = self.axisCom.get(".RDBD")
         old_DHLM = self.axisCom.get("-CfgDHLM")
         old_DLLM = self.axisCom.get("-CfgDLLM")
