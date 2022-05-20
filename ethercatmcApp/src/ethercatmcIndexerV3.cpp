@@ -624,14 +624,13 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
           pAxis->drvlocal.enumparam_read_id[parameter_index] = enumparam_read_id;
         }
         {
-          unsigned axisNo = pAxis->axisNo_;
           if (parameter_index == PARAM_IDX_HYTERESIS_FLOAT) {
-            setParamMeta(axisNo, ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
-            setParamMeta(axisNo, ethercatmcCfgRDBD_RB_, "EGU", unitCodeTxt);
+            setParamMeta(pAxis->axisNo_, ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
+            setParamMeta(pAxis->axisNo_, ethercatmcCfgRDBD_RB_, "EGU", unitCodeTxt);
           } else if (unitCodeTxt[0]) {
             int function = paramIndexToFunction(parameter_index);
             if (function) {
-              setParamMeta(axisNo, ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
+              setParamMeta(pAxis->axisNo_, ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
             }
           }
         }
