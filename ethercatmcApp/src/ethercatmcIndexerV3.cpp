@@ -569,15 +569,28 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
         unsigned function_argument_id = NETTOUINT(tmp1Descriptor.functionDescriptor.function_argument_id);
         unsigned function_result_id = NETTOUINT(tmp1Descriptor.functionDescriptor.function_result_id);
         parameter_index = NETTOUINT(tmp1Descriptor.functionDescriptor.function_index);
-        parameter_type = 0x1000; /* A function is writable */
+        if (function_argument_id) {
+          allDescriptors_type tmp3Descriptor;
+          status = readMailboxV3(function_argument_id, &tmp3Descriptor, sizeof(tmp3Descriptor));
+          if (status) return status;
+          /* Take the parameter type from the paramater descriptor */
+          parameter_type = NETTOUINT(tmp3Descriptor.parameterDescriptor.parameter_type);
+        } else {
+          parameter_type = 0x1000; /* A function is writable */
+        }
+        char parameter_type_ascii[32];
+        parameter_type_to_ASCII_V3(parameter_type_ascii,
+                                   sizeof(parameter_type_ascii),
+                                   parameter_type);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%s%s descID=0x%04X parameter_index=%u type=0x%X functionDescriptor"
-                  " prev=0x%04X string=0x%04X  arg_id=0x%x res_id=0x%x fun_idx=%d flags=%x utf8_string=\"%s\"\n",
+                  " prev=0x%04X string=0x%04X  arg_id=0x%x res_id=0x%x param_type=0x%X (%s) fun_idx=%d flags=%x utf8_string=\"%s\"\n",
                   modNamEMC, c_function_name, descID, parameter_index,
                   NETTOUINT(tmp1Descriptor.functionDescriptor.descriptor_type_0x680e),
                   prev_descriptor_id,
                   NETTOUINT(tmp1Descriptor.functionDescriptor.string_description_id),
                   function_argument_id, function_result_id,
+                  parameter_type, parameter_type_ascii,
                   NETTOUINT(tmp1Descriptor.functionDescriptor.function_index),
                   NETTOUINT(tmp1Descriptor.functionDescriptor.function_flags),
                   tmp1Descriptor.functionDescriptor.function_name);
