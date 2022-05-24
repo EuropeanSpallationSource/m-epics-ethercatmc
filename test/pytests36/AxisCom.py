@@ -97,9 +97,14 @@ class AxisCom:
         if self.ctxt is not None:
             ret = self.ctxt.put(pvname, value, timeout=timeout, wait=wait)
             if self.log_debug:
-                print(
-                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} pvput_ret={ret}"
-                )
+                if ret == None:
+                    print(
+                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value}"
+                    )
+                else:
+                    print(
+                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} ret={ret}"
+                    )
         else:
             caput_ret = self.epics.caput(pvname, value, timeout=timeout, wait=wait)
             # This function returns 1 on success,
