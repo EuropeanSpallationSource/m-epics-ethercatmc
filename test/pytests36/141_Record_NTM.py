@@ -39,7 +39,12 @@ def moveVALnewRBVnewValNtmRtryDly(
     self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm, rtry, dly
 ):
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} startpos={startpos:.2f} firstVal={firstVal:.2f} travelDistance={self.travelDistance:.2f}pointOfReturnPos={pointOfReturnPos:.2f} secondVal={secondVal:.2f} ntm={ntm:d} rtry{rtry:d} dly={dly:.2f}"
+    )
+
     # Go to start
+    oldVELO = self.axisCom.get(".VELO")
     oldDLY = self.axisCom.get(".DLY")
     oldNTM = self.axisCom.get(".NTM")
     oldRTRY = self.axisCom.get(".RTRY")
@@ -48,26 +53,47 @@ def moveVALnewRBVnewValNtmRtryDly(
     self.axisCom.put(".NTM", ntm)
     self.axisCom.put(".RTRY", rtry)
     self.axisCom.put(".SPAM", 2047)
-    velo = self.axisCom.get(".VELO")
     vmax = self.axisCom.get(".VMAX")
-
+    velo = oldVELO
     if vmax > 0.0:
         self.axisCom.put(".VELO", vmax)
     self.axisMr.moveWait(tc_no, startpos)
 
-    if vmax > 0.0:
+    # Max velo: Move the whole range not faster than 4 seconds
+    hlm = self.axisCom.get(".HLM")
+    llm = self.axisCom.get(".LLM")
+
+    if hlm > llm:
+        velo = (hlm - llm) / 4.0
+        if velo > oldVELO:
+            velo = oldVELO
         self.axisCom.put(".VELO", velo)
 
     # Start a movement
     self.axisCom.put(".VAL", firstVal)
+    self.axisCom.putDbgStrToLOG("waitForStart Start" + str(int(tc_no)), wait=True)
     self.axisMr.waitForStart(tc_no, 2.0)
+    self.axisCom.putDbgStrToLOG("waitForStart End" + str(int(tc_no)), wait=True)
 
     maxDelta = velo + 2.0  # around our point
     timeout = self.axisMr.calcTimeOut(pointOfReturnPos + 1.0, velo)
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} maxDelta={maxDelta:.2f} velo={velo:.2f} timeout={timeout:.2f} "
+    )
     self.axisMr.waitForValueChanged(tc_no, ".RBV", pointOfReturnPos, maxDelta, timeout)
 
-    # Extra long timeout: The motor may overshoot, kind of
-    timeout = 2 * self.axisMr.calcTimeOut(secondVal, velo)
+    # Calculate timeout
+    accl = self.axisCom.get(".ACCL")
+    timeout = 2 * accl + 2.0
+    delta = hlm - llm
+    if velo != 0.0 and delta != 0 :
+        # Be prepared to travel forth and back twice
+        timeout += 2*delta / velo
+    else:
+        timeout += 60.0
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} NewVAL VAL={secondVal:.2f} timeout={timeout:.2f}"
+    )
     self.axisCom.putDbgStrToLOG("NewVAL " + str(tc_no), wait=True)
     self.axisCom.put(".VAL", secondVal)
 
@@ -82,6 +108,7 @@ def moveVALnewRBVnewValNtmRtryDly(
         f"{tc_no} moveVALnewRBVnewValNtmRtryDly valueChangedOK={valueChangedOK} postMoveCheckOK={postMoveCheckOK}"
     )
 
+    self.axisCom.put(".VELO", oldVELO)
     self.axisCom.put(".DLY", oldDLY)
     self.axisCom.put(".NTM", oldNTM)
     self.axisCom.put(".RTRY", oldRTRY)
@@ -158,9 +185,15 @@ class Test(unittest.TestCase):
     vmax = axisCom.get(".VMAX")
     msta = int(axisCom.get(".MSTA"))
     travelDistance = calcDistanceMax4Seconds(llm, hlm, velo, 4.0)
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm} hlm={hlm} velo={velo} travelDistance={travelDistance}"
+    )
 
     def test_TC_14100(self):
         tc_no = "14100"
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={self.llm:.2f} hlm={self.hlm:.2f} velo={self.velo:.2f} travelDistance={self.travelDistance:.2f}"
+        )
         self.axisMr.powerOnHomeAxis(tc_no)
 
     #
