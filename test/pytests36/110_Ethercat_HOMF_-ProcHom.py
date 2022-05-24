@@ -27,8 +27,8 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     old_high_limit = self.axisCom.get(".HLM")
     old_low_limit = self.axisCom.get(".LLM")
-    old_HomProc = self.axisCom.get("-HomProc")
-    old_HomPos = self.axisCom.get("-HomPos")
+    old_HomProc = 0  # default
+    old_HomPos = 0.0 # default
 
     if jogToLSBefore != 0:
         msta = int(self.axisCom.get(".MSTA"))
@@ -54,6 +54,9 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
         self.axisMr.moveWait(tc_no, (old_high_limit + old_low_limit) / 2.0)
 
     if homProc != 0:
+        old_HomProc = self.axisCom.get("-HomProc")
+        old_HomPos = self.axisCom.get("-HomPos")
+
         self.axisCom.put("-HomProc", homProc, wait=True)
         maxcnt = 5
         cnt = 1
