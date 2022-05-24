@@ -910,6 +910,12 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setDoubleParam(pC_->motorPosition_, actPosition);
     setDoubleParam(pC_->motorEncoderPosition_, actPosition);
   }
+  if (statusValid || nowMoving) {
+    /* These 2 bits are important to inform the motorRecord
+       when a motion is completed */
+    setIntegerParam(pC_->motorStatusMoving_, nowMoving);
+    setIntegerParam(pC_->motorStatusDone_, !nowMoving);
+  }
   if (statusValid) {
     int hls = idxReasonBits & 0x8 ? 1 : 0;
     int lls = idxReasonBits & 0x4 ? 1 : 0;
@@ -919,8 +925,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
     setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
     setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
-    setIntegerParam(pC_->motorStatusMoving_, nowMoving);
-    setIntegerParam(pC_->motorStatusDone_, !nowMoving);
     pC_->setUIntDigitalParam(axisNo_, pC_->ethercatmcStatusBits_,
                              (epicsUInt32)statusReasonAux,
                              0x03FFFFFF, 0x03FFFFFF);
