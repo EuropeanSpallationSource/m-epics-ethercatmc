@@ -45,8 +45,9 @@ class Test(unittest.TestCase):
 
     # per90 UserPosition
     def test_TC_1232(self):
+        tc_no = "1232"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1232"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -57,8 +58,9 @@ class Test(unittest.TestCase):
 
     # High soft limit in controller when using MoveVel
     def test_TC_1233(self):
+        tc_no = "1233"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1233"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
 
             jar = self.axisCom.get(".JAR")
@@ -103,8 +105,9 @@ class Test(unittest.TestCase):
 
     # per90 UserPosition
     def test_TC_1234(self):
+        tc_no = "1234"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1234-90-percent-UserPosition"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -115,8 +118,9 @@ class Test(unittest.TestCase):
 
     # High soft limit in controller when using MoveAbs
     def test_TC_1235(self):
+        tc_no = "1235"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "TC-1235-high-soft-limit-Moveabs"
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: Start"
             )

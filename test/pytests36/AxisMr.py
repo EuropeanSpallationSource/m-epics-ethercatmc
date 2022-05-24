@@ -310,7 +310,7 @@ class AxisMr:
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV")
             val = self.axisCom.get(".VAL")
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} val={val} rbv={rbv:.2f}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} val={val:.2f} rbv={rbv:.2f}"
             print(debug_text)
             if movn and not dmov:
                 return
@@ -356,9 +356,15 @@ class AxisMr:
             debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start_and_done_done={wait_for_done:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f} mipTxt={mipTxt}"
             print(debug_text)
             if dmov and not movn:
+                print(
+                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start_and_done_done: return OK"
+                )
                 return
             time.sleep(polltime)
             wait_for_done = wait_for_done - polltime
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start_and_done_done: raise Exception"
+        )
         raise Exception(debug_text)
 
     def waitForMipZero(self, tc_no, wait_for_mip_zero):
@@ -948,12 +954,16 @@ class AxisMr:
         raise Exception(debug_text)
         assert False
 
-    def setSoftLimitsOn(self, tc_no, low_limit, high_limit, direction=-1):
+    def setSoftLimitsOn(self, tc_no, low_limit=0.0, high_limit=0.0, initAbsMinMax=False):
         """
         Set the soft limits
         """
+        if initAbsMinMax:
+            high_limit = self.axisCom.get("-CfgPMAX-RB")
+            low_limit = self.axisCom.get("-CfgPMIN-RB")
+
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit={low_limit} high_limit={high_limit} direction={direction}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit={low_limit} high_limit={high_limit} initAbsMinMax={initAbsMinMax}"
         )
         # switch on the controller soft limits
         try:
@@ -1076,7 +1086,7 @@ class AxisMr:
         rlls = self.axisCom.get(".RLLS")
 
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov} movn={movn} stat={stat} sevr={sevr} miss={miss} rhls={rhls} rlls={rlls} val={val:.2f} rbv={rbv:.2f}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov:d} movn={movn:d} stat={stat:X} sevr={sevr} miss={miss:d} rhls={rhls:d} rlls={rlls:d} val={val:.2f} rbv={rbv:.2f}"
         )
         return (
             dmov == 1
@@ -1214,11 +1224,11 @@ class AxisMr:
         self.moveWait(tc_no, jog_start_pos)
         self.axisCom.put(".VELO", old_VELO)
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} lvio={int(lvio)}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} msta={self.getMSTAtext(mstaE)} lvio={int(lvio)}"
         )
 
         if doDisableSoftLimit:
-            self.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM, direction=direction)
+            self.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM)
         if setInfiniteSoftLimit:
             self.axisCom.put(softlimitFieldName, oldSoftLimitValue)
 

@@ -57,6 +57,7 @@ class Test(unittest.TestCase):
         tc_no = tc_no_base + 1
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         self.axisMr.powerOnHomeAxis(tc_no)
+        self.axisMr.setSoftLimitsOn(tc_no, initAbsMinMax=True)
         self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
 
     # high limit switch

@@ -41,12 +41,16 @@ class Test(unittest.TestCase):
     # Make sure that motor is homed
     def test_TC_1211(self):
         tc_no = "1211"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         self.axisMr.powerOnHomeAxis(tc_no)
+        self.axisMr.setSoftLimitsOn(tc_no, initAbsMinMax=True)
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
 
     # close-toHLM
     def test_TC_1212(self):
+        tc_no = "1212"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1212"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -57,8 +61,9 @@ class Test(unittest.TestCase):
 
     # High soft limit JOGF
     def test_TC_1213(self):
+        tc_no = "1213"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1213"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 1.0)
             self.axisMr.jogDirection(tc_no, 1)
@@ -84,10 +89,12 @@ class Test(unittest.TestCase):
 
     # close-toHLM
     def test_TC_1214(self):
+        tc_no = "1214"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
+
         axisCom = self.axisCom
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1214"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -97,10 +104,11 @@ class Test(unittest.TestCase):
             )
 
     def test_TC_1215(self):
+        tc_no = "1215"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         axisCom = self.axisCom
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1215"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 0.0)
             self.axisMr.jogDirection(tc_no, 1)
@@ -129,10 +137,11 @@ class Test(unittest.TestCase):
 
     # High soft limt JOGF
     def test_TC_1216(self):
+        tc_no = "1216"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         axisCom = self.axisCom
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1216"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 0.0)
             mip1 = int(self.axisCom.get(".MIP"))
@@ -173,10 +182,11 @@ class Test(unittest.TestCase):
 
     # close-toHLM UserPosition
     def test_TC_1217(self):
+        tc_no = "1217"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         axisCom = self.axisCom
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1217"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
@@ -187,10 +197,11 @@ class Test(unittest.TestCase):
 
     # High soft limit JOGR + DIR
     def test_TC_1218(self):
+        tc_no = "1218"
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         axisCom = self.axisCom
         axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1218"
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             saved_DIR = self.axisCom.get(".DIR")
             saved_FOFF = self.axisCom.get(".FOFF")
