@@ -503,6 +503,7 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
     unsigned parameter_type = 0;
     unsigned enumparam_read_id = 0;
     unsigned enumparam_write_id = 0;
+    double   max_value = 0.0;
     char unitCodeTxt[40];
     unitCodeTxt[0] = '\0';
 
@@ -513,6 +514,7 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
         unsigned prev_descriptor_id = NETTOUINT(tmp1Descriptor.parameterDescriptor.prev_descriptor_id);
         parameter_index = NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_index);
         parameter_type = NETTOUINT(tmp1Descriptor.parameterDescriptor.parameter_type);
+        max_value = NETTODOUBLE(tmp1Descriptor.parameterDescriptor.max_value);
         char parameter_type_ascii[32];
         unitCode = NETTOUINT(tmp1Descriptor.parameterDescriptor.unit);
         unitCodeToText(unitCodeTxt, sizeof(unitCodeTxt), unitCode,
@@ -637,6 +639,15 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
           pAxis->drvlocal.enumparam_read_id[parameter_index] = enumparam_read_id;
         }
         {
+          /* Max velocity for VMAX */
+          if (parameter_index == PARAM_IDX_SPEED_FLOAT) {
+            int initial = 1;
+            parameterFloatReadBack(pAxis->axisNo_,
+                                   initial,
+                                   PARAM_IDX_MAX_VELO_FLOAT,
+                                   max_value);
+          }
+            /* Set EGU. asyn that supports setParamMeta() is needed to make this work */
           if (parameter_index == PARAM_IDX_HYTERESIS_FLOAT) {
             setParamMeta(pAxis->axisNo_, ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
             setParamMeta(pAxis->axisNo_, ethercatmcCfgRDBD_RB_, "EGU", unitCodeTxt);
