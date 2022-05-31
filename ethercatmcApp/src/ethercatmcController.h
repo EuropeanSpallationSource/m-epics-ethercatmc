@@ -392,7 +392,7 @@ public:
 #define readMailboxV3(a,b,c) readMailboxV3FL(a,b,c, __FILE__, __LINE__)
 
 asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
-                                       unsigned parameter_index,
+                                       unsigned parameterIndex,
                                        unsigned enumparam_read_id,
                                        unsigned defaultLenInPlcPara);
 
