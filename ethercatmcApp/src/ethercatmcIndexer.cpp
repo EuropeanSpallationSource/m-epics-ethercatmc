@@ -992,6 +992,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                       ethercatmcstrStatus(status), (int)status);
             return status;
           }
+          parameterFloatReadBack(axisNo, initial, paramIndex, fValue);
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sparameters(%d) paramIdx=%s (%u) value=%f\n",
                     modNamEMC, axisNo,
@@ -1002,7 +1003,6 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
       if (paramIndexIsParameterToPoll(paramIndex)) {
         pAxis->addPollNowParam(paramIndex);
       }
-      parameterFloatReadBack(axisNo, initial, paramIndex, fValue);
     }
   }
   return status;
