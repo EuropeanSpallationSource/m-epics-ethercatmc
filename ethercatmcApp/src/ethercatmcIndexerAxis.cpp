@@ -1083,11 +1083,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                                                       drvlocal.lenInPlcPara);
           }
           if (!status) {
-            double fValue = -1.0;
             status = pC_->indexerParamRead(this,
                                            drvlocal.paramIfOffset,
                                            paramIndex,
-                                           &fValue);
+                                           &paramfValue);
             if (!status) {
               int initial = 1;
               pC_->parameterFloatReadBack(axisNo_,
