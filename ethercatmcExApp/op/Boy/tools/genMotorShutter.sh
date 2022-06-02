@@ -93,6 +93,7 @@ fi &&
 sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!"  <motorx.start >$$ &&
   echo "Creating $FILE" &&
   cat plcName.mid  >>$$ &&
+  cat plcHealthStatus.mid >>$$ &&
   if test "$HAS_PTP" != ""; then
     cat ptp.mid  >>$$
   fi &&

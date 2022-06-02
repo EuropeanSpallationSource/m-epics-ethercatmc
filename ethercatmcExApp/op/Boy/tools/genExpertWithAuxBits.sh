@@ -17,6 +17,9 @@ case $BASENAME in
   ethercatmcaxisExpert)
     yaux=y=416
     ;;
+  ethercatmcStatusWord1802)
+    yaux=y=18
+    ;;
   *)
     echo >&2 "invalid: $BASENAME"
     exit 1

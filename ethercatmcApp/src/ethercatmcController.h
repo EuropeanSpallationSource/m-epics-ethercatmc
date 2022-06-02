@@ -22,6 +22,7 @@ FILENAME...   ethercatmcController.h
 #endif
 
 #define MAX_AUX_BIT_SHOWN 24
+#define MAX_REASON_AUX_BIT_SHOW (MAX_AUX_BIT_SHOWN+2)
 
 #ifdef asynParamMetaMask
 #define ETHERCATMC_ASYN_PARAMMETA
@@ -424,12 +425,13 @@ public:
                                          unsigned iOffset,
                                          unsigned lenInPlcPara);
   asynStatus poll(void);
-  asynStatus newIndexerAxisV2(ethercatmcIndexerAxis *pAxis,
-                              unsigned devNum,
-                              unsigned iAllFlags,
-                              double   fAbsMin,
-                              double   fAbsMax,
-                              unsigned iOffset);
+  asynStatus newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
+                                     unsigned axisNo,
+                                     unsigned devNum,
+                                     unsigned iAllFlags,
+                                     double   fAbsMin,
+                                     double   fAbsMax,
+                                     unsigned iOffset);
   asynStatus newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
                               unsigned target_param_descriptor_id,
                               unsigned auxbits_bitfield_flag_descriptor_id,
@@ -494,6 +496,10 @@ public:
                                                 int function,
                                                 asynParamType myEPICSParamType);
 
+  void changedAuxBits_to_ASCII(int         axisNo,
+                               epicsUInt32 statusReasonAux,
+                               epicsUInt32 oldStatusReasonAux);
+
   struct {
     uint8_t      *pIndexerProcessImage;
     asynStatus   oldStatus;
@@ -524,6 +530,7 @@ public:
     pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
     unsigned numPilsAsynDevInfo;
     int lockADSlineno;
+    char changedAuxBits[MAX_REASON_AUX_BIT_SHOW][36];
   } ctrlLocal;
 
 

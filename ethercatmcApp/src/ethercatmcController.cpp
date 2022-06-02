@@ -54,6 +54,8 @@ extern "C" const char *errStringFromErrId(int nErrorId)
     return "Axis pos en";
   case 0x4225:
     return "Drv not en";
+  case 0x4257:
+    return "Fn not allwd";
   case 0x4450:
     return "Enc undeflw";
   case 0x4451:
