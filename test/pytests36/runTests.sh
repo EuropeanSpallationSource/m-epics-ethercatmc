@@ -94,23 +94,6 @@ if test "$ImageOS" = ubuntu20; then
   exit
 fi
 
-
-########################################
-#
-# conda or virtualenv
-#
-if ! which conda >/dev/null 2>&1; then
-  if test -z " $MYVIRTUALENV"; then
-    checkAndInstallSystemPackage conda anaconda || {
-      # conda installation failed, fall back to virtualenv
-      checkAndInstallSystemPackage py37-virtualenv virtualenv python-virtualenv || {
-        echo >2 "could not install virtualenv"
-        exit 1
-      }
-    }
-  fi
-fi
-
 ########################################
 if test -z "$MYVIRTUALENV"; then
   echo no VIRTUALENV found, trying conda
@@ -174,6 +157,13 @@ if ! type pytest >/dev/null 2>&1 ; then
     fi
     if test -r $VIRTUALENVDIR/bin/activate; then
       .  $VIRTUALENVDIR/bin/activate
+    elif test -z "$MYVIRTUALENV"; then
+      checkAndInstallSystemPackage py37-virtualenv virtualenv python-virtualenv || {
+        echo >2 "could not install virtualenv"
+      }
+      echo >2 "virtualenv has been installed"
+      echo >2 "Re-run the script"
+      exit 1
     else
       $MYVIRTUALENV --python=$PYTHON $VIRTUALENVDIR || {
         echo >&2 $MYVIRTUALENV failed
@@ -183,9 +173,11 @@ if ! type pytest >/dev/null 2>&1 ; then
     if test -r $VIRTUALENVDIR/bin/activate; then
       .  $VIRTUALENVDIR/bin/activate
     fi
-  elif which conda >/dev/null 2>&1; then
-    checkAndInstallPythonPackage pytest "conda install -c conda-forge pyTest"
-    checkAndInstallPythonPackage epics  "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
+  else
+    if which conda >/dev/null 2>&1; then
+      checkAndInstallPythonPackage pytest "conda install -c conda-forge pyTest"
+      checkAndInstallPythonPackage epics  "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
+    fi
   fi
   checkAndInstallPythonPackage epics "pip3 install pyepics" "pip install pyepics" &&
   checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST" || {
