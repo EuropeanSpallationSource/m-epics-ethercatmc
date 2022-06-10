@@ -247,6 +247,7 @@ asynStatus ethercatmcController::readMailboxV3FL(unsigned descID,
                                                  const char *fileName,
                                                  int lineNo)
 {
+  static const char * const c_function_name = "readMailboxV3";
   asynStatus status;
   unsigned value = descID;
   unsigned valueAcked = 0x8000 + value;
@@ -255,8 +256,8 @@ asynStatus ethercatmcController::readMailboxV3FL(unsigned descID,
     status = asynDisabled;
     asynPrint(pasynUserController_,
               ASYN_TRACE_INFO,
-              "%s%s:%d readDeviceIndexer descID=%d status=%s (%d)\n",
-              modNamEMC, fileName, lineNo, descID,
+              "%s%s descID=%d status=%s (%d)\n",
+              modNamEMC, c_function_name, descID,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
@@ -270,8 +271,8 @@ asynStatus ethercatmcController::readMailboxV3FL(unsigned descID,
   if (status) {
     asynPrint(pasynUserController_,
               ASYN_TRACE_INFO,
-              "%s%s:%d readMailboxV3 status=%s (%d)\n",
-              modNamEMC,fileName, lineNo,
+              "%s%s status=%s (%d)\n",
+              modNamEMC, c_function_name,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
@@ -297,8 +298,8 @@ asynStatus ethercatmcController::readMailboxV3FL(unsigned descID,
   status = asynDisabled;
   asynPrint(pasynUserController_,
             ASYN_TRACE_INFO,
-            "%sreadDeviceIndexer descID=0x%X counter=%u value=0x%X status=%s (%d)\n",
-            modNamEMC, descID, counter, value,
+            "%s%s descID=0x%X counter=%u value=0x%X status=%s (%d)\n",
+            modNamEMC, c_function_name, descID, counter, value,
             ethercatmcstrStatus(status), (int)status);
   return status;
 }
