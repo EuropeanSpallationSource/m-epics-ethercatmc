@@ -373,7 +373,7 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
   asynStatus status;
   unsigned cmd      = PARAM_IF_CMD_DOREAD + paramIndex;
   unsigned counter = 0;
-  unsigned lenInPlcPara;
+  unsigned lenInPlcPara = 0;
   if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
     lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
   } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
