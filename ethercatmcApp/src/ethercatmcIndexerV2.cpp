@@ -533,6 +533,12 @@ ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
         } else {
           pAxis->drvlocal.lenInPlcParaFloat[paramIndex] = 8; /* sizeof(double) */
         }
+        switch(paramIndex) {
+        case PARAM_IDX_OPMODE_AUTO_UINT:
+          /* CNEN for EPICS */
+          pAxis->setIntegerParam(motorStatusGainSupport_, 1);
+          break;
+        }
       }
     }
   }
