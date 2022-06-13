@@ -200,10 +200,10 @@ class AxisMr:
             ret = ret + "Lls"
         else:
             ret = ret + "..."
-        # if (msta & self.MSTA_BIT_GAIN_SUPPORT):
-        #    ret = ret + 'G'
-        # else:
-        #    ret = ret +'.'
+        if (msta & self.MSTA_BIT_GAIN_SUPPORT):
+           ret = ret + 'Gai'
+        else:
+           ret = ret +'...'
         if msta & self.MSTA_BIT_MOVING:
             ret = ret + "Mov"
         else:
