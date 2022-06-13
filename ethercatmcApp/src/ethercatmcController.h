@@ -387,6 +387,13 @@ public:
                                  const char *fileName,
                                  int lineNo);
 #define readDeviceIndexer(a,b) readDeviceIndexerFL(a,b,__FILE__, __LINE__)
+  /* IndexerV2 */
+  asynStatus readDeviceIndexerV2FL(unsigned devNum, unsigned infoType,
+                                   void *bufptr, size_t buflen,
+                                   const char *fileName,
+                                   int lineNo);
+#define readDeviceIndexerV2(a,b,c,d) readDeviceIndexerV2FL(a,b,c,d,__FILE__, __LINE__)
+
   asynStatus readMailboxV3FL(unsigned mbxNum, void *bufptr, size_t buflen,
                              const char *fileName, int lineNo);
 #define readMailboxV3(a,b,c) readMailboxV3FL(a,b,c, __FILE__, __LINE__)

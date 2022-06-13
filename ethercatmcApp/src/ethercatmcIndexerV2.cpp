@@ -159,6 +159,69 @@ asynStatus ethercatmcController::readDeviceIndexerFL(unsigned devNum,
 
 }
 
+asynStatus ethercatmcController::readDeviceIndexerV2FL(unsigned devNum,
+                                                       unsigned infoType,
+                                                       void *bufptr, size_t buflen,
+                                                       const char *fileName,
+                                                       int lineNo)
+{
+  const static char *const functionName = "readDeviceIndexerV2";
+ asynStatus status;
+  unsigned value = (devNum + (infoType << 8));
+  unsigned valueAcked = 0x8000 + value;
+  unsigned counter = 0;
+  if ((devNum > 0xFF) || (infoType > 0xFF)) {
+    status = asynDisabled;
+    asynPrint(pasynUserController_,
+              ASYN_TRACE_INFO,
+              "%s%s:%d %s devNum=%u infoType=%u status=%s (%d)\n",
+              modNamEMC, fileName, lineNo, functionName, devNum, infoType,
+              ethercatmcstrStatus(status), (int)status);
+    return status;
+  }
+
+  /* https://forge.frm2.tum.de/public/doc/plc/v2.0/singlehtml/
+     The ACK bit on bit 15 must be set when we read back.
+     devNum and infoType must match our request as well,
+     otherwise there is a collision.
+  */
+  status = setPlcMemoryInteger(ctrlLocal.indexerOffset, value, 2);
+  if (status) {
+    asynPrint(pasynUserController_,
+              ASYN_TRACE_INFO,
+              "%s%s:%d %s status=%s (%d)\n",
+              modNamEMC,fileName, lineNo, functionName,
+              ethercatmcstrStatus(status), (int)status);
+    return status;
+  }
+  status = asynDisabled;
+  while (counter < MAX_COUNTER) {
+    status = getPlcMemoryUint(ctrlLocal.indexerOffset, &value, 2);
+    if (status) {
+      asynPrint(pasynUserController_,
+                ASYN_TRACE_INFO,
+                "%s%s:%d readDeviceIndexer status=%s (%d)\n",
+                modNamEMC, fileName, lineNo,
+                ethercatmcstrStatus(status), (int)status);
+      return status;
+    }
+    if (value == valueAcked) break;
+    counter++;
+    epicsThreadSleep(calcSleep(counter));
+  }
+  if (status) {
+    asynPrint(pasynUserController_,
+              ASYN_TRACE_INFO,
+              "%sreadDeviceIndexer devNum=0x%X infoType=0x%X counter=%u value=0x%X status=%s (%d)\n",
+              modNamEMC, devNum, infoType, counter, value,
+              ethercatmcstrStatus(status), (int)status);
+    return status;
+  }
+  status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset +  1*2,
+                                          bufptr, buflen);
+  return status;
+}
+
 asynStatus ethercatmcController::indexerInitialPollv2(void)
 {
   asynStatus status;
@@ -188,8 +251,6 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
     unsigned iAllFlags = -1;
     double fAbsMin = 0;
     double fAbsMax = 0;
-    status = readDeviceIndexer(devNum, infoType0);
-    if (status) goto endPollIndexer;
     struct {
       uint8_t   typCode_0;
       uint8_t   typCode_1;
@@ -206,8 +267,8 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
       uint8_t   absMin[4];
       uint8_t   absMax[4];
     } infoType0_data;
-    status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset +  1*2,
-                                            &infoType0_data, sizeof(infoType0_data));
+    status = readDeviceIndexerV2(devNum, infoType0,
+                                 &infoType0_data, sizeof(infoType0_data));
     if (status) goto endPollIndexer;
     iTypCode  = infoType0_data.typCode_0 + (infoType0_data.typCode_1 << 8);
     iSizeBytes= infoType0_data.size_0 + (infoType0_data.size_1 << 8);
@@ -220,26 +281,22 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
     fAbsMax   = netToDouble(&infoType0_data.absMax,
                             sizeof(infoType0_data.absMax));
 
-    status = readDeviceIndexer(devNum, infoType4);
+    status = readDeviceIndexerV2(devNum, infoType4,
+                                 descVersAuthors.desc,
+                                 sizeof(descVersAuthors.desc));
     if (status) goto endPollIndexer;
-    getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                   descVersAuthors.desc,
-                                   sizeof(descVersAuthors.desc));
-    status = readDeviceIndexer(devNum, infoType5);
+    status = readDeviceIndexerV2(devNum, infoType5,
+                                 descVersAuthors.vers,
+                                 sizeof(descVersAuthors.vers));
     if (status) goto endPollIndexer;
-    getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                   descVersAuthors.vers,
-                                   sizeof(descVersAuthors.vers));
-    status = readDeviceIndexer(devNum, infoType6);
+    status = readDeviceIndexerV2(devNum, infoType6,
+                                 descVersAuthors.author1,
+                                 sizeof(descVersAuthors.author1));
     if (status) goto endPollIndexer;
-    getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                   descVersAuthors.author1,
-                                   sizeof(descVersAuthors.author1));
-    status = readDeviceIndexer(devNum, infoType7);
+    status = readDeviceIndexerV2(devNum, infoType7,
+                                 descVersAuthors.author2,
+                                 sizeof(descVersAuthors.author2));
     if (status) goto endPollIndexer;
-    getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                   descVersAuthors.author2,
-                                   sizeof(descVersAuthors.author2));
     switch (iTypCode) {
       case 0x1802:
         /* The first axisNo goes to axis#0, which is not used for axes
