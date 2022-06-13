@@ -102,63 +102,6 @@ extern "C" {
   }
 };
 
-asynStatus ethercatmcController::readDeviceIndexerFL(unsigned devNum,
-                                                     unsigned infoType,
-                                                     const char *fileName,
-                                                     int lineNo)
-{
-  asynStatus status;
-  unsigned value = (devNum + (infoType << 8));
-  unsigned valueAcked = 0x8000 + value;
-  unsigned counter = 0;
-  if ((devNum > 0xFF) || (infoType > 0xFF)) {
-    status = asynDisabled;
-    asynPrint(pasynUserController_,
-              ASYN_TRACE_INFO,
-              "%s%s:%d readDeviceIndexer devNum=%u infoType=%u status=%s (%d)\n",
-              modNamEMC, fileName, lineNo, devNum, infoType,
-              ethercatmcstrStatus(status), (int)status);
-    return status;
-  }
-
-  /* https://forge.frm2.tum.de/public/doc/plc/v2.0/singlehtml/
-     The ACK bit on bit 15 must be set when we read back.
-     devNum and infoType must match our request as well,
-     otherwise there is a collision.
-  */
-  status = setPlcMemoryInteger(ctrlLocal.indexerOffset, value, 2);
-  if (status) {
-    asynPrint(pasynUserController_,
-              ASYN_TRACE_INFO,
-              "%s%s:%d readDeviceIndexer status=%s (%d)\n",
-              modNamEMC,fileName, lineNo,
-              ethercatmcstrStatus(status), (int)status);
-    return status;
-  }
-  while (counter < MAX_COUNTER) {
-    status = getPlcMemoryUint(ctrlLocal.indexerOffset, &value, 2);
-    if (status) {
-      asynPrint(pasynUserController_,
-                ASYN_TRACE_INFO,
-                "%s%s:%d readDeviceIndexer status=%s (%d)\n",
-                modNamEMC, fileName, lineNo,
-                ethercatmcstrStatus(status), (int)status);
-      return status;
-    }
-    if (value == valueAcked) return asynSuccess;
-    counter++;
-    epicsThreadSleep(calcSleep(counter));
-  }
-  status = asynDisabled;
-  asynPrint(pasynUserController_,
-            ASYN_TRACE_INFO,
-            "%sreadDeviceIndexer devNum=0x%X infoType=0x%X counter=%u value=0x%X status=%s (%d)\n",
-            modNamEMC, devNum, infoType, counter, value,
-            ethercatmcstrStatus(status), (int)status);
-  return status;
-
-}
-
 asynStatus ethercatmcController::readDeviceIndexerV2FL(unsigned devNum,
                                                        unsigned infoType,
                                                        void *bufptr, size_t buflen,

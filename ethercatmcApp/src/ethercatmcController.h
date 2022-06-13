@@ -382,11 +382,6 @@ public:
                                         int lineNo);
 #define setSAFDoubleOnAxisViaADS(a,b,c,d) setSAFDoubleOnAxisViaADSFL(a,b,c,d,__FILE__, __LINE__)
 
-  /* Indexer */
-  asynStatus readDeviceIndexerFL(unsigned devNum, unsigned infoType,
-                                 const char *fileName,
-                                 int lineNo);
-#define readDeviceIndexer(a,b) readDeviceIndexerFL(a,b,__FILE__, __LINE__)
   /* IndexerV2 */
   asynStatus readDeviceIndexerV2FL(unsigned devNum, unsigned infoType,
                                    void *bufptr, size_t buflen,
