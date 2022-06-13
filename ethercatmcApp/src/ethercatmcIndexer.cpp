@@ -733,14 +733,9 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
                                                   unsigned paramIndex,
                                                   double fValue)
 {
-  asynMotorAxis *pAxis=getAxis((int)axisNo);
   const static double fullsrev = 200;    /* (default) Full steps/revolution */
 
   switch(paramIndex) {
-  case PARAM_IDX_OPMODE_AUTO_UINT:
-    /* CNEN for EPICS */
-    pAxis->setIntegerParam(motorStatusGainSupport_, 1);
-    break;
   case PARAM_IDX_MICROSTEPS_FLOAT:
     updateCfgValue(axisNo, ethercatmcCfgSREV_RB_, fullsrev * fValue, "srev");
     break;
@@ -806,18 +801,6 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
   case PARAM_IDX_HOME_POSITION_FLOAT:
     updateCfgValue(axisNo, ethercatmcHomPos_RB_, fValue, "homPosRB");
     if (initial) updateCfgValue(axisNo, ethercatmcHomPos_,   fValue, "hompos");
-    break;
-  case PARAM_IDX_FUN_REFERENCE:
-#ifdef  motorNotHomedProblemString
-    pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
-#endif
-    updateCfgValue(axisNo, ethercatmcHomeVis_, 1, "homeVis");
-    break;
-  case PARAM_IDX_FUN_SET_POSITION:
-#ifdef  motorNotHomedProblemString
-    pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
-#endif
-    updateCfgValue(axisNo, ethercatmcFoffVis_, 1, "foffVis");
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
     if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_RB_, fabs(fValue), "jvel");
@@ -901,6 +884,24 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
       // parameter is read or write
       double fValue = 0.0;
       int initial = 1;
+      switch(paramIndex) {
+      case PARAM_IDX_OPMODE_AUTO_UINT:
+        /* CNEN for EPICS */
+        pAxis->setIntegerParam(motorStatusGainSupport_, 1);
+        break;
+      case PARAM_IDX_FUN_REFERENCE:
+#ifdef  motorNotHomedProblemString
+        pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
+#endif
+        updateCfgValue(axisNo, ethercatmcHomeVis_, 1, "homeVis");
+        break;
+      case PARAM_IDX_FUN_SET_POSITION:
+#ifdef  motorNotHomedProblemString
+        pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
+#endif
+    updateCfgValue(axisNo, ethercatmcFoffVis_, 1, "foffVis");
+    break;
+      }
       if (paramIndexIsParameterToPoll(paramIndex) ||
           (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)) {
         /* Some parameters are functions: Don't read them.

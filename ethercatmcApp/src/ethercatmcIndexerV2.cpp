@@ -195,34 +195,24 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
     double fAbsMin = 0;
     double fAbsMax = 0;
     struct {
-      uint8_t   typCode_0;
-      uint8_t   typCode_1;
-      uint8_t   size_0;
-      uint8_t   size_1;
-      uint8_t   offset_0;
-      uint8_t   offset_1;
-      uint8_t   unit_0;
-      uint8_t   unit_1;
-      uint8_t   flags_0;
-      uint8_t   flags_1;
-      uint8_t   flags_2;
-      uint8_t   flags_3;
+      uint8_t   typCode[2];
+      uint8_t   sizeInBytes[2];
+      uint8_t   offset[2];
+      uint8_t   unit[2];
+      uint8_t   flags[4];
       uint8_t   absMin[4];
       uint8_t   absMax[4];
     } infoType0_data;
     status = readDeviceIndexerV2(devNum, infoType0,
                                  &infoType0_data, sizeof(infoType0_data));
     if (status) goto endPollIndexer;
-    iTypCode  = infoType0_data.typCode_0 + (infoType0_data.typCode_1 << 8);
-    iSizeBytes= infoType0_data.size_0 + (infoType0_data.size_1 << 8);
-    iOffsBytes= infoType0_data.offset_0 + (infoType0_data.offset_1 << 8);
-    iUnit     = infoType0_data.unit_0 + (infoType0_data.unit_1 << 8);
-    iAllFlags = infoType0_data.flags_0 + (infoType0_data.flags_1 << 8) +
-      (infoType0_data.flags_2 << 16) + (infoType0_data.flags_3 << 24);
-    fAbsMin   = netToDouble(&infoType0_data.absMin,
-                            sizeof(infoType0_data.absMin));
-    fAbsMax   = netToDouble(&infoType0_data.absMax,
-                            sizeof(infoType0_data.absMax));
+    iTypCode  = NETTOUINT(infoType0_data.typCode);
+    iSizeBytes= NETTOUINT(infoType0_data.sizeInBytes);
+    iOffsBytes= NETTOUINT(infoType0_data.offset);
+    iUnit     = NETTOUINT(infoType0_data.unit);
+    iAllFlags = NETTOUINT(infoType0_data.flags);
+    fAbsMin   = NETTODOUBLE(infoType0_data.absMin);
+    fAbsMax   = NETTODOUBLE(infoType0_data.absMax);
 
     status = readDeviceIndexerV2(devNum, infoType4,
                                  descVersAuthors.desc,
@@ -429,15 +419,13 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
         char auxBitName[34];
         unsigned infoType16 = 16;
         memset(&auxBitName, 0, sizeof(auxBitName));
-        status = readDeviceIndexer(devNum, infoType16 + auxBitIdx);
+        status = readDeviceIndexerV2(devNum, infoType16 + auxBitIdx,
+                                     auxBitName,
+                                     sizeof(auxBitName));
         if (status) return status;
-        status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset + 1*2,
-                                                auxBitName,
-                                                sizeof(auxBitName));
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sauxBitName(%d) auxBitName[%02u]=%s\n",
                   modNamEMC, axisNo, auxBitIdx, auxBitName);
-        if (status) return status;
         if (function <= ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN) {
           setStringParam(axisNo, function, auxBitName);
           setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
@@ -476,12 +464,15 @@ asynStatus
 ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
                                                   unsigned devNum)
 {
+  const static char *const functionName = "indexerReadAxisParametersV2";
   unsigned axisNo = pAxis->axisNo_;
   unsigned infoType15 = 15;
   asynStatus status;
   unsigned dataIdx;
+  uint8_t parameters_32[32];
 
-  status = readDeviceIndexer(devNum, infoType15);
+  status = readDeviceIndexerV2(devNum, infoType15,
+                               &parameters_32, sizeof(parameters_32));
   if (status) {
     asynPrint(pasynUserController_,
               ASYN_TRACE_INFO,
@@ -490,34 +481,14 @@ ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
-  for (dataIdx = 0; dataIdx < 16; dataIdx++) {
-    unsigned parameters;
-    int traceMask = 0;
-    parameters = -1;
-
-    status = getPlcMemoryUint(ctrlLocal.indexerOffset + (1 + dataIdx) * 2,
-                              &parameters, 2);
-    if (status) {
-      asynPrint(pasynUserController_,
-                ASYN_TRACE_INFO,
-                "%sindexerReadAxisParameters (%d) status=%s (%d)\n",
-                modNamEMC, axisNo,
-                ethercatmcstrStatus(status), (int)status);
-      return status;
-    }
-    /* dataIdx == 0 has ACK + infoType/devNum
-       dataIdx == 1 has supported parameters 15..0 */
-    asynPrint(pasynUserController_, traceMask,
-              "%sparameters[%03u..%03u]=0x%04X\n",
-              modNamEMC, dataIdx*16 +15,
-              dataIdx*16, parameters);
-    /* Where is the parameter interface to this device ?
-       See indexerDevice5008interface_type;,
-       indexerDevice5010interface_type in indexer.c */
+  for (dataIdx = 0; dataIdx < sizeof(parameters_32); dataIdx++) {
     unsigned bitIdx;
-
-    for (bitIdx = 0; bitIdx <= 15; bitIdx++) {
-      unsigned paramIndex = dataIdx*16 + bitIdx;
+    unsigned traceMask = ASYN_TRACE_INFO;
+    asynPrint(pasynUserController_, traceMask,
+              "%sparameters_32[%02u]=0x%02X\n",
+              modNamEMC, dataIdx, parameters_32[dataIdx]);
+    for (bitIdx = 0; bitIdx <= 7; bitIdx++) {
+      unsigned paramIndex = dataIdx*8 + bitIdx;
       if (paramIndex >= sizeof(pAxis->drvlocal.PILSparamPerm)) {
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sparameters(%d) paramIdx (%u 0x%02X) out of range\n",
@@ -525,19 +496,18 @@ ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
                   paramIndex, paramIndex);
         return asynError;
       }
-      unsigned bitIsSet = parameters & (1 << bitIdx) ? 1 : 0;
+      unsigned bitIsSet = parameters_32[dataIdx] & (1 << bitIdx) ? 1 : 0;
       if (bitIsSet) {
+        asynPrint(pasynUserController_, traceMask,
+                  "%s%s paramIndex=%u dataIdx=%u bitIdx=%u (%s)\n",
+                  modNamEMC, functionName,
+                  paramIndex, dataIdx, bitIdx,
+                  plcParamIndexTxtFromParamIndex(paramIndex));
         pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermWrite;
         if (paramIndexIsIntegerV2(paramIndex)) {
           pAxis->drvlocal.lenInPlcParaInteger[paramIndex] = 4; /* sizeof(int32) */
         } else {
           pAxis->drvlocal.lenInPlcParaFloat[paramIndex] = 8; /* sizeof(double) */
-        }
-        switch(paramIndex) {
-        case PARAM_IDX_OPMODE_AUTO_UINT:
-          /* CNEN for EPICS */
-          pAxis->setIntegerParam(motorStatusGainSupport_, 1);
-          break;
         }
       }
     }
