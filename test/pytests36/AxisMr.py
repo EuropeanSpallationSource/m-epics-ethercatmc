@@ -673,11 +673,14 @@ class AxisMr:
                         deltaFrac = delta * frac
                     else:
                         deltaFrac = delta
-                    line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n" % (
-                        motorStartPos + deltaFrac,
-                        self.myBVEL,
-                        self.myBAR,
-                        motorStartPos,
+                    line1 = (
+                        "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
+                        % (
+                            motorStartPos + deltaFrac,
+                            self.myBVEL,
+                            self.myBAR,
+                            motorStartPos,
+                        )
                     )
                     # The way the simulation is written,
                     # the motor/master re-tries and moves from startpos to startpos
@@ -721,11 +724,14 @@ class AxisMr:
                 else:
                     # Do not move relative 0
                     if deltaToMov1 != 0:
-                        line1 = "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n" % (
-                            motorStartPos + deltaToMov1,
-                            self.myVELO,
-                            self.myAR,
-                            motorStartPos,
+                        line1 = (
+                            "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
+                            % (
+                                motorStartPos + deltaToMov1,
+                                self.myVELO,
+                                self.myAR,
+                                motorStartPos,
+                            )
                         )
                     self.axisCom.putDbgStrToLOG(debug_text, wait=True)
                     # Move forward with backlash parameters
