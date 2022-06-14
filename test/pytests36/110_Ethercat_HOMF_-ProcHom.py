@@ -28,7 +28,7 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
     old_high_limit = self.axisCom.get(".HLM")
     old_low_limit = self.axisCom.get(".LLM")
     old_HomProc = 0  # default
-    old_HomPos = 0.0 # default
+    old_HomPos = 0.0  # default
 
     if jogToLSBefore != 0:
         msta = int(self.axisCom.get(".MSTA"))
@@ -166,6 +166,7 @@ class Test(unittest.TestCase):
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
             )
             homeTheMotor(self, tc_no, 0, START_FROM_HLS)
+
 
 #    def test_TC_11110(self):
 #        tc_no = "11110"

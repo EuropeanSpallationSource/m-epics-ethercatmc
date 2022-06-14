@@ -86,9 +86,9 @@ def moveVALnewRBVnewValNtmRtryDly(
     accl = self.axisCom.get(".ACCL")
     timeout = 2 * accl + 2.0
     delta = hlm - llm
-    if velo != 0.0 and delta != 0 :
+    if velo != 0.0 and delta != 0:
         # Be prepared to travel forth and back twice
-        timeout += 2*delta / velo
+        timeout += 2 * delta / velo
     else:
         timeout += 60.0
     print(

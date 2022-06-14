@@ -200,10 +200,10 @@ class AxisMr:
             ret = ret + "Lls"
         else:
             ret = ret + "..."
-        if (msta & self.MSTA_BIT_GAIN_SUPPORT):
-           ret = ret + 'Gai'
+        if msta & self.MSTA_BIT_GAIN_SUPPORT:
+            ret = ret + "Gai"
         else:
-           ret = ret +'...'
+            ret = ret + "..."
         if msta & self.MSTA_BIT_MOVING:
             ret = ret + "Mov"
         else:
@@ -960,7 +960,9 @@ class AxisMr:
         raise Exception(debug_text)
         assert False
 
-    def setSoftLimitsOn(self, tc_no, low_limit=0.0, high_limit=0.0, initAbsMinMax=False):
+    def setSoftLimitsOn(
+        self, tc_no, low_limit=0.0, high_limit=0.0, initAbsMinMax=False
+    ):
         """
         Set the soft limits
         """
