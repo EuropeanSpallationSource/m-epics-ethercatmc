@@ -21,6 +21,16 @@
   exit 1
 }
 
+BLACK_VERSION=22.3.0
+if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
+  pip install git+https://github.com/psf/black@22.3.0
+fi
+if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
+  echo >&2 black not found or wrong version
+  exit 1
+fi
+black *.py
+
 ##############################################################################
 # functions
 #
