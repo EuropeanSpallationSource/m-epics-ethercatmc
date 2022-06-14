@@ -25,7 +25,6 @@ epicsEnvSet("AXISCONFIG",    "cfgFile=./SimPosRestore.cfg")
 epicsEnvSet("ECAXISFIELDINIT", ",DVAL=10")
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 # Axis 11
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m11)")
@@ -35,7 +34,6 @@ epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("ECAXISFIELDINIT", ",DVAL=11")
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 # Axis 12
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m12)")
@@ -45,7 +43,6 @@ epicsEnvSet("AXISCONFIG",    "cfgFile=./SimPosRestore.cfg")
 epicsEnvSet("ECAXISFIELDINIT", ",DVAL=12")
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 # Axis 13
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m13)")
@@ -55,7 +52,6 @@ epicsEnvSet("AXISCONFIG",    "cfgFile=./SimPosRestore.cfg")
 epicsEnvSet("ECAXISFIELDINIT", ",DVAL=13")
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 # Axis 14
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m14)")
@@ -65,7 +61,6 @@ epicsEnvSet("AXISCONFIG",    "cfgFile=./SimPosRestore.cfg")
 epicsEnvSet("ECAXISFIELDINIT", ",DVAL=14")
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 
 # Axis 15
@@ -76,7 +71,6 @@ epicsEnvSet("AXISCONFIG",    "cfgFile=./SimPosRestore.cfg")
 epicsEnvSet("ECAXISFIELDINIT", ",DVAL=15")
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 # Axis 16
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m16)")
@@ -86,7 +80,6 @@ epicsEnvSet("AXISCONFIG",    "cfgFile=./SimPosRestore.cfg")
 epicsEnvSet("ECAXISFIELDINIT", ",DVAL=16")
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 # Axis 17
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m17)")
@@ -96,4 +89,3 @@ epicsEnvSet("AXISCONFIG",    "cfgFile=./SimPosRestore.cfg")
 epicsEnvSet("ECAXISFIELDINIT", ",DVAL=17")
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh

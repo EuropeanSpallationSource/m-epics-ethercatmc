@@ -1238,22 +1238,6 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modNamEMC, axisNo_, value);
 #endif
-  } else if (function == pC_->ethercatmcHomProc_) {
-    unsigned paramIndex = PARAM_IDX_HOMPROC_UINT;
-    double valueRB = -1;
-    if (drvlocal.PILSparamPerm[paramIndex] != PILSparamPermWrite) {
-      paramIndex = PARAM_IDX_HOMPROC_FLOAT;
-    }
-    status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetIntegerParam(%d ethercatmcHomProc)=%d  status=%s(%d)\n",
-              modNamEMC, axisNo_, value,
-              ethercatmcstrStatus(status), (int)status);
-    if (status == asynSuccess) {
-      int initial = 0;
-      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
-      status = asynSuccess;
-    }
   } else if (function == pC_->ethercatmcErrRst_) {
     if (value) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
@@ -1358,19 +1342,7 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
 asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value)
 {
   asynStatus status;
-  if (function == pC_->ethercatmcHomPos_) {
-    static const unsigned paramIndex = PARAM_IDX_HOME_POSITION_FLOAT;
-    double valueRB = -1;
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetDoubleParam(%d ethercatmcHomPos_)=%g\n", modNamEMC, axisNo_, value);
-    status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
-    if (status == asynSuccess) {
-      int initial = 0;
-      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
-      return asynSuccess;
-    }
-    return asynError;
-  } else if (function == pC_->ethercatmcCfgDHLM_) {
+  if (function == pC_->ethercatmcCfgDHLM_) {
     static const unsigned paramIndex = PARAM_IDX_USR_MAX_FLOAT;
     double valueRB = -1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,

@@ -28,7 +28,6 @@ DB += ethercatmcOpenClutch.template
 DB += ethercatmcPlcName.template
 DB += ethercatmcShutter.template
 DB += ethercatmcdebug.template
-DB += ethercatmchome.template
 DB += ethercatmcindexer.template
 DB += ethercatmcreadback.template
 DB += ethercatmcDefPos.template

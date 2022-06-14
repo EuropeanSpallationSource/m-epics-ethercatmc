@@ -73,10 +73,6 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcHomeVisString              "HomeVis"
 #define ethercatmcHomProc_RBString           "HomProc-RB"
 #define ethercatmcHomPos_RBString            "HomPos-RB"
-#define ethercatmcHomProcString              "HomProc"
-#define ethercatmcHomPosString               "HomPos"
-#define ethercatmcVelToHomString             "VelToHom"
-#define ethercatmcVelFrmHomString            "VelFrmHom"
 #define ethercatmcRawEncStepString           "RawEncStep"
 #define ethercatmcRawMtrStepString           "RawMtrStep"
 #define ethercatmcRawMtrVeloString           "RawMtrVelo"
@@ -568,10 +564,6 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   int ethercatmcHomeVis_;           /* HOMF/HOMR visible in GUI (motor can be calibrated with a homing sequence */
   int ethercatmcHomProc_RB_;        /* Homing procedure (even called homing sequence) from MCU */
   int ethercatmcHomPos_RB_;         /* Position of home sensor/switch, debug only */
-  int ethercatmcHomProc_;           /* Homing procedure towards the MCU, for testing only, to be removed ? */
-  int ethercatmcHomPos_;            /* Homing position towards the MCU, for testing only, to be removed ?  */
-  int ethercatmcVelToHom_;          /* Homing velocity towards CAM, ethercatmcAxis only, to be removed ? */
-  int ethercatmcVelFrmHom_;         /* Homing velocity from CAM, ethercatmcAxis only, to be removed ? */
   int ethercatmcRawEncStep_;        /* Raw encoder steps on the terminal, debug only */
   int ethercatmcRawMtrStep_;        /* Raw motor steps on the terminal, debug only */
   int ethercatmcRawMtrVelo_;        /* Raw motor veloclty on the terminal, debug only */

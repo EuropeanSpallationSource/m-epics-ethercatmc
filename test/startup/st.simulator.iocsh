@@ -22,4 +22,4 @@ epicsEnvSet("AXISCONFIG",    "stepSize=1.0;cfgFile=./SimAxis.cfg;encoder=ADSPORT
 < ethercatmcController.iocsh
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
+

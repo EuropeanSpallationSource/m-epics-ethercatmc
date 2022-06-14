@@ -25,7 +25,6 @@ SOURCES = \
 TEMPLATES = \
   ethercatmcApp/Db/ethercatmc.template \
   ethercatmcApp/Db/ethercatmcdebug.template \
-  ethercatmcApp/Db/ethercatmchome.template \
   ethercatmcApp/Db/ethercatmcindexer.template \
   ethercatmcApp/Db/ethercatmcreadback.template \
   ethercatmcApp/Db/ethercatmcslit_soft.template \

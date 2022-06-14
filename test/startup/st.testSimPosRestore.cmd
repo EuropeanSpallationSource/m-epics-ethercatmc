@@ -30,4 +30,4 @@ dbLoadRecords("ethercatmcreadback.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOT
 
 
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
+

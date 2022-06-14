@@ -22,7 +22,6 @@ epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 # Raw steps and velocity
 < ethercatmcRawMtrEnc.iocsh

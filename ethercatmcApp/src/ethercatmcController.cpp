@@ -185,10 +185,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   /* Outputs */
   createParam(ethercatmcDbgStrToMcuString,   asynParamOctet,       &ethercatmcDbgStrToMcu_);
   createParam(ethercatmcDbgStrToLogString,   asynParamOctet,       &ethercatmcDbgStrToLog_);
-  createParam(ethercatmcHomProcString,       asynParamInt32,       &ethercatmcHomProc_);
-  createParam(ethercatmcHomPosString,        asynParamFloat64,     &ethercatmcHomPos_);
-  createParam(ethercatmcVelToHomString,      asynParamFloat64,     &ethercatmcVelToHom_);
-  createParam(ethercatmcVelFrmHomString,     asynParamFloat64,     &ethercatmcVelFrmHom_);
   createParam(pilsLongoutRecordString,       asynParamInt32,       &pilsLongoutRecord_);
   createParam(pilsBoMinMaxString,            asynParamInt32,       &pilsBoMinMax_);
   createParam(ethercatmcErrRstString,        asynParamInt32,       &ethercatmcErrRst_);

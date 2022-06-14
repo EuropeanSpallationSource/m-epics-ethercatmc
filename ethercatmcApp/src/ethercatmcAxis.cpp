@@ -90,7 +90,6 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
 #endif
 
   drvlocal.scaleFactor = 1.0;
-  drvlocal.homProc = -1;
   if (axisOptionsStr && axisOptionsStr[0]) {
     const char * const encoder_is_str = "encoder=";
     const char * const cfgfile_str = "cfgFile=";
@@ -99,9 +98,7 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
     /* The non-ESS motor needs a dummy "stepm-size" to compensate for MRES */
     const char * const stepSize_str = "stepSize=";
 #endif
-    const char * const homProc_str         = "HomProc=";
     const char * const foffVis_str         = "FoffVis=";
-    const char * const homPos_str          = "HomPos=";
     const char * const adsPort_str         = "adsPort=";
     const char * const axisFlags_str       = "axisFlags=";
     const char * const powerAutoOnOff_str  = "powerAutoOnOff=";
@@ -149,17 +146,10 @@ ethercatmcAxis::ethercatmcAxis(ethercatmcController *pC, int axisNo,
       } else if (!strncmp(pThisOption, powerAutoOnOff_str, strlen(powerAutoOnOff_str))) {
         pThisOption += strlen(powerAutoOnOff_str);
         powerAutoOnOff = atoi(pThisOption);
-      } else if (!strncmp(pThisOption, homProc_str, strlen(homProc_str))) {
-        pThisOption += strlen(homProc_str);
-        drvlocal.homProc = atoi(pThisOption); /* See even readBackHoming() */
       } else if (!strncmp(pThisOption, foffVis_str, strlen(foffVis_str))) {
         pThisOption += strlen(foffVis_str);
         int foffVis = atoi(pThisOption);
         setIntegerParam(pC_->ethercatmcFoffVis_, foffVis);
-      } else if (!strncmp(pThisOption, homPos_str, strlen(homPos_str))) {
-        pThisOption += strlen(homPos_str);
-        double homPos = atof(pThisOption);
-        setDoubleParam(pC_->ethercatmcHomPos_, homPos);
       } else if (!strncmp(pThisOption, scaleFactor_str, strlen(scaleFactor_str))) {
         pThisOption += strlen(scaleFactor_str);
         drvlocal.scaleFactor = atof(pThisOption);
@@ -278,21 +268,9 @@ asynStatus ethercatmcAxis::readBackHoming(void)
 {
   asynStatus status;
   int    homProc = 0;
-  double homPos  = 0.0;
 
-  /* Don't read it, when the driver has been configured with HomProc= */
-  if (drvlocal.homProc >= 0) {
-    setIntegerParam(pC_->ethercatmcHomProc_, drvlocal.homProc);
-    return asynSuccess;
-  }
   status = getValueFromAxis("_EPICS_HOMPROC", &homProc);
-  if (!status) setIntegerParam(pC_->ethercatmcHomProc_, homProc);
-  status = getValueFromAxis("_EPICS_HOMPOS", &homPos);
-  if (status) {
-    /* fall back */
-    status = getSAFValueFromAxisPrint(0x5000, 0x103, "homPos", &homPos);
-  }
-  if (!status) setDoubleParam(pC_->ethercatmcHomPos_, homPos);
+  if (!status) setIntegerParam(pC_->ethercatmcHomProc_RB_, homProc);
   return asynSuccess;
 }
 
@@ -662,7 +640,7 @@ asynStatus ethercatmcAxis::home(double minVelocity, double maxVelocity, double a
   double homPos = 0.0;
 
   (void)pC_->getIntegerParam(axisNo_, pC_->ethercatmcHomeVis_, &homeVis);
-  (void)pC_->getIntegerParam(axisNo_, pC_->ethercatmcHomProc_, &homProc);
+  (void)pC_->getIntegerParam(axisNo_, pC_->ethercatmcHomProc_RB_, &homProc);
   if ((!homeVis) || (homProc == HOMPROC_MANUAL_SETPOS)) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%shome(%d) homeVis=%d homProc=%d\n",
@@ -670,32 +648,11 @@ asynStatus ethercatmcAxis::home(double minVelocity, double maxVelocity, double a
     return asynError;
   }
 
-  /* The homPos may be undefined, then use 0.0 */
-  (void)pC_->getDoubleParam(axisNo_, pC_->ethercatmcHomPos_, &homPos);
-
   drvlocal.eeAxisWarning = eeAxisWarningNoWarning;
   /* The controller will do the home search, and change its internal
      raw value to what we specified in fPosition. */
   if (pC_->features_ & FEATURE_BITS_ECMC) {
-    double velToHom;
-    double velFrmHom;
-    if (!status) status = stopAxisInternal(__FUNCTION__, 0);
-    if (!status) status = setValueOnAxis("fHomePosition", homPos);
-    if (!status) status = pC_->getDoubleParam(axisNo_,
-                                              pC_->ethercatmcVelToHom_,
-                                              &velToHom);
-    if (!status) status = pC_->getDoubleParam(axisNo_,
-                                              pC_->ethercatmcVelFrmHom_,
-                                              &velFrmHom);
-    if (!status) status = setSAFValueOnAxis(0x4000, 0x6,
-                                            velToHom);
-    if (!status) status = setSAFValueOnAxis(0x4000, 0x7,
-                                            velFrmHom);
-    if (!status)  status = setValuesOnAxis("fAcceleration", acceleration,
-                                           "fDeceleration", acceleration);
-    if (!status) status = setValueOnAxis("nCommand", nCommand );
-    if (!status) status = setValueOnAxis("nCmdData", homProc);
-    if (!status) status = setValueOnAxis("bExecute", 1);
+    return asynError;
   } else {
     snprintf(pC_->outString_, sizeof(pC_->outString_),
              "%sMain.M%d.bExecute=0;"
@@ -1442,7 +1399,7 @@ asynStatus ethercatmcAxis::setIntegerParam(int function, int value)
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modNamEMC, axisNo_, value);
 #endif
-  } else if (function == pC_->ethercatmcHomProc_) {
+  } else if (function == pC_->ethercatmcHomProc_RB_) {
     int foffVis = 0;
     int homeVis = 0;
     if (value == HOMPROC_MANUAL_SETPOS) {

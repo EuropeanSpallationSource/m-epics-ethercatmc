@@ -25,7 +25,6 @@ epicsEnvSet("AXISCONFIG",    "HomProc=1;HomPos=-63;encoder=ADSPORT=501/.ADR.16#3
 
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=MC-MCU-02:m2)")
@@ -35,7 +34,6 @@ epicsEnvSet("AXISCONFIG",    "HomProc=2;HomPos=64;encoder=ADSPORT=501/.ADR.16#30
 
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 
 ## Logical axes and slit
 epicsEnvSet("SLIT",          "$(SM_SLIT=MC-SLT-01:SltH-)")

@@ -29,7 +29,7 @@ epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
+
 # Predefined Positions
 # NVL: Input Value Location (INLINK)
 epicsEnvSet("NVL",           "")
@@ -46,7 +46,6 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 # Predefined Positions
 # NVL: Input Value Location (INLINK)
 epicsEnvSet("NVL",           "")
@@ -62,7 +61,6 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
-< ethercatmcAxishome.iocsh
 # Predefined Positions
 # NVL: Input Value Location (INLINK)
 epicsEnvSet("NVL",           "")

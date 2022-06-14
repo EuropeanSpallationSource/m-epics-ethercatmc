@@ -800,7 +800,6 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_HOME_POSITION_FLOAT:
     updateCfgValue(axisNo, ethercatmcHomPos_RB_, fValue, "homPosRB");
-    if (initial) updateCfgValue(axisNo, ethercatmcHomPos_,   fValue, "hompos");
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
     if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_RB_, fabs(fValue), "jvel");
@@ -815,7 +814,6 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_HOMPROC_UINT:
     updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
-    if (initial) updateCfgValue(axisNo, ethercatmcHomProc_, (int)fValue, "homproc");
     break;
   case PARAM_IDX_USR_MIN_EN_FLOAT:
     updateCfgValue(axisNo, ethercatmcCfgDLLM_En_RB_, (int)fValue, "dllm_en");
@@ -827,7 +825,6 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_HOMPROC_FLOAT:
     updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
-    if (initial) updateCfgValue(axisNo, ethercatmcHomProc_, (int)fValue, "homproc");
     break;
   case PARAM_IDX_UNITS_PER_REV_FLOAT:
     {
