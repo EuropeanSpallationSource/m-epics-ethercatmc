@@ -137,10 +137,9 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
     HomeVis = int(axisCom.get("-HomeVis"))
-    homProc = int(axisCom.get("-HomProc"))
     homProcRB = int(axisCom.get("-HomProc-RB"))
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} HomeVis={HomeVis} homProc={homProc} homProcRB={homProcRB}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} HomeVis={HomeVis} homProcRB={homProcRB}"
     )
 
     def test_TC_11100(self):
