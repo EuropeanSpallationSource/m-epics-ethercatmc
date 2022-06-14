@@ -483,7 +483,7 @@ ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
   }
   for (dataIdx = 0; dataIdx < sizeof(parameters_32); dataIdx++) {
     unsigned bitIdx;
-    unsigned traceMask = ASYN_TRACE_INFO;
+    unsigned traceMask = ASYN_TRACE_FLOW;
     asynPrint(pasynUserController_, traceMask,
               "%sparameters_32[%02u]=0x%02X\n",
               modNamEMC, dataIdx, parameters_32[dataIdx]);
