@@ -18,6 +18,7 @@ filnam = "100xx.py"
 
 polltime = 0.2
 
+
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
     print(
@@ -67,10 +68,9 @@ class Test(unittest.TestCase):
             time_to_wait -= polltime
             if msta & axisMr.MSTA_BIT_HOMED:
                 time_to_wait = 0
-        testPassed =  msta & axisMr.MSTA_BIT_HOMED
+        testPassed = msta & axisMr.MSTA_BIT_HOMED
         if testPassed:
             self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
         else:
             self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
         assert testPassed
-

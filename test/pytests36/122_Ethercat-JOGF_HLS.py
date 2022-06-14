@@ -67,7 +67,7 @@ class Test(unittest.TestCase):
 
     # high limit switch, disabling softlimts after the JOG
     # had been started. This is not supported by our MCU SW
-    #def test_TC_1223(self):
+    # def test_TC_1223(self):
     #    tc_no = tc_no_base + 3
     #    moveIntoLimitSwitch(self, tc_no, movingMethod="JOG", paramWhileMove=True)
 

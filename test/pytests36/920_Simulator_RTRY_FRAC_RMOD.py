@@ -324,21 +324,22 @@ class Test(unittest.TestCase):
             self, 92038, myBDST, motorRMOD_I, use_rel, self.myPOSlow, self.myPOSmid
         )
 
-##############################################################################
+    ##############################################################################
     # Test with "negative backlash destination", relative movements
     # position backward & backlash compensation, relative
     def test_TC_92104(self):
         positionAndBacklash(
             self, 92104, -myBDST, motorRMOD_D, use_rel, self.myPOShig, self.myPOSlow
         )
+
     # position backward & backlash compensation, relative
     def test_TC_92114(self):
         positionAndBacklash(
             self, 92114, -myBDST, motorRMOD_A, use_rel, self.myPOShig, self.myPOSlow
         )
+
     # position backward & backlash compensation, relative
     def test_TC_92124(self):
         positionAndBacklash(
             self, 92124, -myBDST, motorRMOD_G, use_rel, self.myPOShig, self.myPOSlow
         )
-

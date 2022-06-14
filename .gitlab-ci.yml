@@ -1,0 +1,4 @@
+#https://confluence.esss.lu.se/display/CSI/Software+Quality
+
+include:
+  - remote: 'https://gitlab.esss.lu.se/ics-infrastructure/gitlab-ci-yml/raw/master/PreCommit.gitlab-ci.yml'

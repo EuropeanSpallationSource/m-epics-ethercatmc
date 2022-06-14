@@ -61,6 +61,12 @@ ethercatmc_LIBS += motor
 ethercatmc_LIBS += softMotor
 endif
 
+ifneq (,$(findstring /,$(PVXS)))
+ethercatmc_LIBS += pvxsIoc
+ethercatmc_LIBS += pvxs
+ethercatmc_DBD  += pvxsIoc.dbd
+endif
+
 ifneq (,$(findstring /,$(TWINCATADS)))
 ethercatmc_LIBS += ads
 ethercatmc_DBD  += ads.dbd

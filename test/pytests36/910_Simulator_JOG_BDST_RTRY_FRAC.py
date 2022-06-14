@@ -187,7 +187,7 @@ class Test(unittest.TestCase):
         jogAndBacklash(
             self,
             91032,
-            noFRAC, ##withFRAC,
+            noFRAC,  ##withFRAC,
             use_rel,
             1,
             self.myPOSmid,
@@ -231,7 +231,7 @@ class Test(unittest.TestCase):
         jogAndBacklash(
             self,
             91042,
-            noFRAC, ##withFRAC,
+            noFRAC,  ##withFRAC,
             use_rel,
             1,
             self.myPOSmid,
