@@ -435,12 +435,15 @@ ethercatmcController::indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     strncpy(PILSenumsForAsyn.enumChars[auxBitIdx],
             tmp2Descriptor.enumDescriptor.enum_name,
             length);
-    PILSenumsForAsyn.enumStrings[auxBitIdx] = &PILSenumsForAsyn.enumChars[auxBitIdx][0];
     PILSenumsForAsyn.enumValues[auxBitIdx] = enum_value;
     auxBitIdx++;
   }
   if (parameterIndex == PARAM_IDX_HOMPROC_FLOAT) {
-    for (unsigned i = 0; i < auxBitIdx; i++) {
+    /* The dbd file may define all enums, but the current MCU ony some.
+     * So we need to fill in all 16 enum values
+     */
+    for (unsigned i = 0; i < MAX_VALUES_FOR_ENUM; i++) {
+      PILSenumsForAsyn.enumStrings[i] = &PILSenumsForAsyn.enumChars[i][0];
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s(%i) [%u] enumString=\"%s\" enumValue=%i\n",
                 modNamEMC, c_function_name, pAxis->axisNo_, i,
