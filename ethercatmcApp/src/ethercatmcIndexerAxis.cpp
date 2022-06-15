@@ -1227,11 +1227,8 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     if (value  && !drvlocal.dirty.initialPollNeeded ) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
                 "%s Communication error(%d)\n", modNamEMC, axisNo_);
+      memset(&drvlocal, 0, sizeof(drvlocal));
       memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
-      drvlocal.dirty.initialPollNeeded = 1;
-      drvlocal.devNum = 0;
-      drvlocal.iTypCode = 0;
-      drvlocal.iOffset = 0;
     }
 #ifdef motorPowerAutoOnOffString
   } else if (function == pC_->motorPowerAutoOnOff_) {
