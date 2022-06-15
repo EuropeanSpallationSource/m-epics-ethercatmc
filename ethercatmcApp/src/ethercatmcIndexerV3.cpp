@@ -688,8 +688,8 @@ ethercatmcController::indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
       {
         prev_descriptor_id = NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X type=0x%X bitfieldDescriptor prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
-                  modNamEMC, c_function_name, descID,
+                  "%s%s(%d) descID=0x%04X type=0x%X bitfieldDescriptor prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
+                  modNamEMC, c_function_name, axisNo, descID,
                   NETTOUINT(tmp1Descriptor.bitfieldDescriptor.descriptor_type_0x5008),
                   NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id),
                   NETTOUINT(tmp1Descriptor.bitfieldDescriptor.last_descriptor_id),
@@ -707,8 +707,8 @@ ethercatmcController::indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
         unsigned bit_number = NETTOUINT(tmp1Descriptor.flagDescriptor.bit_number);
         const char *flag_name = &tmp1Descriptor.flagDescriptor.flag_name[0];
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X type=0x%X flagDescriptor prev=0x%04X bit_number=%u utf8_string=\"%s\"\n",
-                  modNamEMC, c_function_name, descID,
+                  "%s%s(%d) descID=0x%04X type=0x%X flagDescriptor prev=0x%04X bit_number=%u utf8_string=\"%s\"\n",
+                  modNamEMC, c_function_name, axisNo, descID,
                   descriptor_type_XXXX,
                   prev_descriptor_id,
                   bit_number,
@@ -830,9 +830,8 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
     case 0x1010:
       numOfDevicesInPLC = NETTOUINT(tmp1Descriptor.plcDescriptor.number_of_devices);
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s descID=0x%04X type=0x%04X  plcDescriptor last=0x%04X plcdesc=0x%04X plcvers=0x%04X plcauthor=0x%04X slot_size=%u num_of_devices=%u flags=0x%x name=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.plcDescriptor.descriptor_type_0x1010),
+                "%s plcDescr descID=0x%04X last=0x%04X plcdesc=0x%04X plcvers=0x%04X plcauthor=0x%04X slot_size=%u num_of_devices=%u flags=0x%x name=\"%s\"\n",
+                modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.plcDescriptor.last_descriptor_id),
                 NETTOUINT(tmp1Descriptor.plcDescriptor.plc_description_id),
                 NETTOUINT(tmp1Descriptor.plcDescriptor.plc_version_descriptor_id),
@@ -857,9 +856,8 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
         unsigned device_offset = NETTOUINT(tmp1Descriptor.deviceDescriptor.device_offset);
         unsigned device_flags = NETTOUINT(tmp1Descriptor.deviceDescriptor.device_flags);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X type=0x%X deviceDescriptor prev=0x%04X string=0x%04X target=0x%04X auxbits=0x%04X paramters=0x%04X enum_errorID=0x%04X type_code=0x%04X offset=%u flags=0x%x name=\"%s\"\n",
-                  modNamEMC, c_function_name, descID,
-                  NETTOUINT(tmp1Descriptor.deviceDescriptor.descriptor_type_0x2014),
+                  "%s devDescr descID=0x%04X prev=0x%04X string=0x%04X target=0x%04X auxbits=0x%04X paramters=0x%04X enum_errorID=0x%04X type_code=0x%04X offset=%u flags=0x%x name=\"%s\"\n",
+                  modNamEMC, descID,
                   NETTOUINT(tmp1Descriptor.deviceDescriptor.prev_descriptor_id),
                   string_description_id,
                   target_param_descriptor_id,
@@ -908,27 +906,23 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
       break;
     case 0x3004:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s descID=0x%04X type=0x%X stringDescriptor prev=0x%04X utf8_string=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.stringDescriptor.descriptor_type_0x3004),
+                "%sstrgDesc descID=0x%04X prev=0x%04X utf8_string=\"%s\"\n",
+                modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.stringDescriptor.prev_descriptor_id),
                 tmp1Descriptor.stringDescriptor.utf8_string);
       break;
-
     case 0x4006:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s descID=0x%04X type=0x%X enumDescriptor prev=0x%04X enum_value=%u utf8_string=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.enumDescriptor.descriptor_type_0x4006),
+                "%senumDesc descID=0x%04X prev=0x%04X enum_value=%02u utf8_string=\"%s\"\n",
+                modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.enumDescriptor.prev_descriptor_id),
                 NETTOUINT(tmp1Descriptor.enumDescriptor.enum_value),
                 tmp1Descriptor.enumDescriptor.enum_name);
       break;
     case 0x5008:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s descID=0x%04X type=0x%X bitfieldDescriptor prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.descriptor_type_0x5008),
+                "%sbitfield descID=0x%04X prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
+                modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id),
                 NETTOUINT(tmp1Descriptor.bitfieldDescriptor.last_descriptor_id),
                 NETTOUINT(tmp1Descriptor.bitfieldDescriptor.lowest_bit),
@@ -937,9 +931,8 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
       break;
     case 0x5105:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s descID=0x%04X type=0x%X flagDescriptor prev=0x%04X bit_number=%u utf8_string=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.flagDescriptor.descriptor_type_0x5105),
+                "%sflagDesc descID=0x%04X prev=0x%04X bit_number=%u utf8_string=\"%s\"\n",
+                modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.flagDescriptor.prev_descriptor_id),
                 NETTOUINT(tmp1Descriptor.flagDescriptor.bit_number),
                 tmp1Descriptor.flagDescriptor.flag_name);
@@ -948,9 +941,8 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
       {
         unsigned unitCode = NETTOUINT(tmp1Descriptor.parameterDescriptor.unit);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s descID=0x%04X type=0x%X parameterDescriptor prev=0x%04X string=0x%04X index=%u type=0x%04X unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
-                  modNamEMC, c_function_name, descID,
-                  NETTOUINT(tmp1Descriptor.parameterDescriptor.descriptor_type_0x6114),
+                  "%sparaDesc descID=0x%04X prev=0x%04X string=0x%04X index=%u type=0x%04X unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
+                  modNamEMC, descID,
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.prev_descriptor_id),
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.string_description_id),
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.parameterIndex),
@@ -963,9 +955,8 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
       break;
     case 0x620e:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s descID=0x%04X type=0x%X enumparamDescriptor prev=0x%04X string=0x%04X read=0x%04X write=0x%04X index=0x%04X type=0x%04X utf8_string=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.enumparamDescriptor.descriptor_type_0x620e),
+                "%senumpara descID=0x%04X prev=0x%04X string=0x%04X read=0x%04X write=0x%04X index=0x%04X type=0x%04X utf8_string=\"%s\"\n",
+                modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.enumparamDescriptor.prev_descriptor_id),
                 NETTOUINT(tmp1Descriptor.enumparamDescriptor.string_description_id),
                 NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_read_id),
@@ -977,9 +968,8 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
     case 0x680c:
     case 0x680e:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s functionDescriptor descID=0x%04X type=0x%X prev=0x%04X string=0x%04X argument=0x%04X result=0x%04X index=0x%04X flags=0x%x utf8_string=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.functionDescriptor.descriptor_type_0x680e),
+                "%sfunDescr descID=0x%04X prev=0x%04X string=0x%04X arg=0x%04X res=0x%04X index=0x%04X flags=0x%x utf8_string=\"%s\"\n",
+                modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.functionDescriptor.prev_descriptor_id),
                 NETTOUINT(tmp1Descriptor.functionDescriptor.string_description_id),
                 NETTOUINT(tmp1Descriptor.functionDescriptor.function_argument_id),
@@ -990,9 +980,8 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
       break;
     case 0x7FFF:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s descID=0x%04X type=0x%X debugDescriptor cycleCounter=0x%04X lengthOfDebugDescriptor=%u name=\"%s\"\n",
-                modNamEMC, c_function_name, descID,
-                NETTOUINT(tmp1Descriptor.debugDescriptor.descriptor_type_0xFFFF),
+                "%sdebugDes descID=0x%04X cycleCounter=0x%04X lengthOfDebugDescriptor=%u name=\"%s\"\n",
+                modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.debugDescriptor.cycleCounter),
                 NETTOUINT(tmp1Descriptor.debugDescriptor.lengthOfDebugDescriptor),
                 tmp1Descriptor.debugDescriptor.message);
