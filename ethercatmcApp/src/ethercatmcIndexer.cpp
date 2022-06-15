@@ -896,8 +896,8 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
 #ifdef  motorNotHomedProblemString
         pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-    updateCfgValue(axisNo, ethercatmcFoffVis_, 1, "foffVis");
-    break;
+        updateCfgValue(axisNo, ethercatmcFoffVis_, 1, "foffVis");
+        break;
       }
       if (paramIndexIsParameterToPoll(paramIndex) ||
           (paramIndex == PARAM_IDX_FUN_MOVE_VELOCITY)) {
