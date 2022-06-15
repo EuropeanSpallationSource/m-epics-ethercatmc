@@ -394,11 +394,22 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
                                             &paramIf_from_MCU,
                                             lenInPLCparamIf);
 
-    if (status) return status;
+    if (status) {
+      int axisNo = pAxis->axisNo_;
+      asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
+                "%s:%d %s(%d) paramIfOffset=%u lenInPLCparamIf=%u status=%s (%d)\n",
+                fileName, lineNo, "indexerParamRead", axisNo,
+                paramIfOffset, (unsigned)lenInPLCparamIf,
+                ethercatmcstrStatus(status), (int)status);
+      return status;
+    }
     unsigned cmdSubParamIndexRB = NETTOUINT(paramIf_from_MCU.paramCtrl);
     unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
     if (counter > 1) {
       int axisNo = pAxis->axisNo_;
+      if (counter = MAX_COUNTER) {
+        traceMask |= ASYN_TRACE_INFO;
+      }
       asynPrint(pasynUserController_, traceMask, /* | ASYN_TRACE_INFO, */
                 "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
                 "counter=%u cmdSubParamIndexRB=%s (0x%04X)\n",
