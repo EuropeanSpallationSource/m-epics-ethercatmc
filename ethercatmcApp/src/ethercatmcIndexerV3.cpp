@@ -815,6 +815,7 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
   unsigned firstDeviceStartOffset = (unsigned)-1; /* Will be decreased while we go */
   unsigned lastDeviceEndOffset = 0;  /* will be increased while we go */
   asynStatus status;
+  int tracelevel = ASYN_TRACE_FLOW; //ASYN_TRACE_INFO;
   allDescriptors_type tmp1Descriptor;
   for (unsigned descID = 0; descID < 100; descID++) {
     status = readMailboxV3(descID, &tmp1Descriptor, sizeof(tmp1Descriptor));
@@ -851,7 +852,7 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
         unsigned type_code = NETTOUINT(tmp1Descriptor.deviceDescriptor.type_code);
         unsigned device_offset = NETTOUINT(tmp1Descriptor.deviceDescriptor.device_offset);
         unsigned device_flags = NETTOUINT(tmp1Descriptor.deviceDescriptor.device_flags);
-        asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+        asynPrint(pasynUserController_, tracelevel,
                   "%sdevDescr descID=0x%04X prev=0x%04X string=0x%04X target=0x%04X auxbits=0x%04X paramters=0x%04X enum_errorID=0x%04X type_code=0x%04X offset=%u flags=0x%x name=\"%s\"\n",
                   modNamEMC, descID,
                   NETTOUINT(tmp1Descriptor.deviceDescriptor.prev_descriptor_id),
@@ -916,7 +917,7 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
                 tmp1Descriptor.enumDescriptor.enum_name);
       break;
     case 0x5008:
-      asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+      asynPrint(pasynUserController_, tracelevel,
                 "%sbitfield descID=0x%04X prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
                 modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id),
@@ -926,7 +927,7 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
                 tmp1Descriptor.bitfieldDescriptor.bitfield_name);
       break;
     case 0x5105:
-      asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+      asynPrint(pasynUserController_, tracelevel,
                 "%sflagDesc descID=0x%04X prev=0x%04X bit_number=%u utf8_string=\"%s\"\n",
                 modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.flagDescriptor.prev_descriptor_id),
@@ -936,7 +937,7 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
     case 0x6114:
       {
         unsigned unitCode = NETTOUINT(tmp1Descriptor.parameterDescriptor.unit);
-        asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+        asynPrint(pasynUserController_, tracelevel,
                   "%sparaDesc descID=0x%04X prev=0x%04X string=0x%04X index=%u type=0x%04X unit=0x%x min=%f max=%f utf8_string=\"%s\"\n",
                   modNamEMC, descID,
                   NETTOUINT(tmp1Descriptor.parameterDescriptor.prev_descriptor_id),
@@ -950,7 +951,7 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
       }
       break;
     case 0x620e:
-      asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+      asynPrint(pasynUserController_, tracelevel,
                 "%senumpara descID=0x%04X prev=0x%04X string=0x%04X read=0x%04X write=0x%04X index=0x%04X type=0x%04X utf8_string=\"%s\"\n",
                 modNamEMC, descID,
                 NETTOUINT(tmp1Descriptor.enumparamDescriptor.prev_descriptor_id),
@@ -961,7 +962,6 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
                 NETTOUINT(tmp1Descriptor.enumparamDescriptor.enumparam_type),
                 tmp1Descriptor.enumparamDescriptor.enumparam_name);
       break;
-    case 0x680c:
     case 0x680e:
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                 "%sfunDescr descID=0x%04X prev=0x%04X string=0x%04X arg=0x%04X res=0x%04X index=0x%04X flags=0x%x utf8_string=\"%s\"\n",
