@@ -822,7 +822,6 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
     if (status) goto endPollIndexer3;
     unsigned descriptor_type_XXXX = NETTOUINT(tmp1Descriptor.genericDescriptor.descriptor_type);
     unsigned descriptor_prev_XXXX = 0x7FFF & NETTOUINT(tmp1Descriptor.genericDescriptor.descriptor_prev);
-    if (status) goto endPollIndexer3;
     switch (descriptor_type_XXXX) {
     case 0x1010:
       numOfDevicesInPLC = NETTOUINT(tmp1Descriptor.plcDescriptor.number_of_devices);
