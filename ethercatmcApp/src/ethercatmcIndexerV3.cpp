@@ -801,6 +801,13 @@ ethercatmcController::indexerV3addDevice(unsigned devNum,
           }
         }
       }
+    default:
+      asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+                "%s%s(%d) unsuport: type_code=0x%04X name=\"%s\"\n",
+                modNamEMC, c_function_name, axisNo,
+                type_code,
+                device_name);
+      return asynSuccess;
     }
     return status;
 }
