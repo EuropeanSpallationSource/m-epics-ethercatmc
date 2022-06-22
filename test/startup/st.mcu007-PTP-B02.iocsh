@@ -1,7 +1,4 @@
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
-
-#IOC: 172.30.38.12 
-#MCU: 172.30.38.37
 epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.38.37)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
