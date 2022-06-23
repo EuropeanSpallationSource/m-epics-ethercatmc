@@ -407,9 +407,7 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
     unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
     if (counter > 1) {
       int axisNo = pAxis->axisNo_;
-      if (counter = MAX_COUNTER) {
-        traceMask |= ASYN_TRACE_INFO;
-      }
+      traceMask |= ASYN_TRACE_INFO;
       asynPrint(pasynUserController_, traceMask, /* | ASYN_TRACE_INFO, */
                 "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
                 "counter=%u cmdSubParamIndexRB=%s (0x%04X)\n",
