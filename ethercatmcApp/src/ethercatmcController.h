@@ -11,6 +11,8 @@ FILENAME...   ethercatmcController.h
 #include "ethercatmcAxis.h"
 #include "ethercatmcADSdefs.h"
 
+#define MAXCNTADSSTATUS 10
+
 #ifndef VERSION_INT
 #  define VERSION_INT(V,R,M,P) ( ((V)<<24) | ((R)<<16) | ((M)<<8) | (P))
 #endif

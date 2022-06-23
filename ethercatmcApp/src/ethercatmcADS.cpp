@@ -13,7 +13,6 @@
 #endif
 
 //#define DEFAULT_CONTROLLER_TIMEOUT 2.0
-#define MAXCNTADSSTATUS 10
 
 static uint32_t invokeID;
 static int deftracelevel = ASYN_TRACE_DEBUG;

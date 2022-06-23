@@ -1030,34 +1030,37 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
   status = getPlcMemoryUint(ctrlLocal.indexerOffset,
                             &ctrlLocal.indexerOffset, 2);
   if (!status) {
-    double version = 0.0;
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sindexerOffset=%u\n",
-              modNamEMC, ctrlLocal.indexerOffset);
+    const char *version = "";
     if (iTmpVer == 0x44fbe0a4) {
       ctrlLocal.supported.bPILSv2 = 1;
-      version = 2015.02;
+      version = "2015.02";
       status = indexerInitialPollv2();
     } else if (iTmpVer == 0x44fca2e1) {
       ctrlLocal.supported.bPILSv3 = 1;
-      version = 2021.09;
+      version = "2021.09";
       status = indexerInitialPollv3();
     } else {
       status = asynDisabled;
     }
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sadsport=%u version=%f 0x%X\n",
-              modNamEMC, ctrlLocal.adsport, version, iTmpVer);
-  }
-  if (status) {
+    if (status == asynSuccess) {
+      ctrlLocal.cntADSstatus = 0;
+    }
+    if (ctrlLocal.cntADSstatus < MAXCNTADSSTATUS) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%sadsport=%u version='%s' 0x%X indexerOffset=%u\n",
+                modNamEMC, ctrlLocal.adsport, version, iTmpVer,
+                ctrlLocal.indexerOffset);
+      ctrlLocal.cntADSstatus++;
+    }
+    if (status != asynSuccess) {
 #ifdef motorMessageTextString
-    char buf[64];
-    snprintf(buf, sizeof(buf), "IndexerVers 0x%08X", iTmpVer);
-    (void)setStringParam(motorMessageText_, buf);
+      char buf[64];
+      snprintf(buf, sizeof(buf), "IndexerVers 0x%08X", iTmpVer);
+      (void)setStringParam(motorMessageText_, buf);
 #endif
-
-    /* Clean up, if we manged to come half-through only */
-    indexerDisconnected();
+      /* Clean up, if we manged to come half-through only */
+      indexerDisconnected();
+    }
   }
   return status;
 }
@@ -1569,9 +1572,11 @@ asynStatus ethercatmcController::indexerPoll(void)
 
 void ethercatmcController::indexerDisconnected(void)
 {
-  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s%s\n",
-            modNamEMC, "indexerDisconnected");
+  if (!ctrlLocal.oldStatus || ctrlLocal.numPilsAsynDevInfo) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s\n",
+              modNamEMC, "indexerDisconnected");
+  }
   for (int axisNo=0; axisNo<numAxes_; axisNo++) {
     setIntegerParam(axisNo, motorStatusGainSupport_, 0);
     for (int function = ethercatmcNamAux0_;
