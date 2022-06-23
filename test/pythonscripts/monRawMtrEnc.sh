@@ -1,11 +1,12 @@
 #!/bin/sh
 
 # Our motor to work against
-if test -n "$P" ; then
+if test -z "$P" ; then
   export P=LabS-MCAG:MC-MCU-07:
 fi
-export P=IOC:
-export M=m1
+if test -z "$M" ; then
+  export M=m1
+fi
 
 
 if test -x ../../checkws.sh; then
@@ -43,8 +44,8 @@ basename="${mewithoutdir%.*}"
 #echo mewithoutdir=$mewithoutdir
 #echo basname=$basename
 
-LOGFILE=$basename.txt
-LOGFILE2=${basename}X.txt
+LOGFILE=$P$M-$basename.txt
+LOGFILE2=$P$M-${basename}X.txt
 #echo LOGFILE=$LOGFILE ; exit
 
 if test -f $LOGFILE; then
@@ -93,8 +94,8 @@ camonitor \
   ${P}${M}-RawEncStep${TSE} \
   ${P}${M}-RawMtrStep${TSE} \
   ${P}${M}-RawMtrVelo${TSE} \
- | tee $LOGFILE | ./monXXX.py | tee $LOGFILE2
-#  | tee $LOGFILE
+ | tee $LOGFILE | ./RawMtrEncPostprocess.py | tee $LOGFILE2
+
 
 
 
