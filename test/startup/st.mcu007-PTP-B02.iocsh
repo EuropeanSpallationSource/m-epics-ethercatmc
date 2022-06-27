@@ -47,6 +47,6 @@ epicsEnvSet("CHNO",     "0")
 #
 # Start polling, values are in millisconds
 #
-epicsEnvSet("MOVINGPOLLPERIOD", "50")
+epicsEnvSet("MOVINGPOLLPERIOD", "9")
 epicsEnvSet("IDLEPOLLPERIOD",   "100")
 ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
