@@ -6,8 +6,12 @@ import sys
 import time
 import traceback
 
-# from time import strftime
-# from time import gmtime
+# Script to post-process a logfile
+# reorder the fields: Timestamp first followed by the pvname
+# Translate the aux-bit changes into ASCII readable, by using the
+# auxbitname PVs
+# Do a mulit-turn calculation of motor (micro) steps and encoder ticks
+#
 
 
 # https://stackoverflow.com/questions/775049/how-do-i-convert-seconds-to-hours-minutes-and-seconds

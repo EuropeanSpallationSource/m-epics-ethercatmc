@@ -1,5 +1,12 @@
 #!/bin/sh
 
+
+#  Script to monitor MotorPositions
+#  The positions are timestamped inside the controller:
+#  see the "-TSE" pvs
+#  Monitor the values from the stepper terminal and the encoder
+#  terminal as well.
+
 # Our motor to work against
 if test -z "$P" ; then
   export P=LabS-MCAG:MC-MCU-07:
@@ -41,26 +48,22 @@ fi
 # The log file name is dependent on the name of this script
 mewithoutdir="${0##*/}"
 basename="${mewithoutdir%.*}"
-#echo mewithoutdir=$mewithoutdir
-#echo basname=$basename
+P_M_NO_COLON=$(echo $P$M | sed -e "s/:/_/g")
+LOGFILEBASENAME=$(echo log-$P_M_NO_COLON-$basename )
+export LOGFILEBASENAME
+echo LOGFILEBASENAME=$LOGFILEBASENAME
 
-LOGFILE=$P$M-$basename.txt
-LOGFILE2=$P$M-${basename}X.txt
-#echo LOGFILE=$LOGFILE ; exit
-
-if test -f $LOGFILE; then
-  timestamp=$(date "+%y-%m-%d-%H.%M.%S")
-  mkdir -p logs
-  test -f $LOGFILE && mv $LOGFILE ./logs/$timestamp-$LOGFILE || exit 1
-  test -f $LOGFILE2 && mv $LOGFILE2 ./logs/$timestamp-$LOGFILE2 || exit 1
-fi
-
-#
+#Move old logfiles out of the way
+mkdir -p logs
+timestamp=$(date "+%y-%m-%d-%H.%M.%S")
+for ext in .txt -processed.txt; do
+    test -f $LOGFILEBASENAME$ext && mv $LOGFILEBASENAME$ext logs/log-$P_M_NO_COLON-$timestamp$ext
+done
 
 TSE="-TSE"
 #TSE=""
 export TSE
-camonitor \
+pvmonitor \
   ${P}${M}-NamAuxBit0 \
   ${P}${M}-NamAuxBit1 \
   ${P}${M}-NamAuxBit2 \
@@ -85,6 +88,9 @@ camonitor \
   ${P}${M}-NamAuxBit21 \
   ${P}${M}-NamAuxBit22 \
   ${P}${M}-NamAuxBit23 \
+  ${P}${M}.ACCS \
+  ${P}${M}.VELO \
+  ${P}${M}.RDBD \
   ${P}${M}-CfgSREV-RB \
   ${P}${M}-CfgUREV-RB \
   ${P}${M}-PosAct${TSE} \
@@ -94,8 +100,4 @@ camonitor \
   ${P}${M}-RawEncStep${TSE} \
   ${P}${M}-RawMtrStep${TSE} \
   ${P}${M}-RawMtrVelo${TSE} \
- | tee $LOGFILE | ./RawMtrEncPostprocess.py | tee $LOGFILE2
-
-
-
-
+ | tee $LOGFILEBASENAME.txt | ./RawMtrEncPostprocess.py | tee $LOGFILEBASENAME-processed.txt
