@@ -112,7 +112,7 @@ auxbitnames = {
 }
 
 
-old_auxbits = 0
+old_auxbits = -1
 
 global wrappingMtrStepCounter
 wrappingMtrStepCounter = WrappingStepCounter()
@@ -152,7 +152,15 @@ def handle_statusbits(date, time, pvname, raw):
 
     while bit_no > 0:
         bit_mask = 1 << bit_no
-        if (new_auxbits ^ old_auxbits) & bit_mask:
+        if old_auxbits == -1:
+            if new_auxbits & bit_mask:
+                # Never have seen AUX bits in the log
+                # Print a line without the sign: "+" or "-"
+                if changed_txt == None:
+                    changed_txt = auxbitnames[bit_no]
+                else:
+                    changed_txt = changed_txt + " " + auxbitnames[bit_no]
+        elif (new_auxbits ^ old_auxbits) & bit_mask:
             if new_auxbits & bit_mask:
                 sign = "+"
             else:
@@ -165,7 +173,10 @@ def handle_statusbits(date, time, pvname, raw):
 
     if debug:
         print(f"handle_statusbits changed_txt={changed_txt}")
-    value = f"0x{old_auxbits:07x}->0x{new_auxbits:07x} ({changed_txt})"
+    if old_auxbits == -1:
+        value = f"({changed_txt})"
+    else:
+        value = f"0x{old_auxbits:07x}->0x{new_auxbits:07x} ({changed_txt})"
     line2 = format_line2(date, time, pvname, value)
     old_auxbits = new_auxbits
     return line2
