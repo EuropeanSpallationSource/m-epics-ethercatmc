@@ -803,12 +803,11 @@ ethercatmcController::indexerV3addDevice(unsigned devNum,
       }
       break;
     default:
-      asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-                "%s%s(%d) unsuport: type_code=0x%04X name=\"%s\"\n",
-                modNamEMC, c_function_name, axisNo,
-                type_code,
-                device_name);
-      return asynSuccess;
+      {
+        int function;
+        function = newPilsAsynDevice(axisNo, device_offset, type_code, device_name);
+        return (function < 0 ? asynError : asynSuccess);
+      }
     }
     return status;
 }
