@@ -91,10 +91,12 @@ pvmonitor \
   ${P}${M}.ACCS \
   ${P}${M}.VELO \
   ${P}${M}.RDBD \
+  ${P}${M}.VAL \
   ${P}${M}-CfgSREV-RB \
   ${P}${M}-CfgUREV-RB \
   ${P}${M}-PosAct${TSE} \
   ${P}${M}-VelAct${TSE} \
+  ${P}${M}-PLCopenStateMachine${TSE} \
   ${P}${M}-StatusCode${TSE} \
   ${P}${M}-StatusBits${TSE} \
   ${P}${M}-RawEncStep${TSE} \
