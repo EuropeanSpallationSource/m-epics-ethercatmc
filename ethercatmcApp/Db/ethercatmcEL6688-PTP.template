@@ -61,3 +61,13 @@ record(int64in, "$(PREFIX)SystemUTCtime")
     field(INP,  "@asyn($(MOTOR_PORT),0)SystemUTCtime")
     field(SCAN, "I/O Intr")
 }
+
+record(int64in, "$(PREFIX)SystemUTCtime-TSE")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "SystemUTCtime")
+    field(EGU,  "nanoSeconds")
+    field(INP,  "@asyn($(MOTOR_PORT),0)SystemUTCtime")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}
