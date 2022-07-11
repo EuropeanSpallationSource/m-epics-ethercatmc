@@ -29,6 +29,9 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 # Raw steps and velocity
 < ethercatmcRawMtrEnc.iocsh
 
+# PLCopen state machine
+< ethercatmcPLCopenStateMachine.iocsh
+
 # Predefined Positions
 epicsEnvSet("NVL",           "")
 epicsEnvSet("EGU",           "")
