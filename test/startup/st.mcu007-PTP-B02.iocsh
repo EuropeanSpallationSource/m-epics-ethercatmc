@@ -7,6 +7,10 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "1")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=192.168.88.57.1.1;amsNetIdLocal=172.30.38.12.1.1"
 
+# Do not start the poller yet
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
+
 < ethercatmcController.iocsh
 < ethercatmcEL6688-PTP.iocsh
 < ethercatmcEL6688-ExtSync.iocsh
