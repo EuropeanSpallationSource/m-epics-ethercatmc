@@ -109,7 +109,8 @@ if test -z "$MYVIRTUALENV"; then
   echo no VIRTUALENV found, trying conda
   if which conda >/dev/null 2>&1; then
     if test -n "$CONDA_PROMPT_MODIFIER"; then
-      echo "We use activated $CONDA_PYTHON_EXE"
+      #echo "We use activated $CONDA_PYTHON_EXE"
+      echo "We use activated $CONDA_PROMPT_MODIFIER"
       checkAndInstallPythonPackage pytest "conda install pyTest"
       checkAndInstallPythonPackage epics  "conda install pyepics"
     else
@@ -137,7 +138,7 @@ if ! type pytest >/dev/null 2>&1 ; then
 fi
 
 ##############################################################################
-if type $MYVIRTUALENV >/dev/null 2>&1; then
+if test -n "$MYVIRTUALENV" && type $MYVIRTUALENV >/dev/null 2>&1; then
   if which python3.9 >/dev/null 2>&1; then
     PYTHON=python3.9
   elif which python3.8 >/dev/null 2>&1; then
