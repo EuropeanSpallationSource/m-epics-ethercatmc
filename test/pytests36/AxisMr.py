@@ -1242,10 +1242,14 @@ class AxisMr:
 
         passed = True
         if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
+            errId = int(self.axisCom.get("-ErrId", use_monitor=False))
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} errId={errId:x}"
             )
-            passed = False
+            if errId == 0x4223:
+                self.resetAxis(tc_no)
+            else:
+                passed = False
 
         if (mstaE & ls_not_to_be_activated) != 0:
             print(
