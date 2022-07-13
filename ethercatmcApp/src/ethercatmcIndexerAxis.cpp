@@ -929,7 +929,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
     pC_->setUIntDigitalParam(axisNo_, pC_->ethercatmcStatusBits_,
                              (epicsUInt32)statusReasonAux,
-                             0x03FFFFFF, 0x03FFFFFF);
+                             0x0FFFFFFF, 0x0FFFFFFF);
     setIntegerParam(pC_->ethercatmcMcuErr_, hasError);
     if (drvlocal.auxBitsNotHomedMask) {
       homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;

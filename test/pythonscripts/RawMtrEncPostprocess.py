@@ -106,9 +106,10 @@ auxbitnames = {
     21: "AUXbit21",
     22: "AUXbit22",
     23: "AUXbit23",
-    24: "AUXbit24",
-    25: "AUXbit25",
-    26: "AUXbit26",
+    24: "StatPrbm",
+    25: "DynPrblm",
+    26: "LLS",
+    27: "HLS",
 }
 
 
@@ -144,7 +145,7 @@ def handle_namauxbit(line, match_namauxbit, raw):
 def handle_statusbits(date, time, pvname, raw):
     global old_auxbits
     new_auxbits = int(raw)
-    bit_no = 24
+    bit_no = 28
     changed_txt = None
 
     # if debug or True:

@@ -2,7 +2,7 @@ record(mbbiDirect, "$(PREFIX)$(MOTOR_NAME)-StatusBits")
 {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "StatusBits")
-    field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO) 0x3FFFFFF)StatusBits")
+    field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO) 0x0FFFFFFF)StatusBits")
     field(SCAN, "I/O Intr")
 }
 
