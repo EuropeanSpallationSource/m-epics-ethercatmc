@@ -555,9 +555,9 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
       {
         if (paramIndexRB == paramIndex) {
           asynPrint(pasynUserController_, traceMask,
-                    "%sindexerParamWrite(%d) paramIndex=%s(%u) value=%02g valueRB=%02g has_written=%d\n",
+                    "%sindexerParamWrite(%d) paramIndex=%s(%u 0x%02X) value=%02g valueRB=%02g has_written=%d\n",
                     modNamEMC, axisNo,
-                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                     value, valueRB, has_written);
           if (paramIndexIsMovingFunction(paramIndex)) {
             /* New param interface handling:
@@ -586,9 +586,9 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
         if (paramIndexRB != paramIndex || !has_written) {
           /* Send the write request, unless we already done it */
           asynPrint(pasynUserController_, traceMask,
-                    "%sindexerParamWrite(%d) writing to MCU paramIndex=%s(%u) value=%02g lenInPlcPara=%u has_written=%d\n",
+                    "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g lenInPlcPara=%u has_written=%d\n",
                     modNamEMC, axisNo,
-                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                     value, lenInPlcPara, has_written);
           status = setPlcMemoryOnErrorStateChange(paramIfOffset, &paramIf_to_MCU,
                                                   (unsigned)sizeof(paramIf_to_MCU));
@@ -625,8 +625,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
         /* No parameter settings during jogging/homing */
         if (paramIndexIsMovingFunction(paramIndexRB)) {
           asynPrint(pasynUserController_, traceMask,
-                    "%sindexerParamWrite(%d) paramIndex=%s(%u 0x%02X) value=%02g "
-                    "cmdSubParamIndexRB=%s (0x%04X)\n",
+                    "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g movingFun RB=%s (0x%04X)\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                     value,
