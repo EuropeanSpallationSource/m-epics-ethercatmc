@@ -9,7 +9,7 @@ epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "3")
 
 
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=172.30.244.59.1.1;amsNetIdLocal=10.102.10.13.1.1"
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=172.30.244.59.1.1;amsNetIdLocal=10.102.10.13.1.1")
 
 # No poller yet, see ethercatmcStartPoller at the end of the script
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
