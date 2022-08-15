@@ -273,17 +273,17 @@ export LOCALAMSNETID REMOTEAMSNETID
 # log/tee to file
 if test "$1" = "-l"; then
     if test -n "$SM_PREFIX"; then
-        XX_TXT=xx-$(echo $SM_PREFIX | sed -e "s/:$//g" | tr ":" "-" ).txt
+        LOG_TXT=log-$(echo $SM_PREFIX | sed -e "s/:$//g" | tr ":" "-" ).txt
     else
-        XX_TXT=xx-$MOTORCFG.txt
+        LOG_TXT=log-$MOTORCFG.txt
     fi
-    export XX_TXT
-  if test -f $XX_TXT; then
+    export LOG_TXT
+  if test -f $LOG_TXT; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
     mkdir -p ../logs/ &&
-    mv $XX_TXT ../logs/$timestamp-$MOTORCFG.txt || exit 1
+    mv $LOG_TXT ../logs/$timestamp-$MOTORCFG.txt || exit 1
   fi
-  DOLOG=" 2>&1 | tee $PWD/$XX_TXT"
+  DOLOG=" 2>&1 | tee $PWD/$LOG_TXT"
   shift
 fi
 export DOLOG
