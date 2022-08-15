@@ -19,6 +19,7 @@ lib/
 logs/
 O.*
 test/logs
+test/log-*.txt
 test/pytests36/venvpython3*/
 test/pytests36/*.*log*
 test/pytests36/*.*log*.failed
