@@ -555,7 +555,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
       {
         if (paramIndexRB == paramIndex) {
           asynPrint(pasynUserController_, traceMask,
-                    "%sindexerParamWrite(%d) paramIndex=%s(%u 0x%02X) value=%02g valueRB=%02g has_written=%d\n",
+                    "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g valueRB=%02g has_written=%d\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                     value, valueRB, has_written);
