@@ -1189,8 +1189,14 @@ asynStatus ethercatmcIndexerAxis::setClosedLoop(bool closedLoop)
             "%ssetClosedLoop(%d)=%d\n",  modNamEMC, axisNo_,
             (int)closedLoop);
   double fValue = closedLoop ? 0.0 : 1.0; /* 1.0 means disable */
-  return  pC_->indexerParamWrite(this, PARAM_IDX_OPMODE_AUTO_UINT,
-                                 fValue, NULL);
+  asynStatus status =  pC_->indexerParamWrite(this, PARAM_IDX_OPMODE_AUTO_UINT,
+                                              fValue, NULL);
+  //The PILS interface in the MCU should be able to return the actual
+  // value, if we change NULL from above with an &double,
+  // which would save us one transaction
+  // Need to check the PLC code first, before changing things here
+  (void)pollPowerIsOn();
+  return status;
 }
 
 asynStatus ethercatmcIndexerAxis::setGenericIntegerParam(int function, int value)
