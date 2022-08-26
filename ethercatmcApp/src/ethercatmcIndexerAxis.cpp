@@ -640,6 +640,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                                          asynSuccess);
       pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcStatusCode_,
                                          asynSuccess);
+      pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcMcuErr_,
+                                         asynSuccess);
+      pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->ethercatmcErrId_,
+                                         asynSuccess);
       updateMsgTxtFromDriver(NULL);
     }
   }
@@ -837,7 +841,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                 idxStatusCodeTypeToStr(idxStatusCode),
                 actPosition);
     }
-    drvlocal.dirty.old_ErrorId = errorID;
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
     pC_->changedAuxBits_to_ASCII(axisNo_, idxAuxBits, drvlocal.old_idxAuxBits);
@@ -945,9 +948,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     if (drvlocal.auxBitsEnabledMask) {
       powerIsOn = idxAuxBits & drvlocal.auxBitsEnabledMask ? 1 : 0;
     }
-    if (hasError) {
+    if (hasError || errorID) {
       char sErrorMessage[40];
       const char *errIdString = errStringFromErrId(errorID);
+      const char charEorW = hasError ? 'E' : 'W';
       memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
       if (!powerIsOn) {
         /*
@@ -957,13 +961,13 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
          * The error LED is still there
          */
         snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                 "E: (PowerOff) %X", errorID);
+                 "%c: (PowerOff) %X", charEorW, errorID);
       } else if (errIdString[0]) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "E: %s %X",
-                 errIdString, errorID);
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
+                 charEorW, errIdString, errorID);
       } else {
         snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                 "E: TwinCAT Err %X", errorID);
+                 "%c: TwinCAT Err %X", charEorW, errorID);
       }
       msgTxtFromDriver = sErrorMessage;
     } else if (localMode) {
@@ -973,10 +977,12 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     /* Update if we have an error now.
        Update even if we had an error before - it may have gone now,
        and the we need to set the NULL pointer */
-    if (hasError || drvlocal.dirty.old_hasError) {
+    if (hasError || errorID ||
+        drvlocal.dirty.old_hasError || drvlocal.dirty.old_ErrorId) {
       updateMsgTxtFromDriver(msgTxtFromDriver);
     }
     drvlocal.dirty.old_hasError = hasError;
+    drvlocal.dirty.old_ErrorId = errorID;
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
