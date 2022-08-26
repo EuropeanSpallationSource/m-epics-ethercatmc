@@ -51,7 +51,7 @@
   <format_type>1</format_type>
   <precision_from_pv>true</precision_from_pv>
   <transparent>false</transparent>
-  <pv_name>$(P)$(R)PlcName</pv_name>
+  <pv_name>$(PREFIX)PlcName</pv_name>
   <background_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
   </background_color>

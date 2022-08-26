@@ -52,7 +52,7 @@
   <format_type>1</format_type>
   <precision_from_pv>true</precision_from_pv>
   <transparent>false</transparent>
-  <pv_name>$(P)$(R)PlcName</pv_name>
+  <pv_name>$(PREFIX)PlcName</pv_name>
   <background_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
   </background_color>
@@ -121,7 +121,7 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_name>$(PREFIX)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="ReasonBitLED25-Visible" prop_id="visible" out_exp="false">
@@ -131,7 +131,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)NamBit25.SEVR</pv>
+        <pv trig="true">$(PREFIX)NamBit25.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -185,7 +185,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamBit25</pv_name>
+    <pv_name>$(PREFIX)NamBit25</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -196,7 +196,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)NamBit25.SEVR</pv>
+        <pv trig="true">$(PREFIX)NamBit25.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -257,7 +257,7 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(R)StatusBits</pv_name>
+    <pv_name>$(PREFIX)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="ReasonBitLED24-Visible" prop_id="visible" out_exp="false">
@@ -267,7 +267,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)NamBit24.SEVR</pv>
+        <pv trig="true">$(PREFIX)NamBit24.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -321,7 +321,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)NamBit24</pv_name>
+    <pv_name>$(PREFIX)NamBit24</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -332,7 +332,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)NamBit24.SEVR</pv>
+        <pv trig="true">$(PREFIX)NamBit24.SEVR</pv>
       </rule>
     </rules>
     <scale_options>

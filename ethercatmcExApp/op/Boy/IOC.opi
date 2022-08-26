@@ -18,7 +18,8 @@
   <height>600</height>
   <macros>
     <include_parent_macros>true</include_parent_macros>
-    <P>IOC:</P>
+    <PREFIX>IOC:</PREFIX>
+    <P>$(PREFIX)</P>
     <R></R>
   </macros>
   <name></name>
@@ -99,6 +100,7 @@ $(pv_value)</tooltip>
         <path>motor-4.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS-MCAG:MC-MCU-10:</PREFIX>
           <P>LabS-MCAG:MC-MCU-10:</P>
           <M1>m1</M1>
           <M2>m2</M2>
@@ -163,6 +165,7 @@ $(pv_value)</tooltip>
         <path>shutter-1.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>IOC:</PREFIX>
           <P>IOC:</P>
           <M>Shutter:</M>
           <R>Shutter:</R>
@@ -221,7 +224,8 @@ $(pv_value)</tooltip>
         <path>motor-4x4.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <P>PSI-ESTIARND:MC-MCU-01:</P>
+          <PREFIX>PSI-ESTIARND:MC-MCU-01:</PREFIX>
+          <P>PSI-ESTIARND:MC-MCU-01</P>
           <M1>m1</M1>
           <M2>m2</M2>
           <M3>m3</M3>
@@ -309,6 +313,7 @@ $(pv_value)</tooltip>
         <path>motor-6.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>IOC:</PREFIX>
           <P>IOC:</P>
           <M1>m1</M1>
           <M2>m2</M2>
@@ -377,6 +382,7 @@ $(pv_value)</tooltip>
         <path>motor-4.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS-MCAG:MC-MCU-003:</PREFIX>
           <P>LabS-MCAG:MC-MCU-003:</P>
           <M1>m1</M1>
           <M2>m2</M2>
@@ -441,6 +447,7 @@ $(pv_value)</tooltip>
         <path>motor-1-ptp.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS-MCAG:MC-MCU-07:</PREFIX>
           <P>LabS-MCAG:MC-MCU-07:</P>
           <M1>m1</M1>
           <R1>m1-</R1>
@@ -499,6 +506,7 @@ $(pv_value)</tooltip>
         <path>motor-4.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS-MCAG:MC-MCU-24:</PREFIX>
           <P>LabS-MCAG:MC-MCU-24:</P>
           <M1>m1</M1>
           <M2>m2</M2>
@@ -563,6 +571,7 @@ $(pv_value)</tooltip>
         <path>motor-2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS-MCAG:MC-MCU-15:</PREFIX>
           <P>LabS-MCAG:MC-MCU-15:</P>
           <M1>m1</M1>
           <M2>m2</M2>
@@ -623,6 +632,7 @@ $(pv_value)</tooltip>
         <path>motor-2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS-MCAG:MC-MCU-26:</PREFIX>
           <P>LabS-MCAG:MC-MCU-26:</P>
           <M1>m1</M1>
           <M2>m2</M2>
@@ -683,6 +693,7 @@ $(pv_value)</tooltip>
         <path>motor-4.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS-MCAG:MC-MCU-28:</PREFIX>
           <P>LabS-MCAG:MC-MCU-28:</P>
           <M1>m1</M1>
           <M2>m2</M2>
@@ -747,9 +758,10 @@ $(pv_value)</tooltip>
         <path>motor-1.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS-ESSIIP:MC-MCU-01:</PREFIX>
+          <P>LabS-ESSIIP:MC-MCU-01:</P>
           <M1>m1</M1>
           <R1>m1-</R1>
-          <P>LabS-ESSIIP:MC-MCU-01:</P>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -805,6 +817,7 @@ $(pv_value)</tooltip>
         <path>motor-2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>LabS</PREFIX>
           <P>LabS</P>
           <M1>-ESSIIP:MC-MCU-02:m1</M1>
           <M2>-ESSIIP:MC-MCU-02:m2</M2>
@@ -865,8 +878,8 @@ $(pv_value)</tooltip>
         <path>motor-4-ptp.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>YMIR-SpScn:MC-MCU-001:</PREFIX>
           <P>YMIR-</P>
-          <R>SpScn:MC-MCU-001:</R>
           <M1>SpScn:MC-X-01:m</M1>
           <M2>SpScn:MC-Y-01:m</M2>
           <M3>SpScn:MC-Z-01:m</M3>
@@ -931,6 +944,7 @@ $(pv_value)</tooltip>
         <path>motor-4x3.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>HZB-V20:MC-</PREFIX>
           <P>HZB-V20:MC-</P>
           <M1>SLT-01:SltH-Center</M1>
           <M2>SLT-01:SltH-Gap</M2>
@@ -1011,9 +1025,10 @@ $(pv_value)</tooltip>
         <path>shutter-1.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>Labs-MCAG:MC-MCU-032:</PREFIX>
+          <P>Labs-MCAG:MC-MCU-032:</P>
           <M>Shutter</M>
           <R>Shutter-</R>
-          <P>Labs-MCAG:MC-MCU-032:</P>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1069,6 +1084,7 @@ $(pv_value)</tooltip>
         <path>motor-3.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <PREFIX>YMIR-SE:MC-MCU-01:</PREFIX>
           <P>YMIR-SE:MC-MCU-01:</P>
           <M1>m1</M1>
           <M2>m2</M2>

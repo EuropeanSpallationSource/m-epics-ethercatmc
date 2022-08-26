@@ -51,7 +51,7 @@
   <format_type>1</format_type>
   <precision_from_pv>true</precision_from_pv>
   <transparent>false</transparent>
-  <pv_name>$(P)$(R)PlcName</pv_name>
+  <pv_name>$(PREFIX)PlcName</pv_name>
   <background_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
   </background_color>
@@ -157,7 +157,7 @@ $(pv_value)</tooltip>
   <format_type>0</format_type>
   <precision_from_pv>true</precision_from_pv>
   <transparent>false</transparent>
-  <pv_name>$(P)$(R)PTPState</pv_name>
+  <pv_name>$(PREFIX)PTPState</pv_name>
   <background_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
   </background_color>
@@ -182,7 +182,7 @@ $(pv_value)</tooltip>
       <exp bool_exp="pv0!=17">
         <value>true</value>
       </exp>
-      <pv trig="true">$(P)$(R)PTPState.STAT</pv>
+      <pv trig="true">$(PREFIX)PTPState.STAT</pv>
     </rule>
   </rules>
   <pv_value />
@@ -218,7 +218,7 @@ $(pv_value)</tooltip>
   <format_type>0</format_type>
   <precision_from_pv>true</precision_from_pv>
   <transparent>false</transparent>
-  <pv_name>$(P)$(R)PTPSyncSeqNum</pv_name>
+  <pv_name>$(PREFIX)PTPSyncSeqNum</pv_name>
   <background_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
   </background_color>
@@ -243,7 +243,7 @@ $(pv_value)</tooltip>
     <exp bool_exp="pv0!=17">
       <value>true</value>
     </exp>
-    <pv trig="true">$(P)$(R)PTPSyncSeqNum.STAT</pv>
+    <pv trig="true">$(PREFIX)PTPSyncSeqNum.STAT</pv>
   </rule>
   </rules>
   <pv_value />
@@ -279,7 +279,7 @@ $(pv_value)</tooltip>
   <format_type>0</format_type>
   <precision_from_pv>true</precision_from_pv>
   <transparent>false</transparent>
-  <pv_name>$(P)$(R)PTPOffset</pv_name>
+  <pv_name>$(PREFIX)PTPOffset</pv_name>
   <background_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
   </background_color>
@@ -304,7 +304,7 @@ $(pv_value)</tooltip>
       <exp bool_exp="pv0!=17">
         <value>true</value>
       </exp>
-      <pv trig="true">$(P)$(R)PTPOffset.STAT</pv>
+      <pv trig="true">$(PREFIX)PTPOffset.STAT</pv>
     </rule>
   </rules>
   <pv_value />
