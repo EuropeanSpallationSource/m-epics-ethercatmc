@@ -8,7 +8,7 @@ epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-MCAG:MC-MCU-24:)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "4")
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=169.254.61.196.1.1;amsNetIdLocal=172.30.38.12.1.1"
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=172.30.41.141.1.1;amsNetIdLocal=172.30.38.12.1.1"
 
 < ethercatmcController.iocsh
 
