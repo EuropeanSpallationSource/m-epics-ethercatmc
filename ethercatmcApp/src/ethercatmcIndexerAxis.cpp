@@ -310,7 +310,8 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
             position, relative, minVelocity, maxVelocity, acceleration);
 
   if (drvlocal.paramIfOffset) {
-    if (maxVelocity > 0.0) {
+    if ((maxVelocity > 0.0)  &&
+        (drvlocal.PILSparamPerm[PARAM_IDX_SPEED_FLOAT] == PILSparamPermWrite)) {
       double oldValue, valueRB;
       status = pC_->getDoubleParam(axisNo_, pC_->ethercatmcVel_RB_, &oldValue);
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
@@ -325,12 +326,16 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
                     "%smove (%d) status=%s (%d)\n",
                     "ethercatmcIndexerAxis", axisNo_,
                     ethercatmcstrStatus(status), (int)status);
-          return status;
+          if (status != asynParamWrongType) {
+            return status;
+          }
+        } else {
+          setDoubleParam(pC_->ethercatmcVel_RB_, maxVelocity);
         }
-        setDoubleParam(pC_->ethercatmcVel_RB_, maxVelocity);
       }
     }
-    if (acceleration > 0.0) {
+    if ((acceleration > 0.0) &&
+        (drvlocal.PILSparamPerm[PARAM_IDX_ACCEL_FLOAT] == PILSparamPermWrite)) {
       double oldValue, valueRB;
       status = pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
@@ -345,9 +350,12 @@ asynStatus ethercatmcIndexerAxis::move(double position, int relative,
                     "%smove (%d) status=%s (%d)\n",
                     "ethercatmcIndexerAxis", axisNo_,
                     ethercatmcstrStatus(status), (int)status);
-          return status;
+          if (status != asynParamWrongType) {
+            return status;
+          }
+        } else {
+          setDoubleParam(pC_->ethercatmcAcc_RB_, acceleration);
         }
-        setDoubleParam(pC_->ethercatmcAcc_RB_, acceleration);
       }
     }
   }
@@ -457,7 +465,8 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
   if (!motorStatusDone) {
     stopAxisInternal("moveVelocity", acceleration);
   }
-  if (acceleration > 0.0) {
+  if ((acceleration > 0.0) &&
+      (drvlocal.PILSparamPerm[PARAM_IDX_ACCEL_FLOAT] == PILSparamPermWrite)) {
     double oldValue, valueRB;
     pC_->getDoubleParam(axisNo_, pC_->ethercatmcAcc_RB_, &oldValue);
     if (acceleration != oldValue) {
@@ -468,9 +477,12 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
                   "%smoveVelocity (%d) status=%s (%d)\n",
                   "ethercatmcIndexerAxis", axisNo_,
                   ethercatmcstrStatus(status), (int)status);
-        return status;
+        if (status != asynParamWrongType) {
+          return status;
+        }
+      } else {
+        setDoubleParam(pC_->ethercatmcAcc_RB_, acceleration);
       }
-      setDoubleParam(pC_->ethercatmcAcc_RB_, acceleration);
     }
   }
   status = pC_->indexerParamWrite(this, PARAM_IDX_FUN_MOVE_VELOCITY,

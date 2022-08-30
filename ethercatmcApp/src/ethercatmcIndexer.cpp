@@ -595,6 +595,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
           if (status) return status;
           has_written = 1;
         } else if (paramIndexRB == paramIndex) {
+          status = asynDisabled;
           if (pAxis) {
             if (paramIfCmd == PARAM_IF_CMD_ERR_NO_IDX) {
               status = asynParamBadIndex;
@@ -608,7 +609,6 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
               status = asynParamWrongType;
             }
           }
-          status = asynDisabled;
         }
         if (status != asynSuccess) {
           asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
