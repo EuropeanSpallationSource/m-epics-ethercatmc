@@ -74,6 +74,13 @@ record(ao, "$(PREFIX)$(MOTOR_NAME)-VELO")
 }
 
 
+record(ao, "$(PREFIX)$(MOTOR_NAME)-Home")
+{
+    field(DESC, "Home")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_HOME")
+}
+
 record(longout, "$(PREFIX)$(MOTOR_NAME)-Stop")
 {
     field(DESC, "Stop")
