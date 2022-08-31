@@ -22,8 +22,11 @@ START_FROM_LLS = -1
 START_FROM_MID = 0
 START_FROM_HLS = 1
 
+HOME_VIA_RECORD = 0  # home via the .HOMF or .HOMR field of the motorRecord
+HOME_VIA_DRIVER = 0  # home via the -Home PV talking to the model 3 driver
 
-def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
+
+def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     old_high_limit = self.axisCom.get(".HLM")
     old_low_limit = self.axisCom.get(".LLM")
@@ -90,7 +93,9 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore):
 
     msta = int(self.axisCom.get(".MSTA"))
     # We can home while sitting on a limit switch
-    if msta & self.axisMr.MSTA_BIT_MINUS_LS:
+    if homeViaDriver == 1:
+        self.axisCom.put("-Home", 0)
+    elif msta & self.axisMr.MSTA_BIT_MINUS_LS:
         self.axisCom.put(".HOMR", 1)
     else:
         self.axisCom.put(".HOMF", 1)
@@ -142,29 +147,53 @@ class Test(unittest.TestCase):
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} HomeVis={HomeVis} homProcRB={homProcRB}"
     )
 
-    def test_TC_11100(self):
-        tc_no = "11100"
+    def test_TC_111000(self):
+        tc_no = "111000"
         if self.HomeVis == 1:
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
             )
-            homeTheMotor(self, tc_no, 0, START_FROM_LLS)
+            homeTheMotor(self, tc_no, 0, START_FROM_LLS, HOME_VIA_RECORD)
 
-    def test_TC_11101(self):
-        tc_no = "11101"
+    def test_TC_111001(self):
+        tc_no = "111001"
         if self.HomeVis == 1:
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
             )
-            homeTheMotor(self, tc_no, 0, START_FROM_MID)
+            homeTheMotor(self, tc_no, 0, START_FROM_LLS, HOME_VIA_DRIVER)
 
-    def test_TC_11102(self):
-        tc_no = "11112"
+    def test_TC_111010(self):
+        tc_no = "111010"
         if self.HomeVis == 1:
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
             )
-            homeTheMotor(self, tc_no, 0, START_FROM_HLS)
+            homeTheMotor(self, tc_no, 0, START_FROM_MID, HOME_VIA_RECORD)
+
+    def test_TC_111011(self):
+        tc_no = "111011"
+        if self.HomeVis == 1:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+            )
+            homeTheMotor(self, tc_no, 0, START_FROM_MID, HOME_VIA_DRIVER)
+
+    def test_TC_111020(self):
+        tc_no = "111120"
+        if self.HomeVis == 1:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+            )
+            homeTheMotor(self, tc_no, 0, START_FROM_HLS, HOME_VIA_RECORD)
+
+    def test_TC_111021(self):
+        tc_no = "111121"
+        if self.HomeVis == 1:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+            )
+            homeTheMotor(self, tc_no, 0, START_FROM_HLS, HOME_VIA_DRIVER)
 
 
 #    def test_TC_11110(self):
