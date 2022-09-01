@@ -317,6 +317,7 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
                                          axisNo,
                                          devNum,
                                          iAllFlags,
+                                         //functionNamAux0,
                                          fAbsMin,
                                          fAbsMax,
                                          iOffsBytes);
@@ -405,6 +406,7 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
                                               unsigned axisNo,
                                               unsigned devNum,
                                               unsigned iAllFlags,
+                                              //int      functionNamAux0,
                                               double   fAbsMin,
                                               double   fAbsMax,
                                               unsigned iOffsBytes)

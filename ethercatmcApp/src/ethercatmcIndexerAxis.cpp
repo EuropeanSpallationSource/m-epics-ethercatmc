@@ -857,7 +857,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
     pC_->changedAuxBits_to_ASCII(axisNo_, idxAuxBits, drvlocal.old_idxAuxBits);
     asynPrint(pC_->pasynUserController_, traceMask,
-              "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
+              "%spoll(%d) auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
               modNamEMC, axisNo_, drvlocal.old_idxAuxBits, idxAuxBits,
               pC_->ctrlLocal.changedAuxBits[0],  pC_->ctrlLocal.changedAuxBits[1],
               pC_->ctrlLocal.changedAuxBits[2],  pC_->ctrlLocal.changedAuxBits[3],

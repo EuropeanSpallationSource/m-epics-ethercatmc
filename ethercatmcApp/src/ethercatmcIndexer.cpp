@@ -1066,6 +1066,7 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 
 int ethercatmcController::addPilsAsynDevLst(int           axisNo,
                                             const char    *paramName,
+                                            int           functionNamAux0,
                                             unsigned      lenInPLC,
                                             unsigned      inputOffset,
                                             unsigned      outputOffset,
@@ -1091,10 +1092,11 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   }
 
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-            "%s%s axisNo=%i \"%s\" lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
+            "%s%s axisNo=%i \"%s\" functionNamAux0=%d lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
             " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
             modNamEMC, functionName, axisNo,
             paramName,
+            functionNamAux0,
             lenInPLC,
             inputOffset,
             outputOffset,
@@ -1129,6 +1131,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   }
 
   pPilsAsynDevInfo->axisNo           = axisNo;
+  pPilsAsynDevInfo->functionNamAux0  = functionNamAux0;
   pPilsAsynDevInfo->lenInPLC         = lenInPLC;
   pPilsAsynDevInfo->inputOffset      = inputOffset;
   pPilsAsynDevInfo->outputOffset     = outputOffset;
@@ -1158,7 +1161,8 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
   unsigned      lenInPLC          = 0;
   unsigned      inputOffset       = 0;
   unsigned      outputOffset      = 0;
-  unsigned      statusOffset = 0;
+  unsigned      statusOffset      = 0;
+  int           functionNamAux0   = 0;
   asynParamType myAsynParamType = asynParamNotDefined;
   struct {
     char     name[80];      /* 34 + some spare */
@@ -1180,9 +1184,6 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
     if (nvals == 2) {
       int newAxisNo = (int)splitedParamNameNumber.axisNoOrIndex;
       paramName = &splitedParamNameNumber.name[0];
-      if (iTypCode == 0x1802 && newAxisNo != axisNo) {
-        return -1;
-      }
       axisNo = newAxisNo;
     }
   }
@@ -1231,12 +1232,28 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       myAsynParamType = asynParamInt32;
       break;
     case 0x1802:
-      lenInPLC = 4;
-      /* We have a predefined name, no need to create a new asyn param */
-      paramName = ethercatmcStatusBitsString;
-      /* 1802 has only a 32 bit status word */
-      statusOffset = indexOffset;
-      myAsynParamType = asynParamInt32;
+      {
+        unsigned i;
+        lenInPLC = 4;
+        //paramName = ethercatmcStatusBitsString;
+        /* 1802 has only a 32 bit status word */
+        statusOffset = indexOffset;
+        myAsynParamType = asynParamInt32;
+        for (i=0; i < 25; i++) {
+          int function;
+          asynStatus status;
+          char  buf[64];
+          snprintf(buf, sizeof(buf), "%s_NamAuxBit%u", paramName, i);
+          status = createParam(buf, asynParamOctet, &function);
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                    "%s%s(%u) numPilsAsynDevInfo=%d created function=%d paramName=%s status=%s (%d)\n",
+                    modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
+                    buf,
+                    ethercatmcstrStatus(status), (int)status);
+          if (status == asynSuccess && i == 0)
+            functionNamAux0 = function;
+        }
+      }
       break;
     case 0x1A02:
       lenInPLC = 2;
@@ -1262,6 +1279,7 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
   if (myAsynParamType != asynParamNotDefined) {
     return addPilsAsynDevLst(axisNo,
                              paramName,
+                             functionNamAux0,
                              lenInPLC,
                              inputOffset,
                              outputOffset,
