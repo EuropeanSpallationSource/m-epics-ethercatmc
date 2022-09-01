@@ -308,16 +308,21 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
     case 0x1802:
       {
         const char *paramName = descVersAuthors.desc;
+        unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
+        /* Hack: save the pointer to the "new, now to be created" device */
+        pilsAsynDevInfo_type *pPilsAsynDevInfo
+          = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
         int function = newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, paramName);
         if (function < 0) {
           status = asynError;
           goto endPollIndexer;
         }
+        int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
         status = newIndexerAxisAuxBitsV2(NULL, /* pAxis */
                                          axisNo,
                                          devNum,
                                          iAllFlags,
-                                         //functionNamAux0,
+                                         functionNamAux0,
                                          fAbsMin,
                                          fAbsMax,
                                          iOffsBytes);
@@ -334,10 +339,12 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
           pAxis = new ethercatmcIndexerAxis(this, axisNo, 0, NULL);
         }
         /* Now we have an axis */
+        int functionNamAux0 = ethercatmcNamAux0_; /* Default for an Axis */
         status = newIndexerAxisAuxBitsV2(pAxis,
                                          pAxis->axisNo_,
                                          devNum,
                                          iAllFlags,
+                                         functionNamAux0,
                                          fAbsMin,
                                          fAbsMax,
                                          iOffsBytes);
@@ -406,7 +413,7 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
                                               unsigned axisNo,
                                               unsigned devNum,
                                               unsigned iAllFlags,
-                                              //int      functionNamAux0,
+                                              int      functionNamAux0,
                                               double   fAbsMin,
                                               double   fAbsMax,
                                               unsigned iOffsBytes)
@@ -416,7 +423,7 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
   {
     unsigned auxBitIdx = 0;
     for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_SHOWN; auxBitIdx++) {
-      int function = ethercatmcNamAux0_ + auxBitIdx;
+      int function = functionNamAux0 + auxBitIdx;
       if ((iAllFlags >> auxBitIdx) & 1) {
         char auxBitName[34];
         unsigned infoType16 = 16;

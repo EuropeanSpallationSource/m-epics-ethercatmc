@@ -430,7 +430,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
                                      unsigned axisNo,
                                      unsigned devNum,
                                      unsigned iAllFlags,
-				     //int      functionNamAux0,
+                                     int      functionNamAux0,
                                      double   fAbsMin,
                                      double   fAbsMax,
                                      unsigned iOffset);
