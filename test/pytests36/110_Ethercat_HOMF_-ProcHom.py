@@ -116,21 +116,31 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
 
     stopped = self.axisMr.waitForStop(tc_no, time_to_wait)
 
-    msta2 = int(self.axisCom.get(".MSTA"))
-    homed = 0
-    if msta2 & self.axisMr.MSTA_BIT_HOMED:
-        homed = 1
     if homProc != 0:
         self.axisCom.put("-HomProc", old_HomProc)
         self.axisCom.put("-HomPos", old_HomPos)
 
-    self.assertEqual(
-        0,
-        msta2 & self.axisMr.MSTA_BIT_SLIP_STALL,
-        tc_no + "MSTA.no MSTA_BIT_SLIP_STALL",
+    msta2 = int(self.axisCom.get(".MSTA"))
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} msta2=={self.axisMr.getMSTAtext(msta2)}"
     )
-    self.assertNotEqual(0, homed, tc_no + "MSTA.homed (Axis has been homed)")
-    self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
+    if msta2 & self.axisMr.MSTA_BIT_SLIP_STALL:
+        passed = False
+    else:
+        passed = True
+    if not msta2 & self.axisMr.MSTA_BIT_HOMED:
+        passed = False
+    if msta2 & self.axisMr.MSTA_BIT_PROBLEM:
+        passed = False
+        errId = int(self.axisCom.get("-ErrId", use_monitor=False))
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} errId={errId:x}")
+        self.axisMr.resetAxis(tc_no)
+
+    if passed:
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
+    else:
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+    assert passed
 
 
 class Test(unittest.TestCase):
