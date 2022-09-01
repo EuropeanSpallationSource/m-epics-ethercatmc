@@ -231,13 +231,6 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
                                  sizeof(descVersAuthors.author2));
     if (status) goto endPollIndexer;
     switch (iTypCode) {
-      case 0x1802:
-        /* The first axisNo goes to axis#0, which is not used for axes
-           all others need their own axis numbers */
-        if (axisNo) {
-          axisNo++;
-        }
-        break;
       case 0x1E04:
       case 0x5008:
       case 0x500C:
@@ -433,8 +426,8 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
                                      sizeof(auxBitName));
         if (status) return status;
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%sauxBitName(%d) auxBitName[%02u]=%s\n",
-                  modNamEMC, axisNo, auxBitIdx, auxBitName);
+                  "%sauxBitName(%d) auxBitName@%03u[%02u]=%s\n",
+                  modNamEMC, axisNo, functionNamAux0+auxBitIdx, auxBitIdx, auxBitName);
         if (function <= ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN) {
           setStringParam(axisNo, function, auxBitName);
           setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
