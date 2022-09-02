@@ -1404,6 +1404,9 @@ asynStatus ethercatmcController::indexerPoll(void)
         unsigned statusOffset = pPilsAsynDevInfo->statusOffset;
         int axisNo = pPilsAsynDevInfo->axisNo;
         int function = pPilsAsynDevInfo->function;
+        const char *paramName = "";
+        getParamName(axisNo, function, &paramName);
+
         void *pDataInPlc = &ctrlLocal.pIndexerProcessImage[inputOffset];
         asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
                   "%sindexerPoll(%d) numPilsAsynDevInfo=%u inputOffset=%u\n",
@@ -1433,8 +1436,8 @@ asynStatus ethercatmcController::indexerPoll(void)
             changedAuxBits_to_ASCII(axisNo, functionNamAux0,
                                     statusReasonAux, oldStatusReasonAux);
             asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
-                      "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
-                      modNamEMC, axisNo, oldStatusReasonAux, statusReasonAux,
+                      "%spoll(%d) %sOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
+                      modNamEMC, axisNo, paramName, oldStatusReasonAux, statusReasonAux,
                       ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
                       ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
                       ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
@@ -1463,10 +1466,8 @@ asynStatus ethercatmcController::indexerPoll(void)
         case asynParamInt32:
           {
             int tracelevel = ASYN_TRACE_FLOW;
-            const char *paramName = "";
             unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
             epicsInt32 newValue, oldValue;
-            getParamName(axisNo, function, &paramName);
             newValue = (epicsInt32)netToSint(pDataInPlc, lenInPLC);
             status = getIntegerParam(axisNo, function, &oldValue);
             if (status != asynSuccess || oldValue != newValue) {
