@@ -497,6 +497,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
                                                 asynParamType myEPICSParamType);
 
   void changedAuxBits_to_ASCII(int         axisNo,
+                               int         functionNamAux0,
                                epicsUInt32 statusReasonAux,
                                epicsUInt32 oldStatusReasonAux);
 

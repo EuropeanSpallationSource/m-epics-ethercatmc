@@ -428,7 +428,7 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sauxBitName(%d) auxBitName@%03u[%02u]=%s\n",
                   modNamEMC, axisNo, functionNamAux0+auxBitIdx, auxBitIdx, auxBitName);
-        if (function <= ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN) {
+        if (function <= functionNamAux0 + MAX_AUX_BIT_SHOWN) {
           setStringParam(axisNo, function, auxBitName);
           setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
         }

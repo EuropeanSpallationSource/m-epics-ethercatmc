@@ -1238,7 +1238,7 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
         //paramName = ethercatmcStatusBitsString;
         /* 1802 has only a 32 bit status word */
         statusOffset = indexOffset;
-        myAsynParamType = asynParamInt32;
+        myAsynParamType = asynParamUInt32Digital;
         for (i=0; i < 25; i++) {
           int function;
           asynStatus status;
@@ -1331,17 +1331,21 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(int axisNo,
 
 void
 ethercatmcController::changedAuxBits_to_ASCII(int         axisNo,
+                                              int         functionNamAux0,
                                               epicsUInt32 statusReasonAux,
                                               epicsUInt32 oldStatusReasonAux)
 {
   /* Show even bit 24 and 25, which are reson bits, here */
   epicsUInt32 changed = statusReasonAux ^ oldStatusReasonAux;
   epicsUInt32 auxBitIdx;
+  if (!functionNamAux0) {
+    functionNamAux0 = ethercatmcNamAux0_;
+  }
   memset(&ctrlLocal.changedAuxBits, 0, sizeof(ctrlLocal.changedAuxBits));
   for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
     if ((changed >> auxBitIdx) & 0x01) {
       asynStatus status;
-      int function = (int)(ethercatmcNamAux0_ + auxBitIdx);
+      int function = (int)(functionNamAux0 + auxBitIdx);
       /* Leave the first character for '+' or '-',
          leave one byte for '\0' */
       int length = (int)sizeof(ctrlLocal.changedAuxBits[auxBitIdx]) - 2;
@@ -1357,6 +1361,11 @@ ethercatmcController::changedAuxBits_to_ASCII(int         axisNo,
         } else {
           ctrlLocal.changedAuxBits[auxBitIdx][0] = '-';
         }
+      } else {
+        asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+                  "%s%s(%d) function=%d status=%s (%d)\n",
+                  modNamEMC, "changedAuxBits_to_ASCII", axisNo, function,
+                  ethercatmcstrStatus(status), (int)status);
       }
     }
   }
@@ -1407,14 +1416,23 @@ asynStatus ethercatmcController::indexerPoll(void)
           void *pStatusInPlc = &ctrlLocal.pIndexerProcessImage[statusOffset];
           epicsUInt32 statusReasonAux, oldStatusReasonAux; /* We use only 32 bit status words here */
           unsigned statusLenInPLC = sizeof(statusReasonAux);
+          int function = pPilsAsynDevInfo->function;
+          if (!function) {
+            function = ethercatmcStatusBits_;
+          }
+          int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
+          if (!functionNamAux0) {
+            functionNamAux0 = ethercatmcNamAux0_;
+          }
           statusReasonAux = netToUint(pStatusInPlc, statusLenInPLC);
 
-          getUIntDigitalParam(axisNo, ethercatmcStatusBits_,
+          getUIntDigitalParam(axisNo, function,
                               &oldStatusReasonAux, maskStatusReasonAux);
 
           if (statusReasonAux != oldStatusReasonAux) {
-            changedAuxBits_to_ASCII(axisNo, statusReasonAux, oldStatusReasonAux);
-            asynPrint(pasynUserController_, traceMask,
+            changedAuxBits_to_ASCII(axisNo, functionNamAux0,
+                                    statusReasonAux, oldStatusReasonAux);
+            asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
                       "%spoll(%d) auxBitsOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
                       modNamEMC, axisNo, oldStatusReasonAux, statusReasonAux,
                       ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
@@ -1430,7 +1448,7 @@ asynStatus ethercatmcController::indexerPoll(void)
                       ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
                       ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
                       ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
-            setUIntDigitalParam(axisNo, ethercatmcStatusBits_,
+            setUIntDigitalParam(axisNo, function,
                                 (epicsUInt32)statusReasonAux,
                                 maskStatusReasonAux, maskStatusReasonAux);
           }
