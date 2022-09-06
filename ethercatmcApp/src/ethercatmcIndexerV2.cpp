@@ -216,19 +216,19 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
 
     status = readDeviceIndexerV2(devNum, infoType4,
                                  descVersAuthors.desc,
-                                 sizeof(descVersAuthors.desc));
+                                 sizeof(descVersAuthors.desc)-1);
     if (status) goto endPollIndexer;
     status = readDeviceIndexerV2(devNum, infoType5,
                                  descVersAuthors.vers,
-                                 sizeof(descVersAuthors.vers));
+                                 sizeof(descVersAuthors.vers)-1);
     if (status) goto endPollIndexer;
     status = readDeviceIndexerV2(devNum, infoType6,
                                  descVersAuthors.author1,
-                                 sizeof(descVersAuthors.author1));
+                                 sizeof(descVersAuthors.author1)-1);
     if (status) goto endPollIndexer;
     status = readDeviceIndexerV2(devNum, infoType7,
                                  descVersAuthors.author2,
-                                 sizeof(descVersAuthors.author2));
+                                 sizeof(descVersAuthors.author2)-1);
     if (status) goto endPollIndexer;
     switch (iTypCode) {
       case 0x1E04:
@@ -250,8 +250,8 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
               plcUnitTxtFromUnitCodeV2(iUnit & 0xFF),
               iAllFlags, fAbsMin, fAbsMax);
 
-    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
-              "%sdescVersAuthors(%d)  vers=%s author1=%s author2=%s\n",
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%sdescVersAuthors(%d)  vers=%s author1='%s' author2='%s'\n",
               modNamEMC, devNum,
               descVersAuthors.vers,
               descVersAuthors.author1,
@@ -423,7 +423,7 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexerV2(devNum, infoType16 + auxBitIdx,
                                      auxBitName,
-                                     sizeof(auxBitName));
+                                     sizeof(auxBitName)-1);
         if (status) return status;
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sauxBitName(%d) auxBitName@%03u[%02u]=%s\n",
