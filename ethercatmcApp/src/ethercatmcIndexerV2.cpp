@@ -446,12 +446,11 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
       }
     }
   }
-  /* Limits */
-  updateCfgValue(axisNo, ethercatmcCfgPMAX_RB_, fAbsMax, "CfgPMAX");
-  updateCfgValue(axisNo, ethercatmcCfgPMIN_RB_, fAbsMin, "CfgPMIN");
-
-#ifdef motorHighLimitROString
   if (pAxis) {
+    /* Limits */
+    updateCfgValue(axisNo, ethercatmcCfgPMAX_RB_, fAbsMax, "CfgPMAX");
+    updateCfgValue(axisNo, ethercatmcCfgPMIN_RB_, fAbsMin, "CfgPMIN");
+#ifdef motorHighLimitROString
     udateMotorLimitsRO(axisNo,
                        (fAbsMin > fABSMIN && fAbsMax < fABSMAX),
                        fAbsMax,
