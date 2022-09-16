@@ -24,6 +24,17 @@ record(mbbi,  "$(PREFIX)PTPState") {
     field(SVST, "PTP:PASSIVE")
     field(EIST, "PTP:UNCALIBRATED")
     field(NIST, "PTP:SLAVE")
+
+    field(ZRSV, "2")
+    field(ONSV, "1")
+    field(TWSV, "2")
+    field(THSV, "2")
+    field(FRSV, "1")
+    field(FVSV, "1")
+    field(SXSV, "2")
+    field(SVSV, "2")
+    field(EISV, "2")
+    field(NISV, "0")
 }
 
 record(longin, "$(PREFIX)PTPOffset")
