@@ -1338,9 +1338,6 @@ ethercatmcController::changedAuxBits_to_ASCII(int         axisNo,
   /* Show even bit 24 and 25, which are reson bits, here */
   epicsUInt32 changed = statusReasonAux ^ oldStatusReasonAux;
   epicsUInt32 auxBitIdx;
-  if (!functionNamAux0) {
-    functionNamAux0 = ethercatmcNamAux0_;
-  }
   memset(&ctrlLocal.changedAuxBits, 0, sizeof(ctrlLocal.changedAuxBits));
   for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
     if ((changed >> auxBitIdx) & 0x01) {
