@@ -115,6 +115,10 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #ifdef motorFlagsHomeOnLsString
   setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
 #endif
+
+#ifdef motorFlagsNotHomedProblemString
+  setIntegerParam(pC_->motorFlagsNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
+#endif
 #ifdef  motorNotHomedProblemString
   setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
@@ -951,9 +955,11 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     if (drvlocal.auxBitsNotHomedMask) {
       homed = idxAuxBits & drvlocal.auxBitsNotHomedMask ? 0 : 1;
       setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
+#ifdef motorNotHomedProblemString
       if (!homed) {
         drvlocal.hasProblem = 1;
       }
+#endif
     }
     if (drvlocal.auxBitsHomeSwitchMask) {
       int homeSwitch = idxAuxBits & drvlocal.auxBitsHomeSwitchMask ? 0 : 1;
