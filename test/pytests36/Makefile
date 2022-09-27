@@ -16,7 +16,6 @@ SIMULATOR-ONE-CA = \
   920_Simulator_RTRY_FRAC_RMOD.log-ca-m1\
   930_Simulator_Vel-RB_Acc-RB.log-ca-m1\
   931_Simulator-ACCL_ACCS_VELO_TWF.log-ca-m1\
-  940_Simulator-powerOnFailed.log-ca-m1\
 
 SIMULATOR-TWO-CA = \
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-ca-m1\
@@ -55,7 +54,6 @@ SIMULATOR-ONE-PVA = \
   920_Simulator_RTRY_FRAC_RMOD.log-pva-m1\
   930_Simulator_Vel-RB_Acc-RB.log-pva-m1\
   931_Simulator-ACCL_ACCS_VELO_TWF.log-pva-m1\
-  940_Simulator-powerOnFailed.log-pva-m1\
 
 SIMULATOR-TWO-PVA = \
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-pva-m1\
