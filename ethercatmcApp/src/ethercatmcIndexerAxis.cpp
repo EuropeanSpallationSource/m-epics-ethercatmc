@@ -179,6 +179,29 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
     }
     free(pOptions);
   }
+  if (axisFlags & AMPLIFIER_ON_FLAG_AUTO_ON) {
+    asynMotorAxis *pAxis = pC->getAxis(axisNo);
+    if (pAxis) {
+      asynStatus status;
+      int function;
+      status = pC->findParam(motorPowerAutoOnOffString, &function);
+      if (!status) {
+#ifdef POWERAUTOONOFFMODE2
+        pAxis->setIntegerParam(function, POWERAUTOONOFFMODE2);
+#else
+        pAxis->setIntegerParam(function, 1);
+#endif
+      }
+      status = pC->findParam(motorPowerOnDelayString, &function);
+      if (!status) {
+        pAxis->setDoubleParam(function, 6.0);
+      }
+      status = pC->findParam(motorPowerOffDelayString, &function);
+      if (!status) {
+        pAxis->setDoubleParam(function, -1.0);
+      }
+    }
+  }
   return asynSuccess;
 }
 
