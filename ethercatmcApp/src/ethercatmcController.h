@@ -504,6 +504,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   struct {
     uint8_t      *pIndexerProcessImage;
     asynStatus   oldStatus;
+    uint32_t     old_ams_errorCode;
     unsigned int cntADSstatus;
     unsigned int local_no_ASYN_;
     unsigned int hasConfigError;

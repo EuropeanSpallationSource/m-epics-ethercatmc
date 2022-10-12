@@ -413,13 +413,14 @@ asynStatus ethercatmcController::writeReadAds(asynUser *pasynUser,
     }
     if (!status) {
       uint32_t ams_errorCode = NETTOUINT(ams_rep_hdr_p->net_errCode);
+      int tracelevel = ASYN_TRACEIO_DRIVER;
 
       if (ams_errorCode) {
-        int tracelevel = ASYN_TRACEIO_DRIVER;
-        if (ctrlLocal.cntADSstatus < MAXCNTADSSTATUS) {
+        if (ams_errorCode != ctrlLocal.old_ams_errorCode) {
+          ctrlLocal.old_ams_errorCode = ams_errorCode;
           tracelevel |= ASYN_TRACE_ERROR;
-          ctrlLocal.cntADSstatus++;
         }
+
         epicsSnprintf(pasynUser->errorMessage,pasynUser->errorMessageSize,
                       "ams_errorCode=0x%04X", ams_errorCode);
         const char *outdata = (const char *)ams_req_hdr_p;
@@ -438,6 +439,7 @@ asynStatus ethercatmcController::writeReadAds(asynUser *pasynUser,
         default:
           ;
         }
+        ctrlLocal.old_ams_errorCode = ams_errorCode;
         ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
         ethercatmcamsdump(pasynUser, tracelevel, "OUT", ams_req_hdr_p);
         ethercatmchexdump(pasynUser, tracelevel, "IN ", indata, nread);
