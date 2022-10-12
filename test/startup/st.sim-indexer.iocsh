@@ -30,6 +30,7 @@ epicsEnvSet("EGU",           "PlcHealth")
 #
 # Axis 1
 #
+epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
