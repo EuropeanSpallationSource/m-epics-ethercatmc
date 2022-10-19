@@ -1,5 +1,6 @@
 #!/bin/sh
 
+echo genMotorShutter.sh "$@"
 # Number of motors in Y direction
 Y=1
 # Hight of one "motor widget"
@@ -10,7 +11,7 @@ WIDTH=120
 EXT=opi
 
 HAS_PTP=""
-
+TITLEH=16
 export TITLEH WIDTH HIGHT
 
 genMatrix() {
@@ -23,6 +24,11 @@ genMatrix() {
   XCNTMAX=1
   YCNTMAX=1
   haveseenX=0
+  if test "$1" = "ptp"; then
+    TITLEH=32
+    export TITLEH
+    shift
+  fi &&
   while test -n "$1"; do
     echo genMatrix "numparameaten=$numparameaten param=$1"
     case "$1" in
@@ -59,7 +65,7 @@ genMatrix() {
       exit 1
       ;;
     esac
-    echo genMatrix iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX
+    echo genMatrix TITLEH=$TITLEH iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX
     while test $iy -lt $YCNTMAX; do
       while test $ix -lt $XCNTMAX; do
         y=$(($TITLEH + $iy * $HIGHT))
@@ -85,7 +91,7 @@ shift
 BASENAMEF=${FILE##*/}
 
 if test "$1" = "ptp"; then
-  shift
+  #shift keep it for genMatrix below
   HAS_PTP="-ptp"
   export HAS_PTP
 fi &&
@@ -95,7 +101,10 @@ sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!"  <motorx.start >$$ &&
   cat plcName.mid  >>$$ &&
   cat plcHealthStatus.mid >>$$ &&
   if test "$HAS_PTP" != ""; then
-    cat ptp.mid  >>$$
+    cmd=$(echo ./shiftopi.py --shiftx 0 --shifty 16 --shiftm 0)
+    echo cmd=$cmd "<ptp.mid"
+    eval $cmd <ptp.mid >>$$
+
   fi &&
   genMatrix "$@" &&
   cat motorx.end  >>$$ &&
