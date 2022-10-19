@@ -92,6 +92,7 @@ pvmonitor \
   ${P}${M}.VELO \
   ${P}${M}.RDBD \
   ${P}${M}.VAL \
+  ${P}${M}.MISS \
   ${P}${M}-CfgSREV-RB \
   ${P}${M}-CfgUREV-RB \
   ${P}${M}-PosAct${TSE} \
