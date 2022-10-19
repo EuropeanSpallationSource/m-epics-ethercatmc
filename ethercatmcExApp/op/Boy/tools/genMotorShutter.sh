@@ -24,11 +24,6 @@ genMatrix() {
   XCNTMAX=1
   YCNTMAX=1
   haveseenX=0
-  if test "$1" = "ptp"; then
-    TITLEH=32
-    export TITLEH
-    shift
-  fi &&
   while test -n "$1"; do
     echo genMatrix "numparameaten=$numparameaten param=$1"
     case "$1" in
@@ -52,6 +47,11 @@ genMatrix() {
     n)
       ix=0
       iy=$(($iy + 1)) # newline
+      ;;
+    ptp)
+      TITLEH=$(($TITLEH + 16))
+      shift
+      continue
       ;;
     s)
       OPIMID=shutterx.mid
@@ -104,7 +104,6 @@ sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!"  <motorx.start >$$ &&
     cmd=$(echo ./shiftopi.py --shiftx 0 --shifty 16 --shiftm 0)
     echo cmd=$cmd "<ptp.mid"
     eval $cmd <ptp.mid >>$$
-
   fi &&
   genMatrix "$@" &&
   cat motorx.end  >>$$ &&
