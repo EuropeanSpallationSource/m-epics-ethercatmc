@@ -16,6 +16,15 @@ record(int64in, "$(PREFIX)DcToExtTimeOffsetSystem")
     field(SCAN, "I/O Intr")
 }
 
+record(int64in, "$(PREFIX)TimeOffsetDiffEL6688")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "DcToExtTimeOffsetSystem")
+    field(EGU,  "nanoSeconds")
+    field(INP,  "@asyn($(MOTOR_PORT),0)TimeOffsetDiffEL6688")
+    field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(PREFIX)WriteDoneExtTimeOffset")
 {
     field(DTYP, "asynInt32")
