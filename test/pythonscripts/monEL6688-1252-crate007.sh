@@ -24,10 +24,9 @@ if test -f $LOGFILE; then
 fi
 
 pvmonitor ${P}PTPState ${P}PTPOffset \
-${P}DcToExtTimeOffsetEL6688 \
-${P}DcToExtTimeOffsetSystem  \
-${P}WriteDoneExtTimeOffset  \
-${P}TimeOffsetDiffEL6688 \
+${P}PTPDcToExtTimeOffsetEL6688 \
+${P}PTPDcToExtTimeOffsetSystem  \
+${P}PTPTimeOffsetDiffEL6688 \
 ${P}PTPdiffTimeIOC_MCU \
 ${P}PTPErrorStatus \
 ${P}UTCEL1252P0 | ./tai2string.py  2>&1 | tee $LOGFILE

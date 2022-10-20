@@ -1,6 +1,0 @@
-ethercatmcCreateAsynParam $(MOTOR_PORT) WriteDoneExtTimeOffset Int32
-ethercatmcCreateAsynParam $(MOTOR_PORT) DcToExtTimeOffsetEL6688 Int64
-ethercatmcCreateAsynParam $(MOTOR_PORT) DcToExtTimeOffsetSystem Int64
-ethercatmcCreateAsynParam $(MOTOR_PORT) TimeOffsetDiffEL6688 Int64
-
-dbLoadRecords("ethercatmcEL6688-ExtSync.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT)")
