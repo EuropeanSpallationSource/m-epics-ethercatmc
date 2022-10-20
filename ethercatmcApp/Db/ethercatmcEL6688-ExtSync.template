@@ -35,9 +35,9 @@ record(longin, "$(PREFIX)WriteDoneExtTimeOffset")
 }
 
 
-record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
+record(int64in, "$(PREFIX)PTPdiffTimeIOC_MCU")
 {
-    field(DTYP, "asynFloat64")
+    field(DTYP, "asynInt64")
     field(DESC, "Diff between IOC time and MCU time")
     field(EGU,  "nsec")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPdiffTimeIOC_MCU")

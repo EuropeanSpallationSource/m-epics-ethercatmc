@@ -82,3 +82,13 @@ record(int64in, "$(PREFIX)SystemUTCtime-TSE")
     field(SCAN, "I/O Intr")
     field(TSE, -2)
 }
+
+record(longin, "$(PREFIX)PTPErrorStatus")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "PTPErrorStatus")
+    field(EGU,  "ErrorStatusBits")
+    field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus")
+    field(SCAN, "I/O Intr")
+}
+

@@ -1592,24 +1592,20 @@ asynStatus ethercatmcController::indexerPoll(void)
                     timeMCU.secPastEpoch, timeMCU.nsec);
           setTimeStamp(&timeMCU);
           callBacksNeeded = 1;
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
           int function = ethercatmcPTPdiffTimeIOC_MCU_;
           int axisNo = 0;
           int rtn = epicsTimeGetCurrent(&timeIOC);
           if (!rtn) {
-#if 0
-            double diffTimeIOC_MCU = timeIOC.nsec - timeMCU.nsec;
-            diffTimeIOC_MCU = diffTimeIOC_MCU / 1000000000;
-            diffTimeIOC_MCU += timeIOC.secPastEpoch - timeMCU.secPastEpoch;
-#else
-            double diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
+            int64_t diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
             diffTimeIOC_MCU = diffTimeIOC_MCU * 1000000000;
             diffTimeIOC_MCU += timeIOC.nsec - timeMCU.nsec;
-#endif
-            (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
+            (void)setInteger64Param(axisNo, function, diffTimeIOC_MCU);
             setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
           } else {
             setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
           }
+#endif
         }
       } /* for */
     }

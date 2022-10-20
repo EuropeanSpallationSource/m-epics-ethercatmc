@@ -29,4 +29,5 @@ ${P}DcToExtTimeOffsetSystem  \
 ${P}WriteDoneExtTimeOffset  \
 ${P}TimeOffsetDiffEL6688 \
 ${P}PTPdiffTimeIOC_MCU \
+${P}PTPErrorStatus \
 ${P}UTCEL1252P0 | ./tai2string.py  2>&1 | tee $LOGFILE

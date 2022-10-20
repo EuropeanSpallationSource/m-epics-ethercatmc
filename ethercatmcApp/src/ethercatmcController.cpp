@@ -211,11 +211,11 @@ ethercatmcController::ethercatmcController(const char *portName,
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
   createParam(ethercatmcSystemUTCtimeString, asynParamInt64,       &ethercatmcSystemUTCtime_);
   createParam(ethercatmcDCTIMEString,        asynParamInt64,       &ethercatmcDCTIME_);
+  createParam(ethercatmcPTPdiffTimeIOC_MCUString,  asynParamInt64, &ethercatmcPTPdiffTimeIOC_MCU_);
 #else
   createParam(ethercatmcSystemUTCtimeString, asynParamFloat64,     &ethercatmcSystemUTCtime_);
   createParam(ethercatmcDCTIMEString,        asynParamFloat64,     &ethercatmcDCTIME_);
 #endif
-  createParam(ethercatmcPTPdiffTimeIOC_MCUString,  asynParamFloat64, &ethercatmcPTPdiffTimeIOC_MCU_);
   createParam(ethercatmcRBV_TSEString,       asynParamFloat64,     &ethercatmcRBV_TSE_);
   createParam(pilsLonginActualString,        asynParamInt32,       &pilsLonginActual_);
   createParam(pilsLonginTargetString,        asynParamInt32,       &pilsLonginTarget_);
