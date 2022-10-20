@@ -86,6 +86,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcPTPOffsetString            "PTPOffset"
 #define ethercatmcPTPSyncSeqNumString        "PTPSyncSeqNum"
 #define ethercatmcSystemUTCtimeString        "SystemUTCtime"
+#define ethercatmcPTPdiffTimeIOC_MCUString   "PTPdiffTimeIOC_MCU"
 #define ethercatmcDCTIMEString               "DCTIME"
 #define ethercatmcRBV_TSEString              "RBV-TSE"
 #define pilsLonginActualString               "pilsLonginActual"
@@ -592,6 +593,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   int ethercatmcPTPOffset_;
   int ethercatmcPTPSyncSeqNum_;
   int ethercatmcSystemUTCtime_;
+  int ethercatmcPTPdiffTimeIOC_MCU_;
   int ethercatmcDCTIME_;            /* "Distributed Clock time" */
   int ethercatmcRBV_TSE_;           /* motor position (RBV in motorRecord) MCU time stamped */
   int pilsLonginActual_;

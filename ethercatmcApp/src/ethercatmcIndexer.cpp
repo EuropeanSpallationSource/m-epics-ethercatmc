@@ -1581,16 +1581,35 @@ asynStatus ethercatmcController::indexerPoll(void)
         }
         if (pPilsAsynDevInfo->isSystemUTCtime) {
           uint64_t nSec;
-          epicsTimeStamp timeStamp;
+          epicsTimeStamp timeMCU;
+          epicsTimeStamp timeIOC;
           unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
           nSec = netToUint64(pDataInPlc, lenInPLC);
-          UTCtimeToEpicsTimeStamp(nSec, &timeStamp);
+          UTCtimeToEpicsTimeStamp(nSec, &timeMCU);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
                     "%sindexerPoll SystemUTCtime nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
                     modNamEMC, nSec,
-                    timeStamp.secPastEpoch, timeStamp.nsec);
-          setTimeStamp(&timeStamp);
+                    timeMCU.secPastEpoch, timeMCU.nsec);
+          setTimeStamp(&timeMCU);
           callBacksNeeded = 1;
+          int function = ethercatmcPTPdiffTimeIOC_MCU_;
+          int axisNo = 0;
+          int rtn = epicsTimeGetCurrent(&timeIOC);
+          if (!rtn) {
+#if 0
+            double diffTimeIOC_MCU = timeIOC.nsec - timeMCU.nsec;
+            diffTimeIOC_MCU = diffTimeIOC_MCU / 1000000000;
+            diffTimeIOC_MCU += timeIOC.secPastEpoch - timeMCU.secPastEpoch;
+#else
+            double diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
+            diffTimeIOC_MCU = diffTimeIOC_MCU * 1000000000;
+            diffTimeIOC_MCU += timeIOC.nsec - timeMCU.nsec;
+#endif
+            (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
+            setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
+          } else {
+            setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
+          }
         }
       } /* for */
     }

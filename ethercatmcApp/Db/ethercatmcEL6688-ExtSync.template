@@ -33,3 +33,15 @@ record(longin, "$(PREFIX)WriteDoneExtTimeOffset")
     field(INP,  "@asyn($(MOTOR_PORT),0)WriteDoneExtTimeOffset")
     field(SCAN, "I/O Intr")
 }
+
+
+record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
+{
+    field(DTYP, "asynFloat64")
+    field(DESC, "Diff between IOC time and MCU time")
+    field(EGU,  "nsec")
+    field(INP,  "@asyn($(MOTOR_PORT),0)PTPdiffTimeIOC_MCU")
+    #field(SCAN, "I/O Intr")
+    field(SCAN, "1 second")
+}
+
