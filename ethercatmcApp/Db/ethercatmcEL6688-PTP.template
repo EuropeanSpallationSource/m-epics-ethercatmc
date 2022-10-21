@@ -96,34 +96,12 @@ record(longin, "$(PREFIX)PTPErrorStatus")
     field(SCAN, "I/O Intr")
 }
 
-record(int64in, "$(PREFIX)PTPDcToExtTimeOffsetEL6688")
+record(int64in, "$(PREFIX)TimeOffsetDiffEL6688")
 {
     field(DTYP, "asynInt64")
     field(DESC, "PTPDcToExtTimeOffsetEL6688")
     field(EGU,  "nanoSeconds")
-    field(INP,  "@asyn($(MOTOR_PORT),0)PTPDcToExtTimeOffsetEL6688")
-    field(SCAN, "I/O Intr")
-}
-
-record(int64in, "$(PREFIX)PTPDcToExtTimeOffsetSystem")
-{
-    field(DTYP, "asynInt64")
-    field(DESC, "DcToExtTimeOffsetSystem")
-    field(EGU,  "nanoSeconds")
-    field(INP,  "@asyn($(MOTOR_PORT),0)PTPDcToExtTimeOffsetSystem")
-    field(SCAN, "I/O Intr")
-}
-
-record(int64in, "$(PREFIX)PTPTimeOffsetDiffEL6688")
-{
-    field(DTYP, "asynInt64")
-    field(DESC, "DcToExtTimeOffsetSystem")
-    field(EGU,  "nanoSeconds")
-    field(HIGH, "1")
-    field(LOW, "-1")
-    field(HSV,  "2")
-    field(LSV,  "2")
-    field(INP,  "@asyn($(MOTOR_PORT),0)PTPTimeOffsetDiffEL6688")
+    field(INP,  "@asyn($(MOTOR_PORT),0)TimeOffsetDiffEL6688")
     field(SCAN, "I/O Intr")
 }
 
