@@ -82,11 +82,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVelActString               "VelAct"
 #define ethercatmcVel_RBString               "Vel-RB"
 #define ethercatmcAcc_RBString               "Acc-RB"
-#define ethercatmcPTPStateString             "PTPState"
-#define ethercatmcPTPOffsetString            "PTPOffset"
-#define ethercatmcPTPSyncSeqNumString        "PTPSyncSeqNum"
-#define ethercatmcSystemUTCtimeString        "SystemUTCtime"
-#define ethercatmcDCTIMEString               "DCTIME"
+#define ethercatmcPTPdiffTimeIOC_MCUString   "PTPdiffTimeIOC_MCU"
 #define ethercatmcRBV_TSEString              "RBV-TSE"
 #define pilsLonginActualString               "pilsLonginActual"
 #define pilsLonginTargetString               "pilsLonginTarget"
@@ -588,11 +584,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   int ethercatmcVelAct_;            /* Actual velocity. Measured in the MCU (typically with Jitter */
   int ethercatmcVel_RB_;            /* Velocity used in MCU */
   int ethercatmcAcc_RB_;            /* Acceleration used in MCU */
-  int ethercatmcPTPState_;          /* PTP */
-  int ethercatmcPTPOffset_;
-  int ethercatmcPTPSyncSeqNum_;
-  int ethercatmcSystemUTCtime_;
-  int ethercatmcDCTIME_;            /* "Distributed Clock time" */
+  int ethercatmcPTPdiffTimeIOC_MCU_;
   int ethercatmcRBV_TSE_;           /* motor position (RBV in motorRecord) MCU time stamped */
   int pilsLonginActual_;
   int pilsLonginTarget_;

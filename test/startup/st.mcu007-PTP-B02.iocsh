@@ -13,7 +13,6 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 
 < ethercatmcController.iocsh
 < ethercatmcEL6688-PTP.iocsh
-< ethercatmcEL6688-ExtSync.iocsh
 
 #
 # Axis 1
@@ -48,7 +47,6 @@ epicsEnvSet("CHNO",     "0")
 #####################################################
 # PTP with ExtSync
 < ethercatmcEL6688-PTP.iocsh
-< ethercatmcEL6688-ExtSync.iocsh
 
 
 #

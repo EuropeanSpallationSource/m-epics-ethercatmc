@@ -1142,6 +1142,9 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   if (!strcmp(paramName, "SystemUTCtime")) {
     pPilsAsynDevInfo->isSystemUTCtime = 1;
     ctrlLocal.systemUTCtimeOffset = inputOffset;
+    // We will calculate the PV in poll()
+    setAlarmStatusSeverityWrapper(axisNo, ethercatmcPTPdiffTimeIOC_MCU_,
+                                  asynSuccess);
   }
   setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
 
@@ -1581,16 +1584,30 @@ asynStatus ethercatmcController::indexerPoll(void)
         }
         if (pPilsAsynDevInfo->isSystemUTCtime) {
           uint64_t nSec;
-          epicsTimeStamp timeStamp;
+          epicsTimeStamp timeMCU;
+          epicsTimeStamp timeIOC;
           unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
           nSec = netToUint64(pDataInPlc, lenInPLC);
-          UTCtimeToEpicsTimeStamp(nSec, &timeStamp);
+          UTCtimeToEpicsTimeStamp(nSec, &timeMCU);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
                     "%sindexerPoll SystemUTCtime nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
                     modNamEMC, nSec,
-                    timeStamp.secPastEpoch, timeStamp.nsec);
-          setTimeStamp(&timeStamp);
+                    timeMCU.secPastEpoch, timeMCU.nsec);
+          setTimeStamp(&timeMCU);
           callBacksNeeded = 1;
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+          int function = ethercatmcPTPdiffTimeIOC_MCU_;
+          int axisNo = 0;
+          int rtn = epicsTimeGetCurrent(&timeIOC);
+          if (!rtn) {
+            double diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
+            diffTimeIOC_MCU = diffTimeIOC_MCU * 1000; // msec
+            diffTimeIOC_MCU += (timeIOC.nsec - timeMCU.nsec) / 1000000.0; // nsec -> msec
+            (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
+          } else {
+            setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
+          }
+#endif
         }
       } /* for */
     }

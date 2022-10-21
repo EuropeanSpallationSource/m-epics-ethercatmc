@@ -20,7 +20,6 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 #
 #
 < ethercatmcEL6688-PTP.iocsh
-< ethercatmcEL6688-ExtSync.iocsh
 
 
 #

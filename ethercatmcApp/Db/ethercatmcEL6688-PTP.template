@@ -82,3 +82,52 @@ record(int64in, "$(PREFIX)SystemUTCtime-TSE")
     field(SCAN, "I/O Intr")
     field(TSE, -2)
 }
+
+record(longin, "$(PREFIX)PTPErrorStatus")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "PTPErrorStatus")
+    field(EGU,  "ErrorStatusBits")
+    field(HIGH, "1")
+    field(LOW, "-1")
+    field(HSV,  "2")
+    field(LSV,  "2")
+    field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus")
+    field(SCAN, "I/O Intr")
+}
+
+record(int64in, "$(PREFIX)TimeOffsetDiffEL6688")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "PTPDcToExtTimeOffsetEL6688")
+    field(EGU,  "nsec")
+    field(HIGH, "1")
+    field(LOW, "-1")
+    field(HSV,  "2")
+    field(LSV,  "2")
+    field(INP,  "@asyn($(MOTOR_PORT),0)TimeOffsetDiffEL6688")
+    field(SCAN, "I/O Intr")
+}
+
+#
+# Diff between NTP (IOC) and PTP (MCU/PLC)
+# Typically the MCU has an EL6688 with PTP
+# Since the PLC cycle time is 10msec,
+# we allow 10msec larger values for HIGH/HIHI
+record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
+{
+    field(DTYP, "asynFloat64")
+    field(DESC, "Diff between IOC time and MCU time")
+    field(EGU,  "msec")
+    field(PREC, "0")
+    field(HIGH, "110")
+    field(HIHI, "210")
+    field(LOW,  "-100")
+    field(LOLO, "-200")
+    field(HSV,  "2")
+    field(LSV,  "1")
+    field(INP,  "@asyn($(MOTOR_PORT),0)PTPdiffTimeIOC_MCU")
+    #field(SCAN, "I/O Intr")
+    field(SCAN, "1 second")
+}
+
