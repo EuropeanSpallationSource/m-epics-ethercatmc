@@ -208,10 +208,10 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcPTPStateString,      asynParamInt32,       &ethercatmcPTPState_);
   createParam(ethercatmcPTPOffsetString,     asynParamInt32,       &ethercatmcPTPOffset_);
   createParam(ethercatmcPTPSyncSeqNumString, asynParamInt32,       &ethercatmcPTPSyncSeqNum_);
+  createParam(ethercatmcPTPdiffTimeIOC_MCUString, asynParamFloat64, &ethercatmcPTPdiffTimeIOC_MCU_);
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
   createParam(ethercatmcSystemUTCtimeString, asynParamInt64,       &ethercatmcSystemUTCtime_);
   createParam(ethercatmcDCTIMEString,        asynParamInt64,       &ethercatmcDCTIME_);
-  createParam(ethercatmcPTPdiffTimeIOC_MCUString,  asynParamInt64, &ethercatmcPTPdiffTimeIOC_MCU_);
 #else
   createParam(ethercatmcSystemUTCtimeString, asynParamFloat64,     &ethercatmcSystemUTCtime_);
   createParam(ethercatmcDCTIMEString,        asynParamFloat64,     &ethercatmcDCTIME_);

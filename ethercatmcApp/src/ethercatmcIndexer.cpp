@@ -1142,6 +1142,9 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   if (!strcmp(paramName, "SystemUTCtime")) {
     pPilsAsynDevInfo->isSystemUTCtime = 1;
     ctrlLocal.systemUTCtimeOffset = inputOffset;
+    // We will calculate the PV in poll()
+    setAlarmStatusSeverityWrapper(axisNo, ethercatmcPTPdiffTimeIOC_MCU_,
+                                  asynSuccess);
   }
   setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
 
@@ -1597,11 +1600,10 @@ asynStatus ethercatmcController::indexerPoll(void)
           int axisNo = 0;
           int rtn = epicsTimeGetCurrent(&timeIOC);
           if (!rtn) {
-            int64_t diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
-            diffTimeIOC_MCU = diffTimeIOC_MCU * 1000000000;
-            diffTimeIOC_MCU += timeIOC.nsec - timeMCU.nsec;
-            (void)setInteger64Param(axisNo, function, diffTimeIOC_MCU);
-            setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
+            double diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
+            diffTimeIOC_MCU = diffTimeIOC_MCU * 1000; // msec
+            diffTimeIOC_MCU += (timeIOC.nsec - timeMCU.nsec) / 1000000.0; // nsec -> msec
+            (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
           } else {
             setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
           }

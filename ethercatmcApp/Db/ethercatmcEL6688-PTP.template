@@ -127,11 +127,11 @@ record(int64in, "$(PREFIX)PTPTimeOffsetDiffEL6688")
     field(SCAN, "I/O Intr")
 }
 
-record(int64in, "$(PREFIX)PTPdiffTimeIOC_MCU")
+record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
 {
-    field(DTYP, "asynInt64")
+    field(DTYP, "asynFloat64")
     field(DESC, "Diff between IOC time and MCU time")
-    field(EGU,  "nsec")
+    field(EGU,  "msec")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPdiffTimeIOC_MCU")
     #field(SCAN, "I/O Intr")
     field(SCAN, "1 second")
