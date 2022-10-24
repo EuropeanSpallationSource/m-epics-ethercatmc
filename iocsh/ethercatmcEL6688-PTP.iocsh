@@ -2,6 +2,7 @@ ethercatmcCreateAsynParam $(MOTOR_PORT) PTPState      Int32
 ethercatmcCreateAsynParam $(MOTOR_PORT) PTPOffset     Int32
 ethercatmcCreateAsynParam $(MOTOR_PORT) PTPSyncSeqNum Int32
 ethercatmcCreateAsynParam $(MOTOR_PORT) PTPErrorStatus Int32
+ethercatmcCreateAsynParam $(MOTOR_PORT) DcToExtTimeOffset Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) TimeOffsetDiffEL6688 Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) SystemUTCtime Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) DCTIME        Int64

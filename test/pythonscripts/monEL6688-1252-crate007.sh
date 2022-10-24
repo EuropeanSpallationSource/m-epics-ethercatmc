@@ -24,8 +24,7 @@ if test -f $LOGFILE; then
 fi
 
 pvmonitor ${P}PTPState ${P}PTPOffset \
-${P}PTPDcToExtTimeOffsetEL6688 \
-${P}PTPDcToExtTimeOffsetSystem  \
+${P}DcToExtTimeOffset  \
 ${P}PTPTimeOffsetDiffEL6688 \
 ${P}PTPdiffTimeIOC_MCU \
 ${P}PTPErrorStatus \

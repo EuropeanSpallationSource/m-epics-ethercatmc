@@ -60,11 +60,20 @@ record(longin, "$(PREFIX)PTPSyncSeqNum")
     field(SCAN, "I/O Intr")
 }
 
+record(int64in, "$(PREFIX)DcToExtTimeOffset")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "DcToExtTimeOffsetSystem")
+    field(EGU,  "nsec")
+    field(INP,  "@asyn($(MOTOR_PORT),0)DcToExtTimeOffset")
+    field(SCAN, "I/O Intr")
+}
+
 record(int64in, "$(PREFIX)SystemUTCtime")
 {
     field(DTYP, "asynInt64")
     field(DESC, "SystemUTCtime")
-    field(EGU,  "nanoSeconds")
+    field(EGU,  "nsec")
     field(INP,  "@asyn($(MOTOR_PORT),0)SystemUTCtime")
     field(SCAN, "I/O Intr")
 }
