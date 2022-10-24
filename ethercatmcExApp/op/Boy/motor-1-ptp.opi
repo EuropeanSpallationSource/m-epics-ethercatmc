@@ -175,15 +175,6 @@ $(pv_value)</tooltip>
   <width>98</width>
   <border_style>0</border_style>
   <rules>
-    <rule name="PTPState-Visible" prop_id="visible" out_exp="false">
-      <exp bool_exp="pv0==17">
-        <value>false</value>
-      </exp>
-      <exp bool_exp="pv0!=17">
-        <value>true</value>
-      </exp>
-      <pv trig="true">$(PREFIX)PTPState.STAT</pv>
-    </rule>
   </rules>
   <pv_value />
   <border_width>1</border_width>
@@ -202,7 +193,7 @@ $(pv_value)</tooltip>
   <border_alarm_sensitive>true</border_alarm_sensitive>
   <visible>true</visible>
   <vertical_alignment>1</vertical_alignment>
-  <show_units>true</show_units>
+  <show_units>false</show_units>
   <wuid>39872d87:13e14015f61:d0d</wuid>
   <auto_size>false</auto_size>
   <rotation_angle>0.0</rotation_angle>
@@ -233,18 +224,9 @@ $(pv_value)</tooltip>
   <font>
     <fontdata fontName="Sans" height="11" style="0" />
   </font>
-  <width>48</width>
+  <width>20</width>
   <border_style>0</border_style>
   <rules>
-  <rule name="PTPSyncSeqNum-Visible" prop_id="visible" out_exp="false">
-    <exp bool_exp="pv0==17">
-      <value>false</value>
-    </exp>
-    <exp bool_exp="pv0!=17">
-      <value>true</value>
-    </exp>
-    <pv trig="true">$(PREFIX)PTPSyncSeqNum.STAT</pv>
-  </rule>
   </rules>
   <pv_value />
   <border_width>1</border_width>
@@ -297,15 +279,6 @@ $(pv_value)</tooltip>
   <width>78</width>
   <border_style>0</border_style>
   <rules>
-    <rule name="PTPOffset-Visible" prop_id="visible" out_exp="false">
-      <exp bool_exp="pv0==17">
-        <value>false</value>
-      </exp>
-      <exp bool_exp="pv0!=17">
-        <value>true</value>
-      </exp>
-      <pv trig="true">$(PREFIX)PTPOffset.STAT</pv>
-    </rule>
   </rules>
   <pv_value />
   <border_width>1</border_width>
@@ -318,7 +291,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>150</x>
+  <x>122</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -358,15 +331,6 @@ $(pv_value)</tooltip>
   <width>78</width>
   <border_style>0</border_style>
   <rules>
-    <rule name="PTPErrorStatus-Visible" prop_id="visible" out_exp="false">
-      <exp bool_exp="pv0==17">
-        <value>false</value>
-      </exp>
-      <exp bool_exp="pv0!=17">
-        <value>true</value>
-      </exp>
-      <pv trig="true">$(PREFIX)PTPErrorStatus.STAT</pv>
-    </rule>
   </rules>
   <pv_value />
   <border_width>1</border_width>
@@ -379,7 +343,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>230</x>
+  <x>202</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -419,15 +383,6 @@ $(pv_value)</tooltip>
   <width>98</width>
   <border_style>0</border_style>
   <rules>
-    <rule name="TimeOffsetDiffEL6688-Visible" prop_id="visible" out_exp="false">
-      <exp bool_exp="pv0==17">
-        <value>false</value>
-      </exp>
-      <exp bool_exp="pv0!=17">
-        <value>true</value>
-      </exp>
-      <pv trig="true">$(PREFIX)TimeOffsetDiffEL6688.STAT</pv>
-    </rule>
   </rules>
   <pv_value />
   <border_width>1</border_width>
@@ -440,7 +395,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>310</x>
+  <x>282</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -480,15 +435,6 @@ $(pv_value)</tooltip>
   <width>78</width>
   <border_style>0</border_style>
   <rules>
-    <rule name="PTPdiffTimeIOC_MCU-Visible" prop_id="visible" out_exp="false">
-      <exp bool_exp="pv0==17">
-        <value>false</value>
-      </exp>
-      <exp bool_exp="pv0!=17">
-        <value>true</value>
-      </exp>
-      <pv trig="true">$(PREFIX)PTPdiffTimeIOC_MCU.STAT</pv>
-    </rule>
   </rules>
   <pv_value />
   <border_width>1</border_width>
@@ -501,7 +447,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>410</x>
+  <x>382</x>
 </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
