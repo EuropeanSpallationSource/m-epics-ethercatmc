@@ -41,7 +41,7 @@ record(longin, "$(PREFIX)PTPOffset")
 {
     field(DTYP, "asynInt32")
     field(DESC, "PTPOffset")
-    field(EGU,  "nsec")
+    field(EGU,  "ns")
     field(HIGH, "20000")
     field(LOW,  "-20000")
     field(HSV,  "1")
@@ -64,7 +64,7 @@ record(int64in, "$(PREFIX)DcToExtTimeOffset")
 {
     field(DTYP, "asynInt64")
     field(DESC, "DcToExtTimeOffsetSystem")
-    field(EGU,  "nsec")
+    field(EGU,  "ns")
     field(INP,  "@asyn($(MOTOR_PORT),0)DcToExtTimeOffset")
     field(SCAN, "I/O Intr")
 }
@@ -73,7 +73,7 @@ record(int64in, "$(PREFIX)SystemUTCtime")
 {
     field(DTYP, "asynInt64")
     field(DESC, "SystemUTCtime")
-    field(EGU,  "nsec")
+    field(EGU,  "ns")
     field(INP,  "@asyn($(MOTOR_PORT),0)SystemUTCtime")
     field(SCAN, "I/O Intr")
 }
@@ -82,7 +82,7 @@ record(int64in, "$(PREFIX)SystemUTCtime-TSE")
 {
     field(DTYP, "asynInt64")
     field(DESC, "SystemUTCtime")
-    field(EGU,  "nanoSeconds")
+    field(EGU,  "ns")
     field(INP,  "@asyn($(MOTOR_PORT),0)SystemUTCtime")
     field(SCAN, "I/O Intr")
     field(TSE, -2)
@@ -105,7 +105,7 @@ record(int64in, "$(PREFIX)TimeOffsetDiffEL6688")
 {
     field(DTYP, "asynInt64")
     field(DESC, "PTPDcToExtTimeOffsetEL6688")
-    field(EGU,  "nsec")
+    field(EGU,  "ns")
     field(HIGH, "1")
     field(LOW, "-1")
     field(HSV,  "1")
@@ -123,7 +123,7 @@ record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
 {
     field(DTYP, "asynFloat64")
     field(DESC, "Diff between IOC time and MCU time")
-    field(EGU,  "msec")
+    field(EGU,  "ms")
     field(PREC, "0")
     field(HIGH, "110")
     field(LOW,  "-100")
@@ -148,8 +148,9 @@ record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
   field(INPE, "$(PREFIX)TimeOffsetDiffEL6688.SEVR  CP NMS")
   field(INPF, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP NMS")
   field(CLCN, "b || c || d || e || f")
-  # This is O, not 0
+  # O is LED visible
   field(CLCO, "N ? A : (O > 0 ? O - 1 : O)")
+  # P is all good
   field(CLCP, "O > 0 ? 0 : 1")
   field(FLNK, "$(PREFIX)PTPallGood")
 
