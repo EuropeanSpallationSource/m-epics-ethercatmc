@@ -133,3 +133,35 @@ record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
     #field(SCAN, "I/O Intr")
     field(SCAN, "1 second")
 }
+
+# Calculate the severity
+# When the severity from all input links gets 0,
+# start a countdown
+record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
+  field(DESC, "Alarm Severity of PTP")
+  field(SCAN, "1 second")
+  field(COPT, "Always")
+  field(INPA, "70")
+  field(INPB, "$(PREFIX)PTPState.SEVR              CP NMS")
+  field(INPC, "$(PREFIX)PTPOffset.SEVR             CP NMS")
+  field(INPD, "$(PREFIX)PTPErrorStatus.SEVR        CP NMS")
+  field(INPE, "$(PREFIX)TimeOffsetDiffEL6688.SEVR  CP NMS")
+  field(INPF, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP NMS")
+  field(CLCN, "b || c || d || e || f")
+  # This is O, not 0
+  field(CLCO, "N ? A : (O > 0 ? O - 1 : O)")
+  field(CLCP, "O > 0 ? 0 : 1")
+  field(FLNK, "$(PREFIX)PTPallGood")
+
+}
+
+record(bo,  "$(PREFIX)PTPallGood") {
+  field(DESC, "PTP is all good")
+  field(DTYP, "asynInt32")
+  field(DOL,  "$(PREFIX)PTPAlarmSevrCalc.P CP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT,  "@asyn($(MOTOR_PORT),0)PTPallGood")
+  field(ZNAM, "No")
+  field(ONAM, "Yes")
+}
+

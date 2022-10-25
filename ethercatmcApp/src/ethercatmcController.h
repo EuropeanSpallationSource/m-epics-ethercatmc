@@ -83,6 +83,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVel_RBString               "Vel-RB"
 #define ethercatmcAcc_RBString               "Acc-RB"
 #define ethercatmcPTPdiffTimeIOC_MCUString   "PTPdiffTimeIOC_MCU"
+#define ethercatmcPTPallGoodString           "PTPallGood"
 #define ethercatmcRBV_TSEString              "RBV-TSE"
 #define pilsLonginActualString               "pilsLonginActual"
 #define pilsLonginTargetString               "pilsLonginTarget"
@@ -585,6 +586,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   int ethercatmcVel_RB_;            /* Velocity used in MCU */
   int ethercatmcAcc_RB_;            /* Acceleration used in MCU */
   int ethercatmcPTPdiffTimeIOC_MCU_;
+  int ethercatmcPTPallGood_;
   int ethercatmcRBV_TSE_;           /* motor position (RBV in motorRecord) MCU time stamped */
   int pilsLonginActual_;
   int pilsLonginTarget_;
