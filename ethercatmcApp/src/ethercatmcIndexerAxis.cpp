@@ -1068,9 +1068,13 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     /* Motor position in "user coordinates" with UTC time from PTP */
     double motorRecOffset;
     int motorRecDirection;
+    int ethercatmcPTPallGood;
     asynStatus RBV_TSEstatus = asynDisabled;
     double ethercatmcRBV_TSE = 0.0;
+
+    pC_->getIntegerParam(0, pC_->ethercatmcPTPallGood_, &ethercatmcPTPallGood);
     if (homed &&
+        (ethercatmcPTPallGood == 1) &&
         (!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
                               &motorRecOffset)) &&
         (!pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
