@@ -141,12 +141,13 @@ record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
   field(DESC, "Alarm Severity of PTP")
   field(SCAN, "1 second")
   field(COPT, "Always")
-  field(INPA, "70")
-  field(INPB, "$(PREFIX)PTPState.SEVR              CP NMS")
-  field(INPC, "$(PREFIX)PTPOffset.SEVR             CP NMS")
-  field(INPD, "$(PREFIX)PTPErrorStatus.SEVR        CP NMS")
-  field(INPE, "$(PREFIX)TimeOffsetDiffEL6688.SEVR  CP NMS")
-  field(INPF, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP NMS")
+  # Counter before allGood gets true
+  field(INPA, "11")
+  field(INPB, "$(PREFIX)PTPState.SEVR              CP MS")
+  field(INPC, "$(PREFIX)PTPOffset.SEVR             CP MS")
+  field(INPD, "$(PREFIX)PTPErrorStatus.SEVR        CP MS")
+  field(INPE, "$(PREFIX)TimeOffsetDiffEL6688.SEVR  CP MS")
+  field(INPF, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
   field(CLCN, "b || c || d || e || f")
   # O is LED visible
   field(CLCO, "N ? A : (O > 0 ? O - 1 : O)")
@@ -159,10 +160,11 @@ record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
 record(bo,  "$(PREFIX)PTPallGood") {
   field(DESC, "PTP is all good")
   field(DTYP, "asynInt32")
-  field(DOL,  "$(PREFIX)PTPAlarmSevrCalc.P CP NMS")
+  field(DOL,  "$(PREFIX)PTPAlarmSevrCalc.P CP MS")
   field(OMSL, "closed_loop")
   field(OUT,  "@asyn($(MOTOR_PORT),0)PTPallGood")
   field(ZNAM, "No")
   field(ONAM, "Yes")
+  field(ZSV,  "1")
 }
 
