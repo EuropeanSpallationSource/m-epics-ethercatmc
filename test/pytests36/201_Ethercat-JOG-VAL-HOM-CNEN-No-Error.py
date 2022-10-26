@@ -9,15 +9,13 @@ from AxisCom import AxisCom
 
 import time
 
-filnam = "201xx.py"
-
 ###
 
 polltime = 0.2
 
 
 def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}")
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisCom.put(".CNEN", 1)
     self.axisMr.waitForPowerOn(tc_no, 8.0)
@@ -36,7 +34,7 @@ def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
     bError_1 = self.axisCom.get("-Err", use_monitor=False)
     nErrorId_1 = self.axisCom.get("-ErrId", use_monitor=False)
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} bError_1={int(bError_1)} nErrorId_1=0x{int(nErrorId_1):04X}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} bError_1={int(bError_1)} nErrorId_1=0x{int(nErrorId_1):04X}"
     )
 
     if bError_1 != 0:
@@ -49,7 +47,7 @@ def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
         while msta & self.axisMr.MSTA_BIT_MOVING or bError != 0 or nErrorId != 0:
             time.sleep(polltime)
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} sleep counter = {int(counter)}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} sleep counter = {int(counter)}"
             )
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             bError = self.axisCom.get("-Err", use_monitor=False)
@@ -69,7 +67,7 @@ def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
 
     # Run the assert after we have restored the original state
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} bError_1={bError_1} msta_1={self.axisMr.getMSTAtext(msta_1)}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} bError_1={bError_1} msta_1={self.axisMr.getMSTAtext(msta_1)}"
     )
     testPassed = int(bError_1) == 0
     if testPassed:
@@ -80,7 +78,7 @@ def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
 
 
 def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
-    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}")
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisCom.put(".CNEN", 1)
     self.axisMr.waitForPowerOn(tc_no, 8.0)
@@ -98,7 +96,7 @@ def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
     bError_1 = self.axisCom.get("-Err", use_monitor=False)
     nErrorId_1 = self.axisCom.get("-ErrId", use_monitor=False)
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} bError_1={int(bError_1)} nErrorId_1=0x{int(nErrorId_1):04X}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} bError_1={int(bError_1)} nErrorId_1=0x{int(nErrorId_1):04X}"
     )
 
     if bError_1 != 0:
@@ -111,7 +109,7 @@ def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
         while msta & self.axisMr.MSTA_BIT_MOVING or bError != 0 or nErrorId != 0:
             time.sleep(polltime)
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} sleep counter = {int(counter)}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} sleep counter = {int(counter)}"
             )
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
             bError = self.axisCom.get("-Err", use_monitor=False)
@@ -134,7 +132,7 @@ def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
 
     # Run the assert after we have restored the original state
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} bError_1={bError_1} msta_1={self.axisMr.getMSTAtext(msta_1)}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} bError_1={bError_1} msta_1={self.axisMr.getMSTAtext(msta_1)}"
     )
     testPassed = int(bError_1) != 0
     if testPassed:
@@ -146,9 +144,7 @@ def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
 
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
-    )
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
