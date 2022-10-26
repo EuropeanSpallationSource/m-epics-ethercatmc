@@ -1595,19 +1595,17 @@ asynStatus ethercatmcController::indexerPoll(void)
                     timeMCU.secPastEpoch, timeMCU.nsec);
           setTimeStamp(&timeMCU);
           callBacksNeeded = 1;
-#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
           int function = ethercatmcPTPdiffTimeIOC_MCU_;
           int axisNo = 0;
           int rtn = epicsTimeGetCurrent(&timeIOC);
           if (!rtn) {
             double diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
             diffTimeIOC_MCU = diffTimeIOC_MCU * 1000; // msec
-            diffTimeIOC_MCU += (timeIOC.nsec - timeMCU.nsec) / 1000000.0; // nsec -> msec
+            diffTimeIOC_MCU += ((double)timeIOC.nsec - (double)timeMCU.nsec) / 1000000.0; // nsec -> msec
             (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
           } else {
             setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
           }
-#endif
         }
       } /* for */
     }
