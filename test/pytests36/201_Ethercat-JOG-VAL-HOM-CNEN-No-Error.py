@@ -79,24 +79,37 @@ def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
 
 def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
     print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}")
+    caughtException = False
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisCom.put(".CNEN", 1)
     self.axisMr.waitForPowerOn(tc_no, 8.0)
     self.axisMr.moveWait(tc_no, startpos)
 
+    self.axisCom.putDbgStrToLOG("PwrOf " + str(tc_no), wait=True)
     self.axisCom.put("-PwrAuto", 0)
     self.axisCom.put(".CNEN", 0)
+    self.axisCom.putDbgStrToLOG("MoveS " + str(tc_no), wait=True)
     self.axisCom.put(field_name, field_value)
 
     # self.axisMr.waitForStart(tc_no, 3.0)
     # self.axisMr.waitForStop(tc_no, 3.0)
-    self.axisMr.waitForStartAndDone(tc_no, 6.0)
+    try:
+        self.axisMr.waitForStartAndDone(tc_no, 6.0)
+    except:
+        caughtException = True
+        msta = int(self.axisCom.get(".MSTA", use_monitor=False))
+        if msta & self.axisMr.MSTA_BIT_MOVING:
+            self.axisCom.putDbgStrToLOG("ESTOP " + str(tc_no), wait=True)
+            self.axisCom.put(".STOP", 1)
+            self.axisMr.waitForStop(tc_no, 3.0)
+
+    self.axisCom.putDbgStrToLOG("MoveE " + str(tc_no), wait=True)
 
     msta_1 = int(self.axisCom.get(".MSTA", use_monitor=False))
     bError_1 = self.axisCom.get("-Err", use_monitor=False)
     nErrorId_1 = self.axisCom.get("-ErrId", use_monitor=False)
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} bError_1={int(bError_1)} nErrorId_1=0x{int(nErrorId_1):04X}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} bError_1={int(bError_1)} nErrorId_1=0x{int(nErrorId_1):04X} caughtException={caughtException}"
     )
 
     if bError_1 != 0:
@@ -134,7 +147,7 @@ def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} bError_1={bError_1} msta_1={self.axisMr.getMSTAtext(msta_1)}"
     )
-    testPassed = int(bError_1) != 0
+    testPassed = not caughtException and (int(bError_1) != 0 or int(nErrorId_1) != 0)
     if testPassed:
         self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
