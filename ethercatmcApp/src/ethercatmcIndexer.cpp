@@ -623,7 +623,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
       {
         /* A "function" goes into busy - and stays there */
         /* No parameter settings during jogging/homing */
-        if (paramIndexIsMovingFunction(paramIndexRB)) {
+        if (paramIndexIsMovingFunction(paramIndex)) {
           asynPrint(pasynUserController_, traceMask,
                     "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g movingFun RB=%s (0x%04X)\n",
                     modNamEMC, axisNo,
@@ -635,7 +635,6 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
             if (pValueRB) *pValueRB = valueRB;
             return asynSuccess;
           }
-          return asynDisabled;
         }
       }
       /* fall through */
