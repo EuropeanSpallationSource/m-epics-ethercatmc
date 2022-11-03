@@ -17,70 +17,74 @@
 static uint32_t invokeID;
 static int deftracelevel = ASYN_TRACE_DEBUG;
 
-#define ethercatmcamsdump(pasynUser, tracelevel, help_txt, ams_headdr_p)\
-{\
-  const AmsHdrType *amsHdr_p = (const AmsHdrType *)(ams_headdr_p);\
-  unsigned amsTcpHdr_len = amsHdr_p->amsTcpHdr.net_len[0] +\
-    (amsHdr_p->amsTcpHdr.net_len[1] << 8) +\
-    (amsHdr_p->amsTcpHdr.net_len[2] << 16) +\
-    (amsHdr_p->amsTcpHdr.net_len[3] <<24);\
-    unsigned ams_lenght = amsHdr_p->net_len[0] +\
-      (amsHdr_p->net_len[1] << 8) +\
-      (amsHdr_p->net_len[2] << 16) +\
-      (amsHdr_p->net_len[3] << 24);\
-    unsigned ams_errorCode = amsHdr_p->net_errCode[0] +\
-      (amsHdr_p->net_errCode[1] << 8) +\
-      (amsHdr_p->net_errCode[2] << 16) +\
-      (amsHdr_p->net_errCode[3] << 24);\
-    unsigned ams_invokeID = amsHdr_p->net_invokeID[0] +\
-      (amsHdr_p->net_invokeID[1] << 8) +\
-      (amsHdr_p->net_invokeID[2] << 16) +\
-      (amsHdr_p->net_invokeID[3] << 24);\
-    unsigned cmd = amsHdr_p->cmdID_low + (amsHdr_p->cmdID_high <<8); \
-  asynPrint(pasynUser, tracelevel,\
-            "%samsTcpHdr_len=%u ams target=%d.%d.%d.%d.%d.%d:%d "  \
-            "source=%d.%d.%d.%d.%d.%d:%d\n",                       \
-            help_txt, (unsigned)amsTcpHdr_len,                               \
-            amsHdr_p->target.netID[0], amsHdr_p->target.netID[1],\
-            amsHdr_p->target.netID[2], amsHdr_p->target.netID[3],\
-            amsHdr_p->target.netID[4], amsHdr_p->target.netID[5],\
-            amsHdr_p->target.port_low + (amsHdr_p->target.port_high << 8),\
-            amsHdr_p->source.netID[0],  amsHdr_p->source.netID[1],\
-            amsHdr_p->source.netID[2],  amsHdr_p->source.netID[3],\
-            amsHdr_p->source.netID[4],  amsHdr_p->source.netID[5],\
-            amsHdr_p->source.port_low + (amsHdr_p->source.port_high << 8)\
-            );\
-  asynPrint(pasynUser, tracelevel,\
-            "%samsHdr cmd=%u flags=%u ams_len=%u ams_err=%u id=%u\n",\
-            help_txt,                                        \
-            cmd,\
-            amsHdr_p->stateFlags_low + (amsHdr_p->stateFlags_high << 8),\
-            ams_lenght, ams_errorCode, ams_invokeID);\
-  if (cmd == ADS_READ || cmd == ADS_WRITE || cmd == ADS_READ_WRITE) { \
-    AdsReadReqType *ads_read_req_p = (AdsReadReqType*)ams_headdr_p;\
-    const char *cmd_str = "";\
-    switch (cmd) { case ADS_READ: cmd_str =  "RD"; break;\
-                   case ADS_WRITE: cmd_str = "WR"; break;\
-                   case ADS_READ_WRITE: cmd_str = "WRRD"; break;\
-                 }\
-    unsigned idxGrp = ads_read_req_p->net_idxGrp[0] +\
-      (ads_read_req_p->net_idxGrp[1] << 8) +\
-      (ads_read_req_p->net_idxGrp[2] << 16) +\
-      (ads_read_req_p->net_idxGrp[3] << 24);\
-    unsigned idxOff = ads_read_req_p->net_idxOff[0] +\
-      (ads_read_req_p->net_idxOff[1] << 8) + \
-      (ads_read_req_p->net_idxOff[2] << 16) +\
-      (ads_read_req_p->net_idxOff[3] << 24);\
-    unsigned len = ads_read_req_p->net_len[0] +\
-      (ads_read_req_p->net_len[1] << 8) + \
-      (ads_read_req_p->net_len[2] << 16) +\
-      (ads_read_req_p->net_len[3] << 24);\
-  asynPrint(pasynUser, tracelevel,\
-            "%s %4s idxGrp=0X%04X idxOff=0x%04X len=%u\n",\
-            help_txt, cmd_str,                           \
-            idxGrp, idxOff, len);                        \
-  } \
-}\
+#define ethercatmcamsdump(pasynUser, tracelevel, help_txt, ams_headdr_p, buflen) \
+{                                                                        \
+  if (buflen >= sizeof(AmsHdrType)) {                                    \
+    const AmsHdrType *amsHdr_p = (const AmsHdrType *)(ams_headdr_p);     \
+    unsigned amsTcpHdr_len = amsHdr_p->amsTcpHdr.net_len[0] +            \
+      (amsHdr_p->amsTcpHdr.net_len[1] << 8) +                            \
+      (amsHdr_p->amsTcpHdr.net_len[2] << 16) +                           \
+      (amsHdr_p->amsTcpHdr.net_len[3] <<24);                             \
+    unsigned ams_lenght = amsHdr_p->net_len[0] +                         \
+      (amsHdr_p->net_len[1] << 8) +                                      \
+      (amsHdr_p->net_len[2] << 16) +                                     \
+      (amsHdr_p->net_len[3] << 24);                                      \
+    unsigned ams_errorCode = amsHdr_p->net_errCode[0] +                  \
+      (amsHdr_p->net_errCode[1] << 8) +                                  \
+      (amsHdr_p->net_errCode[2] << 16) +                                 \
+      (amsHdr_p->net_errCode[3] << 24);                                  \
+    unsigned ams_invokeID = amsHdr_p->net_invokeID[0] +                  \
+      (amsHdr_p->net_invokeID[1] << 8) +                                 \
+      (amsHdr_p->net_invokeID[2] << 16) +                                \
+      (amsHdr_p->net_invokeID[3] << 24);                                 \
+    unsigned cmd = amsHdr_p->cmdID_low + (amsHdr_p->cmdID_high <<8);     \
+    asynPrint(pasynUser, tracelevel,                                     \
+              "%samsTcpHdr_len=%u ams target=%d.%d.%d.%d.%d.%d:%d "      \
+              "source=%d.%d.%d.%d.%d.%d:%d\n",                           \
+              help_txt, (unsigned)amsTcpHdr_len,                         \
+              amsHdr_p->target.netID[0], amsHdr_p->target.netID[1],      \
+              amsHdr_p->target.netID[2], amsHdr_p->target.netID[3],      \
+              amsHdr_p->target.netID[4], amsHdr_p->target.netID[5],      \
+              amsHdr_p->target.port_low + (amsHdr_p->target.port_high << 8), \
+              amsHdr_p->source.netID[0],  amsHdr_p->source.netID[1],     \
+              amsHdr_p->source.netID[2],  amsHdr_p->source.netID[3],     \
+              amsHdr_p->source.netID[4],  amsHdr_p->source.netID[5],     \
+              amsHdr_p->source.port_low + (amsHdr_p->source.port_high << 8) \
+              );                                                         \
+    asynPrint(pasynUser, tracelevel,                                     \
+              "%samsHdr cmd=%u flags=%u ams_len=%u ams_err=%u id=%u\n",  \
+              help_txt,                                                  \
+              cmd,                                                       \
+              amsHdr_p->stateFlags_low + (amsHdr_p->stateFlags_high << 8), \
+              ams_lenght, ams_errorCode, ams_invokeID);                  \
+    if (buflen >= sizeof(AdsReadReqType)) {                              \
+      if (cmd == ADS_READ || cmd == ADS_WRITE || cmd == ADS_READ_WRITE) {\
+        AdsReadReqType *ads_read_req_p = (AdsReadReqType*)ams_headdr_p;  \
+        const char *cmd_str = "";                                        \
+        switch (cmd) { case ADS_READ: cmd_str =  "RD"; break;            \
+        case ADS_WRITE: cmd_str = "WR"; break;                           \
+        case ADS_READ_WRITE: cmd_str = "WRRD"; break;                    \
+        }                                                                \
+        unsigned idxGrp = ads_read_req_p->net_idxGrp[0] +                \
+          (ads_read_req_p->net_idxGrp[1] << 8) +                         \
+          (ads_read_req_p->net_idxGrp[2] << 16) +                        \
+          (ads_read_req_p->net_idxGrp[3] << 24);                         \
+        unsigned idxOff = ads_read_req_p->net_idxOff[0] +                \
+          (ads_read_req_p->net_idxOff[1] << 8) +                         \
+          (ads_read_req_p->net_idxOff[2] << 16) +                        \
+          (ads_read_req_p->net_idxOff[3] << 24);                         \
+        unsigned len = ads_read_req_p->net_len[0] +                      \
+          (ads_read_req_p->net_len[1] << 8) +                            \
+          (ads_read_req_p->net_len[2] << 16) +                           \
+          (ads_read_req_p->net_len[3] << 24);                            \
+        asynPrint(pasynUser, tracelevel,                                 \
+                  "%s %4s idxGrp=0X%04X idxOff=0x%04X len=%u\n",         \
+                  help_txt, cmd_str,                                     \
+                  idxGrp, idxOff, len);                                  \
+       }                                                                 \
+    }                                                                    \
+  }                                                                      \
+}                                                                        \
 
 /****************************************************************************/
 extern "C" unsigned netToUint(const void *data, size_t lenInPlc)
@@ -330,9 +334,9 @@ ethercatmcController::writeReadControllerADS(asynUser *pasynUser,
     }
   }
   EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
-  ethercatmcamsdump(pasynUser, tracelevel, "OUT", outdata);
+  ethercatmcamsdump(pasynUser, tracelevel, "OUT", outdata, outlen);
   ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
-  ethercatmcamsdump(pasynUser, tracelevel, "IN1 ", indata);
+  ethercatmcamsdump(pasynUser, tracelevel, "IN1 ", indata, nread1);
   ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1);
   if (nread2) {
     ethercatmchexdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2);
@@ -441,9 +445,9 @@ asynStatus ethercatmcController::writeReadAds(asynUser *pasynUser,
         }
         ctrlLocal.old_ams_errorCode = ams_errorCode;
         ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
-        ethercatmcamsdump(pasynUser, tracelevel, "OUT", ams_req_hdr_p);
+        ethercatmcamsdump(pasynUser, tracelevel, "OUT", ams_req_hdr_p, outlen);
         ethercatmchexdump(pasynUser, tracelevel, "IN ", indata, nread);
-        ethercatmcamsdump(pasynUser, tracelevel, "IN ", indata);
+        ethercatmcamsdump(pasynUser, tracelevel, "IN ", indata, nread);
 
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "%s nread=%u ams_errorCode=0x%x\n", modNamEMC,
@@ -600,7 +604,7 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
     uint32_t ads_result = NETTOUINT(ADS_Write_rep.response.net_res);
     if (ads_result) {
       tracelevel |= ASYN_TRACE_INFO;
-      ethercatmcamsdump(pasynUser, tracelevel, "OUT ", p_write_buf);
+      ethercatmcamsdump(pasynUser, tracelevel, "OUT ", p_write_buf, write_buf_len);
       ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc);
 
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
