@@ -23,10 +23,12 @@ if test -f $LOGFILE; then
   mv $LOGFILE ./logs/$timestamp-$LOGFILE || exit 1
 fi
 
-pvmonitor ${P}PTPState ${P}PTPOffset \
-${P}DcToExtTimeOffset  \
-${P}PTPTimeOffsetDiffEL6688 \
-${P}PTPdiffTimeIOC_MCU \
-${P}PTPErrorStatus \
-${P}PTPallGood \
-${P}UTCEL1252P0 | ./tai2string.py  2>&1 | tee $LOGFILE
+PVS="${P}PTPState ${P}PTPOffset"
+PVS="$PVS ${P}DcToExtTimeOffset"
+PVS="$PVS ${P}PTPTimeOffsetDiffEL6688"
+PVS="$PVS ${P}PTPdiffTimeIOC_MCU"
+PVS="$PVS ${P}PTPErrorStatus"
+PVS="$PVS ${P}PTPallGood"
+PVS="$PVS ${P}UTCEL1252P0"
+
+pvmonitor $PVS  | ./tai2string.py  2>&1 | tee $LOGFILE
