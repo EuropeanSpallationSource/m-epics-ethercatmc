@@ -1025,7 +1025,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       updateMsgTxtFromDriver(msgTxtFromDriver);
     }
     drvlocal.dirty.old_hasError = hasError;
-    drvlocal.dirty.old_ErrorId = errorID;
     setIntegerParam(pC_->ethercatmcStatusCode_, idxStatusCode);
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
@@ -1172,6 +1171,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   }
   drvlocal.old_idxAuxBits        = idxAuxBits;
   drvlocal.dirty.idxStatusCode   = idxStatusCode;
+  drvlocal.dirty.old_ErrorId = errorID;
   callParamCallbacks();
   return status;
 }
