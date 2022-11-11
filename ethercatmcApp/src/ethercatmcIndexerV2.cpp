@@ -308,7 +308,7 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
         /* Hack: save the pointer to the "new, now to be created" device */
         pilsAsynDevInfo_type *pPilsAsynDevInfo
           = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
-        int function = newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, paramName);
+        int function = newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, iAllFlags, paramName);
         if (function < 0) {
           status = asynError;
           goto endPollIndexer;
@@ -375,7 +375,7 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
         const char *paramName = descVersAuthors.desc;
         int function;
 
-        function = newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, paramName);
+        function = newPilsAsynDevice(axisNo, iOffsBytes, iTypCode, iAllFlags, paramName);
         if (function > 0) {
 #ifdef ETHERCATMC_ASYN_PARAMMETA
           char metaValue[256];

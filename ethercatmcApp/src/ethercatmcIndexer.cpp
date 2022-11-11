@@ -1156,6 +1156,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
 int ethercatmcController::newPilsAsynDevice(int      axisNo,
                                             unsigned indexOffset,
                                             unsigned iTypCode,
+                                            unsigned iAllFlags,
                                             const char *paramName)
 {
   const static char *const functionName = "newPilsAsynDevice";
@@ -1241,19 +1242,28 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
         /* 1802 has only a 32 bit status word */
         statusOffset = indexOffset;
         myAsynParamType = asynParamUInt32Digital;
-        for (i=0; i < 25; i++) {
-          int function;
-          asynStatus status;
-          char  buf[64];
-          snprintf(buf, sizeof(buf), "%s_NamAuxBit%u", paramName, i);
-          status = createParam(buf, asynParamOctet, &function);
-          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%s%s(%u) numPilsAsynDevInfo=%d created function=%d paramName=%s status=%s (%d)\n",
-                    modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
-                    buf,
-                    ethercatmcstrStatus(status), (int)status);
-          if (status == asynSuccess && i == 0)
-            functionNamAux0 = function;
+        if (iAllFlags & 0x03FFFFFF) {
+          for (i=0; i < MAX_REASON_AUX_BIT_SHOW; i++) {
+            int function;
+            asynStatus status;
+            char  buf[64];
+            snprintf(buf, sizeof(buf), "%s_NamAuxBit%u", paramName, i);
+            status = findParam(paramName, &function);
+            if (status == asynSuccess) {
+              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                        "%s%s exist function=%d paramName=%s\n",
+                        modNamEMC, functionName, function, paramName);
+            } else {
+              status = createParam(buf, asynParamOctet, &function);
+              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                        "%s%s(%u) numPilsAsynDevInfo=%d created function=%d paramName=%s status=%s (%d)\n",
+                        modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
+                        buf,
+                        ethercatmcstrStatus(status), (int)status);
+            }
+            if (status == asynSuccess && i == 0)
+              functionNamAux0 = function;
+          }
         }
       }
       break;
@@ -1343,28 +1353,25 @@ ethercatmcController::changedAuxBits_to_ASCII(int         axisNo,
   memset(&ctrlLocal.changedAuxBits, 0, sizeof(ctrlLocal.changedAuxBits));
   for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
     if ((changed >> auxBitIdx) & 0x01) {
-      asynStatus status;
-      int function = (int)(functionNamAux0 + auxBitIdx);
-      /* Leave the first character for '+' or '-',
-         leave one byte for '\0' */
-      int length = (int)sizeof(ctrlLocal.changedAuxBits[auxBitIdx]) - 2;
-      status = getStringParam(axisNo,
-                              function,
-                              length,
-                              &ctrlLocal.changedAuxBits[auxBitIdx][1]);
-      if (status == asynSuccess) {
-        /* the name of "aux bits without a name" is never written,
-           so that we don't show it here */
-        if ((statusReasonAux >> auxBitIdx) & 0x01) {
-          ctrlLocal.changedAuxBits[auxBitIdx][0] = '+';
-        } else {
-          ctrlLocal.changedAuxBits[auxBitIdx][0] = '-';
-        }
+      asynStatus status = asynError;
+      size_t length = sizeof(ctrlLocal.changedAuxBits[auxBitIdx]) - 2;
+      if (functionNamAux0) {
+        int function = (int)(functionNamAux0 + auxBitIdx);
+        /* Leave the first character for '+' or '-',
+           leave one byte for '\0' */
+        status = getStringParam(axisNo,
+                                function,
+                                (int)length,
+                                &ctrlLocal.changedAuxBits[auxBitIdx][1]);
+      }
+      if (status != asynSuccess) {
+        snprintf(&ctrlLocal.changedAuxBits[auxBitIdx][1],
+                 length, "Bit%d", auxBitIdx);
+      }
+      if ((statusReasonAux >> auxBitIdx) & 0x01) {
+        ctrlLocal.changedAuxBits[auxBitIdx][0] = '+';
       } else {
-        asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
-                  "%s%s(%d) function=%d status=%s (%d)\n",
-                  modNamEMC, "changedAuxBits_to_ASCII", axisNo, function,
-                  ethercatmcstrStatus(status), (int)status);
+        ctrlLocal.changedAuxBits[auxBitIdx][0] = '-';
       }
     }
   }
@@ -1416,44 +1423,42 @@ asynStatus ethercatmcController::indexerPoll(void)
              currently the poller for the axis has simiar code */
           const static epicsUInt32 maskStatusReasonAux = 0x03FFFFFF;
           void *pStatusInPlc = &ctrlLocal.pIndexerProcessImage[statusOffset];
-          epicsUInt32 statusReasonAux, oldStatusReasonAux; /* We use only 32 bit status words here */
+          epicsUInt32 statusReasonAux;
           unsigned statusLenInPLC = sizeof(statusReasonAux);
           int function = pPilsAsynDevInfo->function;
           if (!function) {
             function = ethercatmcStatusBits_;
           }
-          int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
-          if (!functionNamAux0) {
-            functionNamAux0 = ethercatmcNamAux0_;
-          }
           statusReasonAux = netToUint(pStatusInPlc, statusLenInPLC);
-
-          getUIntDigitalParam(axisNo, function,
-                              &oldStatusReasonAux, maskStatusReasonAux);
-
-          if (statusReasonAux != oldStatusReasonAux) {
-            changedAuxBits_to_ASCII(axisNo, functionNamAux0,
-                                    statusReasonAux, oldStatusReasonAux);
-            asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
-                      "%spoll(%d) %sOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
-                      modNamEMC, axisNo, paramName, oldStatusReasonAux, statusReasonAux,
-                      ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
-                      ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
-                      ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
-                      ctrlLocal.changedAuxBits[6],  ctrlLocal.changedAuxBits[7],
-                      ctrlLocal.changedAuxBits[8],  ctrlLocal.changedAuxBits[9],
-                      ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
-                      ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
-                      ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
-                      ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
-                      ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
-                      ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
-                      ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
-                      ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
-            setUIntDigitalParam(axisNo, function,
-                                (epicsUInt32)statusReasonAux,
-                                maskStatusReasonAux, maskStatusReasonAux);
+          int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
+          if (functionNamAux0) {
+            epicsUInt32 oldStatusReasonAux;
+            getUIntDigitalParam(axisNo, function,
+                                &oldStatusReasonAux, maskStatusReasonAux);
+            if (statusReasonAux != oldStatusReasonAux) {
+              changedAuxBits_to_ASCII(axisNo, functionNamAux0,
+                                      statusReasonAux, oldStatusReasonAux);
+              asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
+                        "%spoll(%d) %sOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
+                        modNamEMC, axisNo, paramName, oldStatusReasonAux, statusReasonAux,
+                        ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
+                        ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
+                        ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
+                        ctrlLocal.changedAuxBits[6],  ctrlLocal.changedAuxBits[7],
+                        ctrlLocal.changedAuxBits[8],  ctrlLocal.changedAuxBits[9],
+                        ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
+                        ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
+                        ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
+                        ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
+                        ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
+                        ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
+                        ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
+                        ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
+            }
           }
+          setUIntDigitalParam(axisNo, function,
+                              (epicsUInt32)statusReasonAux,
+                              maskStatusReasonAux, maskStatusReasonAux);
         }
         if (!inputOffset) continue;
 
