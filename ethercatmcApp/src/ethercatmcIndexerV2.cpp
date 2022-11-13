@@ -458,9 +458,8 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
                        (fAbsMin > fABSMIN && fAbsMax < fABSMAX),
                        fAbsMax,
                        fAbsMin);
-  }
 #endif
-
+  }
   return status;
 }
 
