@@ -1246,19 +1246,19 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
           for (i=0; i < MAX_REASON_AUX_BIT_SHOW; i++) {
             int function;
             asynStatus status;
-            char  buf[64];
-            snprintf(buf, sizeof(buf), "%s_NamAuxBit%u", paramName, i);
-            status = findParam(paramName, &function);
+            char  auxBitname[64];
+            snprintf(auxBitname, sizeof(auxBitname), "%s_NamAuxBit%u", paramName, i);
+            status = findParam(auxBitname, &function);
             if (status == asynSuccess) {
               asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                        "%s%s exist function=%d paramName=%s\n",
-                        modNamEMC, functionName, function, paramName);
+                        "%s%s exist function=%d\n",
+                        modNamEMC, auxBitname, function);
             } else {
-              status = createParam(buf, asynParamOctet, &function);
+              status = createParam(auxBitname, asynParamOctet, &function);
               asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                        "%s%s(%u) numPilsAsynDevInfo=%d created function=%d paramName=%s status=%s (%d)\n",
-                        modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
-                        buf,
+                        "%s%s(%u) numPilsAsynDevInfo=%d created function=%d auxBitname=%s status=%s (%d)\n",
+                        modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
+                        auxBitname,
                         ethercatmcstrStatus(status), (int)status);
             }
             if (status == asynSuccess && i == 0)
