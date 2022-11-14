@@ -5,6 +5,19 @@ record(stringin, "$(PREFIX)PlcName") {
     field(SCAN, "I/O Intr")
 }
 
+
+# The IPADDR of the system
+record(stringout, "$(PREFIX)IPADDR") {
+    field(VAL, "$(IPADDR)")
+}
+
+
+# The IPPORT of the system
+record(stringout, "$(PREFIX)IPPORT") {
+    field(VAL, "$(IPPORT)")
+}
+
+
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {
 }

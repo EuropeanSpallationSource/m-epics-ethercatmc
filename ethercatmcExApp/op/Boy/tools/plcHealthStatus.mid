@@ -51,5 +51,5 @@
   <y>0</y>
   <tooltip>$(pv_name)
     $(pv_value)</tooltip>
-  <x>120</x>
+  <x>240</x>
 </widget>
