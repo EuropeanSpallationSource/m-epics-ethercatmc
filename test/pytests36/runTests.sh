@@ -21,15 +21,6 @@
   exit 1
 }
 
-BLACK_VERSION=22.3.0
-if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
-  pip install git+https://github.com/psf/black@22.3.0
-fi
-if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
-  echo >&2 black not found or wrong version
-  exit 1
-fi
-black *.py
 
 ##############################################################################
 # functions
@@ -95,7 +86,6 @@ elif type virtualenv >/dev/null 2>&1; then
 fi
 
 echo MYVIRTUALENV=$MYVIRTUALENV
-
 export MYVIRTUALENV
 
 # There must be a better way to do this
@@ -199,6 +189,18 @@ checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST"
 }
 
 checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
+
+#Check black, the python formatter
+BLACK_VERSION=22.3.0
+if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
+  pip install git+https://github.com/psf/black@22.3.0
+fi
+if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
+  echo >&2 black not found or wrong version
+  exit 1
+fi
+black *.py
+
 
 # See if we have a local EPICS installation
 uname_s=$(uname -s 2>/dev/null || echo unknown)
