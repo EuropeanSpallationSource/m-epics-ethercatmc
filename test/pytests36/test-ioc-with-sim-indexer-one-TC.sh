@@ -48,7 +48,11 @@ IOC_NC_PORT=5001
 killExitIocSimulator()
 {
   # exit IOC
-  echo "exit" | nc localhost ${IOC_NC_PORT} || :
+  IOC_NC_PARAM=""
+  if nc -h 2>&1 | grep -q '\-\-send-only'; then
+    IOC_NC_PARAM="--send-only"
+  fi
+  echo "exit" | nc $IOC_NC_PARAM localhost ${IOC_NC_PORT} || :
   sleep 2
   # terminate simulator
   echo "kill" | nc localhost ${SIM_NC_PORT} || :
@@ -84,7 +88,7 @@ sleep 5
 
 # start ioc
 date
-( cd .. && nc -l  ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh --no-make sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1 ) &
+( cd .. && nc -l -p ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh --no-make sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1 ) &
 IOC_PID=$!
 sleep 10
 date
