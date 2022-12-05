@@ -142,6 +142,7 @@ extern "C" {
     switch (paramIndex) {
     case PARAM_IDX_UNITS_PER_REV_FLOAT: return 1;
     case PARAM_IDX_STEPS_PER_REV_FLOAT: return 1;
+    case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT: return 1;
     default:
       return 0;
     }
@@ -772,12 +773,12 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     break;
   case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
     updateCfgValue(axisNo, ethercatmcCfgPOSLAG_RB_, fValue, "poslag");
-    updateCfgValue(axisNo, ethercatmcCfgPOSLAG_En_RB_, 1, "poslag_en");
+    updateCfgValue(axisNo, ethercatmcCfgPOSLAG_En_RB_, fValue > 0.0, "poslag_en");
     break;
   case PARAM_IDX_HYTERESIS_FLOAT:
     updateCfgValue(axisNo, ethercatmcCfgSPDB_RB_, fValue, "spdb");
     updateCfgValue(axisNo, ethercatmcCfgRDBD_RB_, fValue, "rdbd");
-    updateCfgValue(axisNo, ethercatmcCfgRDBD_En_RB_, 1, "rdbd_en");
+    updateCfgValue(axisNo, ethercatmcCfgRDBD_En_RB_, fValue > 0.0, "rdbd_en");
     break;
   case PARAM_IDX_REFSPEED_FLOAT:
     updateCfgValue(axisNo, ethercatmcCfgHVEL_RB_, fValue, "hvel");
