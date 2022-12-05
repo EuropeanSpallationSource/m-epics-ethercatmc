@@ -88,7 +88,14 @@ sleep 5
 
 # start ioc
 date
-( cd .. && nc -l -p ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh --no-make sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1 ) &
+( cd .. &&
+    # Later nc under Linux (Debian ?)
+    IOC_NC_PARAM="-l -p"
+    if nc -h 2>&1 | grep -q '\-p.*port.*Specify.*local.*port.*for *remote.*connects.*cannot.*use.*with.*\-l'; then
+      # -l only, MacOs
+      IOC_NC_PARAM="-l"
+    fi
+    nc ${IOC_NC_PARAM} ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh --no-make sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1 ) &
 IOC_PID=$!
 sleep 10
 date
