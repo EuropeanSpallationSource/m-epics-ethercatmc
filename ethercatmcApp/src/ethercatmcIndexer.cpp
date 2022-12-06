@@ -1279,7 +1279,7 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       lenInPLC = 4;
       /* 1A04 has "current value, followed by extended status word */
       inputOffset = indexOffset;
-      statusOffset = indexOffset + lenInPLC;
+      //statusOffset = indexOffset + lenInPLC; We do not handle both value and status yet
       myAsynParamType = asynParamInt32;
       break;
   }
