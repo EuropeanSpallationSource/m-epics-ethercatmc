@@ -44,6 +44,11 @@ class AxisCom:
         else:
             help_and_exit(self, url_string, "invalid scheme")
 
+    def close(self):
+        if self.ctxt is not None:
+            self.ctxt.close
+            self.ctxt = None
+
     def get(
         self,
         pvsuf,
