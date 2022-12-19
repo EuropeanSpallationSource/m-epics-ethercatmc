@@ -29,6 +29,11 @@ if test -n "$1"; then
    shift 1
 else
   echo >&2 "$0 <PV> [numruns] [testfile.py]"
+  echo >&2 "example: $0 pva://IOC:m1 [testfile.py] [-k pattern] [numruns]"
+  echo >&2 "example: $0 pva://IOC:m1 testfile.py"
+  echo >&2 "example: $0 pva://IOC:m1 testfile.py -k 91011"
+  echo >&2 "example: PVXS_LOG=*=DEBUG $0 pva://IOC:m1 testfile.py -k 91011"
+  echo >&2 "example: $0 pva://IOC:m1 testfile.py 2"
   exit 1
 fi
 

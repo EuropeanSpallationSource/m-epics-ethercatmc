@@ -21,6 +21,12 @@
   exit 1
 }
 
+if ! test "$1"; then
+  # get the help from doRunTests.sh
+  ./doRunTests.sh
+  exit 1
+fi
+
 
 ##############################################################################
 # functions
