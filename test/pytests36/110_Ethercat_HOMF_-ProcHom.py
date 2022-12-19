@@ -6,6 +6,7 @@
 
 
 import datetime
+import inspect
 import unittest
 import os
 import sys
@@ -14,9 +15,7 @@ import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-filnam = "110xx.py"
-
-###
+filnam = os.path.basename(__file__)[0:3]
 
 START_FROM_LLS = -1
 START_FROM_MID = 0
@@ -24,6 +23,10 @@ START_FROM_HLS = 1
 
 HOME_VIA_RECORD = 0  # home via the .HOMF or .HOMR field of the motorRecord
 HOME_VIA_DRIVER = 0  # home via the -Home PV talking to the model 3 driver
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
@@ -205,52 +208,57 @@ class Test(unittest.TestCase):
             )
             homeTheMotor(self, tc_no, 0, START_FROM_HLS, HOME_VIA_DRIVER)
 
-
-#    def test_TC_11110(self):
-#        tc_no = "11110"
-#        if self.HomeVis == 1:
-#            print(
-#                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
-#            )
-#            homeTheMotor(self, tc_no, 1, START_FROM_LLS)
-#
-#    def test_TC_11111(self):
-#        tc_no = "11111"
-#        if self.HomeVis == 1:
-#            print(
-#                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
-#            )
-#            homeTheMotor(self, tc_no, 1, START_FROM_MID)
-#
-#    def test_TC_11112(self):
-#        tc_no = "11112"
-#        if self.HomeVis == 1:
-#            print(
-#                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
-#            )
-#            homeTheMotor(self, tc_no, 1, START_FROM_HLS)
-#
-#    def test_TC_11120(self):
-#        tc_no = "11120"
-#        if self.HomeVis == 1:
-#            print(
-#                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
-#            )
-#            homeTheMotor(self, tc_no, 2, START_FROM_LLS)
-#
-#    def test_TC_11121(self):
-#        tc_no = "11121"
-#        if self.HomeVis == 1:
-#            print(
-#                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
-#            )
-#            homeTheMotor(self, tc_no, 2, START_FROM_MID)
-#
-#    def test_TC_11122(self):
-#        tc_no = "11122"
-#        if self.HomeVis == 1:
-#            print(
-#                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
-#            )
-#            homeTheMotor(self, tc_no, 2, START_FROM_HLS)
-#
+    #    def test_TC_11110(self):
+    #        tc_no = "11110"
+    #        if self.HomeVis == 1:
+    #            print(
+    #                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+    #            )
+    #            homeTheMotor(self, tc_no, 1, START_FROM_LLS)
+    #
+    #    def test_TC_11111(self):
+    #        tc_no = "11111"
+    #        if self.HomeVis == 1:
+    #            print(
+    #                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+    #            )
+    #            homeTheMotor(self, tc_no, 1, START_FROM_MID)
+    #
+    #    def test_TC_11112(self):
+    #        tc_no = "11112"
+    #        if self.HomeVis == 1:
+    #            print(
+    #                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+    #            )
+    #            homeTheMotor(self, tc_no, 1, START_FROM_HLS)
+    #
+    #    def test_TC_11120(self):
+    #        tc_no = "11120"
+    #        if self.HomeVis == 1:
+    #            print(
+    #                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+    #            )
+    #            homeTheMotor(self, tc_no, 2, START_FROM_LLS)
+    #
+    #    def test_TC_11121(self):
+    #        tc_no = "11121"
+    #        if self.HomeVis == 1:
+    #            print(
+    #                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+    #            )
+    #            homeTheMotor(self, tc_no, 2, START_FROM_MID)
+    #
+    #    def test_TC_11122(self):
+    #        tc_no = "11122"
+    #        if self.HomeVis == 1:
+    #            print(
+    #                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
+    #            )
+    #            homeTheMotor(self, tc_no, 2, START_FROM_HLS)
+    #
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

@@ -2,6 +2,7 @@
 #
 
 import datetime
+import inspect
 import unittest
 import os
 import sys
@@ -12,12 +13,8 @@ import time
 import math
 import inspect
 
-filnam = "920xx.py"
+filnam = os.path.basename(__file__)[0:3]
 ###
-
-
-def lineno():
-    return inspect.currentframe().f_back.f_lineno
 
 
 ###
@@ -35,6 +32,10 @@ motorRMOD_I = 3  # "In-Position"
 use_abs = 0
 use_rel = 1
 # Note: motorRMOD_I is always absolute !
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 def motorInitTC(self, tc_no, rmod, encRel):
@@ -343,3 +344,10 @@ class Test(unittest.TestCase):
         positionAndBacklash(
             self, 92124, -myBDST, motorRMOD_G, use_rel, self.myPOShig, self.myPOSlow
         )
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

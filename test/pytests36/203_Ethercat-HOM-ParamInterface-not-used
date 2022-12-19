@@ -9,7 +9,7 @@ from AxisCom import AxisCom
 
 import time
 
-filnam = "203xx.py"
+filenam = os.path.basename(__file__)[0:3]
 
 ###
 

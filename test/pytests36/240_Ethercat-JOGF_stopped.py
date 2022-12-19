@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 
 import datetime
+import inspect
 import unittest
 import os
 import sys
+import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-import time
 
-filnam = "240xx.py"
+filnam = os.path.basename(__file__)[0:3]
 ###
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 class Test(unittest.TestCase):
@@ -66,3 +71,10 @@ class Test(unittest.TestCase):
             self.axisCom.putDbgStrToLOG("End " + tc_no[0:20], wait=True)
 
             self.assertEqual(True, res4, "VAL synched with RBV")
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

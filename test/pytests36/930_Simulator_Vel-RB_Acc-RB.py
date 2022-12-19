@@ -2,6 +2,7 @@
 #
 
 import datetime
+import inspect
 import unittest
 import os
 import sys
@@ -12,7 +13,7 @@ import time
 import math
 import inspect
 
-filnam = "930xx.py"
+filnam = os.path.basename(__file__)[0:3]
 ###
 
 
@@ -21,6 +22,10 @@ def lineno():
 
 
 polltime = 0.1
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 def setAndReadBackParam(self, tc_no, field_name, paramInSimu):
@@ -98,3 +103,10 @@ class Test(unittest.TestCase):
     # def test_TC_9306(self):
     #    tc_no = "TC-9306"
     #    setAndReadBackParam(self,  tc_no, '-CfgDLLM-En-RB', 'bEnableLowSoftLimit')
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

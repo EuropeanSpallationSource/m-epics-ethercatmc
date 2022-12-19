@@ -1,17 +1,23 @@
 #!/usr/bin/env python
 
 import datetime
+import inspect
 import unittest
 import os
 import sys
+import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-import time
+filnam = os.path.basename(__file__)[0:3]
 
 ###
 
 polltime = 0.2
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 def startAndPowerOff(self, tc_no, startpos, field_name, field_value):
@@ -228,3 +234,10 @@ class Test(unittest.TestCase):
         startpos = (self.saved_HLM + self.saved_LLM) / 2.0
         testPassed = powerOffAndStart(self, tc_no, startpos, ".HOMF", 1)
         assert testPassed
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

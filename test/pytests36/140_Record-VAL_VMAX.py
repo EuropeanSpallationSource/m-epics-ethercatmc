@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 #
 
+import datetime
+import inspect
 import unittest
 import os
 import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-###
+filnam = os.path.basename(__file__)[0:3]
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 def motorPositionTC(self, tc_no, destination, velocity):
@@ -81,3 +87,10 @@ class Test(unittest.TestCase):
     def test_TC_1407(self):
         tc_no = "1407"
         motorPositionTC(self, tc_no, self.llm, self.vmax)
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

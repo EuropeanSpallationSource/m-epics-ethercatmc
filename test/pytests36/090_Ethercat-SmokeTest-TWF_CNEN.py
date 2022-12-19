@@ -5,6 +5,8 @@
 # http://cars9.uchicago.edu/software/python/pyepics3/
 #
 
+import datetime
+import inspect
 import unittest
 import os
 import sys
@@ -14,9 +16,7 @@ import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-import inspect
-
-###
+filnam = os.path.basename(__file__)[0:3]
 
 polltime = 0.1
 
@@ -305,3 +305,10 @@ class Test(unittest.TestCase):
         print(f"{tc_no}:{int(lineno())} CNEN={int(self.old_Enable)}")
         self.axisMr.setCNENandWait(tc_no, self.old_Enable)
         # assert False
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

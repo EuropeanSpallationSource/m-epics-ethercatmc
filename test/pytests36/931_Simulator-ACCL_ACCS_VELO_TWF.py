@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import inspect
 import unittest
 import os
 import sys
@@ -9,8 +10,12 @@ from AxisCom import AxisCom
 
 import time
 
-filnam = "931xx.py"
+filnam = os.path.basename(__file__)[0:3]
 ###
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 def getAccEGUfromMCU(self, tc_no):
@@ -151,3 +156,10 @@ class Test(unittest.TestCase):
         if self.hasACCSfield:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 4.0, -1.0, -1.0, 16.0)
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

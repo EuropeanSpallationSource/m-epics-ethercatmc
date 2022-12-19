@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
 import datetime
+import inspect
 import unittest
 import os
 import sys
+import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-import time
-
-filnam = "220xx.py"
+filnam = os.path.basename(__file__)[0:3]
 
 ###
 
@@ -17,6 +17,10 @@ PwrOnDly = 6.0
 globalPwrOffDly = 3.0
 DLY = 4.0
 BDST = 5.0
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 def restorePwrSettings(self, tc_no, dly, bdst, pwrAuto, pwrOnDly, pwrOffDly):
@@ -166,3 +170,10 @@ class Test(unittest.TestCase):
             self.axisMr.resetAxis(tc_no)
 
         self.axisMr.setCNENandWait(tc_no, self.saved_CNEN)
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

@@ -2,18 +2,17 @@
 #
 
 import datetime
+import inspect
 import unittest
 import math
 import os
 import sys
+import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-import time
-import math
-import inspect
 
-filnam = "950xx.py"
+filnam = os.path.basename(__file__)[0:3]
 ###
 
 #
@@ -492,3 +491,10 @@ class Test(unittest.TestCase):
         jogDir = 1
 
         jogTheMotorTestWrapper(self, tc_no, mres=mres, dir=dir)
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

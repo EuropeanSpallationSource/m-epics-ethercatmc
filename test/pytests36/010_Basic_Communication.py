@@ -18,7 +18,7 @@ import unittest
 from AxisCom import AxisCom
 
 ###
-filnam = "010"
+filnam = os.path.basename(__file__)[0:3]
 
 
 def lineno():

@@ -1,15 +1,21 @@
 #!/usr/bin/env python
 #
 
+import datetime
+import inspect
 import unittest
 import os
 import sys
+import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-import time
 
-###
+filnam = os.path.basename(__file__)[0:3]
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 class Test(unittest.TestCase):
@@ -71,3 +77,10 @@ class Test(unittest.TestCase):
         self.assertEqual(
             0, msta & self.axisMr.MSTA_BIT_PROBLEM, "Problem bit must not be set"
         )
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()

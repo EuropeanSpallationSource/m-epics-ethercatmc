@@ -2,6 +2,7 @@
 #
 
 import datetime
+import inspect
 import unittest
 import os
 import sys
@@ -12,15 +13,15 @@ import time
 import math
 import inspect
 
-filnam = "900xx.py"
+filnam = os.path.basename(__file__)[0:3]
 ###
+
+polltime = 0.1
 
 
 def lineno():
     return inspect.currentframe().f_back.f_lineno
 
-
-polltime = 0.1
 
 # Values to be used for test
 # Note: Make sure to use different values to hae a good
@@ -570,3 +571,10 @@ class Test(unittest.TestCase):
     def test_TC_900999(self):
         if self.drvUseEGU_RB == 1:
             self.axisCom.put("-DrvUseEGU", 1)
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()
