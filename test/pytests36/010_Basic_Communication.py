@@ -10,12 +10,19 @@
 # The (motor) PV  does exist
 # Or the PLC can be connected via ADS
 
+import datetime
+import inspect
 import os
 import unittest
 
 from AxisCom import AxisCom
 
 ###
+filnam = "010"
+
+
+def lineno():
+    return inspect.currentframe().f_back.f_lineno
 
 
 class Test(unittest.TestCase):
@@ -124,3 +131,10 @@ class Test(unittest.TestCase):
         print(f"{tc_no}/{url_string} floatGetEx={floatGetEx} floatPutEx={floatPutEx}")
         self.assertNotEqual(None, floatGetEx, "floatGetEx must not be None")
         self.assertNotEqual(None, floatPutEx, "floatPutEx must not be None")
+
+    def teardown_class(self):
+        tc_no = int(filnam) * 10000 + 9999
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} teardown_class"
+        )
+        self.axisCom.close()
