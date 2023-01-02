@@ -20,6 +20,9 @@ class ConnCA(ConnEPICS):
         self.log_debug = log_debug
         self.url_scheme = "ca://"
 
+    def close(self):
+        self.url_scheme = None  # Needs better code
+
     def get(
         self,
         pvname,
