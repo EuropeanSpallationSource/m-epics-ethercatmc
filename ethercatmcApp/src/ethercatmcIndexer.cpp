@@ -1067,6 +1067,7 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 int ethercatmcController::addPilsAsynDevLst(int           axisNo,
                                             const char    *paramName,
                                             int           functionNamAux0,
+                                            int           functionStatusBits,
                                             unsigned      lenInPLC,
                                             unsigned      inputOffset,
                                             unsigned      outputOffset,
@@ -1080,7 +1081,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
     (sizeof(ctrlLocal.pilsAsynDevInfo) / sizeof(ctrlLocal.pilsAsynDevInfo[0])) - 1;
 
   asynStatus status;
-  int function = -1;
+  int function = 0;
   pilsAsynDevInfo_type *pPilsAsynDevInfo
     = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
@@ -1092,11 +1093,12 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   }
 
   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-            "%s%s axisNo=%i \"%s\" functionNamAux0=%d lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
+            "%s%s axisNo=%i \"%s\" functionNamAux0=%d functionStatusBits=%d lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
             " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
             modNamEMC, functionName, axisNo,
             paramName,
             functionNamAux0,
+            functionStatusBits,
             lenInPLC,
             inputOffset,
             outputOffset,
@@ -1110,28 +1112,30 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
             stringFromAsynParamType(myEPICSParamType),
             (int)myEPICSParamType);
 
-  /* Some parameters are alread pre-created by the Controller.cpp,
-     e.g.errorId. Use those, otherwise create a parameter */
-  status = findParam(/* axisNo, */paramName, &function);
-  if (status == asynSuccess) {
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s exist function=%d paramName=%s\n",
-              modNamEMC, functionName, function, paramName);
-  } else {
-    status = createParam(/* axisNo, */
-                         paramName,
-                         myEPICSParamType,
-                         &function);
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s(%u) numPilsAsynDevInfo=%d created function=%d paramName=%s status=%s (%d)\n",
-              modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
-              paramName,
-              ethercatmcstrStatus(status), (int)status);
-    if (status != asynSuccess) return -1;
+  if (myEPICSParamType != asynParamNotDefined) {
+    /* Some parameters are alread pre-created by the Controller.cpp,
+       e.g.errorId. Use those, otherwise create a parameter */
+    status = findParam(paramName, &function);
+    if (status == asynSuccess) {
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s exist function=%d paramName=%s\n",
+                modNamEMC, functionName, function, paramName);
+    } else {
+      status = createParam(paramName,
+                           myEPICSParamType,
+                           &function);
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s(%u) numPilsAsynDevInfo=%d created function=%d paramName=%s status=%s (%d)\n",
+                modNamEMC, functionName, axisNo, numPilsAsynDevInfo, function,
+                paramName,
+                ethercatmcstrStatus(status), (int)status);
+      if (status != asynSuccess) return -1;
+    }
   }
 
   pPilsAsynDevInfo->axisNo           = axisNo;
   pPilsAsynDevInfo->functionNamAux0  = functionNamAux0;
+  pPilsAsynDevInfo->functionStatusBits = functionStatusBits;
   pPilsAsynDevInfo->lenInPLC         = lenInPLC;
   pPilsAsynDevInfo->inputOffset      = inputOffset;
   pPilsAsynDevInfo->outputOffset     = outputOffset;
@@ -1167,6 +1171,7 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
   unsigned      outputOffset      = 0;
   unsigned      statusOffset      = 0;
   int           functionNamAux0   = 0;
+  int           functionStatusBits= 0;
   asynParamType myAsynParamType = asynParamNotDefined;
   struct {
     char     name[80];      /* 34 + some spare */
@@ -1236,37 +1241,8 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       myAsynParamType = asynParamInt32;
       break;
     case 0x1802:
-      {
-        unsigned i;
-        lenInPLC = 4;
-        //paramName = ethercatmcStatusBitsString;
-        /* 1802 has only a 32 bit status word */
-        statusOffset = indexOffset;
-        myAsynParamType = asynParamUInt32Digital;
-        if (iAllFlags & 0x03FFFFFF) {
-          for (i=0; i < MAX_REASON_AUX_BIT_SHOW; i++) {
-            int function;
-            asynStatus status;
-            char  auxBitname[64];
-            snprintf(auxBitname, sizeof(auxBitname), "%s_NamAuxBit%u", paramName, i);
-            status = findParam(auxBitname, &function);
-            if (status == asynSuccess) {
-              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                        "%s%s exist function=%d\n",
-                        modNamEMC, auxBitname, function);
-            } else {
-              status = createParam(auxBitname, asynParamOctet, &function);
-              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                        "%s%s(%u) numPilsAsynDevInfo=%d created function=%d auxBitname=%s status=%s (%d)\n",
-                        modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
-                        auxBitname,
-                        ethercatmcstrStatus(status), (int)status);
-            }
-            if (status == asynSuccess && i == 0)
-              functionNamAux0 = function;
-          }
-        }
-      }
+      /* 1802 has only a 32 bit status word */
+      statusOffset = indexOffset;
       break;
     case 0x1A02:
       lenInPLC = 2;
@@ -1279,32 +1255,86 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       lenInPLC = 4;
       /* 1A04 has "current value, followed by extended status word */
       inputOffset = indexOffset;
-      //statusOffset = indexOffset + lenInPLC; We do not handle both value and status yet
+      statusOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamInt32;
       break;
   }
-  if (!lenInPLC) {
+  /* Aux bits */
+  if (iAllFlags & 0x03FFFFFF) {
+    unsigned i;
+    statusOffset = indexOffset;
+    for (i=0; i < MAX_REASON_AUX_BIT_SHOW; i++) {
+      int function;
+      asynStatus status;
+      char  auxBitname[64];
+      snprintf(auxBitname, sizeof(auxBitname), "%s_NamAuxBit%u", paramName, i);
+      status = findParam(auxBitname, &function);
+      if (status == asynSuccess) {
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s exist function=%d\n",
+                  modNamEMC, auxBitname, function);
+      } else {
+        status = createParam(auxBitname, asynParamOctet, &function);
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s(%u) numPilsAsynDevInfo=%d created function=%d auxBitname=%s status=%s (%d)\n",
+                  modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
+                  auxBitname,
+                  ethercatmcstrStatus(status), (int)status);
+      }
+      if (status == asynSuccess && i == 0)
+        functionNamAux0 = function;
+    }
+  }
+  /* Status word */
+  if (statusOffset) {
+      int function;
+      asynStatus status;
+      char  statusBitsName[64];
+      if (inputOffset) {
+        snprintf(statusBitsName, sizeof(statusBitsName), "%s_StatusBits", paramName);
+      } else {
+        /* probably an 1802 which is only a status word: use the name as is */
+        snprintf(statusBitsName, sizeof(statusBitsName), "%s", paramName);
+      }
+      status = findParam(statusBitsName, &function);
+      if (status == asynSuccess) {
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s exist function=%d\n",
+                  modNamEMC, statusBitsName, function);
+      } else {
+        status = createParam(statusBitsName, asynParamUInt32Digital, &function);
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s(%u) numPilsAsynDevInfo=%d created function=%d statusBitsName=%s status=%s (%d)\n",
+                  modNamEMC, statusBitsName, axisNo, numPilsAsynDevInfo, function,
+                  statusBitsName,
+                  ethercatmcstrStatus(status), (int)status);
+      }
+      if (status == asynSuccess)
+        functionStatusBits = function;
+  }
+
+  if (!lenInPLC && !statusOffset) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s(%u) iTypCode not supported, ignored 0x%X\n",
               modNamEMC, functionName, numPilsAsynDevInfo, iTypCode);
     return -1;
   }
-  if (myAsynParamType != asynParamNotDefined) {
-    return addPilsAsynDevLst(axisNo,
-                             paramName,
-                             functionNamAux0,
-                             lenInPLC,
-                             inputOffset,
-                             outputOffset,
-                             statusOffset,
-                             myAsynParamType,
-                             iTypCode);
-  } else {
+  if ((myAsynParamType == asynParamNotDefined) && !statusOffset){
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s(%u) pilsNo=%d not created paramName=%s)\n",
+              "%s%s(%u) pilsNo=%d not created paramName=%s\n",
               modNamEMC, functionName, axisNo, numPilsAsynDevInfo, paramName);
+    return -1;
   }
-  return -1;
+  return addPilsAsynDevLst(axisNo,
+                           paramName,
+                           functionNamAux0,
+                           functionStatusBits,
+                           lenInPLC,
+                           inputOffset,
+                           outputOffset,
+                           statusOffset,
+                           myAsynParamType,
+                           iTypCode);
 }
 
 extern "C" void UTCtimeToEpicsTimeStamp(uint64_t dcNsec, epicsTimeStamp *ts)
@@ -1410,31 +1440,31 @@ asynStatus ethercatmcController::indexerPoll(void)
         unsigned inputOffset = pPilsAsynDevInfo->inputOffset;
         unsigned statusOffset = pPilsAsynDevInfo->statusOffset;
         int axisNo = pPilsAsynDevInfo->axisNo;
-        int function = pPilsAsynDevInfo->function;
         const char *paramName = "";
-        getParamName(axisNo, function, &paramName);
-
+        int function = pPilsAsynDevInfo->function;
+        int functionStatusBits = pPilsAsynDevInfo->functionStatusBits;
         void *pDataInPlc = &ctrlLocal.pIndexerProcessImage[inputOffset];
+        if (function > 0) {
+          getParamName(axisNo, function, &paramName);
+        } else if (functionStatusBits > 0) {
+          getParamName(axisNo, functionStatusBits, &paramName);
+        }
         asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
                   "%sindexerPoll(%d) numPilsAsynDevInfo=%u inputOffset=%u\n",
                   modNamEMC, axisNo,
                   numPilsAsynDevInfo, inputOffset);
-        if (statusOffset) {
+        if (statusOffset && functionStatusBits) {
           /* Add a printout for the changed AUX bits.
              currently the poller for the axis has simiar code */
           const static epicsUInt32 maskStatusReasonAux = 0x03FFFFFF;
           void *pStatusInPlc = &ctrlLocal.pIndexerProcessImage[statusOffset];
           epicsUInt32 statusReasonAux;
           unsigned statusLenInPLC = sizeof(statusReasonAux);
-          int function = pPilsAsynDevInfo->function;
-          if (!function) {
-            function = ethercatmcStatusBits_;
-          }
           statusReasonAux = netToUint(pStatusInPlc, statusLenInPLC);
           int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
           if (functionNamAux0) {
             epicsUInt32 oldStatusReasonAux;
-            getUIntDigitalParam(axisNo, function,
+            getUIntDigitalParam(axisNo, functionStatusBits,
                                 &oldStatusReasonAux, maskStatusReasonAux);
             if (statusReasonAux != oldStatusReasonAux) {
               changedAuxBits_to_ASCII(axisNo, functionNamAux0,
@@ -1457,7 +1487,7 @@ asynStatus ethercatmcController::indexerPoll(void)
                         ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
             }
           }
-          setUIntDigitalParam(axisNo, function,
+          setUIntDigitalParam(axisNo, functionStatusBits,
                               (epicsUInt32)statusReasonAux,
                               maskStatusReasonAux, maskStatusReasonAux);
         }

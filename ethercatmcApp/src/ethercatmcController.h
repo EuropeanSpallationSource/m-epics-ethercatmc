@@ -178,6 +178,7 @@ extern "C" {
   typedef struct {
     int            axisNo;      /* 0 is the controller */
     int            functionNamAux0; /* Function for name if bit0, if any */
+    int            functionStatusBits; /* Function for status bits */
     unsigned       inputOffset; /* offset inside the "plc memory bytes" */
     unsigned       outputOffset; /* offset inside the "plc memory bytes" */
     unsigned       statusOffset; /* offset inside the "plc memory bytes" */
@@ -477,6 +478,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   int  addPilsAsynDevLst(int           axisNo,
                          const char    *paramName,
                          int           functionNamAux0,
+                         int           functionStatusBits,
                          unsigned      lenInPLC,
                          unsigned      inputOffset,
                          unsigned      outputOffset,
