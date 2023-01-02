@@ -24,17 +24,27 @@ if test -f $LOGFILE; then
 fi
 
 PVS="${P}PTPState ${P}PTPOffset"
-PVS="$PVS ${P}DcToExtTimeOffset"
-PVS="$PVS ${P}PTPdiffTimeIOC_MCU"
-PVS="$PVS ${P}PTPErrorStatus"
 PVS="$PVS ${P}PTPallGood"
 PVS="$PVS ${P}UTCEL1252P0"
+PVS="$PVS LabS-MCAG:MC-MCU-07:DcToExtTimeOffset"
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPdiffTimeIOC_MCU"
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPErrorStatus"
+PVS="$PVS LabS-MCAG:MC-MCU-07:UTCEL1252P0"
+PVS="$PVS YMIR-SETS:SE-BADC-001:TS_NS"
+PVS="$PVS YMIR-SETS:SE-BPTP-001:SYNCHRONIZED"
+PVS="$PVS YMIR-SETS:SE-BPTP-001:TTL_EPOCH_SYNCH"
+PVS="$PVS YMIR-SETS:SE-BPTP-001:TTL_NS_OFSET_OK"
+PVS="$PVS YMIR-SETS:SE-BPTP-001:PTP_OFFSET_MASTER"
 
+export EPICS_PVA_ADDR_LIST="idmz-ro-epics-gw-tn.esss.lu.se 172.30.38.12"
+
+PVSEGU=""
 for PV in $PVS; do
   pvget $PV || {
     echo >&2 $PV not found
     exit 1
   }
+  PVSEGU="$PVSEGU $PV.EGU"
 done
 
-pvmonitor $PVS  | ./tai2string.py  2>&1 | tee $LOGFILE
+pvmonitor $PVS $PVSEGU | ./tai2string.py  2>&1 | tee $LOGFILE

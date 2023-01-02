@@ -26,3 +26,4 @@ test/pytests36/venvpython3*/
 test/pytests36/*.*log*
 test/pytests36/*.*log*.failed
 test/pythonscripts/log-*.txt
+test/pythonscripts/mon*.txt
