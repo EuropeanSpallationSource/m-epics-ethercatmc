@@ -21,6 +21,7 @@ O.*
 test/logs
 test/log-*.txt
 test/motionTestV2/venvpython3*/
+test/motionTestV2/*.*log*
 test/pytests36/venvpython3*/
 test/pytests36/*.*log*
 test/pytests36/*.*log*.failed
