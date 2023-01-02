@@ -6,13 +6,13 @@ AXISFILES =\
 
 
 TESTS-PART1-CA = \
-  010-Basic-Communication.log-ca-m1\
-  090-Hardware-Ethercat-SmokeTest-LS.log-ca-m1\
+  300-Basic-Communication.log-ca-m1\
+  320-SmokeTest-LS.log-ca-m1\
 
 
 TESTS-PART1-PVA = \
-  010-Basic-Communication.log-pva-m1\
-  090-Hardware-Ethercat-SmokeTest-LS.log-pva-m1\
+  300-Basic-Communication.log-pva-m1\
+  320-SmokeTest-LS.log-pva-m1\
 
 # make (the default target)
 all: \
@@ -35,16 +35,16 @@ clean:
 
 # Dependencies to make sure that a change in "any" py file
 # triggers at least one action
-010-Basic-Communication.log-ca-m1: \
-  010-Basic-Communication.py \
+300-Basic-Communication.log-ca-m1: \
+  300-Basic-Communication.py \
   $(AXISFILES) \
   Makefile \
   ConnCA.py
 
 ## Rules
 
-010-Basic-Communication.log-pva-m1: \
-  010-Basic-Communication.py \
+300-Basic-Communication.log-pva-m1: \
+  300-Basic-Communication.py \
   $(AXISFILES) \
   Makefile \
   ConnP4P.py

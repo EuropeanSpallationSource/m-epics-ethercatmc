@@ -13,7 +13,7 @@ import unittest
 from AxisTestUtil import AxisTestUtil
 import AxisComm as AxisComm
 
-filnam = "010"
+filnam = os.path.basename(__file__)[0:3]
 
 
 def lineno():

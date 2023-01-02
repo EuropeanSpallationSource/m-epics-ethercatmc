@@ -16,7 +16,7 @@ import unittest
 from AxisTestUtil import AxisTestUtil
 import AxisComm as AxisComm
 
-filnam = "091"
+filnam = os.path.basename(__file__)[0:3]
 polltime = 0.1
 
 
