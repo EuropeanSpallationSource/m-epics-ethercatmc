@@ -1258,6 +1258,15 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       statusOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamInt32;
       break;
+    case 0x1A08:
+      lenInPLC = 8;
+      /* 1A04 has "current value, followed by extended status word; errorID is ignored */
+      inputOffset = indexOffset;
+      statusOffset = indexOffset + lenInPLC;
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+      myAsynParamType = asynParamInt64;
+#endif
+      break;
   }
   /* Aux bits */
   if (iAllFlags & 0x03FFFFFF) {
@@ -1319,7 +1328,7 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
               modNamEMC, functionName, numPilsAsynDevInfo, iTypCode);
     return -1;
   }
-  if ((myAsynParamType == asynParamNotDefined) && !statusOffset){
+  if ((myAsynParamType == asynParamNotDefined) && lenInPLC){
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s(%u) pilsNo=%d not created paramName=%s\n",
               modNamEMC, functionName, axisNo, numPilsAsynDevInfo, paramName);
