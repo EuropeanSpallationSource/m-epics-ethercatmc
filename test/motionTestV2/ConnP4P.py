@@ -2,13 +2,12 @@ import datetime
 import sys
 import time
 
-from ConnEPICS import ConnEPICS
 from p4p.client.thread import Context
 
 filnam = "ConnP4P"
 
 
-class ConnP4P(ConnEPICS):
+class ConnP4P:
     def __init__(self, log_debug=False):
         self.ctxt = Context("pva")
         self.log_debug = log_debug

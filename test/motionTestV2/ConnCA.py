@@ -2,7 +2,6 @@ import datetime
 import sys
 
 import epics as epics
-from ConnEPICS import ConnEPICS
 
 filnam = "ConnCA"
 
@@ -15,7 +14,7 @@ def help_and_exit(self, url_string, problem_string):
     sys.exit(1)
 
 
-class ConnCA(ConnEPICS):
+class ConnCA:
     def __init__(self, log_debug=False):
         self.log_debug = log_debug
         self.url_scheme = "ca://"
