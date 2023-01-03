@@ -310,9 +310,9 @@ send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
   ams_hdr_p->stateFlags_low = 5;
   ams_hdr_p->stateFlags_high = 0;
   ams_hdr_p->lenght_0 = (uint8_t)ams_payload_len;
-  ams_hdr_p->lenght_1 = (uint8_t)(ams_payload_len << 8);
-  ams_hdr_p->lenght_2 = (uint8_t)(ams_payload_len << 16);
-  ams_hdr_p->lenght_3 = (uint8_t)(ams_payload_len << 24);
+  ams_hdr_p->lenght_1 = (uint8_t)(ams_payload_len >> 8);
+  ams_hdr_p->lenght_2 = (uint8_t)(ams_payload_len >> 16);
+  ams_hdr_p->lenght_3 = (uint8_t)(ams_payload_len >> 24);
 
   send_to_socket(fd, ams_hdr_p, len_to_socket);
   switch (simulatedNetworkProblem) {
