@@ -1150,9 +1150,14 @@ void ethercatmcController::setAlarmStatusSeverityAllAxes(int function, asynStatu
 /* Alarm definition from EPICS Base */
 #include <alarm.h>
 /* Code inspired by .../asyn/devEpics/asynEpicsUtils.c */
-void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
-                                                         int function,
-                                                         asynStatus status)
+
+
+
+
+void ethercatmcController::setAlarmStatusSeverityUpdate(int axisNo,
+                                                        int function,
+                                                        int newStat,
+                                                        int newSevr)
 {
   const static char *const functionName = "AlarmStatSevr";
   /* alarm.h from EPICS base define these enums:
@@ -1163,10 +1168,40 @@ void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
 
   int oldStat = -1;
   int oldSevr = -1;
-  int newStat = STATE_ALARM; /* Assume the worst */
-  int newSevr = INVALID_ALARM;
   getParamAlarmStatus(axisNo, function, &oldStat);
   getParamAlarmSeverity(axisNo, function, &oldSevr);
+  if (newStat != oldStat) {
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+              "%s%s(%d) %s(%d) STAT=%s(%d)->%s(%d)\n",
+              modNamEMC, functionName,
+              axisNo, paramName, function,
+              epicsAlarmConditionStrings[oldStat], oldStat,
+              epicsAlarmConditionStrings[newStat], newStat);
+    setParamAlarmStatus(axisNo, function, newStat);
+  }
+  if (newSevr != oldSevr) {
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+              "%s%s(%d) %s(%d) SEVR=%s(%d)->%s(%d)\n",
+              modNamEMC, functionName,
+              axisNo, paramName, function,
+              epicsAlarmSeverityStrings[oldSevr], oldSevr,
+              epicsAlarmSeverityStrings[newSevr], newSevr);
+    setParamAlarmSeverity(axisNo, function, newSevr);
+  }
+}
+
+void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
+                                                         int function,
+                                                         asynStatus status)
+{
+  /* alarm.h from EPICS base define these enums:
+     epicsAlarmCondition epicsAlarmSeverity
+  but we use "int" here */
+  const char *paramName = NULL;
+  if (getParamName(axisNo, function, &paramName)) paramName = "";
+
+  int newStat = STATE_ALARM; /* Assume the worst */
+  int newSevr = INVALID_ALARM;
   switch (status) {
     case asynSuccess:
       newStat = NO_ALARM;
@@ -1185,24 +1220,5 @@ void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
       newSevr = INVALID_ALARM;
       break;
   }
-  if (newStat != oldStat) {
-    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
-              "%s%s(%d) %s(%d) asynStatus=%s(%d) STAT=%s(%d)->%s(%d)\n",
-              modNamEMC, functionName,
-              axisNo, paramName, function,
-              ethercatmcstrStatus(status), (int)status,
-              epicsAlarmConditionStrings[oldStat], oldStat,
-              epicsAlarmConditionStrings[newStat], newStat);
-    setParamAlarmStatus(axisNo, function, newStat);
-  }
-  if (newSevr != oldSevr) {
-    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
-              "%s%s(%d) %s(%d) asynStatus=%s(%d) STAT=%s(%d)->%s(%d)\n",
-              modNamEMC, functionName,
-              axisNo, paramName, function,
-              ethercatmcstrStatus(status), (int)status,
-              epicsAlarmSeverityStrings[oldSevr], oldSevr,
-              epicsAlarmSeverityStrings[newSevr], newSevr);
-    setParamAlarmSeverity(axisNo, function, newSevr);
-  }
+  setAlarmStatusSeverityUpdate(axisNo, function, newStat, newSevr);
 }

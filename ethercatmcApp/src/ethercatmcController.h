@@ -293,6 +293,8 @@ public:
   asynStatus writeReadOnErrorDisconnect(void);
   void setAlarmStatusSeverityAllReadbacks(asynStatus status);
   void setAlarmStatusSeverityAllAxes(int function, asynStatus status);
+  void setAlarmStatusSeverityUpdate(int axisNo, int function,
+                                    int newStat, int newSevr);
   void setAlarmStatusSeverityWrapper(int axisNo, int function,
                                      asynStatus status);
   ethercatmcAxis* getAxis(asynUser *pasynUser);
