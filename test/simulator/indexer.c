@@ -360,18 +360,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
         "", "", "", "", "", "", "", ""},
       0.0, 0.0
     },
-#ifdef HAS_0518
-    /* special device */
-    { TYPECODE_SPECIALDEVICE_0518, 2*WORDS_SPECIALDEVICE_0518,
-      UNITCODE_NONE, AXISNO_NONE,
-      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-      "DbgStrToMcu",
-      { "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", ""},
-      0.0, 0.0
-    },
-#endif
     /* device for discrete input with status word */
     { TYPECODE_DISCRETEINPUT_1A04, 2*WORDS_DISCRETEINPUT_1A04,
        UNITCODE_NONE, 0,
@@ -392,6 +380,18 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
          "", "", "", "", "", "", "", "" },
        0.0, 0.0
     },
+#ifdef HAS_0518
+    /* special device */
+    { TYPECODE_SPECIALDEVICE_0518, 2*WORDS_SPECIALDEVICE_0518,
+      UNITCODE_NONE, AXISNO_NONE,
+      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+      "DbgStrToMcu",
+      { "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", ""},
+      0.0, 0.0
+    },
+#endif
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 1,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
@@ -752,7 +752,7 @@ static union {
     } indexer;
     netDevice1802interface_type statusWord1802[NUM_1802];
     netDevice1A04interface_type discreteInput1A04[1];
-    netDevice1E04interface_type discreteOutput1E04[1];
+    netDevice1604interface_type discreteOutput1604[1];
 #ifdef HAS_0518
     netDevice0518interface_type special0518; /* 42 bytes for ASCII to the simulator */
 #endif
@@ -1952,11 +1952,46 @@ void indexerHandlePLCcycle(void)
           unsigned motor5008Num = axisNo - 1;
           (void)motor5008Num;
           (void)pLCcycleInitDone;
+        } else if (!strcmp("DISCRETEOUTPUT#0", indexerDeviceAbsStraction[devNum].devName)) {
+          unsigned value = NETTOUINT(netData.memoryStruct.discreteOutput1604[0].targetValue);
+          /* Mirror the value back */
+          UINTTONET(value, netData.memoryStruct.discreteOutput1604[0].actualValue);
+          /* And copy it into our input device (this is for testing only) */
+          UINTTONET(value, netData.memoryStruct.discreteInput1A04[0].actualValue);
+          /* And into the status word. More testing : EPICS Record Alarms */
+          UINTTONET(value, netData.memoryStruct.discreteInput1A04[0].statusReasonAux32);
         } else {
           LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n",
                   __FILE__, __FUNCTION__, __LINE__,
                   devNum,
                   indexerDeviceAbsStraction[devNum].devName);
+        }
+      }
+      break;
+    case TYPECODE_STATUSWORD_1802:
+      {
+        if (!strcmp("SystemHealth#0", indexerDeviceAbsStraction[devNum].devName)) {
+          ; /* Nothing yet */
+        } else {
+          LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n",
+                  __FILE__, __FUNCTION__, __LINE__,
+                  devNum,
+                  indexerDeviceAbsStraction[devNum].devName,
+                  indexerDeviceAbsStraction[devNum].typeCode);
+        }
+      }
+      break;
+
+    case TYPECODE_DISCRETEINPUT_1A04:
+      {
+        if (!strcmp("DISCRETEINPUT#0", indexerDeviceAbsStraction[devNum].devName)) {
+          ; /* Done in DISCRETEOUTPUT#0 */
+        } else {
+          LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n",
+                  __FILE__, __FUNCTION__, __LINE__,
+                  devNum,
+                  indexerDeviceAbsStraction[devNum].devName,
+                  indexerDeviceAbsStraction[devNum].typeCode);
         }
       }
       break;
@@ -2132,10 +2167,11 @@ void indexerHandlePLCcycle(void)
       break;
 #endif
     default:
-      LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n",
+      LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n",
               __FILE__, __FUNCTION__, __LINE__,
               devNum,
-              indexerDeviceAbsStraction[devNum].devName);
+              indexerDeviceAbsStraction[devNum].devName,
+              indexerDeviceAbsStraction[devNum].typeCode);
       break;
     }
     devNum++;
