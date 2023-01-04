@@ -29,6 +29,7 @@
 #endif
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
 #define TYPECODE_STATUSWORD_1802 0x1802
+#define TYPECODE_DISCRETEINPUT_1A04 0x1A04
 #define TYPECODE_DISCRETEOUTPUT_1604 0x1604
 //#define TYPECODE_PARAMDEVICE_5008 0x5008
 
@@ -41,6 +42,7 @@
 #define WORDS_DISCRETEINPUT_1202     0x2
 #define WORDS_DISCRETEOUTPUT_1604    0x4
 #define WORDS_STATUSWORD_1802         0x2
+#define WORDS_DISCRETEINPUT_1A04      0x4
 //#define WORDS_PARAMDEVICE_5008       0x8
 #define WORDS_PARAMDEVICE_5010      0x10
 
@@ -67,6 +69,9 @@
 /*
    Devices for the indexer:
    + the indexer itself
+   + 1 SystemHealth#0 1802
+   + 1 DISCRETEINPUT#0 1A04
+   + 1 DISCRETEOUTPUT#0 1604
    + 1 special 0518
    + 4 motors 5010
    + 4 raw encoders
@@ -88,7 +93,9 @@
 #endif
 
 #define  NUM_5010           4
-#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1802 + NUM_1E04)
+#define  NUM_DISCRET_IN     1
+#define  NUM_DISCRET_OUT    1
+#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1802 + NUM_1E04 + NUM_DISCRET_IN + NUM_DISCRET_OUT)
 
 
 typedef enum {
@@ -265,6 +272,11 @@ typedef struct {
   uint8_t   statusReasonAux32[4];
 } netDevice1802interface_type;
 
+typedef struct {
+  uint8_t   actualValue[4];
+  uint8_t   statusReasonAux32[4];
+} netDevice1A04interface_type;
+
 #ifdef HAS_1E04_SHUTTER
 typedef struct {
   uint8_t   actualValue[2];
@@ -360,6 +372,26 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       0.0, 0.0
     },
 #endif
+    /* device for discrete input with status word */
+    { TYPECODE_DISCRETEINPUT_1A04, 2*WORDS_DISCRETEINPUT_1A04,
+       UNITCODE_NONE, 0,
+       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+       "DISCRETEINPUT#0",
+       { "", "", "", "", "", "", "", "",
+         "", "", "", "", "", "", "", "",
+         "", "", "", "", "", "", "", "" },
+       0.0, 0.0
+    },
+    /* device for simple discrete output */
+    { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
+       UNITCODE_NONE, 0,
+       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+       "DISCRETEOUTPUT#0",
+       { "", "", "", "", "", "", "", "",
+         "", "", "", "", "", "", "", "",
+         "", "", "", "", "", "", "", "" },
+       0.0, 0.0
+    },
     { TYPECODE_PARAMDEVICE_5010, 2*WORDS_PARAMDEVICE_5010,
       UNITCODE_MM, 1,
     {/*   0..4   */ permPNone, modePRDWR, permPNone, permPNone, permPNone,
@@ -690,7 +722,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
          "", "", "", "", "", "", "", "",
          "", "", "", "", "", "", "", "" },
        1.0, 5.0
-}
+    }
 #endif
   };
 
@@ -719,6 +751,8 @@ static union {
       netInfoType15_type infoType15;
     } indexer;
     netDevice1802interface_type statusWord1802[NUM_1802];
+    netDevice1A04interface_type discreteInput1A04[1];
+    netDevice1E04interface_type discreteOutput1E04[1];
 #ifdef HAS_0518
     netDevice0518interface_type special0518; /* 42 bytes for ASCII to the simulator */
 #endif
@@ -1918,14 +1952,19 @@ void indexerHandlePLCcycle(void)
           unsigned motor5008Num = axisNo - 1;
           (void)motor5008Num;
           (void)pLCcycleInitDone;
+        } else {
+          LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n",
+                  __FILE__, __FUNCTION__, __LINE__,
+                  devNum,
+                  indexerDeviceAbsStraction[devNum].devName);
         }
       }
       break;
-#ifdef HAS_1E04_SHUTTER
     case TYPECODE_DISCRETEOTPUT_1E04:
       {
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
+#ifdef HAS_1E04_SHUTTER
           /*
            * motor1E04Num starts at 0
            * all hw_motor axes start at 1, and we need to jump over
@@ -1938,10 +1977,21 @@ void indexerHandlePLCcycle(void)
           /* status */
           indexerMotorStatusRead1E04(devNum, axisNo, numAuxBits,
                                      &netData.memoryStruct.motors1E04[motor1E04Num]);
+#else
+          LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n",
+                  __FILE__, __FUNCTION__, __LINE__,
+                  devNum,
+                  indexerDeviceAbsStraction[devNum].devName);
+
+#endif
+        } else {
+          LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n",
+                  __FILE__, __FUNCTION__, __LINE__,
+                  devNum,
+                  indexerDeviceAbsStraction[devNum].devName);
         }
       }
       break;
-#endif
 #ifdef HAS_5008
     case TYPECODE_PARAMDEVICE_5008:
       {
@@ -2082,6 +2132,10 @@ void indexerHandlePLCcycle(void)
       break;
 #endif
     default:
+      LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n",
+              __FILE__, __FUNCTION__, __LINE__,
+              devNum,
+              indexerDeviceAbsStraction[devNum].devName);
       break;
     }
     devNum++;
