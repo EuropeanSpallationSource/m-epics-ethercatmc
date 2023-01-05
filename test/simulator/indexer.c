@@ -70,8 +70,8 @@
    Devices for the indexer:
    + the indexer itself
    + 1 SystemHealth#0 1802
-   + 1 DISCRETEINPUT#0 1A04
-   + 1 DISCRETEOUTPUT#0 1604
+   + 1 DISCRETEINPUT#1 1A04
+   + 1 DISCRETEOUTPUT#1 1604
    + 1 special 0518
    + 4 motors 5010
    + 4 raw encoders
@@ -364,7 +364,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     { TYPECODE_DISCRETEINPUT_1A04, 2*WORDS_DISCRETEINPUT_1A04,
        UNITCODE_NONE, 0,
        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-       "DISCRETEINPUT#0",
+       "DISCRETEINPUT#1",
        { "", "", "", "", "", "", "", "",
          "", "", "", "", "", "", "", "",
          "", "", "", "", "", "", "", "" },
@@ -374,7 +374,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
     { TYPECODE_DISCRETEOUTPUT_1604, 2*WORDS_DISCRETEOUTPUT_1604,
        UNITCODE_NONE, 0,
        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-       "DISCRETEOUTPUT#0",
+       "DISCRETEOUTPUT#1",
        { "", "", "", "", "", "", "", "",
          "", "", "", "", "", "", "", "",
          "", "", "", "", "", "", "", "" },
@@ -1952,7 +1952,7 @@ void indexerHandlePLCcycle(void)
           unsigned motor5008Num = axisNo - 1;
           (void)motor5008Num;
           (void)pLCcycleInitDone;
-        } else if (!strcmp("DISCRETEOUTPUT#0", indexerDeviceAbsStraction[devNum].devName)) {
+        } else if (!strcmp("DISCRETEOUTPUT#1", indexerDeviceAbsStraction[devNum].devName)) {
           unsigned value = NETTOUINT(netData.memoryStruct.discreteOutput1604[0].targetValue);
           /* Mirror the value back */
           UINTTONET(value, netData.memoryStruct.discreteOutput1604[0].actualValue);
@@ -1984,7 +1984,7 @@ void indexerHandlePLCcycle(void)
 
     case TYPECODE_DISCRETEINPUT_1A04:
       {
-        if (!strcmp("DISCRETEINPUT#0", indexerDeviceAbsStraction[devNum].devName)) {
+        if (!strcmp("DISCRETEINPUT#1", indexerDeviceAbsStraction[devNum].devName)) {
           ; /* Done in DISCRETEOUTPUT#0 */
         } else {
           LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n",
