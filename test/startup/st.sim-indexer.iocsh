@@ -38,6 +38,9 @@ epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcOpenClutch.iocsh
+# Test records
+< ethercatmcTestInputRecordAlarm.iocsh
+
 
 
 #
