@@ -1453,16 +1453,16 @@ asynStatus ethercatmcController::indexerPoll(void)
         int function = pPilsAsynDevInfo->function;
         int functionStatusBits = pPilsAsynDevInfo->functionStatusBits;
         void *pDataInPlc = &ctrlLocal.pIndexerProcessImage[inputOffset];
-        if (function > 0) {
+        if (function) {
           getParamName(axisNo, function, &paramName);
-        } else if (functionStatusBits > 0) {
+        } else if (functionStatusBits) {
           getParamName(axisNo, functionStatusBits, &paramName);
         }
         asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
                   "%sindexerPoll(%d) numPilsAsynDevInfo=%u inputOffset=%u\n",
                   modNamEMC, axisNo,
                   numPilsAsynDevInfo, inputOffset);
-        if (statusOffset && functionStatusBits) {
+        if (statusOffset) {
           /* Add a printout for the changed AUX bits.
              currently the poller for the axis has simiar code */
           const static epicsUInt32 maskStatusReasonAux = 0x03FFFFFF;
@@ -1471,7 +1471,7 @@ asynStatus ethercatmcController::indexerPoll(void)
           unsigned statusLenInPLC = sizeof(statusReasonAux);
           statusReasonAux = netToUint(pStatusInPlc, statusLenInPLC);
           int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
-          if (functionNamAux0) {
+          if (functionNamAux0 && functionStatusBits) {
             epicsUInt32 oldStatusReasonAux;
             getUIntDigitalParam(axisNo, functionStatusBits,
                                 &oldStatusReasonAux, maskStatusReasonAux);
@@ -1495,10 +1495,11 @@ asynStatus ethercatmcController::indexerPoll(void)
                         ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
                         ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
             }
+            setUIntDigitalParam(axisNo, functionStatusBits,
+                                (epicsUInt32)statusReasonAux,
+                                maskStatusReasonAux, maskStatusReasonAux);
           }
-          setUIntDigitalParam(axisNo, functionStatusBits,
-                              (epicsUInt32)statusReasonAux,
-                              maskStatusReasonAux, maskStatusReasonAux);
+          setAlarmStatusSeverityFromStatusBits(axisNo, function, statusReasonAux);
         }
         if (!inputOffset) continue;
 
