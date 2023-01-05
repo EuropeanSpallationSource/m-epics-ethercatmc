@@ -1,0 +1,16 @@
+# Records to test the alarm status of an discrete input with status word
+# To simplify things in the testing framwork: Connect them to motor 1
+record(longin, "$(PREFIX)$(MOTOR_NAME)-TestDiscreteInput")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "TestDiscreteInput")
+    field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))DISCRETEINPUT")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(PREFIX)$(MOTOR_NAME)-TestDiscreteOutput")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "TestDiscreteOutput")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))DISCRETEOUTPUT")
+}
