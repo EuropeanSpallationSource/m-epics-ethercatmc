@@ -420,6 +420,20 @@ class AxisMr:
             time_to_wait -= polltime
         return False
 
+    def waitForValueChangedInt32(self, tc_no, field_name, expVal, time_to_wait):
+        inrange = False
+        while time_to_wait > 0:
+            actVal = int(self.axisCom.get(field_name, use_monitor=False))
+            if ((int(expVal) & 0xFFFFFFFF) ^ (int(actVal) & 0xFFFFFFFF)) == 0:
+                inrange = True
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal:X} actVal={actVal:X} inrange={inrange}"
+            print(debug_text)
+            if inrange:
+                return True
+            time.sleep(polltime)
+            time_to_wait -= polltime
+        return False
+
     def jogDirectionTimeout(self, tc_no, direction, time_to_wait):
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogDirectionTimeout direction={direction} time_to_wait={time_to_wait}"
