@@ -24,25 +24,6 @@
 #endif
 
 
-typedef enum {
-  idxStatusCodeRESET    = 0,
-  idxStatusCodeIDLE     = 1,
-  idxStatusCodePOWEROFF = 2,
-  idxStatusCodeWARN     = 3,
-  idxStatusCodeERR4     = 4,
-  idxStatusCodeSTART    = 5,
-  idxStatusCodeBUSY     = 6,
-  idxStatusCodeSTOP     = 7,
-  idxStatusCodeERROR    = 8,
-  idxStatusCodeERR9     = 9,
-  idxStatusCodeERR10    = 10,
-  idxStatusCodeERR11    = 11,
-  idxStatusCodeERR12    = 12,
-  idxStatusCodeERR13    = 13,
-  idxStatusCodeERR14    = 14,
-  idxStatusCodeERR15    = 15
-} idxStatusCodeType;
-
 extern "C" const char *idxStatusCodeTypeToStr(idxStatusCodeType idxStatusCode)
 {
   switch (idxStatusCode) {

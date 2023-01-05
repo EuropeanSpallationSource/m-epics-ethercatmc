@@ -128,6 +128,24 @@ FILENAME...   ethercatmcController.h
 
 extern const char *modNamEMC;
 
+typedef enum {
+  idxStatusCodeRESET    = 0,
+  idxStatusCodeIDLE     = 1,
+  idxStatusCodePOWEROFF = 2,
+  idxStatusCodeWARN     = 3,
+  idxStatusCodeERR4     = 4,
+  idxStatusCodeSTART    = 5,
+  idxStatusCodeBUSY     = 6,
+  idxStatusCodeSTOP     = 7,
+  idxStatusCodeERROR    = 8,
+  idxStatusCodeERR9     = 9,
+  idxStatusCodeERR10    = 10,
+  idxStatusCodeERR11    = 11,
+  idxStatusCodeERR12    = 12,
+  idxStatusCodeERR13    = 13,
+  idxStatusCodeERR14    = 14,
+  idxStatusCodeERR15    = 15
+} idxStatusCodeType;
 
 /**********************************************************************/
 #define ethercatmchexdump(pasynUser, tracelevel, help_txt, bufptr, buflen)\
@@ -297,6 +315,9 @@ public:
                                     int newStat, int newSevr);
   void setAlarmStatusSeverityWrapper(int axisNo, int function,
                                      asynStatus status);
+  void setAlarmStatusSeverityFromStatusBits(int axisNo,
+                                            int function,
+                                            epicsUInt32 statusReasonAux);
   ethercatmcAxis* getAxis(asynUser *pasynUser);
   ethercatmcAxis* getAxis(int axisNo);
   int features_;

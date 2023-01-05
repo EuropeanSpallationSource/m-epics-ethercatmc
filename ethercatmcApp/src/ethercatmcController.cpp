@@ -470,7 +470,7 @@ extern "C" int ethercatmcCreateAsynParam(const char *ethercatmcName,
   asynParamType myEPICSParamType;
 
   if (!ethercatmcName || !paramName || !paramType) {
-    printf("ethercatmcCreateAsynParam MCU1 paramName [Float64|Int32|Int64]\n");
+    printf("ethercatmcCreateAsynParam MCU1 paramName [Float64|Int32|Int64|UInt32Digital]\n");
     return asynError;
   }
   pC = (ethercatmcController*) findAsynPortDriver(ethercatmcName);
@@ -482,6 +482,8 @@ extern "C" int ethercatmcCreateAsynParam(const char *ethercatmcName,
     myEPICSParamType = asynParamFloat64;
   } else if (!strcmp(paramType, "Int32")) {
     myEPICSParamType = asynParamInt32;
+  } else if (!strcmp(paramType, "UInt32Digital")) {
+    myEPICSParamType = asynParamUInt32Digital;
   } else if (!strcmp(paramType, "Int64")) {
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
     myEPICSParamType = asynParamInt64;
@@ -1219,6 +1221,58 @@ void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
       newStat = COMM_ALARM;
       newSevr = INVALID_ALARM;
       break;
+  }
+  setAlarmStatusSeverityUpdate(axisNo, function, newStat, newSevr);
+}
+
+void ethercatmcController::setAlarmStatusSeverityFromStatusBits(int axisNo,
+                                                                int function,
+                                                                epicsUInt32 statusReasonAux)
+{
+  idxStatusCodeType idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
+  unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
+
+  int newStat = NO_ALARM;
+  int newSevr = NO_ALARM;
+
+  switch (idxStatusCode) {
+  case idxStatusCodeIDLE:
+    newStat = NO_ALARM;
+    newSevr = NO_ALARM;
+    break;
+  case idxStatusCodePOWEROFF:
+    newStat = STATE_ALARM;
+    newSevr = MINOR_ALARM;
+    break;
+  case idxStatusCodeWARN:
+    // Look at the reason bits
+    if (idxReasonBits & 0x8) {
+      newStat = HIGH_ALARM;
+    } else if (idxReasonBits & 0x4) {
+      newStat = LOW_ALARM;
+    } else if (idxReasonBits & 0x2) {
+      newStat = TIMEOUT_ALARM;
+    } else  {
+      newStat = STATE_ALARM;
+    }
+    newSevr = MINOR_ALARM;
+    break;
+  case idxStatusCodeERROR:
+    // Look at the reason bits
+    if (idxReasonBits & 0x8) {
+      newStat = HIHI_ALARM;
+    } else if (idxReasonBits & 0x4) {
+      newStat = LOLO_ALARM;
+    } else if (idxReasonBits & 0x2) {
+      newStat = TIMEOUT_ALARM;
+    } else {
+      newStat = STATE_ALARM;
+    }
+    newSevr = MAJOR_ALARM;
+    break;
+  default:
+    newStat = STATE_ALARM; /* Assume the worst */
+    newSevr = INVALID_ALARM;
   }
   setAlarmStatusSeverityUpdate(axisNo, function, newStat, newSevr);
 }
