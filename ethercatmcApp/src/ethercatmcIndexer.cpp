@@ -1271,7 +1271,6 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
   /* Aux bits */
   if (iAllFlags & 0x03FFFFFF) {
     unsigned i;
-    statusOffset = indexOffset;
     for (i=0; i < MAX_REASON_AUX_BIT_SHOW; i++) {
       int function;
       asynStatus status;
@@ -1474,8 +1473,8 @@ asynStatus ethercatmcController::indexerPoll(void)
           if (functionNamAux0 && functionStatusBits) {
             epicsUInt32 oldStatusReasonAux;
             getUIntDigitalParam(axisNo, functionStatusBits,
-                                &oldStatusReasonAux, maskStatusReasonAux);
-            if (statusReasonAux != oldStatusReasonAux) {
+                                &oldStatusReasonAux, 0xFFFFFFFF);
+            if ((statusReasonAux ^ oldStatusReasonAux) & maskStatusReasonAux) {
               changedAuxBits_to_ASCII(axisNo, functionNamAux0,
                                       statusReasonAux, oldStatusReasonAux);
               asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
