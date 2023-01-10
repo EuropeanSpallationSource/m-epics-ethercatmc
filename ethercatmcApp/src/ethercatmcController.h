@@ -510,6 +510,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
                          unsigned      iTypCode);
 
   int newPilsAsynDevice(int      axisNo,
+                        unsigned devNum,
                         unsigned indexOffset,
                         unsigned iTypCode,
                         unsigned iAllFlags,

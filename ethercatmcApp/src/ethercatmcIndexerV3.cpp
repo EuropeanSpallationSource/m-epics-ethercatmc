@@ -805,7 +805,7 @@ ethercatmcController::indexerV3addDevice(unsigned devNum,
     default:
       {
         int function;
-        function = newPilsAsynDevice(axisNo, device_offset, type_code, device_flags, device_name);
+        function = newPilsAsynDevice(axisNo, devNum, device_offset, type_code, device_flags, device_name);
         return (function < 0 ? asynError : asynSuccess);
       }
     }
