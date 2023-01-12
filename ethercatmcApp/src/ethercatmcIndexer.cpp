@@ -1284,14 +1284,20 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
                   modNamEMC, auxBitname, function);
       } else {
         status = createParam(auxBitname, asynParamOctet, &function);
+      }
+      if (status == asynSuccess) {
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s(%u) numPilsAsynDevInfo=%d created function=%d auxBitname=%s status=%s (%d)\n",
+                  "%s%s(%u) numPilsAsynDevInfo=%d created function=%d auxBitname=%s\n",
+                  modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
+                  auxBitname);
+        if (i == 0) functionNamAux0 = function;
+      } else {
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%s%s(%u) numPilsAsynDevInfo=%d not created function=%d auxBitname=%s status=%s (%d)\n",
                   modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
                   auxBitname,
                   ethercatmcstrStatus(status), (int)status);
       }
-      if (status == asynSuccess && i == 0)
-        functionNamAux0 = function;
     }
     if (ctrlLocal.supported.bPILSv2) {
       newIndexerAxisAuxBitsV2(NULL, /* pAxis */

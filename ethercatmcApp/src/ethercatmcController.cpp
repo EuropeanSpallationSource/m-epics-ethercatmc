@@ -442,12 +442,14 @@ ethercatmcController::ethercatmcCreateParam(const char *paramName,
                                             int *pFunction)
 {
   asynStatus status;
-  status = createParam(paramName,
-                       myEPICSParamType,
-                       pFunction);
-
+  int function;
+  status = findParam(paramName, &function);
+  if (status == asynSuccess) {
+    return status;
+  }
+  status = createParam(paramName, myEPICSParamType, pFunction);
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s paramName=%s paramType=%s function=%d status=%s (%d)\n",
+            "%s paramName='%s' paramType=%s function=%d status=%s (%d)\n",
             modNamEMC, paramName,
             stringFromAsynParamType(myEPICSParamType),
             *pFunction,
