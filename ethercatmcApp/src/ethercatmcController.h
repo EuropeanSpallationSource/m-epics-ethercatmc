@@ -556,6 +556,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
     unsigned numPilsAsynDevInfo;
     int lockADSlineno;
+    uint32_t callBackNeeded;
     char changedAuxBits[MAX_REASON_AUX_BIT_SHOW][36];
   } ctrlLocal;
 

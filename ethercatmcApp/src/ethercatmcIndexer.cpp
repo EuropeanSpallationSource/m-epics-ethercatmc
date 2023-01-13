@@ -1435,7 +1435,6 @@ ethercatmcController::changedAuxBits_to_ASCII(int         axisNo,
 
 asynStatus ethercatmcController::indexerPoll(void)
 {
-  int callBacksNeeded = 0;
   if (ctrlLocal.pIndexerProcessImage &&
       ctrlLocal.lastDeviceEndOffset) {
     size_t indexOffset = ctrlLocal.firstDeviceStartOffset;
@@ -1542,7 +1541,7 @@ asynStatus ethercatmcController::indexerPoll(void)
                           ethercatmcstrStatus(status), (int)status);
                 pPilsAsynDevInfo->inputOffset = 0;
               } else {
-                callBacksNeeded = 1;
+                ctrlLocal.callBackNeeded |= 1 << axisNo;
                 if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
               }
             }
@@ -1598,7 +1597,7 @@ asynStatus ethercatmcController::indexerPoll(void)
                             ethercatmcstrStatus(status), (int)status);
                   pPilsAsynDevInfo->inputOffset = 0;
                 } else {
-                  callBacksNeeded = 1;
+                  ctrlLocal.callBackNeeded |= 1 << axisNo;
                   if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
                 }
               }
@@ -1629,7 +1628,7 @@ asynStatus ethercatmcController::indexerPoll(void)
                           ethercatmcstrStatus(status), (int)status);
                 pPilsAsynDevInfo->inputOffset = 0;
               } else {
-                callBacksNeeded = 1;
+                ctrlLocal.callBackNeeded |= 1 << axisNo;
                 if (status != asynSuccess)  tracelevel |= ASYN_TRACE_INFO;
               }
             }
@@ -1648,6 +1647,7 @@ asynStatus ethercatmcController::indexerPoll(void)
           epicsTimeStamp timeMCU;
           epicsTimeStamp timeIOC;
           unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
+          int axisNo = 0;
           nSec = netToUint64(pDataInPlc, lenInPLC);
           UTCtimeToEpicsTimeStamp(nSec, &timeMCU);
           asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
@@ -1655,9 +1655,8 @@ asynStatus ethercatmcController::indexerPoll(void)
                     modNamEMC, nSec,
                     timeMCU.secPastEpoch, timeMCU.nsec);
           setTimeStamp(&timeMCU);
-          callBacksNeeded = 1;
+          ctrlLocal.callBackNeeded |= 1 << axisNo;
           int function = ethercatmcPTPdiffTimeIOC_MCU_;
-          int axisNo = 0;
           int rtn = epicsTimeGetCurrent(&timeIOC);
           if (!rtn) {
             double diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
@@ -1669,9 +1668,6 @@ asynStatus ethercatmcController::indexerPoll(void)
           }
         }
       } /* for */
-    }
-    if (callBacksNeeded) {
-      callParamCallbacks();
     }
     return status;
   }

@@ -835,6 +835,7 @@ asynStatus ethercatmcController::poll(void)
             "%spoll ctrlLocal.initialPollDone=%d features_=0x%x\n",
             modNamEMC, ctrlLocal.initialPollDone, features_);
 
+  ctrlLocal.callBackNeeded = 0;
   if (ctrlLocal.useADSbinary) {
     if (!ctrlLocal.initialPollDone) {
       status = indexerInitialPoll();
@@ -854,7 +855,6 @@ asynStatus ethercatmcController::poll(void)
       if (status) {
         handleStatusChange(status);
       }
-      return status;
     }
   } else {
     if (!(features_ & reportedFeatureBits)) {
@@ -866,6 +866,12 @@ asynStatus ethercatmcController::poll(void)
       }
     }
   }
+  for (int axisNo=0; axisNo<numAxes_; axisNo++) {
+    if ((ctrlLocal.callBackNeeded >> axisNo & 1) || (getAxis(axisNo))){
+      callParamCallbacks(axisNo);
+    }
+  }
+
   return status;
 }
 
