@@ -1054,12 +1054,13 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 
     pC_->getIntegerParam(0, pC_->ethercatmcPTPallGood_, &ethercatmcPTPallGood);
     if (homed &&
-        (ethercatmcPTPallGood == 1) &&
         (!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
                               &motorRecOffset)) &&
         (!pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
                                &motorRecDirection))) {
-      RBV_TSEstatus = asynSuccess;
+      if (ethercatmcPTPallGood == 1) {
+        RBV_TSEstatus = asynSuccess;
+      }
       /* direction == 1 means "negative" */
       motorRecDirection = motorRecDirection ? -1 : 1;
       ethercatmcRBV_TSE = actPosition *  motorRecDirection + motorRecOffset;
