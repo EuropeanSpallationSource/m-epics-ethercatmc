@@ -67,7 +67,7 @@ def jogAndBacklash(self, tc_no, frac, encRel, maxcnt, StartPos, EndPos, myJOGX):
     # Add the dot between the motorRecord name and the field
     self.axisCom.put(field_name, 1)
     time.sleep(1)
-    self.axisMr.setValueOnSimulator(tc_no, "fActPosition", EndPos)
+    self.axisMr.setValueOnSimulator(tc_no, "fActPosMove", EndPos)
     self.axisCom.put(field_name, 0)
     time_to_wait = 500
     self.axisMr.waitForMipZero(tc_no, time_to_wait)
