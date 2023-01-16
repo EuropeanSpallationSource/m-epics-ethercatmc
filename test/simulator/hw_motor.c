@@ -70,6 +70,7 @@ typedef struct
       double HomeVelocity;
       double PosVelocity;
       double JogVelocity;
+      int stillMoving;
     } velo;
     int hitPosLimitSwitch;
     int hitNegLimitSwitch;
@@ -417,6 +418,9 @@ int isMotorMoving(int axis_no)
   if (motor_axis[axis_no].moving.rampUpAfterStart) {
     return 0;
   }
+  if (motor_axis[axis_no].moving.velo.stillMoving) {
+    return 1;
+  }
   return getMotorVelocityInt(axis_no) ? 1 : 0;
 }
 
@@ -693,7 +697,7 @@ static int hard_limits_clip(int axis_no, double velocity)
       fprintf(stdlog,
               "%s/%s:%d axis_no=%d CLIP LLS motorPosNow=%g calcMotorPosHw=%g "
               "velocity=%g jvel=%g velo=%g hvel=%g HomeVelocity=%g HomePos=%g lowHardLimitPos=%g "
-              "enabledLowSoftLimitPos=%d lowSoftLimitPos=%g\n",
+              "enabledLowSoftLimitPos=%d lowSoftLimitPos=%g stillMoving=%d\n",
               __FILE__, __FUNCTION__, __LINE__,
               axis_no,
               motor_axis[axis_no].MotorPosNow,
@@ -706,7 +710,8 @@ static int hard_limits_clip(int axis_no, double velocity)
               motor_axis[axis_no].moving.velo.HomeVelocity,
               motor_axis[axis_no].lowHardLimitPos,
               motor_axis[axis_no].enabledLowSoftLimitPos,
-              motor_axis[axis_no].lowSoftLimitPos);
+              motor_axis[axis_no].lowSoftLimitPos,
+              motor_axis[axis_no].moving.velo.stillMoving);
       clipped = 1;
       if (motor_axis[axis_no].moving.velo.HomeVelocity) {
         /* setAxisHomed will set MotorPosSetPosOffset to 0 */
@@ -897,15 +902,18 @@ double getMotorPos(int axis_no)
   return motor_axis[axis_no].MotorPosReported;
 }
 
-void setMotorPos(int axis_no, double value)
+void setMotorPos(int axis_no, double value, int flags)
 {
   AXIS_CHECK_RETURN(axis_no);
+  int stillMoving = isMotorMoving(axis_no);
   StopInternal(axis_no);
-  fprintf(stdlog, "%s/%s:%d axis_no=%d value=%g\n",
+  fprintf(stdlog, "%s/%s:%d axis_no=%d value=%g flags=0x%x\n",
           __FILE__, __FUNCTION__, __LINE__,
-          axis_no, value);
-  // setAxisHomed(axis_no, 1);
+          axis_no, value, flags);
   motor_axis[axis_no].homed = 1;
+  if (flags & SET_MOTOR_POS_FLAGS_KEEP_MOVING) {
+    motor_axis[axis_no].moving.velo.stillMoving = stillMoving;
+  }
 
   /* The new position is pushed into the axis.
      However, save the offset (negative) so that
@@ -1086,7 +1094,8 @@ int moveHomeProc(int axis_no,
           acceleration);
 
   if (nCmdData == 15) {
-    setMotorPos(axis_no, position);
+    int flags = 0;
+    setMotorPos(axis_no, position, flags);
     return 0;
   }
   motor_axis[axis_no].HomePos = position;

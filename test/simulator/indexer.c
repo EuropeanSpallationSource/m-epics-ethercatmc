@@ -1562,7 +1562,10 @@ indexerMotorParamInterface(unsigned motor_axis_no,
       }
       break;
     case PARAM_IDX_FUN_SET_POSITION:
-      setMotorPos(motor_axis_no, fValue);
+      {
+        int flags = 0;
+        setMotorPos(motor_axis_no, fValue, flags);
+      }
       ret = PARAM_IF_CMD_DONE | paramIndex;
       break;
     case PARAM_IDX_USR_MIN_EN_UINT32:

@@ -156,8 +156,17 @@ static int motorHandleOneArg(const char *myarg_1)
   /* fActPosition=30 */
   nvals = sscanf(myarg_1, "fActPosition=%lf", &fValue);
   if (nvals == 1) {
-    //setActPosition(motor_axis_no, fValue);
-    setMotorPos(motor_axis_no, fValue);
+    int flags = 0;
+    setMotorPos(motor_axis_no, fValue, flags);
+    cmd_buf_printf("OK");
+    return 0;
+  }
+
+  /* fActPosMove=30 */
+  nvals = sscanf(myarg_1, "fActPosMove=%lf", &fValue);
+  if (nvals == 1) {
+    int flags = SET_MOTOR_POS_FLAGS_KEEP_MOVING;
+    setMotorPos(motor_axis_no, fValue, flags);
     cmd_buf_printf("OK");
     return 0;
   }

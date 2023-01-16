@@ -8,6 +8,9 @@
 #define AXIS_CHECK_RETURN_ERROR(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return (-1);}
 #define AXIS_CHECK_RETURN_EINVAL(_axis) {init_axis(_axis); if (((_axis) <= 0) || ((_axis) >=MAX_AXES)) return (EINVAL);}
 
+
+
+#define SET_MOTOR_POS_FLAGS_KEEP_MOVING (1 << 0)
 typedef struct motor_init_values
 {
   double ReverseERES;
@@ -78,7 +81,7 @@ double getMRES_24(int axis_no);
 int    setMRES_24(int axis_no, double value);
 
 double getMotorPos(int axis_no);
-void   setMotorPos(int axis_no, double value);
+void   setMotorPos(int axis_no, double value, int flags);
 void   setPositionJitter(int axis_no, double value);
 
 double getEncoderPos(int axis_no);
