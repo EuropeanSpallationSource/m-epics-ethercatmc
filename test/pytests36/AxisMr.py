@@ -935,13 +935,12 @@ class AxisMr:
         """
         Switch off the soft limits
         """
-        actDHLM = self.axisCom.get(".DHLM", use_monitor=False)
-        actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
+        actDHLM = float(self.axisCom.get(".DHLM", use_monitor=False))
+        actDLLM = float(self.axisCom.get(".DLLM", use_monitor=False))
 
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff direction={direction}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff direction={direction} actDHLM={actDHLM} actDLLM={actDLLM}"
         )
-        print(f"setSoftLimitsOff hlm={actDHLM} llm={actDLLM}")
         # switch off the controller soft limits
         if direction == 0:
             self.axisCom.put("-CfgDLLM-En", 0, wait=True)
@@ -956,8 +955,8 @@ class AxisMr:
             self.axisCom.put(".DLLM", 0.0)
             self.axisCom.put(".DHLM", 0.0)
 
-            actDHLM = self.axisCom.get(".DHLM", use_monitor=False)
-            actDLLM = self.axisCom.get(".DLLM", use_monitor=False)
+            actDHLM = float(self.axisCom.get(".DHLM", use_monitor=False))
+            actDLLM = float(self.axisCom.get(".DLLM", use_monitor=False))
 
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff dhlm={actDHLM} dllm={actDLLM}"
