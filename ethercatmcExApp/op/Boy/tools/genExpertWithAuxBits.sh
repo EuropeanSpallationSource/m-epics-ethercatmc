@@ -1,7 +1,7 @@
 #!/bin/sh
 
-export OPIS
-
+STATUSBITS=StatusBits
+NAMAUXBIT=NamAuxBit
 # Name of the destination file
 FILE=$1
 shift
@@ -15,16 +15,33 @@ case $BASENAME in
     yaux=298
     ;;
   ethercatmcaxisExpert)
-    yaux=y=416
+    yaux=416
+    ;;
+  ethercatmcPTPErrBits)
+    yaux=18
+    STATUSBITS=PTPErrorStatus
+    NAMAUXBIT=PTPErrBitNam
     ;;
   ethercatmcStatusWord1802)
-    yaux=y=18
+    yaux=18
     ;;
   *)
     echo >&2 "invalid: $BASENAME"
     exit 1
     ;;
 esac
+
+
+
+# open ptp aux
+if test "$1" = "openPTPErrBits"; then
+  shift
+  PTPSHIFTX=20
+else
+  PTPSHIFTX=0
+fi
+export PTPSHIFTX
+
 
 # ptp version or not
 if test "$1" = "ptp"; then
@@ -39,8 +56,13 @@ export HAS_PTP
 echo "Creating $FILE" &&
 cat $BASENAME.start >$$ &&
 cat plcName.mid  >>$$ &&
+if test $PTPSHIFTX != 0; then
+  cat openPTPErrBits.mid >>$$
+fi
 if test "$HAS_PTP" != ""; then
-  cat ptp.mid  >>$$
+  cmd=$(echo ./shiftopi.py --shiftx $PTPSHIFTX)
+  echo cmd=$cmd
+  eval $cmd <ptp.mid >>$$
 fi &&
 im=0
 x=0
@@ -55,7 +77,7 @@ eval $cmd <$BASENAME.mid >>$$
       yaux=$(($yaux + 20))
       cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
       echo cmd=$cmd
-      eval $cmd <ethercatmcaxisAuxBit.mid >>$$
+      eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g">>$$
   done
   cat $BASENAME.end  >>$$ &&
   mv -f $$ $FILE &&

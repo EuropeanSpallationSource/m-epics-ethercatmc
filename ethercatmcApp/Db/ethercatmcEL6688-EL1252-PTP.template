@@ -1,0 +1,13 @@
+record(longin, "$(PREFIX)TS_NS")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "TS_NS fraction")
+    field(EGU,  "ns")
+    field(HIGH, "5000")
+    field(LOW,  "-5000")
+    field(HSV,  "1")
+    field(LSV,  "1")
+    field(HYST, "20")
+    field(INP,  "@asyn($(MOTOR_PORT),0)TS_NS")
+    field(SCAN, "I/O Intr")
+}

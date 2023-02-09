@@ -83,6 +83,61 @@
 $(pv_value)</tooltip>
   <x>0</x>
 </widget>
+<widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+  <border_alarm_sensitive>false</border_alarm_sensitive>
+  <visible>true</visible>
+  <actions_from_pv>false</actions_from_pv>
+  <wuid>39872d87:13e14015f61:d1a</wuid>
+  <scripts />
+  <height>18</height>
+  <name>Menu Button</name>
+  <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+  <scale_options>
+    <width_scalable>true</width_scalable>
+    <height_scalable>true</height_scalable>
+    <keep_wh_ratio>false</keep_wh_ratio>
+  </scale_options>
+  <transparent>false</transparent>
+  <pv_name></pv_name>
+  <background_color>
+    <color red="0" green="0" blue="128" />
+  </background_color>
+  <foreground_color>
+    <color name="Gray_0" red="255" green="255" blue="255" />
+  </foreground_color>
+  <widget_type>Menu Button</widget_type>
+  <enabled>true</enabled>
+  <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+  <font>
+    <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+  </font>
+  <width>80</width>
+  <border_style>6</border_style>
+  <label>More</label>
+  <rules />
+  <pv_value />
+  <border_width>1</border_width>
+  <border_color>
+    <color red="0" green="0" blue="255" />
+  </border_color>
+  <y>174</y>
+  <actions hook="false" hook_all="false">
+    <action type="OPEN_DISPLAY">
+      <path>ethercatmcPTPErrBits.opi</path>
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+        <P>$(P)</P>
+        <R></R>
+      </macros>
+      <replace>0</replace>
+      <description>$(P) (PTPErrorStatus)</description>
+    </action>
+  </actions>
+  <y>0</y>
+  <tooltip>$(pv_name)
+    $(pv_value)</tooltip>
+  <x>0</x>
+</widget>
 <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
   <actions hook="false" hook_all="false" />
   <alarm_pulsing>false</alarm_pulsing>
@@ -148,7 +203,7 @@ $(pv_value)</tooltip>
   <widget_type>LED</widget_type>
   <width>40</width>
   <wuid>-68918818:158524ceeb4:-7584</wuid>
-  <x>0</x>
+  <x>20</x>
   <y>0</y>
 </widget>
 
@@ -203,7 +258,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>16</x>
+  <x>36</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -255,7 +310,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>100</x>
+  <x>120</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -307,7 +362,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>122</x>
+  <x>142</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -359,7 +414,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>202</x>
+  <x>222</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -411,7 +466,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>282</x>
+  <x>302</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -463,7 +518,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>382</x>
+  <x>402</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -524,7 +579,7 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>460</x>
+  <x>480</x>
 </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
     <actions hook="false" hook_all="false" />

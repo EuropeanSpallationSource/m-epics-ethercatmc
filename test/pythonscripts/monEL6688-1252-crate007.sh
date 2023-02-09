@@ -23,12 +23,21 @@ if test -f $LOGFILE; then
   mv $LOGFILE ./logs/$timestamp-$LOGFILE || exit 1
 fi
 
-PVS="${P}PTPState ${P}PTPOffset"
-PVS="$PVS ${P}DcToExtTimeOffset"
-PVS="$PVS ${P}PTPdiffTimeIOC_MCU"
-PVS="$PVS ${P}PTPErrorStatus"
-PVS="$PVS ${P}PTPallGood"
-PVS="$PVS ${P}UTCEL1252P0"
+PVS=""
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPOffset"
+#PVS="$PVS LabS-MCAG:MC-MCU-07:PTPOffset.STAT"
+#PVS="$PVS LabS-MCAG:MC-MCU-07:PTPOffset.SEVR"
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPOffset1"
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPOffset2"
+#PVS="$PVS LabS-MCAG:MC-MCU-07:PTPOffset2.STAT"
+#PVS="$PVS LabS-MCAG:MC-MCU-07:PTPOffset2.SEVR"
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPState"
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPallGood"
+#PVS="$PVS LabS-MCAG:MC-MCU-07:UTCEL1252P0"
+PVS="$PVS LabS-MCAG:MC-MCU-07:TimeOffsetDiffEL6688"
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPdiffTimeIOC_MCU"
+PVS="$PVS LabS-MCAG:MC-MCU-07:PTPErrorStatus"
+PVS="$PVS LabS-MCAG:MC-MCU-07:TS_NS"
 
 for PV in $PVS; do
   pvget $PV || {

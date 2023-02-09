@@ -23,6 +23,7 @@ DB += ethercatmcEL3162-OneChannel.template
 DB += ethercatmcRawMtrEnc.template
 DB += ethercatmcPLCopenStateMachine.template
 DB += ethercatmcEL6688-PTP.template
+DB += ethercatmcEL6688-EL1252-PTP.template
 DB += ethercatmcMotorTemp.template
 DB += ethercatmcOpenClutch.template
 DB += ethercatmcPlcName.template
