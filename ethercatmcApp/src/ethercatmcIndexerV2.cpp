@@ -446,6 +446,8 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
         } else if (!strcmp("homeSwitch", auxBitName)) {
           pAxis->setAuxBitsHomeSwitchMask(1 << auxBitIdx);
         }
+      } else {
+        setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
       }
     }
   }
