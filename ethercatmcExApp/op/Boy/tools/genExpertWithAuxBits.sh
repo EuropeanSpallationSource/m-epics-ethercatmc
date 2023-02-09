@@ -53,6 +53,10 @@ fi
 export HAS_PTP
 
 
+im=0
+x=0
+y=$TITLEH
+
 echo "Creating $FILE" &&
 cat $BASENAME.start >$$ &&
 cat plcName.mid  >>$$ &&
@@ -60,13 +64,11 @@ if test $PTPSHIFTX != 0; then
   cat openPTPErrBits.mid >>$$
 fi
 if test "$HAS_PTP" != ""; then
-  cmd=$(echo ./shiftopi.py --shiftx $PTPSHIFTX)
+  cmd=$(echo ./shiftopi.py --shiftx $PTPSHIFTX --shifty $yaux)
   echo cmd=$cmd
   eval $cmd <ptp.mid >>$$
+  $yaux=$yaux + 16
 fi &&
-im=0
-x=0
-y=$TITLEH
 
 echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
 
