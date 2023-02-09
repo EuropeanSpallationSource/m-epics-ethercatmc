@@ -124,6 +124,16 @@ record(bo,  "$(PREFIX)PTPRewriteOffset") {
     info(asyn:INITIAL_READBACK,"1")
 }
 
+record(bo,  "$(PREFIX)PTPDoSyncCheck") {
+    field(DESC, "PTP do synch check of EL6688")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(MOTOR_PORT),0)PTPDoSyncCheck")
+    field(ZNAM, "NO")
+    field(ONAM, "YES")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
 
 #
 # Diff between NTP (IOC) and PTP (MCU/PLC)
