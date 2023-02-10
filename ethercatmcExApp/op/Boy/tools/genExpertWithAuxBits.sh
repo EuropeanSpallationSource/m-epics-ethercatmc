@@ -52,6 +52,14 @@ else
 fi
 export HAS_PTP
 
+if test "$1" = "ptprwoffset"; then
+  shift
+  PTPRWOFFSET="y"
+else
+  PTPRWOFFSET=""
+fi
+export PTPRWOFFSET
+
 
 im=0
 x=0
@@ -65,9 +73,17 @@ if test $PTPSHIFTX != 0; then
 fi
 if test "$HAS_PTP" != ""; then
   cmd=$(echo ./shiftopi.py --shiftx $PTPSHIFTX --shifty $yaux)
-  echo cmd=$cmd
+  echo HAS_PTP cmd=$cmd
   eval $cmd <ptp.mid >>$$
-  $yaux=$yaux + 16
+  yaux=$(($yaux + 16))
+fi &&
+
+if test "$PTPRWOFFSET" = "y"; then
+  yaux=$(($yaux + 6))
+  cmd=$(echo ./shiftopi.py --shiftx 15 --shifty $yaux)
+  echo PTPRWOFFSET cmd=$cmd
+  eval $cmd <ptp_rw_offset_do_synch_check.mid >>$$
+  yaux=$(($yaux + 34))
 fi &&
 
 echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
