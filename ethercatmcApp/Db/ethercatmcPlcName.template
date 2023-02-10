@@ -17,6 +17,11 @@ record(stringout, "$(PREFIX)IPPORT") {
     field(VAL, "$(IPPORT)")
 }
 
+# The ControllerInfo
+record(stringout, "$(PREFIX)ControllerInfo") {
+    field(VAL, "twincat")
+}
+
 
 record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
 {
