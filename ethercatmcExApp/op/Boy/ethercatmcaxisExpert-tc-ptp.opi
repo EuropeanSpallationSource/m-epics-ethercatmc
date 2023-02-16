@@ -1781,72 +1781,6 @@ $(pv_value)</tooltip>
     <x>251</x>
     <y>297</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="0" green="0" blue="0" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <confirm_message></confirm_message>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>0</format_type>
-    <height>26</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
-    <multiline_input>false</multiline_input>
-    <name>Text Input Template_36</name>
-    <next_focus>0</next_focus>
-    <password_input>false</password_input>
-    <precision>0</precision>
-    <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(M)-StatusCode</pv_name>
-    <pv_value />
-    <read_only>false</read_only>
-    <rules>
-      <rule name="StatusCode-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==3">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=3">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)StatusCode.SEVR</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_native_border>true</show_native_border>
-    <show_units>false</show_units>
-    <style>1</style>
-    <text>StatusCode</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>60</width>
-    <wuid>-68918818:158524ceeb4:-6c71</wuid>
-    <x>293</x>
-    <y>302</y>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <alarm_pulsing>false</alarm_pulsing>
@@ -2788,76 +2722,6 @@ $(pv_value)</tooltip>
     <width>30</width>
     <wuid>-68918818:158524ceeb4:-668a</wuid>
     <x>305</x>
-    <y>54</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <bit>-1</bit>
-    <boolean_label_position>0</boolean_label_position>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>100</height>
-    <name>Boolean Switch</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
-    <off_label>Dial</off_label>
-    <on_color>
-      <color name="Major" red="255" green="0" blue="0" />
-    </on_color>
-    <on_label>User</on_label>
-    <password></password>
-    <push_action_index>0</push_action_index>
-    <pv_name>$(P)$(M).FOFF</pv_name>
-    <pv_value />
-    <released_action_index>0</released_action_index>
-    <rules>
-      <rule name="FOFF-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0 == 0">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0 != 0">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)FoffVis</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>false</show_boolean_label>
-    <show_confirm_dialog>0</show_confirm_dialog>
-    <toggle_button>true</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Boolean Switch</widget_type>
-    <width>30</width>
-    <wuid>-68918818:158524ceeb4:-668a</wuid>
-    <x>335</x>
     <y>54</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
@@ -4509,6 +4373,358 @@ $(pv_value)</tooltip>
     <x>16</x>
     <y>384</y>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Button" red="178" green="178" blue="178" />
+    </background_color>
+    <bit>0</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <confirm_message>Are your sure you want to do this?</confirm_message>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <height>50</height>
+    <labels_from_pv>false</labels_from_pv>
+    <name>Boolean Button Template_2</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>HOMR</off_label>
+    <on_color>
+      <color name="IO PV ON" red="0" green="0" blue="255" />
+    </on_color>
+    <on_label>HOMR</on_label>
+    <password></password>
+    <push_action_index>0</push_action_index>
+    <pv_name>$(P)$(M).HOMR</pv_name>
+    <pv_value />
+    <released_action_index>0</released_action_index>
+    <rules>
+      <rule name="HOMR-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)HomeVis</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <show_confirm_dialog>0</show_confirm_dialog>
+    <show_led>true</show_led>
+    <square_button>false</square_button>
+    <toggle_button>true</toggle_button>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Boolean Button</widget_type>
+    <width>46</width>
+    <wuid>4d211c1e:14b9b97b4ed:-7eb2</wuid>
+    <x>90</x>
+    <y>155</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Button" red="178" green="178" blue="178" />
+    </background_color>
+    <bit>0</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <confirm_message>Are your sure you want to do this?</confirm_message>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <height>50</height>
+    <labels_from_pv>false</labels_from_pv>
+    <name>Boolean Button Template</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>HOMF</off_label>
+    <on_color>
+      <color name="IO PV ON" red="0" green="0" blue="255" />
+    </on_color>
+    <on_label>HOMF</on_label>
+    <password></password>
+    <push_action_index>0</push_action_index>
+    <pv_name>$(P)$(M).HOMF</pv_name>
+    <pv_value />
+    <released_action_index>0</released_action_index>
+    <rules>
+      <rule name="HOMR-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)HomeVis</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <show_confirm_dialog>0</show_confirm_dialog>
+    <show_led>true</show_led>
+    <square_button>false</square_button>
+    <toggle_button>true</toggle_button>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Boolean Button</widget_type>
+    <width>46</width>
+    <wuid>4d211c1e:14b9b97b4ed:-7eb4</wuid>
+    <x>170</x>
+    <y>154</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Button" red="178" green="178" blue="178" />
+    </background_color>
+    <bit>0</bit>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="215" green="215" blue="215" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <confirm_message>Are your sure you want to do this?</confirm_message>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <height>50</height>
+    <labels_from_pv>false</labels_from_pv>
+    <name>Boolean Button Template_12</name>
+    <off_color>
+      <color red="127" green="127" blue="127" />
+    </off_color>
+    <off_label>cnen</off_label>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <on_label>CNEN</on_label>
+    <password></password>
+    <push_action_index>0</push_action_index>
+    <pv_name>$(P)$(M).CNEN</pv_name>
+    <pv_value />
+    <released_action_index>0</released_action_index>
+    <rules>
+      <rule name="CNEN-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M)-CnenVis</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <show_confirm_dialog>0</show_confirm_dialog>
+    <show_led>true</show_led>
+    <square_button>false</square_button>
+    <toggle_button>true</toggle_button>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Boolean Button</widget_type>
+    <width>46</width>
+    <wuid>6258bd8f:14fdb134223:-7e3c</wuid>
+    <x>362</x>
+    <y>287</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <bit>-1</bit>
+    <boolean_label_position>0</boolean_label_position>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <confirm_message>Are your sure you want to do this?</confirm_message>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="Cantarell" height="11" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>100</height>
+    <name>Boolean Switch</name>
+    <off_color>
+      <color red="0" green="100" blue="0" />
+    </off_color>
+    <off_label>Dial</off_label>
+    <on_color>
+      <color name="Major" red="255" green="0" blue="0" />
+    </on_color>
+    <on_label>User</on_label>
+    <password></password>
+    <push_action_index>0</push_action_index>
+    <pv_name>$(P)$(M).FOFF</pv_name>
+    <pv_value />
+    <released_action_index>0</released_action_index>
+    <rules>
+      <rule name="FOFF-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)FoffVis</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>false</show_boolean_label>
+    <show_confirm_dialog>0</show_confirm_dialog>
+    <toggle_button>true</toggle_button>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Boolean Switch</widget_type>
+    <width>30</width>
+    <wuid>-68918818:158524ceeb4:-668a</wuid>
+    <x>335</x>
+    <y>-42</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>2</border_width>
+    <confirm_message></confirm_message>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Output 1</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="26" green="26" blue="26" />
+    </foreground_color>
+    <format_type>0</format_type>
+    <height>26</height>
+    <horizontal_alignment>0</horizontal_alignment>
+    <limits_from_pv>true</limits_from_pv>
+    <multiline_input>false</multiline_input>
+    <name>Text Input Template_36</name>
+    <next_focus>0</next_focus>
+    <password_input>false</password_input>
+    <precision>0</precision>
+    <precision_from_pv>false</precision_from_pv>
+    <pv_name>$(P)$(M)-StatusCode</pv_name>
+    <pv_value />
+    <read_only>false</read_only>
+    <rules>
+      <rule name="StatusCode-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(R)StatusCode.SEVR</pv>
+      </rule>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_native_border>true</show_native_border>
+    <show_units>false</show_units>
+    <style>1</style>
+    <text>StatusCode</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Text Input</widget_type>
+    <width>60</width>
+    <wuid>-68918818:158524ceeb4:-6c71</wuid>
+    <x>293</x>
+    <y>302</y>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <alarm_pulsing>false</alarm_pulsing>
@@ -4780,222 +4996,6 @@ $(pv_value)</tooltip>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
     <y>432</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Button" red="178" green="178" blue="178" />
-    </background_color>
-    <bit>0</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="215" green="215" blue="215" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <height>50</height>
-    <labels_from_pv>false</labels_from_pv>
-    <name>Boolean Button Template_2</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>HOMR</off_label>
-    <on_color>
-      <color name="IO PV ON" red="0" green="0" blue="255" />
-    </on_color>
-    <on_label>HOMR</on_label>
-    <password></password>
-    <push_action_index>0</push_action_index>
-    <pv_name>$(P)$(M).HOMR</pv_name>
-    <pv_value />
-    <released_action_index>0</released_action_index>
-    <rules>
-      <rule name="HOMR-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0 == 0">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0 != 0">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)HomeVis</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <show_confirm_dialog>0</show_confirm_dialog>
-    <show_led>true</show_led>
-    <square_button>false</square_button>
-    <toggle_button>true</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Boolean Button</widget_type>
-    <width>46</width>
-    <wuid>4d211c1e:14b9b97b4ed:-7eb2</wuid>
-    <x>90</x>
-    <y>155</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Button" red="178" green="178" blue="178" />
-    </background_color>
-    <bit>0</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="215" green="215" blue="215" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <height>50</height>
-    <labels_from_pv>false</labels_from_pv>
-    <name>Boolean Button Template</name>
-    <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
-    </off_color>
-    <off_label>HOMF</off_label>
-    <on_color>
-      <color name="IO PV ON" red="0" green="0" blue="255" />
-    </on_color>
-    <on_label>HOMF</on_label>
-    <password></password>
-    <push_action_index>0</push_action_index>
-    <pv_name>$(P)$(M).HOMF</pv_name>
-    <pv_value />
-    <released_action_index>0</released_action_index>
-    <rules>
-      <rule name="HOMR-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0 == 0">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0 != 0">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(R)HomeVis</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <show_confirm_dialog>0</show_confirm_dialog>
-    <show_led>true</show_led>
-    <square_button>false</square_button>
-    <toggle_button>true</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Boolean Button</widget_type>
-    <width>46</width>
-    <wuid>4d211c1e:14b9b97b4ed:-7eb4</wuid>
-    <x>170</x>
-    <y>154</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="IO Button" red="178" green="178" blue="178" />
-    </background_color>
-    <bit>0</bit>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="215" green="215" blue="215" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <data_type>0</data_type>
-    <effect_3d>true</effect_3d>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <height>50</height>
-    <labels_from_pv>false</labels_from_pv>
-    <name>Boolean Button Template_12</name>
-    <off_color>
-      <color red="127" green="127" blue="127" />
-    </off_color>
-    <off_label>cnen</off_label>
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
-    <on_label>CNEN</on_label>
-    <password></password>
-    <push_action_index>0</push_action_index>
-    <pv_name>$(P)$(M).CNEN</pv_name>
-    <pv_value />
-    <released_action_index>0</released_action_index>
-    <rules>
-      <rule name="CNEN-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0 == 0">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0 != 0">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(P)$(M)-CnenVis</pv>
-      </rule>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>true</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_boolean_label>true</show_boolean_label>
-    <show_confirm_dialog>0</show_confirm_dialog>
-    <show_led>true</show_led>
-    <square_button>false</square_button>
-    <toggle_button>true</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Boolean Button</widget_type>
-    <width>46</width>
-    <wuid>6258bd8f:14fdb134223:-7e3c</wuid>
-    <x>362</x>
-    <y>287</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
