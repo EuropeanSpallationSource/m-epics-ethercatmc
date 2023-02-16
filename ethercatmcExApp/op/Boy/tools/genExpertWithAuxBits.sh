@@ -35,13 +35,14 @@ esac
 
 # pick up all arguments
 HAS_PTP=""
+HAS_TC=""
 PTPRWOFFSET=""
 PTPOPENERRBITS=0
 PARAM="$1"
 while test "$PARAM" != ""; do
   case $1 in
   ptp)
-    HAS_PTP="-ptp"
+    HAS_PTP="y"
     shift
     PARAM="$1"
     ;;
@@ -52,6 +53,11 @@ while test "$PARAM" != ""; do
     ;;
   ptprwoffset)
     PTPRWOFFSET="y"
+    shift
+    PARAM="$1"
+    ;;
+  tc)
+    HAS_TC="y"
     shift
     PARAM="$1"
     ;;
@@ -66,6 +72,7 @@ while test "$PARAM" != ""; do
   esac
 done
 export HAS_PTP
+export HAS_TC
 export PTPRWOFFSET
 export PTPOPENERRBITS
 
@@ -76,10 +83,11 @@ y=0
 echo "Creating $FILE" &&
 cat $BASENAME.start >$$ &&
 cat plcName.mid  >>$$ &&
+y=$(($y + 16)) &&
 if test $PTPOPENERRBITS != 0; then
   cat openPTPErrBits.mid >>$$
 fi
-if test "$HAS_PTP" != ""; then
+if test "$HAS_PTP" = "y"; then
   cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
   echo HAS_PTP cmd=$cmd
   eval $cmd <ptp.mid >>$$
@@ -93,20 +101,26 @@ if test "$PTPRWOFFSET" = "y"; then
   echo PTPRWOFFSET cmd=$cmd
   eval $cmd <ptp_rw_offset_do_synch_check.mid >>$$
   yaux=$(($yaux + 34))
+  y=$(($y + 34))
 fi &&
 
 echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
 
-cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-echo cmd=$cmd
-eval $cmd <$BASENAME.mid >>$$
-  for n in $@; do
-      yaux=$(($yaux + 20))
-      cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
-      echo cmd=$cmd
-      eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g">>$$
-  done
-  cat $BASENAME.end  >>$$ &&
-  mv -f $$ $FILE &&
-  chmod -w $FILE
+cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
+echo $0: $BASENAME cmd=$cmd &&
+eval $cmd <$BASENAME.mid >>$$ &&
+if test "$HAS_TC" = "y"; then
+  cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+  echo $0: HAS_TC cmd=$cmd
+  eval $cmd <tc.mid >>$$
+fi &&
+for n in $@; do
+  yaux=$(($yaux + 20))
+  cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
+  echo cmd=$cmd
+  eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g">>$$
+done
+cat $BASENAME.end  >>$$ &&
+mv -f $$ $FILE &&
+chmod -w $FILE
 
