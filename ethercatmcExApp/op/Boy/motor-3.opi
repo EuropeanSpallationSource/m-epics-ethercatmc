@@ -1380,7 +1380,7 @@ $(pv_value)</tooltip>
         <description>$(M1) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>ethercatmcaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert-tc.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
@@ -2708,7 +2708,7 @@ $(pv_value)</tooltip>
         <description>$(M2) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>ethercatmcaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert-tc.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
@@ -4036,7 +4036,7 @@ $(pv_value)</tooltip>
         <description>$(M3) (Basic)</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>ethercatmcaxisExpert.opi</path>
+        <path>ethercatmcaxisExpert-tc.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>

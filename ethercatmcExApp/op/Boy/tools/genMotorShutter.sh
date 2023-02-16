@@ -114,7 +114,7 @@ sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!"  <motorx.start >$$ &&
   if test "$HAS_PTP" != ""; then
     touch $FILE &&
     chmod +w $FILE &&
-    sed -e "s!ethercatmcaxisExpert.opi!ethercatmcaxisExpert-ptp.opi!"  <$$ >$FILE &&
+    sed -e "s!ethercatmcaxisExpert-tc.opi!ethercatmcaxisExpert-tc-ptp.opi!"  <$$ >$FILE &&
     rm $$ &&
     chmod -w $FILE
   else
