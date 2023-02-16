@@ -137,7 +137,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert $(AUXBITS_EXPERT)
 
 ../ethercatmcaxisExpert-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert openPTPErrBits ptp $(AUXBITS_EXPERT)
+	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert ptp $(AUXBITS_EXPERT)
 
 # Generate ethercatmcShutter*.opi out of
 #   ethercatmcShutter.mid and ethercatmcShutter.end

@@ -33,33 +33,41 @@ esac
 
 
 
-# open ptp aux
-if test "$1" = "openPTPErrBits"; then
-  shift
-  PTPSHIFTX=20
-else
-  PTPSHIFTX=0
-fi
-export PTPSHIFTX
-
-
-# ptp version or not
-if test "$1" = "ptp"; then
-  shift
-  HAS_PTP="-ptp"
-else
-  HAS_PTP=""
-fi
+# pick up all arguments
+HAS_PTP=""
+PTPRWOFFSET=""
+PTPOPENERRBITS=0
+PARAM="$1"
+while test "$PARAM" != ""; do
+  case $1 in
+  ptp)
+    HAS_PTP="-ptp"
+    shift
+    PARAM="$1"
+    ;;
+  openPTPErrBits)
+    PTPOPENERRBITS=20
+    shift
+    PARAM="$1"
+    ;;
+  ptprwoffset)
+    PTPRWOFFSET="y"
+    shift
+    PARAM="$1"
+    ;;
+  [0-9]*)
+    # stop the loop
+    PARAM=""
+    ;;
+  *)
+    echo >&2 "illegal option: $1"
+    exit 1
+    ;;
+  esac
+done
 export HAS_PTP
-
-if test "$1" = "ptprwoffset"; then
-  shift
-  PTPRWOFFSET="y"
-else
-  PTPRWOFFSET=""
-fi
 export PTPRWOFFSET
-
+export PTPOPENERRBITS
 
 im=0
 x=0
@@ -68,14 +76,15 @@ y=$TITLEH
 echo "Creating $FILE" &&
 cat $BASENAME.start >$$ &&
 cat plcName.mid  >>$$ &&
-if test $PTPSHIFTX != 0; then
+if test $PTPOPENERRBITS != 0; then
   cat openPTPErrBits.mid >>$$
 fi
 if test "$HAS_PTP" != ""; then
-  cmd=$(echo ./shiftopi.py --shiftx $PTPSHIFTX --shifty $yaux)
+  cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
   echo HAS_PTP cmd=$cmd
   eval $cmd <ptp.mid >>$$
   yaux=$(($yaux + 16))
+  y=$(($y + 16))
 fi &&
 
 if test "$PTPRWOFFSET" = "y"; then
