@@ -20,6 +20,7 @@ GNERATEDOPIS = \
   ../ethercatmcShutter.opi \
   ../ethercatmcStatusWord1802.opi \
   ../shutter-1.opi \
+  ../IOC.opi \
 
 #Main target:
 all: checkwhitespace $(GNERATEDOPIS)
@@ -153,6 +154,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../shutter-1.opi: $(DEPENDENCIES_FOR_SHUTTER_OPI)
 	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ s 1
+
+../IOC.opi: Makefile genIOC.sh IOC*.*
+	./genIOC.sh ../IOC.opi IOC
 
 
 checkwhitespace:
