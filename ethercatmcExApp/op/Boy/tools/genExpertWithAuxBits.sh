@@ -34,6 +34,7 @@ esac
 
 
 # pick up all arguments
+HAS_ECMC=""
 HAS_PTP=""
 HAS_TC=""
 PTPRWOFFSET=""
@@ -41,6 +42,11 @@ PTPOPENERRBITS=0
 PARAM="$1"
 while test "$PARAM" != ""; do
   case $1 in
+  ecmc)
+    HAS_ECMC="y"
+    shift
+    PARAM="$1"
+    ;;
   ptp)
     HAS_PTP="y"
     shift
@@ -71,6 +77,7 @@ while test "$PARAM" != ""; do
     ;;
   esac
 done
+export HAS_ECMC
 export HAS_PTP
 export HAS_TC
 export PTPRWOFFSET
@@ -113,6 +120,11 @@ if test "$HAS_TC" = "y"; then
   cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
   echo $0: HAS_TC cmd=$cmd
   eval $cmd <tc.mid >>$$
+fi &&
+if test "$HAS_ECMC" = "y"; then
+  cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+  echo $0: HAS_TC cmd=$cmd
+  eval $cmd <ecmc.mid >>$$
 fi &&
 for n in $@; do
   yaux=$(($yaux + 20))

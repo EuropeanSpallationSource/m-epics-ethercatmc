@@ -7,10 +7,12 @@ GNERATEDOPIS = \
   ../motor-3-ptp.opi \
   ../motor-4.opi \
   ../motor-4-ptp.opi \
+  ../motor-4-ecmc.opi \
   ../motor-5.opi \
   ../motor-6.opi  \
   ../motor-4x3.opi \
   ../motor-4x4.opi \
+  ../ethercatmcaxisExpert-ecmc.opi \
   ../ethercatmcaxisExpert-tc.opi \
   ../ethercatmcaxisExpert-tc-ptp.opi \
   ../ethercatmcPTPErrBits.opi \
@@ -68,14 +70,15 @@ DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcPTPErrBits.end
 
 
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI = Makefile
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ecmc.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.sh
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.py
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.start
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += tc.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ptp.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.end
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ptp.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += tc.mid
 
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI = Makefile
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += genExpertWithAuxBits.sh
@@ -112,6 +115,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 4
 
+../motor-4-ecmc.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	./genMotorShutter.sh $@ ecmc 4
+
 ../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ ptp 4
 
@@ -133,6 +139,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
 ../ethercatmcaxisExpert-tc.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert tc $(AUXBITS_EXPERT)
+
+../ethercatmcaxisExpert-ecmc.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
+	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert ecmc $(AUXBITS_EXPERT)
 
 ../ethercatmcaxisExpert-tc-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert tc ptp $(AUXBITS_EXPERT)

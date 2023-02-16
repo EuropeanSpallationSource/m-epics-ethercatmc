@@ -10,6 +10,7 @@ WIDTH=120
 # File name extension
 EXT=opi
 
+HAS_ECMC=""
 HAS_PTP=""
 y=16
 export y WIDTH HIGHT
@@ -90,6 +91,12 @@ FILE=$1
 shift
 BASENAMEF=${FILE##*/}
 
+if test "$1" = "ecmc"; then
+  shift
+  HAS_ECMC=y
+  export HAS_ECMC
+fi &&
+
 if test "$1" = "ptp"; then
   #shift keep it for genMatrix below
   HAS_PTP="-ptp"
@@ -111,7 +118,13 @@ sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!"  <motorx.start >$$ &&
   fi &&
   genMatrix "$@" &&
   cat motorx.end  >>$$ &&
-  if test "$HAS_PTP" != ""; then
+  if test "$HAS_ECMC" = "y"; then
+    touch $FILE &&
+    chmod +w $FILE &&
+    sed -e "s!ethercatmcaxisExpert-tc.opi!ethercatmcaxisExpert-ecmc.opi!"  <$$ >$FILE &&
+    rm $$ &&
+    chmod -w $FILE
+  elif test "$HAS_PTP" != ""; then
     touch $FILE &&
     chmod +w $FILE &&
     sed -e "s!ethercatmcaxisExpert-tc.opi!ethercatmcaxisExpert-tc-ptp.opi!"  <$$ >$FILE &&
