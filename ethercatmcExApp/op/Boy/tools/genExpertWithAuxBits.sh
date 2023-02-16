@@ -71,7 +71,7 @@ export PTPOPENERRBITS
 
 im=0
 x=0
-y=$TITLEH
+y=0
 
 echo "Creating $FILE" &&
 cat $BASENAME.start >$$ &&

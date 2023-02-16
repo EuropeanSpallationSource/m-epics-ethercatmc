@@ -1,7 +1,4 @@
 
-# Height of the title line
-TITLEH=16
-
 GNERATEDOPIS = \
   ../motor-1.opi \
   ../motor-1-ptp.opi \
@@ -97,63 +94,63 @@ AUXBITS_STATUSWORD="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 2
 AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 1
+	./genMotorShutter.sh $@ 1
 
 ../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ ptp 1
+	./genMotorShutter.sh $@ ptp 1
 
 ../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 2
+	./genMotorShutter.sh $@ 2
 
 ../motor-3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 3
+	./genMotorShutter.sh $@ 3
 
 ../motor-3-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ ptp 3
+	./genMotorShutter.sh $@ ptp 3
 
 ../motor-4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 4
+	./genMotorShutter.sh $@ 4
 
 ../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ ptp 4
+	./genMotorShutter.sh $@ ptp 4
 
 ../motor-5.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 5
+	./genMotorShutter.sh $@ 5
 
 
 ../motor-6.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 6
+	./genMotorShutter.sh $@ 6
 
 
 ../motor-4x3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 4 x 3
+	./genMotorShutter.sh $@ 4 x 3
 
 ../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ 4 x 4
+	./genMotorShutter.sh $@ 4 x 4
 
 # Generate ethercatmcaxisExpert*.opi out of
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
 ../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert $(AUXBITS_EXPERT)
+	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert $(AUXBITS_EXPERT)
 
 ../ethercatmcaxisExpert-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert ptp $(AUXBITS_EXPERT)
+	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert ptp $(AUXBITS_EXPERT)
 
 # Generate ethercatmcShutter*.opi out of
 #   ethercatmcShutter.mid and ethercatmcShutter.end
 ../ethercatmcShutter.opi: $(DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcShutter $(AUXBITS_SHUTTER)
+	./genExpertWithAuxBits.sh $@ ethercatmcShutter $(AUXBITS_SHUTTER)
 
 # Generate ethercatmcStatusWord1802*.opi out of
 #   ethercatmcStatusWord1802.mid and ethercatmcStatusWord1802.end
 ../ethercatmcPTPErrBits.opi: $(DEPENDENCIES_FOR_PTPERRORSTATUS_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcPTPErrBits ptp ptprwoffset $(AUXBITS_PTPERRORSTATUS)
+	./genExpertWithAuxBits.sh $@ ethercatmcPTPErrBits ptp ptprwoffset $(AUXBITS_PTPERRORSTATUS)
 
 ../ethercatmcStatusWord1802.opi: $(DEPENDENCIES_FOR_STATUSWORD_OPI)
-	TITLEH=$(TITLEH) ./genExpertWithAuxBits.sh $@ ethercatmcStatusWord1802 $(AUXBITS_STATUSWORD)
+	./genExpertWithAuxBits.sh $@ ethercatmcStatusWord1802 $(AUXBITS_STATUSWORD)
 
 ../shutter-1.opi: $(DEPENDENCIES_FOR_SHUTTER_OPI)
-	TITLEH=$(TITLEH) ./genMotorShutter.sh $@ s 1
+	./genMotorShutter.sh $@ s 1
 
 ../IOC.opi: Makefile genIOC.sh IOC*.*
 	./genIOC.sh ../IOC.opi IOC

@@ -11,8 +11,8 @@ WIDTH=120
 EXT=opi
 
 HAS_PTP=""
-TITLEH=16
-export TITLEH WIDTH HIGHT
+y=16
+export y WIDTH HIGHT
 
 genMatrix() {
   echo genMatrix "$@"
@@ -49,7 +49,7 @@ genMatrix() {
       iy=$(($iy + 1)) # newline
       ;;
     ptp)
-      TITLEH=$(($TITLEH + 16))
+      y=$(($y + 16))
       shift
       continue
       ;;
@@ -65,10 +65,10 @@ genMatrix() {
       exit 1
       ;;
     esac
-    echo genMatrix TITLEH=$TITLEH iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX
+    echo genMatrix y=$y iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX
     while test $iy -lt $YCNTMAX; do
       while test $ix -lt $XCNTMAX; do
-        y=$(($TITLEH + $iy * $HIGHT))
+        y=$(($y + $iy * $HIGHT))
         x=$(($ix * $WIDTH))
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
         echo cmd=$cmd "<$OPIMID"
