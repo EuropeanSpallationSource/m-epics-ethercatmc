@@ -1659,9 +1659,15 @@ asynStatus ethercatmcController::indexerPoll(void)
           int function = ethercatmcPTPdiffTimeIOC_MCU_;
           int rtn = epicsTimeGetCurrent(&timeIOC);
           if (!rtn) {
-            double diffTimeIOC_MCU = timeIOC.secPastEpoch - timeMCU.secPastEpoch;
-            diffTimeIOC_MCU = diffTimeIOC_MCU * 1000; // msec
-            diffTimeIOC_MCU += ((double)timeIOC.nsec - (double)timeMCU.nsec) / 1000000.0; // nsec -> msec
+            double time_IOC_ms = (((double)timeIOC.secPastEpoch) * 1000.0) + (((double)timeIOC.nsec) / 1000000.0);
+            double time_MCU_ms = (((double)timeMCU.secPastEpoch) * 1000.0) + (((double)timeMCU.nsec) / 1000000.0);
+            double diffTimeIOC_MCU = time_IOC_ms - time_MCU_ms;
+            asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
+                      "%sindexerPoll SystemUTCtime nSec=%" PRIu64 " sec:nSec=%09u.%09u  IOC sec=%lu.%09lu diffTimeIOC_MCU=%f\n",
+                      modNamEMC, nSec,
+                      timeMCU.secPastEpoch, timeMCU.nsec,
+                      (unsigned long)timeIOC.secPastEpoch, (unsigned long)timeIOC.nsec,
+                      diffTimeIOC_MCU);
             (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
           } else {
             setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
