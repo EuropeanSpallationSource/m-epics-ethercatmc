@@ -167,9 +167,10 @@ record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
   field(INPB, "$(PREFIX)PTPState.SEVR              CP MS")
   field(INPC, "$(PREFIX)PTPOffset.SEVR             CP MS")
   field(INPD, "$(PREFIX)PTPErrorStatus.SEVR        CP MS")
-  field(INPE, "$(PREFIX)TimeOffsetDiffEL6688.SEVR  CP MS")
-  field(INPF, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
-  field(CLCN, "b || c || d || e || f")
+  field(INPE, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
+  field(INPF, "$(PREFIX)TimeOffsetDiffEL6688.SEVR  CP MS")
+  field(INPG, "$(PREFIX)PTPRewriteOffset           CP MS")
+  field(CLCN, "b || c || d || e || (f && g)")
   # O is LED visible
   field(CLCO, "N ? A : (O > 0 ? O - 1 : O)")
   # P is all good
