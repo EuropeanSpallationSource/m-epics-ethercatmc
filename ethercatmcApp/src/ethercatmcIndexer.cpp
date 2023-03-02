@@ -635,39 +635,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                     "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u status=%s (%d)\n",
                     modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
                     ethercatmcstrStatus(status), (int)status);
-          if (pAxis && pAxis->drvlocal.iTypCode == 0x5010 &&
-              !pAxis->drvlocal.dirty.initialPollNeeded) {
-            unsigned statusReasonAux = NETTOUINT(readback_5010.statReasAux);
-            int errorID = (int)NETTOUINT(readback_5010.errorID);
-            idxStatusCodeType idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
-            //unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
-            unsigned idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
-            if (idxAuxBits != pAxis->drvlocal.old_idxAuxBits) {
-              changedAuxBits_to_ASCII(pAxis->axisNo_,
-                                      ethercatmcNamAux0_,
-                                      idxAuxBits, pAxis->drvlocal.old_idxAuxBits);
-              asynPrint(pasynUserController_, traceMask,
-                        "%sindexerParamWrite(%d) idxStatusCode=0x%02X auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) errorID=0x%04X \"%s\" \n",
-                        modNamEMC, pAxis->axisNo_, idxStatusCode,
-                        pAxis->drvlocal.old_idxAuxBits, idxAuxBits,
-                        ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
-                        ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
-                        ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
-                        ctrlLocal.changedAuxBits[6],  ctrlLocal.changedAuxBits[7],
-                        ctrlLocal.changedAuxBits[8],  ctrlLocal.changedAuxBits[9],
-                        ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
-                        ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
-                        ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
-                        ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
-                        ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
-                        ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
-                        ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
-                        ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25],
-                        errorID, errStringFromErrId(errorID));
-                pAxis->drvlocal.old_idxAuxBits = idxAuxBits;
-            }
-          }
-          return status;
+          goto indexerParamWritePrintAuxReturn;
         }
       }
       break;
@@ -701,11 +669,46 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
       counter++;
     }
   }
+  status = asynDisabled;
   asynPrint(pasynUserController_,
             traceMask | ASYN_TRACE_INFO,
             "%scounter=%u\n",
             modNamEMC, counter);
-  return asynDisabled;
+
+ indexerParamWritePrintAuxReturn:
+  if (pAxis && pAxis->drvlocal.iTypCode == 0x5010 &&
+      !pAxis->drvlocal.dirty.initialPollNeeded) {
+    unsigned statusReasonAux = NETTOUINT(readback_5010.statReasAux);
+    int errorID = (int)NETTOUINT(readback_5010.errorID);
+    idxStatusCodeType idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
+    //unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
+    unsigned idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
+    if (idxAuxBits != pAxis->drvlocal.old_idxAuxBits) {
+      changedAuxBits_to_ASCII(pAxis->axisNo_,
+                              ethercatmcNamAux0_,
+                              idxAuxBits, pAxis->drvlocal.old_idxAuxBits);
+      asynPrint(pasynUserController_, traceMask,
+                "%sindexerParamWrite(%d) idxStatusCode=0x%02X auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) errorID=0x%04X \"%s\" \n",
+                modNamEMC, pAxis->axisNo_, idxStatusCode,
+                pAxis->drvlocal.old_idxAuxBits, idxAuxBits,
+                ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
+                ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
+                ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
+                ctrlLocal.changedAuxBits[6],  ctrlLocal.changedAuxBits[7],
+                ctrlLocal.changedAuxBits[8],  ctrlLocal.changedAuxBits[9],
+                ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
+                ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
+                ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
+                ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
+                ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
+                ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
+                ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
+                ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25],
+                errorID, errStringFromErrId(errorID));
+      pAxis->drvlocal.old_idxAuxBits = idxAuxBits;
+    }
+  }
+  return status;
 }
 
 asynStatus
