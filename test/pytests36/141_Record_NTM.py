@@ -40,7 +40,7 @@ def moveVALnewRBVnewValNtmRtryDly(
 ):
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} startpos={startpos:.2f} firstVal={firstVal:.2f} travelDistance={self.travelDistance:.2f}pointOfReturnPos={pointOfReturnPos:.2f} secondVal={secondVal:.2f} ntm={ntm:d} rtry{rtry:d} dly={dly:.2f}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} startpos={startpos:.2f} firstVal={firstVal:.2f} travelDistance={self.travelDistance:.2f} pointOfReturnPos={pointOfReturnPos:.2f} secondVal={secondVal:.2f} ntm={ntm:d} rtry{rtry:d} dly={dly:.2f}"
     )
 
     # Go to start
@@ -78,7 +78,7 @@ def moveVALnewRBVnewValNtmRtryDly(
     maxDelta = velo + 2.0  # around our point
     timeout = self.axisMr.calcTimeOut(pointOfReturnPos + 1.0, velo)
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} maxDelta={maxDelta:.2f} velo={velo:.2f} timeout={timeout:.2f} "
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} maxDelta={maxDelta:.2f} velo={velo:.2f} timeout={timeout:.2f} "
     )
     self.axisMr.waitForValueChanged(tc_no, ".RBV", pointOfReturnPos, maxDelta, timeout)
 
@@ -92,7 +92,7 @@ def moveVALnewRBVnewValNtmRtryDly(
     else:
         timeout += 60.0
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} NewVAL VAL={secondVal:.2f} timeout={timeout:.2f}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} NewVAL VAL={secondVal:.2f} timeout={timeout:.2f}"
     )
     self.axisCom.putDbgStrToLOG("NewVAL " + str(tc_no), wait=True)
     self.axisCom.put(".VAL", secondVal)
@@ -171,9 +171,10 @@ def moveVALnewRBVnewValWrapper(
 
 
 class Test(unittest.TestCase):
+    tc_no = int(filnam) * 10000
     url_string = os.getenv("TESTEDMOTORAXIS")
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} url_string={url_string}"
     )
 
     axisCom = AxisCom(url_string, log_debug=False)
@@ -186,13 +187,13 @@ class Test(unittest.TestCase):
     msta = int(axisCom.get(".MSTA"))
     travelDistance = calcDistanceMax4Seconds(llm, hlm, velo, 4.0)
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm} hlm={hlm} velo={velo} travelDistance={travelDistance}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no}llm={llm} hlm={hlm} velo={velo} travelDistance={travelDistance}"
     )
 
     def test_TC_14100(self):
         tc_no = "14100"
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={self.llm:.2f} hlm={self.hlm:.2f} velo={self.velo:.2f} travelDistance={self.travelDistance:.2f}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no}llm={self.llm:.2f} hlm={self.hlm:.2f} velo={self.velo:.2f} travelDistance={self.travelDistance:.2f}"
         )
         self.axisMr.powerOnHomeAxis(tc_no)
 
