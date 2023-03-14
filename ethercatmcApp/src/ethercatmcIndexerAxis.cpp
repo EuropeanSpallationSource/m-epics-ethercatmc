@@ -1044,7 +1044,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
   }
 
-  if (pC_->ctrlLocal.systemUTCtimeOffset && positionValid && statusValid)  {
+  if (pC_->ctrlLocal.systemUTCtimeOffset)  {
     /* Motor position in "user coordinates" with UTC time from PTP */
     double motorRecOffset = 0.0;
     int motorRecDirection = 1;
@@ -1057,7 +1057,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                               &motorRecOffset)) &&
         (!pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
                                &motorRecDirection)) &&
-        (homed && (ethercatmcPTPallGood == 1))) {
+        (positionValid && statusValid && homed && (ethercatmcPTPallGood == 1))) {
       RBV_TSEstatus = asynSuccess;
     }
     /* direction == 1 means "negative" */
