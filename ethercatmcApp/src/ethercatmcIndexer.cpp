@@ -567,7 +567,9 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                 modNamEMC, axisNo,
                 plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
                 value, counter,
-                paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
+                paramIfCmdToString(cmdSubParamIndexRB),
+                // Print the even the sub-index as HEX, in case the PLC "hides" some info here
+                cmdSubParamIndexRB & (PARAM_IF_SUBIDX_MASK | PARAM_IF_IDX_MASK));
     }
     unsigned paramIfCmd = cmdSubParamIndexRB & PARAM_IF_CMD_MASK;
     switch (paramIfCmd) {

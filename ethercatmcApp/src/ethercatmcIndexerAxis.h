@@ -6,12 +6,13 @@
 /* Parameter interface */
 /* The highest 3 bits are used for the command itself */
 #define PARAM_IF_CMD_MASK                          0xE000
-#define PARAM_IF_IDX_MASK                          0x1FFF
+#define PARAM_IF_IDX_MASK                          0x00FF
+#define PARAM_IF_SUBIDX_MASK                       0x1F00
 /* highes bit is ACK: PLC has done something */
 #define PARAM_IF_ACK_MASK                          0x8000
 
 
-#define PARAM_IF_CMD_INVALID                   0x0000
+#define PARAM_IF_CMD_INVALID                       0x0000
 #define PARAM_IF_CMD_DOREAD                        0x2000
 #define PARAM_IF_CMD_DOWRITE                       0x4000
 #define PARAM_IF_CMD_BUSY                          0x6000
