@@ -283,7 +283,7 @@ class AxisMr:
             inrange = False
         if doPrint:
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual} delta={delta} maxdelta={maxdelta} inrange={inrange}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual!r} delta={delta} maxdelta={maxdelta} inrange={inrange}"
             )
         return inrange
 
@@ -1024,7 +1024,7 @@ class AxisMr:
         self.axisCom.put(".CNEN", cnen)
         while wait_for_power_changed > 0:
             msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_power_changed={wait_for_power_changed:.2f} msta={msta:04x} {self.getMSTAtext(msta)}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_power_changed={wait_for_power_changed:.2f} cnen={cnen} msta={msta:04x} {self.getMSTAtext(msta)}"
             print(debug_text)
             if cnen and (msta & self.MSTA_BIT_AMPON):
                 return
