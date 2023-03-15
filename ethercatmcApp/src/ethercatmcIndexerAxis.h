@@ -33,6 +33,19 @@ typedef enum
     PILSparamPermWrite = 2
   } PILSparamPermType;
 
+/* Must be syncronized with ethercatmcindexer.template
+   Or: Use the doCallbacksEnum() function to update the
+   record from our cpp-code */
+
+typedef enum
+  {
+    PollScalingNo = 0,
+    PollScalingOnce = 1,
+    PollScalingCyclic = 2,
+  } PollScalingType;
+
+
+
 extern "C" {
   int ethercatmcCreateIndexerAxis(const char *ethercatmcName, int axisNo,
                                   int axisFlags, const char *axisOptionsStr);
@@ -103,12 +116,15 @@ private:
     unsigned old_paramCtrl;
     unsigned old_idxAuxBits;
     unsigned int hasProblem :1;
+    unsigned int hasPolledAllEnums :1;
+    int pollScaling;
     uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
     PILSparamPermType PILSparamPerm[256];
     uint16_t enumparam_read_id[256];    /* parameter has enum defines in PILSv3 */
     uint8_t lenInPlcParaFloat[256];     /* 0 : not a float; 4: float; 8 : double */
     uint8_t lenInPlcParaInteger[256];   /* 0 : not an integer; 2: uint16 4: uint_32 */
-    } drvlocal;
+    uint8_t  param_read_ok_once[256];
+  } drvlocal;
 
 #ifndef motorMessageTextString
   void updateMsgTxtFromDriver(const char *value);

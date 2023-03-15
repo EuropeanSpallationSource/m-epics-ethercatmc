@@ -628,7 +628,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   idxStatusCodeType idxStatusCode;
   unsigned idxReasonBits = 0;
   unsigned idxAuxBits = 0;
-  int pollReadBackInBackGround = 1;
   int homed = 0;
 
   /* Don't leave *moving un-initialized, if we return early */
@@ -1070,7 +1069,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 
   if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
     unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
-    asynPrint(pC_->pasynUserController_,
+    drvlocal.param_read_ok_once[paramIndex] = 1;
+      asynPrint(pC_->pasynUserController_,
               ASYN_TRACE_FLOW,
               "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
               modNamEMC, axisNo_,
@@ -1094,9 +1094,50 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   }
 
   /* Read back the parameters one by one */
-  if (pollReadBackInBackGround && drvlocal.paramIfOffset &&
+  if (drvlocal.pollScaling && drvlocal.paramIfOffset &&
       (paramCtrl & PARAM_IF_ACK_MASK)) {
+    /* Increment */
     drvlocal.pollNowIdx++;
+    int counter = 255;
+    uint16_t paramIndex = drvlocal.pollNowParams[drvlocal.pollNowIdx];
+    while (paramIndex && paramIndexIsReadLaterInBackground(paramIndex) && (counter > 0)) {
+      switch (drvlocal.pollScaling) {
+      case PollScalingOnce:
+        {
+          if (drvlocal.param_read_ok_once[paramIndex]) {
+            drvlocal.pollNowIdx++;
+            paramIndex = drvlocal.pollNowParams[drvlocal.pollNowIdx];
+            if (!paramIndex) {
+              /* wrap around */
+              drvlocal.pollNowIdx = 0;
+              paramIndex = drvlocal.pollNowParams[drvlocal.pollNowIdx];
+            }
+          } else {
+            counter = 0;
+          }
+        }
+        break;
+      default:
+      case PollScalingNo:
+      case PollScalingCyclic:
+        /* fall through */
+        counter = 0;
+        break;
+      }
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+                "%spollParam(%d)pollNowIdx=%u paramIndex=%u pollInBG=%d pollScaling=%d param_read_ok_once=%d counter=%d\n",
+                modNamEMC, axisNo_,
+                drvlocal.pollNowIdx,
+                paramIndex, paramIndexIsReadLaterInBackground(paramIndex),
+                drvlocal.pollScaling,
+                drvlocal.param_read_ok_once[paramIndex],
+                counter);
+      counter--;
+    }
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%spollParam(%d)pollNowIdx=%u\n",
+              modNamEMC, axisNo_, drvlocal.pollNowIdx);
+
     if (!drvlocal.pollNowParams[drvlocal.pollNowIdx]) {
       /* The list is 0 terminated */
       drvlocal.pollNowIdx = 0;
@@ -1104,34 +1145,40 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
          In theory, this can be done earlier - but
          the record may not have registered the callback yet
       */
-      unsigned paramIndex;
-      for (paramIndex = 0; paramIndex < (sizeof(drvlocal.PILSparamPerm) /
-                                         sizeof(drvlocal.PILSparamPerm[0]));
-           paramIndex++) {
-        if (drvlocal.enumparam_read_id[paramIndex]) {
-          unsigned enumparam_read_id = drvlocal.enumparam_read_id[paramIndex];
-          if (!status) {
+      if (!drvlocal.hasPolledAllEnums) {
+        unsigned paramIndex;
+        drvlocal.hasPolledAllEnums = 1; /* May be overwritten below */
+        for (paramIndex = 0; paramIndex < (sizeof(drvlocal.PILSparamPerm) /
+                                           sizeof(drvlocal.PILSparamPerm[0]));
+             paramIndex++) {
+          if (drvlocal.enumparam_read_id[paramIndex]) {
+            unsigned enumparam_read_id = drvlocal.enumparam_read_id[paramIndex];
             status = pC_->indexerV3readParameterEnums(this,
                                                       paramIndex,
                                                       enumparam_read_id,
                                                       drvlocal.lenInPlcPara);
-          }
-          if (!status) {
-            status = pC_->indexerParamRead(this,
-                                           drvlocal.paramIfOffset,
-                                           paramIndex,
-                                           &paramfValue);
+            /* We must read the enums before reading the value
+               If reading ths enum fails, do not read the value */
             if (!status) {
-              int initial = 1;
-              pC_->parameterFloatReadBack(axisNo_,
-                                          initial,
-                                          paramIndex,
-                                          paramfValue);
+              status = pC_->indexerParamRead(this,
+                                             drvlocal.paramIfOffset,
+                                             paramIndex,
+                                             &paramfValue);
+              if (!status) {
+                int initial = 1;
+                pC_->parameterFloatReadBack(axisNo_,
+                                            initial,
+                                            paramIndex,
+                                            paramfValue);
+              }
             }
-          }
-          if (!status) {
-            /* Once read, do not read again */
-            drvlocal.enumparam_read_id[paramIndex] = 0;
+            if (status) {
+              /* reading failed, try again later */
+              drvlocal.hasPolledAllEnums = 0;
+            } else {
+              /* Once read succesfully , do not read again */
+              drvlocal.enumparam_read_id[paramIndex] = 0;
+            }
           }
         }
       }
@@ -1367,6 +1414,11 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     default:
       status = setGenericIntegerParam(function, value);
     }
+  } else if (function == pC_->ethercatmcPollScaling_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetIntegerParam(%d PollScaling_)=%d\n",
+              modNamEMC, axisNo_, value);
+    drvlocal.pollScaling = value;
   } else {
     status = setGenericIntegerParam(function, value);
   }

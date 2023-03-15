@@ -375,6 +375,7 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
   unsigned cmd      = PARAM_IF_CMD_DOREAD + paramIndex;
   unsigned counter = 0;
   unsigned lenInPlcPara = 0;
+  int axisNo = pAxis->axisNo_;
   if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
     lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
   } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
@@ -383,8 +384,9 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
   if (!paramIfOffset || paramIndex > 0xFF || !lenInPlcPara ||
       lenInPlcPara > sizeof(paramIf_from_MCU.paramValueRaw)) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-              "%s paramIndex=%u lenInPlcPara=%u paramIfOffset=%u\n",
-              modNamEMC, paramIndex, lenInPlcPara, paramIfOffset);
+              "%sindexerParamRead(%d) paramIndex=%u lenInPlcPara=%u paramIfOffset=%u\n",
+              modNamEMC, axisNo,
+              paramIndex, lenInPlcPara, paramIfOffset);
     return asynDisabled;
   }
   size_t lenInPLCparamIf = sizeof(paramIf_from_MCU.paramCtrl) + lenInPlcPara;
@@ -396,7 +398,6 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
                                             lenInPLCparamIf);
 
     if (status) {
-      int axisNo = pAxis->axisNo_;
       asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
                 "%s:%d %s(%d) paramIfOffset=%u lenInPLCparamIf=%u status=%s (%d)\n",
                 fileName, lineNo, "indexerParamRead", axisNo,
