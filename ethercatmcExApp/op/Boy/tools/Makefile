@@ -12,6 +12,7 @@ GNERATEDOPIS = \
   ../motor-6.opi  \
   ../motor-4x3.opi \
   ../motor-4x4.opi \
+  ../ethercatmcaxisConfig.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
   ../ethercatmcaxisExpert-tc.opi \
   ../ethercatmcaxisExpert-tc-ptp.opi \
@@ -21,11 +22,21 @@ GNERATEDOPIS = \
   ../shutter-1.opi \
   ../IOC.opi \
 
+
+#  ../ethercatmcaxisConfig-ecmc.opi \
+
 #Main target:
 all: checkwhitespace $(GNERATEDOPIS)
 
 clean:
 	rm -f $(GNERATEDOPIS)
+
+
+DEPENDENCIES_FOR_CONFIG_OPI = \
+        ethercatmcaxisConfig.start \
+        ethercatmcaxisConfig.mid \
+        ethercatmcaxisConfig.end
+
 
 # Depencies, when do we need to revuild a .opi file
 DEPENDENCIES_FOR_MOTOR_OPI = Makefile
@@ -134,6 +145,13 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 4 x 4
+
+
+  ../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
+	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
+
+#../ethercatmcaxisConfig-ecmc.opi \
+
 
 # Generate ethercatmcaxisExpert*.opi out of
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
