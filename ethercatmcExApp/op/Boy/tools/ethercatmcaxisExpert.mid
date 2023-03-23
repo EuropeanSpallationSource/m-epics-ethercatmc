@@ -1970,8 +1970,8 @@ $(pv_value)</tooltip>
     <widget_type>Boolean Button</widget_type>
     <width>46</width>
     <wuid>-68918818:158524ceeb4:-670a</wuid>
-    <x>507</x>
-    <y>-2</y>
+    <x>496</x>
+    <y>21</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <actions hook="false" hook_all="false" />

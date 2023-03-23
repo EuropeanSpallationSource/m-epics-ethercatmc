@@ -2055,8 +2055,8 @@ $(pv_value)</tooltip>
     <widget_type>Boolean Button</widget_type>
     <width>46</width>
     <wuid>-68918818:158524ceeb4:-670a</wuid>
-    <x>507</x>
-    <y>-2</y>
+    <x>496</x>
+    <y>37</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <actions hook="false" hook_all="false" />
@@ -4213,8 +4213,8 @@ $(pv_value)</tooltip>
     <widget_type>Boolean Switch</widget_type>
     <width>30</width>
     <wuid>-68918818:158524ceeb4:-668a</wuid>
-    <x>335</x>
-    <y>-42</y>
+    <x>330</x>
+    <y>38</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <actions hook="false" hook_all="false" />
