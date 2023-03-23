@@ -12,8 +12,8 @@ EXT=opi
 
 HAS_ECMC=""
 HAS_PTP=""
-y=16
-export y WIDTH HIGHT
+y0=16
+export y0 WIDTH HIGHT
 
 genMatrix() {
   echo genMatrix "$@"
@@ -50,7 +50,7 @@ genMatrix() {
       iy=$(($iy + 1)) # newline
       ;;
     ptp)
-      y=$(($y + 16))
+      y0=$(($y0 + 16))
       shift
       continue
       ;;
@@ -66,22 +66,22 @@ genMatrix() {
       exit 1
       ;;
     esac
-    echo genMatrix y=$y iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX
-    while test $iy -lt $YCNTMAX; do
-      while test $ix -lt $XCNTMAX; do
-        y=$(($y + $iy * $HIGHT))
-        x=$(($ix * $WIDTH))
-        cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-        echo cmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>$$
-        im=$(($im + 1))
-        ix=$(($ix + 1))
-      done
-      ix=0
-      iy=$(($iy + 1))
+  shift
+  numparameaten=$(($numparameaten + 1))
+  done
+  echo genMatrix y0=$y0 iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX
+  while test $iy -lt $YCNTMAX; do
+    while test $ix -lt $XCNTMAX; do
+      y=$(($y0 + $iy * $HIGHT))
+      x=$(($ix * $WIDTH))
+      cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+      echo xcmd=$cmd "<$OPIMID"
+      eval $cmd <$OPIMID >>$$
+      im=$(($im + 1))
+      ix=$(($ix + 1))
     done
-    shift
-    numparameaten=$(($numparameaten + 1))
+    ix=0
+    iy=$(($iy + 1))
   done
 }
 
