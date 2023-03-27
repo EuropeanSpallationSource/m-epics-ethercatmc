@@ -1557,29 +1557,31 @@ asynStatus ethercatmcController::indexerPoll(void)
           unsigned statusLenInPLC = sizeof(statusReasonAux);
           statusReasonAux = netToUint(pStatusInPlc, statusLenInPLC);
           int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
-          if (functionNamAux0 && functionStatusBits) {
+          if (functionStatusBits) {
             epicsUInt32 oldStatusReasonAux;
             getUIntDigitalParam(axisNo, functionStatusBits,
                                 &oldStatusReasonAux, 0xFFFFFFFF);
-            if ((statusReasonAux ^ oldStatusReasonAux) & maskStatusReasonAux) {
-              changedAuxBits_to_ASCII(axisNo, functionNamAux0,
-                                      statusReasonAux, oldStatusReasonAux);
-              asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
-                        "%spoll(%d) %sOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
-                        modNamEMC, axisNo, paramName, oldStatusReasonAux, statusReasonAux,
-                        ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
-                        ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
-                        ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
-                        ctrlLocal.changedAuxBits[6],  ctrlLocal.changedAuxBits[7],
-                        ctrlLocal.changedAuxBits[8],  ctrlLocal.changedAuxBits[9],
-                        ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
-                        ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
-                        ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
-                        ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
-                        ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
-                        ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
-                        ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
-                        ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
+            if (functionNamAux0) {
+              if ((statusReasonAux ^ oldStatusReasonAux) & maskStatusReasonAux) {
+                changedAuxBits_to_ASCII(axisNo, functionNamAux0,
+                                        statusReasonAux, oldStatusReasonAux);
+                asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
+                          "%spoll(%d) %sOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
+                          modNamEMC, axisNo, paramName, oldStatusReasonAux, statusReasonAux,
+                          ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
+                          ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
+                          ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
+                          ctrlLocal.changedAuxBits[6],  ctrlLocal.changedAuxBits[7],
+                          ctrlLocal.changedAuxBits[8],  ctrlLocal.changedAuxBits[9],
+                          ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
+                          ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
+                          ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
+                          ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
+                          ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
+                          ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
+                          ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
+                          ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
+              }
             }
             setUIntDigitalParam(axisNo, functionStatusBits,
                                 (epicsUInt32)statusReasonAux,
