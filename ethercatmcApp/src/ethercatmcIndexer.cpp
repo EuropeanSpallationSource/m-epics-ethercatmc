@@ -1318,12 +1318,26 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
       break;
     case 0x1A08:
       lenInPLC = 8;
-      /* 1A04 has "current value, followed by extended status word; errorID is ignored */
+      /* 1A08 has "current value, followed by extended status word; errorID is ignored */
       inputOffset = indexOffset;
       statusOffset = indexOffset + lenInPLC;
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
       myAsynParamType = asynParamInt64;
 #endif
+      break;
+    case 0x1B04:
+      lenInPLC = 4;
+      /* 1B04 has "current value, followed by extended status word */
+      inputOffset = indexOffset;
+      statusOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamFloat64;
+      break;
+    case 0x1B08:
+      lenInPLC = 8;
+      /* 1B08 has "current value, followed by extended status word; errorID is ignored */
+      inputOffset = indexOffset;
+      statusOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamFloat64;
       break;
   }
   /* Aux bits */
@@ -1531,9 +1545,9 @@ asynStatus ethercatmcController::indexerPoll(void)
           getParamName(axisNo, functionStatusBits, &paramName);
         }
         asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
-                  "%sindexerPoll(%d) numPilsAsynDevInfo=%u inputOffset=%u\n",
-                  modNamEMC, axisNo,
-                  numPilsAsynDevInfo, inputOffset);
+                  "%sindexerPoll(%d) numPilsAsynDevInfo=%u '%s' inputOffset=%u statusOffset=%u functionStatusBits=%d\n",
+                  modNamEMC, axisNo, numPilsAsynDevInfo, paramName,
+                  inputOffset, statusOffset, functionStatusBits);
         if (statusOffset) {
           /* Add a printout for the changed AUX bits.
              currently the poller for the axis has simiar code */
@@ -1633,6 +1647,10 @@ asynStatus ethercatmcController::indexerPoll(void)
             case 0x1204:
             case 0x1A08:
               newValue = (double)(epicsInt64)netToSint64(pDataInPlc, lenInPLC);
+              break;
+            case 0x1B04:
+            case 0x1B08:
+              newValue = (double)netToDouble(pDataInPlc, lenInPLC);
               break;
             default:
               asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
