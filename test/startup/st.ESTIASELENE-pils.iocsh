@@ -2,14 +2,12 @@ require ethercatmc,USER
 
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=192.168.1.60)")
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=10.102.16.13)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=PSI-ESTIARND:MC-MCU-01:)")
 epicsEnvSet("ECM_NUMAXES",   "18")
-epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
-epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=5.82.112.102.1.1;amsNetIdLocal=192.168.1.105.1.1")
-
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.82.112.102.1.1;amsNetIdLocal=10.102.16.12.1.1")
 
 # No poller yet, see ethercatmcStartPoller at the end of the script
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
