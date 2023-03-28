@@ -27,6 +27,8 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=SpGon1:MC-RotX-01:Mtr)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -38,6 +40,8 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=SpGon1:MC-RotY-01:Mtr)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -49,6 +53,8 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=SpRot1:MC-RotZ-01:Mtr)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -60,6 +66,8 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=CamLft:MC-LinZ-01:Mtr)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 

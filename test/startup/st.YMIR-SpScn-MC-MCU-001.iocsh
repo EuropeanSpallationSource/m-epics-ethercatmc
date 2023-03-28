@@ -56,6 +56,8 @@ epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -74,6 +76,8 @@ epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("PREFIX",        "YMIR-SpScn:MC-Y-01:")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+epicsEnvSet("RAWENCSTEP_ADEL", 1)
+epicsEnvSet("RAWENCSTEP_MDEL", 1)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 # Predefined Positions
@@ -90,6 +94,8 @@ epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("PREFIX",        "YMIR-SpScn:MC-Z-01:")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
+epicsEnvSet("RAWENCSTEP_ADEL", 1)
+epicsEnvSet("RAWENCSTEP_MDEL", 1)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 # Predefined Positions

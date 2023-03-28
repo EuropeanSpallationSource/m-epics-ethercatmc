@@ -30,6 +30,8 @@ epicsEnvSet("DESC",          "motor")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -40,6 +42,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -50,6 +54,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -60,6 +66,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -70,6 +78,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m5)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=5)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -80,6 +90,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=5)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m6)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=6)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
@@ -92,6 +104,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=6)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m7)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=7)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
@@ -103,6 +117,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=7)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m8)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=8)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
@@ -114,6 +130,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=8)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m9)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=9)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
@@ -125,6 +143,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=9)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m10)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=10)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
@@ -136,6 +156,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=10)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m11)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=11)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
@@ -147,6 +169,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=11)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m12)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=12)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
@@ -159,6 +183,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=12)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m13)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=13)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
@@ -170,6 +196,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=13)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m14)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=14)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -180,6 +208,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=14)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m15)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=15)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -190,6 +220,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=15)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m16)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=16)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -200,6 +232,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=16)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m17)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=17)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -210,6 +244,8 @@ epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=17)")
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m18)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=18)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 

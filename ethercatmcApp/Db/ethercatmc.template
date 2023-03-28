@@ -118,8 +118,8 @@ record(longin, "$(PREFIX)$(MOTOR_NAME)-RawEncStep")
     field(DESC, "RawEncStep")
     field(EGU,  "steps")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))RawEncStep")
-    field(ADEL, "$(ADEL=1)")
-    field(MDEL, "$(MDEL=1)")
+    field(ADEL, "$(RAWENCSTEP_ADEL=1)")
+    field(MDEL, "$(RAWENCSTEP_MDEL=1)")
     field(SCAN, "I/O Intr")
 }
 
