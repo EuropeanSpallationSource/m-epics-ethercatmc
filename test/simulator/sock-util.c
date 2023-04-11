@@ -26,6 +26,7 @@
 #include <arpa/inet.h>   /* htons, ntohs .. */
 #include <netdb.h>
 #include <sys/select.h>
+#include <netinet/in.h>
 #endif
 
 #ifdef START_WINSOCK2
