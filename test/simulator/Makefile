@@ -15,7 +15,12 @@ ifeq ($(uname_S),Darwin)
 CC             = gcc
 CFLAGS         += -Wall -Werror
 CFLAGS         += -O0 -g
+endif
 
+ifeq ($(uname_S),FreeBSD)
+CC             = gcc
+CFLAGS         += -Wall -Werror
+CFLAGS         += -O0 -g
 endif
 
 ifeq ($(uname_S),Linux)

@@ -36,6 +36,7 @@
 #include <netdb.h>
 #include <sys/select.h>
 #include <fcntl.h>
+#include <netinet/in.h>
 #endif
 
 #if (!defined _WIN32 && !defined __WIN32__ && !defined __CYGWIN__)
