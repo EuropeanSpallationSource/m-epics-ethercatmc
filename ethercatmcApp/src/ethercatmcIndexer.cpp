@@ -1553,15 +1553,13 @@ asynStatus ethercatmcController::indexerPoll(void)
              currently the poller for the axis has simiar code */
           const static epicsUInt32 maskStatusReasonAux = 0x03FFFFFF;
           void *pStatusInPlc = &ctrlLocal.pIndexerProcessImage[statusOffset];
-          epicsUInt32 statusReasonAux;
-          unsigned statusLenInPLC = sizeof(statusReasonAux);
-          statusReasonAux = netToUint(pStatusInPlc, statusLenInPLC);
-          int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
+          epicsUInt32 statusReasonAux = netToUint(pStatusInPlc, sizeof(statusReasonAux));
           if (functionStatusBits) {
-            epicsUInt32 oldStatusReasonAux;
-            getUIntDigitalParam(axisNo, functionStatusBits,
-                                &oldStatusReasonAux, 0xFFFFFFFF);
+            int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
             if (functionNamAux0) {
+              epicsUInt32 oldStatusReasonAux;
+              getUIntDigitalParam(axisNo, functionStatusBits,
+                                  &oldStatusReasonAux, 0xFFFFFFFF);
               if ((statusReasonAux ^ oldStatusReasonAux) & maskStatusReasonAux) {
                 changedAuxBits_to_ASCII(axisNo, functionNamAux0,
                                         statusReasonAux, oldStatusReasonAux);
