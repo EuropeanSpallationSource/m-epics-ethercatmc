@@ -35,7 +35,7 @@ jobs:
         # Job names also name artifacts, character limitations apply
         include:
 
-          - os: ubuntu-18.04
+          - os: ubuntu-20.04
             cmp: gcc
             configuration: static
             base: "3.15"
