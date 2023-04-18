@@ -179,6 +179,7 @@ ethercatmcController::ethercatmcController(const char *portName,
 
   /* Controller */
   memset(&ctrlLocal, 0, sizeof(ctrlLocal));
+  memset(&defAsynPara, 0, sizeof(defAsynPara));
   ctrlLocal.oldStatus = asynError; //asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
   features_ = 0;
@@ -1140,10 +1141,18 @@ extern "C" {
 
 void ethercatmcController::setAlarmStatusSeverityAllReadbacks(asynStatus status)
 {
-  int function;
-  // TODO
-  for (function = defAsynPara.ethercatmcMcuErr_; function < defAsynPara.ethercatmcCfgEGU_RB_; function++) {
-    setAlarmStatusSeverityAllAxes(function, status);
+  int *pFunction = (int *)&defAsynPara;
+  /*
+    Set the status of all (asyn) functions that are predefined
+    Note that functions may be defined here, but not used.
+    So check for function != 0 before trying to set the status
+  */
+
+  for (size_t i = 0; i < sizeof(defAsynPara) / sizeof(int); i++, pFunction++) {
+    int function = *pFunction;
+    if (function) {
+      setAlarmStatusSeverityAllAxes(function, status);
+    }
   }
 #ifdef motorMessageTextString
   setAlarmStatusSeverityAllAxes(motorMessageText_, status);

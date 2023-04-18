@@ -560,9 +560,16 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     char changedAuxBits[MAX_REASON_AUX_BIT_SHOW][36];
   } ctrlLocal;
 
+  #ifdef CREATE_MOTOR_REC_RESOLUTION
+    int motorRecResolution_;
+    int motorRecDirection_;
+    int motorRecOffset_;
+  #endif
 
   struct {
-    /* First parameter */
+    /* This struct has only integers, the "function" into asyn.
+       No other member are allowed here.
+       See ::setAlarmStatusSeverityAllReadbacks */
     int ethercatmcMcuErr_;            /* Motion Control Unit reports an error */
     int ethercatmcStatusCode_;        /* PILS status code (BUSY/START/IDLE...) */
     int ethercatmcStatusBits_;        /* PILS Bit 25+24 and Aux bits 23..0 */
@@ -600,14 +607,6 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     int ethercatmcRawEncStep_;        /* Raw encoder steps on the terminal, debug only */
     int ethercatmcRawMtrStep_;        /* Raw motor steps on the terminal, debug only */
     int ethercatmcRawMtrVelo_;        /* Raw motor veloclty on the terminal, debug only */
-
-  #ifdef CREATE_MOTOR_REC_RESOLUTION
-    int motorRecResolution_;
-    int motorRecDirection_;
-    int motorRecOffset_;
-  #endif
-
-    /* Add parameters here */
     int ethercatmcErrRst_;            /* Soft reset of an axis */
     int ethercatmcDbgStrToMcu_;       /* Messages to the simulator or MCU ?. To be reviewed */
     int ethercatmcDbgStrToLog_;       /* Message to show up in the IOC log, test and debug only */
@@ -650,9 +649,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     int ethercatmcCfgDLLM_En_;
     int ethercatmcCfgDESC_RB_;
     int ethercatmcCfgEGU_RB_;
-
     int ethercatmcErrId_;
-  /* Last parameter */
   } defAsynPara;
 
 
