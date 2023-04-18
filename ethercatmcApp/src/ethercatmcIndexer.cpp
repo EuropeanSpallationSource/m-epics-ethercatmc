@@ -688,7 +688,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
     unsigned idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
     if (idxAuxBits != pAxis->drvlocal.old_idxAuxBits) {
       changedAuxBits_to_ASCII(pAxis->axisNo_,
-                              ethercatmcNamAux0_,
+                              defAsynPara.ethercatmcNamAux0_,
                               idxAuxBits, pAxis->drvlocal.old_idxAuxBits);
       asynPrint(pasynUserController_, traceMask,
                 "%sindexerParamWrite(%d) idxStatusCode=0x%02X auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) errorID=0x%04X \"%s\" \n",
@@ -737,57 +737,57 @@ int ethercatmcController::paramIndexToFunction(unsigned paramIndex)
     /* CNEN for EPICS */
     return motorStatusGainSupport_;
   case PARAM_IDX_MICROSTEPS_FLOAT:
-    return ethercatmcCfgSREV_RB_;
+    return defAsynPara.ethercatmcCfgSREV_RB_;
   case PARAM_IDX_USR_MIN_FLOAT:
-    return ethercatmcCfgDLLM_RB_;
+    return defAsynPara.ethercatmcCfgDLLM_RB_;
   case PARAM_IDX_ABS_MIN_FLOAT:
-    return ethercatmcCfgPMIN_RB_;
+    return defAsynPara.ethercatmcCfgPMIN_RB_;
   case PARAM_IDX_ABS_MAX_FLOAT:
-   return ethercatmcCfgPMAX_RB_;
+   return defAsynPara.ethercatmcCfgPMAX_RB_;
   case PARAM_IDX_USR_MAX_FLOAT:
-    return ethercatmcCfgDHLM_RB_;
+    return defAsynPara.ethercatmcCfgDHLM_RB_;
   //case PARAM_IDX_WRN_MIN_FLOAT:
   //case PARAM_IDX_WRN_MAX_FLOAT:
   case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
-    return ethercatmcCfgPOSLAG_RB_;
+    return defAsynPara.ethercatmcCfgPOSLAG_RB_;
   case PARAM_IDX_HYTERESIS_FLOAT:
-    return ethercatmcCfgSPDB_RB_;
-    //return ethercatmcCfgRDBD_RB_;
+    return defAsynPara.ethercatmcCfgSPDB_RB_;
+    //return defAsynPara.ethercatmcCfgRDBD_RB_;
   case PARAM_IDX_REFSPEED_FLOAT:
-    return ethercatmcCfgHVEL_RB_;
+    return defAsynPara.ethercatmcCfgHVEL_RB_;
   case PARAM_IDX_SPEED_FLOAT:
-    return ethercatmcVel_RB_;
+    return defAsynPara.ethercatmcVel_RB_;
   case PARAM_IDX_ACCEL_FLOAT:
-    return ethercatmcAcc_RB_;
+    return defAsynPara.ethercatmcAcc_RB_;
   //case PARAM_IDX_IDLE_CURRENT_FLOAT:
   //case PARAM_IDX_MOVE_CURRENT_FLOAT:
   //case PARAM_IDX_MICROSTEPS_UINT:
   //case PARAM_IDX_STEPS_PER_UNIT_FLOAT:
-    return ethercatmcCfgUREV_RB_;
+    return defAsynPara.ethercatmcCfgUREV_RB_;
   case PARAM_IDX_HOME_POSITION_FLOAT:
-    return ethercatmcHomPos_RB_;
+    return defAsynPara.ethercatmcHomPos_RB_;
   //case PARAM_IDX_FUN_REFERENCE:
   //case PARAM_IDX_FUN_SET_POSITION:
   case PARAM_IDX_FUN_MOVE_VELOCITY:
-    return ethercatmcCfgJVEL_RB_;
+    return defAsynPara.ethercatmcCfgJVEL_RB_;
   case PARAM_IDX_USR_MIN_EN_UINT:
-    return ethercatmcCfgDLLM_En_RB_;
+    return defAsynPara.ethercatmcCfgDLLM_En_RB_;
   case PARAM_IDX_USR_MAX_EN_UINT:
-    return ethercatmcCfgDHLM_En_RB_;
+    return defAsynPara.ethercatmcCfgDHLM_En_RB_;
   case PARAM_IDX_HOMPROC_UINT:
-    return ethercatmcHomProc_RB_;
+    return defAsynPara.ethercatmcHomProc_RB_;
   case PARAM_IDX_USR_MIN_EN_FLOAT:
-    return ethercatmcCfgDLLM_En_RB_;
+    return defAsynPara.ethercatmcCfgDLLM_En_RB_;
   case PARAM_IDX_USR_MAX_EN_FLOAT:
-    return ethercatmcCfgDHLM_En_RB_;
+    return defAsynPara.ethercatmcCfgDHLM_En_RB_;
   case PARAM_IDX_HOMPROC_FLOAT:
-    return ethercatmcHomProc_RB_;
+    return defAsynPara.ethercatmcHomProc_RB_;
   case PARAM_IDX_UNITS_PER_REV_FLOAT:
-    return ethercatmcCfgUREV_RB_;
+    return defAsynPara.ethercatmcCfgUREV_RB_;
   case PARAM_IDX_STEPS_PER_REV_FLOAT:
-    return ethercatmcCfgSREV_RB_;
+    return defAsynPara.ethercatmcCfgSREV_RB_;
   case PARAM_IDX_MAX_VELO_FLOAT:
-    return ethercatmcCfgVMAX_RB_;
+    return defAsynPara.ethercatmcCfgVMAX_RB_;
   default:
     return 0;
   }
@@ -802,25 +802,25 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
 
   switch(paramIndex) {
   case PARAM_IDX_MICROSTEPS_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgSREV_RB_, fullsrev * fValue, "srev");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgSREV_RB_, fullsrev * fValue, "srev");
     break;
   case PARAM_IDX_USR_MIN_FLOAT:
     {
-      updateCfgValue(axisNo, ethercatmcCfgDLLM_RB_,   fValue, "dllm");
-      if (initial) updateCfgValue(axisNo, ethercatmcCfgDLLM_,   fValue, "CfgDllm");
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDLLM_RB_,   fValue, "dllm");
+      if (initial) updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDLLM_,   fValue, "CfgDllm");
     }
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_ABS_MIN_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgPMIN_RB_, fValue, "posmin");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMIN_RB_, fValue, "posmin");
     break;
   case PARAM_IDX_ABS_MAX_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgPMAX_RB_, fValue, "posmax");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMAX_RB_, fValue, "posmax");
     break;
   case PARAM_IDX_USR_MAX_FLOAT:
     {
-      updateCfgValue(axisNo, ethercatmcCfgDHLM_RB_, fValue, "dhlm");
-      if (initial) updateCfgValue(axisNo, ethercatmcCfgDHLM_,   fValue, "CfgDhlm");
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDHLM_RB_, fValue, "dhlm");
+      if (initial) updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDHLM_,   fValue, "CfgDhlm");
     }
     udateMotorLimitsRO(axisNo);
     break;
@@ -829,27 +829,27 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
   case PARAM_IDX_WRN_MAX_FLOAT:
     break;
   case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgPOSLAG_RB_, fValue, "poslag");
-    updateCfgValue(axisNo, ethercatmcCfgPOSLAG_En_RB_, fValue > 0.0, "poslag_en");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPOSLAG_RB_, fValue, "poslag");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPOSLAG_En_RB_, fValue > 0.0, "poslag_en");
     break;
   case PARAM_IDX_HYTERESIS_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgSPDB_RB_, fValue, "spdb");
-    updateCfgValue(axisNo, ethercatmcCfgRDBD_RB_, fValue, "rdbd");
-    updateCfgValue(axisNo, ethercatmcCfgRDBD_En_RB_, fValue > 0.0, "rdbd_en");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgSPDB_RB_, fValue, "spdb");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgRDBD_RB_, fValue, "rdbd");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgRDBD_En_RB_, fValue > 0.0, "rdbd_en");
     break;
   case PARAM_IDX_REFSPEED_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgHVEL_RB_, fValue, "hvel");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgHVEL_RB_, fValue, "hvel");
     break;
   case PARAM_IDX_SPEED_FLOAT:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgVELO_RB_, fValue, "veloCFG");
-    updateCfgValue(axisNo, ethercatmcVel_RB_, fValue, "veloRB");
+    if (initial) updateCfgValue(axisNo, defAsynPara.ethercatmcCfgVELO_RB_, fValue, "veloCFG");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcVel_RB_, fValue, "veloRB");
 #ifdef motorDefVelocityROString
     pAxis->setDoubleParam(motorDefVelocityRO_, fValue);
 #endif
     break;
   case PARAM_IDX_ACCEL_FLOAT:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgACCS_RB_, fValue, "accsRB");
-    updateCfgValue(axisNo, ethercatmcAcc_RB_, fValue, "accsRB");
+    if (initial) updateCfgValue(axisNo, defAsynPara.ethercatmcCfgACCS_RB_, fValue, "accsRB");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcAcc_RB_, fValue, "accsRB");
     break;
   case PARAM_IDX_IDLE_CURRENT_FLOAT:
     break;
@@ -860,53 +860,53 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
   case PARAM_IDX_STEPS_PER_UNIT_FLOAT:
     {
       double urev = fabs(fullsrev / fValue);
-      updateCfgValue(axisNo, ethercatmcCfgUREV_RB_, urev, "urev");
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgUREV_RB_, urev, "urev");
     }
     break;
   case PARAM_IDX_HOME_POSITION_FLOAT:
-    updateCfgValue(axisNo, ethercatmcHomPos_RB_, fValue, "homPosRB");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcHomPos_RB_, fValue, "homPosRB");
     break;
   case PARAM_IDX_FUN_MOVE_VELOCITY:
-    if (initial) updateCfgValue(axisNo, ethercatmcCfgJVEL_RB_, fabs(fValue), "jvel");
+    if (initial) updateCfgValue(axisNo, defAsynPara.ethercatmcCfgJVEL_RB_, fabs(fValue), "jvel");
     break;
   case PARAM_IDX_USR_MIN_EN_UINT:
-    updateCfgValue(axisNo, ethercatmcCfgDLLM_En_RB_, (int)fValue, "dllm_en");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDLLM_En_RB_, (int)fValue, "dllm_en");
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_USR_MAX_EN_UINT:
-    updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, (int)fValue, "dhlm_en");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDHLM_En_RB_, (int)fValue, "dhlm_en");
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_HOMPROC_UINT:
-    updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
     break;
   case PARAM_IDX_USR_MIN_EN_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgDLLM_En_RB_, (int)fValue, "dllm_en");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDLLM_En_RB_, (int)fValue, "dllm_en");
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_USR_MAX_EN_FLOAT:
-    updateCfgValue(axisNo, ethercatmcCfgDHLM_En_RB_, (int)fValue, "dhlm_en");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDHLM_En_RB_, (int)fValue, "dhlm_en");
     udateMotorLimitsRO(axisNo);
     break;
   case PARAM_IDX_HOMPROC_FLOAT:
-    updateCfgValue(axisNo, ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcHomProc_RB_, (int)fValue, "homprocRB");
     break;
   case PARAM_IDX_UNITS_PER_REV_FLOAT:
     {
       if (fValue > 0.0) {
         double urev = fabs(fValue);
-        updateCfgValue(axisNo, ethercatmcCfgUREV_RB_, urev, "urev");
+        updateCfgValue(axisNo, defAsynPara.ethercatmcCfgUREV_RB_, urev, "urev");
       }
     }
     break;
   case PARAM_IDX_STEPS_PER_REV_FLOAT:
     if (fValue > 0.0) {
-      updateCfgValue(axisNo, ethercatmcCfgSREV_RB_, fValue, "srev");
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgSREV_RB_, fValue, "srev");
     }
     break;
   case PARAM_IDX_MAX_VELO_FLOAT:
     if (fValue > 0.0) {
-      updateCfgValue(axisNo, ethercatmcCfgVMAX_RB_, fValue, "vmax");
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgVMAX_RB_, fValue, "vmax");
     }
     break;
   }
@@ -955,13 +955,13 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
 #ifdef  motorNotHomedProblemString
         pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-        updateCfgValue(axisNo, ethercatmcHomeVis_, 1, "homeVis");
+        updateCfgValue(axisNo, defAsynPara.ethercatmcHomeVis_, 1, "homeVis");
         break;
       case PARAM_IDX_FUN_SET_POSITION:
 #ifdef  motorNotHomedProblemString
         pAxis->setIntegerParam(motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-        updateCfgValue(axisNo, ethercatmcFoffVis_, 1, "foffVis");
+        updateCfgValue(axisNo, defAsynPara.ethercatmcFoffVis_, 1, "foffVis");
         break;
       }
       if (paramIndexIsParameterToPoll(paramIndex) ||
@@ -1204,7 +1204,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
     pPilsAsynDevInfo->isSystemUTCtime = 1;
     ctrlLocal.systemUTCtimeOffset = inputOffset;
     // We will calculate the PV in poll()
-    setAlarmStatusSeverityWrapper(axisNo, ethercatmcPTPdiffTimeIOC_MCU_,
+    setAlarmStatusSeverityWrapper(axisNo, defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_,
                                   asynSuccess);
   }
   setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
@@ -1731,7 +1731,7 @@ asynStatus ethercatmcController::indexerPoll(void)
                     timeMCU.secPastEpoch, timeMCU.nsec);
           setTimeStamp(&timeMCU);
           ctrlLocal.callBackNeeded |= 1 << axisNo;
-          int function = ethercatmcPTPdiffTimeIOC_MCU_;
+          int function = defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_;
           int rtn = epicsTimeGetCurrent(&timeIOC);
           if (!rtn) {
             double time_IOC_ms = (((double)timeIOC.secPastEpoch) * 1000.0) + (((double)timeIOC.nsec) / 1000000.0);
@@ -1765,8 +1765,8 @@ void ethercatmcController::indexerDisconnected(void)
   }
   for (int axisNo=0; axisNo<numAxes_; axisNo++) {
     setIntegerParam(axisNo, motorStatusGainSupport_, 0);
-    for (int function = ethercatmcNamAux0_;
-         function < ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN;
+    for (int function = defAsynPara.ethercatmcNamAux0_;
+         function < defAsynPara.ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN;
          function++) {
       setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
     }

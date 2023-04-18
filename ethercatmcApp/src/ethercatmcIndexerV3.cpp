@@ -322,13 +322,13 @@ ethercatmcController::newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
     char unitCodeTxt[40];
     unitCodeToText(unitCodeTxt, sizeof(unitCodeTxt), unitCode, "?", "?");
 
-    setStringParam(axisNo,  ethercatmcCfgEGU_RB_, unitCodeTxt);
-    setParamMeta(axisNo, ethercatmcCfgPMAX_RB_, "EGU", unitCodeTxt);
-    setParamMeta(axisNo, ethercatmcCfgPMIN_RB_, "EGU", unitCodeTxt);
+    setStringParam(axisNo,  defAsynPara.ethercatmcCfgEGU_RB_, unitCodeTxt);
+    setParamMeta(axisNo, defAsynPara.ethercatmcCfgPMAX_RB_, "EGU", unitCodeTxt);
+    setParamMeta(axisNo, defAsynPara.ethercatmcCfgPMIN_RB_, "EGU", unitCodeTxt);
 
     /* Limits */
-    updateCfgValue(axisNo, ethercatmcCfgPMAX_RB_, fAbsMax, "CfgPMAX");
-    updateCfgValue(axisNo, ethercatmcCfgPMIN_RB_, fAbsMin, "CfgPMIN");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMAX_RB_, fAbsMax, "CfgPMAX");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMIN_RB_, fAbsMin, "CfgPMIN");
 #ifdef motorHighLimitROString
     udateMotorLimitsRO(axisNo,
                        (fAbsMin > fABSMIN && fAbsMax < fABSMAX),
@@ -465,7 +465,7 @@ ethercatmcController::indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
                     PILSenumsForAsyn.enumValues,
                     PILSenumsForAsyn.enumSeverities,
                     auxBitIdx,
-                    ethercatmcHomProc_RB_,  pAxis->axisNo_);
+                    defAsynPara.ethercatmcHomProc_RB_,  pAxis->axisNo_);
 #endif
   }
   return status;
@@ -651,12 +651,12 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
           }
             /* Set EGU. asyn that supports setParamMeta() is needed to make this work */
           if (parameterIndex == PARAM_IDX_HYTERESIS_FLOAT) {
-            setParamMeta(pAxis->axisNo_, ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
-            setParamMeta(pAxis->axisNo_, ethercatmcCfgRDBD_RB_, "EGU", unitCodeTxt);
+            setParamMeta(pAxis->axisNo_, defAsynPara.ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
+            setParamMeta(pAxis->axisNo_, defAsynPara.ethercatmcCfgRDBD_RB_, "EGU", unitCodeTxt);
           } else if (unitCodeTxt[0]) {
             int function = paramIndexToFunction(parameterIndex);
             if (function) {
-              setParamMeta(pAxis->axisNo_, ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
+              setParamMeta(pAxis->axisNo_, defAsynPara.ethercatmcCfgSPDB_RB_, "EGU", unitCodeTxt);
             }
           }
         }
@@ -709,8 +709,8 @@ ethercatmcController::indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
                   prev_descriptor_id,
                   bit_number,
                   flag_name);
-        int function = ethercatmcNamAux0_ + bit_number;
-        if (function <= ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN) {
+        int function = defAsynPara.ethercatmcNamAux0_ + bit_number;
+        if (function <= defAsynPara.ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN) {
           pAxis->setStringParam(function, flag_name);
           setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
         }
@@ -782,7 +782,7 @@ ethercatmcController::indexerV3addDevice(unsigned devNum,
         }
         /* Now we have an axis */
         pAxis->setIndexerDevNumOffsetTypeCode(devNum, device_offset, type_code);
-        setStringParam(axisNo,  ethercatmcCfgDESC_RB_, device_name);
+        setStringParam(axisNo,  defAsynPara.ethercatmcCfgDESC_RB_, device_name);
         status = newIndexerAxisV3(pAxis,
                                   target_param_descriptor_id,
                                   auxbits_bitfield_flag_descriptor_id,

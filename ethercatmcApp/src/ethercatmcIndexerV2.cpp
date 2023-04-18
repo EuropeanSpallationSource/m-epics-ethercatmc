@@ -335,7 +335,7 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
           pAxis = new ethercatmcIndexerAxis(this, axisNo, 0, NULL);
         }
         /* Now we have an axis */
-        int functionNamAux0 = ethercatmcNamAux0_; /* Default for an Axis */
+        int functionNamAux0 = defAsynPara.ethercatmcNamAux0_; /* Default for an Axis */
         status = newIndexerAxisAuxBitsV2(pAxis,
                                          pAxis->axisNo_,
                                          devNum,
@@ -351,11 +351,11 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
         if (status) goto endPollIndexer;
 
         pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffsBytes, iTypCode);
-        setStringParam(axisNo,  ethercatmcCfgDESC_RB_, descVersAuthors.desc);
+        setStringParam(axisNo,  defAsynPara.ethercatmcCfgDESC_RB_, descVersAuthors.desc);
         snprintf(unitCodeTxt, sizeof(unitCodeTxt), "%s%s",
                  plcUnitPrefixTxtV2(( (int8_t)((iUnit & 0xFF00)>>8))),
                  plcUnitTxtFromUnitCodeV2(iUnit & 0xFF));
-        setStringParam(axisNo,  ethercatmcCfgEGU_RB_, unitCodeTxt);
+        setStringParam(axisNo,  defAsynPara.ethercatmcCfgEGU_RB_, unitCodeTxt);
       }
       break;
     case 0x0518:
@@ -453,8 +453,8 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
   }
   if (pAxis) {
     /* Limits */
-    updateCfgValue(axisNo, ethercatmcCfgPMAX_RB_, fAbsMax, "CfgPMAX");
-    updateCfgValue(axisNo, ethercatmcCfgPMIN_RB_, fAbsMin, "CfgPMIN");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMAX_RB_, fAbsMax, "CfgPMAX");
+    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMIN_RB_, fAbsMin, "CfgPMIN");
 #ifdef motorHighLimitROString
     udateMotorLimitsRO(axisNo,
                        (fAbsMin > fABSMIN && fAbsMax < fABSMAX),

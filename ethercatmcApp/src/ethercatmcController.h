@@ -561,97 +561,99 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   } ctrlLocal;
 
 
-  /* First parameter */
-  int ethercatmcMcuErr_;            /* Motion Control Unit reports an error */
-  int ethercatmcStatusCode_;        /* PILS status code (BUSY/START/IDLE...) */
-  int ethercatmcStatusBits_;        /* PILS Bit 25+24 and Aux bits 23..0 */
-  int ethercatmcAuxBits07_;
-  int ethercatmcNamAux0_;           /* Name of the AUX bits */
-  int ethercatmcNamAux1_;
-  int ethercatmcNamAux2_;
-  int ethercatmcNamAux3_;
-  int ethercatmcNamAux4_;
-  int ethercatmcNamAux5_;
-  int ethercatmcNamAux6_;
-  int ethercatmcNamAux7_;
-  int ethercatmcNamAux8_;
-  int ethercatmcNamAux9_;
-  int ethercatmcNamAux10_;
-  int ethercatmcNamAux11_;
-  int ethercatmcNamAux12_;
-  int ethercatmcNamAux13_;
-  int ethercatmcNamAux14_;
-  int ethercatmcNamAux15_;
-  int ethercatmcNamAux16_;
-  int ethercatmcNamAux17_;
-  int ethercatmcNamAux18_;
-  int ethercatmcNamAux19_;
-  int ethercatmcNamAux20_;
-  int ethercatmcNamAux21_;
-  int ethercatmcNamAux22_;
-  int ethercatmcNamAux23_;
-  int ethercatmcNamBit24_;
-  int ethercatmcNamBit25_;
-  int ethercatmcFoffVis_;           /* FOFF visible in GUI: motor can be calibrated with setPosition() */
-  int ethercatmcHomeVis_;           /* HOMF/HOMR visible in GUI (motor can be calibrated with a homing sequence */
-  int ethercatmcHomProc_RB_;        /* Homing procedure (even called homing sequence) from MCU */
-  int ethercatmcHomPos_RB_;         /* Position of home sensor/switch, debug only */
-  int ethercatmcRawEncStep_;        /* Raw encoder steps on the terminal, debug only */
-  int ethercatmcRawMtrStep_;        /* Raw motor steps on the terminal, debug only */
-  int ethercatmcRawMtrVelo_;        /* Raw motor veloclty on the terminal, debug only */
+  struct {
+    /* First parameter */
+    int ethercatmcMcuErr_;            /* Motion Control Unit reports an error */
+    int ethercatmcStatusCode_;        /* PILS status code (BUSY/START/IDLE...) */
+    int ethercatmcStatusBits_;        /* PILS Bit 25+24 and Aux bits 23..0 */
+    int ethercatmcAuxBits07_;
+    int ethercatmcNamAux0_;           /* Name of the AUX bits */
+    int ethercatmcNamAux1_;
+    int ethercatmcNamAux2_;
+    int ethercatmcNamAux3_;
+    int ethercatmcNamAux4_;
+    int ethercatmcNamAux5_;
+    int ethercatmcNamAux6_;
+    int ethercatmcNamAux7_;
+    int ethercatmcNamAux8_;
+    int ethercatmcNamAux9_;
+    int ethercatmcNamAux10_;
+    int ethercatmcNamAux11_;
+    int ethercatmcNamAux12_;
+    int ethercatmcNamAux13_;
+    int ethercatmcNamAux14_;
+    int ethercatmcNamAux15_;
+    int ethercatmcNamAux16_;
+    int ethercatmcNamAux17_;
+    int ethercatmcNamAux18_;
+    int ethercatmcNamAux19_;
+    int ethercatmcNamAux20_;
+    int ethercatmcNamAux21_;
+    int ethercatmcNamAux22_;
+    int ethercatmcNamAux23_;
+    int ethercatmcNamBit24_;
+    int ethercatmcNamBit25_;
+    int ethercatmcFoffVis_;           /* FOFF visible in GUI: motor can be calibrated with setPosition() */
+    int ethercatmcHomeVis_;           /* HOMF/HOMR visible in GUI (motor can be calibrated with a homing sequence */
+    int ethercatmcHomProc_RB_;        /* Homing procedure (even called homing sequence) from MCU */
+    int ethercatmcHomPos_RB_;         /* Position of home sensor/switch, debug only */
+    int ethercatmcRawEncStep_;        /* Raw encoder steps on the terminal, debug only */
+    int ethercatmcRawMtrStep_;        /* Raw motor steps on the terminal, debug only */
+    int ethercatmcRawMtrVelo_;        /* Raw motor veloclty on the terminal, debug only */
 
-#ifdef CREATE_MOTOR_REC_RESOLUTION
-  int motorRecResolution_;
-  int motorRecDirection_;
-  int motorRecOffset_;
-#endif
+  #ifdef CREATE_MOTOR_REC_RESOLUTION
+    int motorRecResolution_;
+    int motorRecDirection_;
+    int motorRecOffset_;
+  #endif
 
-  /* Add parameters here */
-  int ethercatmcErrRst_;            /* Soft reset of an axis */
-  int ethercatmcDbgStrToMcu_;       /* Messages to the simulator or MCU ?. To be reviewed */
-  int ethercatmcDbgStrToLog_;       /* Message to show up in the IOC log, test and debug only */
-  int ethercatmcVelAct_;            /* Actual velocity. Measured in the MCU (typically with Jitter */
-  int ethercatmcVel_RB_;            /* Velocity used in MCU */
-  int ethercatmcAcc_RB_;            /* Acceleration used in MCU */
-  int ethercatmcPTPdiffTimeIOC_MCU_;
-  int ethercatmcPTPallGood_;
-  int ethercatmcRBV_TSE_;           /* motor position (RBV in motorRecord) MCU time stamped */
-  int pilsLonginActual_;
-  int pilsLonginTarget_;
-  int pilsLongoutRecord_;
-  int pilsBoMinMax_;                /* bo record: Binary Out, driving to minimum/maximum */
-  int pilsBiAtMax_;                 /* bi record: Binary In, is at the maximum (e.g. shutter) */
-  int pilsBiAtMin_;                 /* bi record: Binary In, is at the minimum (e.g. shutter) */
-  int ethercatmcPollScaling_;       /* When to poll the scaling */
-  int ethercatmcCfgVELO_RB_;        /* configuration values from the MCU */
-  int ethercatmcCfgVMAX_RB_;
-  int ethercatmcCfgJVEL_RB_;
-  int ethercatmcCfgHVEL_RB_;
-  int ethercatmcCfgACCS_RB_;
-  int ethercatmcCfgSREV_RB_;
-  int ethercatmcCfgUREV_RB_;
-  int ethercatmcCfgPMIN_RB_;        /* "PILS Min", AKA AbsMin */
-  int ethercatmcCfgPMAX_RB_;        /* "PILS Max", AKA AbsMax */
-  int ethercatmcCfgSPDB_RB_;
-  int ethercatmcCfgRDBD_RB_;
-  int ethercatmcCfgRDBD_Tim_RB_;
-  int ethercatmcCfgRDBD_En_RB_;
-  int ethercatmcCfgPOSLAG_RB_;
-  int ethercatmcCfgPOSLAG_Tim_RB_;
-  int ethercatmcCfgPOSLAG_En_RB_;
-  int ethercatmcCfgDHLM_RB_;
-  int ethercatmcCfgDLLM_RB_;
-  int ethercatmcCfgDHLM_En_RB_;
-  int ethercatmcCfgDLLM_En_RB_;
-  int ethercatmcCfgDHLM_;
-  int ethercatmcCfgDLLM_;
-  int ethercatmcCfgDHLM_En_;
-  int ethercatmcCfgDLLM_En_;
-  int ethercatmcCfgDESC_RB_;
-  int ethercatmcCfgEGU_RB_;
+    /* Add parameters here */
+    int ethercatmcErrRst_;            /* Soft reset of an axis */
+    int ethercatmcDbgStrToMcu_;       /* Messages to the simulator or MCU ?. To be reviewed */
+    int ethercatmcDbgStrToLog_;       /* Message to show up in the IOC log, test and debug only */
+    int ethercatmcVelAct_;            /* Actual velocity. Measured in the MCU (typically with Jitter */
+    int ethercatmcVel_RB_;            /* Velocity used in MCU */
+    int ethercatmcAcc_RB_;            /* Acceleration used in MCU */
+    int ethercatmcPTPdiffTimeIOC_MCU_;
+    int ethercatmcPTPallGood_;
+    int ethercatmcRBV_TSE_;           /* motor position (RBV in motorRecord) MCU time stamped */
+    int pilsLonginActual_;
+    int pilsLonginTarget_;
+    int pilsLongoutRecord_;
+    int pilsBoMinMax_;                /* bo record: Binary Out, driving to minimum/maximum */
+    int pilsBiAtMax_;                 /* bi record: Binary In, is at the maximum (e.g. shutter) */
+    int pilsBiAtMin_;                 /* bi record: Binary In, is at the minimum (e.g. shutter) */
+    int ethercatmcPollScaling_;       /* When to poll the scaling */
+    int ethercatmcCfgVELO_RB_;        /* configuration values from the MCU */
+    int ethercatmcCfgVMAX_RB_;
+    int ethercatmcCfgJVEL_RB_;
+    int ethercatmcCfgHVEL_RB_;
+    int ethercatmcCfgACCS_RB_;
+    int ethercatmcCfgSREV_RB_;
+    int ethercatmcCfgUREV_RB_;
+    int ethercatmcCfgPMIN_RB_;        /* "PILS Min", AKA AbsMin */
+    int ethercatmcCfgPMAX_RB_;        /* "PILS Max", AKA AbsMax */
+    int ethercatmcCfgSPDB_RB_;
+    int ethercatmcCfgRDBD_RB_;
+    int ethercatmcCfgRDBD_Tim_RB_;
+    int ethercatmcCfgRDBD_En_RB_;
+    int ethercatmcCfgPOSLAG_RB_;
+    int ethercatmcCfgPOSLAG_Tim_RB_;
+    int ethercatmcCfgPOSLAG_En_RB_;
+    int ethercatmcCfgDHLM_RB_;
+    int ethercatmcCfgDLLM_RB_;
+    int ethercatmcCfgDHLM_En_RB_;
+    int ethercatmcCfgDLLM_En_RB_;
+    int ethercatmcCfgDHLM_;
+    int ethercatmcCfgDLLM_;
+    int ethercatmcCfgDHLM_En_;
+    int ethercatmcCfgDLLM_En_;
+    int ethercatmcCfgDESC_RB_;
+    int ethercatmcCfgEGU_RB_;
 
-  int ethercatmcErrId_;
+    int ethercatmcErrId_;
   /* Last parameter */
+  } defAsynPara;
 
 
 #define EMC_ENTER_ADS_CHECK_LOCK(LINENO) do {                           \

@@ -183,91 +183,91 @@ ethercatmcController::ethercatmcController(const char *portName,
   ctrlLocal.cntADSstatus = 0;
   features_ = 0;
   /* Outputs */
-  createParam(ethercatmcDbgStrToMcuString,   asynParamOctet,       &ethercatmcDbgStrToMcu_);
-  createParam(ethercatmcDbgStrToLogString,   asynParamOctet,       &ethercatmcDbgStrToLog_);
-  createParam(pilsLongoutRecordString,       asynParamInt32,       &pilsLongoutRecord_);
-  createParam(pilsBoMinMaxString,            asynParamInt32,       &pilsBoMinMax_);
-  createParam(ethercatmcErrRstString,        asynParamInt32,       &ethercatmcErrRst_);
+  createParam(ethercatmcDbgStrToMcuString,   asynParamOctet,       &defAsynPara.ethercatmcDbgStrToMcu_);
+  createParam(ethercatmcDbgStrToLogString,   asynParamOctet,       &defAsynPara.ethercatmcDbgStrToLog_);
+  createParam(pilsLongoutRecordString,       asynParamInt32,       &defAsynPara.pilsLongoutRecord_);
+  createParam(pilsBoMinMaxString,            asynParamInt32,       &defAsynPara.pilsBoMinMax_);
+  createParam(ethercatmcErrRstString,        asynParamInt32,       &defAsynPara.ethercatmcErrRst_);
 
   /* inputs: do not change too much without updating setAlarmStatusSeverityAllReadbacks() */
-  createParam(ethercatmcMcuErrString,        asynParamInt32,       &ethercatmcMcuErr_);
-  createParam(ethercatmcErrIdString,         asynParamInt32,       &ethercatmcErrId_);
+  createParam(ethercatmcMcuErrString,        asynParamInt32,       &defAsynPara.ethercatmcMcuErr_);
+  createParam(ethercatmcErrIdString,         asynParamInt32,       &defAsynPara.ethercatmcErrId_);
 
-  createParam(ethercatmcRawEncStepString,    asynParamInt32,       &ethercatmcRawEncStep_);
-  createParam(ethercatmcRawMtrStepString,    asynParamInt32,       &ethercatmcRawMtrStep_);
-  createParam(ethercatmcRawMtrVeloString,    asynParamInt32,       &ethercatmcRawMtrVelo_);
-  createParam(ethercatmcStatusCodeString,    asynParamInt32,       &ethercatmcStatusCode_);
-  createParam(ethercatmcStatusBitsString,    asynParamUInt32Digital, &ethercatmcStatusBits_);
-  createParam(ethercatmcFoffVisString,       asynParamInt32,       &ethercatmcFoffVis_);
-  createParam(ethercatmcHomeVisString,       asynParamInt32,       &ethercatmcHomeVis_);
-  createParam(ethercatmcHomProc_RBString,    asynParamInt32,       &ethercatmcHomProc_RB_);
-  createParam(ethercatmcHomPos_RBString,     asynParamFloat64,     &ethercatmcHomPos_RB_);
-  createParam(ethercatmcVelActString,        asynParamFloat64,     &ethercatmcVelAct_);
-  createParam(ethercatmcVel_RBString,        asynParamFloat64,     &ethercatmcVel_RB_);
-  createParam(ethercatmcAcc_RBString,        asynParamFloat64,     &ethercatmcAcc_RB_);
-  createParam(ethercatmcPTPdiffTimeIOC_MCUString, asynParamFloat64, &ethercatmcPTPdiffTimeIOC_MCU_);
-  createParam(ethercatmcPTPallGoodString,    asynParamInt32,       &ethercatmcPTPallGood_);
-  createParam(ethercatmcRBV_TSEString,       asynParamFloat64,     &ethercatmcRBV_TSE_);
-  createParam(pilsLonginActualString,        asynParamInt32,       &pilsLonginActual_);
-  createParam(pilsLonginTargetString,        asynParamInt32,       &pilsLonginTarget_);
-  createParam(pilsBiAtMaxString,             asynParamInt32,       &pilsBiAtMax_);
-  createParam(pilsBiAtMinString,             asynParamInt32,       &pilsBiAtMin_);
-  createParam(ethercatmcAuxBits07_String,    asynParamInt32,       &ethercatmcAuxBits07_);
-  createParam(ethercatmcNamAux0_String,      asynParamOctet,       &ethercatmcNamAux0_);
-  createParam(ethercatmcNamAux1_String,      asynParamOctet,       &ethercatmcNamAux1_);
-  createParam(ethercatmcNamAux2_String,      asynParamOctet,       &ethercatmcNamAux2_);
-  createParam(ethercatmcNamAux3_String,      asynParamOctet,       &ethercatmcNamAux3_);
-  createParam(ethercatmcNamAux4_String,      asynParamOctet,       &ethercatmcNamAux4_);
-  createParam(ethercatmcNamAux5_String,      asynParamOctet,       &ethercatmcNamAux5_);
-  createParam(ethercatmcNamAux6_String,      asynParamOctet,       &ethercatmcNamAux6_);
-  createParam(ethercatmcNamAux7_String,      asynParamOctet,       &ethercatmcNamAux7_);
-  createParam(ethercatmcNamAux8_String,      asynParamOctet,       &ethercatmcNamAux8_);
-  createParam(ethercatmcNamAux9_String,      asynParamOctet,       &ethercatmcNamAux9_);
-  createParam(ethercatmcNamAux10_String,     asynParamOctet,       &ethercatmcNamAux10_);
-  createParam(ethercatmcNamAux11_String,     asynParamOctet,       &ethercatmcNamAux11_);
-  createParam(ethercatmcNamAux12_String,     asynParamOctet,       &ethercatmcNamAux12_);
-  createParam(ethercatmcNamAux13_String,     asynParamOctet,       &ethercatmcNamAux13_);
-  createParam(ethercatmcNamAux14_String,     asynParamOctet,       &ethercatmcNamAux14_);
-  createParam(ethercatmcNamAux15_String,     asynParamOctet,       &ethercatmcNamAux15_);
-  createParam(ethercatmcNamAux16_String,     asynParamOctet,       &ethercatmcNamAux16_);
-  createParam(ethercatmcNamAux17_String,     asynParamOctet,       &ethercatmcNamAux17_);
-  createParam(ethercatmcNamAux18_String,     asynParamOctet,       &ethercatmcNamAux18_);
-  createParam(ethercatmcNamAux19_String,     asynParamOctet,       &ethercatmcNamAux19_);
-  createParam(ethercatmcNamAux20_String,     asynParamOctet,       &ethercatmcNamAux20_);
-  createParam(ethercatmcNamAux21_String,     asynParamOctet,       &ethercatmcNamAux21_);
-  createParam(ethercatmcNamAux22_String,     asynParamOctet,       &ethercatmcNamAux22_);
-  createParam(ethercatmcNamAux23_String,     asynParamOctet,       &ethercatmcNamAux23_);
-  createParam(ethercatmcNamBit24_String,     asynParamOctet,       &ethercatmcNamBit24_);
-  createParam(ethercatmcNamBit25_String,     asynParamOctet,       &ethercatmcNamBit25_);
-  createParam(ethercatmcPollScalingString,   asynParamInt32,       &ethercatmcPollScaling_);
-  createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &ethercatmcCfgVELO_RB_);
-  createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &ethercatmcCfgVMAX_RB_);
-  createParam(ethercatmcCfgJVEL_RBString,    asynParamFloat64,     &ethercatmcCfgJVEL_RB_);
-  createParam(ethercatmcCfgHVEL_RBString,    asynParamFloat64,     &ethercatmcCfgHVEL_RB_);
-  createParam(ethercatmcCfgACCS_RBString,    asynParamFloat64,     &ethercatmcCfgACCS_RB_);
-  createParam(ethercatmcCfgDHLMRBString,    asynParamFloat64,     &ethercatmcCfgDHLM_RB_);
-  createParam(ethercatmcCfgDLLMRBString,    asynParamFloat64,     &ethercatmcCfgDLLM_RB_);
-  createParam(ethercatmcCfgDHLM_EnRBString, asynParamInt32,       &ethercatmcCfgDHLM_En_RB_);
-  createParam(ethercatmcCfgDLLM_EnRBString, asynParamInt32,       &ethercatmcCfgDLLM_En_RB_);
-  createParam(ethercatmcCfgDHLMString,       asynParamFloat64,     &ethercatmcCfgDHLM_);
-  createParam(ethercatmcCfgDLLMString,       asynParamFloat64,     &ethercatmcCfgDLLM_);
-  createParam(ethercatmcCfgDHLM_EnString,    asynParamInt32,       &ethercatmcCfgDHLM_En_);
-  createParam(ethercatmcCfgDLLM_EnString,    asynParamInt32,       &ethercatmcCfgDLLM_En_);
+  createParam(ethercatmcRawEncStepString,    asynParamInt32,       &defAsynPara.ethercatmcRawEncStep_);
+  createParam(ethercatmcRawMtrStepString,    asynParamInt32,       &defAsynPara.ethercatmcRawMtrStep_);
+  createParam(ethercatmcRawMtrVeloString,    asynParamInt32,       &defAsynPara.ethercatmcRawMtrVelo_);
+  createParam(ethercatmcStatusCodeString,    asynParamInt32,       &defAsynPara.ethercatmcStatusCode_);
+  createParam(ethercatmcStatusBitsString,    asynParamUInt32Digital, &defAsynPara.ethercatmcStatusBits_);
+  createParam(ethercatmcFoffVisString,       asynParamInt32,       &defAsynPara.ethercatmcFoffVis_);
+  createParam(ethercatmcHomeVisString,       asynParamInt32,       &defAsynPara.ethercatmcHomeVis_);
+  createParam(ethercatmcHomProc_RBString,    asynParamInt32,       &defAsynPara.ethercatmcHomProc_RB_);
+  createParam(ethercatmcHomPos_RBString,     asynParamFloat64,     &defAsynPara.ethercatmcHomPos_RB_);
+  createParam(ethercatmcVelActString,        asynParamFloat64,     &defAsynPara.ethercatmcVelAct_);
+  createParam(ethercatmcVel_RBString,        asynParamFloat64,     &defAsynPara.ethercatmcVel_RB_);
+  createParam(ethercatmcAcc_RBString,        asynParamFloat64,     &defAsynPara.ethercatmcAcc_RB_);
+  createParam(ethercatmcPTPdiffTimeIOC_MCUString, asynParamFloat64, &defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_);
+  createParam(ethercatmcPTPallGoodString,    asynParamInt32,       &defAsynPara.ethercatmcPTPallGood_);
+  createParam(ethercatmcRBV_TSEString,       asynParamFloat64,     &defAsynPara.ethercatmcRBV_TSE_);
+  createParam(pilsLonginActualString,        asynParamInt32,       &defAsynPara.pilsLonginActual_);
+  createParam(pilsLonginTargetString,        asynParamInt32,       &defAsynPara.pilsLonginTarget_);
+  createParam(pilsBiAtMaxString,             asynParamInt32,       &defAsynPara.pilsBiAtMax_);
+  createParam(pilsBiAtMinString,             asynParamInt32,       &defAsynPara.pilsBiAtMin_);
+  createParam(ethercatmcAuxBits07_String,    asynParamInt32,       &defAsynPara.ethercatmcAuxBits07_);
+  createParam(ethercatmcNamAux0_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux0_);
+  createParam(ethercatmcNamAux1_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux1_);
+  createParam(ethercatmcNamAux2_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux2_);
+  createParam(ethercatmcNamAux3_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux3_);
+  createParam(ethercatmcNamAux4_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux4_);
+  createParam(ethercatmcNamAux5_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux5_);
+  createParam(ethercatmcNamAux6_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux6_);
+  createParam(ethercatmcNamAux7_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux7_);
+  createParam(ethercatmcNamAux8_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux8_);
+  createParam(ethercatmcNamAux9_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux9_);
+  createParam(ethercatmcNamAux10_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux10_);
+  createParam(ethercatmcNamAux11_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux11_);
+  createParam(ethercatmcNamAux12_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux12_);
+  createParam(ethercatmcNamAux13_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux13_);
+  createParam(ethercatmcNamAux14_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux14_);
+  createParam(ethercatmcNamAux15_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux15_);
+  createParam(ethercatmcNamAux16_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux16_);
+  createParam(ethercatmcNamAux17_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux17_);
+  createParam(ethercatmcNamAux18_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux18_);
+  createParam(ethercatmcNamAux19_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux19_);
+  createParam(ethercatmcNamAux20_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux20_);
+  createParam(ethercatmcNamAux21_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux21_);
+  createParam(ethercatmcNamAux22_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux22_);
+  createParam(ethercatmcNamAux23_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux23_);
+  createParam(ethercatmcNamBit24_String,     asynParamOctet,       &defAsynPara.ethercatmcNamBit24_);
+  createParam(ethercatmcNamBit25_String,     asynParamOctet,       &defAsynPara.ethercatmcNamBit25_);
+  createParam(ethercatmcPollScalingString,   asynParamInt32,       &defAsynPara.ethercatmcPollScaling_);
+  createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgVELO_RB_);
+  createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgVMAX_RB_);
+  createParam(ethercatmcCfgJVEL_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgJVEL_RB_);
+  createParam(ethercatmcCfgHVEL_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgHVEL_RB_);
+  createParam(ethercatmcCfgACCS_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgACCS_RB_);
+  createParam(ethercatmcCfgDHLMRBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgDHLM_RB_);
+  createParam(ethercatmcCfgDLLMRBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgDLLM_RB_);
+  createParam(ethercatmcCfgDHLM_EnRBString, asynParamInt32,       &defAsynPara.ethercatmcCfgDHLM_En_RB_);
+  createParam(ethercatmcCfgDLLM_EnRBString, asynParamInt32,       &defAsynPara.ethercatmcCfgDLLM_En_RB_);
+  createParam(ethercatmcCfgDHLMString,       asynParamFloat64,     &defAsynPara.ethercatmcCfgDHLM_);
+  createParam(ethercatmcCfgDLLMString,       asynParamFloat64,     &defAsynPara.ethercatmcCfgDLLM_);
+  createParam(ethercatmcCfgDHLM_EnString,    asynParamInt32,       &defAsynPara.ethercatmcCfgDHLM_En_);
+  createParam(ethercatmcCfgDLLM_EnString,    asynParamInt32,       &defAsynPara.ethercatmcCfgDLLM_En_);
 
-  createParam(ethercatmcCfgSREV_RBString,    asynParamFloat64,     &ethercatmcCfgSREV_RB_);
-  createParam(ethercatmcCfgUREV_RBString,    asynParamFloat64,     &ethercatmcCfgUREV_RB_);
-  createParam(ethercatmcCfgPMIN_RBString,    asynParamFloat64,     &ethercatmcCfgPMIN_RB_);
-  createParam(ethercatmcCfgPMAX_RBString,    asynParamFloat64,     &ethercatmcCfgPMAX_RB_);
-  createParam(ethercatmcCfgSPDB_RBString,    asynParamFloat64,     &ethercatmcCfgSPDB_RB_);
-  createParam(ethercatmcCfgRDBD_RBString,    asynParamFloat64,     &ethercatmcCfgRDBD_RB_);
-  createParam(ethercatmcCfgRDBD_Tim_RBString,asynParamFloat64,     &ethercatmcCfgRDBD_Tim_RB_);
-  createParam(ethercatmcCfgRDBD_En_RBString, asynParamInt32,       &ethercatmcCfgRDBD_En_RB_);
-  createParam(ethercatmcCfgPOSLAG_RBString,  asynParamFloat64,     &ethercatmcCfgPOSLAG_RB_);
-  createParam(ethercatmcCfgPOSLAG_Tim_RBString,asynParamFloat64,   &ethercatmcCfgPOSLAG_Tim_RB_);
-  createParam(ethercatmcCfgPOSLAG_En_RBString, asynParamInt32,     &ethercatmcCfgPOSLAG_En_RB_);
+  createParam(ethercatmcCfgSREV_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgSREV_RB_);
+  createParam(ethercatmcCfgUREV_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgUREV_RB_);
+  createParam(ethercatmcCfgPMIN_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgPMIN_RB_);
+  createParam(ethercatmcCfgPMAX_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgPMAX_RB_);
+  createParam(ethercatmcCfgSPDB_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgSPDB_RB_);
+  createParam(ethercatmcCfgRDBD_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgRDBD_RB_);
+  createParam(ethercatmcCfgRDBD_Tim_RBString,asynParamFloat64,     &defAsynPara.ethercatmcCfgRDBD_Tim_RB_);
+  createParam(ethercatmcCfgRDBD_En_RBString, asynParamInt32,       &defAsynPara.ethercatmcCfgRDBD_En_RB_);
+  createParam(ethercatmcCfgPOSLAG_RBString,  asynParamFloat64,     &defAsynPara.ethercatmcCfgPOSLAG_RB_);
+  createParam(ethercatmcCfgPOSLAG_Tim_RBString,asynParamFloat64,   &defAsynPara.ethercatmcCfgPOSLAG_Tim_RB_);
+  createParam(ethercatmcCfgPOSLAG_En_RBString, asynParamInt32,     &defAsynPara.ethercatmcCfgPOSLAG_En_RB_);
 
-  createParam(ethercatmcCfgDESC_RBString,    asynParamOctet,       &ethercatmcCfgDESC_RB_);
-  createParam(ethercatmcCfgEGU_RBString,     asynParamOctet,       &ethercatmcCfgEGU_RB_);
+  createParam(ethercatmcCfgDESC_RBString,    asynParamOctet,       &defAsynPara.ethercatmcCfgDESC_RB_);
+  createParam(ethercatmcCfgEGU_RBString,     asynParamOctet,       &defAsynPara.ethercatmcCfgEGU_RB_);
   /* No more to be included in setAlarmStatusSeverityAllReadbacks() */
 
 #ifdef CREATE_MOTOR_REC_RESOLUTION
@@ -702,13 +702,13 @@ void ethercatmcController::udateMotorLimitsRO(int axisNo)
 
   /* When the integer parameter is undefined, 0 is returned,
      same as not enabled */
-  getIntegerParam(axisNo, ethercatmcCfgDHLM_En_RB_, &enabledHigh);
-  getIntegerParam(axisNo, ethercatmcCfgDLLM_En_RB_, &enabledLow);
+  getIntegerParam(axisNo, defAsynPara.ethercatmcCfgDHLM_En_RB_, &enabledHigh);
+  getIntegerParam(axisNo, defAsynPara.ethercatmcCfgDLLM_En_RB_, &enabledLow);
 
   if (enabledHigh && enabledLow) {
     asynStatus status1, status2;
-    status1 = getDoubleParam(axisNo, ethercatmcCfgDHLM_RB_, &fValueHigh);
-    status2 = getDoubleParam(axisNo, ethercatmcCfgDLLM_RB_, &fValueLow);
+    status1 = getDoubleParam(axisNo, defAsynPara.ethercatmcCfgDHLM_RB_, &fValueHigh);
+    status2 = getDoubleParam(axisNo, defAsynPara.ethercatmcCfgDLLM_RB_, &fValueLow);
 
     if (status1 || status2) {
       udateMotorLimitsRO(axisNo, 0, 0.0, 0.0);
@@ -811,8 +811,8 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
         asynMotorAxis *pAxis=getAxis(axisNo);
         if (!pAxis) continue;
         pAxis->setIntegerParam(motorStatusCommsError_, 1);
-        setIntegerParam(axisNo, ethercatmcFoffVis_, 0);
-        setIntegerParam(axisNo, ethercatmcHomeVis_, 0);
+        setIntegerParam(axisNo, defAsynPara.ethercatmcFoffVis_, 0);
+        setIntegerParam(axisNo, defAsynPara.ethercatmcHomeVis_, 0);
         pAxis->callParamCallbacks();
       }
     } else {
@@ -1141,7 +1141,8 @@ extern "C" {
 void ethercatmcController::setAlarmStatusSeverityAllReadbacks(asynStatus status)
 {
   int function;
-  for (function = ethercatmcMcuErr_; function < ethercatmcCfgEGU_RB_; function++) {
+  // TODO
+  for (function = defAsynPara.ethercatmcMcuErr_; function < defAsynPara.ethercatmcCfgEGU_RB_; function++) {
     setAlarmStatusSeverityAllAxes(function, status);
   }
 #ifdef motorMessageTextString
