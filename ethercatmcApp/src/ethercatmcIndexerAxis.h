@@ -44,7 +44,7 @@ typedef enum
     PollScalingCyclic = 2,
   } PollScalingType;
 
-
+#define MAX_AUX_BIT_AS_BI_RECORD 24
 
 extern "C" {
   int ethercatmcCreateIndexerAxis(const char *ethercatmcName, int axisNo,
@@ -124,6 +124,7 @@ private:
     uint8_t lenInPlcParaFloat[256];     /* 0 : not a float; 4: float; 8 : double */
     uint8_t lenInPlcParaInteger[256];   /* 0 : not an integer; 2: uint16 4: uint_32 */
     uint8_t  param_read_ok_once[256];
+    int      asynFunctionAuxBitAsBiRecord[MAX_AUX_BIT_AS_BI_RECORD];
   } drvlocal;
 
 #ifndef motorMessageTextString

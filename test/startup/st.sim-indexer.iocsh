@@ -12,10 +12,9 @@ epicsEnvSet("ECM_NUMAXES",   "5")
 epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=127.0.0.1.1.1;amsNetIdLocal=127.0.0.1.1.1"
 
-# Faster polling
-epicsEnvSet("ECM_MOVINGPOLLPERIOD",  "100")
-epicsEnvSet("ECM_IDLEPOLLPERIOD",    "100")
-
+# Do not start the poller yet
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 < ethercatmcController.iocsh
 
 #
@@ -42,6 +41,10 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcOpenClutch.iocsh
 # Test records
 < ethercatmcTestInputRecordAlarm.iocsh
+# Aux bits as bi records; Record name; asynParam name
+epicsEnvSet("AUX_BIT_NAME_R",  "notHomed")
+epicsEnvSet("AUX_BIT_NAME_P",  "AUXBITnotHomed")
+< ethercatmcAuxBitAsBiRecord.iocsh
 
 
 
@@ -90,6 +93,19 @@ epicsEnvSet("AXIS_NO",       "5")
 epicsEnvSet("R",             "Shutter:")
 
 < ethercatmcShutter.iocsh
+
+# Aux bits as bi records
+epicsEnvSet("AUX_BIT_NAME",  "Opened")
+< ethercatmcAuxBitAsBiRecord.iocsh
+epicsEnvSet("AUX_BIT_NAME",  "Closed")
+< ethercatmcAuxBitAsBiRecord.iocsh
+
+
 # Motorrecord to debug
 #epicsEnvSet("MOTOR_NAME",    "Shutter")
 #< ethercatmcIndexerAxis.iocsh
+
+# Faster polling
+epicsEnvSet("MOVINGPOLLPERIOD",  "100")
+epicsEnvSet("IDLEPOLLPERIOD",    "100")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

@@ -882,6 +882,17 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
               pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
               pC_->ctrlLocal.changedAuxBits[24], pC_->ctrlLocal.changedAuxBits[25],
               actPosition);
+    for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD; auxBitIdx++) {
+      int function = drvlocal.asynFunctionAuxBitAsBiRecord[auxBitIdx];
+      if (function) {
+        int value = (idxAuxBits >> auxBitIdx) & 1;
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+                  "%spoll(%d) auxBitIdx=%u function=%d value=%d\n",
+                  modNamEMC, axisNo_, auxBitIdx, function, value);
+        setIntegerParam(function, value);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+      }
+    }
   }
   switch (idxStatusCode) {
     /* After RESET, START, STOP the bits are not valid */
@@ -1315,6 +1326,15 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
     if (value  && !drvlocal.dirty.initialPollNeeded ) {
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
                 "%s Communication error(%d)\n", modNamEMC, axisNo_);
+      for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD; auxBitIdx++) {
+        int function = drvlocal.asynFunctionAuxBitAsBiRecord[auxBitIdx];
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                  "%smotorStatusCommsError_(%d) auxBitIdx=%u function=%d\n",
+                  modNamEMC, axisNo_, auxBitIdx, function);
+        if (function) {
+          pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynDisconnected);
+        }
+      }
       memset(&drvlocal, 0, sizeof(drvlocal));
       memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
     }

@@ -437,14 +437,33 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
         }
         if (!pAxis) {
           ; /* Do nothing */
-        } else if (!strcmp("notHomed", auxBitName)) {
-          pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
-        } else if (!strcmp("enabled", auxBitName)) {
-          pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
-        } else if (!strcmp("localMode", auxBitName)) {
-          pAxis->setAuxBitsLocalModeMask(1 << auxBitIdx);
-        } else if (!strcmp("homeSwitch", auxBitName)) {
-          pAxis->setAuxBitsHomeSwitchMask(1 << auxBitIdx);
+        } else {
+          if (auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD) {
+            char paramName[64];
+            int function;
+            /* construct a parameter name, that is unique by starting
+               with AUXBIT */
+            snprintf(paramName, sizeof(paramName),
+                     "AUXBIT%s", auxBitName);
+            asynStatus status = findParam(paramName, &function);
+            if (status == asynSuccess) {
+              /* There is an existing asyn parameter with that name,
+                 some record is using it */
+              pAxis->drvlocal.asynFunctionAuxBitAsBiRecord[auxBitIdx] = function;
+              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                        "%sauxBitName(%d) auxBitIdx=%u paramName=%s function=%d\n",
+                        modNamEMC, axisNo, auxBitIdx, paramName, function);
+            }
+          }
+          if (!strcmp("notHomed", auxBitName)) {
+            pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
+          } else if (!strcmp("enabled", auxBitName)) {
+            pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
+          } else if (!strcmp("localMode", auxBitName)) {
+            pAxis->setAuxBitsLocalModeMask(1 << auxBitIdx);
+          } else if (!strcmp("homeSwitch", auxBitName)) {
+            pAxis->setAuxBitsHomeSwitchMask(1 << auxBitIdx);
+          }
         }
       } else {
         setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
