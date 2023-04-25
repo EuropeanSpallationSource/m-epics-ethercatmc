@@ -1046,23 +1046,36 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     if (!(pC_->getDoubleParam(axisNo_,
                               pC_->defAsynPara.ethercatmcCfgPMAX_RB_, &cfgPmax))) {
       /* Set "at max" */
-      setIntegerParam(pC_->defAsynPara.pilsBiAtMax_, (int)actPosition == (int)cfgPmax ? 1 : 0);
+      {
+        int function = pC_->defAsynPara.pilsBiAtMax_;
+        setIntegerParam(function, (int)actPosition == (int)cfgPmax ? 1 : 0);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, function,  asynSuccess);
+      }
+
       /* readback */
       if (pilsLonginTargetStatus == asynSuccess &&
           pilsLonginTargetValue == (int)cfgPmax) {
         /* output record with readback: Use base class */
-        asynMotorAxis::setIntegerParam(pC_->defAsynPara.pilsBoMinMax_, 1);
+        int function = pC_->defAsynPara.pilsBoMinMax_;
+        asynMotorAxis::setIntegerParam(function, 1);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
       }
     }
     if (!(pC_->getDoubleParam(axisNo_,
                               pC_->defAsynPara.ethercatmcCfgPMIN_RB_, &cfgPmin))) {
       /* Set "at min" */
-      setIntegerParam(pC_->defAsynPara.pilsBiAtMin_, (int)actPosition == (int)cfgPmin ? 1 : 0);
+      {
+        int function = pC_->defAsynPara.pilsBiAtMin_;
+        setIntegerParam(function, (int)actPosition == (int)cfgPmin ? 1 : 0);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+      }
       /* readback */
       if (pilsLonginTargetStatus == asynSuccess &&
           pilsLonginTargetValue == (int)cfgPmin) {
         /* output record with readback: Use base class */
-        asynMotorAxis::setIntegerParam(pC_->defAsynPara.pilsBoMinMax_, 0);
+        int function = pC_->defAsynPara.pilsBoMinMax_;
+        asynMotorAxis::setIntegerParam(function, 0);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, function,  asynSuccess);
       }
     }
   }
