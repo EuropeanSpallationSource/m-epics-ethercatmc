@@ -94,13 +94,6 @@ epicsEnvSet("R",             "Shutter:")
 
 < ethercatmcShutter.iocsh
 
-# Aux bits as bi records
-epicsEnvSet("AUX_BIT_NAME",  "Opened")
-< ethercatmcAuxBitAsBiRecord.iocsh
-epicsEnvSet("AUX_BIT_NAME",  "Closed")
-< ethercatmcAuxBitAsBiRecord.iocsh
-
-
 # Motorrecord to debug
 #epicsEnvSet("MOTOR_NAME",    "Shutter")
 #< ethercatmcIndexerAxis.iocsh

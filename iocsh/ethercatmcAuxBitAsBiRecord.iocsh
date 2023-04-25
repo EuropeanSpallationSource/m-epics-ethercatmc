@@ -1,4 +1,4 @@
 ethercatmcCreateAsynParam $(MOTOR_PORT) AUXBIT$(AUX_BIT_NAME) Int32
 
 # AUX_BIT_NAME_R is for the record, AUX_BIT_NAME_P is the PLC/asynParameter
-dbLoadRecords("ethercatmcAuxBitAsBiRecord.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO), AUX_BIT_NAME_R=$(AUX_BIT_NAME_R), AUX_BIT_NAME_P=$(AUX_BIT_NAME_P")
+dbLoadRecords("ethercatmcAuxBitAsBiRecord.template", "PREFIX=$(PREFIX), MOTOR_NAME=$(MOTOR_NAME), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO), AUX_BIT_NAME_R=$(AUX_BIT_NAME_R), AUX_BIT_NAME_P=$(AUX_BIT_NAME_P)")

@@ -20,7 +20,7 @@ record(bo,  "$(PREFIX)$(R)Open") {
 record(bi,  "$(PREFIX)$(R)Opened") {
     field(DESC, "Shutter is fully open")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsBiAtMax")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBITOpened")
     field(SCAN, "I/O Intr")
     field(ZNAM, "")
     field(ONAM, "Opened")
@@ -30,7 +30,7 @@ record(bi,  "$(PREFIX)$(R)Opened") {
 record(bi,  "$(PREFIX)$(R)Closed") {
     field(DESC, "Shutter is fully open")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsBiAtMin")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBITClosed")
     field(SCAN, "I/O Intr")
     field(ZNAM, "")
     field(ONAM, "Closed")
