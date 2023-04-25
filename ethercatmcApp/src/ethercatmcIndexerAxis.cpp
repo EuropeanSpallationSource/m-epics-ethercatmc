@@ -1170,6 +1170,13 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
          the record may not have registered the callback yet
       */
       if (!drvlocal.hasPolledAllEnums) {
+        readAuxBitNamesEnums();
+        {
+          /* aux bits 0..7 as mbbi */
+          int function = pC_->defAsynPara.ethercatmcAuxBits07_;
+          setIntegerParam(function, idxAuxBits & 0xFF);
+          pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+        }
         unsigned paramIndex;
         drvlocal.hasPolledAllEnums = 1; /* May be overwritten below */
         for (paramIndex = 0; paramIndex < (sizeof(drvlocal.PILSparamPerm) /
