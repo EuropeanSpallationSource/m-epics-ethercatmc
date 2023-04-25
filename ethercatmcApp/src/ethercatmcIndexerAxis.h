@@ -101,6 +101,7 @@ private:
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialPollNeeded :1;
       unsigned idxStatusCode;
+      unsigned old_idxAuxBits;
     }  dirty;
     double old_paramValue;
     unsigned pollNowIdx;

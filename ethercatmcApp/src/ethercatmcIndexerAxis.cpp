@@ -862,6 +862,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
   }
   if (idxAuxBits != drvlocal.old_idxAuxBits) {
+    /* This is for debugging only: The IOC log will show changed bits */
     pC_->changedAuxBits_to_ASCII(axisNo_,
                                  pC_->defAsynPara.ethercatmcNamAux0_,
                                  idxAuxBits, drvlocal.old_idxAuxBits);
@@ -882,6 +883,11 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
               pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
               pC_->ctrlLocal.changedAuxBits[24], pC_->ctrlLocal.changedAuxBits[25],
               actPosition);
+  }
+  /* This is for EPICS records: after a re-connection,
+     all bits should be written once */
+  if (idxAuxBits != drvlocal.old_idxAuxBits ||
+      idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
     for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD; auxBitIdx++) {
       int function = drvlocal.asynFunctionAuxBitAsBiRecord[auxBitIdx];
       if (function) {
@@ -890,7 +896,14 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                   "%spoll(%d) auxBitIdx=%u function=%d value=%d\n",
                   modNamEMC, axisNo_, auxBitIdx, function, value);
         setIntegerParam(function, value);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+        if (drvlocal.old_idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+          /* In the first cycle:
+             old_idxAuxBits == 0, dirty.old_idxAuxBits == 0xFFFFFFFF
+             Unset the alarm state for all aux bits that we have found
+             after a connect or re-connect
+          */
+          pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+        }
       }
     }
   }
@@ -1208,6 +1221,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
   }
   drvlocal.old_idxAuxBits        = idxAuxBits;
+  drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
   drvlocal.dirty.idxStatusCode   = idxStatusCode;
   drvlocal.dirty.old_ErrorId = errorID;
   callParamCallbacks();
