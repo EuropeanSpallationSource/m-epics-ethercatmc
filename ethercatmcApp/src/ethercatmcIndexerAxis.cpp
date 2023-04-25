@@ -1045,13 +1045,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 
     if (!(pC_->getDoubleParam(axisNo_,
                               pC_->defAsynPara.ethercatmcCfgPMAX_RB_, &cfgPmax))) {
-      /* Set "at max" */
-      {
-        int function = pC_->defAsynPara.pilsBiAtMax_;
-        setIntegerParam(function, (int)actPosition == (int)cfgPmax ? 1 : 0);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, function,  asynSuccess);
-      }
-
       /* readback */
       if (pilsLonginTargetStatus == asynSuccess &&
           pilsLonginTargetValue == (int)cfgPmax) {
@@ -1063,12 +1056,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
     if (!(pC_->getDoubleParam(axisNo_,
                               pC_->defAsynPara.ethercatmcCfgPMIN_RB_, &cfgPmin))) {
-      /* Set "at min" */
-      {
-        int function = pC_->defAsynPara.pilsBiAtMin_;
-        setIntegerParam(function, (int)actPosition == (int)cfgPmin ? 1 : 0);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
-      }
       /* readback */
       if (pilsLonginTargetStatus == asynSuccess &&
           pilsLonginTargetValue == (int)cfgPmin) {

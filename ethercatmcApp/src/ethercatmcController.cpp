@@ -211,8 +211,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcRBV_TSEString,       asynParamFloat64,     &defAsynPara.ethercatmcRBV_TSE_);
   createParam(pilsLonginActualString,        asynParamInt32,       &defAsynPara.pilsLonginActual_);
   createParam(pilsLonginTargetString,        asynParamInt32,       &defAsynPara.pilsLonginTarget_);
-  createParam(pilsBiAtMaxString,             asynParamInt32,       &defAsynPara.pilsBiAtMax_);
-  createParam(pilsBiAtMinString,             asynParamInt32,       &defAsynPara.pilsBiAtMin_);
   createParam(ethercatmcAuxBits07_String,    asynParamInt32,       &defAsynPara.ethercatmcAuxBits07_);
   createParam(ethercatmcNamAux0_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux0_);
   createParam(ethercatmcNamAux1_String,      asynParamOctet,       &defAsynPara.ethercatmcNamAux1_);

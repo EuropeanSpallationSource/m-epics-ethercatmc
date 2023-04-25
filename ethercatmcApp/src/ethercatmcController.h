@@ -89,8 +89,6 @@ FILENAME...   ethercatmcController.h
 #define pilsLonginTargetString               "pilsLonginTarget"
 #define pilsLongoutRecordString              "pilsLongoutRecord"
 #define pilsBoMinMaxString                   "pilsBoMinMax"
-#define pilsBiAtMaxString                    "pilsBiAtMax"
-#define pilsBiAtMinString                    "pilsBiAtMin"
 #define ethercatmcPollScalingString          "PollScaling"
 #define ethercatmcCfgVELO_RBString           "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString           "CfgVMAX-RB"
@@ -620,8 +618,6 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     int pilsLonginTarget_;
     int pilsLongoutRecord_;
     int pilsBoMinMax_;                /* bo record: Binary Out, driving to minimum/maximum */
-    int pilsBiAtMax_;                 /* bi record: Binary In, is at the maximum (e.g. shutter) */
-    int pilsBiAtMin_;                 /* bi record: Binary In, is at the minimum (e.g. shutter) */
     int ethercatmcPollScaling_;       /* When to poll the scaling */
     int ethercatmcCfgVELO_RB_;        /* configuration values from the MCU */
     int ethercatmcCfgVMAX_RB_;
