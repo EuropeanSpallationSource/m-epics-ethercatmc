@@ -13,6 +13,6 @@ fi
     shift
     TESTS=$(ls -1 [0-9]???Record*.py *Ethercat*.py | sort -n)
     for f in $TESTS; do
-      echo ./runTests.sh "$PV" "$f" "$@"
+      ./runTests.sh "$PV" "$f" "$@"
     done
 )
