@@ -121,6 +121,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
 
+epicsEnvSet("AUXBITS07",     "HexScrew")
+< ethercatmcAuxBitAsMbbiRecord.iocsh
+
 #
 # Axis 9
 #
@@ -133,6 +136,8 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
+epicsEnvSet("AUXBITS07",     "HexScrew")
+< ethercatmcAuxBitAsMbbiRecord.iocsh
 
 #
 # Axis 10
