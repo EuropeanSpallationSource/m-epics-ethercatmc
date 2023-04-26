@@ -630,9 +630,11 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   unsigned idxReasonBits = 0;
   unsigned idxAuxBits = 0;
   int homed = 0;
+  char nameAuxBits[36];
 
   /* Don't leave *moving un-initialized, if we return early */
   *moving = false;
+  nameAuxBits[0] = '\0';
   if (!drvlocal.clean.iTypCode) {
     /* No axis, (may be dummy-axis 0), return */
     return asynSuccess;
@@ -1021,6 +1023,45 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     } else if (localMode) {
       msgTxtFromDriver = "localMode";
       hasError = -1;
+    } else {
+      int function = 0;
+      switch (statusReasonAux & 0xFF) {
+      case 1:
+        function = pC_->defAsynPara.ethercatmcNamAux0_;
+        break;
+      case 2:
+        function = pC_->defAsynPara.ethercatmcNamAux1_;
+        break;
+      case 4:
+        function = pC_->defAsynPara.ethercatmcNamAux2_;
+        break;
+      case 8:
+        function = pC_->defAsynPara.ethercatmcNamAux3_;
+        break;
+      case 16:
+        function = pC_->defAsynPara.ethercatmcNamAux4_;
+        break;
+      case 32:
+        function = pC_->defAsynPara.ethercatmcNamAux5_;
+        break;
+      case 64:
+        function = pC_->defAsynPara.ethercatmcNamAux6_;
+        break;
+      case 128:
+        function = pC_->defAsynPara.ethercatmcNamAux7_;
+        break;
+      default:
+        break;
+      }
+      if (function) {
+        asynStatus status = pC_->getStringParam(axisNo_,
+                                                function,
+                                                (int)sizeof(nameAuxBits),
+                                                &nameAuxBits[0]);
+        if (status == asynSuccess) {
+          msgTxtFromDriver = &nameAuxBits[0];
+        }
+      }
     }
     /* Update if we have an error now.
        Update even if we had an error before - it may have gone now,
