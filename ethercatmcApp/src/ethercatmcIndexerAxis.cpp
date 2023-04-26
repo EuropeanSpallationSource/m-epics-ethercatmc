@@ -1068,7 +1068,9 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
        Update even if we had an error before - it may have gone now,
        and the we need to set the NULL pointer */
     if (hasError || errorID ||
-        drvlocal.dirty.old_hasError || drvlocal.dirty.old_ErrorId) {
+        drvlocal.dirty.old_hasError || drvlocal.dirty.old_ErrorId ||
+         idxAuxBits != drvlocal.clean.old_idxAuxBits ||
+        idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
       updateMsgTxtFromDriver(msgTxtFromDriver);
     }
     drvlocal.dirty.old_hasError = hasError;
@@ -1275,10 +1277,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                                newParamCtrl, sizeof(newParamCtrl));
     }
   }
-  drvlocal.clean.old_idxAuxBits        = idxAuxBits;
+  drvlocal.clean.old_idxAuxBits  = idxAuxBits;
   drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
   drvlocal.dirty.idxStatusCode   = idxStatusCode;
-  drvlocal.dirty.old_ErrorId = errorID;
+  drvlocal.dirty.old_ErrorId     = errorID;
   callParamCallbacks();
   return status;
 }
