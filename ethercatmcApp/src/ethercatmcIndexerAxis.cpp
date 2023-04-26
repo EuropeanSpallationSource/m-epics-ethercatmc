@@ -891,6 +891,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
      all bits should be written once */
   if (idxAuxBits != drvlocal.clean.old_idxAuxBits ||
       idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+    setIntegerParam(pC_->defAsynPara.ethercatmcAuxBits07_, statusReasonAux & 0xFF);
     for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD; auxBitIdx++) {
       int function = drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx];
       if (function) {
