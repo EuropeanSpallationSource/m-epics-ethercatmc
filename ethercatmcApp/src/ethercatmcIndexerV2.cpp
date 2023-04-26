@@ -449,7 +449,7 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
             if (status == asynSuccess) {
               /* There is an existing asyn parameter with that name,
                  some record is using it */
-              pAxis->drvlocal.asynFunctionAuxBitAsBiRecord[auxBitIdx] = function;
+              pAxis->drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx] = function;
               asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                         "%sauxBitName(%d) auxBitIdx=%u paramName=%s function=%d\n",
                         modNamEMC, axisNo, auxBitIdx, paramName, function);
@@ -513,7 +513,7 @@ ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
               modNamEMC, dataIdx, parameters_32[dataIdx]);
     for (bitIdx = 0; bitIdx <= 7; bitIdx++) {
       unsigned paramIndex = dataIdx*8 + bitIdx;
-      if (paramIndex >= sizeof(pAxis->drvlocal.PILSparamPerm)) {
+      if (paramIndex >= sizeof(pAxis->drvlocal.clean.PILSparamPerm)) {
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sparameters(%d) paramIdx (%u 0x%02X) out of range\n",
                   modNamEMC, axisNo,
@@ -527,11 +527,11 @@ ethercatmcController::indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
                   modNamEMC, functionName,
                   paramIndex, dataIdx, bitIdx,
                   plcParamIndexTxtFromParamIndex(paramIndex));
-        pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermWrite;
+        pAxis->drvlocal.clean.PILSparamPerm[paramIndex] = PILSparamPermWrite;
         if (paramIndexIsIntegerV2(paramIndex)) {
-          pAxis->drvlocal.lenInPlcParaInteger[paramIndex] = 4; /* sizeof(int32) */
+          pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex] = 4; /* sizeof(int32) */
         } else {
-          pAxis->drvlocal.lenInPlcParaFloat[paramIndex] = 8; /* sizeof(double) */
+          pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex] = 8; /* sizeof(double) */
         }
       }
     }

@@ -613,8 +613,8 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
     }
     if (parameterIndex) {
       int index_in_range;
-      index_in_range = parameterIndex < (sizeof(pAxis->drvlocal.PILSparamPerm) /
-                                          sizeof(pAxis->drvlocal.PILSparamPerm[0]));
+      index_in_range = parameterIndex < (sizeof(pAxis->drvlocal.clean.PILSparamPerm) /
+                                          sizeof(pAxis->drvlocal.clean.PILSparamPerm[0]));
       if (index_in_range) {
         int parameter_is_float = parameter_is_floatV3(parameterTypV3);
         int parameter_is_rw = parameter_is_rw_V3(parameterTypV3);
@@ -630,15 +630,15 @@ ethercatmcController::indexerV3readParameterDescriptors(ethercatmcIndexerAxis *p
           /* Special case for EPICS: We do not poll it in background */
           pAxis->setIntegerParam(motorStatusGainSupport_, 1);
         }
-        pAxis->drvlocal.PILSparamPerm[parameterIndex] =
+        pAxis->drvlocal.clean.PILSparamPerm[parameterIndex] =
           parameter_is_rw ? PILSparamPermWrite : PILSparamPermRead;
         if (parameter_is_float) {
-          pAxis->drvlocal.lenInPlcParaFloat[parameterIndex] = lenInPlcPara;
+          pAxis->drvlocal.clean.lenInPlcParaFloat[parameterIndex] = lenInPlcPara;
         } else {
-          pAxis->drvlocal.lenInPlcParaInteger[parameterIndex] = lenInPlcPara;
+          pAxis->drvlocal.clean.lenInPlcParaInteger[parameterIndex] = lenInPlcPara;
         }
         if (enumparam_read_id && (enumparam_read_id == enumparam_write_id)) {
-          pAxis->drvlocal.enumparam_read_id[parameterIndex] = enumparam_read_id;
+          pAxis->drvlocal.clean.enumparam_read_id[parameterIndex] = enumparam_read_id;
         }
         {
           /* Max velocity for VMAX */

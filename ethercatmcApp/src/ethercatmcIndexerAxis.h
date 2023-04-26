@@ -1,4 +1,4 @@
-#ifndef ETHERCATMCINDEXERAXIS_H
+ #ifndef ETHERCATMCINDEXERAXIS_H
 #define ETHERCATMCINDEXERAXIS_H
 
 #include <stdint.h>
@@ -102,30 +102,32 @@ private:
       unsigned int initialPollNeeded :1;
       unsigned idxStatusCode;
       unsigned old_idxAuxBits;
-    }  dirty;
-    double old_paramValue;
-    unsigned pollNowIdx;
-    unsigned iTypCode;
-    unsigned devNum;
-    unsigned iOffset;
-    unsigned lenInPlcPara;
-    unsigned paramIfOffset;
-    unsigned auxBitsNotHomedMask;
-    unsigned auxBitsEnabledMask;
-    unsigned auxBitsLocalModeMask;
-    unsigned auxBitsHomeSwitchMask;
-    unsigned old_paramCtrl;
-    unsigned old_idxAuxBits;
-    unsigned int hasProblem :1;
-    unsigned int hasPolledAllEnums :1;
+    } dirty;
+    struct {
+      double old_paramValue;
+      unsigned pollNowIdx;
+      unsigned iTypCode;
+      unsigned devNum;
+      unsigned iOffset;
+      unsigned lenInPlcPara;
+      unsigned paramIfOffset;
+      unsigned auxBitsNotHomedMask;
+      unsigned auxBitsEnabledMask;
+      unsigned auxBitsLocalModeMask;
+      unsigned auxBitsHomeSwitchMask;
+      unsigned old_paramCtrl;
+      unsigned old_idxAuxBits;
+      unsigned int hasProblem :1;
+      unsigned int hasPolledAllEnums :1;
+      uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
+      PILSparamPermType PILSparamPerm[256];
+      uint16_t enumparam_read_id[256];    /* parameter has enum defines in PILSv3 */
+      uint8_t lenInPlcParaFloat[256];     /* 0 : not a float; 4: float; 8 : double */
+      uint8_t lenInPlcParaInteger[256];   /* 0 : not an integer; 2: uint16 4: uint_32 */
+      uint8_t  param_read_ok_once[256];
+      int      asynFunctionAuxBitAsBiRecord[MAX_AUX_BIT_AS_BI_RECORD];
+    }  clean;
     int pollScaling;
-    uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */
-    PILSparamPermType PILSparamPerm[256];
-    uint16_t enumparam_read_id[256];    /* parameter has enum defines in PILSv3 */
-    uint8_t lenInPlcParaFloat[256];     /* 0 : not a float; 4: float; 8 : double */
-    uint8_t lenInPlcParaInteger[256];   /* 0 : not an integer; 2: uint16 4: uint_32 */
-    uint8_t  param_read_ok_once[256];
-    int      asynFunctionAuxBitAsBiRecord[MAX_AUX_BIT_AS_BI_RECORD];
   } drvlocal;
 
 #ifndef motorMessageTextString

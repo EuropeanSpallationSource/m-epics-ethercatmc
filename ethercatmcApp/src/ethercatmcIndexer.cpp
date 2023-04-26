@@ -376,10 +376,10 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
   unsigned counter = 0;
   unsigned lenInPlcPara = 0;
   int axisNo = pAxis->axisNo_;
-  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
-    lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
-  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
-    lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
+  if (pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex]) {
+    lenInPlcPara = pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex];
+  } else if (pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex]) {
+    lenInPlcPara = pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex];
   }
   if (!paramIfOffset || paramIndex > 0xFF || !lenInPlcPara ||
       lenInPlcPara > sizeof(paramIf_from_MCU.paramValueRaw)) {
@@ -423,10 +423,10 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
       if (paramIndexRB == paramIndex) {
         /* This is good, return */
         double fValue = -1; //NaN;
-        if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
+        if (pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex]) {
           fValue = (double)netToUint(&paramIf_from_MCU.paramValueRaw,
                                      lenInPlcPara);
-        } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
+        } else if (pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex]) {
           fValue = netToDouble(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
         }
         asynPrint(pasynUserController_, traceMask /* | ASYN_TRACE_INFO */,
@@ -434,8 +434,8 @@ asynStatus ethercatmcController::indexerParamReadFL(ethercatmcIndexerAxis *pAxis
                   "lenInPlcParaFloat=%u lenInPlcParaInteger=%u lenInPlcPara=%u value=%f\n",
                   fileName, lineNo, "indexerParamRead", pAxis->axisNo_, paramIfOffset,
                   plcParamIndexTxtFromParamIndex(paramIndex), paramIndex, paramIndex,
-                  pAxis->drvlocal.lenInPlcParaFloat[paramIndex],
-                  pAxis->drvlocal.lenInPlcParaInteger[paramIndex],
+                  pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex],
+                  pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex],
                   lenInPlcPara, fValue);
 
         *value = fValue;
@@ -500,26 +500,26 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   unsigned counter = 0;
   int has_written = 0;
   unsigned lenInPlcPara = 0;
-  unsigned paramIfOffset = pAxis->drvlocal.paramIfOffset;
+  unsigned paramIfOffset = pAxis->drvlocal.clean.paramIfOffset;
 
-  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
-    lenInPlcPara = pAxis->drvlocal.lenInPlcParaInteger[paramIndex];
-  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
-    lenInPlcPara = pAxis->drvlocal.lenInPlcParaFloat[paramIndex];
+  if (pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex]) {
+    lenInPlcPara = pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex];
+  } else if (pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex]) {
+    lenInPlcPara = pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex];
   }
   if (!pAxis || !paramIfOffset || (paramIndex > 0xFF) ||
       lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
     status = asynDisabled;
-  } else if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermRead) {
+  } else if (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] == PILSparamPermRead) {
     status = asynParamWrongType;
-  } else if (pAxis->drvlocal.PILSparamPerm[paramIndex] == PILSparamPermNone) {
+  } else if (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] == PILSparamPermNone) {
     status = asynParamBadIndex;
   }
   if (status != asynSuccess) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
               "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u perm=%d status=%s (%d)\n",
               modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
-              (int)pAxis->drvlocal.PILSparamPerm[paramIndex],
+              (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex],
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
@@ -529,9 +529,9 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   memset(&paramIf_from_MCU, 0, sizeof(paramIf_from_MCU));
   memset(&readback_5010, 0, sizeof(readback_5010));
 
-  if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
+  if (pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex]) {
     uintToNet((int)value, &paramIf_to_MCU.paramValueRaw, lenInPlcPara);
-  } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
+  } else if (pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex]) {
     doubleToNet(value, &paramIf_to_MCU.paramValueRaw, lenInPlcPara);
   }
   UINTTONET(cmd, paramIf_to_MCU.paramCtrl);
@@ -539,9 +539,9 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   while (counter < MAX_COUNTER) {
     /* get the paraminterface "as is". It may be in DONE state as an answer
        to a write from a previous round */
-    if (pAxis && pAxis->drvlocal.iTypCode == 0x5010 &&
+    if (pAxis && pAxis->drvlocal.clean.iTypCode == 0x5010 &&
         !pAxis->drvlocal.dirty.initialPollNeeded) {
-      status = getPlcMemoryOnErrorStateChange(pAxis->drvlocal.iOffset,
+      status = getPlcMemoryOnErrorStateChange(pAxis->drvlocal.clean.iOffset,
                                               &readback_5010,
                                               sizeof(readback_5010));
       if (status) return status;
@@ -553,9 +553,9 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
     }
     if (status) return status;
     double valueRB = -1.0;
-    if (pAxis->drvlocal.lenInPlcParaInteger[paramIndex]) {
+    if (pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex]) {
       valueRB = netToUint(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
-    } else if (pAxis->drvlocal.lenInPlcParaFloat[paramIndex]) {
+    } else if (pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex]) {
       valueRB = netToDouble(&paramIf_from_MCU.paramValueRaw, lenInPlcPara);
     }
     unsigned cmdSubParamIndexRB = NETTOUINT(paramIf_from_MCU.paramCtrl);
@@ -627,7 +627,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                 // When PILS V2 "announces" a parameter, there is no
                 //   destinction between "read" and "write"
                 //   Change the permissions here
-                pAxis->drvlocal.PILSparamPerm[paramIndex] = PILSparamPermRead;
+                pAxis->drvlocal.clean.PILSparamPerm[paramIndex] = PILSparamPermRead;
               }
               status = asynParamWrongType;
             }
@@ -679,21 +679,21 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
             modNamEMC, counter);
 
  indexerParamWritePrintAuxReturn:
-  if (pAxis && pAxis->drvlocal.iTypCode == 0x5010 &&
+  if (pAxis && pAxis->drvlocal.clean.iTypCode == 0x5010 &&
       !pAxis->drvlocal.dirty.initialPollNeeded) {
     unsigned statusReasonAux = NETTOUINT(readback_5010.statReasAux);
     int errorID = (int)NETTOUINT(readback_5010.errorID);
     idxStatusCodeType idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     //unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     unsigned idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
-    if (idxAuxBits != pAxis->drvlocal.old_idxAuxBits) {
+    if (idxAuxBits != pAxis->drvlocal.clean.old_idxAuxBits) {
       changedAuxBits_to_ASCII(pAxis->axisNo_,
                               defAsynPara.ethercatmcNamAux0_,
-                              idxAuxBits, pAxis->drvlocal.old_idxAuxBits);
+                              idxAuxBits, pAxis->drvlocal.clean.old_idxAuxBits);
       asynPrint(pasynUserController_, traceMask,
                 "%sindexerParamWrite(%d) idxStatusCode=0x%02X auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) errorID=0x%04X \"%s\" \n",
                 modNamEMC, pAxis->axisNo_, idxStatusCode,
-                pAxis->drvlocal.old_idxAuxBits, idxAuxBits,
+                pAxis->drvlocal.clean.old_idxAuxBits, idxAuxBits,
                 ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
                 ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
                 ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
@@ -708,7 +708,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                 ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
                 ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25],
                 errorID, errStringFromErrId(errorID));
-      pAxis->drvlocal.old_idxAuxBits = idxAuxBits;
+      pAxis->drvlocal.clean.old_idxAuxBits = idxAuxBits;
     }
   }
   return status;
@@ -919,9 +919,9 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
   unsigned axisNo = pAxis->axisNo_;
   asynStatus status = asynError;
   /* Find out which parameters that exist for this device
-     The result is stored in pAxis->drvlocal.PILSparamPerm[] */
+     The result is stored in pAxis->drvlocal.clean.PILSparamPerm[] */
 
-  unsigned paramIfOffset = pAxis->drvlocal.paramIfOffset;
+  unsigned paramIfOffset = pAxis->drvlocal.clean.paramIfOffset;
   if (ctrlLocal.supported.bPILSv2) {
     status = indexerReadAxisParametersV2(pAxis, devNum);
   } else if (ctrlLocal.supported.bPILSv3) {
@@ -932,8 +932,8 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
      PILS v2 and v3 use the same param interface logic */
   unsigned paramIndex;
 
-  for (paramIndex = 0; paramIndex < (sizeof(pAxis->drvlocal.PILSparamPerm) /
-                                     sizeof(pAxis->drvlocal.PILSparamPerm[0]));
+  for (paramIndex = 0; paramIndex < (sizeof(pAxis->drvlocal.clean.PILSparamPerm) /
+                                     sizeof(pAxis->drvlocal.clean.PILSparamPerm[0]));
        paramIndex++) {
 
     asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
@@ -941,8 +941,8 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
               modNamEMC, axisNo,
               plcParamIndexTxtFromParamIndex(paramIndex),
               paramIndex,
-              (int)pAxis->drvlocal.PILSparamPerm[paramIndex]);
-    if (pAxis->drvlocal.PILSparamPerm[paramIndex] != PILSparamPermNone) {
+              (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex]);
+    if (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] != PILSparamPermNone) {
       // parameter is read or write
       double fValue = 0.0;
       int initial = 1;
@@ -969,7 +969,7 @@ ethercatmcController::indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
         /* Some parameters are functions: Don't read them.
            tell driver that the function exist
            But read 142, which becomes JVEL */
-        if (pAxis->drvlocal.enumparam_read_id[paramIndex]) {
+        if (pAxis->drvlocal.clean.enumparam_read_id[paramIndex]) {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sparameters(%d) paramIdx=%s (%u) has enums\n",
                     modNamEMC, axisNo,
