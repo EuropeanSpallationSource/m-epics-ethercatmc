@@ -238,6 +238,8 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcNamAux23_String,     asynParamOctet,       &defAsynPara.ethercatmcNamAux23_);
   createParam(ethercatmcNamBit24_String,     asynParamOctet,       &defAsynPara.ethercatmcNamBit24_);
   createParam(ethercatmcNamBit25_String,     asynParamOctet,       &defAsynPara.ethercatmcNamBit25_);
+  createParam(ethercatmcInterlockFwd_String,  asynParamInt32,      &defAsynPara.ethercatmcInterlockFwd_);
+  createParam(ethercatmcInterlockBwd_String,  asynParamInt32,      &defAsynPara.ethercatmcInterlockBwd_);
   createParam(ethercatmcPollScalingString,   asynParamInt32,       &defAsynPara.ethercatmcPollScaling_);
   createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgVELO_RB_);
   createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgVMAX_RB_);

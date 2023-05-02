@@ -463,6 +463,10 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
             pAxis->setAuxBitsLocalModeMask(1 << auxBitIdx);
           } else if (!strcmp("homeSwitch", auxBitName)) {
             pAxis->setAuxBitsHomeSwitchMask(1 << auxBitIdx);
+          } else if (!strcmp("InterlockFwd", auxBitName)) {
+            pAxis->setAuxBitsInterlockFwdMask(1 << auxBitIdx);
+          } else if (!strcmp("InterlockBwd", auxBitName)) {
+            pAxis->setAuxBitsInterlockBwdMask(1 << auxBitIdx);
           }
         }
       } else {

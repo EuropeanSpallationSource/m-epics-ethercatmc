@@ -722,6 +722,10 @@ ethercatmcController::indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
           pAxis->setAuxBitsLocalModeMask(1 << bit_number);
         } else if (!strcmp("homeSwitch", flag_name)) {
           pAxis->setAuxBitsHomeSwitchMask(1 << bit_number);
+        } else if (!strcmp("InterlockFwd", flag_name)) {
+          pAxis->setAuxBitsInterlockFwdMask(1 << bit_number);
+        } else if (!strcmp("InterlockBwd", flag_name)) {
+          pAxis->setAuxBitsInterlockBwdMask(1 << bit_number);
         }
         descID = prev_descriptor_id;
       }

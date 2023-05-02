@@ -253,6 +253,22 @@ void ethercatmcIndexerAxis::setAuxBitsHomeSwitchMask(unsigned auxBitsHomeSwitchM
   drvlocal.clean.auxBitsHomeSwitchMask = auxBitsHomeSwitchMask;
 }
 
+void ethercatmcIndexerAxis::setAuxBitsInterlockFwdMask(unsigned auxBitsInterlockFwdMask)
+{
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) auxBitsInterlockFwdMask=0x%X\n",
+            modNamEMC, axisNo_, auxBitsInterlockFwdMask);
+  drvlocal.clean.auxBitsInterlockFwdMask = auxBitsInterlockFwdMask;
+}
+
+void ethercatmcIndexerAxis::setAuxBitsInterlockBwdMask(unsigned auxBitsInterlockBwdMask)
+{
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) auxBitsInterlockBwdMask=0x%X\n",
+            modNamEMC, axisNo_, auxBitsInterlockBwdMask);
+  drvlocal.clean.auxBitsInterlockBwdMask = auxBitsInterlockBwdMask;
+}
+
 void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex)
 {
   size_t pollNowIdx;
@@ -998,6 +1014,14 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
     if (drvlocal.clean.auxBitsEnabledMask) {
       powerIsOn = idxAuxBits & drvlocal.clean.auxBitsEnabledMask ? 1 : 0;
+    }
+    if (drvlocal.clean.auxBitsInterlockFwdMask) {
+      int interlockFwd = idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask ? 0 : 1;
+      setIntegerParam(pC_->defAsynPara.ethercatmcInterlockFwd_, interlockFwd);
+    }
+    if (drvlocal.clean.auxBitsInterlockBwdMask) {
+      int interlockBwd = idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask ? 0 : 1;
+      setIntegerParam(pC_->defAsynPara.ethercatmcInterlockBwd_, interlockBwd);
     }
     if (hasError || errorID) {
       char sErrorMessage[40];

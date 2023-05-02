@@ -73,6 +73,8 @@ public:
   asynStatus stop(double acceleration);
   void setIndexerDevNumOffsetTypeCode(unsigned devNum, unsigned iOffset, unsigned iTypCode);
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
+  void setAuxBitsInterlockFwdMask(unsigned auxBitsInterlockFwdMask);
+  void setAuxBitsInterlockBwdMask(unsigned auxBitsInterlockBwdMask);
   void setAuxBitsEnabledMask(unsigned auxBitsEnabledMask);
   void setAuxBitsLocalModeMask(unsigned auxBitsLocalModeMask);
   void setAuxBitsHomeSwitchMask(unsigned auxBitsHomeSwitchMask);
@@ -115,6 +117,8 @@ private:
       unsigned auxBitsEnabledMask;
       unsigned auxBitsLocalModeMask;
       unsigned auxBitsHomeSwitchMask;
+      unsigned auxBitsInterlockFwdMask;
+      unsigned auxBitsInterlockBwdMask;
       unsigned old_paramCtrl;
       unsigned old_idxAuxBits;
       unsigned int hasProblem :1;
