@@ -1474,7 +1474,7 @@ ethercatmcController::changedAuxBits_to_ASCII(int         axisNo,
                                               epicsUInt32 statusReasonAux,
                                               epicsUInt32 oldStatusReasonAux)
 {
-  /* Show even bit 24 and 25, which are reson bits, here */
+  /* Show even bit 27..24, which are reson bits, here */
   epicsUInt32 changed = statusReasonAux ^ oldStatusReasonAux;
   epicsUInt32 auxBitIdx;
   memset(&ctrlLocal.changedAuxBits, 0, sizeof(ctrlLocal.changedAuxBits));
@@ -1564,8 +1564,10 @@ asynStatus ethercatmcController::indexerPoll(void)
                 changedAuxBits_to_ASCII(axisNo, functionNamAux0,
                                         statusReasonAux, oldStatusReasonAux);
                 asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
-                          "%spoll(%d) %sOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
+                          "%spoll(%d) %sOld=0x%04X new=0x%04X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)\n",
                           modNamEMC, axisNo, paramName, oldStatusReasonAux, statusReasonAux,
+                          ctrlLocal.changedAuxBits[27], ctrlLocal.changedAuxBits[26],
+                          ctrlLocal.changedAuxBits[25], ctrlLocal.changedAuxBits[24],
                           ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
                           ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
                           ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
@@ -1577,8 +1579,7 @@ asynStatus ethercatmcController::indexerPoll(void)
                           ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
                           ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
                           ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
-                          ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
-                          ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25]);
+                          ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23]);
               }
             }
             setUIntDigitalParam(axisNo, functionStatusBits,

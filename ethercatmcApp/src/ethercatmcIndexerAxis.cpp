@@ -104,6 +104,8 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #ifdef  motorNotHomedProblemString
   setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
+  setStringParam(pC_->defAsynPara.ethercatmcNamBit27_, "HiLimit");
+  setStringParam(pC_->defAsynPara.ethercatmcNamBit26_, "LoLimit");
   setStringParam(pC_->defAsynPara.ethercatmcNamBit25_, "Dynamic_problem_timeout");
   setStringParam(pC_->defAsynPara.ethercatmcNamBit24_, "Static_problem_inhibit");
 
@@ -778,7 +780,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
-    idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
+    idxAuxBits    =  statusReasonAux  & 0x0FFFFFFF;
   } else if (drvlocal.clean.iTypCode == 0x1802) {
     struct {
       uint8_t   statReasAux[4];
@@ -848,7 +850,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                                        asynSuccess);
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
-    idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
+    idxAuxBits    =  statusReasonAux  & 0x0FFFFFFF;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
               "%spoll(%d) iTypCode=0x%X drvlocal.clean.iOffset=%u statusReasonAux=%08x actPosition=%f\n",
               modNamEMC, axisNo_, drvlocal.clean.iTypCode, drvlocal.clean.iOffset,
@@ -882,12 +884,15 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   }
   if (idxAuxBits != drvlocal.clean.old_idxAuxBits) {
     /* This is for debugging only: The IOC log will show changed bits */
+    /* Show even bit 27..24, which are reson bits, here */
     pC_->changedAuxBits_to_ASCII(axisNo_,
                                  pC_->defAsynPara.ethercatmcNamAux0_,
                                  idxAuxBits, drvlocal.clean.old_idxAuxBits);
     asynPrint(pC_->pasynUserController_, traceMask,
-              "%spoll(%d) auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
+              "%spoll(%d) auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
               modNamEMC, axisNo_, drvlocal.clean.old_idxAuxBits, idxAuxBits,
+              pC_->ctrlLocal.changedAuxBits[27], pC_->ctrlLocal.changedAuxBits[26],
+              pC_->ctrlLocal.changedAuxBits[25], pC_->ctrlLocal.changedAuxBits[24],
               pC_->ctrlLocal.changedAuxBits[0],  pC_->ctrlLocal.changedAuxBits[1],
               pC_->ctrlLocal.changedAuxBits[2],  pC_->ctrlLocal.changedAuxBits[3],
               pC_->ctrlLocal.changedAuxBits[4],  pC_->ctrlLocal.changedAuxBits[5],
@@ -900,7 +905,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
               pC_->ctrlLocal.changedAuxBits[18], pC_->ctrlLocal.changedAuxBits[19],
               pC_->ctrlLocal.changedAuxBits[20], pC_->ctrlLocal.changedAuxBits[21],
               pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
-              pC_->ctrlLocal.changedAuxBits[24], pC_->ctrlLocal.changedAuxBits[25],
               actPosition);
   }
   /* This is for EPICS records: after a re-connection,
@@ -991,7 +995,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     int lls = idxReasonBits & 0x4 ? 1 : 0;
     if (drvlocal.clean.auxBitsLocalModeMask) {
       localMode = idxAuxBits & drvlocal.clean.auxBitsLocalModeMask ? 1 : 0;;
-      //nowMoving |= localMode;
     }
     setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
     setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");

@@ -24,7 +24,7 @@ FILENAME...   ethercatmcController.h
 #endif
 
 #define MAX_AUX_BIT_SHOWN 24
-#define MAX_REASON_AUX_BIT_SHOW (MAX_AUX_BIT_SHOWN+2)
+#define MAX_REASON_AUX_BIT_SHOW (MAX_AUX_BIT_SHOWN+4)
 
 #ifdef asynParamMetaMask
 #define ETHERCATMC_ASYN_PARAMMETA
@@ -71,6 +71,8 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcNamAux23_String            "NamAuxBit23"
 #define ethercatmcNamBit24_String            "NamBit24"
 #define ethercatmcNamBit25_String            "NamBit25"
+#define ethercatmcNamBit26_String            "NamBit26"
+#define ethercatmcNamBit27_String            "NamBit27"
 #define ethercatmcInterlockFwd_String        "InterlockFwd"
 #define ethercatmcInterlockBwd_String        "InterlockBwd"
 #define ethercatmcFoffVisString              "FoffVis"
@@ -600,6 +602,8 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     int ethercatmcNamAux23_;
     int ethercatmcNamBit24_;
     int ethercatmcNamBit25_;
+    int ethercatmcNamBit26_;
+    int ethercatmcNamBit27_;
     int ethercatmcInterlockFwd_;
     int ethercatmcInterlockBwd_;
     int ethercatmcFoffVis_;           /* FOFF visible in GUI: motor can be calibrated with setPosition() */
