@@ -428,4 +428,16 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-CnenVis") {
     field(SCAN, "I/O Intr")
 }
 
+record(bi,"$(PREFIX)$(MOTOR_NAME)-InterlockF") {
+    field(DESC, "InterlockF")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))InterlockF")
+    field(SCAN, "I/O Intr")
+}
 
+record(bi,"$(PREFIX)$(MOTOR_NAME)-InterlockR") {
+    field(DESC, "InterlockR")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))InterlockR")
+    field(SCAN, "I/O Intr")
+}
