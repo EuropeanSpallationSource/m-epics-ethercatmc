@@ -994,8 +994,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setIntegerParam(pC_->motorStatusDone_, !nowMoving);
   }
   if (statusValid) {
-    int hls = idxReasonBits & 0x8 || (idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask) ? 1 : 0;
-    int lls = idxReasonBits & 0x4 || (idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask) ? 1 : 0;
+    int hls = idxReasonBits & 0x8;
+    int lls = idxReasonBits & 0x4;
     if (drvlocal.clean.auxBitsLocalModeMask) {
       localMode = idxAuxBits & drvlocal.clean.auxBitsLocalModeMask ? 1 : 0;;
     }
