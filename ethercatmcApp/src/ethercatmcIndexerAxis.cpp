@@ -648,11 +648,14 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   unsigned idxReasonBits = 0;
   unsigned idxAuxBits = 0;
   int homed = 0;
+  int motorRecDirection = -1;
   char nameAuxBits[36];
 
   /* Don't leave *moving un-initialized, if we return early */
   *moving = false;
   nameAuxBits[0] = '\0';
+  pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
+                       &motorRecDirection);
   if (!drvlocal.clean.iTypCode) {
     /* No axis, (may be dummy-axis 0), return */
     return asynSuccess;
@@ -1018,13 +1021,38 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     if (drvlocal.clean.auxBitsEnabledMask) {
       powerIsOn = idxAuxBits & drvlocal.clean.auxBitsEnabledMask ? 1 : 0;
     }
-    if (drvlocal.clean.auxBitsInterlockFwdMask) {
-      int interlockFwd = idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask ? 0 : 1;
-      setIntegerParam(pC_->defAsynPara.ethercatmcInterlockFwd_, interlockFwd);
-    }
-    if (drvlocal.clean.auxBitsInterlockBwdMask) {
-      int interlockBwd = idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask ? 0 : 1;
-      setIntegerParam(pC_->defAsynPara.ethercatmcInterlockBwd_, interlockBwd);
+    if (motorRecDirection >= 0) {
+      int interlockF = -1;
+      int interlockR = -1;
+      int functionR = -1;// pC_->defAsynPara.ethercatmcInterlockR_
+      int functionF = -1;// pC_->defAsynPara.ethercatmcInterlockR_
+      if (drvlocal.clean.auxBitsInterlockFwdMask) {
+        // Note the 2 different coordinate systems: Fwd/Bwd is MCU, F/R is motor
+        if (motorRecDirection == 0) {
+          functionF = pC_->defAsynPara.ethercatmcInterlockF_;
+          interlockF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
+        } else {
+          functionR = pC_->defAsynPara.ethercatmcInterlockR_;
+          interlockR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
+        }
+      }
+      if (drvlocal.clean.auxBitsInterlockBwdMask) {
+        if (motorRecDirection > 0) {
+          functionF = pC_->defAsynPara.ethercatmcInterlockF_;
+          interlockF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
+        } else {
+          functionR = pC_->defAsynPara.ethercatmcInterlockR_;
+          interlockR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
+        }
+      }
+      if (functionF > 0 && interlockF >= 0) {
+        setIntegerParam(functionF, interlockF);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, functionF, asynSuccess);
+      }
+      if (functionR > 0 && interlockR >= 0) {
+        setIntegerParam(functionR, interlockR);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, functionR, asynSuccess);
+      }
     }
     if (hasError || errorID) {
       char sErrorMessage[40];
@@ -1158,7 +1186,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   if (pC_->ctrlLocal.systemUTCtimeOffset)  {
     /* Motor position in "user coordinates" with UTC time from PTP */
     double motorRecOffset = 0.0;
-    int motorRecDirection = 1;
     int ethercatmcPTPallGood = 0;
     asynStatus RBV_TSEstatus = asynDisabled;
     double ethercatmcRBV_TSE = 0.0;
@@ -1166,8 +1193,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     pC_->getIntegerParam(0, pC_->defAsynPara.ethercatmcPTPallGood_, &ethercatmcPTPallGood);
     if ((!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
                               &motorRecOffset)) &&
-        (!pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_,
-                               &motorRecDirection)) &&
+        (motorRecDirection >= 0) &&
         (positionValid && statusValid && homed && (ethercatmcPTPallGood == 1))) {
       RBV_TSEstatus = asynSuccess;
     }
