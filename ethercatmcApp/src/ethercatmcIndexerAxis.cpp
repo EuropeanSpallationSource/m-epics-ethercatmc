@@ -991,13 +991,13 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setIntegerParam(pC_->motorStatusDone_, !nowMoving);
   }
   if (statusValid) {
-    int hls = idxReasonBits & 0x8 ? 1 : 0;
-    int lls = idxReasonBits & 0x4 ? 1 : 0;
+    int hls = idxReasonBits & 0x8 || (idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask) ? 1 : 0;
+    int lls = idxReasonBits & 0x4 || (idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask) ? 1 : 0;
     if (drvlocal.clean.auxBitsLocalModeMask) {
       localMode = idxAuxBits & drvlocal.clean.auxBitsLocalModeMask ? 1 : 0;;
     }
-    setIntegerParamLog(pC_->motorStatusLowLimit_, lls,  "LLS");
-    setIntegerParamLog(pC_->motorStatusHighLimit_, hls, "HLS");
+    setIntegerParam(pC_->motorStatusLowLimit_, lls);
+    setIntegerParam(pC_->motorStatusHighLimit_, hls);
     pC_->setUIntDigitalParam(axisNo_, pC_->defAsynPara.ethercatmcStatusBits_,
                              (epicsUInt32)statusReasonAux,
                              0x0FFFFFFF, 0x0FFFFFFF);
