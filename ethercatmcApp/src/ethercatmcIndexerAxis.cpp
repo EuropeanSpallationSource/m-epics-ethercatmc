@@ -1045,19 +1045,15 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                  "%c: TwinCAT Err %X", charEorW, errorID);
       }
       msgTxtFromDriver = sErrorMessage;
-    } else if (!powerIsOn) {
-#ifdef motorShowPowerOffString
-      ; // Let the asynMotorAxis show the text (PowerOff/PowerOff(Auto)
-#else
-      msgTxtFromDriver = "PowerOff";
-#endif
     } else if (localMode) {
       msgTxtFromDriver = "localMode";
       hasError = -1;
     } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
                                   drvlocal.clean.auxBitsInterlockBwdMask)) {
       // One or two of the interlock bits are set
-      if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+      if (!powerIsOn) {
+        msgTxtFromDriver = "PowerOff/Interlock";
+      } else if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
                                drvlocal.clean.auxBitsInterlockBwdMask)) ==
            drvlocal.clean.auxBitsInterlockFwdMask)) {
         msgTxtFromDriver = "InterlockFwd";
