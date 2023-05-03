@@ -12,6 +12,7 @@ EXT=opi
 
 HAS_ECMC=""
 HAS_PTP=""
+OPIMID_EGU_TEMP=motorx-egu-rbv.mid
 y0=16
 export y0 WIDTH HIGHT
 
@@ -57,6 +58,9 @@ genMatrix() {
     s)
       OPIMID=shutterx.mid
       ;;
+    temp)
+      OPIMID_EGU_TEMP=motorx-temp-rbv.mid
+      ;;
     x)
       haveseenX=$(($haveseenX + 1))
       ;;
@@ -77,6 +81,9 @@ genMatrix() {
       cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
       echo xcmd=$cmd "<$OPIMID"
       eval $cmd <$OPIMID >>$$
+      if test "$OPIMID_EGU_TEMP"; then
+        eval $cmd <$OPIMID_EGU_TEMP >>$$
+      fi
       im=$(($im + 1))
       ix=$(($ix + 1))
     done
