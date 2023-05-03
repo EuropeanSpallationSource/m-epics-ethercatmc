@@ -73,7 +73,7 @@ genMatrix() {
   shift
   numparameaten=$(($numparameaten + 1))
   done
-  echo genMatrix y0=$y0 iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX
+  echo genMatrix y0=$y0 iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX OPIMID_EGU_TEMP=$OPIMID_EGU_TEMP
   while test $iy -lt $YCNTMAX; do
     while test $ix -lt $XCNTMAX; do
       y=$(($y0 + $iy * $HIGHT))

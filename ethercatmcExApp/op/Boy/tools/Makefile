@@ -12,6 +12,7 @@ GNERATEDOPIS = \
   ../motor-6.opi  \
   ../motor-4x3.opi \
   ../motor-4x4.opi \
+  ../motor-4x4-temp.opi \
   ../ethercatmcaxisConfig.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
   ../ethercatmcaxisExpert-tc.opi \
@@ -43,6 +44,7 @@ DEPENDENCIES_FOR_MOTOR_OPI = Makefile
 DEPENDENCIES_FOR_MOTOR_OPI += genMotorShutter.sh
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.start
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.mid
+DEPENDENCIES_FOR_MOTOR_OPI += motorx-egu-rbv.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcHealthStatus.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcIPADDR_PORT.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcName.mid
@@ -146,6 +148,8 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 4 x 4
 
+../motor-4x4-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid
+	./genMotorShutter.sh $@ temp 4 x 4
 
   ../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
 	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
