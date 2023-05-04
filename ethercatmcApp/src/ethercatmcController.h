@@ -73,8 +73,8 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcNamBit25_String            "NamBit25"
 #define ethercatmcNamBit26_String            "NamBit26"
 #define ethercatmcNamBit27_String            "NamBit27"
-#define ethercatmcInterlockF_String          "InterlockF"
-#define ethercatmcInterlockR_String          "InterlockR"
+#define ethercatmcInhibitF_String            "InhibitF"
+#define ethercatmcInhibitR_String            "InhibitR"
 #define ethercatmcFoffVisString              "FoffVis"
 #define ethercatmcHomeVisString              "HomeVis"
 #define ethercatmcHomProc_RBString           "HomProc-RB"
@@ -604,8 +604,8 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     int ethercatmcNamBit25_;
     int ethercatmcNamBit26_;
     int ethercatmcNamBit27_;
-    int ethercatmcInterlockF_;
-    int ethercatmcInterlockR_;
+    int ethercatmcInhibitF_;
+    int ethercatmcInhibitR_;
     int ethercatmcFoffVis_;           /* FOFF visible in GUI: motor can be calibrated with setPosition() */
     int ethercatmcHomeVis_;           /* HOMF/HOMR visible in GUI (motor can be calibrated with a homing sequence */
     int ethercatmcHomProc_RB_;        /* Homing procedure (even called homing sequence) from MCU */

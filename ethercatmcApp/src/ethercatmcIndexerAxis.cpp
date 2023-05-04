@@ -1029,19 +1029,19 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       if (drvlocal.clean.auxBitsInterlockFwdMask) {
         // Note the 2 different coordinate systems: Fwd/Bwd is MCU, F/R is motor
         if (motorRecDirection == 0) {
-          functionF = pC_->defAsynPara.ethercatmcInterlockF_;
+          functionF = pC_->defAsynPara.ethercatmcInhibitF_;
           interlockF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
         } else {
-          functionR = pC_->defAsynPara.ethercatmcInterlockR_;
+          functionR = pC_->defAsynPara.ethercatmcInhibitR_;
           interlockR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
         }
       }
       if (drvlocal.clean.auxBitsInterlockBwdMask) {
         if (motorRecDirection > 0) {
-          functionF = pC_->defAsynPara.ethercatmcInterlockF_;
+          functionF = pC_->defAsynPara.ethercatmcInhibitF_;
           interlockF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
         } else {
-          functionR = pC_->defAsynPara.ethercatmcInterlockR_;
+          functionR = pC_->defAsynPara.ethercatmcInhibitR_;
           interlockR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
         }
       }

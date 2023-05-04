@@ -240,8 +240,8 @@ ethercatmcController::ethercatmcController(const char *portName,
   createParam(ethercatmcNamBit25_String,     asynParamOctet,       &defAsynPara.ethercatmcNamBit25_);
   createParam(ethercatmcNamBit26_String,     asynParamOctet,       &defAsynPara.ethercatmcNamBit26_);
   createParam(ethercatmcNamBit27_String,     asynParamOctet,       &defAsynPara.ethercatmcNamBit27_);
-  createParam(ethercatmcInterlockF_String,   asynParamInt32,       &defAsynPara.ethercatmcInterlockF_); // Interlock F in motor user coordinates
-  createParam(ethercatmcInterlockR_String,   asynParamInt32,       &defAsynPara.ethercatmcInterlockR_); // Interlock R in motor user coordinates
+  createParam(ethercatmcInhibitF_String,     asynParamInt32,       &defAsynPara.ethercatmcInhibitF_);   // Inhibit F in motor user coordinates
+  createParam(ethercatmcInhibitR_String,     asynParamInt32,       &defAsynPara.ethercatmcInhibitR_);   // Inhibit R in motor user coordinates
   createParam(ethercatmcPollScalingString,   asynParamInt32,       &defAsynPara.ethercatmcPollScaling_);
   createParam(ethercatmcCfgVELO_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgVELO_RB_);
   createParam(ethercatmcCfgVMAX_RBString,    asynParamFloat64,     &defAsynPara.ethercatmcCfgVMAX_RB_);
