@@ -1010,13 +1010,65 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setIntegerParam(pC_->motorStatusDone_, !nowMoving);
   }
   if (statusValid) {
-    int hls = idxReasonBits & 0x8;
-    int lls = idxReasonBits & 0x4;
+    /* Limit switches and interlocks gives inhibit */
+    int inhibitF = 0;
+    int inhibitR = 0;
+    int hls = 0;
+    int lls = 0;
+    /* When the MCU has an AUX bit for the limit switch (new version):
+       use that. If not: Use the reason bit (old version) */
+    if (drvlocal.clean.auxBitsLimitSwFwdMask) {
+      hls |= (idxAuxBits & drvlocal.clean.auxBitsLimitSwFwdMask);
+    } else {
+      hls |= (idxReasonBits & 0x8);
+    }
+    if (drvlocal.clean.auxBitsLimitSwBwdMask) {
+      lls |= (idxAuxBits & drvlocal.clean.auxBitsLimitSwBwdMask);
+    } else {
+      lls |= (idxReasonBits & 0x4);
+    }
     if (drvlocal.clean.auxBitsLocalModeMask) {
       localMode = idxAuxBits & drvlocal.clean.auxBitsLocalModeMask ? 1 : 0;;
     }
-    setIntegerParam(pC_->motorStatusLowLimit_, lls);
-    setIntegerParam(pC_->motorStatusHighLimit_, hls);
+    /* Set the integer parameter, 0 or 1, using !! */
+    setIntegerParam(pC_->motorStatusLowLimit_, !!lls);
+    setIntegerParam(pC_->motorStatusHighLimit_, !!hls);
+
+    if (motorRecDirection >= 0) {
+      int functionR = -1;
+      int functionF = -1;
+      if (drvlocal.clean.auxBitsInterlockFwdMask) {
+        // Note the 2 different coordinate systems: Fwd/Bwd is MCU, F/R is motor
+        if (motorRecDirection == 0) {
+          functionF = pC_->defAsynPara.ethercatmcInhibitF_;
+          inhibitF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
+        } else {
+          functionR = pC_->defAsynPara.ethercatmcInhibitR_;
+          inhibitR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
+        }
+      }
+      if (drvlocal.clean.auxBitsInterlockBwdMask) {
+        if (motorRecDirection > 0) {
+          functionF = pC_->defAsynPara.ethercatmcInhibitF_;
+          inhibitF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
+        } else {
+          functionR = pC_->defAsynPara.ethercatmcInhibitR_;
+          inhibitR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
+        }
+      }
+      /* In any case, inhibit is a combination of
+         localmode, limit switch or interlock */
+      inhibitF |= (hls | localMode);
+      inhibitR |= (lls | localMode);
+      if (functionF > 0) {
+        setIntegerParam(functionF, inhibitF);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, functionF, asynSuccess);
+      }
+      if (functionR > 0 ) {
+        setIntegerParam(functionR, inhibitR);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, functionR, asynSuccess);
+      }
+    }
     pC_->setUIntDigitalParam(axisNo_, pC_->defAsynPara.ethercatmcStatusBits_,
                              (epicsUInt32)statusReasonAux,
                              0x0FFFFFFF, 0x0FFFFFFF);
@@ -1036,39 +1088,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
     if (drvlocal.clean.auxBitsEnabledMask) {
       powerIsOn = idxAuxBits & drvlocal.clean.auxBitsEnabledMask ? 1 : 0;
-    }
-    if (motorRecDirection >= 0) {
-      int interlockF = -1;
-      int interlockR = -1;
-      int functionR = -1;// pC_->defAsynPara.ethercatmcInterlockR_
-      int functionF = -1;// pC_->defAsynPara.ethercatmcInterlockR_
-      if (drvlocal.clean.auxBitsInterlockFwdMask) {
-        // Note the 2 different coordinate systems: Fwd/Bwd is MCU, F/R is motor
-        if (motorRecDirection == 0) {
-          functionF = pC_->defAsynPara.ethercatmcInhibitF_;
-          interlockF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
-        } else {
-          functionR = pC_->defAsynPara.ethercatmcInhibitR_;
-          interlockR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
-        }
-      }
-      if (drvlocal.clean.auxBitsInterlockBwdMask) {
-        if (motorRecDirection > 0) {
-          functionF = pC_->defAsynPara.ethercatmcInhibitF_;
-          interlockF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
-        } else {
-          functionR = pC_->defAsynPara.ethercatmcInhibitR_;
-          interlockR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
-        }
-      }
-      if (functionF > 0 && interlockF >= 0) {
-        setIntegerParam(functionF, interlockF);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, functionF, asynSuccess);
-      }
-      if (functionR > 0 && interlockR >= 0) {
-        setIntegerParam(functionR, interlockR);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, functionR, asynSuccess);
-      }
     }
     if (hasError || errorID) {
       char sErrorMessage[40];
