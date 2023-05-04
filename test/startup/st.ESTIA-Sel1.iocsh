@@ -208,6 +208,7 @@ epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
 
 #
 # Axis 15
