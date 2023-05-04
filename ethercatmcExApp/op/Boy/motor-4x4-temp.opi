@@ -1585,7 +1585,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M1)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -3047,7 +3057,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M2)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -4509,7 +4529,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M3)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -5971,7 +6001,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M4)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -7433,7 +7473,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M5)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -8895,7 +8945,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M6)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -10357,7 +10417,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M7)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -11819,7 +11889,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M8)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -13281,7 +13361,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M9)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -14743,7 +14833,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M10)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -16205,7 +16305,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M11)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -17667,7 +17777,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M12)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -19129,7 +19249,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M13)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -20591,7 +20721,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M14)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -22053,7 +22193,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M15)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
@@ -23515,7 +23665,17 @@ $(pv_value)</tooltip>
     </font>
     <width>70</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M16)-Temp.SEVR</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>
