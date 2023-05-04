@@ -1,0 +1,269 @@
+require ethercatmc,USER
+
+epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=10.102.16.13)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("PREFIX",        "$(SM_PREFIX=ESTIA-Sel1:MC-MCU-01:)")
+epicsEnvSet("ECM_NUMAXES",   "18")
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.82.112.102.1.1;amsNetIdLocal=10.102.16.12.1.1")
+
+# No poller yet, see ethercatmcStartPoller at the end of the script
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
+
+< ethercatmcController.iocsh
+
+
+# Common to all axes
+epicsEnvSet("EGU",           "$(SM_EGU=mm)")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("DESC",          "motor")
+
+#
+# Axis 1
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr1)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 2
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr2)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 3
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr3)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 4
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr4)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 5
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr5)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=5)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 6
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr6)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=6)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+< ethercatmcOpenClutch.iocsh
+
+#
+# Axis 7
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr7)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=7)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 8
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr8)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=8)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+epicsEnvSet("AUXBITS07",     "HexScrew")
+< ethercatmcAuxBitAsMbbiRecord.iocsh
+
+#
+# Axis 9
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr9)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=9)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+epicsEnvSet("AUXBITS07",     "HexScrew")
+< ethercatmcAuxBitAsMbbiRecord.iocsh
+
+#
+# Axis 10
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr10)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=10)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 11
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr11)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=11)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 12
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr12)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=12)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+< ethercatmcOpenClutch.iocsh
+
+#
+# Axis 13
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr13)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=13)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 14
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr14)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=14)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 15
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr15)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=15)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 16
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr16)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=16)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 17
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr17)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=17)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Axis 18
+#
+###############################################
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr18)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=18)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcMotorTemp.iocsh
+
+#
+# Start polling, values are in millisconds
+#
+epicsEnvSet("MOVINGPOLLPERIOD", "500")
+epicsEnvSet("IDLEPOLLPERIOD",   "500")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
