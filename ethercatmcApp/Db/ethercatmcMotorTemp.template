@@ -6,6 +6,6 @@ record(ai, "$(PREFIX)$(MOTOR_NAME)-Temp")
     field(PREC,  "$(PREC=1)")
     field(ADEL,  "0.11")
     field(MDEL,  "0.11")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))Temp")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MotorTemp")
     field(SCAN, "I/O Intr")
 }
