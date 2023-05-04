@@ -271,6 +271,22 @@ void ethercatmcIndexerAxis::setAuxBitsInterlockBwdMask(unsigned auxBitsInterlock
   drvlocal.clean.auxBitsInterlockBwdMask = auxBitsInterlockBwdMask;
 }
 
+void ethercatmcIndexerAxis::setAuxBitsLimitSwFwdMask(unsigned auxBitsLimitSwFwdMask)
+{
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) auxBitsLimitSwFwdMask=0x%X\n",
+            modNamEMC, axisNo_, auxBitsLimitSwFwdMask);
+  drvlocal.clean.auxBitsLimitSwFwdMask = auxBitsLimitSwFwdMask;
+}
+
+void ethercatmcIndexerAxis::setAuxBitsLimitSwBwdMask(unsigned auxBitsLimitSwBwdMask)
+{
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) auxBitsLimitSwBwdMask=0x%X\n",
+            modNamEMC, axisNo_, auxBitsLimitSwBwdMask);
+  drvlocal.clean.auxBitsLimitSwBwdMask = auxBitsLimitSwBwdMask;
+}
+
 void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex)
 {
   size_t pollNowIdx;

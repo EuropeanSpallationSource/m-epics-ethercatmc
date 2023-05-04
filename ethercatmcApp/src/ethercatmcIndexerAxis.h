@@ -75,6 +75,8 @@ public:
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
   void setAuxBitsInterlockFwdMask(unsigned auxBitsInterlockFwdMask);
   void setAuxBitsInterlockBwdMask(unsigned auxBitsInterlockBwdMask);
+  void setAuxBitsLimitSwFwdMask(unsigned auxBitsLimitSwFwdMask);
+  void setAuxBitsLimitSwBwdMask(unsigned auxBitsLimitSwBwdMask);
   void setAuxBitsEnabledMask(unsigned auxBitsEnabledMask);
   void setAuxBitsLocalModeMask(unsigned auxBitsLocalModeMask);
   void setAuxBitsHomeSwitchMask(unsigned auxBitsHomeSwitchMask);
@@ -119,6 +121,8 @@ private:
       unsigned auxBitsHomeSwitchMask;
       unsigned auxBitsInterlockFwdMask;
       unsigned auxBitsInterlockBwdMask;
+      unsigned auxBitsLimitSwFwdMask;
+      unsigned auxBitsLimitSwBwdMask;
       unsigned old_paramCtrl;
       unsigned old_idxAuxBits;
       unsigned int hasProblem :1;

@@ -467,6 +467,10 @@ ethercatmcController::newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
             pAxis->setAuxBitsInterlockFwdMask(1 << auxBitIdx);
           } else if (!strcmp("InterlockBwd", auxBitName)) {
             pAxis->setAuxBitsInterlockBwdMask(1 << auxBitIdx);
+          } else if (!strcmp("LimitSwFwd", auxBitName)) {
+            pAxis->setAuxBitsLimitSwFwdMask(1 << auxBitIdx);
+          } else if (!strcmp("LimitSwBwd", auxBitName)) {
+            pAxis->setAuxBitsLimitSwBwdMask(1 << auxBitIdx);
           }
         }
       } else {

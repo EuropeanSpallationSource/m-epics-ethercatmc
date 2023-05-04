@@ -726,6 +726,10 @@ ethercatmcController::indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
           pAxis->setAuxBitsInterlockFwdMask(1 << bit_number);
         } else if (!strcmp("InterlockBwd", flag_name)) {
           pAxis->setAuxBitsInterlockBwdMask(1 << bit_number);
+        } else if (!strcmp("LimitSwFwd", flag_name)) {
+          pAxis->setAuxBitsLimitSwFwdMask(1 << bit_number);
+        } else if (!strcmp("LimitSwBwd", flag_name)) {
+          pAxis->setAuxBitsLimitSwBwdMask(1 << bit_number);
         }
         descID = prev_descriptor_id;
       }
