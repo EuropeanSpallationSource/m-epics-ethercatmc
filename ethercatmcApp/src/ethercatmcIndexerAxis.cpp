@@ -1058,8 +1058,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       }
       /* In any case, inhibit is a combination of
          localmode, limit switch or interlock */
-      inhibitF |= (hls | localMode);
-      inhibitR |= (lls | localMode);
+      inhibitF |= (hls | localMode | (idxReasonBits & 0x8));
+      inhibitR |= (lls | localMode | (idxReasonBits & 0x4));
       if (functionF > 0) {
         setIntegerParam(functionF, inhibitF);
         pC_->setAlarmStatusSeverityWrapper(axisNo_, functionF, asynSuccess);
