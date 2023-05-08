@@ -1510,6 +1510,7 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
           pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynDisconnected);
         }
       }
+      updateMsgTxtFromDriver(NULL);
       memset(&drvlocal.clean, 0, sizeof(drvlocal.clean));
       memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
     }
