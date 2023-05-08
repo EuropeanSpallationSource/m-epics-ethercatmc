@@ -445,9 +445,9 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
     },
       "SimAxis1",
-      { "notHomed", "enabled", "", "", "", "", "", "",
+      { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", ""},
+        "", "", "", "", "", "", "enabled", "notHomed"},
       5.0, 175.0
     },
     /* device for encoderRaw */
@@ -525,9 +525,9 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
      /* 240..204 */ permPNone, permPNone, permPNone, permPNone, permPNone
     },
       "RotAxis2",
-      { "notHomed", "enabled", "", "", "", "", "", "",
+      { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", ""},
+        "", "", "", "", "", "", "enabled", "notHomed"},
       -181.0, +181.0
     },
     /* device for encoderRaw */
