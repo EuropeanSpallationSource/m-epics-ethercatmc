@@ -197,6 +197,7 @@ extern "C" {
      into the asynParameter library and vice-versa */
   typedef struct {
     int            axisNo;      /* 0 is the controller */
+    int            functionDescField; /* Function for DESC field, if any */
     int            functionNamAux0; /* Function for name if bit0, if any */
     int            functionStatusBits; /* Function for status bits */
     unsigned       inputOffset; /* offset inside the "plc memory bytes" */
@@ -502,6 +503,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
                                           void *data, size_t lenInPlc);
   int  addPilsAsynDevLst(int           axisNo,
                          const char    *paramName,
+                         const char    *paramDescField,
                          int           functionNamAux0,
                          int           functionStatusBits,
                          unsigned      lenInPLC,

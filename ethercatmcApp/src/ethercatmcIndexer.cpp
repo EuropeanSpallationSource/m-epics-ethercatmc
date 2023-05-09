@@ -1123,6 +1123,7 @@ asynStatus ethercatmcController::indexerInitialPoll(void)
 
 int ethercatmcController::addPilsAsynDevLst(int           axisNo,
                                             const char    *paramName,
+                                            const char    *paramDescField,
                                             int           functionNamAux0,
                                             int           functionStatusBits,
                                             unsigned      lenInPLC,
@@ -1139,6 +1140,7 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
 
   asynStatus status;
   int function = 0;
+  int functionDescField = 0;
   pilsAsynDevInfo_type *pPilsAsynDevInfo
     = &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
@@ -1189,8 +1191,19 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
       if (status != asynSuccess) return -1;
     }
   }
+  if (paramDescField) {
+    char  descName[64];
+    asynStatus status;
+    snprintf(descName, sizeof(descName), "%s_DESC", paramName);
+    status = ethercatmcCreateParam(descName, asynParamOctet, &functionDescField);
+    if (status == asynSuccess) {
+      setStringParam(axisNo, functionDescField, paramDescField);
+      setAlarmStatusSeverityWrapper(axisNo, functionDescField, asynSuccess);
+    }
+  }
 
   pPilsAsynDevInfo->axisNo           = axisNo;
+  pPilsAsynDevInfo->functionDescField = functionDescField;
   pPilsAsynDevInfo->functionNamAux0  = functionNamAux0;
   pPilsAsynDevInfo->functionStatusBits = functionStatusBits;
   pPilsAsynDevInfo->lenInPLC         = lenInPLC;
@@ -1234,23 +1247,28 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
   struct {
     char     name[80];      /* 34 + some spare */
     unsigned axisNoOrIndex;
-  } splitedParamNameNumber;
+    char     desc[80];
+  } splitedParamNameNumberDesc;
 
-  if (strlen(paramName) < sizeof(splitedParamNameNumber.name)) {
+  if ((strlen(paramName) < sizeof(splitedParamNameNumberDesc.name)) &&
+      (strlen(paramName) < sizeof(splitedParamNameNumberDesc.desc))) {
     /* Need to split the parameter, like "EPOCHEL1252P#1" */
     int nvals;
-    memset(&splitedParamNameNumber, 0, sizeof(splitedParamNameNumber));
-    nvals = sscanf(paramName, "%[^#]#%u",
-                   &splitedParamNameNumber.name[0],
-                   &splitedParamNameNumber.axisNoOrIndex);
+    memset(&splitedParamNameNumberDesc, 0, sizeof(splitedParamNameNumberDesc));
+    /* Try the long form: Temp#1#Temp of chassis */
+    nvals = sscanf(paramName, "%[^#]#%u#%[^#]",
+                   &splitedParamNameNumberDesc.name[0],
+                   &splitedParamNameNumberDesc.axisNoOrIndex,
+                   &splitedParamNameNumberDesc.desc[0]);
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s axisNo=%d iTypCode=0x%04X nvals=%d name=\"%s\" axisNoOrIndex=%u\n",
+              "%s%s axisNo=%d iTypCode=0x%04X nvals=%d name='%s' axisNoOrIndex=%u desc='%s'\n",
               modNamEMC, functionName, axisNo, iTypCode, nvals,
-              &splitedParamNameNumber.name[0],
-              splitedParamNameNumber.axisNoOrIndex);
-    if (nvals == 2) {
-      int newAxisNo = (int)splitedParamNameNumber.axisNoOrIndex;
-      paramName = &splitedParamNameNumber.name[0];
+              &splitedParamNameNumberDesc.name[0],
+              splitedParamNameNumberDesc.axisNoOrIndex,
+              &splitedParamNameNumberDesc.desc[0]);
+    if (nvals >= 2) {
+      int newAxisNo = (int)splitedParamNameNumberDesc.axisNoOrIndex;
+      paramName = &splitedParamNameNumberDesc.name[0];
       axisNo = newAxisNo;
     }
   }
@@ -1423,6 +1441,7 @@ int ethercatmcController::newPilsAsynDevice(int      axisNo,
   }
   return addPilsAsynDevLst(axisNo,
                            paramName,
+                           splitedParamNameNumberDesc.desc[0] ? &splitedParamNameNumberDesc.desc[0] : NULL,
                            functionNamAux0,
                            functionStatusBits,
                            lenInPLC,

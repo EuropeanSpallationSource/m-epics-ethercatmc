@@ -171,7 +171,7 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
   unsigned firstDeviceStartOffset = (unsigned)-1; /* Will be decreased while we go */
   unsigned lastDeviceEndOffset = 0;  /* will be increased while we go */
   struct {
-    char desc[34];
+    char desc[81];
     char vers[34];
     char author1[81];
     char author2[81];
