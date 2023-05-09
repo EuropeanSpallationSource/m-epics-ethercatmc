@@ -496,6 +496,8 @@ extern "C" int ethercatmcCreateAsynParam(const char *ethercatmcName,
 #else
     myEPICSParamType = asynParamFloat64;
 #endif
+  } else if (!strcmp(paramType, "Octet")) {
+    myEPICSParamType = asynParamOctet;
   } else {
     printf("ethercatmcCreateAsynParam: paramType=%s not supported\n",
            paramType);
