@@ -336,9 +336,9 @@ ethercatmcController::writeReadControllerADS(asynUser *pasynUser,
   EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
   ethercatmcamsdump(pasynUser, tracelevel, "OUT", outdata, outlen);
   ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
-  ethercatmcamsdump(pasynUser, tracelevel, "IN1 ", indata, nread1);
   ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1);
   if (nread2) {
+    ethercatmcamsdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2);
     ethercatmchexdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2);
   }
   if ((status == asynTimeout) || (errorProblem & 8)) {
@@ -525,7 +525,7 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
       status = asynError;
     } else if (ads_length != lenInPlc) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
-                  "%s:%d lenInPlc=%lu ads_length=%u\n",
+                  "%s:%d ERROR lenInPlc=%lu ads_length=%u\n",
                   fileName, lineNo,
                   (unsigned long)lenInPlc,(unsigned)ads_length);
         status = asynError;
