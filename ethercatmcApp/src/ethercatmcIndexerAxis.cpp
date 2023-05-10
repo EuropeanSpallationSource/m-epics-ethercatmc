@@ -1404,10 +1404,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
         showPowerOff = 1;
       }
     }
-    if (drvlocal.dirty.initialPollNeeded) {
-      snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-               "%c: %s", charEorW, "Communication");
-    } else if (showPowerOff) {
+    if (showPowerOff) {
       snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
                "%c: %s", charEorW, "PowerOff");
     } else if (hasError) {
@@ -1424,6 +1421,11 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                "%c: %s", charEorW, "Axis not homed");
     }
     setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, &sErrorMessage[0]);
+    /* TODO:
+    axis can not be moved at all: poweroff, localmode, interlock
+    axis can be partly moved: Limit switch, interlock Fwd/Bwd
+    axis is not homed ???
+    axis can be moved */
   }
 
   drvlocal.clean.old_idxAuxBits  = idxAuxBits;

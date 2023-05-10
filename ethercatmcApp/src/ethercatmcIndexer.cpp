@@ -1789,6 +1789,7 @@ void ethercatmcController::indexerDisconnected(void)
   }
   for (int axisNo=0; axisNo<numAxes_; axisNo++) {
     setIntegerParam(axisNo, motorStatusGainSupport_, 0);
+    setStringParam(axisNo, defAsynPara.ethercatmcErrTxt_, "E: Communication");
     for (int function = defAsynPara.ethercatmcNamAux0_;
          function < defAsynPara.ethercatmcNamAux0_ + MAX_AUX_BIT_SHOWN;
          function++) {
