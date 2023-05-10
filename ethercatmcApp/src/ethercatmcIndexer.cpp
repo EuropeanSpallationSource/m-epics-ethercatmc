@@ -1196,6 +1196,10 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
     asynStatus status;
     snprintf(descName, sizeof(descName), "%s_DESC", paramName);
     status = ethercatmcCreateParam(descName, asynParamOctet, &functionDescField);
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+              "%s%s(%u) paramDescField descName='%s' functionDescField=%d  status=%s (%d)\n",
+              modNamEMC, functionName, axisNo, descName, functionDescField,
+              ethercatmcstrStatus(status), (int)status);
     if (status == asynSuccess) {
       setStringParam(axisNo, functionDescField, paramDescField);
       setAlarmStatusSeverityWrapper(axisNo, functionDescField, asynSuccess);
