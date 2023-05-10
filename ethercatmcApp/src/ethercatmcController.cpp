@@ -193,6 +193,7 @@ ethercatmcController::ethercatmcController(const char *portName,
   /* inputs: do not change too much without updating setAlarmStatusSeverityAllReadbacks() */
   createParam(ethercatmcMcuErrString,        asynParamInt32,       &defAsynPara.ethercatmcMcuErr_);
   createParam(ethercatmcErrIdString,         asynParamInt32,       &defAsynPara.ethercatmcErrId_);
+  createParam(ethercatmcErrTxtString,        asynParamOctet,       &defAsynPara.ethercatmcErrTxt_);
 
   createParam(ethercatmcRawEncStepString,    asynParamInt32,       &defAsynPara.ethercatmcRawEncStep_);
   createParam(ethercatmcRawMtrStepString,    asynParamInt32,       &defAsynPara.ethercatmcRawMtrStep_);

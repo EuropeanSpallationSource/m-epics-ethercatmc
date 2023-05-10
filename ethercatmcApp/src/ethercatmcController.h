@@ -41,6 +41,7 @@ FILENAME...   ethercatmcController.h
 #endif
 
 #define ethercatmcMcuErrString               "MCUErr"
+#define ethercatmcErrTxtString               "ErrTxt"
 #define ethercatmcErrIdString                "ErrorID"
 #define ethercatmcStatusCodeString           "StatusCode"
 #define ethercatmcStatusBitsString           "StatusBits"
@@ -657,6 +658,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     int ethercatmcCfgDESC_RB_;
     int ethercatmcCfgEGU_RB_;
     int ethercatmcErrId_;
+    int ethercatmcErrTxt_;
   } defAsynPara;
 
 

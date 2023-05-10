@@ -703,6 +703,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                                          asynSuccess);
       pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->defAsynPara.ethercatmcErrId_,
                                          asynSuccess);
+      pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->defAsynPara.ethercatmcErrTxt_,
+                                         asynSuccess);
       updateMsgTxtFromDriver(NULL);
     }
   }
@@ -1381,6 +1383,49 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                                newParamCtrl, sizeof(newParamCtrl));
     }
   }
+
+  {
+    /* extra Error Text, only showing errors, no info
+       Most important things, in the order that the operator
+       can (try to) fix things:
+       - Wait for the communication IOC - MCU to be established
+       - power on the axis (if needed, because there is no auto-power-on)
+       - reset the axis, if there is an error
+       - home the axis, if not homed */
+    char sErrorMessage[40];
+    const char charEorW = 'E';
+    int showPowerOff = 0;
+    memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
+    if (!powerIsOn) {
+      int motorPowerAutoOnOff;
+      pC_->getIntegerParam(axisNo_,pC_->motorPowerAutoOnOff_,
+                           &motorPowerAutoOnOff);
+      if (!motorPowerAutoOnOff) {
+        showPowerOff = 1;
+      }
+    }
+    if (drvlocal.dirty.initialPollNeeded) {
+      snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+               "%c: %s", charEorW, "Communication");
+    } else if (showPowerOff) {
+      snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+               "%c: %s", charEorW, "PowerOff");
+    } else if (hasError) {
+      const char *errIdString = errStringFromErrId(errorID);
+      if (errIdString[0]) {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
+                 charEorW, errIdString, errorID);
+      } else {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                 "%c: TwinCAT Err %X", charEorW, errorID);
+      }
+    } else if (!homed) {
+      snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+               "%c: %s", charEorW, "Axis not homed");
+    }
+    setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, &sErrorMessage[0]);
+  }
+
   drvlocal.clean.old_idxAuxBits  = idxAuxBits;
   drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
   drvlocal.dirty.idxStatusCode   = idxStatusCode;
@@ -1511,6 +1556,8 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
         }
       }
       updateMsgTxtFromDriver(NULL);
+    }
+    if (value) {
       memset(&drvlocal.clean, 0, sizeof(drvlocal.clean));
       memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
     }
