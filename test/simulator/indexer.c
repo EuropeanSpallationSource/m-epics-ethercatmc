@@ -30,6 +30,7 @@
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
 #define TYPECODE_STATUSWORD_1802 0x1802
 #define TYPECODE_DISCRETEINPUT_1A04 0x1A04
+#define TYPECODE_ANALOGINPUT_1B04   0x1B04
 #define TYPECODE_DISCRETEOUTPUT_1604 0x1604
 //#define TYPECODE_PARAMDEVICE_5008 0x5008
 
@@ -43,6 +44,7 @@
 #define WORDS_DISCRETEOUTPUT_1604    0x4
 #define WORDS_STATUSWORD_1802         0x2
 #define WORDS_DISCRETEINPUT_1A04      0x4
+#define WORDS_ANALOGINPUT_1B04        0x4
 //#define WORDS_PARAMDEVICE_5008       0x8
 #define WORDS_PARAMDEVICE_5010      0x10
 
@@ -77,6 +79,7 @@
    + 4 raw encoders
    + 4 1604 (open clutch)
    + 1 1E04
+   + 1 1B04 (anlog input)
 */
 #define NUM_INDEXERS        1
 
@@ -95,7 +98,8 @@
 #define  NUM_5010           4
 #define  NUM_DISCRET_IN     1
 #define  NUM_DISCRET_OUT    1
-#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1802 + NUM_1E04 + NUM_DISCRET_IN + NUM_DISCRET_OUT)
+#define  NUM_ANALOG_IN      1
+#define  NUM_DEVICES        (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1802 + NUM_1E04 + NUM_DISCRET_IN + NUM_DISCRET_OUT + NUM_ANALOG_IN)
 
 
 typedef enum {
@@ -276,6 +280,11 @@ typedef struct {
   uint8_t   actualValue[4];
   uint8_t   statusReasonAux32[4];
 } netDevice1A04interface_type;
+
+typedef struct {
+  uint8_t   actualValue[4];
+  uint8_t   statusReasonAux32[4];
+} netDevice1B04interface_type;
 
 #ifdef HAS_1E04_SHUTTER
 typedef struct {
@@ -724,6 +733,28 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
        1.0, 5.0
     }
 #endif
+    /* device for analog input with status word */
+    ,{ TYPECODE_ANALOGINPUT_1B04, 2*WORDS_ANALOGINPUT_1B04,
+       UNITCODE_NONE, 0,
+       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+       //"ANALOGINPUT#1#AnalogInWithStatus",
+       "ANALOGINPUT#1",
+       { "", "", "", "", "", "", "", "",
+         "", "", "", "", "", "", "", "",
+         "", "", "", "", "", "", "", "" },
+       180.0, -1.0
+    }
+#if 0
+    ,{ 0, 0,
+       UNITCODE_NONE, 0,
+       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+       "",
+       { "", "", "", "", "", "", "", "",
+         "", "", "", "", "", "", "", "",
+         "", "", "", "", "", "", "", "" },
+       0.0, 0.0
+    }
+#endif
   };
 
 
@@ -759,6 +790,7 @@ static union {
     /* Remember that motor[0] is defined, but never used */
     netDevice5010_1202_Interface_type motors5010_1202[NUM_MOTORS5010];
     netDevice1E04interface_type motors1E04[NUM_1E04];
+    netDevice1B04interface_type analogInput1B04[1];
   } memoryStruct;
 } netData;
 
@@ -1989,6 +2021,30 @@ void indexerHandlePLCcycle(void)
       {
         if (!strcmp("DISCRETEINPUT#1", indexerDeviceAbsStraction[devNum].devName)) {
           ; /* Done in DISCRETEOUTPUT#0 */
+        } else {
+          LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n",
+                  __FILE__, __FUNCTION__, __LINE__,
+                  devNum,
+                  indexerDeviceAbsStraction[devNum].devName,
+                  indexerDeviceAbsStraction[devNum].typeCode);
+        }
+      }
+      break;
+    case TYPECODE_ANALOGINPUT_1B04:
+      {
+        //if (!strcmp("ANALOGINPUT#1#AnalogInWithStatus",
+        if (!strcmp("ANALOGINPUT#1",
+                    indexerDeviceAbsStraction[devNum].devName)) {
+#if 0
+          /* Copy the readback of motor 1 */
+          int axisNo = 1;
+          double fRet = getMotorPos(axisNo);
+          unsigned nValue = 0;
+          DOUBLETONET(fRet, netData.memoryStruct.analogInput1B04[0].actualValue);
+          UINTTONET(nValue, netData.memoryStruct.analogInput1B04[0].statusReasonAux32);
+#else
+          ;
+#endif
         } else {
           LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n",
                   __FILE__, __FUNCTION__, __LINE__,
