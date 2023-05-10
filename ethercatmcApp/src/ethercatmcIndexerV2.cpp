@@ -160,6 +160,9 @@ asynStatus ethercatmcController::readDeviceIndexerV2FL(unsigned devNum,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
+  if (buflen > ctrlLocal.indexerMaxDataSize) {
+    buflen  = ctrlLocal.indexerMaxDataSize;
+  }
   status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset +  1*2,
                                           bufptr, buflen);
   return status;
@@ -299,6 +302,7 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
       /* We find the name of the MCU here */
       setStringParam(0, motorMessageText_, descVersAuthors.desc);
 #endif
+      ctrlLocal.indexerMaxDataSize = iSizeBytes - 2; /* 2 bytes for device num */
     }
     switch (iTypCode) {
     case 0x1802:

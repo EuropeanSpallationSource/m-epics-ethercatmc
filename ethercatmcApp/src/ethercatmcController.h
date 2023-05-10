@@ -531,6 +531,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
 
   struct {
     uint8_t      *pIndexerProcessImage;
+    unsigned int indexerMaxDataSize;
     asynStatus   oldStatus;
     uint32_t     old_ams_errorCode;
     unsigned int cntADSstatus;
