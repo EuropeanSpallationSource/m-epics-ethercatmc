@@ -46,9 +46,9 @@ void handleADSread(int fd, ams_hdr_type *ams_hdr_p)
            indexGroup, indexOffset,len_in_PLC,
            (unsigned)payload_len, (unsigned)total_len_reply);
   ADS_Read_rep_p->response.lenght_0 = (uint8_t)(len_in_PLC);
-  ADS_Read_rep_p->response.lenght_1 = (uint8_t)(len_in_PLC << 8);
-  ADS_Read_rep_p->response.lenght_2 = (uint8_t)(len_in_PLC << 16);
-  ADS_Read_rep_p->response.lenght_3 = (uint8_t)(len_in_PLC << 24);
+  ADS_Read_rep_p->response.lenght_1 = (uint8_t)(len_in_PLC >> 8);
+  ADS_Read_rep_p->response.lenght_2 = (uint8_t)(len_in_PLC >> 16);
+  ADS_Read_rep_p->response.lenght_3 = (uint8_t)(len_in_PLC >> 24);
   indexerHandlePLCcycle();
   {
     uint8_t *data_ptr = (uint8_t *)ADS_Read_rep_p + sizeof(*ADS_Read_rep_p);
@@ -313,6 +313,24 @@ send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
   ams_hdr_p->lenght_1 = (uint8_t)(ams_payload_len >> 8);
   ams_hdr_p->lenght_2 = (uint8_t)(ams_payload_len >> 16);
   ams_hdr_p->lenght_3 = (uint8_t)(ams_payload_len >> 24);
+
+  LOGINFO7("%s/%s:%d ADS_Readcmd total_len_reply=%u ams_tcp_header_len=%u tcplen_0=%u tcplen_1=%u tcplen_2=%u tcplen_3=%u\n",
+           __FILE__,__FUNCTION__, __LINE__,
+          (unsigned)total_len_reply,
+          (unsigned)ams_tcp_header_len,
+          ams_hdr_p->ams_tcp_header.lenght_0,
+          ams_hdr_p->ams_tcp_header.lenght_1,
+          ams_hdr_p->ams_tcp_header.lenght_2,
+          ams_hdr_p->ams_tcp_header.lenght_3);
+
+  LOGINFO7("%s/%s:%d ADS_Readcmd total_len_reply=%u ams_payload_len=%u lenght_0=%u lenght_1=%u lenght_2=%u lenght_3=%u\n",
+           __FILE__,__FUNCTION__, __LINE__,
+          (unsigned)total_len_reply,
+          (unsigned)ams_payload_len,
+          ams_hdr_p->lenght_0,
+          ams_hdr_p->lenght_1,
+          ams_hdr_p->lenght_2,
+          ams_hdr_p->lenght_3);
 
   send_to_socket(fd, ams_hdr_p, len_to_socket);
   switch (simulatedNetworkProblem) {
