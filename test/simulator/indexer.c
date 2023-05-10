@@ -749,7 +749,7 @@ static union {
       netInfoType3_type  infoType3;
       netInfoType4_type  infoType4;
       netInfoType15_type infoType15;
-    } indexer;
+    } indexer_info;
     netDevice1802interface_type statusWord1802[NUM_1802];
     netDevice1A04interface_type discreteInput1A04[1];
     netDevice1604interface_type discreteOutput1604[1];
@@ -1624,7 +1624,7 @@ static int indexerHandleIndexerCmd(unsigned offset,
            __FILE__, __FUNCTION__, __LINE__,
            offset, lenInPlc,
            uValue, devNum, maxDevNum, infoType);
-  memset(&netData.memoryStruct.indexer, 0, sizeof(netData.memoryStruct.indexer));
+  memset(&netData.memoryStruct.indexer_info, 0, sizeof(netData.memoryStruct.indexer_info));
   UINTTONET(uValue, netData.memoryStruct.indexer_ack);
   if (devNum >= NUM_DEVICES) {
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
@@ -1634,20 +1634,20 @@ static int indexerHandleIndexerCmd(unsigned offset,
   case 0:
     /* get values from device table */
     UINTTONET(indexerDeviceAbsStraction[devNum].typeCode,
-              netData.memoryStruct.indexer.infoType0.typeCode);
+              netData.memoryStruct.indexer_info.infoType0.typeCode);
     UINTTONET(indexerDeviceAbsStraction[devNum].sizeInBytes,
-              netData.memoryStruct.indexer.infoType0.size);
+              netData.memoryStruct.indexer_info.infoType0.size);
     UINTTONET(indexerDeviceAbsStraction[devNum].unitCode,
-              netData.memoryStruct.indexer.infoType0.unit);
+              netData.memoryStruct.indexer_info.infoType0.unit);
     DOUBLETONET(indexerDeviceAbsStraction[devNum].absMin,
-                netData.memoryStruct.indexer.infoType0.absMin);
+                netData.memoryStruct.indexer_info.infoType0.absMin);
     DOUBLETONET(indexerDeviceAbsStraction[devNum].absMax,
-                netData.memoryStruct.indexer.infoType0.absMax);
+                netData.memoryStruct.indexer_info.infoType0.absMax);
     if (!devNum) {
       /* The indexer himself. */
       unsigned flags = 0x80000000; /* extended indexer */
-      UINTTONET(offsetIndexer, netData.memoryStruct.indexer.infoType0.offset);
-      UINTTONET(flags, netData.memoryStruct.indexer.infoType0.flags);
+      UINTTONET(offsetIndexer, netData.memoryStruct.indexer_info.infoType0.offset);
+      UINTTONET(flags, netData.memoryStruct.indexer_info.infoType0.flags);
     } else {
       unsigned auxIdx;
       unsigned flags = 0;
@@ -1656,9 +1656,9 @@ static int indexerHandleIndexerCmd(unsigned offset,
         init_axis((int)axisNo);
         if (indexerDeviceAbsStraction[devNum].typeCode == 0x5010) {
           DOUBLETONET(getLowHardLimitPos((int)axisNo),
-                      netData.memoryStruct.indexer.infoType0.absMin);
+                      netData.memoryStruct.indexer_info.infoType0.absMin);
           DOUBLETONET(getHighHardLimitPos((int)axisNo),
-                      netData.memoryStruct.indexer.infoType0.absMax);
+                      netData.memoryStruct.indexer_info.infoType0.absMax);
         }
       }
       maxAuxIdx = sizeof(indexerDeviceAbsStraction[devNum].auxName) /
@@ -1672,12 +1672,12 @@ static int indexerHandleIndexerCmd(unsigned offset,
                  __FILE__, __FUNCTION__, __LINE__,
                  devNum, auxIdx, flags);
       }
-      UINTTONET(flags, netData.memoryStruct.indexer.infoType0.flags);
+      UINTTONET(flags, netData.memoryStruct.indexer_info.infoType0.flags);
 
       /* Calculate offset */
       {
         unsigned offset =
-          (unsigned)((void*)&netData.memoryStruct.indexer - (void*)&netData);
+          (unsigned)((void*)&netData.memoryStruct.indexer_info - (void*)&netData);
         unsigned tmpDevNum = 0;
         LOGINFO6("%s/%s:%d devNum=%u offset=%u\n",
                  __FILE__, __FUNCTION__, __LINE__,
@@ -1691,42 +1691,42 @@ static int indexerHandleIndexerCmd(unsigned offset,
           offset += indexerDeviceAbsStraction[tmpDevNum].sizeInBytes;
           tmpDevNum++;
         }
-        UINTTONET(offset, netData.memoryStruct.indexer.infoType0.offset);
+        UINTTONET(offset, netData.memoryStruct.indexer_info.infoType0.offset);
       }
     }
     LOGINFO6("%s/%s:%d devNum=%u axisNo=%u netData=%p indexer=%p delta=%u typeCode=%x sizeW=%u offsetW=%u flagsLow=0x%x ack=0x%x\n",
              __FILE__, __FUNCTION__, __LINE__,
-             devNum, axisNo, &netData, &netData.memoryStruct.indexer,
-             (unsigned)((void*)&netData.memoryStruct.indexer - (void*)&netData),
-             NETTOUINT(netData.memoryStruct.indexer.infoType0.typeCode),
-             NETTOUINT(netData.memoryStruct.indexer.infoType0.size),
-             NETTOUINT(netData.memoryStruct.indexer.infoType0.offset),
-             NETTOUINT(netData.memoryStruct.indexer.infoType0.flags),
+             devNum, axisNo, &netData, &netData.memoryStruct.indexer_info,
+             (unsigned)((void*)&netData.memoryStruct.indexer_info - (void*)&netData),
+             NETTOUINT(netData.memoryStruct.indexer_info.infoType0.typeCode),
+             NETTOUINT(netData.memoryStruct.indexer_info.infoType0.size),
+             NETTOUINT(netData.memoryStruct.indexer_info.infoType0.offset),
+             NETTOUINT(netData.memoryStruct.indexer_info.infoType0.flags),
              NETTOUINT(netData.memoryStruct.indexer_ack));
 
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
   case 1:
     UINTTONET(indexerDeviceAbsStraction[devNum].sizeInBytes,
-              netData.memoryStruct.indexer.infoType1.size);
+              netData.memoryStruct.indexer_info.infoType1.size);
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
 #if 0
   case 3:
     UINTTONET(indexerDeviceAbsStraction[devNum].unitCode,
-              netData.memoryStruct.indexer.infoType3.unitcode);
+              netData.memoryStruct.indexer_info.infoType3.unitcode);
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
 #endif
   case 4:
     /* get values from device table */
-    strncpy(&netData.memoryStruct.indexer.infoType4.name[0],
+    strncpy(&netData.memoryStruct.indexer_info.infoType4.name[0],
             indexerDeviceAbsStraction[devNum].devName,
-            sizeof(netData.memoryStruct.indexer.infoType4.name));
+            sizeof(netData.memoryStruct.indexer_info.infoType4.name));
     LOGINFO3("%s/%s:%d devName=%s idxName=%s\n",
              __FILE__, __FUNCTION__, __LINE__,
              indexerDeviceAbsStraction[devNum].devName,
-             &netData.memoryStruct.indexer.infoType4.name[0]);
+             &netData.memoryStruct.indexer_info.infoType4.name[0]);
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
     return 0;
   case 5: /* version */
@@ -1737,16 +1737,16 @@ static int indexerHandleIndexerCmd(unsigned offset,
   case 15:
     {
       unsigned byteIdx;
-      memset(&netData.memoryStruct.indexer.infoType15,
+      memset(&netData.memoryStruct.indexer_info.infoType15,
              0,
-             sizeof(netData.memoryStruct.indexer.infoType15));
+             sizeof(netData.memoryStruct.indexer_info.infoType15));
       for (byteIdx = 0;
-           byteIdx < sizeof(netData.memoryStruct.indexer.infoType15.parameters);
+           byteIdx < sizeof(netData.memoryStruct.indexer_info.infoType15.parameters);
            byteIdx ++) {
         unsigned bitIdx;
         unsigned parameter = 0;
         size_t size_of_param;
-        size_of_param = 8 * sizeof(netData.memoryStruct.indexer.infoType15.parameters[0]);
+        size_of_param = 8 * sizeof(netData.memoryStruct.indexer_info.infoType15.parameters[0]);
         for (bitIdx = 0; bitIdx < size_of_param; bitIdx++) {
           permPTyp permP;
           unsigned param_idx = byteIdx * size_of_param + bitIdx;
@@ -1759,7 +1759,7 @@ static int indexerHandleIndexerCmd(unsigned offset,
         LOGINFO6("%s/%s:%d devNum=%u byteIdx=%02u parameter=0x%02X\n",
                  __FILE__, __FUNCTION__, __LINE__,
                  devNum, byteIdx, parameter);
-        netData.memoryStruct.indexer.infoType15.parameters[byteIdx] = parameter;
+        netData.memoryStruct.indexer_info.infoType15.parameters[byteIdx] = parameter;
       }
     }
     netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
@@ -1767,9 +1767,9 @@ static int indexerHandleIndexerCmd(unsigned offset,
   default:
     if (infoType >= 16 && infoType <= 39) {
       /* Support for aux bits 23..0 */
-      strncpy(&netData.memoryStruct.indexer.infoType4.name[0],
+      strncpy(&netData.memoryStruct.indexer_info.infoType4.name[0],
               indexerDeviceAbsStraction[devNum].auxName[infoType-16],
-              sizeof(netData.memoryStruct.indexer.infoType4.name));
+              sizeof(netData.memoryStruct.indexer_info.infoType4.name));
       netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
       return 0;
     }
