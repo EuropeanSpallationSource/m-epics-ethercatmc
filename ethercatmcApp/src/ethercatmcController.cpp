@@ -449,6 +449,7 @@ ethercatmcController::ethercatmcCreateParam(const char *paramName,
   int function;
   status = findParam(paramName, &function);
   if (status == asynSuccess) {
+    *pFunction = function;
     return status;
   }
   status = createParam(paramName, myEPICSParamType, pFunction);
