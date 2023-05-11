@@ -1181,7 +1181,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
         idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
       updateMsgTxtFromDriver(msgTxtFromDriver);
     }
-    drvlocal.dirty.old_hasError = hasError;
     setIntegerParam(pC_->defAsynPara.ethercatmcStatusCode_, idxStatusCode);
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.clean.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
@@ -1384,14 +1383,17 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
   }
 
-  {
-    /* extra Error Text, only showing errors, no info
-       Most important things, in the order that the operator
-       can (try to) fix things:
-       - Wait for the communication IOC - MCU to be established
-       - power on the axis (if needed, because there is no auto-power-on)
-       - reset the axis, if there is an error
-       - home the axis, if not homed */
+  /* extra Error Text, only showing errors, no info
+     Most important things, in the order that the operator
+     can (try to) fix things:
+     - Wait for the communication IOC - MCU to be established
+     - power on the axis (if needed, because there is no auto-power-on)
+     - reset the axis, if there is an error
+     - home the axis, if not homed */
+  if (hasError || drvlocal.dirty.old_hasError ||
+      drvlocal.dirty.idxStatusCode  != idxStatusCode ||
+      idxAuxBits != drvlocal.clean.old_idxAuxBits ||
+      idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
     char sErrorMessage[40];
     const char charEorW = 'E';
     int showPowerOff = 0;
@@ -1422,7 +1424,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
     setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, &sErrorMessage[0]);
     /* TODO:
-    axis can not be moved at all: poweroff, localmode, interlock
+    axis can not be moved at all: poweroff, localmode, interlock, axis in reset state
     axis can be partly moved: Limit switch, interlock Fwd/Bwd
     axis is not homed ???
     axis can be moved */
@@ -1430,6 +1432,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 
   drvlocal.clean.old_idxAuxBits  = idxAuxBits;
   drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
+  drvlocal.dirty.old_hasError    = hasError;
   drvlocal.dirty.idxStatusCode   = idxStatusCode;
   drvlocal.dirty.old_ErrorId     = errorID;
   callParamCallbacks();
