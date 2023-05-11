@@ -122,6 +122,20 @@ alarmStatSevrValuesInt = {
 }
 
 
+#   Test case number, error, homed, autoPower, amplifier on, ErrTxt
+#   tc_no     e      hm au on  txt
+allTCs = [
+    (941001, 0x0000, 0, 0, 0, "E: PowerOff"),
+    (941002, 0x0000, 0, 0, 1, "E: Axis not homed"),
+    (941003, 0x0000, 0, 1, 0, "E: Axis not homed"),
+    (941004, 0x0000, 0, 1, 1, "E: Axis not homed"),
+    (941005, 0x4550, 0, 0, 0, "E: PowerOff"),
+    (941006, 0x4550, 0, 0, 1, "E: Follw errpos 4550"),
+    (941007, 0x4550, 0, 1, 0, "E: Follw errpos 4550"),
+    (941008, 0x4550, 0, 1, 1, "E: Follw errpos 4550"),
+]
+
+
 def lineno():
     return inspect.currentframe().f_back.f_lineno
 
@@ -147,13 +161,11 @@ def writeBitsReadErrTxt(
     self.axisCom.put("-PwrAuto", pwrAuto)
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
     self.axisMr.setValueOnSimulator(tc_no, "bAxisHomed", axisHomed)
+    self.axisMr.setValueOnSimulator(tc_no, "nErrorId", errorId)
     self.axisMr.setValueOnSimulator(tc_no, "nAmplifierPercent", amplifierPercent)
     self.axisCom.put(".STUP", 1)
     while maxTime > 0:
         actErrTxt = self.axisCom.get("-ErrTxt")
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} tc_no={tc_no} axisHomed={axisHomed} errorId={errorId} pwrAuto={pwrAuto} amplifierOn={amplifierOn} errTxtExp={errTxt} actErrTxt={actErrTxt!r}"
-        )
         if actErrTxt == errTxt:
             passed = True
             maxTime = 0
@@ -161,6 +173,9 @@ def writeBitsReadErrTxt(
             time.sleep(polltime)
             maxTime = maxTime - polltime
 
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} tc_no={tc_no} axisHomed={axisHomed} errorId={errorId} pwrAuto={pwrAuto} amplifierOn={amplifierOn} errTxtExp={errTxt} actErrTxt={actErrTxt!r}"
+    )
     self.axisCom.put("-PwrAuto", oldPwrAuto)
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
     if actErrTxt != errTxt:
@@ -184,19 +199,34 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
-    def test_TC_94101(self):
-        tc_no = 94101
-        writeBitsReadErrTxt(
-            self,
-            tc_no=tc_no,
-            axisHomed=0,
-            errorId=0,
-            pwrAuto=0,
-            amplifierOn=0,
-            errTxt="E: PowerOff",
-        )
+    def test_TC_94000(self):
+        for tc in allTCs:
+            tc_no = tc[0]
+            errorId = tc[1]
+            axisHomed = tc[2]
+            pwrAuto = tc[3]
+            amplifierOn = tc[4]
+            errTxt = tc[5]
+            writeBitsReadErrTxt(
+                self,
+                tc_no=tc_no * 10,
+                axisHomed=1,
+                errorId=0,
+                pwrAuto=1,
+                amplifierOn=1,
+                errTxt="",
+            )
+            writeBitsReadErrTxt(
+                self,
+                tc_no=tc_no * 10 + 1,
+                axisHomed=axisHomed,
+                errorId=errorId,
+                pwrAuto=pwrAuto,
+                amplifierOn=amplifierOn,
+                errTxt=errTxt,
+            )
 
-    def test_TC_94102(self):
+    def test_TC_94199999(self):
         tc_no = 94102
         writeBitsReadErrTxt(
             self,
@@ -206,16 +236,4 @@ class Test(unittest.TestCase):
             pwrAuto=2,
             amplifierOn=1,
             errTxt="",
-        )
-
-    def test_TC_94103(self):
-        tc_no = 94103
-        writeBitsReadErrTxt(
-            self,
-            tc_no=tc_no,
-            axisHomed=0,
-            errorId=0,
-            pwrAuto=2,
-            amplifierOn=0,
-            errTxt="E: Axis not homed",
         )
