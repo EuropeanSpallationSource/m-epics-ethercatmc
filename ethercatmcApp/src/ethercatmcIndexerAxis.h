@@ -104,6 +104,7 @@ private:
       int          old_hasError;
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialPollNeeded :1;
+      unsigned int motorPowerAutoOnOff :1;
       unsigned idxStatusCode;
       unsigned old_idxAuxBits;
     } dirty;

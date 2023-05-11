@@ -1176,6 +1176,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
        Update even if we had an error before - it may have gone now,
        and the we need to set the NULL pointer */
     if (hasError || errorID ||
+        drvlocal.dirty.motorPowerAutoOnOff ||
         drvlocal.dirty.old_hasError || drvlocal.dirty.old_ErrorId ||
          idxAuxBits != drvlocal.clean.old_idxAuxBits ||
         idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
@@ -1391,7 +1392,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
      - reset the axis, if there is an error
      - home the axis, if not homed */
   if (hasError || drvlocal.dirty.old_hasError ||
-      drvlocal.dirty.idxStatusCode  != idxStatusCode ||
+      drvlocal.dirty.motorPowerAutoOnOff ||
+      drvlocal.dirty.idxStatusCode != idxStatusCode ||
       idxAuxBits != drvlocal.clean.old_idxAuxBits ||
       idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
     char sErrorMessage[40];
@@ -1570,6 +1572,7 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value)
   } else if (function == pC_->motorPowerAutoOnOff_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d motorPowerAutoOnOff_)=%d\n", modNamEMC, axisNo_, value);
+    drvlocal.dirty.motorPowerAutoOnOff = 1;
 #endif
   } else if (function == pC_->defAsynPara.ethercatmcErrRst_) {
     if (value) {
