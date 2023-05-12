@@ -283,7 +283,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -299,13 +299,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M1).LVIO</pv>
+        <pv trig="true">$(P)$(M1).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -1755,7 +1755,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -1771,13 +1771,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M2).LVIO</pv>
+        <pv trig="true">$(P)$(M2).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -3227,7 +3227,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -3243,13 +3243,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M3).LVIO</pv>
+        <pv trig="true">$(P)$(M3).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -4699,7 +4699,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -4715,13 +4715,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M4).LVIO</pv>
+        <pv trig="true">$(P)$(M4).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -6171,7 +6171,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -6187,13 +6187,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M5).LVIO</pv>
+        <pv trig="true">$(P)$(M5).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -7643,7 +7643,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -7659,13 +7659,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M6).LVIO</pv>
+        <pv trig="true">$(P)$(M6).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -9115,7 +9115,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -9131,13 +9131,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M7).LVIO</pv>
+        <pv trig="true">$(P)$(M7).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -10587,7 +10587,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -10603,13 +10603,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M8).LVIO</pv>
+        <pv trig="true">$(P)$(M8).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -12059,7 +12059,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -12075,13 +12075,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M9).LVIO</pv>
+        <pv trig="true">$(P)$(M9).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -13531,7 +13531,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -13547,13 +13547,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M10).LVIO</pv>
+        <pv trig="true">$(P)$(M10).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -15003,7 +15003,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -15019,13 +15019,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M11).LVIO</pv>
+        <pv trig="true">$(P)$(M11).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -16475,7 +16475,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -16491,13 +16491,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M12).LVIO</pv>
+        <pv trig="true">$(P)$(M12).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -17947,7 +17947,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -17963,13 +17963,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M13).LVIO</pv>
+        <pv trig="true">$(P)$(M13).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -19419,7 +19419,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -19435,13 +19435,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M14).LVIO</pv>
+        <pv trig="true">$(P)$(M14).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -20891,7 +20891,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -20907,13 +20907,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M15).LVIO</pv>
+        <pv trig="true">$(P)$(M15).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
@@ -22363,7 +22363,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color name="warning" red="0" green="0" blue="251" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -22379,13 +22379,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="pv0==0">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="pv0!=0">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M16).LVIO</pv>
+        <pv trig="true">$(P)$(M16).CNEN</pv>
       </rule>
     </rules>
     <pv_value />
