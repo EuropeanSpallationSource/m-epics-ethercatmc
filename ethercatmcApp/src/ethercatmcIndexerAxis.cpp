@@ -92,7 +92,7 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #endif
 
 #ifdef motorShowPowerOffString
-  setIntegerParam(pC_->motorShowPowerOff_, 1);
+  //setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
 #ifdef motorFlagsHomeOnLsString
   setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
@@ -1091,97 +1091,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     if (drvlocal.clean.auxBitsEnabledMask) {
       powerIsOn = idxAuxBits & drvlocal.clean.auxBitsEnabledMask ? 1 : 0;
     }
-    if (hasError || errorID) {
-      char sErrorMessage[40];
-      const char *errIdString = errStringFromErrId(errorID);
-      const char charEorW = hasError ? 'E' : 'W';
-      memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
-      if (!powerIsOn) {
-        /*
-         * It is important to know, if the motor can be disconnected
-         * on e.g. a sample stage.
-         * Let the generic driver write PowerOff and hide the error text so long
-         * The error LED is still there
-         */
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                 "%c: (PowerOff) %X", charEorW, errorID);
-      } else if (errIdString[0]) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
-                 charEorW, errIdString, errorID);
-      } else {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                 "%c: TwinCAT Err %X", charEorW, errorID);
-      }
-      msgTxtFromDriver = sErrorMessage;
-    } else if (localMode) {
-      msgTxtFromDriver = "localMode";
-      hasError = -1;
-    } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                  drvlocal.clean.auxBitsInterlockBwdMask)) {
-      // One or two of the interlock bits are set
-      if (!powerIsOn) {
-        msgTxtFromDriver = "PowerOff/Interlock";
-      } else if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                               drvlocal.clean.auxBitsInterlockBwdMask)) ==
-           drvlocal.clean.auxBitsInterlockFwdMask)) {
-        msgTxtFromDriver = "InterlockFwd";
-      } else if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                      drvlocal.clean.auxBitsInterlockBwdMask)) ==
-           drvlocal.clean.auxBitsInterlockBwdMask)) {
-        msgTxtFromDriver = "InterlockBwd";
-      } else {
-        msgTxtFromDriver = "InterlockFwdBwd";
-      }
-    } else {
-      int function = 0;
-      switch (statusReasonAux & 0xFF) {
-      case 1:
-        function = pC_->defAsynPara.ethercatmcNamAux0_;
-        break;
-      case 2:
-        function = pC_->defAsynPara.ethercatmcNamAux1_;
-        break;
-      case 4:
-        function = pC_->defAsynPara.ethercatmcNamAux2_;
-        break;
-      case 8:
-        function = pC_->defAsynPara.ethercatmcNamAux3_;
-        break;
-      case 16:
-        function = pC_->defAsynPara.ethercatmcNamAux4_;
-        break;
-      case 32:
-        function = pC_->defAsynPara.ethercatmcNamAux5_;
-        break;
-      case 64:
-        function = pC_->defAsynPara.ethercatmcNamAux6_;
-        break;
-      case 128:
-        function = pC_->defAsynPara.ethercatmcNamAux7_;
-        break;
-      default:
-        break;
-      }
-      if (function) {
-        asynStatus status = pC_->getStringParam(axisNo_,
-                                                function,
-                                                (int)sizeof(nameAuxBits),
-                                                &nameAuxBits[0]);
-        if (status == asynSuccess) {
-          msgTxtFromDriver = &nameAuxBits[0];
-        }
-      }
-    }
-    /* Update if we have an error now.
-       Update even if we had an error before - it may have gone now,
-       and the we need to set the NULL pointer */
-    if (hasError || errorID ||
-        drvlocal.dirty.motorPowerAutoOnOff ||
-        drvlocal.dirty.old_hasError || drvlocal.dirty.old_ErrorId ||
-         idxAuxBits != drvlocal.clean.old_idxAuxBits ||
-        idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-      updateMsgTxtFromDriver(msgTxtFromDriver);
-    }
     setIntegerParam(pC_->defAsynPara.ethercatmcStatusCode_, idxStatusCode);
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.clean.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
@@ -1430,6 +1339,66 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     axis can be partly moved: Limit switch, interlock Fwd/Bwd
     axis is not homed ???
     axis can be moved */
+
+    /* Anyway, continue with msgtxt */
+    if (sErrorMessage[0]) {
+      msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
+    } else if (localMode) {
+      msgTxtFromDriver = "localMode";
+    } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                  drvlocal.clean.auxBitsInterlockBwdMask)) {
+      if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                               drvlocal.clean.auxBitsInterlockBwdMask)) ==
+           drvlocal.clean.auxBitsInterlockFwdMask)) {
+        msgTxtFromDriver = "InterlockFwd";
+      } else if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                      drvlocal.clean.auxBitsInterlockBwdMask)) ==
+                  drvlocal.clean.auxBitsInterlockBwdMask)) {
+        msgTxtFromDriver = "InterlockBwd";
+      } else {
+        msgTxtFromDriver = "InterlockFwdBwd";
+      }
+    } else {
+      int function = 0;
+      switch (statusReasonAux & 0xFF) {
+      case 1:
+        function = pC_->defAsynPara.ethercatmcNamAux0_;
+        break;
+      case 2:
+        function = pC_->defAsynPara.ethercatmcNamAux1_;
+        break;
+      case 4:
+        function = pC_->defAsynPara.ethercatmcNamAux2_;
+        break;
+      case 8:
+        function = pC_->defAsynPara.ethercatmcNamAux3_;
+        break;
+      case 16:
+        function = pC_->defAsynPara.ethercatmcNamAux4_;
+        break;
+      case 32:
+        function = pC_->defAsynPara.ethercatmcNamAux5_;
+        break;
+      case 64:
+        function = pC_->defAsynPara.ethercatmcNamAux6_;
+        break;
+      case 128:
+        function = pC_->defAsynPara.ethercatmcNamAux7_;
+        break;
+      default:
+        break;
+      }
+      if (function) {
+        asynStatus status = pC_->getStringParam(axisNo_,
+                                                function,
+                                                (int)sizeof(nameAuxBits),
+                                                &nameAuxBits[0]);
+        if (status == asynSuccess) {
+          msgTxtFromDriver = &nameAuxBits[0];
+        }
+      }
+    }
+    updateMsgTxtFromDriver(msgTxtFromDriver);
   }
 
   drvlocal.clean.old_idxAuxBits  = idxAuxBits;
