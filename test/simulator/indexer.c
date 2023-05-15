@@ -32,7 +32,6 @@
 #define TYPECODE_DISCRETEINPUT_1A04 0x1A04
 #define TYPECODE_ANALOGINPUT_1B04   0x1B04
 #define TYPECODE_DISCRETEOUTPUT_1604 0x1604
-//#define TYPECODE_PARAMDEVICE_5008 0x5008
 
 #ifdef HAS_1E04_SHUTTER
 #define TYPECODE_DISCRETEOTPUT_1E04 0x1E04
@@ -45,7 +44,6 @@
 #define WORDS_STATUSWORD_1802         0x2
 #define WORDS_DISCRETEINPUT_1A04      0x4
 #define WORDS_ANALOGINPUT_1B04        0x4
-//#define WORDS_PARAMDEVICE_5008       0x8
 #define WORDS_PARAMDEVICE_5010      0x10
 
 
@@ -55,7 +53,6 @@
 #define UNITCODE_DEGREE             0x000C
 
 #define AXISNO_NONE         0
-//#define  NUM_MOTORS5008     2
 
 /* axis1 .. axis4 */
 #define  NUM_MOTORS5010     4
@@ -292,25 +289,6 @@ typedef struct {
   uint8_t   targetValue[2];
   uint8_t   statusReasonAux32[4];
 } netDevice1E04interface_type;
-#endif
-
-#ifdef HAS_5008
-/* The paramDevice structure.
-   floating point values are 4 bytes long,
-   the whole structure uses 16 bytes, 8 words */
-typedef struct {
-  uint8_t   actualValue[4];
-  uint8_t   targetValue[4];
-  uint8_t   statusReasonAux16[2];
-  uint8_t   paramCtrl[2];
-  uint8_t   paramValue[4];
-} netDevice5008interface_type;
-
-typedef struct {
-  netDevice5008interface_type dev5008;
-  netDevice1202interface_type dev1202errorID;
-  netDevice1202interface_type dev1202encoderRaw;
-} netDevice5008_1202_1604_Interface_type;
 #endif
 
 /* struct as seen on the network = in memory
@@ -966,8 +944,6 @@ static void init_axis(int axis_no)
                  axis_no, tmp_axis_no, devNum,
                  indexerDeviceAbsStraction[devNum].typeCode);
         switch (indexerDeviceAbsStraction[devNum].typeCode) {
-          //case 0x5008:
-          //case 0x500C:
         case 0x1E04:
             if (tmp_axis_no == axis_no) {
               double absMax = indexerDeviceAbsStraction[devNum].absMax;
@@ -1021,106 +997,6 @@ static void init_axis(int axis_no)
     init_done[axis_no] = 1;
   }
 }
-
-#ifdef HAS_5008
-static void
-indexerMotorStatusRead5008(unsigned devNum,
-                           unsigned motor_axis_no,
-                           unsigned numAuxBits,
-                           netDevice5008interface_type *pIndexerDevice5008interface)
-{
-  unsigned ret = 0;
-  unsigned statusReasonAux;
-  idxStatusCodeType idxStatusCode;
-  /* The following only works on little endian (?)*/
-  statusReasonAux = NETTOUINT(pIndexerDevice5008interface->statusReasonAux16);
-  idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 12);
-  /* The following would be run in an own task in a PLC program.
-     For the simulator, we hook the code into the read request
-     RESET, START and STOP are commands from IOC.
-     RESET is even the "wakeup" state.
-  */
-
-  switch (idxStatusCode) {
-  case idxStatusCodeRESET:
-    init_axis((int)motor_axis_no);
-    motorStop(motor_axis_no);
-    set_nErrorId(motor_axis_no, 0);
-    break;
-  case idxStatusCodeSTART:
-    movePosition(motor_axis_no,
-                 NETTODOUBLE(pIndexerDevice5008interface->targetValue),
-                 0, /* int relative, */
-                 getNxtMoveVelocity(motor_axis_no),
-                 getNxtMoveAcceleration(motor_axis_no));
-    break;
-  case idxStatusCodeSTOP:
-    motorStop(motor_axis_no);
-    break;
-  default:
-    ;
-  }
-  statusReasonAux = 0;
-
-  /* reason bits */
-  if (getPosLimitSwitch(motor_axis_no))
-    statusReasonAux |= 0x0800;
-  if (getNegLimitSwitch(motor_axis_no))
-    statusReasonAux |= 0x0400;
-  {
-    unsigned auxBitIdx = 0;
-    for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
-      const char *auxBitName = (const char*)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
-
-      if (!strcmp("homing", auxBitName)) {
-        if (isMotorHoming(motor_axis_no)) {
-          statusReasonAux |= 1 << auxBitIdx;
-        }
-      } else if (!strcmp("homed", auxBitName)) {
-        int bValue = getAxisHomed(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u homed=%d\n",
-                 __FILE__, __FUNCTION__, __LINE__,
-                 motor_axis_no, auxBitIdx, bValue);
-        if (bValue) {
-          statusReasonAux |= 1 << auxBitIdx;
-        }
-      } else if (!strcmp("notHomed", auxBitName)) {
-        int bValue = getAxisHomed(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u homed=%d\n",
-                 __FILE__, __FUNCTION__, __LINE__,
-                 motor_axis_no, auxBitIdx, bValue);
-        if (!bValue) {
-          statusReasonAux |= 1 << auxBitIdx;
-      } else if (!strcmp("enabled", auxBitName)) {
-        int bValue = getAmplifierOn(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
-                 __FILE__, __FUNCTION__, __LINE__,
-                 motor_axis_no, auxBitIdx, bValue);
-        if (bValue) {
-          statusReasonAux |= 1 << auxBitIdx;
-        }
-      }
-    }
-  }
-
-  /* the status bits */
-  if (get_bError(motor_axis_no))
-    idxStatusCode = idxStatusCodeERROR;
-#ifdef USE_IDXSTATUSCODEPOWEROFF
-  else if (!getAmplifierOn(motor_axis_no))
-    idxStatusCode = idxStatusCodePOWEROFF;
-#endif
-  else if (isMotorMoving(motor_axis_no))
-    idxStatusCode = idxStatusCodeBUSY;
-  else if(statusReasonAux)
-    idxStatusCode = idxStatusCodeWARN;
-  else
-    idxStatusCode = idxStatusCodeIDLE;
-
-  ret = statusReasonAux | (idxStatusCode << 12);;
-  UINTTONET(ret, pIndexerDevice5008interface->statusReasonAux16);
-}
-#endif
 
 #ifdef HAS_1E04_SHUTTER
 static void
@@ -1968,14 +1844,14 @@ void indexerHandlePLCcycle(void)
       {
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
-          unsigned motor5008Num = axisNo - 1;
+          unsigned motor5010Num = axisNo - 1;
           if (!(strcmp(indexerDeviceAbsStraction[devNum].devName, "encoderRaw"))) {
             int encoderRaw = (int)getEncoderPos(axisNo);
-            LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u encoderRaw=%u\n",
+            LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u encoderRaw=%u\n",
                      __FILE__, __FUNCTION__, __LINE__,
-                     devNum, axisNo, motor5008Num, encoderRaw);
+                     devNum, axisNo, motor5010Num, encoderRaw);
             UINTTONET(encoderRaw,
-                      netData.memoryStruct.motors5010_1202[motor5008Num].dev1202encoderRaw.value);
+                      netData.memoryStruct.motors5010_1202[motor5010Num].dev1202encoderRaw.value);
           }
         }
       }
@@ -1984,8 +1860,8 @@ void indexerHandlePLCcycle(void)
       {
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
-          unsigned motor5008Num = axisNo - 1;
-          (void)motor5008Num;
+          unsigned motor5010Num = axisNo - 1;
+          (void)motor5010Num;
           (void)pLCcycleInitDone;
         } else if (!strcmp("DISCRETEOUTPUT#1", indexerDeviceAbsStraction[devNum].devName)) {
           unsigned value = NETTOUINT(netData.memoryStruct.discreteOutput1604[0].targetValue);
@@ -2086,37 +1962,6 @@ void indexerHandlePLCcycle(void)
         }
       }
       break;
-#ifdef HAS_5008
-    case TYPECODE_PARAMDEVICE_5008:
-      {
-        double fRet;
-        size_t lenInPlcPara = 4;
-        unsigned offset;
-        unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
-        unsigned motor5008Num = axisNo - 1;
-        static const unsigned numAuxBits = 8;
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5010_1202[motor5008Num] -
-                            (void*)&netData);
-
-        fRet = getMotorPos((int)axisNo);
-        LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u offset=%u fRet=%f\n",
-                 __FILE__, __FUNCTION__, __LINE__,
-                 devNum, axisNo, motor5008Num, offset, (double)fRet);
-        doubleToNet(fRet, &netData.memoryBytes[offset], lenInPlcPara);
-        /* status */
-        indexerMotorStatusRead5008(devNum, axisNo, numAuxBits,
-                                   &netData.memoryStruct.motors5010_1202[motor5008Num].dev5008);
-
-        /* param interface */
-        offset = (unsigned)((void*)&netData.memoryStruct.motors5010_1202[motor5008Num].dev5008.paramCtrl -
-                            (void*)&netData);
-        LOGINFO6("%s/%s:%d devNum=%u axisNo=%u motor5008Num=%u paramoffset=%u\n",
-                 __FILE__, __FUNCTION__, __LINE__,
-                 devNum, axisNo, motor5008Num, offset);
-        indexerMotorParamInterface(axisNo, offset, lenInPlcPara);
-      }
-      break;
-#endif
     case TYPECODE_PARAMDEVICE_5010:
       {
         double fRet;
