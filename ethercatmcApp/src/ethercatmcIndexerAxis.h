@@ -82,6 +82,7 @@ public:
   void setAuxBitsHomeSwitchMask(unsigned auxBitsHomeSwitchMask);
   void addPollNowParam(uint8_t paramIndex);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
+  void pollReadBackParameters(unsigned idxAuxBits, unsigned paramCtrl,double paramfValue);
   asynStatus poll(bool *moving);
   asynStatus doThePoll(bool cached, bool *moving);
   void       readAuxBitNamesEnums(void);

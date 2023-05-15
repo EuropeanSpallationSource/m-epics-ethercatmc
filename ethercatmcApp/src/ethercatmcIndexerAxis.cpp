@@ -618,6 +618,156 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function,
   return setIntegerParam(function, newValue);
 }
 
+
+
+void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
+                                                   unsigned paramCtrl,
+                                                   double paramfValue)
+{
+  asynStatus status = asynSuccess;
+  if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
+    unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+    drvlocal.clean.param_read_ok_once[paramIndex] = 1;
+      asynPrint(pC_->pasynUserController_,
+              ASYN_TRACE_FLOW,
+              "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
+              modNamEMC, axisNo_,
+              plcParamIndexTxtFromParamIndex(paramIndex),
+              paramCtrl, paramfValue);
+    if ((paramCtrl != drvlocal.clean.old_paramCtrl) ||
+        (paramfValue != drvlocal.clean.old_paramValue)) {
+      /* The enums must have been read.
+         Only read real parameters, not functions */
+      if (!drvlocal.clean.enumparam_read_id[paramIndex] &&
+          paramIndexIsParameterToPoll(paramIndex)) {
+        int initial = 0;
+        pC_->parameterFloatReadBack(axisNo_,
+                                    initial,
+                                    paramIndex,
+                                    paramfValue);
+      }
+      drvlocal.clean.old_paramCtrl = paramCtrl;
+      drvlocal.clean.old_paramValue = paramfValue;
+    }
+  }
+
+  /* Read back the parameters one by one */
+  if (drvlocal.pollScaling && drvlocal.clean.paramIfOffset &&
+      (paramCtrl & PARAM_IF_ACK_MASK)) {
+    /* Increment */
+    drvlocal.clean.pollNowIdx++;
+    int counter = 255;
+    uint16_t paramIndex = drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
+    while (paramIndex && paramIndexIsReadLaterInBackground(paramIndex) && (counter > 0)) {
+      switch (drvlocal.pollScaling) {
+      case PollScalingOnce:
+        {
+          if (drvlocal.clean.param_read_ok_once[paramIndex]) {
+            drvlocal.clean.pollNowIdx++;
+            paramIndex = drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
+            if (!paramIndex) {
+              /* wrap around */
+              drvlocal.clean.pollNowIdx = 0;
+              paramIndex = drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
+            }
+          } else {
+            counter = 0;
+          }
+        }
+        break;
+      default:
+      case PollScalingNo:
+      case PollScalingCyclic:
+        /* fall through */
+        counter = 0;
+        break;
+      }
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+                "%spollParam(%d)pollNowIdx=%u paramIndex=%u pollInBG=%d pollScaling=%d param_read_ok_once=%d counter=%d\n",
+                modNamEMC, axisNo_,
+                drvlocal.clean.pollNowIdx,
+                paramIndex, paramIndexIsReadLaterInBackground(paramIndex),
+                drvlocal.pollScaling,
+                drvlocal.clean.param_read_ok_once[paramIndex],
+                counter);
+      counter--;
+    }
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%spollParam(%d)pollNowIdx=%u\n",
+              modNamEMC, axisNo_, drvlocal.clean.pollNowIdx);
+
+    if (!drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx]) {
+      /* The list is 0 terminated */
+      drvlocal.clean.pollNowIdx = 0;
+      /* Take the chance to read the enums
+         In theory, this can be done earlier - but
+         the record may not have registered the callback yet
+      */
+        asynPrint(pC_->pasynUserController_,
+                  ASYN_TRACE_FLOW,
+                  "%spoll(%d) idxAuxBits=0x%08X hasPolledAllEnums=%d\n",
+                  modNamEMC, axisNo_, idxAuxBits & 0xFF, drvlocal.clean.hasPolledAllEnums);
+      if (!drvlocal.clean.hasPolledAllEnums) {
+
+        readAuxBitNamesEnums();
+        {
+          /* aux bits 0..7 as mbbi */
+          int function = pC_->defAsynPara.ethercatmcAuxBits07_;
+          setIntegerParam(function, idxAuxBits & 0xFF);
+          pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+        }
+        unsigned paramIndex;
+        drvlocal.clean.hasPolledAllEnums = 1; /* May be overwritten below */
+        for (paramIndex = 0; paramIndex < (sizeof(drvlocal.clean.PILSparamPerm) /
+                                           sizeof(drvlocal.clean.PILSparamPerm[0]));
+             paramIndex++) {
+          if (drvlocal.clean.enumparam_read_id[paramIndex]) {
+            unsigned enumparam_read_id = drvlocal.clean.enumparam_read_id[paramIndex];
+            status = pC_->indexerV3readParameterEnums(this,
+                                                      paramIndex,
+                                                      enumparam_read_id,
+                                                      drvlocal.clean.lenInPlcPara);
+            /* We must read the enums before reading the value
+               If reading ths enum fails, do not read the value */
+            if (!status) {
+              status = pC_->indexerParamRead(this,
+                                             drvlocal.clean.paramIfOffset,
+                                             paramIndex,
+                                             &paramfValue);
+              if (!status) {
+                int initial = 1;
+                pC_->parameterFloatReadBack(axisNo_,
+                                            initial,
+                                            paramIndex,
+                                            paramfValue);
+              }
+            }
+            if (status) {
+              /* reading failed, try again later */
+              drvlocal.clean.hasPolledAllEnums = 0;
+            } else {
+              /* Once read succesfully , do not read again */
+              drvlocal.clean.enumparam_read_id[paramIndex] = 0;
+            }
+          }
+        }
+      }
+    }
+    if (drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx]) {
+      uint16_t paramIndex = drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
+      uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD + paramIndex;
+      asynPrint(pC_->pasynUserController_,
+                ASYN_TRACE_FLOW,
+                "%spollNext(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
+                modNamEMC, axisNo_,
+                plcParamIndexTxtFromParamIndex(paramIndex),
+                paramCtrl, paramfValue);
+      pC_->setPlcMemoryInteger(drvlocal.clean.paramIfOffset,
+                               newParamCtrl, sizeof(newParamCtrl));
+    }
+  }
+}
+
 /**
  * Called from the poller.
  * Before this axis-related method is called, the controller has
@@ -1150,148 +1300,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->defAsynPara.ethercatmcRBV_TSE_,
                                        RBV_TSEstatus);
   }
-
-  if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
-    unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
-    drvlocal.clean.param_read_ok_once[paramIndex] = 1;
-      asynPrint(pC_->pasynUserController_,
-              ASYN_TRACE_FLOW,
-              "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
-              modNamEMC, axisNo_,
-              plcParamIndexTxtFromParamIndex(paramIndex),
-              paramCtrl, paramfValue);
-    if ((paramCtrl != drvlocal.clean.old_paramCtrl) ||
-        (paramfValue != drvlocal.clean.old_paramValue)) {
-      /* The enums must have been read.
-         Only read real parameters, not functions */
-      if (!drvlocal.clean.enumparam_read_id[paramIndex] &&
-          paramIndexIsParameterToPoll(paramIndex)) {
-        int initial = 0;
-        pC_->parameterFloatReadBack(axisNo_,
-                                    initial,
-                                    paramIndex,
-                                    paramfValue);
-      }
-      drvlocal.clean.old_paramCtrl = paramCtrl;
-      drvlocal.clean.old_paramValue = paramfValue;
-    }
-  }
-
-  /* Read back the parameters one by one */
-  if (drvlocal.pollScaling && drvlocal.clean.paramIfOffset &&
-      (paramCtrl & PARAM_IF_ACK_MASK)) {
-    /* Increment */
-    drvlocal.clean.pollNowIdx++;
-    int counter = 255;
-    uint16_t paramIndex = drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
-    while (paramIndex && paramIndexIsReadLaterInBackground(paramIndex) && (counter > 0)) {
-      switch (drvlocal.pollScaling) {
-      case PollScalingOnce:
-        {
-          if (drvlocal.clean.param_read_ok_once[paramIndex]) {
-            drvlocal.clean.pollNowIdx++;
-            paramIndex = drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
-            if (!paramIndex) {
-              /* wrap around */
-              drvlocal.clean.pollNowIdx = 0;
-              paramIndex = drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
-            }
-          } else {
-            counter = 0;
-          }
-        }
-        break;
-      default:
-      case PollScalingNo:
-      case PollScalingCyclic:
-        /* fall through */
-        counter = 0;
-        break;
-      }
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
-                "%spollParam(%d)pollNowIdx=%u paramIndex=%u pollInBG=%d pollScaling=%d param_read_ok_once=%d counter=%d\n",
-                modNamEMC, axisNo_,
-                drvlocal.clean.pollNowIdx,
-                paramIndex, paramIndexIsReadLaterInBackground(paramIndex),
-                drvlocal.pollScaling,
-                drvlocal.clean.param_read_ok_once[paramIndex],
-                counter);
-      counter--;
-    }
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
-              "%spollParam(%d)pollNowIdx=%u\n",
-              modNamEMC, axisNo_, drvlocal.clean.pollNowIdx);
-
-    if (!drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx]) {
-      /* The list is 0 terminated */
-      drvlocal.clean.pollNowIdx = 0;
-      /* Take the chance to read the enums
-         In theory, this can be done earlier - but
-         the record may not have registered the callback yet
-      */
-        asynPrint(pC_->pasynUserController_,
-                  ASYN_TRACE_FLOW,
-                  "%spoll(%d) idxAuxBits=0x%08X hasPolledAllEnums=%d\n",
-                  modNamEMC, axisNo_, idxAuxBits & 0xFF, drvlocal.clean.hasPolledAllEnums);
-      if (!drvlocal.clean.hasPolledAllEnums) {
-
-        readAuxBitNamesEnums();
-        {
-          /* aux bits 0..7 as mbbi */
-          int function = pC_->defAsynPara.ethercatmcAuxBits07_;
-          setIntegerParam(function, idxAuxBits & 0xFF);
-          pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
-        }
-        unsigned paramIndex;
-        drvlocal.clean.hasPolledAllEnums = 1; /* May be overwritten below */
-        for (paramIndex = 0; paramIndex < (sizeof(drvlocal.clean.PILSparamPerm) /
-                                           sizeof(drvlocal.clean.PILSparamPerm[0]));
-             paramIndex++) {
-          if (drvlocal.clean.enumparam_read_id[paramIndex]) {
-            unsigned enumparam_read_id = drvlocal.clean.enumparam_read_id[paramIndex];
-            status = pC_->indexerV3readParameterEnums(this,
-                                                      paramIndex,
-                                                      enumparam_read_id,
-                                                      drvlocal.clean.lenInPlcPara);
-            /* We must read the enums before reading the value
-               If reading ths enum fails, do not read the value */
-            if (!status) {
-              status = pC_->indexerParamRead(this,
-                                             drvlocal.clean.paramIfOffset,
-                                             paramIndex,
-                                             &paramfValue);
-              if (!status) {
-                int initial = 1;
-                pC_->parameterFloatReadBack(axisNo_,
-                                            initial,
-                                            paramIndex,
-                                            paramfValue);
-              }
-            }
-            if (status) {
-              /* reading failed, try again later */
-              drvlocal.clean.hasPolledAllEnums = 0;
-            } else {
-              /* Once read succesfully , do not read again */
-              drvlocal.clean.enumparam_read_id[paramIndex] = 0;
-            }
-          }
-        }
-      }
-    }
-    if (drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx]) {
-      uint16_t paramIndex = drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
-      uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD + paramIndex;
-      asynPrint(pC_->pasynUserController_,
-                ASYN_TRACE_FLOW,
-                "%spollNext(%d) paramCtrl=%s (0x%x) paramValue=%f\n",
-                modNamEMC, axisNo_,
-                plcParamIndexTxtFromParamIndex(paramIndex),
-                paramCtrl, paramfValue);
-      pC_->setPlcMemoryInteger(drvlocal.clean.paramIfOffset,
-                               newParamCtrl, sizeof(newParamCtrl));
-    }
-  }
+  /* Read back parameters */
+  pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
 
   /* extra Error Text, only showing errors, no info
      Most important things, in the order that the operator
