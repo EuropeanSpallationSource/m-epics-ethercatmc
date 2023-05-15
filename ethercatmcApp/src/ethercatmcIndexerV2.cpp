@@ -244,8 +244,6 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
     if (status) goto endPollIndexer;
     switch (iTypCode) {
       case 0x1E04:
-      case 0x5008:
-      case 0x500C:
       case 0x5010:
         {
           axisNo++;
@@ -329,8 +327,6 @@ asynStatus ethercatmcController::indexerInitialPollv2(void)
       }
       break;
     case 0x1E04:
-    case 0x5008:
-    case 0x500C:
     case 0x5010:
       {
         char unitCodeTxt[40];

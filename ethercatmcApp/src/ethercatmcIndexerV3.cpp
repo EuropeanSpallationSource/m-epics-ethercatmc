@@ -180,15 +180,6 @@ typedef union {
   } enumDescriptor;
 
   struct {
-    uint8_t descriptor_type_0x5008                   [2];
-    uint8_t prev_descriptor_id                       [2];
-    uint8_t last_descriptor_id                       [2];
-    uint8_t lowest_bit                               [1];
-    uint8_t bit_width                                [1];
-    char    bitfield_name                            [64];
-  } bitfieldDescriptor;
-
-  struct {
     uint8_t descriptor_type_0x5105                   [2];
     uint8_t prev_descriptor_id                       [2];
     uint8_t bit_number                               [1]; /* 1 byte only */
@@ -682,22 +673,6 @@ ethercatmcController::indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
     unsigned descriptor_type_XXXX = NETTOUINT(tmp1Descriptor.genericDescriptor.descriptor_type);
     prev_descriptor_id = NETTOUINT(tmp1Descriptor.deviceDescriptor.prev_descriptor_id);
     switch (descriptor_type_XXXX) {
-    case 0x5008:
-      {
-        prev_descriptor_id = NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id);
-        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s(%d) bitfield descID=0x%04X prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
-                  modNamEMC, c_function_name, axisNo, descID,
-                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id),
-                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.last_descriptor_id),
-                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.lowest_bit),
-                  NETTOUINT(tmp1Descriptor.bitfieldDescriptor.bit_width),
-                  tmp1Descriptor.bitfieldDescriptor.bitfield_name);
-        descID = prev_descriptor_id;
-        // break the loop
-        //descID = 0; // NETTOUINT(tmp1Descriptor.bitfieldDescriptor.last_descriptor_id);
-      }
-      break;
     case 0x5105:
       {
         prev_descriptor_id = NETTOUINT(tmp1Descriptor.flagDescriptor.prev_descriptor_id);
@@ -779,8 +754,6 @@ ethercatmcController::indexerV3addDevice(unsigned devNum,
             device_name);
     switch (type_code) {
     case 0x1E04:
-    case 0x5008:
-    case 0x500C:
     case 0x5010:
       {
         ethercatmcIndexerAxis *pAxis;
@@ -881,8 +854,6 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
                   tmp1Descriptor.deviceDescriptor.device_name);
         switch (type_code) {
         case 0x1E04:
-        case 0x5008:
-        case 0x500C:
         case 0x5010:
           {
             axisNo++;
@@ -929,16 +900,6 @@ asynStatus ethercatmcController::indexerInitialPollv3(void)
                 NETTOUINT(tmp1Descriptor.enumDescriptor.prev_descriptor_id),
                 NETTOUINT(tmp1Descriptor.enumDescriptor.enum_value),
                 tmp1Descriptor.enumDescriptor.enum_name);
-      break;
-    case 0x5008:
-      asynPrint(pasynUserController_, tracelevel,
-                "%sbitfield descID=0x%04X prev=0x%04X last=0x%04X lowest=%u width=%u utf8_string=\"%s\"\n",
-                modNamEMC, descID,
-                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.prev_descriptor_id),
-                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.last_descriptor_id),
-                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.lowest_bit),
-                NETTOUINT(tmp1Descriptor.bitfieldDescriptor.bit_width),
-                tmp1Descriptor.bitfieldDescriptor.bitfield_name);
       break;
     case 0x5105:
       asynPrint(pasynUserController_, tracelevel,
