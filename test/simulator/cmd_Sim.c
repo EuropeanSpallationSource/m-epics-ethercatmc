@@ -193,6 +193,16 @@ static int motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("OK");
     return 0;
   }
+  /* bErrorId=1 */
+  nvals = sscanf(myarg_1, "bError=%u", &iValue);
+  if (nvals == 1) {
+    LOGINFO("%s/%s:%d myarg_1=\"%s\" iValue=0x%x %d\n",
+            __FILE__, __FUNCTION__, __LINE__,
+            myarg_1, iValue, iValue);
+    set_bError(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return 0;
+  }
   /* nErrorId=17744 */
   nvals = sscanf(myarg_1, "nErrorId=%u", &iValue);
   if (nvals == 1) {

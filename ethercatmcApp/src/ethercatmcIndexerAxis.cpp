@@ -1240,6 +1240,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
      - reset the axis, if there is an error
      - home the axis, if not homed */
   if (hasError || drvlocal.dirty.old_hasError ||
+      drvlocal.dirty.old_ErrorId != errorID ||
       drvlocal.dirty.motorPowerAutoOnOff ||
       drvlocal.dirty.idxStatusCode != idxStatusCode ||
       idxAuxBits != drvlocal.clean.old_idxAuxBits ||

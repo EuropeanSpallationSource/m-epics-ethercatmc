@@ -1014,6 +1014,7 @@ indexerMotorStatusRead1E04(unsigned devNum,
   case idxStatusCodeRESET:
     init_axis((int)motor_axis_no);
     motorStop(motor_axis_no);
+    set_bError(motor_axis_no, 0);
     set_nErrorId(motor_axis_no, 0);
     break;
   case idxStatusCodeSTART:
@@ -1199,8 +1200,6 @@ indexerMotorStatusRead5010(unsigned devNum,
   /* the status bits */
   if (get_bError(motor_axis_no)) {
     idxStatusCode = idxStatusCodeERROR;
-    UINTTONET(get_nErrorId(motor_axis_no),
-              pIndexerDevice5010interface->errorID);
   }
 #ifdef USE_IDXSTATUSCODEPOWEROFF
   else if (!getAmplifierOn(motor_axis_no))
@@ -1216,6 +1215,8 @@ indexerMotorStatusRead5010(unsigned devNum,
   statusReasonAux32 |= (idxStatusCode << 28);
   UINTTONET(statusReasonAux32,
             pIndexerDevice5010interface->statusReasonAux32);
+  UINTTONET(get_nErrorId(motor_axis_no),
+            pIndexerDevice5010interface->errorID);
 }
 
 /* Reads a parameter.

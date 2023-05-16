@@ -123,16 +123,16 @@ alarmStatSevrValuesInt = {
 
 
 #   Test case number, error, homed, autoPower, amplifier on, ErrTxt
-#   tc_no     e      hm au on  txt
+#   tc_no    e  errId   hm au on  MsgTxt                ErrTxt
 allTCs = [
-    (941001, 0x0000, 0, 0, 0, "E: PowerOff"),
-    (941002, 0x0000, 0, 0, 1, "E: Axis not homed"),
-    (941003, 0x0000, 0, 1, 0, "E: Axis not homed"),
-    (941004, 0x0000, 0, 1, 1, "E: Axis not homed"),
-    (941005, 0x4550, 0, 0, 0, "E: PowerOff"),
-    (941006, 0x4550, 0, 0, 1, "E: Follw errpos 4550"),
-    (941007, 0x4550, 0, 1, 0, "E: Follw errpos 4550"),
-    (941008, 0x4550, 0, 1, 1, "E: Follw errpos 4550"),
+    (941001, 0, 0x0000, 0, 0, 0, "E: PowerOff", "E: PowerOff"),
+    (941002, 0, 0x0000, 0, 0, 1, "E: Axis not homed", "E: Axis not homed"),
+    (941003, 0, 0x0000, 0, 1, 0, "E: Axis not homed", "E: Axis not homed"),
+    (941004, 0, 0x0000, 0, 1, 1, "E: Axis not homed", "E: Axis not homed"),
+    (941005, 1, 0x4550, 0, 0, 0, "E: PowerOff", "E: PowerOff"),
+    (941006, 1, 0x4550, 0, 0, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    (941007, 1, 0x4550, 0, 1, 0, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    (941008, 1, 0x4550, 0, 1, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
 ]
 
 
@@ -140,15 +140,25 @@ def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 
-def writeBitsReadErrTxt(
-    self, tc_no=0, axisHomed=-1, errorId=-1, pwrAuto=-1, amplifierOn=-1, errTxt="undef"
+def writeBitsReadMsgTxtErrTxt(
+    self,
+    tc_no=0,
+    axisHomed=-1,
+    err=-1,
+    errorId=-1,
+    pwrAuto=-1,
+    amplifierOn=-1,
+    msgTxt="undef",
+    errTxt="undef",
 ):
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     assert tc_no != 0
     assert axisHomed >= 0
+    assert err != -1
     assert errorId != -1
     assert pwrAuto != -1
     assert amplifierOn != -1
+    assert msgTxt != "undef"
     assert errTxt != "undef"
 
     if amplifierOn == 1:
@@ -161,12 +171,16 @@ def writeBitsReadErrTxt(
     self.axisCom.put("-PwrAuto", pwrAuto)
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
     self.axisMr.setValueOnSimulator(tc_no, "bAxisHomed", axisHomed)
+    self.axisMr.setValueOnSimulator(tc_no, "bError", err)
     self.axisMr.setValueOnSimulator(tc_no, "nErrorId", errorId)
     self.axisMr.setValueOnSimulator(tc_no, "nAmplifierPercent", amplifierPercent)
     self.axisCom.put(".STUP", 1)
     while maxTime > 0:
+        actMsgTxt = self.axisCom.get("-MsgTxt")
+        if actMsgTxt == " ":
+            actMsgTxt = ""
         actErrTxt = self.axisCom.get("-ErrTxt")
-        if actErrTxt == errTxt:
+        if actMsgTxt == msgTxt and actErrTxt == errTxt:
             passed = True
             maxTime = 0
         else:
@@ -174,10 +188,12 @@ def writeBitsReadErrTxt(
             maxTime = maxTime - polltime
 
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} tc_no={tc_no} axisHomed={axisHomed} errorId={errorId} pwrAuto={pwrAuto} amplifierOn={amplifierOn} errTxtExp={errTxt} actErrTxt={actErrTxt!r}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} tc_no={tc_no} axisHomed={axisHomed} err={err} errorId={errorId} pwrAuto={pwrAuto} amplifierOn={amplifierOn} msgTxtExp={msgTxt} actMsgTxt={actMsgTxt!r} errTxtExp={errTxt} actErrTxt={actErrTxt!r}"
     )
     self.axisCom.put("-PwrAuto", oldPwrAuto)
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
+    if actMsgTxt != msgTxt:
+        passed = False
     if actErrTxt != errTxt:
         passed = False
     if passed:
@@ -202,38 +218,46 @@ class Test(unittest.TestCase):
     def test_TC_94000(self):
         for tc in allTCs:
             tc_no = tc[0]
-            errorId = tc[1]
-            axisHomed = tc[2]
-            pwrAuto = tc[3]
-            amplifierOn = tc[4]
-            errTxt = tc[5]
-            writeBitsReadErrTxt(
+            err = tc[1]
+            errorId = tc[2]
+            axisHomed = tc[3]
+            pwrAuto = tc[4]
+            amplifierOn = tc[5]
+            msgTxt = tc[6]
+            errTxt = tc[7]
+            writeBitsReadMsgTxtErrTxt(
                 self,
                 tc_no=tc_no * 10,
                 axisHomed=1,
+                err=0,
                 errorId=0,
                 pwrAuto=1,
                 amplifierOn=1,
+                msgTxt="",
                 errTxt="",
             )
-            writeBitsReadErrTxt(
+            writeBitsReadMsgTxtErrTxt(
                 self,
                 tc_no=tc_no * 10 + 1,
                 axisHomed=axisHomed,
+                err=err,
                 errorId=errorId,
                 pwrAuto=pwrAuto,
                 amplifierOn=amplifierOn,
+                msgTxt=msgTxt,
                 errTxt=errTxt,
             )
 
     def test_TC_94199999(self):
         tc_no = 94102
-        writeBitsReadErrTxt(
+        writeBitsReadMsgTxtErrTxt(
             self,
             tc_no=tc_no,
             axisHomed=1,
+            err=0,
             errorId=0,
             pwrAuto=2,
             amplifierOn=1,
+            msgTxt="",
             errTxt="",
         )
