@@ -1280,77 +1280,79 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     axis can be partly moved: Limit switch, interlock Fwd/Bwd
     axis is not homed ???
     axis can be moved */
-
-    /* Anyway, continue with msgtxt */
-    if (sErrorMessage[0]) {
-      msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
-    } else if (localMode) {
-      msgTxtFromDriver = "localMode";
-    } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                  drvlocal.clean.auxBitsInterlockBwdMask)) {
-      if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                               drvlocal.clean.auxBitsInterlockBwdMask)) ==
-           drvlocal.clean.auxBitsInterlockFwdMask)) {
-        msgTxtFromDriver = "InterlockFwd";
-      } else if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                      drvlocal.clean.auxBitsInterlockBwdMask)) ==
-                  drvlocal.clean.auxBitsInterlockBwdMask)) {
-        msgTxtFromDriver = "InterlockBwd";
+    /* continue with msgtxt */
+    if (!nowMoving) {
+      /* A moving axis should show moving, homing ...*/
+      if (sErrorMessage[0]) {
+        msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
+      } else if (localMode) {
+        msgTxtFromDriver = "localMode";
+      } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                    drvlocal.clean.auxBitsInterlockBwdMask)) {
+        if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                 drvlocal.clean.auxBitsInterlockBwdMask)) ==
+             drvlocal.clean.auxBitsInterlockFwdMask)) {
+          msgTxtFromDriver = "InterlockFwd";
+        } else if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                        drvlocal.clean.auxBitsInterlockBwdMask)) ==
+                    drvlocal.clean.auxBitsInterlockBwdMask)) {
+          msgTxtFromDriver = "InterlockBwd";
+        } else {
+          msgTxtFromDriver = "InterlockFwdBwd";
+        }
+      } else if (errorID) {
+        charEorW = 'W';
+        const char *errIdString = errStringFromErrId(errorID);
+        if (errIdString[0]) {
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
+                   charEorW, errIdString, errorID);
+        } else {
+          snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                   "%c: TwinCAT Err %X", charEorW, errorID);
+        }
+      }
+      if (sErrorMessage[0]) {
+        msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
+      } else if (msgTxtFromDriver) {
+        ; // nothing. keep the message */
       } else {
-        msgTxtFromDriver = "InterlockFwdBwd";
-      }
-    } else if (errorID) {
-      charEorW = 'W';
-      const char *errIdString = errStringFromErrId(errorID);
-      if (errIdString[0]) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
-                 charEorW, errIdString, errorID);
-      } else {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                 "%c: TwinCAT Err %X", charEorW, errorID);
-      }
-    }
-    if (sErrorMessage[0]) {
-      msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
-    } else if (msgTxtFromDriver) {
-      ; // nothing. keep the message */
-    } else {
-      int function = 0;
-      switch (statusReasonAux & 0xFF) {
-      case 1:
-        function = pC_->defAsynPara.ethercatmcNamAux0_;
-        break;
-      case 2:
-        function = pC_->defAsynPara.ethercatmcNamAux1_;
-        break;
-      case 4:
-        function = pC_->defAsynPara.ethercatmcNamAux2_;
-        break;
-      case 8:
-        function = pC_->defAsynPara.ethercatmcNamAux3_;
-        break;
-      case 16:
-        function = pC_->defAsynPara.ethercatmcNamAux4_;
-        break;
-      case 32:
-        function = pC_->defAsynPara.ethercatmcNamAux5_;
-        break;
-      case 64:
-        function = pC_->defAsynPara.ethercatmcNamAux6_;
-        break;
-      case 128:
-        function = pC_->defAsynPara.ethercatmcNamAux7_;
-        break;
-      default:
-        break;
-      }
-      if (function) {
-        asynStatus status = pC_->getStringParam(axisNo_,
-                                                function,
-                                                (int)sizeof(nameAuxBits),
-                                                &nameAuxBits[0]);
-        if (status == asynSuccess) {
-          msgTxtFromDriver = &nameAuxBits[0];
+        int function = 0;
+        switch (statusReasonAux & 0xFF) {
+        case 1:
+          function = pC_->defAsynPara.ethercatmcNamAux0_;
+          break;
+        case 2:
+          function = pC_->defAsynPara.ethercatmcNamAux1_;
+          break;
+        case 4:
+          function = pC_->defAsynPara.ethercatmcNamAux2_;
+          break;
+        case 8:
+          function = pC_->defAsynPara.ethercatmcNamAux3_;
+          break;
+        case 16:
+          function = pC_->defAsynPara.ethercatmcNamAux4_;
+          break;
+        case 32:
+          function = pC_->defAsynPara.ethercatmcNamAux5_;
+          break;
+        case 64:
+          function = pC_->defAsynPara.ethercatmcNamAux6_;
+          break;
+        case 128:
+          function = pC_->defAsynPara.ethercatmcNamAux7_;
+          break;
+        default:
+          break;
+        }
+        if (function) {
+          asynStatus status = pC_->getStringParam(axisNo_,
+                                                  function,
+                                                  (int)sizeof(nameAuxBits),
+                                                  &nameAuxBits[0]);
+          if (status == asynSuccess) {
+            msgTxtFromDriver = &nameAuxBits[0];
+          }
         }
       }
     }
