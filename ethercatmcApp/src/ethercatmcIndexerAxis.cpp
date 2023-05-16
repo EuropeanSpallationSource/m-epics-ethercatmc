@@ -777,7 +777,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
 {
   asynStatus status = asynSuccess;
   unsigned traceMask = ASYN_TRACE_INFO;
-  const char *msgTxtFromDriver = NULL;
   //double targetPosition = 0.0;
   double actPosition = 0.0;
   double paramfValue = 0.0;
@@ -1245,6 +1244,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       drvlocal.dirty.idxStatusCode != idxStatusCode ||
       idxAuxBits != drvlocal.clean.old_idxAuxBits ||
       idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+    const char *msgTxtFromDriver = NULL;
     char sErrorMessage[40];
     char charEorW = 'E';
     int showPowerOff = 0;
@@ -1283,19 +1283,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     /* Anyway, continue with msgtxt */
     if (sErrorMessage[0]) {
       msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
-    } else if (errorID) {
-      charEorW = 'W';
-      const char *errIdString = errStringFromErrId(errorID);
-      if (errIdString[0]) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
-                 charEorW, errIdString, errorID);
-      } else {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                 "%c: TwinCAT Err %X", charEorW, errorID);
-      }
-    }
-    if (sErrorMessage[0]) {
-      msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
     } else if (localMode) {
       msgTxtFromDriver = "localMode";
     } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
@@ -1311,6 +1298,21 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       } else {
         msgTxtFromDriver = "InterlockFwdBwd";
       }
+    } else if (errorID) {
+      charEorW = 'W';
+      const char *errIdString = errStringFromErrId(errorID);
+      if (errIdString[0]) {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
+                 charEorW, errIdString, errorID);
+      } else {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                 "%c: TwinCAT Err %X", charEorW, errorID);
+      }
+    }
+    if (sErrorMessage[0]) {
+      msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
+    } else if (msgTxtFromDriver) {
+      ; // nothing. keep the message */
     } else {
       int function = 0;
       switch (statusReasonAux & 0xFF) {
