@@ -1246,7 +1246,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       idxAuxBits != drvlocal.clean.old_idxAuxBits ||
       idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
     char sErrorMessage[40];
-    const char charEorW = 'E';
+    char charEorW = 'E';
     int showPowerOff = 0;
     memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
     if (!powerIsOn) {
@@ -1281,6 +1281,19 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     axis can be moved */
 
     /* Anyway, continue with msgtxt */
+    if (sErrorMessage[0]) {
+      msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
+    } else if (errorID) {
+      charEorW = 'W';
+      const char *errIdString = errStringFromErrId(errorID);
+      if (errIdString[0]) {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
+                 charEorW, errIdString, errorID);
+      } else {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                 "%c: TwinCAT Err %X", charEorW, errorID);
+      }
+    }
     if (sErrorMessage[0]) {
       msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
     } else if (localMode) {
