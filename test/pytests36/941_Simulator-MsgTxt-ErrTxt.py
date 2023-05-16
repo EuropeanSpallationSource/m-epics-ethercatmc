@@ -123,16 +123,28 @@ alarmStatSevrValuesInt = {
 
 
 #   Test case number, error, homed, autoPower, amplifier on, ErrTxt
-#   tc_no    e  errId   hm au on  MsgTxt                ErrTxt
+#   tc_no     e  errId  hm au on  MsgTxt                ErrTxt
 allTCs = [
-    (941001, 0, 0x0000, 0, 0, 0, "E: PowerOff", "E: PowerOff"),
-    (941002, 0, 0x0000, 0, 0, 1, "E: Axis not homed", "E: Axis not homed"),
-    (941003, 0, 0x0000, 0, 1, 0, "E: Axis not homed", "E: Axis not homed"),
-    (941004, 0, 0x0000, 0, 1, 1, "E: Axis not homed", "E: Axis not homed"),
-    (941005, 1, 0x4550, 0, 0, 0, "E: PowerOff", "E: PowerOff"),
-    (941006, 1, 0x4550, 0, 0, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
-    (941007, 1, 0x4550, 0, 1, 0, "E: Follw errpos 4550", "E: Follw errpos 4550"),
-    (941008, 1, 0x4550, 0, 1, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    (9410001, 0, 0x0000, 0, 0, 0, "E: PowerOff", "E: PowerOff"),
+    (9410002, 0, 0x0000, 0, 0, 1, "E: Axis not homed", "E: Axis not homed"),
+    (9410003, 0, 0x0000, 0, 1, 0, "E: Axis not homed", "E: Axis not homed"),
+    (9410004, 0, 0x0000, 0, 1, 1, "E: Axis not homed", "E: Axis not homed"),
+    (9410005, 0, 0x4460, 0, 0, 0, "E: PowerOff", "E: PowerOff"),
+    (9410006, 0, 0x4460, 0, 0, 1, "E: Axis not homed", "E: Axis not homed"),
+    (9410007, 0, 0x4460, 0, 1, 0, "E: Axis not homed", "E: Axis not homed"),
+    (9410008, 0, 0x4460, 0, 1, 1, "E: Axis not homed", "E: Axis not homed"),
+    (9410009, 0, 0x4460, 1, 0, 0, "E: PowerOff", "E: PowerOff"),
+    (9410010, 0, 0x4460, 1, 0, 1, "W: Low soft lim 4460", ""),
+    (9410011, 0, 0x4460, 1, 1, 0, "W: Low soft lim 4460", ""),
+    (9410012, 0, 0x4460, 1, 1, 1, "W: Low soft lim 4460", ""),
+    (9410020, 1, 0x4550, 0, 0, 0, "E: PowerOff", "E: PowerOff"),
+    (9410021, 1, 0x4550, 0, 0, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    (9410022, 1, 0x4550, 0, 1, 0, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    (9410023, 1, 0x4550, 0, 1, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    (9410024, 1, 0x4550, 1, 0, 0, "E: PowerOff", "E: PowerOff"),
+    (9410025, 1, 0x4550, 1, 0, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    (9410026, 1, 0x4550, 1, 1, 0, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    (9410027, 1, 0x4550, 1, 1, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
 ]
 
 
@@ -188,14 +200,10 @@ def writeBitsReadMsgTxtErrTxt(
             maxTime = maxTime - polltime
 
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} tc_no={tc_no} axisHomed={axisHomed} err={err} errorId={errorId} pwrAuto={pwrAuto} amplifierOn={amplifierOn} msgTxtExp={msgTxt} actMsgTxt={actMsgTxt!r} errTxtExp={errTxt} actErrTxt={actErrTxt!r}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} tc_no={tc_no} passed={passed} axisHomed={axisHomed} err={err} errorId={errorId:x} pwrAuto={pwrAuto} amplifierOn={amplifierOn} msgTxtExp={msgTxt} actMsgTxt={actMsgTxt!r} errTxtExp={errTxt} actErrTxt={actErrTxt!r}"
     )
     self.axisCom.put("-PwrAuto", oldPwrAuto)
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
-    if actMsgTxt != msgTxt:
-        passed = False
-    if actErrTxt != errTxt:
-        passed = False
     if passed:
         self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
