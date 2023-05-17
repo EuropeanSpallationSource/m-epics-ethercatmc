@@ -434,7 +434,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       "SimAxis1",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "enabled", "notHomed"},
+        "", "", "interlockFwd", "interlockBwd", "localMode", "", "enabled", "notHomed"},
       5.0, 175.0
     },
     /* device for encoderRaw */
@@ -514,7 +514,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       "RotAxis2",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "enabled", "notHomed"},
+        "", "", "interlockFwd", "interlockBwd", "localMode", "", "enabled", "notHomed"},
       -181.0, +181.0
     },
     /* device for encoderRaw */
@@ -1188,6 +1188,30 @@ indexerMotorStatusRead5010(unsigned devNum,
       } else if (!strcmp("enabled", auxBitName)) {
         int bValue = getAmplifierOn(motor_axis_no);
         LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 motor_axis_no, auxBitIdx, bValue);
+        if (bValue) {
+          statusReasonAux32 |= 1 << auxBitIdx;
+        }
+      } else if (!strcmp("localMode", auxBitName)) {
+        int bValue = getLocalmode(motor_axis_no);
+        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u localMode=%d\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 motor_axis_no, auxBitIdx, bValue);
+        if (bValue) {
+          statusReasonAux32 |= 1 << auxBitIdx;
+        }
+      } else if (!strcmp("interlockBwd", auxBitName)) {
+        int bValue = getInterlockBwd(motor_axis_no);
+        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockBwd=%d\n",
+                 __FILE__, __FUNCTION__, __LINE__,
+                 motor_axis_no, auxBitIdx, bValue);
+        if (bValue) {
+          statusReasonAux32 |= 1 << auxBitIdx;
+        }
+      } else if (!strcmp("interlockFwd", auxBitName)) {
+        int bValue = getInterlockFwd(motor_axis_no);
+        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockFwd=%d\n",
                  __FILE__, __FUNCTION__, __LINE__,
                  motor_axis_no, auxBitIdx, bValue);
         if (bValue) {

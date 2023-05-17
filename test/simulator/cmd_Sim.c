@@ -186,6 +186,31 @@ static int motorHandleOneArg(const char *myarg_1)
     cmd_buf_printf("OK");
     return 0;
   }
+
+  /* bLocalMode=1 */
+  nvals = sscanf(myarg_1, "bLocalMode=%d", &iValue);
+  if (nvals == 1) {
+    setLocalmode(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return 0;
+  }
+
+  /* bInterlockBwd=1 */
+  nvals = sscanf(myarg_1, "bInterlockBwd=%d", &iValue);
+  if (nvals == 1) {
+    setInterlockBwd(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return 0;
+  }
+
+  /* bInterlockFwd=1 */
+  nvals = sscanf(myarg_1, "bInterlockFwd=%d", &iValue);
+  if (nvals == 1) {
+    setInterlockFwd(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return 0;
+  }
+
   /* bAxisHomed=1 */
   nvals = sscanf(myarg_1, "bAxisHomed=%d", &iValue);
   if (nvals == 1) {

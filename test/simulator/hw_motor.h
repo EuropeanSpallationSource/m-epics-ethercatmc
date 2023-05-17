@@ -240,6 +240,19 @@ int getManualSimulatorMode(int axis_no);
 void setManualSimulatorMode(int axis_no, int manualMode);
 
 /*
+ * localmode can be set in TwinCAT to disable all writing from EPICS
+ */
+int getLocalmode(int axis_no);
+void setLocalmode(int axis_no, int manualMode);
+
+
+/* Interlocks */
+int getInterlockBwd(int axis_no);
+void setInterlockBwd(int axis_no, int manualMode);
+int getInterlockFwd(int axis_no);
+void setInterlockFwd(int axis_no, int manualMode);
+
+/*
  * Lock the amplifier to off (even if it should be on)
  */
 #define AMPLIFIER_LOCKED_TO_BE_OFF_SILENT 1

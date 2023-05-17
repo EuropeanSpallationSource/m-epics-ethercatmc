@@ -86,6 +86,9 @@ typedef struct
   int nErrorId;
   FILE *logFile;
   int bManualSimulatorMode;
+  int bLocalMode;
+  int bInterlockBwd;
+  int bInterlockFwd;
   int amplifierLockedToBeOff;
   int defRampUpAfterStart;
   double nxtMoveAcceleration;
@@ -1382,6 +1385,50 @@ void setManualSimulatorMode(int axis_no, int manualMode)
   motor_axis[axis_no].bManualSimulatorMode = manualMode;
 }
 
+int getLocalmode(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].bLocalMode;
+}
+
+void setLocalmode(int axis_no, int localMode)
+{
+  AXIS_CHECK_RETURN(axis_no);
+  fprintf(stdlog, "%s/%s:%d axis_no=%d localMode=%d\n",
+          __FILE__, __FUNCTION__, __LINE__,
+          axis_no, localMode);
+  motor_axis[axis_no].bLocalMode = localMode;
+}
+
+int getInterlockBwd(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].bInterlockBwd;
+}
+
+void setInterlockBwd(int axis_no, int interlockBwd)
+{
+  AXIS_CHECK_RETURN(axis_no);
+  fprintf(stdlog, "%s/%s:%d axis_no=%d interlockBwd=%d\n",
+          __FILE__, __FUNCTION__, __LINE__,
+          axis_no, interlockBwd);
+  motor_axis[axis_no].bInterlockBwd = interlockBwd;
+}
+
+int getInterlockFwd(int axis_no)
+{
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].bInterlockFwd;
+}
+
+void setInterlockFwd(int axis_no, int interlockFwd)
+{
+  AXIS_CHECK_RETURN(axis_no);
+  fprintf(stdlog, "%s/%s:%d axis_no=%d interlockFwd=%d\n",
+          __FILE__, __FUNCTION__, __LINE__,
+          axis_no, interlockFwd);
+  motor_axis[axis_no].bInterlockFwd = interlockFwd;
+}
 
 int getAmplifierLockedToBeOff(int axis_no)
 {
