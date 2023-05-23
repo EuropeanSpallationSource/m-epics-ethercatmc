@@ -5,6 +5,8 @@ FILENAME...   ethercatmcController.h
 #ifndef ETHERCATMCCONTROLLER_H
 #define ETHERCATMCCONTROLLER_H
 
+#include <epicsExport.h>
+#include <shareLib.h>
 #include "asynDriver.h"
 #include "asynMotorController.h"
 #include "asynMotorAxis.h"

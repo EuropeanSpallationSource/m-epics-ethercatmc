@@ -5,6 +5,8 @@ FILENAME...   ethercatmcAxis.h
 #ifndef ETHERCATMCAXIS_H
 #define ETHERCATMCAXIS_H
 
+#include <epicsExport.h>
+#include <shareLib.h>
 #include "asynMotorAxis.h"
 
 #define AMPLIFIER_ON_FLAG_CREATE_AXIS  (1)
