@@ -27,6 +27,7 @@ generate_st_cmd_classic() {
     sed <"$src" >"$dst" \
         -e "s%dbLoadRecords(\"%dbLoadRecords(\"./db/%" \
         -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
+        -e "s!/c/Users/!c:/Users/!" \
         -e "s%adsAsynPortDriverConfigure%#adsAsynPortDriverConfigure%"
   done &&
     rm -f $stcmddst &&
@@ -49,6 +50,7 @@ EOF
       -e "s%cfgFile=./%cfgFile=./test/startup/%"    \
       -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
       -e "s%require%#require%" \
+      -e "s!/c/Users/!c:/Users/!" \
     | grep -v '^  *#' >>$stcmddst &&
     cat >>$stcmddst <<-EOF &&
         iocInit
