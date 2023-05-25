@@ -784,7 +784,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   int errorID = -1;
   bool nowMoving = false;
   int powerIsOn = 0;
-  int statusValid = 0;
+  int auxbitsValid = 0;
   int positionValid = 1; /* all states except RESET */
   int hasError = 0;
   int localMode = 0;
@@ -968,21 +968,21 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   case idxStatusCodeIDLE:
   case idxStatusCodeWARN:
     powerIsOn = 1;
-    statusValid = 1;
+    auxbitsValid = 1;
     break;
   case idxStatusCodePOWEROFF:
-    statusValid = 1;
+    auxbitsValid = 1;
     drvlocal.clean.hasProblem = 1;
     powerIsOn = 0;
     break;
   case idxStatusCodeBUSY:
     powerIsOn = 1;
-    statusValid = 1;
+    auxbitsValid = 1;
     nowMoving = true;
     break;
   case idxStatusCodeERROR:
     hasError = 1;
-    statusValid = 1;
+    auxbitsValid = 1;
     drvlocal.clean.hasProblem = 1;
     break;
   case idxStatusCodeRESET:
@@ -1016,7 +1016,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setDoubleParam(pC_->motorPosition_, actPosition);
     setDoubleParam(pC_->motorEncoderPosition_, actPosition);
   }
-  if (statusValid || nowMoving) {
+  if (auxbitsValid || nowMoving) {
     /* These 2 bits are important to inform the motorRecord
        when a motion is completed */
     setIntegerParam(pC_->motorStatusMoving_, nowMoving);
@@ -1067,7 +1067,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     if ((!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
                               &motorRecOffset)) &&
         (motorRecDirection >= 0) &&
-        (positionValid && statusValid && homed && (ethercatmcPTPallGood == 1))) {
+        (positionValid && auxbitsValid && homed && (ethercatmcPTPallGood == 1))) {
       RBV_TSEstatus = asynSuccess;
     }
     /* direction == 1 means "negative" */
@@ -1080,26 +1080,32 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   /* Read back parameters */
   pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
 
-  if (statusValid) {
-    if ((idxStatusCode != drvlocal.dirty.idxStatusCode) ||
-        (errorID != drvlocal.dirty.old_ErrorId)) {
-      if (errorID) {
-        asynPrint(pC_->pasynUserController_, traceMask,
-                  "%spoll(%d) statusReasonAux=0x%08X (%s) errorID=0x%04X \"%s\" actPos=%f\n",
+  if ((idxStatusCode != drvlocal.dirty.idxStatusCode) ||
+      (errorID != drvlocal.dirty.old_ErrorId)) {
+    if (errorID) {
+      asynPrint(pC_->pasynUserController_, traceMask,
+                "%spoll(%d) statusReasonAux=0x%08X (%s) errorID=0x%04X \"%s\" actPos=%f\n",
                 modNamEMC, axisNo_,
-                  statusReasonAux,
-                  idxStatusCodeTypeToStr(idxStatusCode),
-                  errorID, errStringFromErrId(errorID),
-                  actPosition);
-      } else {
-        asynPrint(pC_->pasynUserController_, traceMask,
-                  "%spoll(%d) statusReasonAux=0x%08X (%s) actPos=%f\n",
-                  modNamEMC, axisNo_,
-                  statusReasonAux,
-                  idxStatusCodeTypeToStr(idxStatusCode),
-                  actPosition);
-      }
+                statusReasonAux,
+                idxStatusCodeTypeToStr(idxStatusCode),
+                errorID, errStringFromErrId(errorID),
+                actPosition);
+    } else if (auxbitsValid) {
+      asynPrint(pC_->pasynUserController_, traceMask,
+                "%spoll(%d) statusReasonAux=0x%08X (%s) actPos=%f\n",
+                modNamEMC, axisNo_,
+                statusReasonAux,
+                idxStatusCodeTypeToStr(idxStatusCode),
+                actPosition);
+    } else {
+      asynPrint(pC_->pasynUserController_, traceMask,
+                "%spoll(%d)                            (%s) actPos=%f\n",
+                modNamEMC, axisNo_,
+                idxStatusCodeTypeToStr(idxStatusCode),
+                actPosition);
     }
+  }
+  if (auxbitsValid) {
     if (idxAuxBits != drvlocal.clean.old_idxAuxBits) {
       /* This is for debugging only: The IOC log will show changed bits */
       /* Show even bit 27..24, which are reson bits, here */
@@ -1361,9 +1367,9 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     drvlocal.clean.old_idxAuxBits  = idxAuxBits;
     drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
     drvlocal.dirty.old_hasError    = hasError;
-    drvlocal.dirty.idxStatusCode   = idxStatusCode;
-    drvlocal.dirty.old_ErrorId     = errorID;
-  } /* statusValid */
+  } /* auxbitsValid */
+  drvlocal.dirty.idxStatusCode   = idxStatusCode;
+  drvlocal.dirty.old_ErrorId     = errorID;
   callParamCallbacks();
   return status;
 }
