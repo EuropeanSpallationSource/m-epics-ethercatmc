@@ -963,74 +963,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
   }
   drvlocal.clean.hasProblem = 0;
   setIntegerParam(pC_->defAsynPara.ethercatmcStatusCode_, idxStatusCode);
-  if ((idxStatusCode != drvlocal.dirty.idxStatusCode) ||
-      (errorID != drvlocal.dirty.old_ErrorId)) {
-    if (errorID) {
-      asynPrint(pC_->pasynUserController_, traceMask,
-                "%spoll(%d) statusReasonAux=0x%08X (%s) errorID=0x%04X \"%s\" actPos=%f\n",
-                modNamEMC, axisNo_,
-                statusReasonAux,
-                idxStatusCodeTypeToStr(idxStatusCode),
-                errorID, errStringFromErrId(errorID),
-                actPosition);
-    } else {
-      asynPrint(pC_->pasynUserController_, traceMask,
-                "%spoll(%d) statusReasonAux=0x%08X (%s) actPos=%f\n",
-                modNamEMC, axisNo_,
-                statusReasonAux,
-                idxStatusCodeTypeToStr(idxStatusCode),
-                actPosition);
-    }
-  }
-  if (idxAuxBits != drvlocal.clean.old_idxAuxBits) {
-    /* This is for debugging only: The IOC log will show changed bits */
-    /* Show even bit 27..24, which are reson bits, here */
-    pC_->changedAuxBits_to_ASCII(axisNo_,
-                                 pC_->defAsynPara.ethercatmcNamAux0_,
-                                 idxAuxBits, drvlocal.clean.old_idxAuxBits);
-    asynPrint(pC_->pasynUserController_, traceMask,
-              "%spoll(%d) auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
-              modNamEMC, axisNo_, drvlocal.clean.old_idxAuxBits, idxAuxBits,
-              pC_->ctrlLocal.changedAuxBits[27], pC_->ctrlLocal.changedAuxBits[26],
-              pC_->ctrlLocal.changedAuxBits[25], pC_->ctrlLocal.changedAuxBits[24],
-              pC_->ctrlLocal.changedAuxBits[0],  pC_->ctrlLocal.changedAuxBits[1],
-              pC_->ctrlLocal.changedAuxBits[2],  pC_->ctrlLocal.changedAuxBits[3],
-              pC_->ctrlLocal.changedAuxBits[4],  pC_->ctrlLocal.changedAuxBits[5],
-              pC_->ctrlLocal.changedAuxBits[6],  pC_->ctrlLocal.changedAuxBits[7],
-              pC_->ctrlLocal.changedAuxBits[8],  pC_->ctrlLocal.changedAuxBits[9],
-              pC_->ctrlLocal.changedAuxBits[10], pC_->ctrlLocal.changedAuxBits[11],
-              pC_->ctrlLocal.changedAuxBits[12], pC_->ctrlLocal.changedAuxBits[13],
-              pC_->ctrlLocal.changedAuxBits[14], pC_->ctrlLocal.changedAuxBits[15],
-              pC_->ctrlLocal.changedAuxBits[16], pC_->ctrlLocal.changedAuxBits[17],
-              pC_->ctrlLocal.changedAuxBits[18], pC_->ctrlLocal.changedAuxBits[19],
-              pC_->ctrlLocal.changedAuxBits[20], pC_->ctrlLocal.changedAuxBits[21],
-              pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
-              actPosition);
-  }
-  /* This is for EPICS records: after a re-connection,
-     all bits should be written once */
-  if (idxAuxBits != drvlocal.clean.old_idxAuxBits ||
-      idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-    setIntegerParam(pC_->defAsynPara.ethercatmcAuxBits07_, statusReasonAux & 0xFF);
-    for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD; auxBitIdx++) {
-      int function = drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx];
-      if (function) {
-        int value = (idxAuxBits >> auxBitIdx) & 1;
-        asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
-                  "%spoll(%d) auxBitIdx=%u function=%d value=%d\n",
-                  modNamEMC, axisNo_, auxBitIdx, function, value);
-        setIntegerParam(function, value);
-        if (drvlocal.clean.old_idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-          /* In the first cycle:
-             old_idxAuxBits == 0, dirty.old_idxAuxBits == 0xFFFFFFFF
-             Unset the alarm state for all aux bits that we have found
-             after a connect or re-connect
-          */
-          pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
-        }
-      }
-    }
-  }
   switch (idxStatusCode) {
     /* After RESET, START, STOP the bits are not valid */
   case idxStatusCodeIDLE:
@@ -1090,7 +1022,133 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setIntegerParam(pC_->motorStatusMoving_, nowMoving);
     setIntegerParam(pC_->motorStatusDone_, !nowMoving);
   }
+
+  if (positionValid) {
+    double cfgPmax, cfgPmin;
+    int pilsLonginTargetValue;
+    asynStatus pilsLonginTargetStatus;
+
+    pilsLonginTargetStatus = pC_->getIntegerParam(axisNo_,
+                                                  pC_->defAsynPara.pilsLonginTarget_,
+                                                  &pilsLonginTargetValue);
+
+    if (!(pC_->getDoubleParam(axisNo_,
+                              pC_->defAsynPara.ethercatmcCfgPMAX_RB_, &cfgPmax))) {
+      /* readback */
+      if (pilsLonginTargetStatus == asynSuccess &&
+          pilsLonginTargetValue == (int)cfgPmax) {
+        /* output record with readback: Use base class */
+        int function = pC_->defAsynPara.pilsBoMinMax_;
+        asynMotorAxis::setIntegerParam(function, 1);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+      }
+    }
+    if (!(pC_->getDoubleParam(axisNo_,
+                              pC_->defAsynPara.ethercatmcCfgPMIN_RB_, &cfgPmin))) {
+      /* readback */
+      if (pilsLonginTargetStatus == asynSuccess &&
+          pilsLonginTargetValue == (int)cfgPmin) {
+        /* output record with readback: Use base class */
+        int function = pC_->defAsynPara.pilsBoMinMax_;
+        asynMotorAxis::setIntegerParam(function, 0);
+        pC_->setAlarmStatusSeverityWrapper(axisNo_, function,  asynSuccess);
+      }
+    }
+  }
+
+  if (pC_->ctrlLocal.systemUTCtimeOffset)  {
+    /* Motor position in "user coordinates" with UTC time from PTP */
+    double motorRecOffset = 0.0;
+    int ethercatmcPTPallGood = 0;
+    asynStatus RBV_TSEstatus = asynDisabled;
+    double ethercatmcRBV_TSE = 0.0;
+
+    pC_->getIntegerParam(0, pC_->defAsynPara.ethercatmcPTPallGood_, &ethercatmcPTPallGood);
+    if ((!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
+                              &motorRecOffset)) &&
+        (motorRecDirection >= 0) &&
+        (positionValid && statusValid && homed && (ethercatmcPTPallGood == 1))) {
+      RBV_TSEstatus = asynSuccess;
+    }
+    /* direction == 1 means "negative" */
+    motorRecDirection = motorRecDirection ? -1 : 1;
+    ethercatmcRBV_TSE = actPosition *  motorRecDirection + motorRecOffset;
+    setDoubleParam(pC_->defAsynPara.ethercatmcRBV_TSE_, ethercatmcRBV_TSE);
+    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->defAsynPara.ethercatmcRBV_TSE_,
+                                       RBV_TSEstatus);
+  }
+  /* Read back parameters */
+  pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
+
   if (statusValid) {
+    if ((idxStatusCode != drvlocal.dirty.idxStatusCode) ||
+        (errorID != drvlocal.dirty.old_ErrorId)) {
+      if (errorID) {
+        asynPrint(pC_->pasynUserController_, traceMask,
+                  "%spoll(%d) statusReasonAux=0x%08X (%s) errorID=0x%04X \"%s\" actPos=%f\n",
+                modNamEMC, axisNo_,
+                  statusReasonAux,
+                  idxStatusCodeTypeToStr(idxStatusCode),
+                  errorID, errStringFromErrId(errorID),
+                  actPosition);
+      } else {
+        asynPrint(pC_->pasynUserController_, traceMask,
+                  "%spoll(%d) statusReasonAux=0x%08X (%s) actPos=%f\n",
+                  modNamEMC, axisNo_,
+                  statusReasonAux,
+                  idxStatusCodeTypeToStr(idxStatusCode),
+                  actPosition);
+      }
+    }
+    if (idxAuxBits != drvlocal.clean.old_idxAuxBits) {
+      /* This is for debugging only: The IOC log will show changed bits */
+      /* Show even bit 27..24, which are reson bits, here */
+      pC_->changedAuxBits_to_ASCII(axisNo_,
+                                   pC_->defAsynPara.ethercatmcNamAux0_,
+                                   idxAuxBits, drvlocal.clean.old_idxAuxBits);
+      asynPrint(pC_->pasynUserController_, traceMask,
+                "%spoll(%d) auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
+                modNamEMC, axisNo_, drvlocal.clean.old_idxAuxBits, idxAuxBits,
+                pC_->ctrlLocal.changedAuxBits[27], pC_->ctrlLocal.changedAuxBits[26],
+                pC_->ctrlLocal.changedAuxBits[25], pC_->ctrlLocal.changedAuxBits[24],
+                pC_->ctrlLocal.changedAuxBits[0],  pC_->ctrlLocal.changedAuxBits[1],
+                pC_->ctrlLocal.changedAuxBits[2],  pC_->ctrlLocal.changedAuxBits[3],
+                pC_->ctrlLocal.changedAuxBits[4],  pC_->ctrlLocal.changedAuxBits[5],
+                pC_->ctrlLocal.changedAuxBits[6],  pC_->ctrlLocal.changedAuxBits[7],
+                pC_->ctrlLocal.changedAuxBits[8],  pC_->ctrlLocal.changedAuxBits[9],
+                pC_->ctrlLocal.changedAuxBits[10], pC_->ctrlLocal.changedAuxBits[11],
+                pC_->ctrlLocal.changedAuxBits[12], pC_->ctrlLocal.changedAuxBits[13],
+                pC_->ctrlLocal.changedAuxBits[14], pC_->ctrlLocal.changedAuxBits[15],
+                pC_->ctrlLocal.changedAuxBits[16], pC_->ctrlLocal.changedAuxBits[17],
+                pC_->ctrlLocal.changedAuxBits[18], pC_->ctrlLocal.changedAuxBits[19],
+                pC_->ctrlLocal.changedAuxBits[20], pC_->ctrlLocal.changedAuxBits[21],
+                pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
+                actPosition);
+    }
+    /* This is for EPICS records: after a re-connection,
+       all bits should be written once */
+    if (idxAuxBits != drvlocal.clean.old_idxAuxBits ||
+        idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+      setIntegerParam(pC_->defAsynPara.ethercatmcAuxBits07_, statusReasonAux & 0xFF);
+      for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD; auxBitIdx++) {
+        int function = drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx];
+        if (function) {
+          int value = (idxAuxBits >> auxBitIdx) & 1;
+          asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+                    "%spoll(%d) auxBitIdx=%u function=%d value=%d\n",
+                    modNamEMC, axisNo_, auxBitIdx, function, value);
+          setIntegerParam(function, value);
+          if (drvlocal.clean.old_idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+            /* In the first cycle:
+               old_idxAuxBits == 0, dirty.old_idxAuxBits == 0xFFFFFFFF
+               Unset the alarm state for all aux bits that we have found
+               after a connect or re-connect
+            */
+            pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+          }
+        }
+      }
+    }
     /* Limit switches and interlocks gives inhibit */
     int inhibitF = 0;
     int inhibitR = 0;
@@ -1173,135 +1231,37 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setIntegerParam(pC_->defAsynPara.ethercatmcStatusCode_, idxStatusCode);
     setIntegerParam(pC_->motorStatusProblem_, drvlocal.clean.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
-  }
 
-  if (positionValid) {
-    double cfgPmax, cfgPmin;
-    int pilsLonginTargetValue;
-    asynStatus pilsLonginTargetStatus;
-
-    pilsLonginTargetStatus = pC_->getIntegerParam(axisNo_,
-                                                  pC_->defAsynPara.pilsLonginTarget_,
-                                                  &pilsLonginTargetValue);
-
-    if (!(pC_->getDoubleParam(axisNo_,
-                              pC_->defAsynPara.ethercatmcCfgPMAX_RB_, &cfgPmax))) {
-      /* readback */
-      if (pilsLonginTargetStatus == asynSuccess &&
-          pilsLonginTargetValue == (int)cfgPmax) {
-        /* output record with readback: Use base class */
-        int function = pC_->defAsynPara.pilsBoMinMax_;
-        asynMotorAxis::setIntegerParam(function, 1);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
-      }
-    }
-    if (!(pC_->getDoubleParam(axisNo_,
-                              pC_->defAsynPara.ethercatmcCfgPMIN_RB_, &cfgPmin))) {
-      /* readback */
-      if (pilsLonginTargetStatus == asynSuccess &&
-          pilsLonginTargetValue == (int)cfgPmin) {
-        /* output record with readback: Use base class */
-        int function = pC_->defAsynPara.pilsBoMinMax_;
-        asynMotorAxis::setIntegerParam(function, 0);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, function,  asynSuccess);
-      }
-    }
-  }
-
-  if (pC_->ctrlLocal.systemUTCtimeOffset)  {
-    /* Motor position in "user coordinates" with UTC time from PTP */
-    double motorRecOffset = 0.0;
-    int ethercatmcPTPallGood = 0;
-    asynStatus RBV_TSEstatus = asynDisabled;
-    double ethercatmcRBV_TSE = 0.0;
-
-    pC_->getIntegerParam(0, pC_->defAsynPara.ethercatmcPTPallGood_, &ethercatmcPTPallGood);
-    if ((!pC_->getDoubleParam(axisNo_, pC_->motorRecOffset_,
-                              &motorRecOffset)) &&
-        (motorRecDirection >= 0) &&
-        (positionValid && statusValid && homed && (ethercatmcPTPallGood == 1))) {
-      RBV_TSEstatus = asynSuccess;
-    }
-    /* direction == 1 means "negative" */
-    motorRecDirection = motorRecDirection ? -1 : 1;
-    ethercatmcRBV_TSE = actPosition *  motorRecDirection + motorRecOffset;
-    setDoubleParam(pC_->defAsynPara.ethercatmcRBV_TSE_, ethercatmcRBV_TSE);
-    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->defAsynPara.ethercatmcRBV_TSE_,
-                                       RBV_TSEstatus);
-  }
-  /* Read back parameters */
-  pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
-
-  /* extra Error Text, only showing errors, no info
-     Most important things, in the order that the operator
-     can (try to) fix things:
-     - Wait for the communication IOC - MCU to be established
-     - power on the axis (if needed, because there is no auto-power-on)
-     - reset the axis, if there is an error
-     - home the axis, if not homed */
-  if (hasError || drvlocal.dirty.old_hasError ||
-      drvlocal.dirty.old_ErrorId != errorID ||
-      drvlocal.dirty.motorPowerAutoOnOff ||
-      drvlocal.dirty.idxStatusCode != idxStatusCode ||
-      idxAuxBits != drvlocal.clean.old_idxAuxBits ||
-      idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-    const char *msgTxtFromDriver = NULL;
-    char sErrorMessage[40];
-    char charEorW = 'E';
-    int showPowerOff = 0;
-    memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
-    if (!powerIsOn) {
-      int motorPowerAutoOnOff;
-      pC_->getIntegerParam(axisNo_,pC_->motorPowerAutoOnOff_,
-                           &motorPowerAutoOnOff);
-      if (!motorPowerAutoOnOff) {
-        showPowerOff = 1;
-      }
-    }
-    if (showPowerOff) {
-      snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-               "%c: %s", charEorW, "PowerOff");
-    } else if (hasError) {
-      const char *errIdString = errStringFromErrId(errorID);
-      if (errIdString[0]) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
-                 charEorW, errIdString, errorID);
-      } else {
-        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-                 "%c: TwinCAT Err %X", charEorW, errorID);
-      }
-    } else if (!homed) {
-      snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
-               "%c: %s", charEorW, "Axis not homed");
-    }
-    setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, &sErrorMessage[0]);
-    /* TODO:
-    axis can not be moved at all: poweroff, localmode, interlock, axis in reset state
-    axis can be partly moved: Limit switch, interlock Fwd/Bwd
-    axis is not homed ???
-    axis can be moved */
-    /* continue with msgtxt */
-    if (!nowMoving) {
-      /* A moving axis should show moving, homing ...*/
-      if (sErrorMessage[0]) {
-        msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
-      } else if (localMode) {
-        msgTxtFromDriver = "localMode";
-      } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                    drvlocal.clean.auxBitsInterlockBwdMask)) {
-        if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                 drvlocal.clean.auxBitsInterlockBwdMask)) ==
-             drvlocal.clean.auxBitsInterlockFwdMask)) {
-          msgTxtFromDriver = "InterlockFwd";
-        } else if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                        drvlocal.clean.auxBitsInterlockBwdMask)) ==
-                    drvlocal.clean.auxBitsInterlockBwdMask)) {
-          msgTxtFromDriver = "InterlockBwd";
-        } else {
-          msgTxtFromDriver = "InterlockFwdBwd";
+    /* extra Error Text, only showing errors, no info
+       Most important things, in the order that the operator
+       can (try to) fix things:
+       - Wait for the communication IOC - MCU to be established
+       - power on the axis (if needed, because there is no auto-power-on)
+       - reset the axis, if there is an error
+       - home the axis, if not homed */
+    if (hasError || drvlocal.dirty.old_hasError ||
+        drvlocal.dirty.old_ErrorId != errorID ||
+        drvlocal.dirty.motorPowerAutoOnOff ||
+        drvlocal.dirty.idxStatusCode != idxStatusCode ||
+        idxAuxBits != drvlocal.clean.old_idxAuxBits ||
+        idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+      const char *msgTxtFromDriver = NULL;
+      char sErrorMessage[40];
+      char charEorW = 'E';
+      int showPowerOff = 0;
+      memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
+      if (!powerIsOn) {
+        int motorPowerAutoOnOff;
+        pC_->getIntegerParam(axisNo_,pC_->motorPowerAutoOnOff_,
+                             &motorPowerAutoOnOff);
+        if (!motorPowerAutoOnOff) {
+          showPowerOff = 1;
         }
-      } else if (errorID) {
-        charEorW = 'W';
+      }
+      if (showPowerOff) {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                 "%c: %s", charEorW, "PowerOff");
+      } else if (hasError) {
         const char *errIdString = errStringFromErrId(errorID);
         if (errIdString[0]) {
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
@@ -1310,60 +1270,100 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
           snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
                    "%c: TwinCAT Err %X", charEorW, errorID);
         }
+      } else if (!homed) {
+        snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                 "%c: %s", charEorW, "Axis not homed");
       }
-      if (sErrorMessage[0]) {
-        msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
-      } else if (msgTxtFromDriver) {
-        ; // nothing. keep the message */
-      } else {
-        int function = 0;
-        switch (statusReasonAux & 0xFF) {
-        case 1:
-          function = pC_->defAsynPara.ethercatmcNamAux0_;
-          break;
-        case 2:
-          function = pC_->defAsynPara.ethercatmcNamAux1_;
-          break;
-        case 4:
-          function = pC_->defAsynPara.ethercatmcNamAux2_;
-          break;
-        case 8:
-          function = pC_->defAsynPara.ethercatmcNamAux3_;
-          break;
-        case 16:
-          function = pC_->defAsynPara.ethercatmcNamAux4_;
-          break;
-        case 32:
-          function = pC_->defAsynPara.ethercatmcNamAux5_;
-          break;
-        case 64:
-          function = pC_->defAsynPara.ethercatmcNamAux6_;
-          break;
-        case 128:
-          function = pC_->defAsynPara.ethercatmcNamAux7_;
-          break;
-        default:
-          break;
+      setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, &sErrorMessage[0]);
+      /* TODO:
+      axis can not be moved at all: poweroff, localmode, interlock, axis in reset state
+      axis can be partly moved: Limit switch, interlock Fwd/Bwd
+      axis is not homed ???
+      axis can be moved */
+      /* continue with msgtxt */
+      if (!nowMoving) {
+        /* A moving axis should show moving, homing ...*/
+        if (sErrorMessage[0]) {
+          msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
+        } else if (localMode) {
+          msgTxtFromDriver = "localMode";
+        } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                      drvlocal.clean.auxBitsInterlockBwdMask)) {
+          if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                   drvlocal.clean.auxBitsInterlockBwdMask)) ==
+               drvlocal.clean.auxBitsInterlockFwdMask)) {
+            msgTxtFromDriver = "InterlockFwd";
+          } else if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                          drvlocal.clean.auxBitsInterlockBwdMask)) ==
+                      drvlocal.clean.auxBitsInterlockBwdMask)) {
+            msgTxtFromDriver = "InterlockBwd";
+          } else {
+            msgTxtFromDriver = "InterlockFwdBwd";
+          }
+        } else if (errorID) {
+          charEorW = 'W';
+          const char *errIdString = errStringFromErrId(errorID);
+          if (errIdString[0]) {
+            snprintf(sErrorMessage, sizeof(sErrorMessage)-1, "%c: %s %X",
+                     charEorW, errIdString, errorID);
+          } else {
+            snprintf(sErrorMessage, sizeof(sErrorMessage)-1,
+                     "%c: TwinCAT Err %X", charEorW, errorID);
+          }
         }
-        if (function) {
-          asynStatus status = pC_->getStringParam(axisNo_,
-                                                  function,
-                                                  (int)sizeof(nameAuxBits),
-                                                  &nameAuxBits[0]);
-          if (status == asynSuccess) {
-            msgTxtFromDriver = &nameAuxBits[0];
+        if (sErrorMessage[0]) {
+          msgTxtFromDriver = &sErrorMessage[0]; /* There is an important text already */
+        } else if (msgTxtFromDriver) {
+          ; // nothing. keep the message */
+        } else {
+          int function = 0;
+          switch (statusReasonAux & 0xFF) {
+          case 1:
+            function = pC_->defAsynPara.ethercatmcNamAux0_;
+            break;
+          case 2:
+            function = pC_->defAsynPara.ethercatmcNamAux1_;
+            break;
+          case 4:
+            function = pC_->defAsynPara.ethercatmcNamAux2_;
+            break;
+          case 8:
+            function = pC_->defAsynPara.ethercatmcNamAux3_;
+            break;
+          case 16:
+            function = pC_->defAsynPara.ethercatmcNamAux4_;
+            break;
+          case 32:
+            function = pC_->defAsynPara.ethercatmcNamAux5_;
+            break;
+          case 64:
+            function = pC_->defAsynPara.ethercatmcNamAux6_;
+            break;
+          case 128:
+            function = pC_->defAsynPara.ethercatmcNamAux7_;
+            break;
+          default:
+            break;
+          }
+          if (function) {
+            asynStatus status = pC_->getStringParam(axisNo_,
+                                                    function,
+                                                    (int)sizeof(nameAuxBits),
+                                                    &nameAuxBits[0]);
+            if (status == asynSuccess) {
+              msgTxtFromDriver = &nameAuxBits[0];
+            }
           }
         }
       }
+      updateMsgTxtFromDriver(msgTxtFromDriver);
     }
-    updateMsgTxtFromDriver(msgTxtFromDriver);
-  }
-
-  drvlocal.clean.old_idxAuxBits  = idxAuxBits;
-  drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
-  drvlocal.dirty.old_hasError    = hasError;
-  drvlocal.dirty.idxStatusCode   = idxStatusCode;
-  drvlocal.dirty.old_ErrorId     = errorID;
+    drvlocal.clean.old_idxAuxBits  = idxAuxBits;
+    drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
+    drvlocal.dirty.old_hasError    = hasError;
+    drvlocal.dirty.idxStatusCode   = idxStatusCode;
+    drvlocal.dirty.old_ErrorId     = errorID;
+  } /* statusValid */
   callParamCallbacks();
   return status;
 }
