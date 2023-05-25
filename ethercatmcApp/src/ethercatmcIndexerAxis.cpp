@@ -687,15 +687,8 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
                   "%spoll(%d) idxAuxBits=0x%08X hasPolledAllEnums=%d\n",
                   modNamEMC, axisNo_, idxAuxBits & 0xFF, drvlocal.clean.hasPolledAllEnums);
       if (!drvlocal.clean.hasPolledAllEnums) {
-
-        readAuxBitNamesEnums();
-        {
-          /* aux bits 0..7 as mbbi */
-          int function = pC_->defAsynPara.ethercatmcAuxBits07_;
-          setIntegerParam(function, idxAuxBits & 0xFF);
-          pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
-        }
         unsigned paramIndex;
+        readAuxBitNamesEnums();
         drvlocal.clean.hasPolledAllEnums = 1; /* May be overwritten below */
         for (paramIndex = 0; paramIndex < (sizeof(drvlocal.clean.PILSparamPerm) /
                                            sizeof(drvlocal.clean.PILSparamPerm[0]));
@@ -945,9 +938,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                                        asynSuccess);
 
     statusReasonAux = NETTOUINT(readback.statReasAux);
-    setIntegerParam(pC_->defAsynPara.ethercatmcAuxBits07_, statusReasonAux & 0xFF);
-    pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->defAsynPara.ethercatmcAuxBits07_,
-                                       asynSuccess);
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     idxAuxBits    =  statusReasonAux  & 0x0FFFFFFF;
@@ -1133,24 +1123,30 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
     /* This is for EPICS records: after a re-connection,
        all bits should be written once */
-    if (idxAuxBits != drvlocal.clean.old_idxAuxBits ||
-        idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-      setIntegerParam(pC_->defAsynPara.ethercatmcAuxBits07_, statusReasonAux & 0xFF);
-      for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD; auxBitIdx++) {
-        int function = drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx];
-        if (function) {
-          int value = (idxAuxBits >> auxBitIdx) & 1;
-          asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
-                    "%spoll(%d) auxBitIdx=%u function=%d value=%d\n",
-                    modNamEMC, axisNo_, auxBitIdx, function, value);
-          setIntegerParam(function, value);
-          if (drvlocal.clean.old_idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-            /* In the first cycle:
-               old_idxAuxBits == 0, dirty.old_idxAuxBits == 0xFFFFFFFF
-               Unset the alarm state for all aux bits that we have found
-               after a connect or re-connect
-            */
-            pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+    if (drvlocal.clean.hasPolledAllEnums) {
+      if (idxAuxBits != drvlocal.clean.old_idxAuxBits ||
+          idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+        {
+          int function = pC_->defAsynPara.ethercatmcAuxBits07_;
+          setIntegerParam(function, idxAuxBits & 0xFF);
+          pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+        }
+        for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD; auxBitIdx++) {
+          int function = drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx];
+          if (function) {
+            int value = (idxAuxBits >> auxBitIdx) & 1;
+            asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+                      "%spoll(%d) auxBitIdx=%u function=%d value=%d\n",
+                      modNamEMC, axisNo_, auxBitIdx, function, value);
+            setIntegerParam(function, value);
+            if (drvlocal.clean.old_idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+              /* In the first cycle:
+                 old_idxAuxBits == 0, dirty.old_idxAuxBits == 0xFFFFFFFF
+                 Unset the alarm state for all aux bits that we have found
+                 after a connect or re-connect
+              */
+              pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
+            }
           }
         }
       }
@@ -1364,8 +1360,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       }
       updateMsgTxtFromDriver(msgTxtFromDriver);
     }
-    drvlocal.clean.old_idxAuxBits  = idxAuxBits;
-    drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
+    if (drvlocal.clean.hasPolledAllEnums) {
+      drvlocal.clean.old_idxAuxBits  = idxAuxBits;
+      drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
+    }
     drvlocal.dirty.old_hasError    = hasError;
   } /* auxbitsValid */
   drvlocal.dirty.idxStatusCode   = idxStatusCode;
