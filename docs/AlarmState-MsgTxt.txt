@@ -6,6 +6,9 @@ The position and the status, more about this below.
 Motor position
   The actual position of a motor is found in the .RBV field, e.g.
   Labs-ESSIIP:MC-MCU-01:m1.RBV
+  For controllers that are connected to a PTP server, there is an additional
+  record. It has the "same value" as .RBV, but is timestamped with the
+  help of the PTP time: "-RBV-TSE".
 
   When the motor should be moved to a different postion, like 12.34,
   write to the .VAL field:
@@ -26,7 +29,7 @@ Motor status
   1) The motion controller
     Most (SW) function blocks have an "error" bit and provide an "errorId".
     When the error bit is set, more information is provided in the errorId.
-    The errorId is a numeric value, "owned" by Beckhoff.
+    The errorId is a numeric value, defined by Beckhoff.
     The different values are grouped in a hexadecimal way,
     more information can be found under https://infosys.beckhoff.com
 
@@ -38,11 +41,11 @@ Motor status
     - The errorID is read from TwinCAT and saved into
       Labs-ESSIIP:MC-MCU-01:m1-ErrId
       We don't do much more with errorId, but:
-    - The error ID is put as a string into a a different PV,
+    - The error ID is put as a string into a a different record,
       Labs-ESSIIP:MC-MCU-01:m1-MsgTxt
 
-      Well-understood errorIds will get a short message, what the error
-      is about.
+      Well-understood errorIds will get a short message,
+      what the error is about.
       Short because we don't have too much space on the display.
       And short, because even a longer text doesn't tell you more -
       https://infosys.beckhoff.com is the source of truth.
@@ -62,8 +65,14 @@ Motor status
       Once that is done,
       Labs-ESSIIP:MC-MCU-01:m1-MsgTxt will now contain an empty string
 
+      Later versions of the TwinCAT SW will set the errorId to a value,
+      but leave the error bit false. This could happen e.g with the "errorId 4460"
+      from above:
+      The command that was send to the system can not be executed and needs no reset.
+      This is a warning, the test will be "W: Low soft lim 4460"
+
   2+3) model 3 (EPICS) driver
-     Because the -MsgTxt PV is and was so helpful, other type of information
+     Because the -MsgTxt record is and was so helpful, other type of information
      may be shown.
      If, and only if, there is no information from the MCU.
      For example, "E: Axis not homed", "Homing",
@@ -75,6 +84,11 @@ Motor status
      and then the amplifier needs to be switched off.
      The -MsgTxt field will show "PowerOff".
 
+     PowerOff(Auto)
+     Many axes are configured to use the "auto-power-on" feature from EPICS.
+     If enabled, the "PowerOff" text will be replaced by "PowerOff(Auto)"
+
+
   4) The motorRecord has more fields of information.
      All information(s) are stored in the different fields of the motorRecord.
      Most important fields are:
@@ -83,7 +97,7 @@ Motor status
                            Labs-ESSIIP:MC-MCU-01:m1.HLS
      Soft limit violation: Labs-ESSIIP:MC-MCU-01:m1.LVIO
      "Missed":             Labs-ESSIIP:MC-MCU-01:m1.MISS (target not reached)
-     Since these PVs have been existings since "day 1", they are present in most
+     Since these records have been existings since "day 1", they are present in most
      EDM, MEDM or CSS screens.
 
 Overall status:
@@ -113,8 +127,10 @@ Overall status:
     The basic idea for a motor is like this:
     - is the device fully usable ?  (green)
     - is the device busy (motor moving) (yellow)
-    - is the device partly usable (sitting on a limit switch):
-      you can move into one direction only) (green with exclamation mark)
+    - is the device partly usable:
+      (green with exclamation mark, or orange?)
+      E.g. sitting on a limit switch:
+      you can move into one direction only)
     - is the device not fully usable ?  (red)
 
   What should happen when ?
@@ -123,85 +139,16 @@ Overall status:
     it anyway.
     When things need a slight adjustement, the homing may not be important.
 
-    And A motor that is powered off can not be used, but can be powerd on...
+    And a motor that is powered off can not be used, but can be powerd on...
 
-  What should be shown to a user.
-    Note: there are users (=scientists), experts (beamline scientists)
-    and (motion) engineers.
-    I try to focus on users here, trying to provide them
-    with useful information:
-
-    if (-MsgTxt != "") show-it()
-    else if (.HLS && .LLS) show("high and low limit switch)
-    else if (.HLS) show("high limit switch)
-    else if (.LLS) show("low limit switch)
-    else if (.LVIO) show("soft limit violation")
-    else if (.MISS) show("target not reached")
-    else if (.STAT != 0) show("Problemd")
-
-Alarm state, severity, message text
-See even
-https://docs.epics-controls.org/en/latest/guides/EPICS_Process_Database_Concepts.html#alarm-specification
-
-  The .SEVR field has 4 possible states
-  (and those are common for all EPICS Records.
-
-    .SEVR
-    NO_ALARM
-    MINOR_ALARM
-    MAJOR_ALARM
-    INVALID_ALARM
-
-  The .STAT field has a number of different possible values:
-    .STAT
-    READ_ALARM
-    WRITE_ALARM
-    HIHI_ALARM
-    HIGH_ALARM
-    LOLO_ALARM
-    LOW_ALARM
-    STATE_ALARM
-    COS_ALARM
-    COMM_ALARM
-    TIMEOUT_ALARM
-    HW_LIMIT_ALARM
-    CALC_ALARM
-    SCAN_ALARM
-    LINK_ALARM
-    SOFT_ALARM
-    BAD_SUB_ALARM
-    UDF_ALARM
-    DISABLE_ALARM
-    SIMM_ALARM
-    READ_ACCESS_ALARM
-    WRITE_ACCESS_ALARM
-
-  Note that not all SEVR/STAT combinations are valid or used.
-
-  .SEVR         .STAT        otherPV: -MsgTxt
-  INVALID_ALARM COMM_ALARM   	    "E: Communication"   connection MCU - IOC
-  MAJOR_ALARM   STATE_ALARM  	    "E: xxx"             Problem within MCU
-  MAJOR_ALARM   STATE_ALARM  	    "E: Axis not homed"  axis not homed
-  MAJOR_ALARM   STATE_ALARM  .MISS=1  ""                  .MISV=2; missed
-  MINOR_ALARM   STATE_ALARM  .MISS=1  ""                  .MISV=1; missed
-  MAJOR_ALARM   HIGH_ALARM   .HLS=1   ""                  .HLSV=2; high limit sw
-  MINOR_ALARM   HIGH_ALARM   .HLS=1   ""                  .HLSV=1; high limit sw
-  MAJOR_ALARM   LOW_ALARM    .LLS=1   ""                  .HLSV=2; low limit sw
-  MINOR_ALARM   LOW_ALARM    .LLS=1   ""                  .HLSV=1; low limit sw
-
-  Other combination will be added in the future, like
-  MAJOR_ALARM   STATE_ALARM  	    "localMode"         Engineering ongoing
-  MAJOR_ALARM   STATE_ALARM  	    "interlock"         Axis blocked from moving
-
-  but there is no intention to add more texts to this document at all.
-
+See even StatusBits-alarms.txt
 
 =====================================================================================
-Message texts (-msgTxt) used today
+Message texts (-MsgTxt) used today
   This module (ethercatmc) supports 2 generations of TwinCAT SW:
   The older one: "FB_drive_virtual" (or so).
   The new one: "Gvl" in TwinCAT, using the PILS interface.
-  The "older" ones are to be phased out, we focus on the newer one.
+  The "older" ones are phased out, we focus on the newer one.
 
   First of all, there are messages from the generic motor driver.
   These are there for all motor drivers, ethercatmc or not.
@@ -210,15 +157,8 @@ Message texts (-msgTxt) used today
     (cable pulled, controller SW not running, wrong IP address...)
       "E: Communication"
 
-    There is a problem reported from the controller
-    (ethercatmc will overwrite this message)
-      "E: Problem"
-
-    Axis is not homed and problem reported
+    Axis is not homed:
       "E: Axis not homed"
-
-    Axis is not homed, no problem reported
-      "Axis not homed"
 
     Motor is "disabled", the amplifier is off.
     For a motor on a sample stage this could mean that it is
@@ -226,7 +166,7 @@ Message texts (-msgTxt) used today
     and to remove the motor from the beamline.
     For a motor in vacuum it could mean that it is simply turned off
     to prevent overheating.
-    There is even an auto-power-on/off feature in the generic motor driver,
+    There is an auto-power-on/off feature in the generic motor driver,
     so that the "PowerOff" will go away as soon as a move is commanded.
       "PowerOff"
 
@@ -247,7 +187,7 @@ Message texts (-msgTxt) used today
 
   Errors from the controller are shown like this:
     "E: TwinCAT Err %X" (followed by a 4 digit hex number
-    Or, if we know a little bit more, what the hux number means:
+    Or, if we know a little bit more, what the hex number means:
     "E: Enc inv pos 4467"
     In future, we will have texts like
     "localmode" or
@@ -261,9 +201,27 @@ Message texts (-msgTxt) used today
   Some of them are more like a warning: The motor can't be used right now,
   but can be made usable. When in "powerOff", it can be powerd on.
 
-  The NICOS way displays those axes in a state of warning.
-  From an EPICS point of view, there seems to be need to put a record into
-  an alarm state.
+  The NICOS way is to display only texts when the use need to act and do
+  something. (Or may be somebody else needs to do this.)
 
-  Where to generate the warnings, and when is an information a warning ?
-  There is no easy answer.
+  On the other hand, it could be useful to have an overview about the
+  state of the motor in a text field.
+  Either to show the state of many motors at a glance in one CSS screen.
+  Or to run a pvmonitor in a terminal window, when CSS is not available.
+  As a result of these conflicting requirements we decided to create a new
+  record dedicated to errors of different kind, which is used e.g. in NICOS
+
+  Having a dedicated test removes depencies: NICOS just shows what the
+  IOC (and TwinCAT) provides, without any "business logic".
+
+  The new PV is called "error text" like this:
+  Labs-ESSIIP:MC-MCU-01:m1-ErrTxt
+
+  The split into 2 text Records should make it easier to display "errors":
+  The errTxt record displays errors. If there is any, the msgTxt displays
+  the same text. If there is no error, msgTxt is used to display
+  information (or nothing)
+
+  How things like "interlock", "overheated" and "localmode" should make
+  their way into NICOS needs to be discussed.
+

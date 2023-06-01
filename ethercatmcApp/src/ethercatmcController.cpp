@@ -1227,24 +1227,24 @@ void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
   const char *paramName = NULL;
   if (getParamName(axisNo, function, &paramName)) paramName = "";
 
-  int newStat = STATE_ALARM; /* Assume the worst */
   int newSevr = INVALID_ALARM;
+  int newStat = STATE_ALARM; /* Assume the worst */
   switch (status) {
     case asynSuccess:
-      newStat = NO_ALARM;
       newSevr = NO_ALARM;
+      newStat = NO_ALARM;
       break;
     case asynTimeout:
     case asynOverflow:
     case asynError:
     case asynDisabled:
     default:
-      newStat = STATE_ALARM; /* Assume the worst */
       newSevr = INVALID_ALARM;
+      newStat = STATE_ALARM; /* Assume the worst */
       break;
     case asynDisconnected:
-      newStat = COMM_ALARM;
       newSevr = INVALID_ALARM;
+      newStat = COMM_ALARM;
       break;
   }
   setAlarmStatusSeverityUpdate(axisNo, function, newStat, newSevr);
@@ -1257,47 +1257,54 @@ void ethercatmcController::setAlarmStatusSeverityFromStatusBits(int axisNo,
   idxStatusCodeType idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
   unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
 
-  int newStat = NO_ALARM;
-  int newSevr = NO_ALARM;
+  int newSevr = INVALID_ALARM;
+  int newStat = STATE_ALARM; /* Assume the worst */
 
   switch (idxStatusCode) {
+  case idxStatusCodeRESET:
+    newSevr = MINOR_ALARM;
+    newStat = UDF_ALARM;
+    break;
   case idxStatusCodeIDLE:
-    newStat = NO_ALARM;
-    newSevr = NO_ALARM;
+    /* Some MCU sends high/low even in IDLE */
+    switch (idxReasonBits) {
+      case 0x8: newSevr = MINOR_ALARM; newStat = HIGH_ALARM; break;
+      case 0x4: newSevr = MINOR_ALARM; newStat = LOW_ALARM; break;
+      case 0x2: newSevr = MINOR_ALARM; newStat = TIMEOUT_ALARM; break;
+      case 0x1: newSevr = MINOR_ALARM; newStat = STATE_ALARM; break;
+      case 0x0: newSevr = NO_ALARM; newStat = NO_ALARM; break;
+      default:
+        /* illegal/reserved combination */
+        newSevr = MAJOR_ALARM;
+        newStat = STATE_ALARM;
+        break;
+    }
     break;
   case idxStatusCodePOWEROFF:
-    newStat = STATE_ALARM;
-    newSevr = MINOR_ALARM;
-    break;
   case idxStatusCodeWARN:
-    // Look at the reason bits
-    if (idxReasonBits & 0x8) {
-      newStat = HIGH_ALARM;
-    } else if (idxReasonBits & 0x4) {
-      newStat = LOW_ALARM;
-    } else if (idxReasonBits & 0x2) {
-      newStat = TIMEOUT_ALARM;
-    } else  {
-      newStat = STATE_ALARM;
-    }
     newSevr = MINOR_ALARM;
-    break;
-  case idxStatusCodeERROR:
-    // Look at the reason bits
-    if (idxReasonBits & 0x8) {
-      newStat = HIHI_ALARM;
-    } else if (idxReasonBits & 0x4) {
-      newStat = LOLO_ALARM;
-    } else if (idxReasonBits & 0x2) {
-      newStat = TIMEOUT_ALARM;
-    } else {
-      newStat = STATE_ALARM;
+    switch (idxReasonBits) {
+      case 0x8: newStat = HIGH_ALARM; break;
+      case 0x4: newStat = LOW_ALARM; break;
+      case 0x2: newStat = TIMEOUT_ALARM; break;
+      case 0x1: newStat = STATE_ALARM; break;
+      case 0x0: newStat = STATE_ALARM; break;
+      default:
+        /* illegal/reserved combination */
+        newSevr = MAJOR_ALARM;
+        newStat = STATE_ALARM;
+        break;
     }
-    newSevr = MAJOR_ALARM;
     break;
+  case idxStatusCodeSTART:
+  case idxStatusCodeBUSY:
+  case idxStatusCodeSTOP:
+    /* temporary state, no action taken */
+    return;
+  case idxStatusCodeERROR:
   default:
-    newStat = STATE_ALARM; /* Assume the worst */
     newSevr = INVALID_ALARM;
+    newStat = STATE_ALARM; /* Assume the worst */
   }
   setAlarmStatusSeverityUpdate(axisNo, function, newStat, newSevr);
 }

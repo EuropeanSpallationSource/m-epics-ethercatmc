@@ -1,0 +1,121 @@
+Mapping between "status bits" and "aux bits" in TwinCAT
+into EPICS records and alarms.
+
+The current TwinCAT SW (tc_mca_std_lib) defines status bits about an axis.
+The PILS protocol [1] defines a how these bits are transported over the wire
+into an external control system like Tango or EPICS.
+Note that this definition is independent to the control system, aiming to
+harmonize all the different TwinCAT implementations to expose a common API.
+
+The simplified main status of an axis is ERROR, WARNING, IDLE, BUSY.
+And then we have the ones initiated from the control system,
+like START, STOP or RESET.
+
+For ERROR or WARNING there are 4 predefined reason bits [2]:
+Bit 24: Disabled/Inhibit, "Static Problem"
+Bit 25: Timeout, "Dynamic Problem"
+Bit 26: Limit for "low" range exceeded
+Bit 27: Limit for "high" range exceeded
+
+More about these bits later.
+
+To ease the debugging in EPICS, some of the AUX bits, which do not have a
+pre-defined meaning, are typically defined inside the TwinCAT system.
+"localmode"    (The TwinCAT engineer is logged onto the system ans wants to
+               disable any write actions from the control system.
+"interlockBwd" Interlock, movements to lower positions are impossible
+"interlockFwd" Interlock, movements to lower positions are impossible
+"overheated"   Not yet defined, but will come soonish
+
+==================================================
+EPICS alarms
+EPICS defines alarm states for records:
+Each record type (analog in, analog out, motor, all others)
+has 2 dedicated fields for this, .SEVR and .STAT, see [3]
+
+
+The .SEVR field has 4 possible values:
+    NO_ALARM
+    MINOR_ALARM
+    MAJOR_ALARM
+    INVALID_ALARM
+
+The .STAT field has these possible values:
+    READ_ALARM
+    WRITE_ALARM
+    HIHI_ALARM
+    HIGH_ALARM
+    LOLO_ALARM
+    LOW_ALARM
+    STATE_ALARM
+    COS_ALARM
+    COMM_ALARM
+    TIMEOUT_ALARM
+    HW_LIMIT_ALARM
+    CALC_ALARM
+    SCAN_ALARM
+    LINK_ALARM
+    SOFT_ALARM
+    BAD_SUB_ALARM
+    UDF_ALARM
+    DISABLE_ALARM
+    SIMM_ALARM
+    READ_ACCESS_ALARM
+    WRITE_ACCESS_ALARM
+
+Note that not all SEVR/STAT combinations are valid or used.
+The motorRecord as such defines/implements these combinations:
+  .SEVR         .STAT                -MsgTxt
+  INVALID_ALARM COMM_ALARM   	    "E: Communication"   connection MCU - IOC
+  MAJOR_ALARM   STATE_ALARM  	    "E: xxx"             Problem within MCU
+  MAJOR_ALARM   STATE_ALARM  	    "E: Axis not homed"  axis not homed
+  MAJOR_ALARM   STATE_ALARM  .MISS=1  ""                  .MISV=2; missed
+  MINOR_ALARM   STATE_ALARM  .MISS=1  ""                  .MISV=1; missed
+  MAJOR_ALARM   HIGH_ALARM   .HLS=1   ""                  .HLSV=2; high limit sw
+  MINOR_ALARM   HIGH_ALARM   .HLS=1   ""                  .HLSV=1; high limit sw
+  MAJOR_ALARM   LOW_ALARM    .LLS=1   ""                  .HLSV=2; low limit sw
+  MINOR_ALARM   LOW_ALARM    .LLS=1   ""                  .HLSV=1; low limit sw
+
+  Other combination will be added in the future, like
+  MAJOR_ALARM   STATE_ALARM  	    "localMode"         Engineering ongoing
+  MAJOR_ALARM   STATE_ALARM  	    "interlock"         Axis blocked from moving
+
+The "-StatusCode"" record reflects the status code in TwinCAT.
+Like RESET, IDLE, DISABLED, WARNING, IDLE, BUSY, ERROR.
+
+
+
+
+The "-StatusBits" record collects all reason- and aux-bits in one word.
+
+
+=============================
+Combinations of .SEVR and .STAT for an analog input or discrete input.
+
+.SEVR               .STAT
+NO_ALARM            NO_ALARM         # No alarm. The "all good" combination
+
+INVALID_ALARM       UDF_ALARM        # Record has never been processed
+INVALID_ALARM       COMM_ALARM       # Record had been processed. Now communication IOC-MCU is lost
+INVALID_ALARM       STATE_ALARM      # ERROR. Device is broken. Even Communication MCU-Sensor
+
+MINOR_ALARM         UDF_ALARM        # RESET
+
+MINOR_ALARM         HIGH_ALARM       # IDLE/WARNING/DISABLED + Bit27
+MINOR_ALARM         LOW_ALARM        # IDLE/WARNING/DISABLED + Bit26
+MINOR_ALARM         TIMEOUT_ALARM    # IDLE/WARNING/DISABLED + Bit25
+MINOR_ALARM         STATE_ALARM      # WARNING/DISABLED (with or without Bit24)
+
+# All other combinations are reserved, and lead to
+INVALID_ALARM       STATE_ALARM      # Same as ERROR
+
+
+================================================================
+
+
+
+
+
+[1] https://forge.frm2.tum.de/public/doc/plc/v2.0/singlehtml/
+[2] https://forge.frm2.tum.de/public/doc/plc/v2.0/singlehtml/index.html#status-word
+[3] https://docs.epics-controls.org/en/latest/guides/EPICS_Process_Database_Concepts.html#alarm-specification
