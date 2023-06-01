@@ -406,28 +406,34 @@ class AxisMr:
             wait_for_powerOff -= polltime
         raise Exception(debug_text)
 
-    def waitForValueChanged(self, tc_no, field_name, expVal, maxDelta, time_to_wait):
+    def waitForValueChanged(
+        self, tc_no, field_name, expVal, maxDelta, time_to_wait, debugPrint=True
+    ):
         while time_to_wait > 0:
             actVal = self.axisCom.get(field_name, use_monitor=False)
             inrange = self.calcAlmostEqual(
                 tc_no, expVal, actVal, maxDelta, doPrint=False
             )
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal:.2f} actVal={actVal:.2f} maxDelta={maxDelta:.2f} inrange={inrange}"
-            print(debug_text)
+            if debugPrint:
+                debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal:.2f} actVal={actVal:.2f} maxDelta={maxDelta:.2f} inrange={inrange}"
+                print(debug_text)
             if inrange:
                 return True
             time.sleep(polltime)
             time_to_wait -= polltime
         return False
 
-    def waitForValueChangedInt32(self, tc_no, field_name, expVal, time_to_wait):
+    def waitForValueChangedInt32(
+        self, tc_no, field_name, expVal, time_to_wait, debugPrint=True
+    ):
         inrange = False
         while time_to_wait > 0:
             actVal = int(self.axisCom.get(field_name, use_monitor=False))
             if ((int(expVal) & 0xFFFFFFFF) ^ (int(actVal) & 0xFFFFFFFF)) == 0:
                 inrange = True
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal:X} actVal={actVal:X} inrange={inrange}"
-            print(debug_text)
+            if debugPrint:
+                debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal:X} actVal={actVal:X} inrange={inrange}"
+                print(debug_text)
             if inrange:
                 return True
             time.sleep(polltime)
