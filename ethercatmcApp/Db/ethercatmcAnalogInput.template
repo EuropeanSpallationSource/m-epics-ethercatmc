@@ -9,7 +9,7 @@ record(ai, "$(P)$(R)")
 
 record(stringin, "$(P)$(R)-DESC-RB_") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO)))$(ASYNPARAMNAME)_DESC")
+    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)_DESC")
     field(SCAN, "I/O Intr")
 }
 
