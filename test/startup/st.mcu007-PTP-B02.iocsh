@@ -51,6 +51,13 @@ epicsEnvSet("CHNO",     "0")
 # PTP with ExtSync
 < ethercatmcEL6688-PTP.iocsh
 
+# Analog input, copy of TS_NS for testing
+epicsEnvSet("CHNO",             "0")
+epicsEnvSet("ASYNPARAMNAME",    "TS_NS_AI")
+epicsEnvSet("P",                "$(PREFIX)")
+epicsEnvSet("R",                "TS_NS_AI")
+< ethercatmcAnalogInput.iocsh
+
 
 #
 # Start polling, values are in millisconds
