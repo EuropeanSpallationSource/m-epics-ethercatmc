@@ -686,14 +686,14 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
     idxStatusCodeType idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     //unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     unsigned idxAuxBits    =  statusReasonAux  & 0x03FFFFFF;
-    if (idxAuxBits != pAxis->drvlocal.clean.old_idxAuxBits) {
+    if (idxAuxBits != pAxis->drvlocal.clean.old_idxAuxBitsPrinted) {
       changedAuxBits_to_ASCII(pAxis->axisNo_,
                               defAsynPara.ethercatmcNamAux0_,
-                              idxAuxBits, pAxis->drvlocal.clean.old_idxAuxBits);
+                              idxAuxBits, pAxis->drvlocal.clean.old_idxAuxBitsPrinted);
       asynPrint(pasynUserController_, traceMask,
                 "%sindexerParamWrite(%d) idxStatusCode=0x%02X auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) errorID=0x%04X \"%s\" \n",
                 modNamEMC, pAxis->axisNo_, idxStatusCode,
-                pAxis->drvlocal.clean.old_idxAuxBits, idxAuxBits,
+                pAxis->drvlocal.clean.old_idxAuxBitsPrinted, idxAuxBits,
                 ctrlLocal.changedAuxBits[0],  ctrlLocal.changedAuxBits[1],
                 ctrlLocal.changedAuxBits[2],  ctrlLocal.changedAuxBits[3],
                 ctrlLocal.changedAuxBits[4],  ctrlLocal.changedAuxBits[5],
@@ -708,7 +708,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                 ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
                 ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25],
                 errorID, errStringFromErrId(errorID));
-      pAxis->drvlocal.clean.old_idxAuxBits = idxAuxBits;
+      pAxis->drvlocal.clean.old_idxAuxBitsPrinted = idxAuxBits;
     }
   }
   return status;

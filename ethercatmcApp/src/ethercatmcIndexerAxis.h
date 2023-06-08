@@ -126,7 +126,8 @@ private:
       unsigned auxBitsLimitSwFwdMask;
       unsigned auxBitsLimitSwBwdMask;
       unsigned old_paramCtrl;
-      unsigned old_idxAuxBits;
+      unsigned old_idxAuxBitsPrinted;
+      unsigned old_idxAuxBitsWritten;
       unsigned int hasProblem :1;
       unsigned int hasPolledAllEnums :1;
       uint8_t pollNowParams[128]; /* 0 terminated list of parameters to be polled */

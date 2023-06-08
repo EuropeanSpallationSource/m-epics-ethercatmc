@@ -1096,15 +1096,15 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
   }
   if (auxbitsValid) {
-    if (idxAuxBits != drvlocal.clean.old_idxAuxBits) {
+    if (idxAuxBits != drvlocal.clean.old_idxAuxBitsPrinted) {
       /* This is for debugging only: The IOC log will show changed bits */
       /* Show even bit 27..24, which are reson bits, here */
       pC_->changedAuxBits_to_ASCII(axisNo_,
                                    pC_->defAsynPara.ethercatmcNamAux0_,
-                                   idxAuxBits, drvlocal.clean.old_idxAuxBits);
+                                   idxAuxBits, drvlocal.clean.old_idxAuxBitsPrinted);
       asynPrint(pC_->pasynUserController_, traceMask,
                 "%spoll(%d) auxBitsOld=0x%06X new=0x%06X (%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) actPos=%f\n",
-                modNamEMC, axisNo_, drvlocal.clean.old_idxAuxBits, idxAuxBits,
+                modNamEMC, axisNo_, drvlocal.clean.old_idxAuxBitsPrinted, idxAuxBits,
                 pC_->ctrlLocal.changedAuxBits[27], pC_->ctrlLocal.changedAuxBits[26],
                 pC_->ctrlLocal.changedAuxBits[25], pC_->ctrlLocal.changedAuxBits[24],
                 pC_->ctrlLocal.changedAuxBits[0],  pC_->ctrlLocal.changedAuxBits[1],
@@ -1120,11 +1120,12 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                 pC_->ctrlLocal.changedAuxBits[20], pC_->ctrlLocal.changedAuxBits[21],
                 pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
                 actPosition);
+      drvlocal.clean.old_idxAuxBitsPrinted = idxAuxBits;
     }
     /* This is for EPICS records: after a re-connection,
        all bits should be written once */
     if (drvlocal.clean.hasPolledAllEnums) {
-      if (idxAuxBits != drvlocal.clean.old_idxAuxBits ||
+      if (idxAuxBits != drvlocal.clean.old_idxAuxBitsWritten ||
           idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
         {
           int function = pC_->defAsynPara.ethercatmcAuxBits07_;
@@ -1139,7 +1140,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
                       "%spoll(%d) auxBitIdx=%u function=%d value=%d\n",
                       modNamEMC, axisNo_, auxBitIdx, function, value);
             setIntegerParam(function, value);
-            if (drvlocal.clean.old_idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+            if (drvlocal.clean.old_idxAuxBitsWritten != drvlocal.dirty.old_idxAuxBits) {
               /* In the first cycle:
                  old_idxAuxBits == 0, dirty.old_idxAuxBits == 0xFFFFFFFF
                  Unset the alarm state for all aux bits that we have found
@@ -1245,7 +1246,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
         drvlocal.dirty.old_ErrorId != errorID ||
         drvlocal.dirty.motorPowerAutoOnOff ||
         drvlocal.dirty.idxStatusCode != idxStatusCode ||
-        idxAuxBits != drvlocal.clean.old_idxAuxBits ||
+        idxAuxBits != drvlocal.clean.old_idxAuxBitsWritten ||
         idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
       const char *msgTxtFromDriver = NULL;
       char sErrorMessage[40];
@@ -1361,7 +1362,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       updateMsgTxtFromDriver(msgTxtFromDriver);
     }
     if (drvlocal.clean.hasPolledAllEnums) {
-      drvlocal.clean.old_idxAuxBits  = idxAuxBits;
+      drvlocal.clean.old_idxAuxBitsWritten  = idxAuxBits;
       drvlocal.dirty.old_idxAuxBits  = idxAuxBits;
     }
     drvlocal.dirty.old_hasError    = hasError;
