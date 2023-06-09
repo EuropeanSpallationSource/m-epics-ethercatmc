@@ -28,7 +28,7 @@
     <widget_type>Text Update</widget_type>
     <enabled>true</enabled>
     <text>######</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
       <fontdata fontName="Sans" height="13" style="0" />
