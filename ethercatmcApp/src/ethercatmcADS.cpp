@@ -267,7 +267,7 @@ ethercatmcController::writeReadControllerADS(asynUser *pasynUser,
     return asynError;
   }
   ethercatmchexdump(pasynUser, tracelevel, "OUT",
-                    outdata, outlen);
+                    outdata, outlen, fileName, lineNo);
   /* Read the AMS/TCP Header */
   status = pasynOctetSyncIO->read(pasynUser,
                                   indata, part_1_len,
@@ -335,11 +335,10 @@ ethercatmcController::writeReadControllerADS(asynUser *pasynUser,
   }
   EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
   ethercatmcamsdump(pasynUser, tracelevel, "OUT", outdata, outlen);
-  ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
-  ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1);
+  ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1, (const char*)NULL, 0);
   if (nread2) {
     ethercatmcamsdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2);
-    ethercatmchexdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2);
+    ethercatmchexdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2, (const char*)NULL, 0);
   }
   if ((status == asynTimeout) || (errorProblem & 8)) {
     asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
@@ -444,9 +443,9 @@ asynStatus ethercatmcController::writeReadAds(asynUser *pasynUser,
           ;
         }
         ctrlLocal.old_ams_errorCode = ams_errorCode;
-        ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen);
+        ethercatmchexdump(pasynUser, tracelevel, "OUT", outdata, outlen, fileName, lineNo);
         ethercatmcamsdump(pasynUser, tracelevel, "OUT", ams_req_hdr_p, outlen);
-        ethercatmchexdump(pasynUser, tracelevel, "IN ", indata, nread);
+        ethercatmchexdump(pasynUser, tracelevel, "IN ", indata, nread, fileName, lineNo);
         ethercatmcamsdump(pasynUser, tracelevel, "IN ", indata, nread);
 
         asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
@@ -534,7 +533,7 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
       uint8_t *src_ptr = (uint8_t*) p_read_buf;
       src_ptr += sizeof(AdsReadRepType);
       memcpy(data, src_ptr, ads_length);
-      ethercatmchexdump(pasynUser, tracelevel, "RDMEM", src_ptr, ads_length);
+      ethercatmchexdump(pasynUser, tracelevel, "RDMEM", src_ptr, ads_length, fileName, lineNo);
     }
   }
   free(p_read_buf);
@@ -591,7 +590,7 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
     uint8_t *dst_ptr = (uint8_t*)p_write_buf;
     dst_ptr += sizeof(AdsWriteReqType);
     memcpy(dst_ptr, data, lenInPlc);
-    ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc);
+    ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc, fileName, lineNo);
   }
   status = writeReadAds(pasynUser,
                         (AmsHdrType *)p_write_buf, write_buf_len,
@@ -605,7 +604,7 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
     if (ads_result) {
       tracelevel |= ASYN_TRACE_INFO;
       ethercatmcamsdump(pasynUser, tracelevel, "OUT ", p_write_buf, write_buf_len);
-      ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc);
+      ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc, fileName, lineNo);
 
       asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                 "%s:%d ads_result=0x%x\n",
@@ -652,7 +651,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
     dst_ptr += sizeof(AdsReadWriteReqType);
     memcpy(dst_ptr, symbolName, symbolNameLen);
     ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
-                      symbolName, symbolNameLen);
+                      symbolName, symbolNameLen, (const char*)NULL, 0);
   }
   status = writeReadAds(pasynUser,
                         (AmsHdrType *)ads_read_write_req_p,
@@ -683,7 +682,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
       asynPrint(pasynUser, tracelevel,
                 "%s ads_result=0x%x ads_length=0x%x\n",
                 modNamEMC, (unsigned)ads_result, (unsigned)ads_length);
-      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length);
+      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length, (const char*)NULL, 0);
       memcpy(data, src_ptr, ads_length);
     }
   }
@@ -727,7 +726,7 @@ ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
     dst_ptr += sizeof(AdsReadWriteReqType);
     memcpy(dst_ptr, symbolName, symbolNameLen);
     ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
-                      symbolName, symbolNameLen);
+                      symbolName, symbolNameLen, (const char*)NULL, 0);
   }
   status = writeReadAds(pasynUser,
                         (AmsHdrType *)ads_read_write_req_p,
@@ -758,7 +757,7 @@ ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
       asynPrint(pasynUser, tracelevel,
                 "%s ads_result=0x%x ads_length=0x%x\n",
                 modNamEMC, (unsigned)ads_result, (unsigned)ads_length);
-      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length);
+      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length, (const char*)NULL, 0);
       if (ads_length == lenInPlc) {
         *handle = netToUint(src_ptr, lenInPlc);
       } else {

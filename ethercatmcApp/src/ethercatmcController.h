@@ -153,13 +153,18 @@ typedef enum {
 } idxStatusCodeType;
 
 /**********************************************************************/
-#define ethercatmchexdump(pasynUser, tracelevel, help_txt, bufptr, buflen)\
+#define ethercatmchexdump(pasynUser, tracelevel, help_txt, bufptr, buflen, fName, lNo)\
 {\
   const void* buf = (const void*)bufptr;\
   int len = (int)buflen;\
   uint8_t *data = (uint8_t *)buf;\
   int count;\
   unsigned pos = 0;\
+  if (fName && lNo) { \
+    asynPrint(pasynUser, tracelevel, \
+              "%s%s %s:%d\n",\
+              modNamEMC, help_txt, fName, lNo);  \
+  } \
   while (len > 0) {\
     struct {\
       char asc_txt[8];\
