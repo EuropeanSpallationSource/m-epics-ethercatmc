@@ -335,10 +335,10 @@ ethercatmcController::writeReadControllerADS(asynUser *pasynUser,
   }
   EMC_LEAVE_ADS_CHECK_LOCK(__LINE__);
   ethercatmcamsdump(pasynUser, tracelevel, "OUT", outdata, outlen);
-  ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1, (const char*)NULL, 0);
+  ethercatmchexdump(pasynUser, tracelevel, "IN1 ", indata, nread1, "", 0);
   if (nread2) {
     ethercatmcamsdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2);
-    ethercatmchexdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2, (const char*)NULL, 0);
+    ethercatmchexdump(pasynUser, tracelevel, "IN2 ", indata, nread1 + nread2, "", 0);
   }
   if ((status == asynTimeout) || (errorProblem & 8)) {
     asynPrint(pasynUser, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
@@ -651,7 +651,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
     dst_ptr += sizeof(AdsReadWriteReqType);
     memcpy(dst_ptr, symbolName, symbolNameLen);
     ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
-                      symbolName, symbolNameLen, (const char*)NULL, 0);
+                      symbolName, symbolNameLen, "", 0);
   }
   status = writeReadAds(pasynUser,
                         (AmsHdrType *)ads_read_write_req_p,
@@ -682,7 +682,7 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
       asynPrint(pasynUser, tracelevel,
                 "%s ads_result=0x%x ads_length=0x%x\n",
                 modNamEMC, (unsigned)ads_result, (unsigned)ads_length);
-      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length, (const char*)NULL, 0);
+      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length, "", 0);
       memcpy(data, src_ptr, ads_length);
     }
   }
@@ -726,7 +726,7 @@ ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
     dst_ptr += sizeof(AdsReadWriteReqType);
     memcpy(dst_ptr, symbolName, symbolNameLen);
     ethercatmchexdump(pasynUser, tracelevel, "LOOKUP",
-                      symbolName, symbolNameLen, (const char*)NULL, 0);
+                      symbolName, symbolNameLen, "", 0);
   }
   status = writeReadAds(pasynUser,
                         (AmsHdrType *)ads_read_write_req_p,
@@ -757,7 +757,7 @@ ethercatmcController::getSymbolHandleByNameViaADS(const char *symbolName,
       asynPrint(pasynUser, tracelevel,
                 "%s ads_result=0x%x ads_length=0x%x\n",
                 modNamEMC, (unsigned)ads_result, (unsigned)ads_length);
-      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length, (const char*)NULL, 0);
+      ethercatmchexdump(pasynUser, tracelevel, "IN ADS", src_ptr, ads_length, "", 0);
       if (ads_length == lenInPlc) {
         *handle = netToUint(src_ptr, lenInPlc);
       } else {

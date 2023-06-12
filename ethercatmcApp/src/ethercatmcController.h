@@ -160,7 +160,7 @@ typedef enum {
   uint8_t *data = (uint8_t *)buf;\
   int count;\
   unsigned pos = 0;\
-  if (fName && lNo) { \
+  if (fName && fName[0] && lNo) { \
     asynPrint(pasynUser, tracelevel, \
               "%s%s %s:%d\n",\
               modNamEMC, help_txt, fName, lNo);  \
