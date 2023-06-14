@@ -106,6 +106,7 @@ private:
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialPollNeeded :1;
       unsigned int motorPowerAutoOnOff :1;
+      int motorRecDirection;
       unsigned idxStatusCode;
       unsigned old_idxAuxBits;
     } dirty;
@@ -117,6 +118,7 @@ private:
       unsigned iOffset;
       unsigned lenInPlcPara;
       unsigned paramIfOffset;
+      unsigned statusReasonAux;
       unsigned auxBitsNotHomedMask;
       unsigned auxBitsEnabledMask;
       unsigned auxBitsLocalModeMask;

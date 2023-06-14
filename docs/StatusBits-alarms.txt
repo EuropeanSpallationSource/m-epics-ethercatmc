@@ -41,13 +41,14 @@ The .SEVR field has 4 possible values:
     INVALID_ALARM
 
 The .STAT field has these possible values:
+    NO_ALARM
     READ_ALARM
     WRITE_ALARM
     HIHI_ALARM
-    HIGH_ALARM
+    HIGH_ALARM = 4
     LOLO_ALARM
-    LOW_ALARM
-    STATE_ALARM
+    LOW_ALARM = 6
+    STATE_ALARM = 7
     COS_ALARM
     COMM_ALARM
     TIMEOUT_ALARM

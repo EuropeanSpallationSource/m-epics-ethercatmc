@@ -434,7 +434,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       "SimAxis1",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "interlockFwd", "interlockBwd", "localMode", "", "enabled", "notHomed"},
+        "", "", "InterlockFwd", "InterlockBwd", "localMode", "", "enabled", "notHomed"},
       5.0, 175.0
     },
     /* device for encoderRaw */
@@ -514,7 +514,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] =
       "RotAxis2",
       { "", "", "", "", "", "", "", "",
         "", "", "", "", "", "", "", "",
-        "", "", "interlockFwd", "interlockBwd", "localMode", "", "enabled", "notHomed"},
+        "", "", "InerlockFwd", "InerlockBwd", "localMode", "", "enabled", "notHomed"},
       -181.0, +181.0
     },
     /* device for encoderRaw */
@@ -1201,7 +1201,7 @@ indexerMotorStatusRead5010(unsigned devNum,
         if (bValue) {
           statusReasonAux32 |= 1 << auxBitIdx;
         }
-      } else if (!strcmp("interlockBwd", auxBitName)) {
+      } else if (!strcmp("InterlockBwd", auxBitName)) {
         int bValue = getInterlockBwd(motor_axis_no);
         LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockBwd=%d\n",
                  __FILE__, __FUNCTION__, __LINE__,
@@ -1209,7 +1209,7 @@ indexerMotorStatusRead5010(unsigned devNum,
         if (bValue) {
           statusReasonAux32 |= 1 << auxBitIdx;
         }
-      } else if (!strcmp("interlockFwd", auxBitName)) {
+      } else if (!strcmp("InterlockFwd", auxBitName)) {
         int bValue = getInterlockFwd(motor_axis_no);
         LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockFwd=%d\n",
                  __FILE__, __FUNCTION__, __LINE__,

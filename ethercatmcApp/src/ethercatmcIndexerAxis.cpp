@@ -1061,8 +1061,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
       RBV_TSEstatus = asynSuccess;
     }
     /* direction == 1 means "negative" */
-    motorRecDirection = motorRecDirection ? -1 : 1;
-    ethercatmcRBV_TSE = actPosition *  motorRecDirection + motorRecOffset;
+    int motorRecDirectionFactor = motorRecDirection ? -1 : 1;
+    ethercatmcRBV_TSE = actPosition * motorRecDirectionFactor + motorRecOffset;
     setDoubleParam(pC_->defAsynPara.ethercatmcRBV_TSE_, ethercatmcRBV_TSE);
     pC_->setAlarmStatusSeverityWrapper(axisNo_, pC_->defAsynPara.ethercatmcRBV_TSE_,
                                        RBV_TSEstatus);
@@ -1176,44 +1176,57 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     setIntegerParam(pC_->motorStatusLowLimit_, !!lls);
     setIntegerParam(pC_->motorStatusHighLimit_, !!hls);
 
-    if (motorRecDirection >= 0) {
-      int functionR = -1;
-      int functionF = -1;
-      if (drvlocal.clean.auxBitsInterlockFwdMask) {
-        // Note the 2 different coordinate systems: Fwd/Bwd is MCU, F/R is motor
-        if (motorRecDirection == 0) {
-          functionF = pC_->defAsynPara.ethercatmcInhibitF_;
-          inhibitF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
-        } else {
-          functionR = pC_->defAsynPara.ethercatmcInhibitR_;
-          inhibitR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
-        }
-      }
-      if (drvlocal.clean.auxBitsInterlockBwdMask) {
-        if (motorRecDirection > 0) {
-          functionF = pC_->defAsynPara.ethercatmcInhibitF_;
-          inhibitF = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
-        } else {
-          functionR = pC_->defAsynPara.ethercatmcInhibitR_;
-          inhibitR = !!(idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
-        }
-      }
-      /* In any case, inhibit is a combination of
-         localmode, limit switch or interlock */
-      inhibitF |= (hls | localMode | (idxReasonBits & 0x8));
-      inhibitR |= (lls | localMode | (idxReasonBits & 0x4));
-      if (functionF > 0) {
-        setIntegerParam(functionF, inhibitF);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, functionF, asynSuccess);
-      }
-      if (functionR > 0 ) {
-        setIntegerParam(functionR, inhibitR);
-        pC_->setAlarmStatusSeverityWrapper(axisNo_, functionR, asynSuccess);
-      }
-    }
     pC_->setUIntDigitalParam(axisNo_, pC_->defAsynPara.ethercatmcStatusBits_,
                              (epicsUInt32)statusReasonAux,
                              0x0FFFFFFF, 0x0FFFFFFF);
+
+    if ((motorRecDirection >= 0) &&
+        ((drvlocal.clean.statusReasonAux != statusReasonAux ||
+          motorRecDirection != drvlocal.dirty.motorRecDirection))) {
+      int inhibitFwd = localMode;
+      int inhibitBwd = localMode;
+      if (drvlocal.clean.auxBitsInterlockFwdMask) {
+        inhibitFwd |= (idxAuxBits & drvlocal.clean.auxBitsInterlockFwdMask);
+      }
+      /* The limit switch is on it's own aux bit.
+         That means that the reason bit counts */
+      if (drvlocal.clean.auxBitsLimitSwFwdMask) {
+       inhibitFwd |= (idxReasonBits & 0x8);
+      }
+      if (drvlocal.clean.auxBitsInterlockBwdMask) {
+        inhibitBwd |= (idxAuxBits & drvlocal.clean.auxBitsInterlockBwdMask);
+      }
+      if (drvlocal.clean.auxBitsLimitSwBwdMask) {
+        inhibitBwd |= (idxReasonBits & 0x4);
+      }
+      /* Need to convert the DIAL coordinate system into USER */
+      if (motorRecDirection > 0) {
+        inhibitF = !!inhibitBwd;
+        inhibitR = !!inhibitFwd;
+      } else {
+        inhibitF = !!inhibitFwd;
+        inhibitR = !!inhibitBwd;
+      }
+
+      /*
+         Set alarm state on status code, used in CSS
+         Note: This is a little bit of a hack to avoid adding records
+         which are in some versions and not in other versions
+      */
+      epicsUInt32 statusReasonAux32 = idxStatusCodeIDLE << 28;
+      if (inhibitF && inhibitR) {
+        statusReasonAux32 = idxStatusCodeWARN << 28;
+      } else if (inhibitF) {
+        statusReasonAux32 = idxStatusCodeWARN << 28;
+        statusReasonAux32 |= 1 << 27;
+      } else if (inhibitR) {
+        statusReasonAux32 = idxStatusCodeWARN << 28;
+        statusReasonAux32 |= 1 << 26;
+      }
+      pC_->setAlarmStatusSeverityFromStatusBits(axisNo_,
+                                                pC_->defAsynPara.ethercatmcStatusCode_,
+                                                statusReasonAux32);
+    }
     setIntegerParam(pC_->defAsynPara.ethercatmcMcuErr_, hasError);
     if (drvlocal.clean.auxBitsNotHomedMask) {
       homed = idxAuxBits & drvlocal.clean.auxBitsNotHomedMask ? 0 : 1;
@@ -1359,6 +1372,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
           }
         }
       }
+      drvlocal.dirty.motorPowerAutoOnOff = 0;
       updateMsgTxtFromDriver(msgTxtFromDriver);
     }
     if (drvlocal.clean.hasPolledAllEnums) {
@@ -1367,8 +1381,12 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
     drvlocal.dirty.old_hasError    = hasError;
   } /* auxbitsValid */
+  drvlocal.clean.statusReasonAux = statusReasonAux;
   drvlocal.dirty.idxStatusCode   = idxStatusCode;
   drvlocal.dirty.old_ErrorId     = errorID;
+  if (motorRecDirection >= 0) {
+    drvlocal.dirty.motorRecDirection = motorRecDirection;
+  }
   callParamCallbacks();
   return status;
 }

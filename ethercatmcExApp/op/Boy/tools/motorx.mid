@@ -299,14 +299,14 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
-      <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+      <rule name="VisibilityInhibitR" prop_id="visible" out_exp="false">
+        <exp bool_exp="((pv0 == 6) || (pv0 == 7))">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="(!((pv0 == 6) || (pv0 == 7)))">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M1)-InhibitR</pv>
+        <pv trig="true">$(P)$(M1)-StatusCode.STAT</pv>
       </rule>
     </rules>
     <pv_value />
@@ -434,13 +434,13 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules>
       <rule name="VisibilityInhibitF" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0!=0">
+        <exp bool_exp="((pv0 == 4) || (pv0 == 7))">
           <value>true</value>
         </exp>
-        <exp bool_exp="!(pv0!=0)">
+        <exp bool_exp="(!((pv0 == 4) || (pv0 == 7)))">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M1)-InhibitF</pv>
+        <pv trig="true">$(P)$(M1)-StatusCode.STAT</pv>
       </rule>
     </rules>
     <pv_value />

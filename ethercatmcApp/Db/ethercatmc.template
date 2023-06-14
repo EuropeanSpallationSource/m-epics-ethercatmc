@@ -434,17 +434,3 @@ record(longin,"$(PREFIX)$(MOTOR_NAME)-CnenVis") {
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STATUS_GAIN_SUPPORT")
     field(SCAN, "I/O Intr")
 }
-
-record(bi,"$(PREFIX)$(MOTOR_NAME)-InhibitF") {
-    field(DESC, "InhibitF")
-    field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))InhibitF")
-    field(SCAN, "I/O Intr")
-}
-
-record(bi,"$(PREFIX)$(MOTOR_NAME)-InhibitR") {
-    field(DESC, "InhibitR")
-    field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))InhibitR")
-    field(SCAN, "I/O Intr")
-}
