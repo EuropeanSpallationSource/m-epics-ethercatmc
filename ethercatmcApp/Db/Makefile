@@ -31,6 +31,7 @@ DB += ethercatmcMotorTemp.template
 DB += ethercatmcOpenClutch.template
 DB += ethercatmcPlcName.template
 DB += ethercatmcShutter.template
+DB += ethercatmcTempSensor.template
 DB += ethercatmcdebug.template
 DB += ethercatmcindexer.template
 DB += ethercatmcreadback.template

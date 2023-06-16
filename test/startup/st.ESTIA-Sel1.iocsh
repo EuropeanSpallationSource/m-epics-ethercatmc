@@ -271,51 +271,51 @@ epicsEnvSet("EGU",          "°C")
 
 epicsEnvSet("R",        "Temp1")
 epicsEnvSet("CHNO",     "1")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp2")
 epicsEnvSet("CHNO",     "2")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp3")
 epicsEnvSet("CHNO",     "3")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp4")
 epicsEnvSet("CHNO",     "4")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp5")
 epicsEnvSet("CHNO",     "5")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp6")
 epicsEnvSet("CHNO",     "6")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp7")
 epicsEnvSet("CHNO",     "7")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp8")
 epicsEnvSet("CHNO",     "8")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp9")
 epicsEnvSet("CHNO",     "9")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp10")
 epicsEnvSet("CHNO",     "10")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp11")
 epicsEnvSet("CHNO",     "11")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 epicsEnvSet("R",        "Temp12")
 epicsEnvSet("CHNO",     "12")
-< ethercatmcAnalogInput.iocsh
+< ethercatmcTempSensor.iocsh
 
 
 

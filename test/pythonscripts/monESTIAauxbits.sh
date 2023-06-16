@@ -9,10 +9,10 @@
 
 # Our motor to work against
 if test -z "$P" ; then
-  export P=LabS-MCAG:MC-MCU-07:
+  export P=PSI-ESTIARND:MC-MCU-01:
 fi
 if test -z "$M" ; then
-  export M=m1
+  export M=Mtr8
 fi
 
 
@@ -60,8 +60,8 @@ for ext in .txt -processed.txt; do
     test -f $LOGFILEBASENAME$ext && mv $LOGFILEBASENAME$ext logs/log-$P_M_NO_COLON-$timestamp$ext
 done
 
-TSE="-TSE"
-#TSE=""
+#TSE="-TSE"
+TSE=""
 export TSE
 pvmonitor \
   ${P}${M}-NamAuxBit0 \
@@ -88,19 +88,11 @@ pvmonitor \
   ${P}${M}-NamAuxBit21 \
   ${P}${M}-NamAuxBit22 \
   ${P}${M}-NamAuxBit23 \
-  ${P}${M}.ACCS \
-  ${P}${M}.VELO \
-  ${P}${M}.RDBD \
   ${P}${M}.VAL \
+  ${P}${M}.RBV \
   ${P}${M}.MISS \
-  ${P}${M}-CfgSREV-RB \
-  ${P}${M}-CfgUREV-RB \
-  ${P}${M}-PosAct${TSE} \
-  ${P}${M}-VelAct${TSE} \
-  ${P}${M}-PLCopenStateMachine${TSE} \
-  ${P}${M}-StatusCode${TSE} \
-  ${P}${M}-StatusBits${TSE} \
-  ${P}${M}-RawEncStep${TSE} \
-  ${P}${M}-RawMtrStep${TSE} \
-  ${P}${M}-RawMtrVelo${TSE} \
+  ${P}${M}-StatusBits \
+  ${P}${M}-HexScrew \
  | tee $LOGFILEBASENAME.txt | ./RawMtrEncPostprocess.py | tee $LOGFILEBASENAME-processed.txt
+
+#PSI-ESTIARND:MC-MCU-01:Mtr8-HexScrew

@@ -1,0 +1,4 @@
+ethercatmcCreateAsynParam $(MOTOR_PORT) Temp      Float64
+ethercatmcCreateAsynParam $(MOTOR_PORT) Temp_DESC Octet
+
+dbLoadRecords("ethercatmcTempSensor.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO)")
