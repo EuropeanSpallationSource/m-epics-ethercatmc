@@ -18,7 +18,7 @@ record(stringin, "$(P)$(R)-DESC-RB_") {
 }
 
 record(stringout, "$(P)$(R)-DESC_") {
-    field(DOL, "$(P)$(R)-DESC-RB_ CP")
+    field(DOL, "$(P)$(R)-DESC-RB_ CPP MS")
     field(OUT, "$(P)$(R).DESC")
     field(OMSL, "closed_loop")
 }

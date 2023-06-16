@@ -1802,6 +1802,22 @@ void ethercatmcController::indexerDisconnected(void)
       setAlarmStatusSeverityWrapper(pPilsAsynDevInfo->axisNo,
                                     pPilsAsynDevInfo->function,
                                     asynDisconnected);
+
+      {
+        int axisNo = pPilsAsynDevInfo->axisNo;
+        int function = pPilsAsynDevInfo->function;
+        const char *paramName = NULL;
+        if (!(getParamName(function, &paramName))) {
+          int functionDescField = 0;
+          char  descName[64];
+          snprintf(descName, sizeof(descName), "%s_DESC", paramName);
+          if (!findParam(descName, &functionDescField)) {
+            setStringParam(axisNo, functionDescField, "");
+            setAlarmStatusSeverityWrapper(axisNo, functionDescField,
+                                          asynDisconnected);
+          }
+        }
+      }
     }
     memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
     ctrlLocal.numPilsAsynDevInfo = 0;
