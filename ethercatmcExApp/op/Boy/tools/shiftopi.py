@@ -5,7 +5,7 @@ import os
 import re
 import sys
 
-usage = "usage:   %prog [--shifty|--shifty][--shiftm]\n"
+usage = "usage:   %prog [--shifty|--shifty][--shiftm][--shiftt]\n"
 
 
 ##################################################################
@@ -44,6 +44,16 @@ def parse_command_line():
         type="int",
         default=0,
     )
+    parser.add_option(
+        "",
+        "--shiftt",
+        help="shift the Temp values",
+        metavar="T",
+        action="store",
+        dest="shiftT",
+        type="int",
+        default=0,
+    )
 
     (options, args) = parser.parse_args()
     if args:
@@ -68,10 +78,12 @@ def shiftXorY(options, line):
     matchX = re.compile("^( *<x>)([0-9]+)(</x> *)$")
     matchY = re.compile("^( *<y>)([0-9]+)(</y> *)$")
     matchM = re.compile("(.*\([MR])([0-9]+)(\).*)")
+    matchT = re.compile("(.*Temp)(1)([^0-9].*)$")
 
     isMatchX = matchX.match(line)
     isMatchM = matchM.match(line)
     isMatchY = matchY.match(line)
+    isMatchT = matchT.match(line)
 
     if isMatchY != None:
         pfx = matchY.sub(r"\1", line)
@@ -99,6 +111,15 @@ def shiftXorY(options, line):
         if pfm[-1] == "\n":
             pfm = pfm[0:-1]
         line = pfm + str(mPos) + sfm
+
+    if isMatchT != None:
+        pft = matchT.sub(r"\1", line)
+        tPos = int(matchT.sub(r"\2", line))
+        sft = matchT.sub(r"\3", line)
+        tPos += options.shiftT
+        if pft[-1] == "\n":
+            pft = pft[0:-1]
+        line = pft + str(tPos) + sft
 
     return line
 

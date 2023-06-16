@@ -4,9 +4,11 @@ echo genMotorShutter.sh "$@"
 # Number of motors in Y direction
 Y=1
 # Hight of one "motor widget"
-HIGHT=204
+MOTORHIGHT=204
 # Width of one "motor widget"
 WIDTH=120
+# hight of a temperature wdget
+TEMPSENSORHIGHT=36
 # File name extension
 EXT=opi
 
@@ -14,55 +16,97 @@ HAS_ECMC=""
 HAS_PTP=""
 OPIMID_EGU_TEMP=motorx-egu-rbv.mid
 y0=16
-export y0 WIDTH HIGHT
+export y0 WIDTH MOTORHIGHT TEMPSENSORHIGHT
 
 genMatrix() {
   echo genMatrix "$@"
   OPIMID=motorx.mid
   numparameaten=0
-  ix=0
-  iy=0
-  im=0
+  cntx=0
+  cnty=0
+  y=$y0
+  im=0 # motor number, start at 0
+  it=0 # tempsensor number, start at 0
   XCNTMAX=1
   YCNTMAX=1
-  haveseenX=0
+  haveseenY=0
   while test -n "$1"; do
     echo genMatrix "numparameaten=$numparameaten param=$1"
     case "$1" in
     [123456789])
-      if test $haveseenX -eq 0; then
+      if test $haveseenY -eq 0; then
         XCNTMAX=$1
         echo genMatrix XCNTMAX=$XCNTMAX
-      elif test $haveseenX -eq 1; then
-        ix=0
+      elif test $haveseenY -eq 1; then
+        cntx=0
         YCNTMAX=$1
         echo genMatrix YCNTMAX=$YCNTMAX
+        # loop x times y
+        cntx=0
+        echo genMatrix y=$y cnty=$cnty YCNTMAX=$YCNTMAX cntx=$cntx XCNTMAX=$XCNTMAX OPIMID_EGU_TEMP=$OPIMID_EGU_TEMP
+        while test $cnty -lt $YCNTMAX; do
+          while test $cntx -lt $XCNTMAX; do
+            x=$(($cntx * $WIDTH))
+            cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+            echo xcmd=$cmd "<$OPIMID"
+            eval $cmd <$OPIMID >>$$
+            if test "$OPIMID_EGU_TEMP"; then
+              eval $cmd <$OPIMID_EGU_TEMP >>$$
+            fi
+            im=$(($im + 1))
+            cntx=$(($cntx + 1))
+          done
+          cntx=0
+          cnty=$(($cnty + 1))
+          y=$(($y + $MOTORHIGHT))
+        done
       else
         echo >&2 "Illegale numbers"
-        echo >&2 "numparameaten=$numparameaten haveseenX=$haveseenX"
+        echo >&2 "numparameaten=$numparameaten haveseenY=$haveseenY"
         exit 1
       fi
       ;;
-    m)
+    motor)
       OPIMID=motorx.mid
       ;;
+    m)
+      HIGHT=$MOTORHIGHT
+      x=$(($cntx * $WIDTH))
+      cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+      echo xcmd=$cmd "<$OPIMID"
+      eval $cmd <$OPIMID >>$$
+      if test "$OPIMID_EGU_TEMP"; then
+        eval $cmd <$OPIMID_EGU_TEMP >>$$
+      fi
+      im=$(($im + 1))
+      cntx=$(($cntx + 1))
+      ;;
     n)
-      ix=0
-      iy=$(($iy + 1)) # newline
+      cntx=0
+      cnty=$(($cnty + 1)) # newline
+      y=$(($y+$HIGHT))
       ;;
     ptp)
-      y0=$(($y0 + 16))
-      shift
-      continue
+      y=$(($y + 16))
       ;;
-    s)
+    shutter)
       OPIMID=shutterx.mid
       ;;
     temp)
       OPIMID_EGU_TEMP=motorx-temp-rbv.mid
       ;;
+    t)
+      OPIMID=tempsensor.mid
+      HIGHT=$TEMPSENSORHIGHT
+      x=$(($cntx * $WIDTH))
+      cmd=$(echo OPIMID=$OPIMID ./shiftopi.py --shiftx $x --shifty $y --shiftt $it)
+      echo xcmd=$cmd "<$OPIMID"
+      eval $cmd <$OPIMID >>$$
+      it=$(($it + 1))
+      cntx=$(($cntx + 1))
+      ;;
     x)
-      haveseenX=$(($haveseenX + 1))
+      haveseenY=$(($haveseenY + 1))
       ;;
     *)
       echo >&2 "invalid: parameter $1"
@@ -72,23 +116,6 @@ genMatrix() {
     esac
   shift
   numparameaten=$(($numparameaten + 1))
-  done
-  echo genMatrix y0=$y0 iy=$iy YCNTMAX=$YCNTMAX ix=$ix XCNTMAX=$XCNTMAX OPIMID_EGU_TEMP=$OPIMID_EGU_TEMP
-  while test $iy -lt $YCNTMAX; do
-    while test $ix -lt $XCNTMAX; do
-      y=$(($y0 + $iy * $HIGHT))
-      x=$(($ix * $WIDTH))
-      cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-      echo xcmd=$cmd "<$OPIMID"
-      eval $cmd <$OPIMID >>$$
-      if test "$OPIMID_EGU_TEMP"; then
-        eval $cmd <$OPIMID_EGU_TEMP >>$$
-      fi
-      im=$(($im + 1))
-      ix=$(($ix + 1))
-    done
-    ix=0
-    iy=$(($iy + 1))
   done
 }
 

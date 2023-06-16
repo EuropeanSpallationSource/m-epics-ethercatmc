@@ -13,6 +13,7 @@ GNERATEDOPIS = \
   ../motor-4x3.opi \
   ../motor-4x4.opi \
   ../motor-4x4-temp.opi \
+  ../motor-estiaSel1-temp.opi \
   ../ethercatmcaxisConfig.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
   ../ethercatmcaxisExpert-tc.opi \
@@ -42,6 +43,7 @@ DEPENDENCIES_FOR_CONFIG_OPI = \
 # Depencies, when do we need to revuild a .opi file
 DEPENDENCIES_FOR_MOTOR_OPI = Makefile
 DEPENDENCIES_FOR_MOTOR_OPI += genMotorShutter.sh
+DEPENDENCIES_FOR_MOTOR_OPI += shiftopi.py
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.start
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.mid
 DEPENDENCIES_FOR_MOTOR_OPI += motorx-egu-rbv.mid
@@ -111,36 +113,34 @@ AUXBITS_STATUSWORD="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 2
 AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 1
+	./genMotorShutter.sh $@ 1 x 1
 
 ../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ ptp 1
+	./genMotorShutter.sh $@ ptp 1 x 1
 
 ../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 2
+	./genMotorShutter.sh $@ 2 x 1
 
 ../motor-3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 3
+	./genMotorShutter.sh $@ 3 x 1
 
 ../motor-3-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ ptp 3
+	./genMotorShutter.sh $@ ptp 3 x 1
 
 ../motor-4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 4
+	./genMotorShutter.sh $@ 4 x 1
 
 ../motor-4-ecmc.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ ecmc 4
+	./genMotorShutter.sh $@ ecmc 4 x 1
 
 ../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ ptp 4
+	./genMotorShutter.sh $@ ptp 4 x 1
 
 ../motor-5.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 5
-
+	./genMotorShutter.sh $@ 5 x 1
 
 ../motor-6.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 6
-
+	./genMotorShutter.sh $@ 6 x 1
 
 ../motor-4x3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 4 x 3
@@ -149,9 +149,12 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	./genMotorShutter.sh $@ 4 x 4
 
 ../motor-4x4-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid
-	./genMotorShutter.sh $@ temp 4 x 4
+	./genMotorShutter.sh $@ temp m m m m n m m m m n m m m m n m m m m
 
-  ../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
+../motor-estiaSel1-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid tempsensor.mid
+	./genMotorShutter.sh $@ temp m m m m m n m m m m m n m m m n t t t t t n t t t t t n t t
+
+../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
 	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
 
 #../ethercatmcaxisConfig-ecmc.opi \
@@ -182,7 +185,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	./genExpertWithAuxBits.sh $@ ethercatmcStatusWord1802 $(AUXBITS_STATUSWORD)
 
 ../shutter-1.opi: $(DEPENDENCIES_FOR_SHUTTER_OPI)
-	./genMotorShutter.sh $@ s 1
+	./genMotorShutter.sh $@ shutter 1 x 1
 
 ../IOC.opi: Makefile genIOC.sh IOC*.*
 	./genIOC.sh ../IOC.opi IOC
