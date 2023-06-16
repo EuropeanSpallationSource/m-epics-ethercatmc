@@ -266,6 +266,8 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Temperature Sensors, common
 epicsEnvSet("P", "$(SM_PREFIX=ESTIA-Sel1:MC-MCU-01:)")
 epicsEnvSet("ASYNPARAMNAME" "Temp")
+epicsEnvSet("PREC",         "1")
+epicsEnvSet("EGU",          "°C")
 
 epicsEnvSet("R",        "Temp1")
 epicsEnvSet("CHNO",     "1")

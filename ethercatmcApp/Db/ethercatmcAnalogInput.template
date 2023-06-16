@@ -3,6 +3,7 @@ record(ai, "$(P)$(R)")
     field(DTYP, "asynFloat64")
     field(DESC, "$(DESC=DESC)")
     field(EGU,  "$(EGU=EGU)")
+    field(PREC, "$(PREC=PREC)")
     field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
     field(SCAN, "I/O Intr")
 }
