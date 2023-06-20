@@ -160,11 +160,14 @@ asynStatus ethercatmcController::readDeviceIndexerV2FL(unsigned devNum,
               ethercatmcstrStatus(status), (int)status);
     return status;
   }
-  if (buflen > ctrlLocal.indexerMaxDataSize) {
+  if (ctrlLocal.indexerMaxDataSize &&
+      (buflen > ctrlLocal.indexerMaxDataSize)) {
+    memset(bufptr, 0,  buflen);
     buflen  = ctrlLocal.indexerMaxDataSize;
   }
-  status = getPlcMemoryOnErrorStateChange(ctrlLocal.indexerOffset +  1*2,
-                                          bufptr, buflen);
+  status = getPlcMemoryOnErrorStateChangeFL(ctrlLocal.indexerOffset +  1*2,
+                                            bufptr, buflen,
+                                            fileName, lineNo);
   return status;
 }
 
