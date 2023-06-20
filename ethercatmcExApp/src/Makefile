@@ -36,6 +36,11 @@ ifneq (,$(findstring /,$(STREAM)))
   ethercatmc_LIBS += stream
 endif
 
+ETHERCATMC_TCBSD   := $(shell sh -c 'test -f /usr/local/lib/libTcAdsDll.so && echo YES')
+ifeq ($(ETHERCATMC_TCBSD),YES)
+  ethercatmc_SYS_LIBS += TcAdsDll
+endif
+
 ifdef BASE_7_0
  ethercatmc_DBD += PVAServerRegister.dbd
  ethercatmc_DBD += PVACommonRegister.dbd

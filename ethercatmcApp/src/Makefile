@@ -24,6 +24,11 @@ ethercatmcSupport_SRCS += ethercatmcIndexerV3.cpp
 ethercatmcSupport_SRCS += ethercatmcIndexerAxis.cpp
 
 
+ETHERCATMC_TCBSD   := $(shell sh -c 'test -f /usr/local/lib/libTcAdsDll.so && echo YES')
+ifeq ($(ETHERCATMC_TCBSD),YES)
+USR_CXXFLAGS += -DETHERCATMC_TCBSD
+endif
+
 ethercatmcSupport_LIBS += asyn
 
 ifneq (,$(findstring /,$(ADS)))

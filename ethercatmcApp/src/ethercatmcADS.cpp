@@ -4,6 +4,12 @@
 #include "ethercatmcADSdefs.h"
 #include <asynOctetSyncIO.h>
 
+
+#ifdef ETHERCATMC_TCBSD
+#define POSIX
+#include "/usr/local/include/TcAdsAPI.h"
+#endif
+
 #ifndef ASYN_TRACE_INFO
 #define ASYN_TRACE_INFO      0x0040
 #endif
@@ -470,6 +476,43 @@ asynStatus ethercatmcController::writeReadAds(asynUser *pasynUser,
   return status;
 }
 
+#ifdef ETHERCATMC_TCBSD
+asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
+                                                      void *data,
+                                                      size_t lenInPlc,
+                                                      const char *fileName,
+                                                      int lineNo)
+{
+  int tracelevel = ASYN_TRACE_FLOW;
+  asynUser *pasynUser = pasynUserController_;
+  static unsigned indexGroup = 0x4020;
+  if (!ctrlLocal.tcbsdLocalPort) {
+    ads_i32 ret = AdsPortOpen();
+    asynPrint(pasynUser, tracelevel,
+              "%s:%d getPlcMemoryViaADS AdsPortOpen ret=%u\n",
+              fileName, lineNo, (unsigned)ret);
+    ctrlLocal.tcbsdLocalPort = ret;
+  }
+  AmsAddr remoteAmsAddr;
+  memset(&remoteAmsAddr,0 , sizeof(remoteAmsAddr));
+
+  memcpy(&remoteAmsAddr.netId.b, &ctrlLocal.remote.netID, sizeof(remoteAmsAddr.netId.b));
+  UINTTONET(ctrlLocal.adsport, remoteAmsAddr.port);
+
+  ads_i32 ret2 = AdsSyncReadReq(&remoteAmsAddr,
+                                (ads_ui32) indexGroup,
+                                (ads_ui32) indexOffset,
+                                (ads_ui32) lenInPlc,
+                                data);
+  asynPrint(pasynUser, tracelevel,
+            "%s:%d RDMEM indexOffset=%u lenInPlc=%u ret2=%d\n",
+            fileName, lineNo, indexOffset, (unsigned)lenInPlc,
+            (int)ret2);
+  ethercatmchexdump(pasynUser, tracelevel, "RDMEMTCBSD", data, lenInPlc, fileName, lineNo);
+  return ret2 ? asynError : asynSuccess;
+
+}
+#else
 asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
                                                     void *data,
                                                     size_t lenInPlc,
@@ -539,6 +582,7 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
   free(p_read_buf);
   return status;
 }
+#endif
 
 asynStatus ethercatmcController::setPlcMemoryViaADSFL(unsigned indexOffset,
                                                       const void *data,
@@ -553,6 +597,36 @@ asynStatus ethercatmcController::setPlcMemoryViaADSFL(unsigned indexOffset,
                               fileName, lineNo);
 }
 
+#ifdef ETHERCATMC_TCBSD
+asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
+                                                      unsigned indexOffset,
+                                                      unsigned targetAdsport,
+                                                      const void *data,
+                                                      size_t lenInPlc,
+                                                      const char *fileName,
+                                                      int lineNo)
+{
+  asynUser *pasynUser = pasynUserController_;
+  int tracelevel = ASYN_TRACE_FLOW;
+  AmsAddr remoteAmsAddr;
+  memset(&remoteAmsAddr,0 , sizeof(remoteAmsAddr));
+
+  memcpy(&remoteAmsAddr.netId.b, &ctrlLocal.remote.netID, sizeof(remoteAmsAddr.netId.b));
+  UINTTONET(ctrlLocal.adsport, remoteAmsAddr.port);
+
+  ads_i32 ret2 = AdsSyncWriteReq(&remoteAmsAddr,
+                                 (ads_ui32) indexGroup,
+                                 (ads_ui32) indexOffset,
+                                 (ads_ui32) lenInPlc,
+                                 (void*)data);
+  asynPrint(pasynUser, tracelevel,
+            "%s:%d WRMEM indexOffset=%u lenInPlc=%u ret2=%d\n",
+            fileName, lineNo, indexOffset, (unsigned)lenInPlc,
+            (int)ret2);
+  ethercatmchexdump(pasynUser, tracelevel, "WRMEMTCBSD", data, lenInPlc, fileName, lineNo);
+  return ret2 ? asynError : asynSuccess;
+}
+#else
 asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
                                                       unsigned indexOffset,
                                                       unsigned targetAdsport,
@@ -614,7 +688,7 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(unsigned indexGroup,
   }
   return status;
 }
-
+#endif
 
 asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
                                                      void *data,

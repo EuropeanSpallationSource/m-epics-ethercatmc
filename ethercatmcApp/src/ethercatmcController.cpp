@@ -17,6 +17,12 @@ FILENAME... ethercatmcController.cpp
 #include "ethercatmcAxis.h"
 #include "ethercatmcIndexerAxis.h"
 
+#ifdef ETHERCATMC_TCBSD
+#define POSIX
+#include "/usr/local/include/TcAdsDef.h"
+#include "/usr/local/include/TcAdsAPI.h"
+#endif
+
 #ifndef ASYN_TRACE_INFO
 #define ASYN_TRACE_INFO      0x0040
 #endif
@@ -415,6 +421,20 @@ ethercatmcController::ethercatmcController(const char *portName,
   if (movingPollPeriod && idlePollPeriod) {
     startPoller(movingPollPeriod, idlePollPeriod, 2);
   }
+}
+
+ethercatmcController::~ethercatmcController()
+{
+#ifdef ETHERCATMC_TCBSD
+  asynUser *pasynUser = pasynUserController_;
+  if (ctrlLocal.tcbsdLocalPort) {
+    ads_i32 ret = AdsPortClose();
+    asynPrint(pasynUser, ASYN_TRACE_INFO,
+              "~ethercatmcController: AdsPortClose ret=%u\n",
+              (unsigned)ret);
+    ctrlLocal.tcbsdLocalPort = 0;
+  }
+#endif
 }
 
 

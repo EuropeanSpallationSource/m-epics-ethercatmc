@@ -307,6 +307,7 @@ public:
                        int numAxes, double movingPollPeriod,
                        double idlePollPeriod,
                        const char *optionStr);
+  ~ethercatmcController();
   /* Note: the motor/master version does not have it, so we need it here */
   asynStatus writeOctet(asynUser *pasynUser, const char *value,
                         size_t nChars, size_t *nActual);
@@ -569,6 +570,9 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     int lockADSlineno;
     uint32_t callBackNeeded;
     char changedAuxBits[MAX_REASON_AUX_BIT_SHOW][36];
+#ifdef ETHERCATMC_TCBSD
+    int32_t tcbsdLocalPort;
+#endif
   } ctrlLocal;
 
   #ifdef CREATE_MOTOR_REC_RESOLUTION
