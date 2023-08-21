@@ -841,7 +841,9 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo,
     updateCfgValue(axisNo, defAsynPara.ethercatmcCfgHVEL_RB_, fValue, "hvel");
     break;
   case PARAM_IDX_SPEED_FLOAT:
-    if (initial) updateCfgValue(axisNo, defAsynPara.ethercatmcCfgVELO_RB_, fValue, "veloCFG");
+    /* velocity, the way we use it, has 2 purposes: veloRB and veloCFG.
+       Note that veloCFG must always be positive. veloRB may be negative */
+    if (initial) updateCfgValue(axisNo, defAsynPara.ethercatmcCfgVELO_RB_, fabs(fValue), "veloCFG");
     updateCfgValue(axisNo, defAsynPara.ethercatmcVel_RB_, fValue, "veloRB");
 #ifdef motorDefVelocityROString
     pAxis->setDoubleParam(motorDefVelocityRO_, fValue);
