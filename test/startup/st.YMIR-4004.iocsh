@@ -1,0 +1,87 @@
+#Rotary stage, motor m4 only, now in NIN
+
+epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+
+
+
+#epicsEnvSet("IPADDR",        "$(SM_IPADDR=10.102.10.22)")
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.38.65)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("PREFIX",        "YMIR-4004:MC-MCU-002:")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",     "3")
+
+#epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.79.68.216.1.1;amsNetIdLocal=10.102.10.13.1.1"
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.79.68.216.1.1;amsNetIdLocal=172.30.38.12.1.1"
+
+# No poller yet, see ethercatmcStartPoller at the end of the script
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
+< ethercatmcController.iocsh
+
+#
+# Axis 1
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("PREFIX",        "YMIR-4004:MC-Rz-01:")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 2
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("PREFIX",        "YMIR-4004:MC-MCU-02:")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr2)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 3
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("PREFIX",        "YMIR-4004:MC-MCU-02:")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr3)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+
+#
+# Axis 4
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("PREFIX",        "YMIR-4004:MC-MCU-02:")
+epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr4)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+< ethercatmcReleaseBrake.iocsh
+
+
+
+# Start polling, values are in millisconds
+#
+epicsEnvSet("MOVINGPOLLPERIOD", "200")
+epicsEnvSet("IDLEPOLLPERIOD",   "500")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
