@@ -1,0 +1,9 @@
+record(bo, "$(PREFIX)$(MOTOR_NAME)-ReleaseBrake")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "$(DESC=Clutch)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ReleaseBrake")
+    field(ZNAM, "Engage")
+    field(ONAM, "Release")
+    info(asyn:READBACK,"1")
+}
