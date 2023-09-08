@@ -6,9 +6,14 @@ record(stringin, "$(PREFIX)PlcName") {
 }
 
 
-# The IPADDR of the system
+# The IPADDR of the MCU
 record(stringout, "$(PREFIX)IPADDR") {
     field(VAL, "$(IPADDR)")
+}
+
+# The AMSNETID of the IOC
+record(stringout, "$(PREFIX)AMSNETIDIOC") {
+    field(VAL, "$(AMSNETIDIOC)")
 }
 
 

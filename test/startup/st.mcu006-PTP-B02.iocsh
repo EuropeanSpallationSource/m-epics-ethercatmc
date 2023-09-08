@@ -1,11 +1,12 @@
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.38.31)")
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.38.66)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("AMSNETIDIOC",   "$(SM_AMSNETID=172.30.38.12.1.1)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-MCAG:MC-MCU-06:)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "1")
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=172.30.38.31.1.1;amsNetIdLocal=172.30.38.12.1.1"
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=172.30.38.31.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
 
 # Do not start the poller yet
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")

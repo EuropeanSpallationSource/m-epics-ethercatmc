@@ -1,20 +1,3 @@
-# @field ASYN_PORT
-# @type  STRING
-# MC_CPU1
-
-# @field MOTOR_PORT
-# @type  STRING
-# MCU1
-
-# @field IPADDR
-# @type  STRING
-
-# @field IPPORT
-# @type  INTEGER
-
-# @field NUMAXES
-# @type  INTEGER
-
 # Additional fields can e initialized in Axis
 epicsEnvSet("ECAXISFIELDINIT",    "")
 # How many axes do we have ?
@@ -66,7 +49,7 @@ asynSetTraceInfoMask("$(ASYN_PORT)", -1, 5)
 
 ethercatmcCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)", "$(ECC_OPTIONS)")
 
-dbLoadRecords("ethercatmcPlcName.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), IPADDR=$(IPADDR), IPPORT=$(IPPORT)")
+dbLoadRecords("ethercatmcPlcName.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), IPADDR=$(IPADDR), AMSNETIDIOC=$(AMSNETIDIOC), IPPORT=$(IPPORT)")
 
 asynSetOption $(ASYN_PORT) -1 disconnectOnReadTimeout Y
 asynShowOption $(ASYN_PORT) -1 disconnectOnReadTimeout
