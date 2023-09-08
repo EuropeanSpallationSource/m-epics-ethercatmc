@@ -1,7 +1,7 @@
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-4-ptp.opi</path>
+        <path>motor-3-ptp.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>YMIR-SpScn:MC-MCU-001:</PREFIX>
@@ -9,11 +9,9 @@
           <M1>SpScn:MC-X-01:Mtr</M1>
           <M2>SpScn:MC-Y-01:Mtr</M2>
           <M3>SpScn:MC-Z-01:Mtr</M3>
-          <M4>SpRot:MC-Rz-01:m</M4>
           <R1>SpScn:MC-X-01:Mtr-</R1>
           <R2>SpScn:MC-Y-01:Mtr-</R2>
           <R3>SpScn:MC-Z-01:Mtr-</R3>
-          <R4>SpRot:MC-Rz-01:m-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
