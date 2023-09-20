@@ -13,6 +13,7 @@ record(mbbi,  "$(PREFIX)PTPState") {
     field(SVVL, "7")
     field(EIVL, "8")
     field(NIVL, "9")
+    field(FFVL, "4294967294")
 
     field(ZRST, "PTP:NO_OPERATION")
     field(ONST, "PTP:INITIALIZING")
@@ -25,6 +26,8 @@ record(mbbi,  "$(PREFIX)PTPState") {
     field(EIST, "PTP:UNCALIBRATED")
     field(NIST, "PTP:SLAVE")
 
+    field(FFST, "PTP:NO_CABLE")
+
     field(ZRSV, "2")
     field(ONSV, "1")
     field(TWSV, "2")
@@ -35,6 +38,7 @@ record(mbbi,  "$(PREFIX)PTPState") {
     field(SVSV, "2")
     field(EISV, "2")
     field(NISV, "0")
+    field(FFSV, "2")
 }
 
 record(longin, "$(PREFIX)PTPOffset")
