@@ -2,7 +2,7 @@ record(mbbi,  "$(PREFIX)PTPState") {
     field(DESC, "PTP state EtherCAT bus")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPState")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "1 second")
     field(ZRVL, "0")
     field(ONVL, "1")
     field(TWVL, "2")
@@ -52,7 +52,7 @@ record(longin, "$(PREFIX)PTPOffset")
     field(LSV,  "1")
     field(HYST, "50")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPOffset")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "1 second")
 }
 
 record(longin, "$(PREFIX)PTPSyncSeqNum")
@@ -61,7 +61,7 @@ record(longin, "$(PREFIX)PTPSyncSeqNum")
     field(DESC, "PTPSyncSeqNum")
     field(EGU,  "num")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPSyncSeqNum")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "1 second")
 }
 
 record(int64in, "$(PREFIX)DcToExtTimeOffset")
@@ -70,7 +70,7 @@ record(int64in, "$(PREFIX)DcToExtTimeOffset")
     field(DESC, "DcToExtTimeOffsetSystem")
     field(EGU,  "ns")
     field(INP,  "@asyn($(MOTOR_PORT),0)DcToExtTimeOffset")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "1 second")
 }
 
 record(int64in, "$(PREFIX)SystemUTCtime")
@@ -79,7 +79,7 @@ record(int64in, "$(PREFIX)SystemUTCtime")
     field(DESC, "SystemUTCtime")
     field(EGU,  "ns")
     field(INP,  "@asyn($(MOTOR_PORT),0)SystemUTCtime")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "1 second")
 }
 
 record(int64in, "$(PREFIX)SystemUTCtime-TSE")
@@ -115,7 +115,7 @@ record(int64in, "$(PREFIX)TimeOffsetDiffEL6688")
     field(HSV,  "1")
     field(LSV,  "1")
     field(INP,  "@asyn($(MOTOR_PORT),0)TimeOffsetDiffEL6688")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "1 second")
 }
 
 record(bo,  "$(PREFIX)PTPRewriteOffset") {
@@ -127,17 +127,6 @@ record(bo,  "$(PREFIX)PTPRewriteOffset") {
     info(asyn:READBACK,"1")
     info(asyn:INITIAL_READBACK,"1")
 }
-
-record(bo,  "$(PREFIX)PTPDoSyncCheck") {
-    field(DESC, "PTP do synch check of EL6688")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(MOTOR_PORT),0)PTPDoSyncCheck")
-    field(ZNAM, "NO")
-    field(ONAM, "YES")
-    info(asyn:READBACK,"1")
-    info(asyn:INITIAL_READBACK,"1")
-}
-
 
 #
 # Diff between NTP (IOC) and PTP (MCU/PLC)
@@ -155,7 +144,6 @@ record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
     field(HSV,  "1")
     field(LSV,  "1")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPdiffTimeIOC_MCU")
-    #field(SCAN, "I/O Intr")
     field(SCAN, "1 second")
 }
 
