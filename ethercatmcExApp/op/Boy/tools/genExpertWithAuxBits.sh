@@ -15,7 +15,7 @@ case $BASENAME in
     yaux=298
     ;;
   ethercatmcaxisExpert)
-    yaux=416
+    yaux=436
     ;;
   ethercatmcPTPErrBits)
     yaux=18
