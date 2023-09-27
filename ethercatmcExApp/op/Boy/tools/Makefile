@@ -1,5 +1,6 @@
 
 GNERATEDOPIS = \
+  ../motor-0-ptp.opi \
   ../motor-1.opi \
   ../motor-1-ptp.opi \
   ../motor-2.opi \
@@ -116,6 +117,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 1 x 1
+
+../motor-0-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	./genMotorShutter.sh $@ ptp
 
 ../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ ptp 1 x 1
