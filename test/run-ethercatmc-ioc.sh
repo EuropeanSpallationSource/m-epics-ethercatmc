@@ -38,6 +38,7 @@ epicsEnvSet("ARCH","$EPICS_HOST_ARCH")
 epicsEnvSet("IOC","ioc${APPXX}")
 epicsEnvSet("TOP","$TOP")
 epicsEnvSet("EPICS_BASE","$EPICS_BASE")
+epicsEnvSet("PVXS_QSRV_ENABLE", "YES")
 
 cd ${TOP}
 dbLoadDatabase "dbd/${APPXX}.dbd"
