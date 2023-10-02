@@ -1,5 +1,11 @@
 TOP=../..
 
+#
+# one trick to debug Makefile(s) from the EPICS make system:
+# make show-makefiles
+# make PRINT.PVXS
+#
+
 include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
@@ -41,12 +47,6 @@ ifeq ($(ETHERCATMC_TCBSD),YES)
   ethercatmc_SYS_LIBS += TcAdsDll
 endif
 
-ifdef BASE_7_0
- ethercatmc_DBD += PVAServerRegister.dbd
- ethercatmc_DBD += PVACommonRegister.dbd
- ethercatmc_DBD += softIocPVA.dbd
- ethercatmc_DBD += registerChannelProviderLocal.dbd
-endif
 
 ethercatmc_DBD += ethercatmcSupport.dbd
 
@@ -66,21 +66,25 @@ ethercatmc_LIBS += motor
 ethercatmc_LIBS += softMotor
 endif
 
-ifneq (,$(findstring /,$(PVXS)))
+ifdef PVXS_MAJOR_VERSION
 ethercatmc_LIBS += pvxsIoc
 ethercatmc_LIBS += pvxs
 ethercatmc_DBD  += pvxsIoc.dbd
+else
+  ifdef BASE_7_0
+    ethercatmc_LIBS += qsrv
+    ethercatmc_LIBS += pvDatabase
+    ethercatmc_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+    ethercatmc_DBD += PVAServerRegister.dbd
+    ethercatmc_DBD += PVACommonRegister.dbd
+    ethercatmc_DBD += softIocPVA.dbd
+    ethercatmc_DBD += registerChannelProviderLocal.dbd
+  endif
 endif
 
 ifneq (,$(findstring /,$(TWINCATADS)))
 ethercatmc_LIBS += ads
 ethercatmc_DBD  += ads.dbd
-endif
-
-ifdef BASE_7_0
-ethercatmc_LIBS += qsrv
-ethercatmc_LIBS += pvDatabase
-ethercatmc_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 endif
 
 ethercatmc_LIBS += ethercatmcSupport
