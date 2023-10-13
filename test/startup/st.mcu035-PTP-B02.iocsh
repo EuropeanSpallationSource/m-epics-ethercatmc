@@ -34,3 +34,6 @@ epicsEnvSet("CHNO",     "0")
 epicsEnvSet("MOVINGPOLLPERIOD", "500")
 epicsEnvSet("IDLEPOLLPERIOD",   "500")
 ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
+
+# Sleep to let the poller detect the AUX bit names
+epicsThreadSleep 5
