@@ -43,24 +43,14 @@ epicsEnvSet("EGU",           "")
 
 
 #####################################################
-# EL1252, first channel, CHNO == 0
-epicsEnvSet("CHNO",     "0")
-< ethercatmcEL1252-OneChannel.iocsh
-# EL1252, second channel, CHNO == 1
-epicsEnvSet("CHNO",     "1")
+# EL1252, second channel, CHNO == 2
+epicsEnvSet("CHNO",     "2")
 < ethercatmcEL1252-OneChannel.iocsh
 
 
 #####################################################
 # PTP with ExtSync
 < ethercatmcEL6688-PTP.iocsh
-
-# Analog input, copy of TS_NS for testing
-epicsEnvSet("CHNO",             "0")
-epicsEnvSet("ASYNPARAMNAME",    "TS_NS_AI")
-epicsEnvSet("P",                "$(PREFIX)")
-epicsEnvSet("R",                "TS_NS_AI")
-< ethercatmcAnalogInput.iocsh
 
 
 #
