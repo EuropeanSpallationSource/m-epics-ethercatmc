@@ -105,25 +105,6 @@ record(longin, "$(PREFIX)PTPErrorStatus")
     field(SCAN, "I/O Intr")
 }
 
-record(int64in, "$(PREFIX)TimeOffsetDiffEL6688")
-{
-    field(DTYP, "asynInt64")
-    field(DESC, "PTPDcToExtTimeOffsetEL6688")
-    field(EGU,  "ns")
-    field(INP,  "@asyn($(MOTOR_PORT),0)TimeOffsetDiffEL6688")
-    field(SCAN, "1 second")
-}
-
-record(bo,  "$(PREFIX)PTPRewriteOffset") {
-    field(DESC, "PTP Rewrite Offset to EL6688")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(MOTOR_PORT),0)PTPRewriteOffset")
-    field(ZNAM, "NO")
-    field(ONAM, "YES")
-    info(asyn:READBACK,"1")
-    info(asyn:INITIAL_READBACK,"1")
-}
-
 #
 # Diff between NTP (IOC) and PTP (MCU/PLC)
 # Typically the MCU has an EL6688 with PTP
@@ -156,9 +137,7 @@ record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
   field(INPC, "$(PREFIX)PTPOffset.SEVR             CP MS")
   field(INPD, "$(PREFIX)PTPErrorStatus.SEVR        CP MS")
   field(INPE, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
-  field(INPF, "$(PREFIX)TimeOffsetDiffEL6688.SEVR  CP MS")
-  field(INPG, "$(PREFIX)PTPRewriteOffset           CP MS")
-  field(CLCN, "b || c || d || e || (f && g)")
+  field(CLCN, "b || c || d || e")
   # O is LED visible
   field(CLCO, "N ? A : (O > 0 ? O - 1 : O)")
   # P is all good
