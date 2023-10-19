@@ -37,7 +37,6 @@ esac
 HAS_ECMC=""
 HAS_PTP=""
 HAS_TC=""
-PTPRWOFFSET=""
 PTPOPENERRBITS=0
 PARAM="$1"
 while test "$PARAM" != ""; do
@@ -54,11 +53,6 @@ while test "$PARAM" != ""; do
     ;;
   openPTPErrBits)
     PTPOPENERRBITS=20
-    shift
-    PARAM="$1"
-    ;;
-  ptprwoffset)
-    PTPRWOFFSET="y"
     shift
     PARAM="$1"
     ;;
@@ -80,7 +74,6 @@ done
 export HAS_ECMC
 export HAS_PTP
 export HAS_TC
-export PTPRWOFFSET
 export PTPOPENERRBITS
 
 im=0
@@ -100,15 +93,6 @@ if test "$HAS_PTP" = "y"; then
   eval $cmd <ptp.mid >>$$
   yaux=$(($yaux + 16))
   y=$(($y + 16))
-fi &&
-
-if test "$PTPRWOFFSET" = "y"; then
-  yaux=$(($yaux + 6))
-  cmd=$(echo ./shiftopi.py --shiftx 15 --shifty $yaux)
-  echo PTPRWOFFSET cmd=$cmd
-  eval $cmd <ptp_rw_offset_do_synch_check.mid >>$$
-  yaux=$(($yaux + 34))
-  y=$(($y + 34))
 fi &&
 
 echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@

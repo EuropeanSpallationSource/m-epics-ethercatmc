@@ -84,7 +84,6 @@ DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcPTPErrBits.start
 DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcPTPErrBits.mid
 DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcaxisAuxBit.mid
 DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcPTPErrBits.end
-DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ptp_rw_offset_do_synch_check.mid
 
 
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI = Makefile
@@ -188,7 +187,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 # Generate ethercatmcStatusWord1802*.opi out of
 #   ethercatmcStatusWord1802.mid and ethercatmcStatusWord1802.end
 ../ethercatmcPTPErrBits.opi: $(DEPENDENCIES_FOR_PTPERRORSTATUS_OPI)
-	./genExpertWithAuxBits.sh $@ ethercatmcPTPErrBits ptp ptprwoffset $(AUXBITS_PTPERRORSTATUS)
+	./genExpertWithAuxBits.sh $@ ethercatmcPTPErrBits ptp $(AUXBITS_PTPERRORSTATUS)
 
 ../ethercatmcStatusWord1802.opi: $(DEPENDENCIES_FOR_STATUSWORD_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcStatusWord1802 $(AUXBITS_STATUSWORD)
