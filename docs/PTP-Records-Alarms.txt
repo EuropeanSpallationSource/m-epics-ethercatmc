@@ -1,0 +1,100 @@
+Overview over the EPICS Records dealing with PTP.
+Note that the PTP functionality is achieved with help of an EL6688 terminal,
+and that is where we start.
+
+
+Note that all records should have 2 generic alarm:
+        Alarms:
+          INVALID      UDF       # Record has never been processed
+          INVALID      COMM      # Record had been processed. Now communication IOC-MCU is lost
+        Note that camonitor/pvmonitor may produce log-lines like this:
+          INVALID DRIVER COMM
+          INVALID DEVICE STATE
+          Where INVALID is short for INVALID_ALARM (the alarm severity)
+          and "DRIVER COMM" is the "alarm status" meaning "communication", and as a result,
+          the value of this PV is invalid. It typically stays unchanged at the last value.
+          DEVICE STATE is the alarm state "state": The device is not usable:
+          broken, not configured in the MCU. Some action is needed.
+
+$(PREFIX)PTPState
+        Reflects the PTP state inside the EL6688 terminal.
+        The "good" value is "PTP:SLAVE"
+        A really problematic state is "PTP:NO_CABLE":
+        This means that either the cable towards the PTP master is not there.
+        Or the PTP master is not running on this network.
+
+        Alarm severities:
+          NO_ALARM NO_ALARM   "PTP:SLAVE"
+          MAJOR     STATE     "PTP:NO_CABLE"
+          MINOR     STATE     all other states (e.g. PTP:LISTENING)
+
+$(PREFIX)PTPOffset
+        Alarms:
+          INVALID DEVICE STATE (PTPState has an alarm)
+          MINOR   DEVICE HIGH  (PTPOffset is > +5000nsec. The MCU decides this!)
+          MINOR   DEVICE LOW   (PTPOffset is < -5000nsec. The MCU decides this!)
+
+$(PREFIX)PTPErrorStatus
+        Mainly used to collect the bits around the "EL6688 diag" structure.
+        None of the bits should be true under "all good" conditions.
+        Note: Once the the "NotSynchronized" bit becomes false,
+        a timer is started inside the MCU.
+        Should the NotSynchronized bit become true again, the timer will
+        be reset.
+        But when the timer expires, the "NotFullySycnhed" bit is reset,
+        and now all bits should be false.
+        The IOC will remove the HIGH alarm
+        Alarms:
+          MINOR DEVICE HIGH   (one of the bits is set)
+
+$(PREFIX)PTPdiffTimeIOC_MCU
+        Shows the difference between the UTC time inside the IOC,
+        which is typically synchronized via NTP,
+        and the "UTC time" inside the MCU based on PTP.
+        Both times should be "close to each other":
+        The NTP protocol itself could have a jitter in a 10msec range
+        (depending on the network, CPU load, scheduling inside a VM).
+        The PTP time inside the MCU should have a much less jitter.
+        But the MSU runs everything inside a PLC cycle, which is
+        typically 10msec. In that sense a polled PTP time may have
+        been calculated 9.99 msec before the poll, and is 9.99 msec old.
+        In that sense, the comparison between NTP in the IOC and PTP in the MCU
+        needs to be relaxed.
+        However, beside the "INVALID" alarms, we find:
+        Alarms:
+          MINOR DEVICE LOW
+          MINOR DEVICE HIGH
+
+$(PREFIX)PTPallGood
+        My favorite record.
+        With help of $(PREFIX)PTPAlarmSevrCalc an "overall good state"
+        is calculated, summarizing all PTP records from above.
+        Note that $(PREFIX)PTPAlarmSevrCalc has it's own timer,
+        so that the PTPallGood will become Yes some seconds after
+        all alarms have disappeared.
+        The record itself has the value "Yes" or "No", and beside this,
+        we may find:
+        Alarms:
+          MINOR RECORD LINK
+
+$(PREFIX)TS_NS
+        The nano-second fraction of the 1Hz pulse.
+        The 1Hz pulse is created inside the timing system ("EVR") and
+        feed into an EL1252-0050 (the 5 volt version) to verify e.g.
+        the PTPoffset, drift, jitter, delays inside the PTP-master.
+        It is not part of the PTPallGood calculation.
+        This record has a different alarm handling:
+        The MCU does a check if the last latched time is +/- 2 seconds.
+        If not, the record will go into INVALID STATE, and the value
+        will get dummy values:
+        It looks as if the value is "wildly oscilating", so that you can see
+        that easily in the archiver.
+        Alarms:
+          INVALID STATE (MCU: no new pulse within the last 2 seconds)
+          MINOR   STATE (MCU: The device is "masked", on simulation mode)
+          MINOR   HIGH  (IOC: the value is > +5000 nsec)
+          MINOR   LOW   (IOC: the value is < -5000 nsec)
+
+
+References:
+https://epics.anl.gov/EpicsDocumentation/AppDevManuals/RecordRef/Recordref-23.html
