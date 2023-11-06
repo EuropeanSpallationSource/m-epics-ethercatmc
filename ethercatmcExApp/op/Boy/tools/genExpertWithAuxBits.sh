@@ -35,6 +35,8 @@ esac
 
 # pick up all arguments
 HAS_ECMC=""
+HAS_PTPHIGH=""
+HAS_PTPLOW=""
 HAS_PTP=""
 HAS_TC=""
 PTPOPENERRBITS=0
@@ -46,10 +48,17 @@ while test "$PARAM" != ""; do
     shift
     PARAM="$1"
     ;;
+  ptphigh)
+    HAS_PTPHIGH="y"
+    shift
+    ;;
+  ptplow)
+    HAS_PTPLOW="y"
+    shift
+    ;;
   ptp)
     HAS_PTP="y"
     shift
-    PARAM="$1"
     ;;
   openPTPErrBits)
     PTPOPENERRBITS=20
@@ -73,6 +82,8 @@ while test "$PARAM" != ""; do
 done
 export HAS_ECMC
 export HAS_PTP
+export HAS_PTPHIGH
+export HAS_PTPLOW
 export HAS_TC
 export PTPOPENERRBITS
 
@@ -86,7 +97,14 @@ cat plcName.mid  >>$$ &&
 y=$(($y + 16)) &&
 if test $PTPOPENERRBITS != 0; then
   cat openPTPErrBits.mid >>$$
-fi
+fi &&
+if test "$HAS_PTPHIGH" = "y"; then
+  cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
+  echo HAS_PTPHIGH cmd=$cmd
+  eval $cmd <ptp-high.mid >>$$
+  yaux=$(($yaux + 16))
+  y=$(($y + 16))
+fi &&
 if test "$HAS_PTP" = "y"; then
   cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
   echo HAS_PTP cmd=$cmd
@@ -94,6 +112,13 @@ if test "$HAS_PTP" = "y"; then
   yaux=$(($yaux + 16))
   y=$(($y + 16))
 fi &&
+if test "$HAS_PTPLOW" = "y"; then
+  cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
+  echo HAS_PTPLOW cmd=$cmd
+  eval $cmd <ptp-low.mid >>$$
+  yaux=$(($yaux + 16))
+  y=$(($y + 16))
+fi
 
 echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
 
