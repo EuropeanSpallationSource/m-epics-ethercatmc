@@ -28,7 +28,8 @@ generate_st_cmd_classic() {
         -e "s%dbLoadRecords(\"%dbLoadRecords(\"./db/%" \
         -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%"    \
         -e "s!/c/Users/!c:/Users/!" \
-        -e "s%adsAsynPortDriverConfigure%#adsAsynPortDriverConfigure%"
+        -e "s%$ASYNPORTCONFIGUREDONTUSE%#$ASYNPORTCONFIGUREDONTUSE%" \
+        -e "s%# *$ASYNPORTCONFIGUREUSE%$ASYNPORTCONFIGUREUSE%"
   done &&
     rm -f $stcmddst &&
     cat >$stcmddst <<-EOF &&
@@ -172,16 +173,37 @@ if test -z "$EPICS_HOST_ARCH"; then
   exit 1
 fi
 
-if test "$1" = "--no-make"; then
-  NOMAKE=y
-  shift
-fi
+NOMAKE=""
+NORUN=""
+ASYNPORTCONFIGUREDONTUSE="adsAsynPortDriverConfigure"
+ASYNPORTCONFIGUREUSE="drvAsynIPPortConfigure"
+
+# pick up some arguments
+PARAM="$1"
+while test "$PARAM" != ""; do
+  case $1 in
+  --no-make)
+    NOMAKE=y
+    shift
+  ;;
+  --no-run)
+    NORUN=y
+    shift
+    ;;
+  --epics-twincat-ads)
+    ASYNPORTCONFIGUREUSE=adsAsynPortDriverConfigure
+    ASYNPORTCONFIGUREDONTUSE=drvAsynIPPortConfigure
+    shift
+    ;;
+  *)
+    PARAM="" # end the loop
+    ;;
+  esac
+done
+
 export NOMAKE
-if test "$1" = "--no-run"; then
-  NORUN=y
-  shift
-fi
 export NORUN
+export ASYNPORTCONFIGUREDONTUSE
 
 MOTORCFG="$1"
 export MOTORCFG
@@ -192,7 +214,7 @@ echo MOTORCFG=$MOTORCFG
     CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g" | sort)
     #echo CMDS=$CMDS
     test -n "$1" && echo >&2 "not found st.${1}.iocsh"
-    echo >&2 $0  "[--no-make][--no-run]"
+    echo >&2 $0  "[--no-make][--no-run][--epics-twincat-ads]"
     echo >&2 "try one of these:"
     for cmd in $CMDS; do
       case $cmd in
@@ -314,6 +336,13 @@ if test "$NOMAKE" != "y"; then
         (cd ../../motor &&
             make install) || {
             echo >&2 make ../.. motor install failed
+            exit 1
+        }
+      fi
+      if test -d ../../ads; then
+        (cd ../../ads &&
+            make ) || {
+            echo >&2 make ../.. ads failed
             exit 1
         }
       fi
