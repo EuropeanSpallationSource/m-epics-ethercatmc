@@ -1,0 +1,214 @@
+#Power handling
+record(longout, "$(PREFIX)$(MOTOR_NAME)-PwrCNEN")
+{
+    field(DESC, "power on off via CNEN")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STATUS_GAIN_SUPPORT")
+    info(asyn:READBACK,"1")
+}
+
+record(longout, "$(PREFIX)$(MOTOR_NAME)-PwrAuto")
+{
+    field(DESC, "power automatic on")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_AUTO_ONOFF")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-PwrOnDly")
+{
+    field(DESC, "power on delay")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_ON_DELAY")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-PwrOffDly")
+{
+    field(DESC, "power off delay")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_OFF_DELAY")
+    info(asyn:READBACK,"1")
+}
+
+# Records that allow to talk to the model 3 driver
+# behind the back of the motorRecord
+record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveAbs")
+{
+    field(DESC, "Move absolute")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MOVE_ABS")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveRel")
+{
+    field(DESC, "Move relative")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MOVE_REL")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveVel")
+{
+    field(DESC, "Move velocity")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MOVE_VEL")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-ACCS")
+{
+    field(DESC, "Acc EGU/sec2")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_ACCEL")
+    info(asyn:READBACK,"1")
+}
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-VELO")
+{
+    field(DESC, "Velocity")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_VELOCITY")
+    info(asyn:READBACK,"1")
+}
+
+
+record(ao, "$(PREFIX)$(MOTOR_NAME)-Home")
+{
+    field(DESC, "Home")
+    field(DTYP, "asynFloat64")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_HOME")
+}
+
+record(longout, "$(PREFIX)$(MOTOR_NAME)-Stop")
+{
+    field(DESC, "Stop")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STOP_AXIS")
+    info(asyn:READBACK,"1")
+}
+
+record(stringout, "$(PREFIX)$(MOTOR_NAME)-DbgStrToMCU") {
+    field(DESC, "Send Debug String")
+    field(VAL, "")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))StrToMCU")
+}
+
+record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM") {
+    field(DESC, "EC High Soft Limit")
+    field(VAL,  0.0)
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(ao,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM") {
+    field(DESC, "EC Low Soft Limit")
+    field(VAL,  0.0)
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-CfgDHLM-En") {
+    field(DESC, "EC High Soft Limit enable")
+    field(VAL,  0)
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(ASYN_PORT),0,1)ADSPORT=501/.ADR.16#500$(AXIS_NO),16#C,2,2=")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-CfgDLLM-En") {
+    field(DESC, "EC Low Soft Limit enable")
+    field(VAL,  0)
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(ASYN_PORT),0,1)ADSPORT=501/.ADR.16#500$(AXIS_NO),16#B,2,2=")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-HomeOnLs") {
+    field(DESC, "Allow HOMF on HLS, HOMR on LLS")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_HOME_ON_LS")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-LsRampDown") {
+    field(DESC, "LS hit needs ramp down")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_LS_RAMP_DOWN")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-NoStopOnLs") {
+    field(DESC, "Recoord does not stop on LS")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_NO_STOP_ON_LS")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU") {
+    field(DESC, "Record uses EGU")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_DRIVER_USES_EGU")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(PREFIX)$(MOTOR_NAME)-AdjAfterHomed") {
+    field(DESC, "Adjust (out of soft limit) after homed")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_ADJ_AFTER_HOMED")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(longin,"$(PREFIX)$(MOTOR_NAME)-DrvUseEGU-RB") {
+    field(DESC, "Record uses EGU")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_DRIVER_USES_EGU")
+    field(SCAN, "I/O Intr")
+}
+
+# Help records, to read what the record sends to the model 3 driver
+record(ai,"$(PREFIX)$(MOTOR_NAME)-M3RHLM") {
+    field(DESC, "Driver High Soft Limit")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_HIGH_LIMIT")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai,"$(PREFIX)$(MOTOR_NAME)-M3RLLM") {
+    field(DESC, "Driver Low Soft Limit")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_LOW_LIMIT")
+    field(SCAN, "I/O Intr")
+}
+
+
+# Help help records,to make M3HLM agree with the value send to the
+# Model 3 driver (there may be a bug here ?)
+# 
+record(ao,"$(PREFIX)$(MOTOR_NAME)-M3RHLMo_") {
+    field(DESC, "Driver High Soft Limit")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_HIGH_LIMIT")
+    info(asyn:READBACK,"1")
+}
+record(ao,"$(PREFIX)$(MOTOR_NAME)-M3RLLMo_") {
+    field(DESC, "Driver Low Soft Limit")
+    field(DTYP, "asynFloat64")
+    field(PREC,"$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_LOW_LIMIT")
+    info(asyn:READBACK,"1")
+}

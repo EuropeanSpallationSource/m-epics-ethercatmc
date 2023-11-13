@@ -34,6 +34,7 @@ DB += ethercatmcPlcName.template
 DB += ethercatmcShutter.template
 DB += ethercatmcTempSensor.template
 DB += ethercatmcdebug.template
+DB += ethercatmcdebug-twincat-ads.template
 DB += ethercatmcindexer.template
 DB += ethercatmcreadback.template
 DB += ethercatmcDefPos.template
