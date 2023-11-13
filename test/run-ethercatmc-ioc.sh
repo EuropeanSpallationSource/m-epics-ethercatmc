@@ -16,8 +16,55 @@ MOTORPORT=""
 REMOTEAMSNETID=""
 LOCALAMSNETID=""
 
-
 ## functions
+help_and_exit()
+{
+  cd startup
+  CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g" | sort)
+  #echo CMDS=$CMDS
+  test -n "$1" && echo >&2 "not found st.${1}.iocsh"
+  echo >&2 $0  "[--no-make][--no-run][--epics-twincat-ads]"
+  echo >&2 "try one of these:"
+  for cmd in $CMDS; do
+    case $cmd in
+      *sim-indexer)
+        echo >&2 $0 " $cmd"
+        ;;
+      *-indexer)
+        echo >&2 $0 " $cmd" " <ip>:48898"
+        ;;
+      *)
+        echo >&2 $0 " $cmd" " <ip>[:port]"
+        ;;
+    esac
+  done
+  exit 1
+}
+
+help_ads_and_exit()
+{
+  if which ifconfig >/dev/null 2>&1; then
+    LOCALIPS=$(ifconfig | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g" -e "s/ netmask.*//")
+  elif which ip >/dev/null 2>&1; then
+     LOCALIPS=$(ip addr | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g"  -e "s%/.*%%g")
+  fi
+  #echo LOCALIP=$LOCALIP
+  echo >&2         $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "<REMOTEAMSNETID> <LOCALAMSNETID>"
+  for LOCALIP in $LOCALIPS; do
+    REMOTEAMSNETID=$MOTORIP.1.1
+    case $MOTORCFG in
+    mcu0[0-9][0-9]*)
+      CRATENO=$(echo $MOTORCFG | sed -e "s/mcu0//")
+      IP_DIGIT=$((50 + $CRATENO))
+      REMOTEAMSNETID=192.168.88.$IP_DIGIT.1.1
+      ;;
+    esac
+    echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT " $REMOTEAMSNETID  $LOCALIP.1.1"
+  done
+  exit 1
+}
+
+
 generate_st_cmd_classic() {
   # classic EPICS, non EEE
   # We need to patch the cmd files to adjust dbLoadRecords
@@ -175,6 +222,7 @@ fi
 
 NOMAKE=""
 NORUN=""
+DOLOG=""
 ASYNPORTCONFIGUREDONTUSE="adsAsynPortDriverConfigure"
 ASYNPORTCONFIGUREUSE="drvAsynIPPortConfigure"
 
@@ -195,6 +243,13 @@ while test "$PARAM" != ""; do
     ASYNPORTCONFIGUREDONTUSE=drvAsynIPPortConfigure
     shift
     ;;
+  -h|--help)
+    help_and_exit
+    ;;
+  -l)
+    DOLOG=y
+    shift
+    ;;
   *)
     PARAM="" # end the loop
     ;;
@@ -208,31 +263,9 @@ export ASYNPORTCONFIGUREDONTUSE
 MOTORCFG="$1"
 export MOTORCFG
 echo MOTORCFG=$MOTORCFG
-(
-  cd startup &&
-  if ! test -f st.${MOTORCFG}.iocsh; then
-    CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g" | sort)
-    #echo CMDS=$CMDS
-    test -n "$1" && echo >&2 "not found st.${1}.iocsh"
-    echo >&2 $0  "[--no-make][--no-run][--epics-twincat-ads]"
-    echo >&2 "try one of these:"
-    for cmd in $CMDS; do
-      case $cmd in
-        *sim-indexer)
-          echo >&2 $0 " $cmd"
-          ;;
-        *-indexer)
-          echo >&2 $0 " $cmd" " <ip>:48898"
-          ;;
-        *)
-          echo >&2 $0 " $cmd" " <ip>[:port]"
-          ;;
-      esac
-    done
-    exit 1
-  fi
-) || exit 1
-
+if ! test -f startup/st.${MOTORCFG}.iocsh; then
+  help_and_exit
+fi
 shift
 
 # motor port is different for indexer
@@ -247,8 +280,23 @@ case $MOTORCFG in
     ;;
 esac
 
+PARAM="$1"
+while test "$PARAM" != ""; do
+  case $1 in
+  -h|--help)
+    help_ads_and_exit
+    ;;
+  -l)
+    DOLOG=y
+    shift
+    ;;
+  *)
+    PARAM="" # end the loop
+    ;;
+  esac
+done
 
-if test -n "$1" && test "$1" != "-l"; then
+if test -n "$1"; then
   # allow doit.sh host:port
   PORT=${1##*:}
   HOST=${1%:*}
@@ -266,25 +314,7 @@ fi
 export MOTORIP MOTORPORT
 if test "$MOTORPORT" = 48898; then
   if test -z "$2"; then
-    if which ifconfig >/dev/null 2>&1; then
-      LOCALIPS=$(ifconfig | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g" -e "s/ netmask.*//")
-    elif which ip >/dev/null 2>&1; then
-       LOCALIPS=$(ip addr | grep "inet [0-9]" | grep -v 127.0.0.1 | sed -e "s/.*inet //g"  -e "s%/.*%%g")
-    fi
-    #echo LOCALIP=$LOCALIP
-    echo >&2         $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT "<REMOTEAMSNETID> <LOCALAMSNETID>"
-    for LOCALIP in $LOCALIPS; do
-      REMOTEAMSNETID=$MOTORIP.1.1
-      case $MOTORCFG in
-      mcu0[0-9][0-9]*)
-        CRATENO=$(echo $MOTORCFG | sed -e "s/mcu0//")
-        IP_DIGIT=$((50 + $CRATENO))
-        REMOTEAMSNETID=192.168.88.$IP_DIGIT.1.1
-        ;;
-      esac
-      echo >&2 Example $0 "${MOTORCFG} " $MOTORIP:$MOTORPORT " $REMOTEAMSNETID  $LOCALIP.1.1"
-    done
-    exit 1
+    help_ads_and_exit
   fi
   REMOTEAMSNETID=$1
   shift
@@ -293,15 +323,31 @@ if test "$MOTORPORT" = 48898; then
 fi
 export LOCALAMSNETID REMOTEAMSNETID
 
+PARAM="$1"
+while test "$PARAM" != ""; do
+  case $1 in
+  -h|--help)
+    help_ads_and_exit
+    ;;
+  -l)
+    DOLOG=y
+    shift
+    ;;
+  *)
+    PARAM="" # end the loop
+    ;;
+  esac
+done
+
 # log/tee to file
-if test "$1" = "-l"; then
-    if test -n "$SM_PREFIX"; then
-        LOG_TXT=log-$(echo $SM_PREFIX | sed -e "s/:$//g" | tr ":" "-" ).txt
-    else
-        LOG_TXT=log-$MOTORCFG.txt
-    fi
-    export LOG_TXT
-  if test -f $LOG_TXT; then
+if test "$DOLOG" = y; then
+  if test -n "$SM_PREFIX"; then
+    LOG_TXT=log-$(echo $SM_PREFIX | sed -e "s/:$//g" | tr ":" "-" ).txt
+  else
+    LOG_TXT=log-$MOTORCFG.txt
+  fi
+  export LOG_TXT
+	if test -f $LOG_TXT; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
     mkdir -p ../logs/ &&
     mv $LOG_TXT ../logs/$timestamp-$MOTORCFG.txt || exit 1
