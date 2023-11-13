@@ -347,7 +347,7 @@ if test "$DOLOG" = y; then
     LOG_TXT=log-$MOTORCFG.txt
   fi
   export LOG_TXT
-	if test -f $LOG_TXT; then
+  if test -f $LOG_TXT; then
     timestamp=$(date "+%y-%m-%d-%H.%M.%S")
     mkdir -p ../logs/ &&
     mv $LOG_TXT ../logs/$timestamp-$MOTORCFG.txt || exit 1
