@@ -4,32 +4,23 @@ epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("AMSNETIDIOC",   "$(SM_AMSNETID=172.30.38.12.1.1)")
 epicsEnvSet("REMOTEAMSNETID", "5.36.136.2.1.1")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-MCAG:MC-MCU-035:)")
+epicsEnvSet("PREFIX",        "$(SM_PREFIX=LabS-MCAG:MC-MCU-1035:)")
+epicsEnvSet("P",             "$(SM_PREFIX=LabS-MCAG:MC-MCU-1035:)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "1")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=$(REMOTEAMSNETID);amsNetIdLocal=$(AMSNETIDIOC)"
 
-
-# Do not start the poller yet
-epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
-epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
-
 < ethercatmcController.iocsh
-#< ethercatmcEL6688-PTP.iocsh
+
 < ethercatmcEL6688-PTP-twincat-ads.iocsh
 
 
 #####################################################
-# EL1252, first channel, CHNO == 0
-epicsEnvSet("CHNO",     "0")
-#< ethercatmcEL1252-OneChannel.iocsh
+# EL1252, first channel TS_NS
+epicsEnvSet("R",        "TS_NS")
+epicsEnvSet("DESC",     "1Hz-TimeStamp ns")
+epicsEnvSet("EGU",      "ns")
+epicsEnvSet("ASYNADDR", "ADSPORT=852/GVL_APP.nTS_NS?")
 
-#
-# Start polling, values are in millisconds
-#
-#epicsEnvSet("MOVINGPOLLPERIOD", "500")
-#epicsEnvSet("IDLEPOLLPERIOD",   "500")
-#ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
+< ethercatmcInt64in.iocsh
 
-# Sleep to let the poller detect the AUX bit names
-#epicsThreadSleep 5
