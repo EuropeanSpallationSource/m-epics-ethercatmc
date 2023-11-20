@@ -23,6 +23,7 @@ DB += ethercatmcAuxBitsStatus.template
 DB += ethercatmcClutch.template
 DB += ethercatmcEL1252-OneChannel.template
 DB += ethercatmcEL3162-OneChannel.template
+DB += ethercatmcInt64in.template
 DB += ethercatmcRawMtrEnc.template
 DB += ethercatmcPLCopenStateMachine.template
 DB += ethercatmcEL6688-PTP.template

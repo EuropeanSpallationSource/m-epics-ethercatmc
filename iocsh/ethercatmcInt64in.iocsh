@@ -1,0 +1,1 @@
+dbLoadRecords("ethercatmcInt64in.template", "P=$(P), R=$(R), ASYN_PORT=$(ASYN_PORT), DESC=$(DESC), EGU=$(EGU), ASYNADDR=$(ASYNADDR)")

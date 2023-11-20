@@ -1,0 +1,9 @@
+record(int64in, "$(P)$(R)")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "$(DESC)")
+    field(EGU,  "$(EGU)")
+    field(INP,  "@asyn($(ASYN_PORT),0,1)$(ASYNADDR)")
+    field(SCAN, "I/O Intr")
+}
+
