@@ -1,0 +1,153 @@
+record(mbbi,  "$(PREFIX)PTPState") {
+    field(DESC, "PTP state EtherCAT bus")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(ASYN_PORT),0,1)ADSPORT=852/EL6688_PTP.nPTPState?")
+    field(SCAN, "1 second")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(FRVL, "4")
+    field(FVVL, "5")
+    field(SXVL, "6")
+    field(SVVL, "7")
+    field(EIVL, "8")
+    field(NIVL, "9")
+    field(FFVL, "4294967294")
+
+    field(ZRST, "PTP:NO_OPERATION")
+    field(ONST, "PTP:INITIALIZING")
+    field(TWST, "PTP:FAULTY")
+    field(THST, "PTP:DISABLED")
+    field(FRST, "PTP:LISTENING")
+    field(FVST, "PTP:PRE_MASTER")
+    field(SXST, "PTP:MASTER")
+    field(SVST, "PTP:PASSIVE")
+    field(EIST, "PTP:UNCALIBRATED")
+    field(NIST, "PTP:SLAVE")
+
+    field(FFST, "PTP:NO_CABLE")
+
+    field(ZRSV, "2")
+    field(ONSV, "1")
+    field(TWSV, "2")
+    field(THSV, "2")
+    field(FRSV, "1")
+    field(FVSV, "1")
+    field(SXSV, "2")
+    field(SVSV, "2")
+    field(EISV, "2")
+    field(NISV, "0")
+    field(FFSV, "2")
+}
+
+record(longin, "$(PREFIX)PTPOffset")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "PTPOffset")
+    field(EGU,  "ns")
+    field(INP,  "@asyn($(ASYN_PORT),0,1)ADSPORT=852/EL6688_PTP.nPTPOffset?")
+    field(SCAN, "1 second")
+}
+
+record(longin, "$(PREFIX)PTPSyncSeqNum")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "PTPSyncSeqNum")
+    field(EGU,  "num")
+    field(INP,  "@asyn($(ASYN_PORT),0,1)ADSPORT=852/EL6688_PTP.nPTPSyncSeqNum?")
+    field(SCAN, "1 second")
+}
+
+record(int64in, "$(PREFIX)DcToExtTimeOffset")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "DcToExtTimeOffsetSystem")
+    field(EGU,  "ns")
+    field(INP,  "@asyn($(ASYN_PORT),0,1)ADSPORT=852/EL6688_PTP.nCopyDcToExtTimeOffset?")
+    field(SCAN, "1 second")
+}
+
+record(int64in, "$(PREFIX)SystemUTCtime")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "SystemUTCtime")
+    field(EGU,  "ns")
+    field(INP,  "@asyn($(ASYN_PORT),0,1)ADSPORT=852/EL6688_PTP.nSystemUTCtime?")
+    field(SCAN, "1 second")
+}
+
+record(int64in, "$(PREFIX)SystemUTCtime-TSE")
+{
+    field(DTYP, "asynInt64")
+    field(DESC, "SystemUTCtime")
+    field(EGU,  "ns")
+    field(INP,  "@asyn($(ASYN_PORT),0,1)ADSPORT=852/EL6688_PTP.nSystemUTCtime?")
+    field(SCAN, "I/O Intr")
+    field(TSE, -2)
+}
+
+record(longin, "$(PREFIX)PTPErrorStatus")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "PTPErrorStatus")
+    field(EGU,  "ErrorStatusBits")
+    field(HIGH, "1")
+    field(LOW, "-1")
+    field(HSV,  "1")
+    field(LSV,  "1")
+    field(INP,  "@asyn($(ASYN_PORT),0,1)ADSPORT=852/EL6688_PTP.nPTPErrorStatus?")
+    field(SCAN, "I/O Intr")
+}
+#
+# Diff between NTP (IOC) and PTP (MCU/PLC)
+# Typically the MCU has an EL6688 with PTP
+# Since the PLC cycle time is 10msec,
+# we allow 10msec larger values for HIGH/HIHI
+record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
+{
+    field(DTYP, "asynFloat64")
+    field(DESC, "Diff between IOC time and MCU time")
+    field(EGU,  "ms")
+    field(PREC, "0")
+    field(HIGH, "110")
+    field(LOW,  "-100")
+    field(HSV,  "1")
+    field(LSV,  "1")
+    field(INP,  "@asyn($(MOTOR_PORT),0,1)PTPdiffTimeIOC_MCU")
+    field(SCAN, "1 second")
+}
+
+# Calculate the severity
+# When the severity from all input links gets 0,
+# start a countdown
+record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
+  field(DESC, "Alarm Severity of PTP")
+  field(SCAN, "1 second")
+  field(COPT, "Always")
+  # Counter before allGood gets true
+  field(INPA, "11")
+  field(INPB, "$(PREFIX)PTPState.SEVR              CP MS")
+  field(INPC, "$(PREFIX)PTPOffset.SEVR             CP MS")
+  field(INPD, "$(PREFIX)PTPErrorStatus.SEVR        CP MS")
+  field(INPE, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
+  field(CLCN, "b || c || d || e")
+  # O is LED visible
+  field(CLCO, "N ? A : (O > 0 ? O - 1 : O)")
+  # P is all good
+  field(CLCP, "O > 0 ? 0 : 1")
+  field(FLNK, "$(PREFIX)PTPallGood")
+
+}
+
+record(bo,  "$(PREFIX)PTPallGood") {
+  field(DESC, "PTP is all good")
+  field(DTYP, "asynInt32")
+  field(DOL,  "$(PREFIX)PTPAlarmSevrCalc.P CP MS")
+  field(OMSL, "closed_loop")
+  #field(OUT,  "@asyn($(MOTOR_PORT),0,1)ADSPORT=852/PTPallGood")
+  field(ZNAM, "No")
+  field(ONAM, "Yes")
+  field(ZSV,  "1")
+}
+
