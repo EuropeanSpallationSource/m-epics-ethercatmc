@@ -1,7 +1,7 @@
 #!/bin/sh
 uname_S=$(uname -s 2>/dev/null || echo unknown)
 uname_M=$(uname -m 2>/dev/null || echo unknown)
-uname_R=$(uname -r 2>/dev/null | sed -e "s/[()/]/-/g"|| echo unknown)
+uname_R=$(uname -r 2>/dev/null | sed -e "s/[()/]/-/g" || echo unknown)
 
 binary=simMotor
 valg=

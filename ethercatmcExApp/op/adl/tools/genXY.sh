@@ -10,7 +10,6 @@ maxX=1
 maxY=1
 export OPIS WIDTH HIGHT
 
-
 ########################
 genXY() {
   echo genXY "$@"
@@ -109,7 +108,5 @@ eval $cmd <motorx.start >$OPIS/$$ &&
   else
     genXY "$@"
   fi &&
-  cat motorx.end  >>$OPIS/$$ &&
+  cat motorx.end >>$OPIS/$$ &&
   mv -f $OPIS/$$ $OPIS/$FILE
-
-

@@ -1,5 +1,5 @@
 #!/bin/sh
 (
   cd simulator/ &&
-  ./startSimulator.sh "$@"
+    ./startSimulator.sh "$@"
 )

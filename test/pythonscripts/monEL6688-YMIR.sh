@@ -22,4 +22,4 @@ fi
 
 export P=SES-SCAN:MC-MCU-001:
 
-pvmonitor ${P}PTPState ${P}PTPOffset ${P}DcToExtTimeOffsetEL6688 ${P}DcToExtTimeOffsetSystem  ${P}WriteDoneExtTimeOffset | ./tai2string.py  2>&1 | tee $LOGFILE
+pvmonitor ${P}PTPState ${P}PTPOffset ${P}DcToExtTimeOffsetEL6688 ${P}DcToExtTimeOffsetSystem ${P}WriteDoneExtTimeOffset | ./tai2string.py 2>&1 | tee $LOGFILE

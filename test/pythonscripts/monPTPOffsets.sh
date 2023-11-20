@@ -52,4 +52,3 @@ for PV in $PVS; do
 done
 
 pvmonitor $PVS $PVSEGU 2>&1 | ./tai2string.py | tee $LOGFILE
-

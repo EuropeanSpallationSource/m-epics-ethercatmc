@@ -17,7 +17,7 @@
 
 # First of all, check for whitespace damage (TAB, trailing WS
 ../checkws.sh || {
-  echo >&2   ../checkws.sh failed
+  echo >&2 ../checkws.sh failed
   exit 1
 }
 
@@ -27,13 +27,11 @@ if ! test "$1"; then
   exit 1
 fi
 
-
 ##############################################################################
 # functions
 #
 #
-checkAndInstallSystemPackage()
-{
+checkAndInstallSystemPackage() {
   while test $# -gt 1; do
     PACKAGENAME=$1
     shift
@@ -52,8 +50,7 @@ checkAndInstallSystemPackage()
 }
 
 ########################################
-checkAndInstallPythonPackage()
-{
+checkAndInstallPythonPackage() {
   IMPORTNAME=$1
 
   if ! python -c "import $IMPORTNAME" >/dev/null 2>&1; then
@@ -63,7 +60,7 @@ checkAndInstallPythonPackage()
       echo failed: $PYTHON -c "import $IMPORTNAME"
       $PACKAGEINSTALL && return 0
     done
-    echo >&1  $PACKAGEINSTALL failed
+    echo >&1 $PACKAGEINSTALL failed
     exit 1
   fi
 }
@@ -108,7 +105,7 @@ if test -z "$MYVIRTUALENV"; then
       #echo "We use activated $CONDA_PYTHON_EXE"
       echo "We use activated $CONDA_PROMPT_MODIFIER"
       checkAndInstallPythonPackage pytest "conda install pyTest"
-      checkAndInstallPythonPackage epics  "conda install pyepics"
+      checkAndInstallPythonPackage epics "conda install pyepics"
     else
       echo >&2 "run:"
       if test -d ~/.conda/envs/pyepicsPytestPVApy; then
@@ -123,10 +120,10 @@ fi
 ########################################
 PYTEST=pytest
 PYTHON=python3
-if ! type pytest >/dev/null 2>&1 ; then
+if ! type pytest >/dev/null 2>&1; then
   # more things to do, either conda or virtualenv is our friend
   if test -e $HOME/.bash_profile; then
-     . $HOME/.bash_profile
+    . $HOME/.bash_profile
   fi
 
   # Those values should work as default
@@ -158,11 +155,11 @@ if test -n "$MYVIRTUALENV" && type $MYVIRTUALENV >/dev/null 2>&1; then
     exit 1
   fi
   VIRTUALENVDIR=venv$PYTHON
-  if test -d $HOME/.pyenv/versions/$VIRTUALENVDIR/bin/ ; then
+  if test -d $HOME/.pyenv/versions/$VIRTUALENVDIR/bin/; then
     VIRTUALENVDIR=$HOME/.pyenv/versions/$VIRTUALENVDIR
   fi
   if test -r $VIRTUALENVDIR/bin/activate; then
-    .  $VIRTUALENVDIR/bin/activate
+    . $VIRTUALENVDIR/bin/activate
   elif test -z "$MYVIRTUALENV"; then
     checkAndInstallSystemPackage py37-virtualenv virtualenv python-virtualenv || {
       echo >2 "could not install virtualenv"
@@ -177,16 +174,16 @@ if test -n "$MYVIRTUALENV" && type $MYVIRTUALENV >/dev/null 2>&1; then
     }
   fi
   if test -r $VIRTUALENVDIR/bin/activate; then
-    .  $VIRTUALENVDIR/bin/activate
+    . $VIRTUALENVDIR/bin/activate
   fi
 else
   if which conda >/dev/null 2>&1; then
     checkAndInstallPythonPackage pytest "conda install -c conda-forge pyTest"
-    checkAndInstallPythonPackage epics  "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
+    checkAndInstallPythonPackage epics "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
   fi
 fi
 checkAndInstallPythonPackage epics "pip3 install pyepics" "pip install pyepics" &&
-checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
+  checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
 checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST" || {
   echo >&2 Installation problem:
   echo >&2 pip not found
@@ -207,14 +204,13 @@ if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
 fi
 black *.py
 
-
 # See if we have a local EPICS installation
 uname_s=$(uname -s 2>/dev/null || echo unknown)
 uname_m=$(uname -m 2>/dev/null || echo unknown)
 INSTALLED_EPICS=../../../.epics.$(hostname).$uname_s.$uname_m
 if test -r $INSTALLED_EPICS; then
   echo INSTALLED_EPICS=$INSTALLED_EPICS
-. $INSTALLED_EPICS
+  . $INSTALLED_EPICS
 fi
 
 export VIRTUALENVDIR
@@ -233,5 +229,5 @@ if test -z "$PYEPICS_LIBCA"; then
     fi
   fi
 fi &&
-echo ./doRunTests.sh "$@"
+  echo ./doRunTests.sh "$@"
 ./doRunTests.sh "$@"

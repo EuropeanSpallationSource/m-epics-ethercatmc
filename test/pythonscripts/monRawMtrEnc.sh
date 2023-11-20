@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 #  Script to monitor MotorPositions
 #  The positions are timestamped inside the controller:
 #  see the "-TSE" pvs
@@ -8,20 +7,19 @@
 #  terminal as well.
 
 # Our motor to work against
-if test -z "$P" ; then
+if test -z "$P"; then
   export P=LabS-MCAG:MC-MCU-07:
 fi
-if test -z "$M" ; then
+if test -z "$M"; then
   export M=m1
 fi
-
 
 if test -x ../../checkws.sh; then
   ../../checkws.sh || exit 1
 fi
 
 # Do we have pvmonitor in the PATH ?
-if ! type pvmonitor >/dev/null 2>&1 ; then
+if ! type pvmonitor >/dev/null 2>&1; then
   uname_s=$(uname -s 2>/dev/null || echo unknown)
   uname_m=$(uname -m 2>/dev/null || echo unknown)
   INSTALLED_EPICS=../../../../../.epics.$(hostname).$uname_s.$uname_m
@@ -32,7 +30,6 @@ if ! type pvmonitor >/dev/null 2>&1 ; then
   fi
   . "$INSTALLED_EPICS"
 fi
-
 
 # Do we need EPICS_CA_ADDR_LIST
 if ! caget "${P}${M}" >/dev/null; then
@@ -49,7 +46,7 @@ fi
 mewithoutdir="${0##*/}"
 basename="${mewithoutdir%.*}"
 P_M_NO_COLON=$(echo $P$M | sed -e "s/:/_/g")
-LOGFILEBASENAME=$(echo log-$P_M_NO_COLON-$basename )
+LOGFILEBASENAME=$(echo log-$P_M_NO_COLON-$basename)
 export LOGFILEBASENAME
 echo LOGFILEBASENAME=$LOGFILEBASENAME
 
@@ -57,7 +54,7 @@ echo LOGFILEBASENAME=$LOGFILEBASENAME
 mkdir -p logs
 timestamp=$(date "+%y-%m-%d-%H.%M.%S")
 for ext in .txt -processed.txt; do
-    test -f $LOGFILEBASENAME$ext && mv $LOGFILEBASENAME$ext logs/log-$P_M_NO_COLON-$timestamp$ext
+  test -f $LOGFILEBASENAME$ext && mv $LOGFILEBASENAME$ext logs/log-$P_M_NO_COLON-$timestamp$ext
 done
 
 TSE="-TSE"
@@ -102,5 +99,5 @@ pvmonitor \
   ${P}${M}-StatusBits${TSE} \
   ${P}${M}-RawEncStep${TSE} \
   ${P}${M}-RawMtrStep${TSE} \
-  ${P}${M}-RawMtrVelo${TSE} \
- | tee $LOGFILEBASENAME.txt | ./RawMtrEncPostprocess.py | tee $LOGFILEBASENAME-processed.txt
+  ${P}${M}-RawMtrVelo${TSE} |
+  tee $LOGFILEBASENAME.txt | ./RawMtrEncPostprocess.py | tee $LOGFILEBASENAME-processed.txt

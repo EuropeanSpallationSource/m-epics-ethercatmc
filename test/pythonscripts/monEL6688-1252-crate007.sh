@@ -46,4 +46,4 @@ for PV in $PVS; do
   }
 done
 
-pvmonitor $PVS  | ./tai2string.py  2>&1 | tee $LOGFILE
+pvmonitor $PVS | ./tai2string.py 2>&1 | tee $LOGFILE

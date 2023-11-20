@@ -47,4 +47,4 @@ for PV in $PVS; do
   PVSEGU="$PVSEGU $PV.EGU"
 done
 
-pvmonitor $PVS $PVSEGU | ./tai2string.py  2>&1 | tee $LOGFILE
+pvmonitor $PVS $PVSEGU | ./tai2string.py 2>&1 | tee $LOGFILE

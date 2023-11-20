@@ -2,14 +2,13 @@
 
 set -x
 
-run_pytest ()
-{
+run_pytest() {
   echo CONDA_PREFIX="$CONDA_PREFIX"
   if type pytest; then
     pytest "$@" || exit 1
   elif test "$CONDA_PREFIX"; then
-      echo pytest "$@"
-      pytest "$@"
+    echo pytest "$@"
+    pytest "$@"
   else
     echo $PYTHON $VIRTUALENVDIR/bin/pytest "$@"
     $PYTHON $VIRTUALENVDIR/bin/pytest "$@" || exit 1
@@ -19,14 +18,14 @@ run_pytest ()
 echo "$0" "$@"
 
 if test -n "$1"; then
-   TESTEDMOTORAXIS=$1
-   PREFIX=${1%:*}
-   TESTEDMOTORADDR=${1##*:m}
-   TESTEDMCUASYN=$PREFIX:MCU1:asyn
-   echo TESTEDMOTORAXIS=$TESTEDMOTORAXIS
-   echo TESTEDMOTORADDR=$TESTEDMOTORADDR
-   echo TESTEDMCUASYN=$TESTEDMCUASYN
-   shift 1
+  TESTEDMOTORAXIS=$1
+  PREFIX=${1%:*}
+  TESTEDMOTORADDR=${1##*:m}
+  TESTEDMCUASYN=$PREFIX:MCU1:asyn
+  echo TESTEDMOTORAXIS=$TESTEDMOTORAXIS
+  echo TESTEDMOTORADDR=$TESTEDMOTORADDR
+  echo TESTEDMCUASYN=$TESTEDMCUASYN
+  shift 1
 else
   echo >&2 "$0 <PV> [numruns] [testfile.py]"
   echo >&2 "example: $0 pva://IOC:m1 [testfile.py] [-k pattern] [numruns]"
@@ -37,26 +36,24 @@ else
   exit 1
 fi
 
-
 files=""
 numruns=1
 while test -n "$1" && test -f "$1"; do
-    files="$files $1"
-    shift 1
+  files="$files $1"
+  shift 1
 done
 
 if test "$1" = "-k" && test "$2" != ""; then
-    MOREARGS="-k $2"
-    shift 2
+  MOREARGS="-k $2"
+  shift 2
 fi
 
 if test -n "$1" && test "$1" -ne 0; then
-    numruns=$1
-    shift 1
+  numruns=$1
+  shift 1
 else
-    numruns=1
+  numruns=1
 fi
-
 
 #if test -z "$EPICS_CA_ADDR_LIST" && test -z "$EPICS_CA_AUTO_ADDR_LIST"; then
 #  if EPICS_CA_ADDR_LIST=127.0.1 EPICS_CA_AUTO_ADDR_LIST=NO caget $TESTEDMOTORAXIS.RBV >/dev/null 2>&1; then
@@ -82,8 +79,7 @@ while test $numruns -gt 0; do
   else
     py=$(echo *.py | sort)
     echo py=$py
-    for p in $py
-    do
+    for p in $py; do
       run_pytest "$@" $p $MOREARGS || exit 1
     done
   fi
