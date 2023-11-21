@@ -2,3 +2,35 @@
 
 include:
   - remote: 'https://gitlab.esss.lu.se/ics-infrastructure/gitlab-ci-yml/raw/master/PreCommit.gitlab-ci.yml'
+
+
+stages:
+  - check
+
+default:
+  tags:
+    - docker
+  image: registry.esss.lu.se/ics-docker/centos-e3:latest
+
+
+### stage: check
+shellcheck:
+  image: pipelinecomponents/shellcheck:latest
+  stage: check
+  before_script:
+    - shellcheck --version
+  script:
+    # anything ending on .*sh under test/ should be shell script
+    # exclude checkws.sh
+    # Note: We can not use `git ls-files` because the image does not have it
+    - |
+      find test -name "*.sh" | grep -v checkws.sh |
+      xargs shellcheck --format=gcc -x
+
+shfmt:
+  image: mvdan/shfmt:v3.2.0-alpine
+  stage: check
+  before_script:
+    - shfmt -version
+  script:
+    - shfmt -i 2 -ci -d .  # 2 spaces indent, indent switch-case statements, show diff (don't apply change)
