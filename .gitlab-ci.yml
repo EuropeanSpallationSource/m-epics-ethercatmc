@@ -23,9 +23,7 @@ shellcheck:
     # anything ending on .*sh under test/ should be shell script
     # exclude checkws.sh
     # Note: We can not use `git ls-files` because the image does not have it
-    - |
-      find test -name "*.sh" | grep -v checkws.sh |
-      xargs shellcheck --format=gcc -x
+    - ./checkshellcheck.sh
 
 shfmt:
   image: mvdan/shfmt:v3.2.0-alpine
