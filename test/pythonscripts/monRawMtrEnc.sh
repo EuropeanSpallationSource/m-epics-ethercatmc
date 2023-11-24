@@ -47,16 +47,16 @@ fi
 # The log file name is dependent on the name of this script
 mewithoutdir="${0##*/}"
 basename="${mewithoutdir%.*}"
-P_M_NO_COLON=$(echo $P$M | sed -e "s/:/_/g")
-LOGFILEBASENAME=$(echo log-$P_M_NO_COLON-$basename)
+P_M_NO_COLON=$(echo "$P$M" | sed -e "s/:/_/g")
+LOGFILEBASENAME=log-$P_M_NO_COLON-$basename
 export LOGFILEBASENAME
-echo LOGFILEBASENAME=$LOGFILEBASENAME
+echo LOGFILEBASENAME="$LOGFILEBASENAME"
 
 #Move old logfiles out of the way
 mkdir -p logs
 timestamp=$(date "+%y-%m-%d-%H.%M.%S")
 for ext in .txt -processed.txt; do
-  test -f $LOGFILEBASENAME$ext && mv $LOGFILEBASENAME$ext logs/log-$P_M_NO_COLON-$timestamp$ext
+  test -f $LOGFILEBASENAME$ext && mv $LOGFILEBASENAME$ext logs/log-"$P"_M_NO_COLON-$timestamp$ext
 done
 
 TSE="-TSE"

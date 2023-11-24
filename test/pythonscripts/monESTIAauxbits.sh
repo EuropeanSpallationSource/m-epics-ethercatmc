@@ -48,7 +48,7 @@ fi
 mewithoutdir="${0##*/}"
 basename="${mewithoutdir%.*}"
 P_M_NO_COLON=$(echo $P$M | sed -e "s/:/_/g")
-LOGFILEBASENAME=$(echo log-$P_M_NO_COLON-$basename)
+LOGFILEBASENAME=log-$P_M_NO_COLON-$basename
 export LOGFILEBASENAME
 echo LOGFILEBASENAME=$LOGFILEBASENAME
 
