@@ -23,11 +23,11 @@ LOCALAMSNETID=""
 
 ## functions
 help_and_exit() {
-  cd startup
+  echo >&2 $0 "[--no-make][--no-run][--epics-twincat-ads]"
+  cd startup || exit 1
   CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g" | sort)
   #echo CMDS=$CMDS
   test -n "$1" && echo >&2 "not found st.${1}.iocsh"
-  echo >&2 $0 "[--no-make][--no-run][--epics-twincat-ads]"
   echo >&2 "try one of these:"
   for cmd in $CMDS; do
     case $cmd in
@@ -108,7 +108,7 @@ EOF
 EOF
     postprocess_stcmddst &&
     # Create an xx file to be used under gdb
-    chmod +x $stcmddst && egrep -v "^ *#" $stcmddst >xx
+    chmod +x $stcmddst && grep -v "^ *#" $stcmddst >xx
 }
 
 #
@@ -125,17 +125,14 @@ generate_st_cmd_e3() {
     echo >&2 generate_st_cmd_e3: Parameter MOTORCFG is empty
     exit 1
   fi
-  local stcmddst
   stcmddst="st.$1.cmd"
   >$stcmddst &&
-    cat >>$stcmddst <<-EOF &&
+    cat >>$stcmddst <<-EOF
 require essioc
 require ethercatmc
-
 EOF
-    sed <../../test/startup/st.${MOTORCFG}.iocsh \
-      -e "s/^cd /#cd /" \
-      -e 's! *< *\([^ ]*\)!iocshLoad("\$(ethercatmc_DIR)/\1")!' |
+  sed <../../test/startup/st.${MOTORCFG}.iocsh \
+    -e "s/^cd /#cd /" |
     grep -v '^  *#' >>$stcmddst || {
     echo >&2 can not create stcmddst $stcmddst
     exit 1
@@ -206,8 +203,8 @@ if test -z "$EPICS_HOST_ARCH"; then
       echo >&2 "EPICS_BASE" is not set
       exit 1
     fi
-    [ -z "$EPICS_HOST_ARCH" -a -f $EPICS_BASE/src/tools/EpicsHostArch.pl ] && EPICS_HOST_ARCH=$(perl $EPICS_BASE/src/tools/EpicsHostArch.pl)
-    [ -z "$EPICS_HOST_ARCH" -a -f $EPICS_BASE/startup/EpicsHostArch.pl ] && EPICS_HOST_ARCH=$(perl $EPICS_BASE/startup/EpicsHostArch.pl)
+    [ -z "$EPICS_HOST_ARCH" ] && [ -f $EPICS_BASE/src/tools/EpicsHostArch.pl ] && EPICS_HOST_ARCH=$(perl $EPICS_BASE/src/tools/EpicsHostArch.pl)
+    [ -z "$EPICS_HOST_ARCH" ] && [ -f $EPICS_BASE/startup/EpicsHostArch.pl ] && EPICS_HOST_ARCH=$(perl $EPICS_BASE/startup/EpicsHostArch.pl)
     export EPICS_HOST_ARCH
     echo "EPICS_HOST_ARCH=$EPICS_HOST_ARCH"
   fi
@@ -242,7 +239,7 @@ while test "$PARAM" != ""; do
       shift
       ;;
     -h | --help)
-      help_and_exit
+      help_and_exit "$@"
       ;;
     -l)
       DOLOG=y
@@ -355,7 +352,7 @@ fi
 export DOLOG
 
 if test -n "$1"; then
-  echo >&2 unsupported additional parameters: $@
+  echo >&2 unsupported additional parameters: "$@"
   exit 1
 fi
 
@@ -432,7 +429,7 @@ if test "$NORUN" != "y"; then
         ;;
       e3)
         stcmddst=./st.iocsh.e3.$EPICS_HOST_ARCH &&
-          cmd=$(echo iocsh.bash $stcmddst) &&
+          cmd="iocsh.bash $stcmddst" &&
           echo PWD=$PWD cmd=$cmd &&
           eval $cmd
         ;;
