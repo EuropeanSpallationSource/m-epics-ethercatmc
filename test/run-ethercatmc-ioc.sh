@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2086
 
 #
 # Shell script to generate (and run) an "st.cmd" for an IOC

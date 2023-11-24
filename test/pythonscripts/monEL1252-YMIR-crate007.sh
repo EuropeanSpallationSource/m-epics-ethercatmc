@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2086
 P="LabS-MCAG:MC-MCU-07:"
 if ! type pvmonitor >/dev/null 2>&1; then
   . ~/MCAG_SetupMotionDemo/.epics.ymir-vm-ioc-01.cn.nin.ess.eu.Linux.x86_64

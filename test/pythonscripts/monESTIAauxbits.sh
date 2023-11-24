@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2086
 
 #  Script to monitor MotorPositions
 #  The positions are timestamped inside the controller:
