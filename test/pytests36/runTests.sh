@@ -166,10 +166,10 @@ if test -n "$MYVIRTUALENV" && type $MYVIRTUALENV >/dev/null 2>&1; then
     . $VIRTUALENVDIR/bin/activate
   elif test -z "$MYVIRTUALENV"; then
     checkAndInstallSystemPackage py37-virtualenv virtualenv python-virtualenv || {
-      echo >2 "could not install virtualenv"
+      echo >&2 "could not install virtualenv"
     }
-    echo >2 "virtualenv has been installed"
-    echo >2 "Re-run the script"
+    echo >&2 "virtualenv has been installed"
+    echo >&2 "Re-run the script"
     exit 1
   else
     $MYVIRTUALENV --python=$PYTHON $VIRTUALENVDIR || {
@@ -199,13 +199,14 @@ checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
 
 #Check black, the python formatter
 BLACK_VERSION=22.3.0
-if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
+if ! black --version | grep -q "[^0-9]${BLACK_VERSION}[^0-9]"; then
   pip install git+https://github.com/psf/black@22.3.0
 fi
-if ! black --version | grep -q "[^0-9]$BLACK_VERSION[^0-9]"; then
+if ! black --version | grep -q "[^0-9]${BLACK_VERSION}[^0-9]"; then
   echo >&2 black not found or wrong version
   exit 1
 fi
+# shellcheck disable=SC2035
 black *.py
 
 # See if we have a local EPICS installation
