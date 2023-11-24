@@ -1,5 +1,8 @@
 #!/bin/sh
+# shellcheck disable=SC1090
+# shellcheck disable=SC2004
 # shellcheck disable=SC2086
+# shellcheck disable=SC2188
 
 #
 # Shell script to generate (and run) an "st.cmd" for an IOC
@@ -8,6 +11,7 @@
 # e3 today is Centos only
 #
 APPXX=ethercatmc
+# shellcheck disable=SC2012
 TOP=$(echo $PWD/.. | sed -e "s%/test/\.\.$%%")
 export APPXX
 EPICS_EEE_E3=classic
@@ -194,6 +198,7 @@ if test -z "$EPICS_HOST_ARCH"; then
   RELEASELOCAL=../configure/RELEASE.local
   if test -r "$RELEASELOCAL"; then
     # Code stolen from .ci/travis/prepare.sh
+    # shellcheck disable=SC2046
     eval $(grep "EPICS_BASE=" $RELEASELOCAL)
     export EPICS_BASE
     echo "EPICS_BASE=$EPICS_BASE"

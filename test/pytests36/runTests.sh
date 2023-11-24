@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck disable=SC1090
+# shellcheck disable=SC1091
 # shellcheck disable=SC2086
 #
 # Wrapper scipt to run tests
@@ -93,6 +95,7 @@ echo MYVIRTUALENV=$MYVIRTUALENV
 export MYVIRTUALENV
 
 # There must be a better way to do this
+# shellcheck disable=SC2154
 if test "$ImageOS" = ubuntu20; then
   ./doRunTests.sh "$@"
   exit

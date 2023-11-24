@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC1090
 # shellcheck disable=SC2086
 
 #  Script to monitor MotorPositions

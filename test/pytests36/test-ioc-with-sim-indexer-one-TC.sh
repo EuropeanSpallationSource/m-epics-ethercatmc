@@ -16,6 +16,7 @@ if ! type caget >/dev/null 2>&1; then
     if test -r "$RELEASELOCAL"; then
       # Code stolen from .ci/travis/prepare.sh
       eval $(grep "EPICS_BASE=" $RELEASELOCAL)
+      # shellcheck disable=SC2046
       export EPICS_BASE
       echo "EPICS_BASE=$EPICS_BASE"
       if test -z "$EPICS_BASE"; then

@@ -6,6 +6,7 @@
 #  Monitor the values from the stepper terminal and the encoder
 #  terminal as well.
 
+# shellcheck disable=SC1090
 # shellcheck disable=SC2086
 # Our motor to work against
 if test -z "$P"; then
