@@ -11,7 +11,8 @@ fi
   cd pytests36/ &&
     PV="$1"
   shift
-  TESTS=$(ls -1 [0-9]???Record*.py *Ethercat*.py | sort -n)
+  # shellcheck disable=SC2012
+  TESTS=$(ls -1 ./[0-9]???Record*.py ./*Ethercat*.py | sort -n)
   for f in $TESTS; do
     ./runTests.sh "$PV" "$f" "$@"
   done
