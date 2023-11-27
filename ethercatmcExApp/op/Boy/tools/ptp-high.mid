@@ -35,7 +35,17 @@
     </font>
     <width>78</width>
     <border_style>0</border_style>
-    <rules />
+    <rules>
+      <rule name="PTPdiffTimeIOC_MCU-HIGH-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==1">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=1">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(PREFIX)PTPdiffTimeIOC_MCU.STAT</pv>
+      </rule>
+    </rules>
     <pv_value />
     <border_width>1</border_width>
     <border_color>

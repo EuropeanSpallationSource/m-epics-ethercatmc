@@ -52,7 +52,10 @@ DEPENDENCIES_FOR_MOTOR_OPI += motorx-egu-rbv.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcHealthStatus.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcIPADDR_PORT.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcName.mid
+DEPENDENCIES_FOR_MOTOR_OPI += ptp-high.mid
 DEPENDENCIES_FOR_MOTOR_OPI += ptp.mid
+DEPENDENCIES_FOR_MOTOR_OPI += ptp-ts-ns.mid
+DEPENDENCIES_FOR_MOTOR_OPI += ptp-low.mid
 DEPENDENCIES_FOR_MOTOR_OPI += openPTPErrBits.mid
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.end
 
@@ -84,6 +87,10 @@ DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcPTPErrBits.start
 DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcPTPErrBits.mid
 DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcaxisAuxBit.mid
 DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ethercatmcPTPErrBits.end
+DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ptp-ts-ns-pos-neg.mid
+DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ptp-ts-ns.mid
+DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ptp-high.mid
+DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ptp-low.mid
 DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ptp-high.mid
 DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += ptp-low.mid
 
@@ -189,7 +196,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 # Generate ethercatmcStatusWord1802*.opi out of
 #   ethercatmcStatusWord1802.mid and ethercatmcStatusWord1802.end
 ../ethercatmcPTPErrBits.opi: $(DEPENDENCIES_FOR_PTPERRORSTATUS_OPI)
-	./genExpertWithAuxBits.sh $@ ethercatmcPTPErrBits ptphigh ptp ptplow $(AUXBITS_PTPERRORSTATUS)
+	./genExpertWithAuxBits.sh $@ ethercatmcPTPErrBits ptphigh ptp ptpposneg ptplow $(AUXBITS_PTPERRORSTATUS)
 
 ../ethercatmcStatusWord1802.opi: $(DEPENDENCIES_FOR_STATUSWORD_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcStatusWord1802 $(AUXBITS_STATUSWORD)

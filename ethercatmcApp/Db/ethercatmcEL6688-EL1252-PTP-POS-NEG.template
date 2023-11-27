@@ -1,0 +1,17 @@
+record(longin, "$(PREFIX)TS_NS_POS")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "TS_NS_POS fraction")
+    field(EGU,  "ns")
+    field(INP,  "@asyn($(MOTOR_PORT),0)TS_NS_POS")
+    field(SCAN, "1 second")
+}
+
+record(longin, "$(PREFIX)TS_NS_NEG")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "TS_NS_NEG fraction")
+    field(EGU,  "ns")
+    field(INP,  "@asyn($(MOTOR_PORT),0)TS_NS_NEG")
+    field(SCAN, "1 second")
+}

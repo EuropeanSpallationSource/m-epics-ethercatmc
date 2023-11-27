@@ -28,10 +28,10 @@ ethercatmcCreateAsynParam $(MOTOR_PORT) PTPErrorStatus_NamAuxBit20  Octet
 ethercatmcCreateAsynParam $(MOTOR_PORT) PTPErrorStatus_NamAuxBit21  Octet
 ethercatmcCreateAsynParam $(MOTOR_PORT) PTPErrorStatus_NamAuxBit22  Octet
 
+ethercatmcCreateAsynParam $(MOTOR_PORT) PTPdiffNTP_MCU    Float64
 ethercatmcCreateAsynParam $(MOTOR_PORT) DcToExtTimeOffset Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) TimeOffsetDiffEL6688 Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) SystemUTCtime Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) DCTIME        Int64
-
 
 dbLoadRecords("ethercatmcEL6688-PTP.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT)")

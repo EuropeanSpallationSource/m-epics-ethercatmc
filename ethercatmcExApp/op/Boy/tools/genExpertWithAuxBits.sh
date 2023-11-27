@@ -36,6 +36,7 @@ HAS_ECMC=""
 HAS_PTPHIGH=""
 HAS_PTPLOW=""
 HAS_PTP=""
+HAS_PTP_POS_NEG=""
 HAS_TC=""
 PTPOPENERRBITS=0
 PARAM="$1"
@@ -56,6 +57,10 @@ while test "$PARAM" != ""; do
       ;;
     ptp)
       HAS_PTP="y"
+      shift
+      ;;
+    ptpposneg)
+      HAS_PTP_POS_NEG="y"
       shift
       ;;
     openPTPErrBits)
@@ -97,23 +102,38 @@ echo "Creating $FILE" &&
     cat openPTPErrBits.mid >>$$
   fi &&
   if test "$HAS_PTPHIGH" = "y"; then
+    WIDTH_PTPHIGH=78
     cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
     echo HAS_PTPHIGH cmd=$cmd
     eval $cmd <ptp-high.mid >>$$
+    cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y --shiftx $WIDTH_PTPHIGH)
+    eval $cmd <ptp-high.mid |
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTP_MCU/g" >>$$
+    if test "$HAS_PTP_POS_NEG" = "y"; then
+      echo HAS_PTP_POS_NEG cmd=$cmd "<ptp-ts-ns-pos-neg.mid"
+      eval $cmd <ptp-ts-ns-pos-neg.mid >>$$
+    fi
     yaux=$(($yaux + 16))
     y=$(($y + 16))
   fi &&
   if test "$HAS_PTP" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
-    echo HAS_PTP cmd=$cmd
+    echo HAS_PTP cmd=$cmd "<ptp.mid"
     eval $cmd <ptp.mid >>$$
+    cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
+    echo HAS_PTP cmd=$cmd "<ptp-ts-ns.mid"
+    eval $cmd <ptp-ts-ns.mid >>$$
     yaux=$(($yaux + 16))
     y=$(($y + 16))
   fi &&
   if test "$HAS_PTPLOW" = "y"; then
+    WIDTH_PTPLOW=78
     cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
     echo HAS_PTPLOW cmd=$cmd
     eval $cmd <ptp-low.mid >>$$
+    cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y --shiftx $WIDTH_PTPLOW)
+    eval $cmd <ptp-low.mid |
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTP_MCU/g" >>$$
     yaux=$(($yaux + 16))
     y=$(($y + 16))
   fi
