@@ -1,4 +1,7 @@
 #!/bin/sh
+# shellcheck disable=SC2016
+# shellcheck disable=SC2034
+# shellcheck disable=SC2086
 TAB=$(printf '\t')
 LF=$(printf '\n')
 echo TABX=${TAB}X

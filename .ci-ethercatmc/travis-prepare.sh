@@ -1,4 +1,7 @@
 #!/bin/sh
+# shellcheck disable=SC2016
+# shellcheck disable=SC2086
+
 set -e -x
 
 # different base / modules versions are placed into different directories
