@@ -15,21 +15,19 @@ epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
 epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 
 < ethercatmcController.iocsh
-#< ethercatmcEL6688-PTP.iocsh
-< ethercatmcEL6688-PTP-twincat-ads.iocsh
+< ethercatmcEL6688-PTP.iocsh
+< ethercatmcEL6688-EL1252-PTP.iocsh
 
 
 #####################################################
 # EL1252, first channel, CHNO == 0
 epicsEnvSet("CHNO",     "0")
-#< ethercatmcEL1252-OneChannel.iocsh
+< ethercatmcEL1252-OneChannel.iocsh
 
 #
 # Start polling, values are in millisconds
 #
-#epicsEnvSet("MOVINGPOLLPERIOD", "500")
-#epicsEnvSet("IDLEPOLLPERIOD",   "500")
-#ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
+epicsEnvSet("MOVINGPOLLPERIOD", "500")
+epicsEnvSet("IDLEPOLLPERIOD",   "500")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
 
-# Sleep to let the poller detect the AUX bit names
-#epicsThreadSleep 5
