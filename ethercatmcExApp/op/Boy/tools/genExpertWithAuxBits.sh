@@ -108,7 +108,7 @@ echo "Creating $FILE" &&
     eval $cmd <ptp-high.mid >>$$
     cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y --shiftx $WIDTH_PTPHIGH)
     eval $cmd <ptp-high.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTP_MCU/g" >>$$
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
     if test "$HAS_PTP_POS_NEG" = "y"; then
       echo HAS_PTP_POS_NEG cmd=$cmd "<ptp-ts-ns-pos-neg.mid"
       eval $cmd <ptp-ts-ns-pos-neg.mid >>$$
@@ -133,7 +133,7 @@ echo "Creating $FILE" &&
     eval $cmd <ptp-low.mid >>$$
     cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y --shiftx $WIDTH_PTPLOW)
     eval $cmd <ptp-low.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTP_MCU/g" >>$$
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
     yaux=$(($yaux + 16))
     y=$(($y + 16))
   fi

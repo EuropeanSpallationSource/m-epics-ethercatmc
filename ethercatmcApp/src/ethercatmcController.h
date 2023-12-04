@@ -88,6 +88,7 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVel_RBString               "Vel-RB"
 #define ethercatmcAcc_RBString               "Acc-RB"
 #define ethercatmcPTPdiffTimeIOC_MCUString   "PTPdiffTimeIOC_MCU"
+#define ethercatmcPTPdiffNTtime_MCUString    "PTPdiffNTtime_MCU"
 #define ethercatmcPTPallGoodString           "PTPallGood"
 #define ethercatmcRBV_TSEString              "RBV-TSE"
 #define pilsLonginActualString               "pilsLonginActual"
@@ -478,6 +479,10 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   asynStatus indexerInitialPollv2(void);
   asynStatus indexerInitialPollv3(void);
   asynStatus indexerPoll(void);
+  void       indexerCalcPTPdiffNTtime_MCU(int axisNo,
+                                          int function,
+                                          const epicsTimeStamp *pNTtime_MCU,
+                                          const epicsTimeStamp *pTimePTP);
   void        indexerDisconnected(void);
   asynStatus writeReadControllerPrint(int traceMask);
   asynStatus writeReadACK(int traceMask);
@@ -550,7 +555,9 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     unsigned int lastDeviceEndOffset;
     unsigned int specialDbgStrToMcuDeviceLength;
     unsigned int specialDbgStrToMcuDeviceOffset;
-    unsigned int systemUTCtimeOffset;
+    int systemUTCtimePTPFunction;
+    int systemNTtimePackedTimeStructBiasFunction;
+    int systemNTtimePackedTimeStructBiasFunctionStatusBits;
 
     AmsNetidAndPortType remote;
     AmsNetidAndPortType local;
@@ -631,6 +638,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     int ethercatmcVel_RB_;            /* Velocity used in MCU */
     int ethercatmcAcc_RB_;            /* Acceleration used in MCU */
     int ethercatmcPTPdiffTimeIOC_MCU_;
+    int ethercatmcPTPdiffNTtime_MCU_;
     int ethercatmcPTPallGood_;
     int ethercatmcRBV_TSE_;           /* motor position (RBV in motorRecord) MCU time stamped */
     int pilsLonginActual_;

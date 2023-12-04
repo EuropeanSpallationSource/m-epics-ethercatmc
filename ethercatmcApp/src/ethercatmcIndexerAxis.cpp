@@ -1046,7 +1046,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving)
     }
   }
 
-  if (pC_->ctrlLocal.systemUTCtimeOffset)  {
+  if (pC_->ctrlLocal.systemUTCtimePTPFunction)  {
     /* Motor position in "user coordinates" with UTC time from PTP */
     double motorRecOffset = 0.0;
     int ethercatmcPTPallGood = 0;

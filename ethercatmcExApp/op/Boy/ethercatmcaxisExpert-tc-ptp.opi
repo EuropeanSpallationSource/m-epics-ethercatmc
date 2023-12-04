@@ -433,7 +433,7 @@ $(pv_value)</tooltip>
   <format_type>0</format_type>
   <precision_from_pv>true</precision_from_pv>
   <transparent>false</transparent>
-  <pv_name>$(PREFIX)PTPdiffNTP_MCU</pv_name>
+  <pv_name>$(PREFIX)PTPdiffNTtime_MCU</pv_name>
   <background_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
   </background_color>
@@ -451,14 +451,14 @@ $(pv_value)</tooltip>
   <width>78</width>
   <border_style>0</border_style>
   <rules>
-    <rule name="PTPdiffNTP_MCU-Visible" prop_id="visible" out_exp="false">
+    <rule name="PTPdiffNTtime_MCU-Visible" prop_id="visible" out_exp="false">
         <exp bool_exp="pv0==1">
           <value>false</value>
         </exp>
         <exp bool_exp="pv0!=1">
           <value>true</value>
         </exp>
-        <pv trig="true">$(PREFIX)PTPdiffNTP_MCU.STAT</pv>
+        <pv trig="true">$(PREFIX)PTPdiffNTtime_MCU.STAT</pv>
       </rule>
   </rules>
   <pv_value />
