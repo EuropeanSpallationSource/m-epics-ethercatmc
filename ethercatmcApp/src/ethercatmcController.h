@@ -479,6 +479,9 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   asynStatus indexerInitialPollv2(void);
   asynStatus indexerInitialPollv3(void);
   asynStatus indexerPoll(void);
+  void       indexerNTtimePackedTimeStructBias(int function,
+                                               int functionStatusBits,
+                                               const epicsTimeStamp *pTimePTP_MCU);
   void       indexerCalcPTPdiffNTtime_MCU(int axisNo,
                                           int function,
                                           const epicsTimeStamp *pNTtime_MCU,

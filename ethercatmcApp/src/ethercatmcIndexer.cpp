@@ -1779,61 +1779,71 @@ asynStatus ethercatmcController::indexerPoll(void)
       if (ctrlLocal.systemNTtimePackedTimeStructBiasFunction) {
         int function = ctrlLocal.systemNTtimePackedTimeStructBiasFunction;
         int functionStatusBits = ctrlLocal.systemNTtimePackedTimeStructBiasFunctionStatusBits;
-        asynStatus status; /* Shadow the global one */
-        int axisNo = 0;
-        idxStatusCodeType idxStatusCode = idxStatusCodeIDLE; // good case
-        if (functionStatusBits) {
-          epicsUInt32 statusReasonAux = 0;
-          getUIntDigitalParam(axisNo, functionStatusBits,
-                              &statusReasonAux, 0xFFFFFFFF);
-          idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
-          asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                    "%sindexerPoll systemNTtimePackedTimeStructFunction statusReasonAux=0x%x idxStatusCode=%x functionStatusBits=%d\n",
-                    modNamEMC, statusReasonAux, (unsigned)idxStatusCode, functionStatusBits);
-        }
-        if (idxStatusCode == idxStatusCodeIDLE) {
-          epicsInt64 oldValue;
-          status = getInteger64Param(axisNo, function,  &oldValue);
-          uint64_t packedTimeStruct = (uint64_t)oldValue;
-          struct tm tm;
-          epicsTimeStamp NTtime_MCU;
-          unsigned millisec;
-          int32_t mcu_bias_hours, bias_in_seconds;
-          memset(&tm, 0, sizeof(tm));
-          millisec = packedTimeStruct & 0x3FF; packedTimeStruct >>= 10;
-          tm.tm_sec = packedTimeStruct & 0x3F;  packedTimeStruct >>= 6;
-          tm.tm_min = packedTimeStruct & 0x3F;  packedTimeStruct >>= 6;
-          tm.tm_hour = packedTimeStruct & 0x1F; packedTimeStruct >>= 5;
-          tm.tm_mday = packedTimeStruct & 0x1F; packedTimeStruct >>= 5;
-          /* day is 1..31; month is 0..11 */
-          tm.tm_mon = (packedTimeStruct & 0x0F) -1 ;  packedTimeStruct >>= 4;
-          /* MCU sends year without century (=2000), epicsTimeFromTM() wants year - 1900 */
-          tm.tm_year = 100 + (packedTimeStruct & 0x7F); packedTimeStruct >>= 7;
-          mcu_bias_hours = packedTimeStruct & 0x1F;
-          /* sign extend the bias, minutes */
-          bias_in_seconds = (mcu_bias_hours & 0x1F) ? mcu_bias_hours | 0xFFFFFFF0 : mcu_bias_hours;
-          bias_in_seconds *= 3600; /* hours -> seconds */
-
-          time_t unix_epoch = timegm(&tm);
-          unix_epoch += bias_in_seconds;
-          NTtime_MCU.secPastEpoch = unix_epoch - POSIX_TIME_AT_EPICS_EPOCH;
-          NTtime_MCU.nsec = millisec * 1000000;
-          asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-                    "%sindexerPoll tm=%04u-%02u-%02u %02u:%02u:%02u.%03u NTtime_MCU unix_epoch=%lu sec:nSec=%010u.%09u\n",
-                    modNamEMC,
-                    tm.tm_year, tm.tm_mon, tm.tm_mday,
-                    tm.tm_hour, tm.tm_min, tm.tm_sec,
-                    millisec, (unsigned long)unix_epoch,
-                    NTtime_MCU.secPastEpoch, NTtime_MCU.nsec);
-          indexerCalcPTPdiffNTtime_MCU(axisNo,
-                                       defAsynPara.ethercatmcPTPdiffNTtime_MCU_,
-                                       &NTtime_MCU, &timePTP_MCU);
-        }
+        indexerNTtimePackedTimeStructBias(function,
+                                          functionStatusBits,
+                                          &timePTP_MCU);
       }
     }
     return status;
   }
   return asynDisabled;
+}
+
+void
+ethercatmcController::indexerNTtimePackedTimeStructBias(int function,
+                                                        int functionStatusBits,
+                                                        const epicsTimeStamp *pTimePTP_MCU)
+{
+  int axisNo = 0;
+  asynStatus status;
+  idxStatusCodeType idxStatusCode = idxStatusCodeIDLE; // good case
+  if (functionStatusBits) {
+    epicsUInt32 statusReasonAux = 0;
+    getUIntDigitalParam(axisNo, functionStatusBits,
+                        &statusReasonAux, 0xFFFFFFFF);
+    idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
+              "%sindexerPoll systemNTtimePackedTimeStructFunction statusReasonAux=0x%x idxStatusCode=%x functionStatusBits=%d\n",
+              modNamEMC, statusReasonAux, (unsigned)idxStatusCode, functionStatusBits);
+  }
+  if (idxStatusCode == idxStatusCodeIDLE) {
+    epicsInt64 oldValue;
+    status = getInteger64Param(axisNo, function,  &oldValue);
+    uint64_t packedTimeStruct = (uint64_t)oldValue;
+    struct tm tm;
+    epicsTimeStamp NTtime_MCU;
+    unsigned millisec;
+    int32_t mcu_bias_hours, bias_in_seconds;
+    memset(&tm, 0, sizeof(tm));
+    millisec = packedTimeStruct & 0x3FF; packedTimeStruct >>= 10;
+    tm.tm_sec = packedTimeStruct & 0x3F;  packedTimeStruct >>= 6;
+    tm.tm_min = packedTimeStruct & 0x3F;  packedTimeStruct >>= 6;
+    tm.tm_hour = packedTimeStruct & 0x1F; packedTimeStruct >>= 5;
+    tm.tm_mday = packedTimeStruct & 0x1F; packedTimeStruct >>= 5;
+    /* day is 1..31; month is 0..11 */
+    tm.tm_mon = (packedTimeStruct & 0x0F) -1 ;  packedTimeStruct >>= 4;
+    /* MCU sends year without century (=2000), epicsTimeFromTM() wants year - 1900 */
+    tm.tm_year = 100 + (packedTimeStruct & 0x7F); packedTimeStruct >>= 7;
+    mcu_bias_hours = packedTimeStruct & 0x1F;
+    /* sign extend the bias, minutes */
+    bias_in_seconds = (mcu_bias_hours & 0x1F) ? mcu_bias_hours | 0xFFFFFFF0 : mcu_bias_hours;
+    bias_in_seconds *= 3600; /* hours -> seconds */
+
+    time_t unix_epoch = timegm(&tm);
+    unix_epoch += bias_in_seconds;
+    NTtime_MCU.secPastEpoch = unix_epoch - POSIX_TIME_AT_EPICS_EPOCH;
+    NTtime_MCU.nsec = millisec * 1000000;
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
+              "%sindexerPoll tm=%04u-%02u-%02u %02u:%02u:%02u.%03u NTtime_MCU unix_epoch=%lu sec:nSec=%010u.%09u\n",
+              modNamEMC,
+              tm.tm_year, tm.tm_mon, tm.tm_mday,
+              tm.tm_hour, tm.tm_min, tm.tm_sec,
+              millisec, (unsigned long)unix_epoch,
+              NTtime_MCU.secPastEpoch, NTtime_MCU.nsec);
+    indexerCalcPTPdiffNTtime_MCU(axisNo,
+                                 defAsynPara.ethercatmcPTPdiffNTtime_MCU_,
+                                 &NTtime_MCU, pTimePTP_MCU);
+  }
 }
 
 void
