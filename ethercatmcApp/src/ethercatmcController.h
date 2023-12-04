@@ -214,7 +214,6 @@ extern "C" {
     int            function;    /* asyn: "function" */
     asynParamType  myEPICSParamType; /* asynParamType.h */
     unsigned       iTypCode;
-    int            isSystemUTCtime:1;
   } pilsAsynDevInfo_type;
 }
 extern "C" {
@@ -479,6 +478,8 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   asynStatus indexerInitialPollv2(void);
   asynStatus indexerInitialPollv3(void);
   asynStatus indexerPoll(void);
+  void indexerSystemUTCtime(int function,
+                            epicsTimeStamp *pTimePTP_MCU);
   void       indexerNTtimePackedTimeStructBias(int function,
                                                int functionStatusBits,
                                                const epicsTimeStamp *pTimePTP_MCU);

@@ -1220,7 +1220,6 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->iTypCode         = iTypCode;
   pPilsAsynDevInfo->function         = function;
   if (!strcmp(paramName, "SystemUTCtime")) {
-    pPilsAsynDevInfo->isSystemUTCtime = 1;
     ctrlLocal.systemUTCtimePTPFunction = function;
     // We will calculate the PV in poll()
     setAlarmStatusSeverityWrapper(axisNo, defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_,
@@ -1556,8 +1555,6 @@ asynStatus ethercatmcController::indexerPoll(void)
     if (status) return status;
 
     {
-      epicsTimeStamp timePTP_MCU;
-      memset(&timePTP_MCU, 0, sizeof(timePTP_MCU));
       /* Extract devices, which are not motors */
       for (unsigned numPilsAsynDevInfo = 0;
            numPilsAsynDevInfo < ctrlLocal.numPilsAsynDevInfo;
@@ -1751,42 +1748,57 @@ asynStatus ethercatmcController::indexerPoll(void)
         default:
           ;
         }
-        if (pPilsAsynDevInfo->isSystemUTCtime) {
-          uint64_t nSec;
-          epicsTimeStamp timeIOC;
-          unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
-          int axisNo = 0;
-          nSec = netToUint64(pDataInPlc, lenInPLC);
-          UTCtimeToEpicsTimeStamp(nSec, &timePTP_MCU);
-          asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */ ,
-                    "%sindexerPoll SystemUTCtime nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
-                    modNamEMC, nSec,
-                    timePTP_MCU.secPastEpoch, timePTP_MCU.nsec);
-          setTimeStamp(&timePTP_MCU);
-          ctrlLocal.callBackNeeded |= 1 << axisNo;
-          int function = defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_;
-          int rtn = epicsTimeGetCurrent(&timeIOC);
-          if (!rtn) {
-            double time_IOC_ms = (((double)timeIOC.secPastEpoch) * 1000.0) + (((double)timeIOC.nsec) / 1000000.0);
-            double time_MCU_ms = (((double)timePTP_MCU.secPastEpoch) * 1000.0) + (((double)timePTP_MCU.nsec) / 1000000.0);
-            double diffTimeIOC_MCU = time_IOC_ms - time_MCU_ms;
-            (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
-          } else {
-            setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
+      } /* for */
+      {
+        /* Special code for timing, PTP, NTP */
+        int function = ctrlLocal.systemUTCtimePTPFunction;
+        if (function) {
+          /* PTP on the MCU does exist */
+          epicsTimeStamp timePTP_MCU;
+          memset(&timePTP_MCU, 0, sizeof(timePTP_MCU));
+          indexerSystemUTCtime(function, &timePTP_MCU);
+          /* because PTP does exist, check it against NTP in the IOC */
+          function = ctrlLocal.systemNTtimePackedTimeStructBiasFunction;
+          if (function) {
+            indexerNTtimePackedTimeStructBias(function,
+                                              ctrlLocal.systemNTtimePackedTimeStructBiasFunctionStatusBits,
+                                              &timePTP_MCU);
           }
         }
-      } /* for */
-      if (ctrlLocal.systemNTtimePackedTimeStructBiasFunction) {
-        int function = ctrlLocal.systemNTtimePackedTimeStructBiasFunction;
-        int functionStatusBits = ctrlLocal.systemNTtimePackedTimeStructBiasFunctionStatusBits;
-        indexerNTtimePackedTimeStructBias(function,
-                                          functionStatusBits,
-                                          &timePTP_MCU);
       }
     }
     return status;
   }
   return asynDisabled;
+}
+
+void
+ethercatmcController::indexerSystemUTCtime(int function,
+                                           epicsTimeStamp *pTimePTP_MCU)
+{
+  int axisNo = 0;
+  epicsInt64 oldValue;
+  getInteger64Param(axisNo, function,  &oldValue);
+
+  uint64_t nSec = (uint64_t)oldValue;
+  epicsTimeStamp timeIOC;
+  UTCtimeToEpicsTimeStamp(nSec, pTimePTP_MCU);
+  asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */ ,
+            "%sindexerPoll SystemUTCtime nSec=%" PRIu64 " sec:nSec=%09u.%09u\n",
+            modNamEMC, nSec,
+            pTimePTP_MCU->secPastEpoch, pTimePTP_MCU->nsec);
+  setTimeStamp(pTimePTP_MCU);
+  ctrlLocal.callBackNeeded |= 1 << axisNo;
+  int rtn = epicsTimeGetCurrent(&timeIOC);
+  if (!rtn) {
+    int function = defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_;
+    double time_IOC_ms = (((double)timeIOC.secPastEpoch) * 1000.0) + (((double)timeIOC.nsec) / 1000000.0);
+    double time_MCU_ms = (((double)pTimePTP_MCU->secPastEpoch) * 1000.0) + (((double)pTimePTP_MCU->nsec) / 1000000.0);
+    double diffTimeIOC_MCU = time_IOC_ms - time_MCU_ms;
+    (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
+  } else {
+    setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
+  }
 }
 
 void
