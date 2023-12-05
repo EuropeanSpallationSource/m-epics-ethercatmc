@@ -119,6 +119,10 @@ record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
     field(SCAN, "1 second")
 }
 
+#
+# Difference between PTP and NT time inside the MCU
+# Note: NT time is "outside" the TwinCAT subsystem
+#
 record(ai, "$(PREFIX)PTPdiffNTtime_MCU")
 {
     field(DTYP, "asynFloat64")
@@ -129,7 +133,7 @@ record(ai, "$(PREFIX)PTPdiffNTtime_MCU")
     field(LOW,  "-20")
     field(HSV,  "1")
     field(LSV,  "1")
-    field(INP,  "@asyn($(MOTOR_PORT),0)PTPdiffNTtime_MCU")
+    field(INP,  "@asyn($(MOTOR_PORT),0)PTPdiffXYtime_MCU")
     field(SCAN, "1 second")
 }
 
