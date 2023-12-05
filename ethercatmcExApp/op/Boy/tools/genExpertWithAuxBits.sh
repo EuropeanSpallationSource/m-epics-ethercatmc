@@ -33,8 +33,7 @@ esac
 
 # pick up all arguments
 HAS_ECMC=""
-HAS_PTPHIGH=""
-HAS_PTPLOW=""
+HAS_PTPdiffTimeIOC_MCUHIGHLOW=""
 HAS_PTP=""
 HAS_PTP_POS_NEG=""
 HAS_TC=""
@@ -47,12 +46,8 @@ while test "$PARAM" != ""; do
       shift
       PARAM="$1"
       ;;
-    ptphigh)
-      HAS_PTPHIGH="y"
-      shift
-      ;;
-    ptplow)
-      HAS_PTPLOW="y"
+    ptpdifftimeioc_mcuhighlow)
+      HAS_PTPdiffTimeIOC_MCUHIGHLOW="y"
       shift
       ;;
     ptp)
@@ -85,8 +80,7 @@ while test "$PARAM" != ""; do
 done
 export HAS_ECMC
 export HAS_PTP
-export HAS_PTPHIGH
-export HAS_PTPLOW
+export HAS_PTPdiffTimeIOC_MCUHIGHLOW
 export HAS_TC
 export PTPOPENERRBITS
 
@@ -101,13 +95,13 @@ echo "Creating $FILE" &&
   if test $PTPOPENERRBITS != 0; then
     cat openPTPErrBits.mid >>$$
   fi &&
-  if test "$HAS_PTPHIGH" = "y"; then
+  if test "$HAS_PTPdiffTimeIOC_MCUHIGHLOW" = "y"; then
     WIDTH_PTPHIGH=78
-    cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
-    echo HAS_PTPHIGH cmd=$cmd
-    eval $cmd <ptp-high.mid >>$$
-    cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y --shiftx $WIDTH_PTPHIGH)
-    eval $cmd <ptp-high.mid |
+    cmd=$(echo ./shiftopi.py --shiftx 0 --shifty $y)
+    echo HAS_PTPdiffTimeIOC_MCUHIGHLOW cmd=$cmd
+    eval $cmd <PTPdiffTimeIOC_MCU-HIGH-LOW.mid >>$$
+    cmd=$(echo ./shiftopi.py --shiftx $WIDTH_PTPHIGH --shifty $y)
+    eval $cmd <PTPdiffTimeIOC_MCU-HIGH-LOW.mid |
       sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
     if test "$HAS_PTP_POS_NEG" = "y"; then
       echo HAS_PTP_POS_NEG cmd=$cmd "<ptp-ts-ns-pos-neg.mid"
@@ -126,17 +120,6 @@ echo "Creating $FILE" &&
     yaux=$(($yaux + 16))
     y=$(($y + 16))
   fi &&
-  if test "$HAS_PTPLOW" = "y"; then
-    WIDTH_PTPLOW=78
-    cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y)
-    echo HAS_PTPLOW cmd=$cmd
-    eval $cmd <ptp-low.mid >>$$
-    cmd=$(echo ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y --shiftx $WIDTH_PTPLOW)
-    eval $cmd <ptp-low.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
-    yaux=$(($yaux + 16))
-    y=$(($y + 16))
-  fi
 
 echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
 

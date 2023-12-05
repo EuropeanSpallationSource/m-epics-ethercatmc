@@ -164,6 +164,67 @@ $(pv_value)</tooltip>
     <format_type>1</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
+    <pv_name>$(PREFIX)PTPdiffTimeIOC_MCU.LOW</pv_name>
+    <background_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+    </foreground_color>
+    <widget_type>Text Update</widget_type>
+    <enabled>true</enabled>
+    <text>######</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <fontdata fontName="Sans" height="11" style="0" />
+    </font>
+    <width>78</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="PTPdiffTimeIOC_MCU-LOW-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==1">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=1">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(PREFIX)PTPdiffTimeIOC_MCU.STAT</pv>
+      </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" hook_all="false" />
+    <y>48</y>
+    <wrap_words>false</wrap_words>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>282</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <show_units>false</show_units>
+    <wuid>39872d87:13e14015f61:-2f66</wuid>
+    <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
+    <scripts />
+    <height>16</height>
+    <name>Text Update</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
     <pv_name>$(PREFIX)PTPdiffNTtime_MCU.HIGH</pv_name>
     <background_color>
       <color name="Gray_0" red="255" green="255" blue="255" />
@@ -200,6 +261,67 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
     <y>16</y>
+    <wrap_words>false</wrap_words>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>360</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <show_units>false</show_units>
+    <wuid>39872d87:13e14015f61:-2f66</wuid>
+    <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
+    <scripts />
+    <height>16</height>
+    <name>Text Update</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <pv_name>$(PREFIX)PTPdiffNTtime_MCU.LOW</pv_name>
+    <background_color>
+      <color name="Gray_0" red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+    </foreground_color>
+    <widget_type>Text Update</widget_type>
+    <enabled>true</enabled>
+    <text>######</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <fontdata fontName="Sans" height="11" style="0" />
+    </font>
+    <width>78</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="PTPdiffNTtime_MCU-LOW-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0==1">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0!=1">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(PREFIX)PTPdiffNTtime_MCU.STAT</pv>
+      </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" hook_all="false" />
+    <y>48</y>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -779,128 +901,6 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
   <x>438</x>
 </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <show_units>false</show_units>
-    <wuid>39872d87:13e14015f61:-2f66</wuid>
-    <auto_size>false</auto_size>
-    <rotation_angle>0.0</rotation_angle>
-    <scripts />
-    <height>16</height>
-    <name>Text Update</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <format_type>1</format_type>
-    <precision_from_pv>true</precision_from_pv>
-    <transparent>false</transparent>
-    <pv_name>$(PREFIX)PTPdiffTimeIOC_MCU.LOW</pv_name>
-    <background_color>
-      <color name="Gray_0" red="255" green="255" blue="255" />
-    </background_color>
-    <foreground_color>
-      <color name="ioc_read_fg" red="10" green="0" blue="184" />
-    </foreground_color>
-    <widget_type>Text Update</widget_type>
-    <enabled>true</enabled>
-    <text>######</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <precision>0</precision>
-    <font>
-      <fontdata fontName="Sans" height="11" style="0" />
-    </font>
-    <width>78</width>
-    <border_style>0</border_style>
-    <rules>
-      <rule name="PTPdiffTimeIOC_MCU-LOW-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=1">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(PREFIX)PTPdiffTimeIOC_MCU.STAT</pv>
-      </rule>
-    </rules>
-    <pv_value />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" hook_all="false" />
-    <y>48</y>
-    <wrap_words>false</wrap_words>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>282</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <show_units>false</show_units>
-    <wuid>39872d87:13e14015f61:-2f66</wuid>
-    <auto_size>false</auto_size>
-    <rotation_angle>0.0</rotation_angle>
-    <scripts />
-    <height>16</height>
-    <name>Text Update</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <format_type>1</format_type>
-    <precision_from_pv>true</precision_from_pv>
-    <transparent>false</transparent>
-    <pv_name>$(PREFIX)PTPdiffNTtime_MCU.LOW</pv_name>
-    <background_color>
-      <color name="Gray_0" red="255" green="255" blue="255" />
-    </background_color>
-    <foreground_color>
-      <color name="ioc_read_fg" red="10" green="0" blue="184" />
-    </foreground_color>
-    <widget_type>Text Update</widget_type>
-    <enabled>true</enabled>
-    <text>######</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <precision>0</precision>
-    <font>
-      <fontdata fontName="Sans" height="11" style="0" />
-    </font>
-    <width>78</width>
-    <border_style>0</border_style>
-    <rules>
-      <rule name="PTPdiffNTtime_MCU-LOW-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=1">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(PREFIX)PTPdiffNTtime_MCU.STAT</pv>
-      </rule>
-    </rules>
-    <pv_value />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" hook_all="false" />
-    <y>48</y>
-    <wrap_words>false</wrap_words>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>360</x>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <alarm_pulsing>false</alarm_pulsing>
@@ -966,7 +966,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>86</y>
+    <y>70</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1035,7 +1035,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>86</y>
+    <y>70</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -1102,7 +1102,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>106</y>
+    <y>90</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1171,7 +1171,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>106</y>
+    <y>90</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -1238,7 +1238,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>126</y>
+    <y>110</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1307,7 +1307,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>126</y>
+    <y>110</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -1374,7 +1374,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>146</y>
+    <y>130</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1443,7 +1443,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>146</y>
+    <y>130</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -1510,7 +1510,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>166</y>
+    <y>150</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1579,7 +1579,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>166</y>
+    <y>150</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -1646,7 +1646,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>186</y>
+    <y>170</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1715,7 +1715,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>186</y>
+    <y>170</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -1782,7 +1782,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>206</y>
+    <y>190</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1851,7 +1851,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>206</y>
+    <y>190</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -1918,7 +1918,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>226</y>
+    <y>210</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1987,7 +1987,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>226</y>
+    <y>210</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -2054,7 +2054,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>246</y>
+    <y>230</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -2123,7 +2123,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>246</y>
+    <y>230</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -2190,7 +2190,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>266</y>
+    <y>250</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -2259,7 +2259,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>266</y>
+    <y>250</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -2326,7 +2326,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>286</y>
+    <y>270</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -2395,7 +2395,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>286</y>
+    <y>270</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -2462,7 +2462,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>306</y>
+    <y>290</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -2531,7 +2531,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>306</y>
+    <y>290</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -2598,7 +2598,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>326</y>
+    <y>310</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -2667,7 +2667,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>326</y>
+    <y>310</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -2734,7 +2734,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>346</y>
+    <y>330</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -2803,7 +2803,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>346</y>
+    <y>330</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -2870,7 +2870,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>366</y>
+    <y>350</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -2939,7 +2939,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>366</y>
+    <y>350</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -3006,7 +3006,7 @@ $(pv_value)</tooltip>
     <width>20</width>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>16</x>
-    <y>386</y>
+    <y>370</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -3075,7 +3075,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>5b5c45a4:169296eb9ca:-702f</wuid>
     <x>40</x>
-    <y>386</y>
+    <y>370</y>
   </widget>
 
 </display>
