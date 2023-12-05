@@ -57,7 +57,7 @@
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>438</x>
+  <x>0</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -118,5 +118,5 @@ $(pv_value)</tooltip>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>438</x>
+  <x>0</x>
 </widget>

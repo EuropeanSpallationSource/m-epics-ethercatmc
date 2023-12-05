@@ -147,7 +147,7 @@ fi &&
     cmd=$(echo ./shiftopi.py --shiftx 100 --shifty 16 --shiftm 0)
     echo cmd=$cmd "<ptp.mid"
     eval $cmd <ptp.mid >>$$
-    cmd=$(echo ./shiftopi.py --shiftx 100 --shifty 16)
+    cmd=$(echo ./shiftopi.py --shiftx $((282 + 100)) --shifty 16)
     echo cmd=$cmd "ptp-ts-ns.mid"
     eval $cmd <ptp-ts-ns.mid >>$$
   fi &&

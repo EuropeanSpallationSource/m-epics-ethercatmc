@@ -36,15 +36,6 @@
     <width>78</width>
     <border_style>0</border_style>
     <rules>
-      <rule name="PTPdiffTimeIOC_MCU-HIGH-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=1">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(PREFIX)PTPdiffTimeIOC_MCU.STAT</pv>
-      </rule>
     </rules>
     <pv_value />
     <border_width>1</border_width>
@@ -57,7 +48,7 @@
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>282</x>
+    <x>0</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -97,15 +88,6 @@ $(pv_value)</tooltip>
     <width>78</width>
     <border_style>0</border_style>
     <rules>
-      <rule name="PTPdiffTimeIOC_MCU-LOW-Visible" prop_id="visible" out_exp="false">
-        <exp bool_exp="pv0==1">
-          <value>false</value>
-        </exp>
-        <exp bool_exp="pv0!=1">
-          <value>true</value>
-        </exp>
-        <pv trig="true">$(PREFIX)PTPdiffTimeIOC_MCU.STAT</pv>
-      </rule>
     </rules>
     <pv_value />
     <border_width>1</border_width>
@@ -118,5 +100,5 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>282</x>
+    <x>0</x>
   </widget>

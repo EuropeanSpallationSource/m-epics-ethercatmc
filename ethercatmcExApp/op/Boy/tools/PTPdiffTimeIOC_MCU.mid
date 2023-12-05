@@ -48,5 +48,5 @@
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>282</x>
+  <x>0</x>
 </widget>
