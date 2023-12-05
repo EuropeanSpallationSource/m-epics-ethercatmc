@@ -480,6 +480,8 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
   asynStatus indexerPoll(void);
   void indexerSystemUTCtime(int function,
                             epicsTimeStamp *pTimePTP_MCU);
+  void indexerTcUTCtime(int functionRd, int indexRd,
+                        const epicsTimeStamp *pTimePTP_MCU);
   void       indexerNTtimePackedTimeStructBias(int function,
                                                int functionStatusBits,
                                                const epicsTimeStamp *pTimePTP_MCU);
@@ -560,6 +562,7 @@ asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
     unsigned int specialDbgStrToMcuDeviceLength;
     unsigned int specialDbgStrToMcuDeviceOffset;
     int systemUTCtimePTPFunction;
+    int systemTcUTCtimeFunction;
     int systemNTtimePackedTimeStructBiasFunction;
     int systemNTtimePackedTimeStructBiasFunctionStatusBits;
 

@@ -52,7 +52,11 @@ while test "$PARAM" != ""; do
       shift
       ;;
     ptpNTdifftime_mcu)
-    HAS_PTPNTdiffTime_MCU="y"
+      HAS_PTPNTdiffTime_MCU="y"
+      shift
+      ;;
+    ptpTCdifftime_mcu)
+      HAS_PTPTCdiffTime_MCU="y"
       shift
       ;;
     ptp)
@@ -87,6 +91,7 @@ export HAS_ECMC
 export HAS_PTP
 export HAS_PTPdiffTimeIOC_MCU
 export HAS_PTPNTdiffTime_MCU
+export HAS_PTPTCdiffTime_MCU
 export HAS_TC
 export PTPOPENERRBITS
 
@@ -102,19 +107,27 @@ echo "Creating $FILE" &&
     cat openPTPErrBits.mid >>$$
   fi &&
   WIDTH_PTP=78
-  SHIFTX=$(($PTPOPENERRBITS + 282)) # PTP fields are from left to right
-  SHIFTY=0 # Set to 16 further down, if any PTP is here
-  if test "$HAS_PTPdiffTimeIOC_MCU" = "y"; then
-    ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid >>$$
-    ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid >>$$
-    SHIFTX=$(($SHIFTX + $WIDTH_PTP))
-    SHIFTY=16
-  fi &&
+SHIFTX=$(($PTPOPENERRBITS + 282)) # PTP fields are from left to right
+SHIFTY=0                          # Set to 16 further down, if any PTP is here
+if test "$HAS_PTPdiffTimeIOC_MCU" = "y"; then
+  ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid >>$$
+  ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid >>$$
+  SHIFTX=$(($SHIFTX + $WIDTH_PTP))
+  SHIFTY=16
+fi &&
   if test "$HAS_PTPNTdiffTime_MCU" = "y"; then
     ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid |
       sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
     ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid |
       sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
+    SHIFTX=$(($SHIFTX + $WIDTH_PTP))
+    SHIFTY=16
+  fi &&
+  if test "$HAS_PTPTCdiffTime_MCU" = "y"; then
+    ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid |
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTCtime_MCU/g" >>$$
+    ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid |
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTCtime_MCU/g" >>$$
     SHIFTX=$(($SHIFTX + $WIDTH_PTP))
     SHIFTY=16
   fi &&
@@ -125,13 +138,13 @@ echo "Creating $FILE" &&
     SHIFTY=16
   fi &&
   yaux=$(($yaux + $SHIFTY)) # shift one line from high to have PTP in the middle
-  y=$(($y + $SHIFTY))       # shift one line from high to have PTP in the middle
-  if test "$HAS_PTP" = "y"; then
-    ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y <ptp.mid >>$$
-    SHIFTY=16
-  fi &&
+y=$(($y + $SHIFTY))         # shift one line from high to have PTP in the middle
+if test "$HAS_PTP" = "y"; then
+  ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y <ptp.mid >>$$
+  SHIFTY=16
+fi &&
   yaux=$(($yaux + $SHIFTY)) # shift one line from low to have PTP in the middle
-  y=$(($y + $SHIFTY))       # shift one line from low to have PTP in the middle
+y=$(($y + $SHIFTY))         # shift one line from low to have PTP in the middle
 
 echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
 

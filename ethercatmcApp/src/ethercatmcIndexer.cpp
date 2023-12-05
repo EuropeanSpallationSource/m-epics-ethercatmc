@@ -1227,11 +1227,15 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   } else if (!strcmp(paramName, "NTtimePackedTimeStructBias")) {
     ctrlLocal.systemNTtimePackedTimeStructBiasFunction = function;
     ctrlLocal.systemNTtimePackedTimeStructBiasFunctionStatusBits = functionStatusBits;
-    setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
+    int indexWr = 0;
+    int functionWr = defAsynPara.ethercatmcPTPdiffXYtime_MCU_;
+    setAlarmStatusSeverityWrapper(indexWr, functionWr, asynSuccess);
+  } else if (!strcmp(paramName, "TcUTCtime")) {
+    ctrlLocal.systemTcUTCtimeFunction = function;
+    int indexWr = 1;
+    int functionWr = defAsynPara.ethercatmcPTPdiffXYtime_MCU_;
+    setAlarmStatusSeverityWrapper(indexWr, functionWr, asynSuccess);
   }
-  setAlarmStatusSeverityWrapper(axisNo,
-                                defAsynPara.ethercatmcPTPdiffXYtime_MCU_,
-                                asynSuccess);
 
   /* Last action of this code: Increment the counter */
   ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
@@ -1764,6 +1768,13 @@ asynStatus ethercatmcController::indexerPoll(void)
                                               ctrlLocal.systemNTtimePackedTimeStructBiasFunctionStatusBits,
                                               &timePTP_MCU);
           }
+          /* See if the TcTime exists. If yes, diff against PTP */
+          if (ctrlLocal.systemTcUTCtimeFunction) {
+            int indexRd = 0;
+            indexerTcUTCtime(ctrlLocal.systemTcUTCtimeFunction,
+                             indexRd,
+                             &timePTP_MCU);
+          }
         }
       }
     }
@@ -1798,6 +1809,31 @@ ethercatmcController::indexerSystemUTCtime(int function,
     (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
   } else {
     setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
+  }
+}
+
+void
+ethercatmcController::indexerTcUTCtime(int functionRd, int indexRd,
+                                       const epicsTimeStamp *pTimePTP_MCU)
+{
+  epicsInt64 oldValue;
+  getInteger64Param(indexRd, functionRd,  &oldValue);
+
+  uint64_t nSec = (uint64_t)oldValue;
+  epicsTimeStamp timeTcUTC_MCU;
+  UTCtimeToEpicsTimeStamp(nSec, &timeTcUTC_MCU);
+
+  double msecPTPdiffTctime_MCU = 1000.0 * epicsTimeDiffInSeconds(&timeTcUTC_MCU,
+                                                                 pTimePTP_MCU);
+  asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
+            "%sindexerPoll timeTcUTC_MCU sec:nSec=%010u.%09u msecPTPdiffTctime_MCU=%f\n",
+            modNamEMC,
+            timeTcUTC_MCU.secPastEpoch, timeTcUTC_MCU.nsec,
+            msecPTPdiffTctime_MCU);
+  {
+    int indexWr = 1;
+    int functionWr = defAsynPara.ethercatmcPTPdiffXYtime_MCU_;
+    (void)setDoubleParam(indexWr, functionWr, msecPTPdiffTctime_MCU);
   }
 }
 
