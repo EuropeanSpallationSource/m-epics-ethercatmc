@@ -15,6 +15,7 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 < ethercatmcController.iocsh
 < ethercatmcEL6688-PTP.iocsh
 < ethercatmcEL6688-EL1252-PTP.iocsh
+< ethercatmcEL6688-EL1252-PTP-POS-NEG.iocsh
 
 #
 # Axis 1
