@@ -1787,10 +1787,11 @@ void
 ethercatmcController::indexerSystemUTCtime(int function,
                                            epicsTimeStamp *pTimePTP_MCU)
 {
-  int axisNo = 0;
-  epicsInt64 oldValue;
-  getInteger64Param(axisNo, function,  &oldValue);
-
+  int indexRd = 0;
+  epicsInt64 oldValue = 0;
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+  getInteger64Param(indexRd, function,  &oldValue);
+#endif
   uint64_t nSec = (uint64_t)oldValue;
   epicsTimeStamp timeIOC;
   UTCtimeToEpicsTimeStamp(nSec, pTimePTP_MCU);
@@ -1799,16 +1800,16 @@ ethercatmcController::indexerSystemUTCtime(int function,
             modNamEMC, nSec,
             pTimePTP_MCU->secPastEpoch, pTimePTP_MCU->nsec);
   setTimeStamp(pTimePTP_MCU);
-  ctrlLocal.callBackNeeded |= 1 << axisNo;
+  ctrlLocal.callBackNeeded |= 1 << indexRd;
   int rtn = epicsTimeGetCurrent(&timeIOC);
   if (!rtn) {
     int function = defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_;
     double time_IOC_ms = (((double)timeIOC.secPastEpoch) * 1000.0) + (((double)timeIOC.nsec) / 1000000.0);
     double time_MCU_ms = (((double)pTimePTP_MCU->secPastEpoch) * 1000.0) + (((double)pTimePTP_MCU->nsec) / 1000000.0);
     double diffTimeIOC_MCU = time_IOC_ms - time_MCU_ms;
-    (void)setDoubleParam(axisNo, function, diffTimeIOC_MCU);
+    (void)setDoubleParam(indexRd, function, diffTimeIOC_MCU);
   } else {
-    setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
+    setAlarmStatusSeverityWrapper(indexRd, function, asynDisconnected);
   }
 }
 
@@ -1816,8 +1817,10 @@ void
 ethercatmcController::indexerTcUTCtime(int functionRd, int indexRd,
                                        const epicsTimeStamp *pTimePTP_MCU)
 {
-  epicsInt64 oldValue;
+  epicsInt64 oldValue = 0;
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
   getInteger64Param(indexRd, functionRd,  &oldValue);
+#endif
 
   uint64_t nSec = (uint64_t)oldValue;
   epicsTimeStamp timeTcUTC_MCU;
@@ -1842,12 +1845,11 @@ ethercatmcController::indexerNTtimePackedTimeStructBias(int function,
                                                         int functionStatusBits,
                                                         const epicsTimeStamp *pTimePTP_MCU)
 {
-  int axisNo = 0;
-  asynStatus status;
+  int indexRd = 0;
   idxStatusCodeType idxStatusCode = idxStatusCodeIDLE; // good case
   if (functionStatusBits) {
     epicsUInt32 statusReasonAux = 0;
-    getUIntDigitalParam(axisNo, functionStatusBits,
+    getUIntDigitalParam(indexRd, functionStatusBits,
                         &statusReasonAux, 0xFFFFFFFF);
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
@@ -1855,8 +1857,10 @@ ethercatmcController::indexerNTtimePackedTimeStructBias(int function,
               modNamEMC, statusReasonAux, (unsigned)idxStatusCode, functionStatusBits);
   }
   if (idxStatusCode == idxStatusCodeIDLE) {
-    epicsInt64 oldValue;
-    status = getInteger64Param(axisNo, function,  &oldValue);
+    epicsInt64 oldValue = 0;
+#ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
+    getInteger64Param(indexRd, function,  &oldValue);
+#endif
     uint64_t packedTimeStruct = (uint64_t)oldValue;
     struct tm tm;
     epicsTimeStamp NTtime_MCU;
@@ -1888,14 +1892,14 @@ ethercatmcController::indexerNTtimePackedTimeStructBias(int function,
               tm.tm_hour, tm.tm_min, tm.tm_sec,
               millisec, (unsigned long)unix_epoch,
               NTtime_MCU.secPastEpoch, NTtime_MCU.nsec);
-    indexerCalcPTPdiffXYtime_MCU(axisNo,
+    indexerCalcPTPdiffXYtime_MCU(indexRd,
                                  defAsynPara.ethercatmcPTPdiffXYtime_MCU_,
                                  &NTtime_MCU, pTimePTP_MCU);
   }
 }
 
 void
-ethercatmcController::indexerCalcPTPdiffXYtime_MCU(int axisNo,
+ethercatmcController::indexerCalcPTPdiffXYtime_MCU(int indexRd,
                                                    int function,
                                                    const epicsTimeStamp *pNTtime_MCU,
                                                    const epicsTimeStamp *pTimePTP_MCU) {
@@ -1925,7 +1929,7 @@ ethercatmcController::indexerCalcPTPdiffXYtime_MCU(int axisNo,
             modNamEMC,
             pNTtime_MCU->secPastEpoch, pNTtime_MCU->nsec,
             msecPTPdiffXYtime_MCU);
-  (void)setDoubleParam(axisNo, function, msecPTPdiffXYtime_MCU);
+  (void)setDoubleParam(indexRd, function, msecPTPdiffXYtime_MCU);
 }
 
 void ethercatmcController::indexerDisconnected(void)
