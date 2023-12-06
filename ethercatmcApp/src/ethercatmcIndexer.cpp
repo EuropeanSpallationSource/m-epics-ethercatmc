@@ -1221,8 +1221,8 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
   pPilsAsynDevInfo->function         = function;
   if (!strcmp(paramName, "SystemUTCtime")) {
     ctrlLocal.systemUTCtimePTPFunction = function;
-    // We will calculate the PV in poll()
-    setAlarmStatusSeverityWrapper(axisNo, defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_,
+    setAlarmStatusSeverityWrapper(0,
+                                  defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_,
                                   asynSuccess);
   } else if (!strcmp(paramName, "NTtimePackedTimeStructBias")) {
     ctrlLocal.systemNTtimePackedTimeStructBiasFunction = function;
@@ -1236,7 +1236,13 @@ int ethercatmcController::addPilsAsynDevLst(int           axisNo,
     int functionWr = defAsynPara.ethercatmcPTPdiffXYtime_MCU_;
     setAlarmStatusSeverityWrapper(indexWr, functionWr, asynSuccess);
   }
-
+  if (!statusOffset) {
+    /* The device has no status, so assume that the status is OK,
+       expecially after a connection loss causing a
+       setAlarmStatusSeverityAllReadbacks(asynDisconnected);
+       and now we have the connection up again */
+    setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
+  }
   /* Last action of this code: Increment the counter */
   ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
   return function;
