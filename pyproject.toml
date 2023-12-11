@@ -1,0 +1,3 @@
+[tool.ruff]
+extend-select = ["D212"]
+extend-ignore = ["D105", "D107", "D202", "D418", "E501"]

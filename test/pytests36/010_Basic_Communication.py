@@ -26,7 +26,6 @@ def lineno():
 
 
 class Test(unittest.TestCase):
-
     url_string = os.getenv("TESTEDMOTORAXIS")
     print(f"url_string={url_string}")
 
@@ -48,9 +47,9 @@ class Test(unittest.TestCase):
             try:
                 rbv = axisCom.get(".RBV")
                 enabled = axisCom.get(".CNEN")
-            except:
+            except:  # noqa: E722
                 wait_for -= 1  # Next loop
-            if rbv != None or enabled != None:
+            if rbv is not None or enabled is not None:
                 wait_for = -1  # Finished
 
         print(f"{tc_no}/{url_string} rbv={rbv} enabled={int(enabled)}")
@@ -80,7 +79,7 @@ class Test(unittest.TestCase):
                 "%s/%s velo=%s enabled=%d veloPut=%s enabledPut=%s"
                 % (tc_no, url_string, velo, enabled, veloPut, enabledPut)
             )
-        except:
+        except:  # noqa: E722
             had_ex = True
         self.assertEqual(False, had_ex, "The should not have been an exception")
 
@@ -97,11 +96,11 @@ class Test(unittest.TestCase):
         print(f"{tc_no} Test FLOAT/actual non existing url_string={url_string}")
         value = 0.0
         try:
-            floatGet = axisCom.get(".RBV")
+            floatGet = axisCom.get(".RBV")  # noqa: F841
         except Exception as ex:
             floatGetEx = ex
         try:
-            floatPut = axisCom.put(".RBV", value)
+            floatPut = axisCom.put(".RBV", value)  # noqa: F841
         except Exception as ex:
             floatPutEx = ex
         print(f"{tc_no}/{url_string} floatGetEx={floatGetEx} floatPutEx={floatPutEx}")
@@ -121,11 +120,11 @@ class Test(unittest.TestCase):
         print(f"{tc_no} Test FLOAT/actual non existing url_string={url_string}")
         value = 0.0
         try:
-            floatGet = axisCom.get(".fNONE")
+            floatGet = axisCom.get(".fNONE")  # noqa: F841
         except Exception as ex:
             floatGetEx = ex
         try:
-            floatPut = axisCom.put(".fNONE", value)
+            floatPut = axisCom.put(".fNONE", value)  # noqa: F841
         except Exception as ex:
             floatPutEx = ex
         print(f"{tc_no}/{url_string} floatGetEx={floatGetEx} floatPutEx={floatPutEx}")

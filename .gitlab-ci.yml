@@ -14,6 +14,12 @@ default:
 
 
 ### stage: check
+pre-commit:
+  stage: check
+  image: registry.esss.lu.se/ics-docker/pre-commit:latest
+  script:
+    - pre-commit run --all-files
+
 shellcheck:
   image: pipelinecomponents/shellcheck:latest
   stage: check

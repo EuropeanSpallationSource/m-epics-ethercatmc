@@ -4,7 +4,6 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
@@ -101,7 +100,7 @@ def powerOffAndStart(self, tc_no, startpos, field_name, field_value):
     # self.axisMr.waitForStop(tc_no, 3.0)
     try:
         self.axisMr.waitForStartAndDone(tc_no, 6.0)
-    except:
+    except:  # noqa: E722
         caughtException = True
         msta = int(self.axisCom.get(".MSTA", use_monitor=False))
         if msta & self.axisMr.MSTA_BIT_MOVING:

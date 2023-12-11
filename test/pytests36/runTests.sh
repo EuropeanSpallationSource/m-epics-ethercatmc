@@ -198,9 +198,9 @@ checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST"
 checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
 
 #Check black, the python formatter
-BLACK_VERSION=22.3.0
+BLACK_VERSION=23.9.1
 if ! black --version | grep -q "[^0-9]${BLACK_VERSION}[^0-9]"; then
-  pip install git+https://github.com/psf/black@22.3.0
+  pip install git+https://github.com/psf/black@$BLACK_VERSION
 fi
 if ! black --version | grep -q "[^0-9]${BLACK_VERSION}[^0-9]"; then
   echo >&2 black not found or wrong version

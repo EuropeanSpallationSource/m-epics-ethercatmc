@@ -5,7 +5,6 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
@@ -59,9 +58,9 @@ class Test(unittest.TestCase):
         nErrorId = self.axisCom.get("-ErrId")
         for i in range(1, 10):
             if not (msta & self.axisMr.MSTA_BIT_PROBLEM):
-                res = self.axisCom.put("-MoveAbs", self.per10_UserPosition + i * 10)
+                self.axisCom.put("-MoveAbs", self.per10_UserPosition + i * 10)
                 time.sleep(0.01)
-                res2 = self.axisCom.put(".STOP", 1)
+                self.axisCom.put(".STOP", 1)
                 time.sleep(0.01)
                 msta = int(self.axisCom.get(".MSTA"))
                 nErrorId = self.axisCom.get("-ErrId")

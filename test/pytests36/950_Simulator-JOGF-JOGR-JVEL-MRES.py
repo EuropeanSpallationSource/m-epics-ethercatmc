@@ -6,7 +6,6 @@ import inspect
 import unittest
 import math
 import os
-import sys
 import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
@@ -106,7 +105,7 @@ def InitLimitsNoROlimits(self, tc_no):
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} resH={resH} resL={resL}"
         )
-        if (resH == True) and (resL == True):
+        if resH and resL:
             return True
 
         time.sleep(polltime)
@@ -156,7 +155,6 @@ def jogTheMotorToLS(
         )
         # The motorRecord adjusts VELO, BVEL VBAS
         # and this is not a bug. but an old feature
-        velo = self.axisCom.get(".VELO")
         bvel = self.axisCom.get(".BVEL")
         vbas = self.axisCom.get(".VBAS")
 
@@ -488,7 +486,6 @@ class Test(unittest.TestCase):
         )
         mres = -1.0
         dir = 0
-        jogDir = 1
 
         jogTheMotorTestWrapper(self, tc_no, mres=mres, dir=dir)
 

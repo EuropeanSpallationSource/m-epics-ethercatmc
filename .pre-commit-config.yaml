@@ -1,15 +1,14 @@
-#https://confluence.esss.lu.se/display/CSI/Software+Quality
-#
-# What is needed as well:
-# https://pre-commit.com/
-# pip install pre-commit
-
 repos:
-  - repo: https://github.com/ambv/black
-    rev: 22.3.0
+  - repo: https://github.com/psf/black
+    rev: 23.9.1
     hooks:
       - id: black
-#  - repo: https://gitlab.com/pycqa/flake8
-#    rev: 3.8.3
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.292
+    hooks:
+      - id: ruff
+#  - repo: https://github.com/pre-commit/pre-commit-hooks
+#    rev: v4.4.0
 #    hooks:
-#      - id: flake8
+#      - id: end-of-file-fixer
+#      - id: trailing-whitespace

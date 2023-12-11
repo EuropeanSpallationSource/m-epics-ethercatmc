@@ -5,7 +5,6 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 

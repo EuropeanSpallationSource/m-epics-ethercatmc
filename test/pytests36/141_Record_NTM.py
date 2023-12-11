@@ -3,11 +3,8 @@
 
 import datetime
 import inspect
-import math
 import unittest
 import os
-import sys
-import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
@@ -145,7 +142,6 @@ def moveVALnewRBVnewValNtm(
 def moveVALnewRBVnewValWrapper(
     self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal
 ):
-
     ntm = 0
     moveVALnewRBVnewValNtm(
         self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm

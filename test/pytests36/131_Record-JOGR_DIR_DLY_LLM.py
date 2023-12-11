@@ -5,7 +5,6 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
@@ -200,7 +199,6 @@ class Test(unittest.TestCase):
             self.axisCom.put(".DIR", 1)
             self.axisMr.jogDirection(tc_no, 1)
 
-            lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
 
             self.axisCom.put(".DIR", saved_DIR)

@@ -5,16 +5,14 @@
 
 import unittest
 import os
-import sys
-import math
-import time
+
 from motor_lib import motor_lib
+from motor_globals import motor_globals
+import capv_lib
 
 lib = motor_lib()
-from motor_globals import motor_globals
 
 globals = motor_globals()
-import capv_lib
 
 ###
 
@@ -56,8 +54,8 @@ class XTest(unittest.TestCase):
 
     # Assert that motor is homed
     def Xtest_TC_231(self):
-        motor = self.motor
-        tc_no = "TC-231"
+        # motor = self.motor
+        # tc_no = "TC-231"
         if not (self.msta & lib.MSTA_BIT_HOMED):
             self.assertNotEqual(
                 0, self.msta & lib.MSTA_BIT_HOMED, "MSTA.homed (Axis is not homed)"

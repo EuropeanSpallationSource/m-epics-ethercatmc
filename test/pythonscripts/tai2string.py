@@ -33,7 +33,7 @@ def main(argv=None):
         line = line.strip()
         match_tai = RE_MATCH_TAI.match(line)
         match_epoch = RE_MATCH_UTC.match(line)
-        if match_tai != None:
+        if match_tai is not None:
             gidx = 1
             pvname = match_tai.group(gidx)
             gidx = gidx + 1
@@ -56,7 +56,7 @@ def main(argv=None):
             print(
                 f"{pvname}{sep1}{datetime}{sep2}{alldatetime}.{subnsec:09d} epoch-now={epoch_now} sec_tai_plc={sec_tai_plc}"
             )
-        elif match_epoch != None:
+        elif match_epoch is not None:
             gidx = 1
             pvname = match_epoch.group(gidx)
             gidx = gidx + 1

@@ -3,7 +3,6 @@
 import re
 import sys
 
-import time
 import traceback
 
 # Script to post-process a logfile
@@ -22,6 +21,7 @@ import traceback
 global debug
 debug = False  # True
 
+
 ########################################################################
 #
 # Record the name of the Aux Bits
@@ -36,7 +36,7 @@ class WrappingStepCounter:
         if debug:
             print(f"WrappingStepCounter steps={steps}")
 
-        if self.old_steps != None:
+        if self.old_steps is not None:
             wrap_so_much = 65536
             if self.old_steps < -15000 and steps >= 15000:
                 self.wrap_around_offset = self.wrap_around_offset - wrap_so_much
@@ -130,7 +130,6 @@ def format_line2(date, time, pvname, value):
 # Record the name of the Aux Bits
 #
 def handle_namauxbit(line, match_namauxbit, raw):
-
     numauxbit = int(match_namauxbit.group(3))
     if debug:
         print(f"line={line} numauxbit={numauxbit} raw={raw}")
@@ -157,7 +156,7 @@ def handle_statusbits(date, time, pvname, raw):
             if new_auxbits & bit_mask:
                 # Never have seen AUX bits in the log
                 # Print a line without the sign: "+" or "-"
-                if changed_txt == None:
+                if changed_txt is None:
                     changed_txt = auxbitnames[bit_no]
                 else:
                     changed_txt = changed_txt + " " + auxbitnames[bit_no]
@@ -166,7 +165,7 @@ def handle_statusbits(date, time, pvname, raw):
                 sign = "+"
             else:
                 sign = "-"
-            if changed_txt == None:
+            if changed_txt is None:
                 changed_txt = sign + auxbitnames[bit_no]
             else:
                 changed_txt = changed_txt + " " + sign + auxbitnames[bit_no]
@@ -188,7 +187,6 @@ def handle_statusbits(date, time, pvname, raw):
 # Motor raw steps
 #
 def handle_rawmtrstep(date, time, pvname, raw):
-
     if debug:
         print(f"handle_RawMtrStep raw={raw}")
     wrappingMtrStepCounter.set(raw)
@@ -202,7 +200,6 @@ def handle_rawmtrstep(date, time, pvname, raw):
 # Encoder raw steps
 #
 def handle_rawencstep(date, time, pvname, raw):
-
     if debug:
         print(f"handle_RawEncStep raw={raw}")
     wrappingEncStepCounter.set(raw)
@@ -218,16 +215,16 @@ def handle_rawencstep(date, time, pvname, raw):
 #
 def handle_ioc_log_line(line, pvname, date, time, raw):
     match_namauxbit = RE_MATCH_NAMAUXBIT.match(pvname)
-    if match_namauxbit != None:
+    if match_namauxbit is not None:
         return handle_namauxbit(line, match_namauxbit, raw)
     match_statusbits = RE_MATCH_STATUSBITS.match(pvname)
-    if match_statusbits != None:
+    if match_statusbits is not None:
         return handle_statusbits(date, time, pvname, raw)
     match_rawmtrstep = RE_MATCH_RAWMTRSTEP.match(pvname)
-    if match_rawmtrstep != None:
+    if match_rawmtrstep is not None:
         return handle_rawmtrstep(date, time, pvname, raw)
     match_rawencstep = RE_MATCH_RAWENCSTEP.match(pvname)
-    if match_rawencstep != None:
+    if match_rawencstep is not None:
         return handle_rawencstep(date, time, pvname, raw)
 
     # Nothing special: Return the line. data/time first
@@ -240,18 +237,18 @@ def handle_ioc_log_line(line, pvname, date, time, raw):
 #
 def handle_any_line(line):
     match_ioc_pv_not_found = RE_MATCH_IOC_PV_NOT_FOUND.match(line)
-    if match_ioc_pv_not_found != None:
+    if match_ioc_pv_not_found is not None:
         return None
     match_ioc_pv_disconnected = RE_MATCH_IOC_PV_DISCONNECTED.match(line)
-    if match_ioc_pv_disconnected != None:
+    if match_ioc_pv_disconnected is not None:
         return None
     match_invalid_undefined = RE_MATCH_INVALID_UNDEFINED.match(line)
-    if match_invalid_undefined != None:
+    if match_invalid_undefined is not None:
         return None
 
     match_ioc_log_line = RE_MATCH_IOC_LOG_LINE.match(line)
-    if match_ioc_log_line == None:
-        print("re_match == None line=%s" % (line))
+    if match_ioc_log_line is None:
+        print("re_match is None line=%s" % (line))
         sys.exit(1)
 
     pvname = match_ioc_log_line.group(1)
@@ -274,7 +271,7 @@ def main(argv=None):
         line = line.strip()
         try:
             line2 = handle_any_line(line)
-            if line2 != None:
+            if line2 is not None:
                 print(line2)
 
         except Exception as e:

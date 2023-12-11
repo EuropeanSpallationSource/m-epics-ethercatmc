@@ -3,10 +3,8 @@
 
 import datetime
 import inspect
-import math
 import unittest
 import os
-import sys
 import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
@@ -25,7 +23,6 @@ polltime = 0.1
 
 def readBackParamVerify(self, tc_no, field_name, expVal):
     maxTime = 5  # 5 seconds maximum to poll all parameters
-    testPassed = False
     while maxTime > 0:
         actVal = int(self.axisCom.get(field_name))
         print(
@@ -38,7 +35,7 @@ def readBackParamVerify(self, tc_no, field_name, expVal):
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} res={res}"
         )
-        if res == True:
+        if res:
             return True
         else:
             time.sleep(polltime)

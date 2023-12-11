@@ -8,7 +8,6 @@
 #
 
 import datetime
-import re
 import sys
 
 filnam = "AxisCom"
@@ -61,7 +60,7 @@ class AxisCom:
         pvname = self.pvpfx + pvsuf
         fullname = self.url_scheme + pvname
         ret = None
-        if as_string == True:
+        if as_string:
             raise Exception("as_string=True not supported")
         if self.log_debug:
             print(
@@ -102,7 +101,7 @@ class AxisCom:
         if self.ctxt is not None:
             ret = self.ctxt.put(pvname, value, timeout=timeout, wait=wait)
             if self.log_debug:
-                if ret == None:
+                if ret is None:
                     print(
                         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value}"
                     )

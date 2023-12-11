@@ -5,20 +5,13 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
 import time
-import math
-import inspect
 
 filnam = os.path.basename(__file__)[0:3]
 ###
-
-
-def lineno():
-    return inspect.currentframe().f_back.f_lineno
 
 
 polltime = 0.1

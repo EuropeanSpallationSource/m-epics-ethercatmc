@@ -9,8 +9,6 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
-import math
 import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
@@ -117,7 +115,7 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
     except Exception as ex:
         print(f"{tc_no} waitFoeStart ex={ex} ")
 
-    stopped = self.axisMr.waitForStop(tc_no, time_to_wait)
+    self.axisMr.waitForStop(tc_no, time_to_wait)
 
     if homProc != 0:
         self.axisCom.put("-HomProc", old_HomProc)

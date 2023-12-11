@@ -5,7 +5,6 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
@@ -96,8 +95,6 @@ class Test(unittest.TestCase):
         tc_no = "1214"
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
 
-        axisCom = self.axisCom
-        axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
@@ -110,8 +107,6 @@ class Test(unittest.TestCase):
     def test_TC_1215(self):
         tc_no = "1215"
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
-        axisCom = self.axisCom
-        axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 0.0)
@@ -122,7 +117,7 @@ class Test(unittest.TestCase):
 
             self.axisCom.put(".DLY", self.saved_DLY)
             self.axisCom.put(".JOGF", 0)
-            resW = self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
+            self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
             self.assertEqual(
                 0,
                 msta & self.axisMr.MSTA_BIT_PROBLEM,
@@ -143,8 +138,6 @@ class Test(unittest.TestCase):
     def test_TC_1216(self):
         tc_no = "1216"
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
-        axisCom = self.axisCom
-        axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 0.0)
@@ -188,8 +181,6 @@ class Test(unittest.TestCase):
     def test_TC_1217(self):
         tc_no = "1217"
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
-        axisCom = self.axisCom
-        axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
@@ -203,8 +194,6 @@ class Test(unittest.TestCase):
     def test_TC_1218(self):
         tc_no = "1218"
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
-        axisCom = self.axisCom
-        axisMr = self.axisMr
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             saved_DIR = self.axisCom.get(".DIR")
@@ -213,7 +202,6 @@ class Test(unittest.TestCase):
             self.axisCom.put(".DIR", 1)
             self.axisMr.jogDirection(tc_no, 0)
 
-            lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
 
             self.axisCom.put(".JOGF", 0)

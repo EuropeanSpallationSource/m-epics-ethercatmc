@@ -5,13 +5,8 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
-
-import time
-import math
-import inspect
 
 filnam = os.path.basename(__file__)[0:3]
 ###
@@ -147,7 +142,7 @@ def writeReadDiscreteOutput1(self, tc_no, val):
     )
     pils_stat = val & 0xF0000000
     expSeverity = alarmSeverityValuesInt.get(pils_stat)
-    if expSeverity != None:
+    if expSeverity is not None:
         actSeverity = int(self.axisCom.get("-TestDiscreteInput.SEVR"))
         if actSeverity != expSeverity:
             print(
@@ -155,7 +150,7 @@ def writeReadDiscreteOutput1(self, tc_no, val):
             )
             passed = False
     expAlarmState = alarmStateValuesInt.get(pils_stat)
-    if expAlarmState != None:
+    if expAlarmState is not None:
         actAlarmState = int(self.axisCom.get("-TestDiscreteInput.STAT"))
         if actAlarmState != expAlarmState:
             print(

@@ -5,13 +5,11 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
 import time
 import math
-import inspect
 
 filnam = os.path.basename(__file__)[0:3]
 ###
@@ -133,7 +131,7 @@ def InitLimitsNoROlimits(self, tc_no):
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} resH={resH} resL={resL}"
         )
-        if (resH == True) and (resL == True):
+        if resH and resL:
             return True
 
         time.sleep(polltime)
@@ -169,8 +167,8 @@ def InitLimitsWithROlimits(self, tc_no):
     # Wait until ".DHLM" and ".DLLM" have rippled through the poller
     # and the processing in the motorRecord
     while maxTime > 0:
-        actDHLM = self.axisCom.get(".DHLM", myDHLM)
-        actDLLM = self.axisCom.get(".DLLM", myDLLM)
+        actDHLM = self.axisCom.get(".DHLM")
+        actDLLM = self.axisCom.get(".DLLM")
 
         debug_text = f"{tc_no}:{lineno()} expDHLM={expDHLM} actDHLM={actDHLM} expDLLM={expDLLM} actDLLM={actDLLM} mres={mres}"
         print(debug_text)
@@ -180,7 +178,7 @@ def InitLimitsWithROlimits(self, tc_no):
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}:{int(lineno())} resH={resH} resL={resL}"
         )
-        if (resH == True) and (resL == True):
+        if resH and resL:
             return
         time.sleep(polltime)
         maxTime = maxTime - polltime
@@ -208,14 +206,13 @@ def setMresDirOff(self, tc_no, mres, dir, off):
 
 def readBackParamVerify(self, tc_no, field_name, expVal):
     maxTime = 5  # 5 seconds maximum to poll all parameters
-    testPassed = False
     maxDelta = math.fabs(expVal) * 0.02  # 2 % error tolerance margin
     while maxTime > 0:
         actVal = self.axisCom.get(field_name, use_monitor=False)
         res = self.axisMr.calcAlmostEqual(
             tc_no, expVal, actVal, maxDelta, doPrint=False
         )
-        if (res == True) or (res != 0):
+        if res or (res != 0):
             # self.axisMr.calcAlmostEqual(tc_no, expVal, actVal, maxDelta, doPrint=True)
             print(
                 f"{tc_no}:{int(lineno())} {field_name} expVal={expVal:f} actVal={actVal:f} inrange=True"
@@ -396,7 +393,7 @@ class Test(unittest.TestCase):
     try:
         floatGet = axisCom.get(".RHLM")
         hasRhlmRllm = True
-    except Exception as ex:
+    except Exception:
         hasRhlmRllm = False
 
     print(

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from optparse import OptionParser
-import os
 import re
 import sys
 
@@ -56,7 +55,7 @@ def shiftY_NNN(options, line):
     isMatchY = matchY.match(line)
     isMatchN = matchN.match(line)
 
-    if isMatchY != None:
+    if isMatchY is not None:
         pfx = matchY.sub(r"\1", line)
         yPos = int(matchY.sub(r"\2", line))
         sfx = matchY.sub(r"\3", line)
@@ -65,7 +64,7 @@ def shiftY_NNN(options, line):
             pfx = pfx[0:-1]
         line = pfx + str(yPos) + sfx
 
-    if isMatchN != None:
+    if isMatchN is not None:
         pfm = matchN.sub(r"\1", line)
         # mPos = int(matchM.sub(r'\2', line))
         sfm = matchN.sub(r"\3", line)

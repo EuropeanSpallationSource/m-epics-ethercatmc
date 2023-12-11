@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from optparse import OptionParser
-import os
 import re
 import sys
 
@@ -111,7 +110,7 @@ def shiftXorY(options, line):
     isMatchY = matchY.match(line)
     isMatchPoint = matchPoint.match(line)
 
-    if isMatchPoint != None:
+    if isMatchPoint is not None:
         # if options.debug > 0:
         pfx = matchPoint.sub(r"\1", line)
         xPos = int(matchPoint.sub(r"\2", line))
@@ -128,7 +127,7 @@ def shiftXorY(options, line):
             comma = comma[0:-1]
         line = pfx + str(xPos) + comma + str(yPos) + sfx
 
-    if isMatchY != None:
+    if isMatchY is not None:
         pfx = matchY.sub(r"\1", line)
         yPos = int(matchY.sub(r"\2", line))
         sfx = matchY.sub(r"\3", line)
@@ -137,7 +136,7 @@ def shiftXorY(options, line):
             pfx = pfx[0:-1]
         line = pfx + str(yPos) + sfx
 
-    if isMatchX != None:
+    if isMatchX is not None:
         pfx = matchX.sub(r"\1", line)
         xPos = int(matchX.sub(r"\2", line))
         sfx = matchX.sub(r"\3", line)
@@ -146,7 +145,7 @@ def shiftXorY(options, line):
             pfx = pfx[0:-1]
         line = pfx + str(xPos) + sfx
 
-    if isMatchH != None:
+    if isMatchH is not None:
         pfx = matchH.sub(r"\1", line)
         yPos = int(matchH.sub(r"\2", line))
         sfx = matchH.sub(r"\3", line)
@@ -155,7 +154,7 @@ def shiftXorY(options, line):
             pfx = pfx[0:-1]
         line = pfx + str(yPos) + sfx
 
-    if isMatchW != None:
+    if isMatchW is not None:
         pfx = matchW.sub(r"\1", line)
         xPos = int(matchW.sub(r"\2", line))
         sfx = matchW.sub(r"\3", line)
@@ -164,7 +163,7 @@ def shiftXorY(options, line):
             pfx = pfx[0:-1]
         line = pfx + str(xPos) + sfx
 
-    if isMatchM != None:
+    if isMatchM is not None:
         pfm = matchM.sub(r"\1", line)
         mPos = int(matchM.sub(r"\2", line))
         sfm = matchM.sub(r"\3", line)

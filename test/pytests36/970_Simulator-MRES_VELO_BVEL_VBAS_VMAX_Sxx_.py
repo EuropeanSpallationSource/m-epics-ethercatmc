@@ -6,11 +6,11 @@ import inspect
 import math
 import unittest
 import os
-import sys
 import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
+filnam = os.path.basename(__file__)[0:3]
 
 ###
 
@@ -45,7 +45,6 @@ def InitVelocities(self, tc_no):
 
 def readBackParamVerify(self, tc_no, field_name, expVal):
     maxTime = 5  # 5 seconds maximum to poll all parameters
-    testPassed = False
     maxDelta = math.fabs(expVal) * 0.02  # 2 % error tolerance margin
     while maxTime > 0:
         actVal = self.axisCom.get(field_name)
@@ -57,7 +56,7 @@ def readBackParamVerify(self, tc_no, field_name, expVal):
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}:{int(lineno())} res={res}"
         )
-        if (res == True) or (res != 0):
+        if res or (res != 0):
             return True
         else:
             time.sleep(polltime)
@@ -152,7 +151,7 @@ class Test(unittest.TestCase):
     def test_TC_97030(self):
         tc_no = 97030
         self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
-        if self.drvUseEGU_RB != None:
+        if self.drvUseEGU_RB is not None:
             mflg = int(self.axisCom.get(".MFLG"))
             drvUseEGU = 1
             self.axisCom.put("-DrvUseEGU", drvUseEGU)
@@ -169,15 +168,15 @@ class Test(unittest.TestCase):
     # Change UREV VELO must not change
     def test_TC_97040(self):
         tc_no = 970401
-        if self.drvUseEGU_RB != None:
+        if self.drvUseEGU_RB is not None:
             changeResolutionCheckVelocities(
                 self, tc_no, ".UREV", drvUseEGU=self.drvUseEGU_RB
             )
 
     # Change MRES VELO must not change
-    def test_TC_97040(self):
-        tc_no = 970401
-        if self.drvUseEGU_RB != None:
+    def test_TC_97050(self):
+        tc_no = 970501
+        if self.drvUseEGU_RB is not None:
             changeResolutionCheckVelocities(
                 self, tc_no, ".MRES", drvUseEGU=self.drvUseEGU_RB
             )

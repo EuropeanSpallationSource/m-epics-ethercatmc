@@ -9,8 +9,6 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
-import math
 import time
 
 from AxisMr import AxisMr
@@ -73,7 +71,6 @@ def waitForStart(self, tc_no, wait_for, direction, oldRBV):
         (lls, hls, movn, dmov, outOfRange) = checkForEmergenyStop(
             self, tc_no + " wait waitForStart", wait_for, direction, oldRBV, TweakValue
         )
-        rbv = self.axisCom.get(".RBV")
         if movn and not dmov:
             return True
         time.sleep(polltime)
@@ -200,12 +197,10 @@ def tweakToLimit(self, tc_no, direction):
         if not hls:
             self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
             self.assertEqual(True, hls, "hls should be active")
-        newPos = rbv - deltaToMove
     else:
         if not lls:
             self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
             self.assertEqual(True, lls, "lls should be active")
-        newPos = rbv + deltaToMove
 
     # If we reached the limit switch, we are fine and
     # can reset the error
@@ -228,6 +223,7 @@ class Test(unittest.TestCase):
 
     old_Enable = int(axisCom.get(".CNEN"))
     TweakValue = axisCom.get(".TWV")
+
     # TWF/TWR
     def test_TC_09001(self):
         tc_no = "09001"

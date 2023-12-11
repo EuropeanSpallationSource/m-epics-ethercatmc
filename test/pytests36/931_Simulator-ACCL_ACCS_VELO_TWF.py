@@ -4,11 +4,9 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
-import time
 
 filnam = os.path.basename(__file__)[0:3]
 ###

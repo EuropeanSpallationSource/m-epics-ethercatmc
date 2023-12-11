@@ -5,7 +5,6 @@ import datetime
 import inspect
 import unittest
 import os
-import sys
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
@@ -74,7 +73,7 @@ class Test(unittest.TestCase):
             print(
                 f"{tc_no} rbv={rbv:f} destination={destination:f} timeout={timeout:f}"
             )
-            res = self.axisCom.put("-MoveVel", 0 - jvel)
+            self.axisCom.put("-MoveVel", 0 - jvel)
             # TODO: The -MoveVel PV is not always there ?
             # Investigations needed
             # if (res == None):
@@ -140,7 +139,7 @@ class Test(unittest.TestCase):
                 f"{tc_no}: rbv={rbv:f} destination={destination:f} timeout={timeout:f}"
             )
 
-            res = self.axisCom.put("-MoveAbs", (destination) / mres)
+            self.axisCom.put("-MoveAbs", (destination) / mres)
             # if (res == None):
             #    print('%s caput -Moveabs res=None' % (tc_no))
             #    self.assertNotEqual(res, None, 'caput -Moveabs retuned not None. PV not found ?')

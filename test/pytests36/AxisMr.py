@@ -5,15 +5,12 @@
 """
 
 import datetime
-import sys
 import math
 import time
 import os
 import filecmp
-import time
 import inspect
 
-from AxisCom import AxisCom
 
 filnam = "AxisMr"
 
@@ -45,7 +42,6 @@ class AxisMr:
         while now < end_seconds:
             # Dummy read to give the IOC time to start
             try:
-                msta = int(axisCom.get(".MSTA", timeout=2.0, use_monitor=False))
                 vers = float(self.axisCom.get(".VERS"))
                 if vers >= 6.94 and vers <= 7.09:
                     self.hasFieldSPAM = True
@@ -54,7 +50,7 @@ class AxisMr:
                     self.hasFieldSPAM = False
                     self.isMotorMasterAxis = True
                 return
-            except:
+            except:  # noqa: E722
                 pass
             time.sleep(polltime)
             now = time.time()
@@ -122,26 +118,26 @@ class AxisMr:
     myPOShig = 96  # low + 2*BDST
 
     def setFieldSPAM(self, tc_no, value):
-        if self.hasFieldSPAM == None:
+        if self.hasFieldSPAM is None:
             vers = float(self.axisCom.get(".VERS"))
             if vers >= 6.94 and vers <= 7.09:
                 self.hasFieldSPAM = True
             else:
                 self.hasFieldSPAM = False
-        if self.hasFieldSPAM == True:
+        if self.hasFieldSPAM:
             self.axisCom.put(".SPAM", value)
 
     def getFieldSPAM(
         self,
         tc_no,
     ):
-        if self.hasFieldSPAM == None:
+        if self.hasFieldSPAM is None:
             vers = float(self.axisCom.get(".VERS"))
             if vers >= 6.94 and vers <= 7.09:
                 self.hasFieldSPAM = True
             else:
                 self.hasFieldSPAM = False
-        if self.hasFieldSPAM == True:
+        if self.hasFieldSPAM:
             return self.axisCom.get(".SPAM")
         return None
 
@@ -154,7 +150,7 @@ class AxisMr:
     def initializeMotorRecordOneField(self, tc_no, field_name, value):
         oldVal = self.axisCom.get(field_name)
 
-        if oldVal != None:
+        if oldVal is not None:
             print(
                 "%s: initializeMotorRecordOneField field=%s oldVal=%f value=%f"
                 % (tc_no, field_name, oldVal, value)
@@ -168,7 +164,6 @@ class AxisMr:
             )
 
     def initializeMotorRecordSimulatorAxis(self, tc_no):
-
         self.initializeMotorRecordOneField(tc_no, ".VMAX", 50.0)
         self.initializeMotorRecordOneField(tc_no, ".VELO", 20.0)
         self.initializeMotorRecordOneField(tc_no, ".ACCL", 5.0)
@@ -520,8 +515,8 @@ class AxisMr:
             lenOutStr = len(outStr)
             if lenOutStr >= 40:
                 print(
-                    "%s/%s: setValueOnSimulator lenOutStr=%d outStr=%s"
-                    % (tc_no, self - url_string, lenOutStr, outStr)
+                    "%s: setValueOnSimulator lenOutStr=%d outStr=%s"
+                    % (tc_no, lenOutStr, outStr)
                 )
                 assert len(outStr) < 40
         self.axisCom.put("-DbgStrToMCU", outStr, wait=True)
@@ -938,9 +933,6 @@ class AxisMr:
         return valueVALok
 
     def setSoftLimitsOff(self, tc_no, direction=-1):
-        """
-        Switch off the soft limits
-        """
         actDHLM = float(self.axisCom.get(".DHLM", use_monitor=False))
         actDLLM = float(self.axisCom.get(".DLLM", use_monitor=False))
 
@@ -971,7 +963,7 @@ class AxisMr:
             resL = self.calcAlmostEqual(tc_no, 0.0, actDLLM, maxDelta)
             debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: setSoftLimitsOff actDHLM={actDHLM} actDLLM={actDLLM} resH={resH} resL={resL}"
             print(debug_text)
-            if (resH == True) and (resL == True):
+            if resH and resL:
                 return
 
             time.sleep(polltime)
@@ -982,9 +974,6 @@ class AxisMr:
     def setSoftLimitsOn(
         self, tc_no, low_limit=0.0, high_limit=0.0, initAbsMinMax=False
     ):
-        """
-        Set the soft limits
-        """
         if initAbsMinMax:
             high_limit = self.axisCom.get("-CfgPMAX-RB")
             low_limit = self.axisCom.get("-CfgPMIN-RB")
@@ -1098,9 +1087,7 @@ class AxisMr:
         return True
 
     def postMoveCheck(self, tc_no):
-        """
-        Check the motor for the correct state at the end of move.
-        """
+        # Check the motor for the correct state at the end of move.
         val = self.axisCom.get(".VAL")
         rbv = self.axisCom.get(".RBV", use_monitor=False)
         dmov = self.axisCom.get(".DMOV")
@@ -1156,7 +1143,6 @@ class AxisMr:
             )
             return False
 
-        rdbd = self.axisCom.get(".RDBD")
         old_DHLM = self.axisCom.get("-CfgDHLM")
         old_DLLM = self.axisCom.get("-CfgDLLM")
         margin = 1.1
@@ -1218,7 +1204,7 @@ class AxisMr:
                 self.setSoftLimitsOff(tc_no, direction=direction)
                 try:
                     self.waitForStop(tc_no, wait_for_stop)
-                except Exception as ex:
+                except Exception:
                     self.axisCom.put(".STOP", 1)
                     try:
                         self.waitForStop(tc_no, 2.0)
