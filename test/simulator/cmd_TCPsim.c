@@ -1,31 +1,31 @@
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <ctype.h>
-#include "sock-util.h"
-#include "logerr_info.h"
-#include "cmd_buf.h"
-#include "hw_motor.h"
 #include "cmd_TCPsim.h"
 
-#define TCPSIM_SEND_NEWLINE  1
-#define TCPSIM_SEND_OK       2
-#define NINT(f) (long)((f)>0 ? (f)+0.5 : (f)-0.5)       /* Nearest integer. */
+#include <ctype.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-typedef struct
-{
-  int    velocity;
+#include "cmd_buf.h"
+#include "hw_motor.h"
+#include "logerr_info.h"
+#include "sock-util.h"
+
+#define TCPSIM_SEND_NEWLINE 1
+#define TCPSIM_SEND_OK 2
+#define NINT(f) (long)((f) > 0 ? (f) + 0.5 : (f)-0.5) /* Nearest integer. */
+
+typedef struct {
+  int velocity;
 } cmd_Motor_cmd_type;
 
 static cmd_Motor_cmd_type cmd_Motor_cmd[MAX_AXES];
 
-static void init_axis(int axis_no)
-{
+static void init_axis(int axis_no) {
   static char init_done[MAX_AXES];
   const static double MRES = 0.001;
   const double ERES = 1.0;
-  double ReverseMRES = (double)1.0/MRES;
+  double ReverseMRES = (double)1.0 / MRES;
 
   if (axis_no >= MAX_AXES || axis_no < 0) {
     return;
@@ -35,25 +35,21 @@ static void init_axis(int axis_no)
     double valueLow = -1.0;
     double valueHigh = 180.0;
     memset(&motor_init_values, 0, sizeof(motor_init_values));
-    motor_init_values.ReverseERES = MRES/ERES;
-    motor_init_values.ParkingPos = 1 + axis_no/10.0; /* ParkingPOS, steps */
+    motor_init_values.ReverseERES = MRES / ERES;
+    motor_init_values.ParkingPos = 1 + axis_no / 10.0; /* ParkingPOS, steps */
     motor_init_values.MaxHomeVelocityAbs = 66 * ReverseMRES;
     motor_init_values.lowHardLimitPos = valueLow * ReverseMRES;
     motor_init_values.highHardLimitPos = valueHigh * ReverseMRES;
     motor_init_values.hWlowPos = valueLow * ReverseMRES;
     motor_init_values.hWhighPos = valueHigh * ReverseMRES;
 
-    hw_motor_init(axis_no,
-                  &motor_init_values,
-                  sizeof(motor_init_values));
+    hw_motor_init(axis_no, &motor_init_values, sizeof(motor_init_values));
 
     init_done[axis_no] = 1;
   }
 }
 
-
-static int handle_TCPSIM_cmd3(int motor_axis_no, const char *myarg_2)
-{
+static int handle_TCPSIM_cmd3(int motor_axis_no, const char *myarg_2) {
   AXIS_CHECK_RETURN_ZERO(motor_axis_no);
 
   /* AB (stop) */
@@ -69,25 +65,25 @@ static int handle_TCPSIM_cmd3(int motor_axis_no, const char *myarg_2)
   }
   /* ST? */
   if (0 == strcmp(myarg_2, "ST?")) {
-    /* Status bits */
-    #define STATUS_BIT_DIRECTION       0x1
-    #define STATUS_BIT_DONE            0x2
-    #define STATUS_BIT_MOVING          0x4
-    #define STATUS_BIT_LIMIT_POS       0x8
-    #define STATUS_BIT_LIMIT_NEG      0x10
-  //#define STATUS_BIT_HOMING         0x20
-    #define STATUS_BIT_HSIGNAL        0x40
-    #define STATUS_BIT_HOMED          0x80
-    #define STATUS_BIT_ERROR         0x100
+/* Status bits */
+#define STATUS_BIT_DIRECTION 0x1
+#define STATUS_BIT_DONE 0x2
+#define STATUS_BIT_MOVING 0x4
+#define STATUS_BIT_LIMIT_POS 0x8
+#define STATUS_BIT_LIMIT_NEG 0x10
+    //#define STATUS_BIT_HOMING         0x20
+#define STATUS_BIT_HSIGNAL 0x40
+#define STATUS_BIT_HOMED 0x80
+#define STATUS_BIT_ERROR 0x100
 
     int axis_status = 0;
-    if (getAxisDone(motor_axis_no)) axis_status       |= STATUS_BIT_DONE;
-    if (isMotorMoving(motor_axis_no)) axis_status     |= STATUS_BIT_MOVING;
+    if (getAxisDone(motor_axis_no)) axis_status |= STATUS_BIT_DONE;
+    if (isMotorMoving(motor_axis_no)) axis_status |= STATUS_BIT_MOVING;
     if (getNegLimitSwitch(motor_axis_no)) axis_status |= STATUS_BIT_LIMIT_NEG;
     if (getPosLimitSwitch(motor_axis_no)) axis_status |= STATUS_BIT_LIMIT_POS;
-    if (getAxisHome(motor_axis_no)) axis_status       |= STATUS_BIT_HSIGNAL;
-    if (getAxisHomed(motor_axis_no)) axis_status      |= STATUS_BIT_HOMED;
-    if (get_bError(motor_axis_no)) axis_status        |= STATUS_BIT_ERROR;
+    if (getAxisHome(motor_axis_no)) axis_status |= STATUS_BIT_HSIGNAL;
+    if (getAxisHomed(motor_axis_no)) axis_status |= STATUS_BIT_HOMED;
+    if (get_bError(motor_axis_no)) axis_status |= STATUS_BIT_ERROR;
 
     cmd_buf_printf("%d", axis_status);
     return TCPSIM_SEND_NEWLINE;
@@ -96,33 +92,25 @@ static int handle_TCPSIM_cmd3(int motor_axis_no, const char *myarg_2)
   return 0;
 }
 
-static int handle_TCPSIM_cmd4(int motor_axis_no,
-                              const char *myarg_2,
-                              const char *myarg_3)
-{
+static int handle_TCPSIM_cmd4(int motor_axis_no, const char *myarg_2,
+                              const char *myarg_3) {
   int value = 0;
   int nvals = -1;
   AXIS_CHECK_RETURN_ZERO(motor_axis_no);
 
   if (0 == strcmp(myarg_2, "MA")) {
     nvals = sscanf(myarg_3, "%d", &value);
-    LOGINFO5("%s/%s:%d res=%d\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             nvals);
+    LOGINFO5("%s/%s:%d res=%d\n", __FILE__, __FUNCTION__, __LINE__, nvals);
     if (nvals == 1) {
-      movePosition(motor_axis_no,
-                   (double)value,
-                   0, /* int relative, */
+      movePosition(motor_axis_no, (double)value, 0, /* int relative, */
                    cmd_Motor_cmd[motor_axis_no].velocity,
-                   1.0 /*double acceleration */ );
+                   1.0 /*double acceleration */);
       return TCPSIM_SEND_OK;
     }
   }
   if (0 == strcmp(myarg_2, "VEL")) {
     nvals = sscanf(myarg_3, "%d", &value);
-    LOGINFO5("%s/%s:%d res=%d\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             nvals);
+    LOGINFO5("%s/%s:%d res=%d\n", __FILE__, __FUNCTION__, __LINE__, nvals);
     if (nvals == 1) {
       cmd_Motor_cmd[motor_axis_no].velocity = value;
       return TCPSIM_SEND_OK;
@@ -130,40 +118,30 @@ static int handle_TCPSIM_cmd4(int motor_axis_no,
   }
   if (0 == strcmp(myarg_2, "HOM")) {
     nvals = sscanf(myarg_3, "%d", &value);
-    LOGINFO5("%s/%s:%d res=%d\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             nvals);
+    LOGINFO5("%s/%s:%d res=%d\n", __FILE__, __FUNCTION__, __LINE__, nvals);
     if (nvals == 1) {
-      moveHome(motor_axis_no,
-               value,
-               cmd_Motor_cmd[motor_axis_no].velocity,
+      moveHome(motor_axis_no, value, cmd_Motor_cmd[motor_axis_no].velocity,
                1 /* double acceleration */);
       return TCPSIM_SEND_OK;
     }
   }
   if (0 == strcmp(myarg_2, "JOG")) {
     nvals = sscanf(myarg_3, "%d", &value);
-    LOGINFO5("%s/%s:%d res=%d\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             nvals);
+    LOGINFO5("%s/%s:%d res=%d\n", __FILE__, __FUNCTION__, __LINE__, nvals);
     if (nvals == 1) {
       int direction = 1;
       if (value < 0) {
         direction = 0;
         value = 0 - value;
       }
-      moveVelocity(motor_axis_no,
-                   direction,
-                   (double)value,
+      moveVelocity(motor_axis_no, direction, (double)value,
                    1 /* double acceleration */);
       return TCPSIM_SEND_OK;
     }
   }
   if (0 == strcmp(myarg_2, "POW")) {
     nvals = sscanf(myarg_3, "%d", &value);
-    LOGINFO5("%s/%s:%d res=%d\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             nvals);
+    LOGINFO5("%s/%s:%d res=%d\n", __FILE__, __FUNCTION__, __LINE__, nvals);
     if (nvals == 1) {
       if (!setAmplifierPercent(motor_axis_no, value)) {
         return TCPSIM_SEND_OK;
@@ -173,12 +151,10 @@ static int handle_TCPSIM_cmd4(int motor_axis_no,
   return 0;
 }
 
-int cmd_TCPsim(int argc, const char *argv[])
-{
+int cmd_TCPsim(int argc, const char *argv[]) {
   int ret = 0;
   int axis_no = 0;
-  LOGINFO5("%s/%s:%d argc=%d argv[0]=%s\n",
-           __FILE__, __FUNCTION__, __LINE__,
+  LOGINFO5("%s/%s:%d argc=%d argv[0]=%s\n", __FILE__, __FUNCTION__, __LINE__,
            argc, argv[0]);
   /* We use a UNIX like counting:
      argc == 4
@@ -189,23 +165,20 @@ int cmd_TCPsim(int argc, const char *argv[])
   if (argc >= 2) {
     int nvals;
     nvals = sscanf(argv[1], "%d", &axis_no);
-    LOGINFO5("%s/%s:%d argv[1]=%s argc=%d nvals=%d axis_no=%d\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             argv[1], argc, nvals, axis_no);
+    LOGINFO5("%s/%s:%d argv[1]=%s argc=%d nvals=%d axis_no=%d\n", __FILE__,
+             __FUNCTION__, __LINE__, argv[1], argc, nvals, axis_no);
     if (nvals != 1 || axis_no < 1) {
       return 0; /* Not TCPSIM */
     }
   }
 
   if (argc == 4) {
-    LOGINFO5("%s/%s:%d axis_no=%d argv[2]=%s argv[3]=%s\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             axis_no, argv[2], argv[3]);
+    LOGINFO5("%s/%s:%d axis_no=%d argv[2]=%s argv[3]=%s\n", __FILE__,
+             __FUNCTION__, __LINE__, axis_no, argv[2], argv[3]);
     ret = handle_TCPSIM_cmd4(axis_no, argv[2], argv[3]);
   } else if (argc == 3) {
-    LOGINFO5("%s/%s:%d argv[1]=%s argv[2]=%s\n",
-             __FILE__, __FUNCTION__, __LINE__,
-             argv[1], argv[2]);
+    LOGINFO5("%s/%s:%d argv[1]=%s argv[2]=%s\n", __FILE__, __FUNCTION__,
+             __LINE__, argv[1], argv[2]);
     ret = handle_TCPSIM_cmd3(axis_no, argv[2]);
   }
   switch (ret) {
@@ -216,8 +189,7 @@ int cmd_TCPsim(int argc, const char *argv[])
       cmd_buf_printf("\n");
       break;
     default:
-      LOGERR("%s/%s:%d argv[0]=%s\n",
-             __FILE__, __FUNCTION__, __LINE__,
+      LOGERR("%s/%s:%d argv[0]=%s\n", __FILE__, __FUNCTION__, __LINE__,
              argv[0]);
       ;
   }

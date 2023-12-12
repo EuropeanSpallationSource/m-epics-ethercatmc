@@ -4,11 +4,10 @@
 #include <inttypes.h>
 #include <stddef.h>
 
-#define ADS_READ_DEVICE_INFO  1
-#define ADS_READ              2
-#define ADS_WRITE             3
-#define ADS_READ_WRITE        9
-
+#define ADS_READ_DEVICE_INFO 1
+#define ADS_READ 2
+#define ADS_WRITE 3
+#define ADS_READ_WRITE 9
 
 /* AMS/TCP Header */
 typedef struct {
@@ -25,8 +24,6 @@ typedef struct ams_netid_port_type {
   uint8_t port_low;
   uint8_t port_high;
 } ams_netid_port_type;
-
-
 
 typedef struct {
   ams_tcp_header_type ams_tcp_header;
@@ -114,7 +111,7 @@ typedef struct {
     uint8_t minor;
     uint8_t versionBuild_low;
     uint8_t versionBuild_high;
-    char    deviceName[16];
+    char deviceName[16];
   } response;
 } ADS_Read_Device_Info_rep_type;
 
@@ -144,7 +141,6 @@ typedef struct {
   uint8_t lenght_3;
 } ADS_ReadWrite_rep_type;
 
-
 typedef struct {
   ams_hdr_type ams_hdr;
   struct {
@@ -156,33 +152,30 @@ typedef struct {
 } ADS_Write_rep_type;
 
 typedef enum {
-    simulatedNetworkProblemNone = 0,
-    simulatedNetworkProblemShutdownRead,
-    simulatedNetworkProblemAmsTcpHdrOnly,
-    simulatedNetworkProblemAmsTcpHdrOnlyEOF,
-    simulatedNetworkProblemAmsTcpHdrShortOnly,
-    simulatedNetworkProblemAmsTcpHdrShortOnlyEOF,
-    simulatedNetworkProblemPacketTooShort,
-    simulatedNetworkProblemPacketTooShortEOF,
-    simulatedNetworkProblemAmsHeaderLengthTooShort,
-    simulatedNetworkProblemAmsHeaderLengthTooLong,
-    simulatedNetworkProblemInvokeID_0,
-    simulatedNetworkProblemInvokeID_1,
-    simulatedNetworkProblemInvokeID_2,
-    simulatedNetworkProblemInvokeID_3,
+  simulatedNetworkProblemNone = 0,
+  simulatedNetworkProblemShutdownRead,
+  simulatedNetworkProblemAmsTcpHdrOnly,
+  simulatedNetworkProblemAmsTcpHdrOnlyEOF,
+  simulatedNetworkProblemAmsTcpHdrShortOnly,
+  simulatedNetworkProblemAmsTcpHdrShortOnlyEOF,
+  simulatedNetworkProblemPacketTooShort,
+  simulatedNetworkProblemPacketTooShortEOF,
+  simulatedNetworkProblemAmsHeaderLengthTooShort,
+  simulatedNetworkProblemAmsHeaderLengthTooLong,
+  simulatedNetworkProblemInvokeID_0,
+  simulatedNetworkProblemInvokeID_1,
+  simulatedNetworkProblemInvokeID_2,
+  simulatedNetworkProblemInvokeID_3,
 
-    simulatedNetworkProblemLast
+  simulatedNetworkProblemLast
 } simulatedNetworkProblemType;
 
-
 void send_ams_reply(int fd, ams_hdr_type *ams_hdr_p, uint32_t total_len_reply);
-void
-send_ams_reply_simulate_network_problem(int fd, ams_hdr_type *ams_hdr_p,
-                                        uint32_t total_len_reply,
-                                        simulatedNetworkProblemType simulatedNetworkProblem);
+void send_ams_reply_simulate_network_problem(
+    int fd, ams_hdr_type *ams_hdr_p, uint32_t total_len_reply,
+    simulatedNetworkProblemType simulatedNetworkProblem);
 void handleADSread(int fd, ams_hdr_type *ams_hdr_p);
 void handleADSwrite(int fd, ams_hdr_type *ams_hdr_p);
 void handleADSreadwrite(int fd, ams_hdr_type *ams_hdr_p);
-
 
 #endif

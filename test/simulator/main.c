@@ -1,19 +1,19 @@
+#include <errno.h>
+#include <libgen.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <unistd.h>
-#include <libgen.h>
-#include <stdint.h>
-#include <stdbool.h>
 
-#include <errno.h>
 #include "sock-util.h"
 #if (!defined _WIN32 && !defined __WIN32__ && !defined __CYGWIN__)
-  #include <signal.h>
+#include <signal.h>
 #endif
 
-#include "sock-util.h"
 #include "logerr_info.h"
+#include "sock-util.h"
 
 /* defines */
 /*****************************************************************************/
@@ -27,8 +27,7 @@ unsigned int die_on_error_flags = 3;
 
 FILE *stdlog;
 
-void help_and_exit(const char *msg)
-{
+void help_and_exit(const char *msg) {
   if (msg) {
     fprintf(stderr, "%s\n", msg);
   }
@@ -49,14 +48,12 @@ void help_and_exit(const char *msg)
 /*****************************************************************************/
 
 /*****************************************************************************/
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
 #if (!defined _WIN32 && !defined __WIN32__ && !defined __CYGWIN__)
   (void)signal(SIGPIPE, SIG_IGN);
 #endif
 
-  if (argc == 3 &&
-      !strcmp(argv[1], "-v")) {
+  if (argc == 3 && !strcmp(argv[1], "-v")) {
     debug_print_flags = atoi(argv[2]);
     if (!debug_print_flags) {
       help_and_exit("debug_print_flags must not be 0");

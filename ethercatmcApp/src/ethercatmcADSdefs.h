@@ -4,11 +4,10 @@
 #include <inttypes.h>
 #include <stddef.h>
 
-#define ADS_READ_DEVICE_INFO  1
-#define ADS_READ              2
-#define ADS_WRITE             3
-#define ADS_READ_WRITE        9
-
+#define ADS_READ_DEVICE_INFO 1
+#define ADS_READ 2
+#define ADS_WRITE 3
+#define ADS_READ_WRITE 9
 
 /* AMS/TCP Header */
 typedef struct {
@@ -22,8 +21,6 @@ typedef struct AmsNetidAndPortType {
   uint8_t port_low;
   uint8_t port_high;
 } AmsNetidAndPortType;
-
-
 
 typedef struct {
   AmsTcpHdrType amsTcpHdr;
@@ -68,7 +65,7 @@ typedef struct {
     uint8_t minor;
     uint8_t versionBuild_low;
     uint8_t versionBuild_high;
-    char    deviceName[16];
+    char deviceName[16];
   } response;
 } AdsReadDeviceInfoRepType;
 
@@ -88,7 +85,6 @@ typedef struct {
   } response;
 } AdsReadWriteRepType;
 
-
 typedef struct {
   AmsHdrType amsHdr;
   struct {
@@ -106,11 +102,11 @@ typedef struct {
   uint8_t nameLength[2];
   uint8_t typeLength[2];
   uint8_t commentLength[2];
-  char    buffer[768]; //256*3, 256 is string size in TwinCAT then 768 is max
+  char buffer[768];  // 256*3, 256 is string size in TwinCAT then 768 is max
 } AdsSymbolInfoType;
 
 typedef struct {
   AdsReadWriteRepType adsReadWriteRep;
-  AdsSymbolInfoType   symbol_info;
+  AdsSymbolInfoType symbol_info;
 } AdsGetSymbolInfoByNameRepType;
 #endif

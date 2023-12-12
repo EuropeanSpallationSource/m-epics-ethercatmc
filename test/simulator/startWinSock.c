@@ -1,16 +1,13 @@
 
 #ifdef START_WINSOCK2
-#include <winsock2.h>
-#include <stdio.h>
-
 #include "startWinSock.h"
 
+#include <stdio.h>
+#include <winsock2.h>
 
-int startWinSock(void)
-{
+int startWinSock(void) {
   WSADATA wsadata;
-  if (WSAStartup(MAKEWORD(1,1), &wsadata) == SOCKET_ERROR)
-  {
+  if (WSAStartup(MAKEWORD(1, 1), &wsadata) == SOCKET_ERROR) {
     printf("Error creating socket.");
     return -1;
   }

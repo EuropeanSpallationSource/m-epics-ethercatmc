@@ -1,22 +1,21 @@
-#include <string.h>
-#include <ctype.h> /* isprint() */
-#include <stdlib.h>
-#include <stdarg.h>
-#include "sock-util.h"
 #include "cmd.h"
-#include "cmd_Sim_Ads.h"
-#include "cmd_Sim.h"
+
+#include <ctype.h> /* isprint() */
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "cmd_EAT.h"
 #include "cmd_IcePAP.h"
+#include "cmd_Sim.h"
+#include "cmd_Sim_Ads.h"
 #include "cmd_TCPsim.h"
-#include "logerr_info.h"
 #include "cmd_buf.h"
+#include "logerr_info.h"
+#include "sock-util.h"
 
-void dump_to_std(const char *buf,
-                 unsigned len,
-                 const char *inout,
-                 int had_cr, int had_lf)
-{
+void dump_to_std(const char *buf, unsigned len, const char *inout, int had_cr,
+                 int had_lf) {
   int i;
   if (!inout) {
     inout = "INOUT";
@@ -24,58 +23,52 @@ void dump_to_std(const char *buf,
   if (!stdlog) {
     return;
   }
-  fprintf(stdlog, "------- len=%u cr=%d lf=%d----------%s =>\n", len, had_cr, had_lf, inout);
-  for (i=0; i < len; i++) {
+  fprintf(stdlog, "------- len=%u cr=%d lf=%d----------%s =>\n", len, had_cr,
+          had_lf, inout);
+  for (i = 0; i < len; i++) {
     int ch = buf[i];
     switch (ch) {
       case '\t':
-        fprintf(stdlog,"\\t");
+        fprintf(stdlog, "\\t");
         break;
       case '\r':
-        fprintf(stdlog,"\\r");
+        fprintf(stdlog, "\\r");
         break;
       case '\n':
-        fprintf(stdlog,"\\n");
+        fprintf(stdlog, "\\n");
         break;
       default:
         if (isprint(ch))
-          fprintf(stdlog,"%c", ch);
+          fprintf(stdlog, "%c", ch);
         else
-          fprintf(stdlog,"\\%03o", ch);
+          fprintf(stdlog, "\\%03o", ch);
     }
   }
-  fprintf(stdlog,"%s%s\n=================End of %s\n",
-         had_cr ? "\\r" : "",
-         had_lf ? "\\n" : "",
-         inout);
+  fprintf(stdlog, "%s%s\n=================End of %s\n", had_cr ? "\\r" : "",
+          had_lf ? "\\n" : "", inout);
 }
 
-void dump_and_send(int fd, int flags, const char *buf, unsigned len)
-{
+void dump_and_send(int fd, int flags, const char *buf, unsigned len) {
   if ((flags & PRINT_OUT) || PRINT_STDOUT_BIT1()) {
     dump_to_std(buf, len, "OUT", 0, 0);
   }
   send_to_socket(fd, buf, len);
 }
 /*****************************************************************************/
-static int fd_vprintf_crlf(int fd, int flags, const char* format, va_list arg)
-{
+static int fd_vprintf_crlf(int fd, int flags, const char *format, va_list arg) {
   const static size_t len = 4096;
   int add_cr = flags & PRINT_ADD_CR;
 
-  char *buf = calloc(len,1);
-  int res = vsnprintf(buf, len-1, format, arg);
+  char *buf = calloc(len, 1);
+  int res = vsnprintf(buf, len - 1, format, arg);
   if (res > 0 && !add_cr) {
     dump_and_send(fd, flags, buf, res);
-  }
-  else if (res > 0)
-  {
+  } else if (res > 0) {
     unsigned src_idx = 0;
     unsigned dst_idx = 0;
-    char *buf2 = calloc(2*res, 1);
+    char *buf2 = calloc(2 * res, 1);
     char oldc = 0;
-    for (src_idx=0; src_idx < res; src_idx++)
-    {
+    for (src_idx = 0; src_idx < res; src_idx++) {
       char c = buf[src_idx];
       buf2[dst_idx] = c;
 #if 1
@@ -97,8 +90,7 @@ static int fd_vprintf_crlf(int fd, int flags, const char* format, va_list arg)
 }
 
 /*****************************************************************************/
-void fd_printf_crlf(int fd, int add_cr, const char *format, ...)
-{
+void fd_printf_crlf(int fd, int add_cr, const char *format, ...) {
   va_list ap;
 
   va_start(ap, format);
@@ -107,10 +99,8 @@ void fd_printf_crlf(int fd, int add_cr, const char *format, ...)
 }
 /*****************************************************************************/
 
-
-
-static int create_argv(const char *line, int had_cr, int had_lf, const char*** argv_p)
-{
+static int create_argv(const char *line, int had_cr, int had_lf,
+                       const char ***argv_p) {
   char *input_line = strdup(line);
   size_t calloc_len = 2 + strlen(input_line);
   int argc = 0;
@@ -122,17 +112,17 @@ static int create_argv(const char *line, int had_cr, int had_lf, const char*** a
     dump_to_std(line, (unsigned)strlen(line), "IN", had_cr, had_lf);
   }
 
-  argv = (const char **) (void *)calloc(calloc_len, sizeof(char *));
+  argv = (const char **)(void *)calloc(calloc_len, sizeof(char *));
   *argv_p = argv;
-  if (argv  == NULL)
-  {
+  if (argv == NULL) {
     return 0;
   }
   /* argv[0] is the whole line */
-  argv[argc++] = strdup(input_line);;
+  argv[argc++] = strdup(input_line);
+  ;
   if (!strlen(input_line)) {
-    fprintf(stdlog, "%s/%s:%d argc=%d (Early return)\n", __FILE__, __FUNCTION__, __LINE__,
-            argc);
+    fprintf(stdlog, "%s/%s:%d argc=%d (Early return)\n", __FILE__, __FUNCTION__,
+            __LINE__, argc);
     return argc;
   }
   if (strchr(input_line, ' ') != NULL) {
@@ -155,13 +145,13 @@ static int create_argv(const char *line, int had_cr, int had_lf, const char*** a
 
   free(input_line);
   if (PRINT_STDOUT_BIT2()) {
-    fprintf(stdlog, "%s/%s:%d argc=%d calloc_len=%u\n", __FILE__, __FUNCTION__, __LINE__,
-            argc, (unsigned)calloc_len);
+    fprintf(stdlog, "%s/%s:%d argc=%d calloc_len=%u\n", __FILE__, __FUNCTION__,
+            __LINE__, argc, (unsigned)calloc_len);
     {
       int i;
-      for(i=0; i <= argc;i++) {
-        fprintf(stdlog, "%s/%s:%d argv[%d]=\"%s\"\n", __FILE__, __FUNCTION__, __LINE__,
-                i, argv[i] ? argv[i] : "NULL");
+      for (i = 0; i <= argc; i++) {
+        fprintf(stdlog, "%s/%s:%d argv[%d]=\"%s\"\n", __FILE__, __FUNCTION__,
+                __LINE__, i, argv[i] ? argv[i] : "NULL");
       }
     }
   }
@@ -170,8 +160,8 @@ static int create_argv(const char *line, int had_cr, int had_lf, const char*** a
 }
 
 /*****************************************************************************/
-int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int had_lf)
-{
+int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr,
+                         int had_lf) {
   static const char *seperator_seperator = ";";
   static const char *terminator_terminator = "\n";
   const char *this_stSettings_iTimeOut_str_s = ".THIS.stSettings.iTimeOut=";
@@ -181,72 +171,61 @@ int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int 
   static unsigned int counter;
 
   const char **my_argv = NULL;
-  int argc = create_argv(input_line, had_cr, had_lf, (const char*** )&my_argv);
+  int argc = create_argv(input_line, had_cr, had_lf, (const char ***)&my_argv);
   const char *argv1 = (argc > 1) ? my_argv[1] : "";
   int is_EAT_cmd = strchr(input_line, ';') != NULL;
   int retval = 1;
 
   clear_buf();
-  if ((socket_fd >= 0) &&
-      (!strncmp(argv1, this_stSettings_iTimeOut_str_s, strlen(this_stSettings_iTimeOut_str_s)))) {
+  if ((socket_fd >= 0) && (!strncmp(argv1, this_stSettings_iTimeOut_str_s,
+                                    strlen(this_stSettings_iTimeOut_str_s)))) {
     const char *myarg_1 = &argv1[strlen(this_stSettings_iTimeOut_str_s)];
     int timeout;
     int nvals;
     nvals = sscanf(myarg_1, "%d", &timeout);
     if (nvals == 1) {
       int res = socket_set_timeout(socket_fd, timeout);
-      cmd_buf_printf("%s%s%s",
-                     res ? "Error" : "OK",
-                     seperator_seperator,
+      cmd_buf_printf("%s%s%s", res ? "Error" : "OK", seperator_seperator,
                      terminator_terminator);
     } else {
-      cmd_buf_printf("Error nvals=%d %s%s",
-                     nvals,
-                     seperator_seperator,
+      cmd_buf_printf("Error nvals=%d %s%s", nvals, seperator_seperator,
                      terminator_terminator);
     }
-  } else if (!strncmp(argv1, Sim_this_ads_dot_str, strlen(Sim_this_ads_dot_str))) {
+  } else if (!strncmp(argv1, Sim_this_ads_dot_str,
+                      strlen(Sim_this_ads_dot_str))) {
     retval = cmd_Sim_Ads(argc, my_argv);
   } else if (!strncmp(argv1, sim_str_s, strlen(sim_str_s))) {
     retval = cmd_Sim(argc, my_argv);
   } else if (is_EAT_cmd) {
     retval = cmd_EAT(argc, my_argv);
-  }
-  else if ((argc > 1) && (0 == strcmp(argv1, "bye"))) {
+  } else if ((argc > 1) && (0 == strcmp(argv1, "bye"))) {
     fprintf(stdlog, "%s/%s:%d bye\n", __FILE__, __FUNCTION__, __LINE__);
     return 1;
-  }
-  else if ((argc > 1) && (0 == strcmp(argv1, "kill"))) {
+  } else if ((argc > 1) && (0 == strcmp(argv1, "kill"))) {
     fprintf(stdlog, "%s/%s:%d killed\n", __FILE__, __FUNCTION__, __LINE__);
     exit(0);
-  }
-  else if (cmd_IcePAP(argc, my_argv)) {
+  } else if (cmd_IcePAP(argc, my_argv)) {
     ; /* IcePAP command */
-  }
-  else if (socket_fd >= 0) {
-    if (argv1[0] == 'h' ||
-        argv1[0] == '?') {
-      fd_printf_crlf(socket_fd, had_cr,
-                     "Valid commands :\n");
+  } else if (socket_fd >= 0) {
+    if (argv1[0] == 'h' || argv1[0] == '?') {
+      fd_printf_crlf(socket_fd, had_cr, "Valid commands :\n");
       fd_printf_crlf(socket_fd, had_cr,
                      "bye            : Bye\n"
-                   "kill           : exit(0)\n");
-    } else if (argc > 2){
-      fd_printf_crlf(socket_fd, had_cr,"error(%s:%d): invalid command (%s)\n",
-                     __FILE__, __LINE__,  argv1);
+                     "kill           : exit(0)\n");
+    } else if (argc > 2) {
+      fd_printf_crlf(socket_fd, had_cr, "error(%s:%d): invalid command (%s)\n",
+                     __FILE__, __LINE__, argv1);
     }
   }
   {
     int i;
-    for (i=0; i < argc; i++)
-    {
+    for (i = 0; i < argc; i++) {
       free((void *)my_argv[i]);
     }
     free(my_argv);
   }
   if (PRINT_STDOUT_BIT2()) {
-    fprintf(stdlog, "%s/%s:%d (%u)\n",
-            __FILE__, __FUNCTION__, __LINE__,
+    fprintf(stdlog, "%s/%s:%d (%u)\n", __FILE__, __FUNCTION__, __LINE__,
             counter++);
   }
   if (socket_fd >= 0) {
@@ -258,19 +237,15 @@ int handle_input_line_fd(int socket_fd, const char *input_line, int had_cr, int 
   return retval;
 }
 
-int handle_input_line(const char *input_line, int had_cr, int had_lf)
-{
-  return  handle_input_line_fd(-1, input_line, had_cr, had_lf);
+int handle_input_line(const char *input_line, int had_cr, int had_lf) {
+  return handle_input_line_fd(-1, input_line, had_cr, had_lf);
 }
 
-void handle_accept_new_client(int fd)
-{
+void handle_accept_new_client(int fd) {
   (void)fd;
   memset(&sim_usleep, 0, sizeof(sim_usleep));
 }
 
-void handle_close_and_remove_client_con(void)
-{
+void handle_close_and_remove_client_con(void) {
   ; /* memset(&sim_usleep, 0, sizeof(sim_usleep)); */
 }
-
