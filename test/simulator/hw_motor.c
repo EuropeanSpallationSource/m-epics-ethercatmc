@@ -592,14 +592,21 @@ static int hard_limits_clip(int axis_no, double velocity) {
     if (motor_axis[axis_no].definedHighHardLimitPos && velocity > 0 &&
         calcMotorPosHw(axis_no) > motor_axis[axis_no].highHardLimitPos) {
       fprintf(stdlog,
-              "%s/%s:%d axis_no=%d CLIP HLS motorPosNow=%g calcMotorPosHw=%g "
-              "highHardLimitPos=%g enabledHighSoftLimitPos=%d "
-              "highSoftLimitPos=%g\n",
+              "%s/%s:%d axis_no=%d CLIP LLS motorPosNow=%g calcMotorPosHw=%g "
+              "velocity=%g jvel=%g velo=%g hvel=%g HomeVelocity=%g HomePos=%g "
+              "highHardLimitPos=%g "
+              "enabledHighSoftLimitPos=%d highSoftLimitPos=%g stillMoving=%d\n",
               __FILE__, __FUNCTION__, __LINE__, axis_no,
               motor_axis[axis_no].MotorPosNow, calcMotorPosHw(axis_no),
+              velocity, motor_axis[axis_no].moving.velo.JogVelocity,
+              motor_axis[axis_no].moving.velo.PosVelocity,
+              motor_axis[axis_no].moving.velo.HomeVelocity,
+              motor_axis[axis_no].HomePos,
+              motor_axis[axis_no].moving.velo.HomeVelocity,
               motor_axis[axis_no].highHardLimitPos,
               motor_axis[axis_no].enabledHighSoftLimitPos,
-              motor_axis[axis_no].highSoftLimitPos);
+              motor_axis[axis_no].highSoftLimitPos,
+              motor_axis[axis_no].moving.velo.stillMoving);
       clipped = 1;
       if (motor_axis[axis_no].moving.velo.HomeVelocity) {
         /* setAxisHomed will set MotorPosSetPosOffset to 0 */
