@@ -829,25 +829,34 @@ void setMotorPos(int axis_no, double value, int flags) {
     motor_axis[axis_no].moving.velo.stillMoving = stillMoving;
   }
 
-  /* The new position is pushed into the axis.
-     However, save the offset (negative) so that
-     the hardware (limit switches, encoder) stay where they are
-  */
-  /* Save the old MotorPosSetPosOffset for printing below */
-  double oldMotorPosSetPosOffset = motor_axis[axis_no].MotorPosSetPosOffset;
-  /* Calculate the new MotorPosSetPosOffset */
-  motor_axis[axis_no].MotorPosSetPosOffset = calcMotorPosHw(axis_no) - value;
-  fprintf(stdlog,
-          "%s/%s:%d axis_no=%d value=%g oldMotorPosSetPosOffset=%g "
-          "newMotorPosSetPosOffset=%g\n",
-          __FILE__, __FUNCTION__, __LINE__, axis_no, value,
-          oldMotorPosSetPosOffset, motor_axis[axis_no].MotorPosSetPosOffset);
-
-  motor_axis[axis_no].MotorPosNow = value;
-  motor_axis[axis_no].moving.velo.HomeVelocity = 0;
-
+  if (flags & SET_MOTOR_POS_FLAGS_KEEP_LIMITS_FORCE) {
+    /*
+      The new position is pushed into the axis.
+       This is a "fast move", the offset is set to 0
+    */
+    motor_axis[axis_no].MotorPosSetPosOffset = 0;
+  } else {
+    /* The new position is pushed into the axis.
+       However, save the offset (negative) so that
+       the hardware (limit switches, encoder) stay where they are
+    */
+    /* Save the old MotorPosSetPosOffset for printing below */
+    double oldMotorPosSetPosOffset = motor_axis[axis_no].MotorPosSetPosOffset;
+    /* Calculate the new MotorPosSetPosOffset */
+    motor_axis[axis_no].MotorPosSetPosOffset = calcMotorPosHw(axis_no) - value;
+    fprintf(stdlog,
+            "%s/%s:%d axis_no=%d value=%g oldMotorPosSetPosOffset=%g "
+            "newMotorPosSetPosOffset=%g\n",
+            __FILE__, __FUNCTION__, __LINE__, axis_no, value,
+            oldMotorPosSetPosOffset, motor_axis[axis_no].MotorPosSetPosOffset);
+  }
   /* simulate EncoderPos */
+  motor_axis[axis_no].moving.velo.HomeVelocity = 0;
   motor_axis[axis_no].MotorPosNow = value;
+  {
+    double jitter = 0.0;
+    motor_axis[axis_no].MotorPosReported = calcMotorPosReported(axis_no, jitter);
+  }
   motor_axis[axis_no].EncoderPos =
       getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
 }
@@ -1111,19 +1120,21 @@ void getAxisDebugInfoData(int axis_no, char *buf, size_t maxlen) {
 }
 
 int getNegLimitSwitch(int axis_no) {
+  double calcedMotorPosHw = calcMotorPosHw(axis_no);
   int clipped =
       motor_axis[axis_no].definedLowHardLimitPos &&
-      (calcMotorPosHw(axis_no) <= motor_axis[axis_no].lowHardLimitPos);
+      (calcedMotorPosHw <= motor_axis[axis_no].lowHardLimitPos);
 
+  motor_axis[axis_no].moving.hitNegLimitSwitch = clipped;
   if (motor_axis_reported[axis_no].moving.hitNegLimitSwitch !=
       motor_axis[axis_no].moving.hitNegLimitSwitch) {
     fprintf(stdlog,
             "%s/%s:%d axis_no=%d definedLowHardLimitPos=%d motorPosNow=%g "
-            "calcMotorPosHw=%g "
-            "HardLimitPos=%g hitNegLimitSwitch=%d\n",
+            "calcedMotorPosHw=%g "
+            "lowHardLimitPos=%g hitNegLimitSwitch=%d\n",
             __FILE__, __FUNCTION__, __LINE__, axis_no,
             motor_axis[axis_no].definedLowHardLimitPos,
-            motor_axis[axis_no].MotorPosNow, calcMotorPosHw(axis_no),
+            motor_axis[axis_no].MotorPosNow, calcedMotorPosHw,
             motor_axis[axis_no].lowHardLimitPos,
             motor_axis[axis_no].moving.hitNegLimitSwitch);
     motor_axis_reported[axis_no].moving.hitNegLimitSwitch =
@@ -1132,23 +1143,24 @@ int getNegLimitSwitch(int axis_no) {
       motor_axis[axis_no].moving.rampDownOnLimit = RAMPDOWNONLIMIT;
     }
   }
-  motor_axis[axis_no].moving.hitNegLimitSwitch = clipped;
   return clipped;
 }
 
 int getPosLimitSwitch(int axis_no) {
+  double calcedMotorPosHw = calcMotorPosHw(axis_no);
   int clipped =
-      (calcMotorPosHw(axis_no) >= motor_axis[axis_no].highHardLimitPos);
+      (calcedMotorPosHw >= motor_axis[axis_no].highHardLimitPos);
 
+  motor_axis[axis_no].definedHighHardLimitPos = clipped;
   if (motor_axis_reported[axis_no].moving.hitPosLimitSwitch !=
       motor_axis[axis_no].moving.hitPosLimitSwitch) {
     fprintf(stdlog,
             "%s/%s:%d axis_no=%d definedHighHardLimitPos=%d motorPosNow=%g "
-            "calcMotorPosHw=%g "
+            "calcedMotorPosHw=%g "
             "highHardLimitPos=%g hitPosLimitSwitch=%d\n",
             __FILE__, __FUNCTION__, __LINE__, axis_no,
             motor_axis[axis_no].definedHighHardLimitPos,
-            motor_axis[axis_no].MotorPosNow, calcMotorPosHw(axis_no),
+            motor_axis[axis_no].MotorPosNow, calcedMotorPosHw,
             motor_axis[axis_no].highHardLimitPos,
             motor_axis[axis_no].moving.hitPosLimitSwitch);
     motor_axis_reported[axis_no].moving.hitPosLimitSwitch =
@@ -1157,7 +1169,6 @@ int getPosLimitSwitch(int axis_no) {
       motor_axis[axis_no].moving.rampDownOnLimit = RAMPDOWNONLIMIT;
     }
   }
-  motor_axis[axis_no].definedHighHardLimitPos = clipped;
   return clipped;
 }
 

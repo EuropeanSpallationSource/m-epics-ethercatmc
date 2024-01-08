@@ -26,6 +26,7 @@
   }
 
 #define SET_MOTOR_POS_FLAGS_KEEP_MOVING (1 << 0)
+#define SET_MOTOR_POS_FLAGS_KEEP_LIMITS_FORCE (1 << 1)
 typedef struct motor_init_values {
   double ReverseERES;
   double ParkingPos;
