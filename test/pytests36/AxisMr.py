@@ -885,7 +885,7 @@ class AxisMr:
     def cmpUnlinkExpectedActualFile(self, tc_no, expFileName, actFileName):
         # compare actual and expFile
         sameContent = False
-        wait_for_found = 5
+        wait_for_found = 3
         while wait_for_found > 0:
             try:
                 file = open(expFileName)
@@ -900,6 +900,8 @@ class AxisMr:
                 for line in file:
                     if line[-1] == "\n":
                         line = line[0:-1]
+                        if line == "EOF" and wait_for_found > 1:
+                            wait_for_found = 1
                     print(
                         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {actFileName}: {str(line)}"
                     )
@@ -918,6 +920,7 @@ class AxisMr:
                 os.unlink(actFileName)
                 return sameContent
 
+            time.sleep(polltime)
             wait_for_found -= polltime
 
         return sameContent
