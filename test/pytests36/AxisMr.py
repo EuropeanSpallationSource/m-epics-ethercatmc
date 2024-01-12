@@ -367,7 +367,7 @@ class AxisMr:
             wait_for_mip_zero -= polltime
             mip = int(self.axisCom.get(".MIP", use_monitor=False))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_mip_zero={wait_for_mip_zero:.2f} mip={self.getMIPtext(mip)} (0x{mip:04x}) rbv ={rbv }"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_mip_zero={wait_for_mip_zero:.2f} mip={self.getMIPtext(mip)} (0x{mip:04x}) rbv={rbv:.2f}"
             print(debug_text)
             if not mip:
                 return
@@ -409,13 +409,14 @@ class AxisMr:
             inrange = self.calcAlmostEqual(
                 tc_no, expVal, actVal, maxDelta, doPrint=False
             )
-            if debugPrint:
-                debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal:.2f} actVal={actVal:.2f} maxDelta={maxDelta:.2f} inrange={inrange}"
+            time_to_wait -= polltime
+            if debugPrint or time_to_wait <= 0:
+                debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: waitForValueChanged time_to_wait={time_to_wait:.2f} field_name={field_name} expVal={expVal:.2f} actVal={actVal:.2f} maxDelta={maxDelta:.3f} inrange={inrange}"
                 print(debug_text)
+                debugPrint = False
             if inrange:
                 return True
             time.sleep(polltime)
-            time_to_wait -= polltime
         return False
 
     def waitForValueChangedInt32(
