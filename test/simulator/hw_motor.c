@@ -855,7 +855,8 @@ void setMotorPos(int axis_no, double value, int flags) {
   motor_axis[axis_no].MotorPosNow = value;
   {
     double jitter = 0.0;
-    motor_axis[axis_no].MotorPosReported = calcMotorPosReported(axis_no, jitter);
+    motor_axis[axis_no].MotorPosReported =
+        calcMotorPosReported(axis_no, jitter);
   }
   motor_axis[axis_no].EncoderPos =
       getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
@@ -1121,9 +1122,8 @@ void getAxisDebugInfoData(int axis_no, char *buf, size_t maxlen) {
 
 int getNegLimitSwitch(int axis_no) {
   double calcedMotorPosHw = calcMotorPosHw(axis_no);
-  int clipped =
-      motor_axis[axis_no].definedLowHardLimitPos &&
-      (calcedMotorPosHw <= motor_axis[axis_no].lowHardLimitPos);
+  int clipped = motor_axis[axis_no].definedLowHardLimitPos &&
+                (calcedMotorPosHw <= motor_axis[axis_no].lowHardLimitPos);
 
   motor_axis[axis_no].moving.hitNegLimitSwitch = clipped;
   if (motor_axis_reported[axis_no].moving.hitNegLimitSwitch !=
@@ -1148,8 +1148,7 @@ int getNegLimitSwitch(int axis_no) {
 
 int getPosLimitSwitch(int axis_no) {
   double calcedMotorPosHw = calcMotorPosHw(axis_no);
-  int clipped =
-      (calcedMotorPosHw >= motor_axis[axis_no].highHardLimitPos);
+  int clipped = (calcedMotorPosHw >= motor_axis[axis_no].highHardLimitPos);
 
   motor_axis[axis_no].definedHighHardLimitPos = clipped;
   if (motor_axis_reported[axis_no].moving.hitPosLimitSwitch !=
