@@ -269,6 +269,18 @@ class AxisMr:
             ret = ret + "EXTERNAL "
         return ret
 
+    def VALtoRVAL(self, tc_no, val):
+        mres = float(self.axisCom.get(".MRES"))
+        off = float(self.axisCom.get(".OFF"))
+        dir = int(self.axisCom.get(".DIR"))
+        if dir == 0:  # positive, the default
+            dir = +1
+        else:
+            dir = -1  # negative
+        dval = (val - off) * dir
+        rval = dval / mres
+        return rval
+
     def calcAlmostEqual(self, tc_no, expected, actual, maxdelta, doPrint=True):
         delta = math.fabs(expected - actual)
         delta <= maxdelta
