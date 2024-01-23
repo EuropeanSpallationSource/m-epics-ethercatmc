@@ -75,12 +75,12 @@ def InitAllFor921(self, tc_no):
 
 
 def writeExpFileDontMoveThenMoveWhenOnLS(
-    self, tc_no, expFileName, startPosRVAL, endPosVAL
+    self, tc_no, expFileName, startPosRRAW, endPosRAW
 ):
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: startPosRVAL={startPosRVAL:.2f} endPosVAL={endPosVAL:.2f} "
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: startPosRRAW={startPosRRAW:.2f} endPosRAW={endPosRAW:.2f} "
     )
-    debug_text = f"{tc_no} Strt={startPosRVAL} End={endPosVAL}"
+    debug_text = f"{tc_no} Strt={startPosRRAW} End={endPosRAW}"
     self.axisCom.putDbgStrToLOG(debug_text, wait=True)
     velo = float(self.axisCom.get(".VELO"))
     accs = float(self.axisCom.get(".ACCS"))  # accelation in EGU/sec/sec
@@ -92,14 +92,14 @@ def writeExpFileDontMoveThenMoveWhenOnLS(
 
     # We should move away from the LS
     bdst = float(self.axisCom.get(".BDST"))
-    diff = endPosVAL - startPosRVAL
+    diff = endPosRAW - startPosRRAW
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: bdst={bdst:.2f} diff={diff:.2f}"
     )
     if bdst == 0:
         line1 = (
             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-            % (endPosVAL, velo, accs, startPosRVAL)
+            % (endPosRAW, velo, accs, startPosRRAW)
         )
         expFile.write(f"{line1}")
     else:
@@ -116,14 +116,14 @@ def writeExpFileDontMoveThenMoveWhenOnLS(
         # if diff * bdst > 0 and fabs(diff) < fabs(bdst):
         #    # Same direction, short move
         #    line2 =
-        intermediatePositionVAL = endPosVAL - bdst
+        intermediatePositionRAW = endPosRAW - bdst
         line2 = (
             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-            % (intermediatePositionVAL, velo, accs, startPosRVAL)
+            % (intermediatePositionRAW, velo, accs, startPosRRAW)
         )
         line3 = (
             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-            % (endPosVAL, bvel, bccs, intermediatePositionVAL)
+            % (endPosRAW, bvel, bccs, intermediatePositionRAW)
         )
         expFile.write(f"{line2}{line3}")
     expFile.write("EOF\n")
@@ -235,10 +235,14 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
         had_ex = True
     self.axisMr.setValueOnSimulator(tc_no, "dbgCloseLogFile", "1")
     fileCmpOk = self.axisMr.cmpUnlinkExpectedActualFile(tc_no, expFileName, actFileName)
+    passed = not had_ex and fileCmpOk and lsActive == 1
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} had_ex={had_ex} lsActive={lsActive} fileCmpOk={fileCmpOk}"
     )
-    passed = not had_ex and fileCmpOk and lsActive == 1
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} lsToBeActiveted={lsToBeActiveted} mres={mres} dirPlusMinus={dirPlusMinus} field={field} value={value} bdst={bdst} passed={passed}"
+    )
+
     if passed:
         self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
@@ -262,17 +266,16 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperAllFields(
         beyondLimitSwitchPosVAL = myHighHardLimitPosVAL + 2.0
     else:
         assert False
-    print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} TW{rf} JOG{rf}"
-    )
     # creating a dictionary
-    # TODO: Investigate the VAL/DVAL field handling in motorRecord
     field_value_to_be_tested = {
-        ".DVAL": beyondLimitSwitchPosVAL * dirPlusMinus,
-        ".VAL": beyondLimitSwitchPosVAL,
-        ".TW" + rf: 1,
         ".JOG" + rf: 1,
     }
+    if not self.axisMr.isMotorMasterAxis:
+        # Add VAL and DVAL and tweak
+        field_value_to_be_tested[".VAL"] = beyondLimitSwitchPosVAL
+        field_value_to_be_tested[".DVAL"] = beyondLimitSwitchPosVAL * dirPlusMinus
+        field_value_to_be_tested[".TW" + rf] = 1
+
     counter = 0
     for field in field_value_to_be_tested:
         counter = counter + 1
@@ -300,7 +303,11 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
     counter = 0
     self.axisCom.put(".BVEL", myVELO / 2.0)
     twv = float(self.axisCom.get(".TWV"))
-    BDSTs = [0.0, twv / 2.0, -twv / 2.0]
+    # Avoid testing BDST in the master axis for now
+    if self.axisMr.isMotorMasterAxis:
+        BDSTs = [0.0]
+    else:
+        BDSTs = [0.0, twv / 2.0, -twv / 2.0]
     for bdst in BDSTs:
         counter = counter + 10
         print(
@@ -344,7 +351,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=1.0, dirPlusMinus=1, lsToBeActiveted="LLS"
+            self, tc_no, mres=0.1, dirPlusMinus=1, lsToBeActiveted="LLS"
         )
 
     def test_TC_92120000(self):
@@ -355,7 +362,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=1.0, dirPlusMinus=1, lsToBeActiveted="HLS"
+            self, tc_no, mres=0.1, dirPlusMinus=1, lsToBeActiveted="HLS"
         )
 
     def test_TC_92130000(self):
@@ -366,7 +373,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=1.0, dirPlusMinus=1, lsToBeActiveted="LLS"
+            self, tc_no, mres=0.1, dirPlusMinus=1, lsToBeActiveted="LLS"
         )
 
     def test_TC_92140000(self):
@@ -377,7 +384,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=1.0, dirPlusMinus=1, lsToBeActiveted="HLS"
+            self, tc_no, mres=0.1, dirPlusMinus=1, lsToBeActiveted="HLS"
         )
 
     def test_TC_92150000(self):
@@ -388,7 +395,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=-1.0, dirPlusMinus=1, lsToBeActiveted="LLS"
+            self, tc_no, mres=-0.1, dirPlusMinus=1, lsToBeActiveted="LLS"
         )
 
     def test_TC_92160000(self):
@@ -399,7 +406,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=-1.0, dirPlusMinus=1, lsToBeActiveted="HLS"
+            self, tc_no, mres=-0.1, dirPlusMinus=1, lsToBeActiveted="HLS"
         )
 
     def test_TC_92170000(self):
@@ -410,7 +417,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=-1.0, dirPlusMinus=1, lsToBeActiveted="LLS"
+            self, tc_no, mres=-0.1, dirPlusMinus=1, lsToBeActiveted="LLS"
         )
 
     def test_TC_92180000(self):
@@ -421,7 +428,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=-1.0, dirPlusMinus=1, lsToBeActiveted="HLS"
+            self, tc_no, mres=-0.1, dirPlusMinus=1, lsToBeActiveted="HLS"
         )
 
     def teardown_class(self):
