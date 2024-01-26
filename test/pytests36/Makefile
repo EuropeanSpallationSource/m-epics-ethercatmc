@@ -14,6 +14,7 @@ SIMULATOR-ONE-CA = \
   901-Simulator-SPMG.log-ca-m1\
   910_Simulator_JOG_BDST_RTRY_FRAC.log-ca-m1\
   920_Simulator_RTRY_FRAC_RMOD.log-ca-m1\
+  921_Simulator_HLS_LLS_do-not_move-further.log-ca-m1\
   930_Simulator_Vel-RB_Acc-RB.log-ca-m1\
   931_Simulator-ACCL_ACCS_VELO_TWF.log-ca-m1\
 
@@ -54,6 +55,7 @@ SIMULATOR-ONE-PVA = \
   901-Simulator-SPMG.log-pva-m1\
   910_Simulator_JOG_BDST_RTRY_FRAC.log-pva-m1\
   920_Simulator_RTRY_FRAC_RMOD.log-pva-m1\
+  921_Simulator_HLS_LLS_do-not_move-further.log-pva-m1\
   930_Simulator_Vel-RB_Acc-RB.log-pva-m1\
   931_Simulator-ACCL_ACCS_VELO_TWF.log-pva-m1\
 
