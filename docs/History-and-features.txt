@@ -1,0 +1,155 @@
+History of this driver.
+
+0 Overview
+  This driver is a so-called model 3 motor driver for the EPICS
+  "motor" module.
+  The typical usage is together with the motorRecord itself.
+  Sometimes it is desirable to initiate a movement in the back of
+  the motorRecord:
+  The axis should be driven into a limit switch, which the motorRecord
+  typically prevents us to do.
+  The generic model 3 driver supports other records as well.
+  And, that is important, exposes all needed asyn-parameters to drive
+  a motor with "ao" records, what we use for testing. See
+  ethercatmcdebug.template:
+     record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveAbs")
+
+
+1 History
+  Before going into details, this SW package still supports different
+  "generations" of "motion control unit" (MCU) firmware.
+
+  The first generation
+    The first generation uses a function block called FB_DriveVirtual
+    as an interface towards the different movements inside the MCU.
+    This supports "move absolute", "move relative",
+    "move (constant) velocity", "home" (sometimes called reference).
+    "move absolute" is "the" use case for a motor: Move to a position,
+    and stay there.
+    "move relative" is not exposed by the motorRecord,
+    but used if there is a readback through another EPICS device,
+    like an interferometer.
+    "move velocity" is called jog in EPICS and is initiated by writing
+    to the JOGF and JOGR fields.
+    "home" may be needed when an absolute encoder can not be used.
+    How the axis is homed is typically defined in the MCU,
+    and the 2 home fields (HOMF and HOMR) in the motorRecord have
+    the same effect.
+    Back to TwinCAT:
+    An overall status struct has been defined:
+    "DUT_AxisStatus_v0_01", which is the the type of the PLC symbol
+    "Main.M1.stAxisStatus" for motor 1.
+    (We don't use motor 0, counting starts at 1)
+    This struct is used to initiate movements and reflects the status,
+    so that the poller in the EPICS IOC can read it.
+    The code for both the MCU and the EPICS driver was put into Git [1]
+    and presented at the "EPICS collaboration meeting, Spring 2015" [2]
+    The communication between the EPICS-IOC and the MCU was done through a
+    TCP/IP connection, using ASCII.
+    This follows the classical motion-controller-interface approach.
+    On the MCU side a communication software is used to convert
+    the binary data into ASCII forth and back.
+    In absense of a better idea, it is called "epicscommodule" [3]
+    There is no dependency on EPICS at all.
+    It can be used to interface with EPICS (this driver, Streamdevice),
+    Tango, python programs or telnet.
+
+  The "first and a half" generation
+    The next improvement was to utilize the ADS library from Beckhoff [4].
+    Now a "pure EPICS" driver was written [5].
+    This driver handles "all" record types (e.g. bi, bo, ai, ao),
+    waveforms in a generic way. The input records use a callback
+    principle ("I/O Intr" in EPICS speach, notifications in TwinCAT).
+    Beside the generic records there is support for the model 3 motor
+    driver (this one).
+    This is done by supporting "DUT_AxisStatus_v0_01", so that the motor
+    driver can use the ASCII interface.
+    Back to the input record support:
+    A polling (bulk read) had been added as alternative to notifications,
+    thanks to people at SLAC.
+
+  The "first and three quarter" generation
+    A new struct, "Main.M1.stAxisStatusV2", was defined.
+    However, it went never into real production.
+    This driver has still the obsolete code, as of today.
+
+  The second generation
+    While using the so far developped software, wishes for improvements
+    came up:
+    - peeking and poking inside variables inside the MCU from EPICS is
+      efficient. It is easy to develop when the same person is
+      doing both the MCU and the EPICS development.
+      This is where epics-twincat-ads has it's strong side.
+    - A better abstraction and isolation of variables used to interface
+      the motion functions was suggested for the MCU code.
+      There should be a communication layer, which is independent of
+      implementation details further down.
+    - A more flexible code base inside the MCU was needed,
+      allowing application specific code to be hooked in.
+      The core of the MCU software is now a common project shared
+      between different research facilties ("tc_mca_std_lib") [6]
+    - For timestamped motor positions, the current interface is lacking
+      a timestamp. The "stAxisStatusV2" has a timestamp that can be used.
+      However, we poll all axes seperatly, one by one, and that may be
+      non-ideal when dealing with 3-dimensional movements.
+      It would be better to have all axis information "in one go",
+      including the "facilty time" provided from a timing system.
+    - It is good to have a table inside the MCU, that tells the
+      EPICS IOC which motors, their names, additional hardware sensors
+      that are available to an external control system.
+    In short, the tc_mca_std_lib has been heavily rewritten.
+    The communication layer inside the MCU has been inspired by work done
+    at FRM2 [7].
+    Using their "PLC Interface Layout Specification" ("PILS")
+    has advantages:
+      - All information inside the MCU are stored in a buffer, and updated
+        once per PLC cycle. The EPICS IOC can poll this at a lower rate,
+        and always get a consistent "mini process image".
+      -  All "devices" are enumerated and specified inside the MCU.
+        EPICS records can be set up (the EPICS database, as part of an IOC),
+        before the MCU code is ready. When they are not (yet) present
+        in the MCU, they will stay in "UDF".
+        (I think that epics-twincat-ads does the same)
+      - Alarms can be defined inside the MCU and can be forwarded into
+        the corresponding EPICS record.
+      - There is a clean interface specification.
+    The limitation of PILS is that there is no specification for
+    large arrays, "waveforms".
+    PILS is for control only, data acquisition needs other interfaces.
+
+2 Commissioning workflow
+  The EPICS motor module was designed to drive stepper motor cards.
+  It later learned to deal with more advanced controllers as well.
+  In a typical setup all parameters needed to drive such a hardware
+  are stored inside the motorRecord, and are maintained there.
+  Things like resolution/scaling (MRES, UREV, SREV), soft limits
+  (DHLM, DLLM), velocities (VMAX, VELO, HVEL) are configured
+  from EPICS.
+  Utilizing a modern motion controller introduces a different workflow:
+  an engineering tool, provided by the manufacturer, is used to
+  commission, tune and optimize all hardware components.
+  There are a lot of parameters to configure.
+  Parameters like default/maximal velocity are of course part of the
+  comissioning.
+  The root of truth is inside the MCU, and not the EPICS records.
+  Therefore this driver is able to read out parameters from the MCU,
+  and they are copied into the corresponding fields of the motorRecord.
+  See all the records like "-CfgSREV-RB".
+  Other records are there just to double check the commissioned values
+  from a CSS screen,like "-CfgPOSLAG-Tim-RB".
+
+
+[1] https://github.com/EuropeanSpallationSource/MCAG_Base_Project/
+    https://github.com/EuropeanSpallationSource/MCAG_Base_Project/commit/05654246a2417f6bc6adc3bde7d288e1483a3c43
+
+[2] https://indico.fnal.gov/event/9718/contributions/115186/
+
+[3] https://bitbucket.org/europeanspallationsource/tc_epicscommodule.git
+
+[4] https://github.com/Beckhoff/ADS
+
+[5] https://github.com/EuropeanSpallationSource/epics-twincat-ads
+
+[6] https://bitbucket.org/europeanspallationsource/tc_mca_std_lib.git
+
+[7] https://forge.frm2.tum.de/public/doc/plc/v2.0/singlehtml/
