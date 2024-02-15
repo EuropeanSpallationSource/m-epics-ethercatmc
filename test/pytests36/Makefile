@@ -10,7 +10,7 @@
 
 
 SIMULATOR-ONE-CA = \
-  900_Simulator-Softlimits.log-ca-m1\
+  900_Simulator-MRES_HLM_LLM_DHLM_DLLM.log-ca-m1\
   901-Simulator-SPMG.log-ca-m1\
   910_Simulator_JOG_BDST_RTRY_FRAC.log-ca-m1\
   920_Simulator_RTRY_FRAC_RMOD.log-ca-m1\
@@ -51,7 +51,7 @@ ETHERCATMC-CA = \
 
 ##################################
 SIMULATOR-ONE-PVA = \
-  900_Simulator-Softlimits.log-pva-m1\
+  900_Simulator-MRES_HLM_LLM_DHLM_DLLM.log-pva-m1\
   901-Simulator-SPMG.log-pva-m1\
   910_Simulator_JOG_BDST_RTRY_FRAC.log-pva-m1\
   920_Simulator_RTRY_FRAC_RMOD.log-pva-m1\
