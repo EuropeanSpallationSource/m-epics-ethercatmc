@@ -58,8 +58,7 @@ class Test(unittest.TestCase):
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f"
-                % (tc_no, UserPosition, self.jog_start_pos)
+                f"{tc_no} postion={UserPosition:f} jog_start_pos={self.jog_start_pos:f}"
             )
 
     # Low soft limit JOGR
@@ -99,8 +98,7 @@ class Test(unittest.TestCase):
             self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f"
-                % (tc_no, UserPosition, self.jog_start_pos)
+                f"{tc_no} postion={UserPosition:f} jog_start_pos={self.jog_start_pos:f}"
             )
 
     def test_TC_1315(self):
@@ -183,8 +181,7 @@ class Test(unittest.TestCase):
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                "%s postion=%f jog_start_pos=%f"
-                % (tc_no, UserPosition, self.jog_start_pos)
+                f"{tc_no} postion={UserPosition:f} jog_start_pos={self.jog_start_pos:f}"
             )
 
     # Low soft limit JOGF + DIR
