@@ -44,9 +44,14 @@ while test -n "$1" && test -f "$1"; do
   files="$files $1"
   shift 1
 done
+MOREARGS=""
+if test "$1" = "-s"; then
+  MOREARGS="$MOREARGS -s"
+  shift 2
+fi
 
 if test "$1" = "-k" && test "$2" != ""; then
-  MOREARGS="-k $2"
+  MOREARGS="$MOREARGS -k $2"
   shift 2
 fi
 
