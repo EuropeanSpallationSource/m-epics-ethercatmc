@@ -30,6 +30,7 @@ shellcheck:
     # exclude checkws.sh
     # Note: We can not use `git ls-files` because the image does not have it
     - ./checkshellcheck.sh
+    - ./check-test-methods-sorted.sh
 
 shfmt:
   image: mvdan/shfmt:v3.2.0-alpine
