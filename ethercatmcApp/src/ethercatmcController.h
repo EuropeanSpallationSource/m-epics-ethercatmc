@@ -449,8 +449,8 @@ class epicsShareClass ethercatmcController : public asynMotorController {
   asynStatus indexerInitialPollv3(void);
   asynStatus indexerPoll(void);
   void indexerSystemUTCtime(int function, epicsTimeStamp *pTimePTP_MCU);
-  void indexerTcUTCtime(int functionRd, int indexRd,
-                        const epicsTimeStamp *pTimePTP_MCU);
+  void indexerPTPdiffXYtime(int functionRd, int indexRd, int indexWr,
+                            const epicsTimeStamp *pTimePTP_MCU);
   void indexerNTtimePackedTimeStructBias(int function, int functionStatusBits,
                                          const epicsTimeStamp *pTimePTP_MCU);
   void indexerCalcPTPdiffXYtime_MCU(int axisNo, int function,
@@ -518,6 +518,7 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     unsigned int specialDbgStrToMcuDeviceOffset;
     int systemUTCtimePTPFunction;
     int systemTcUTCtimeFunction;
+    int systemTcNTPExtTimeFunction;
     int systemNTtimePackedTimeStructBiasFunction;
     int systemNTtimePackedTimeStructBiasFunctionStatusBits;
 

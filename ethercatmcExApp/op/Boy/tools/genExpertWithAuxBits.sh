@@ -34,7 +34,8 @@ esac
 # pick up all arguments
 HAS_ECMC=""
 HAS_PTPdiffTimeIOC_MCU=""
-HAS_PTPNTdiffTime_MCU=""
+HAS_PTPdiffNTTime_MCU=""
+HAS_PTPdiffTcNTPExttime_mcu=""
 HAS_PTP=""
 HAS_PTP_TS_NS_POS_NEG=""
 HAS_TC=""
@@ -51,8 +52,12 @@ while test "$PARAM" != ""; do
       HAS_PTPdiffTimeIOC_MCU="y"
       shift
       ;;
-    ptpNTdifftime_mcu)
-      HAS_PTPNTdiffTime_MCU="y"
+    PTPdiffNTtime_mcu)
+      HAS_PTPdiffNTTime_MCU="y"
+      shift
+      ;;
+    PTPdiffTcNTPExttime_mcu)
+      HAS_PTPdiffTcNTPExttime_mcu="HAS_PTPdiffTcNTPExttime_mcu_yes"
       shift
       ;;
     ptpTCdifftime_mcu)
@@ -90,7 +95,8 @@ done
 export HAS_ECMC
 export HAS_PTP
 export HAS_PTPdiffTimeIOC_MCU
-export HAS_PTPNTdiffTime_MCU
+export HAS_PTPdiffNTTime_MCU
+export HAS_PTPdiffTcNTPExttime_mcu
 export HAS_PTPTCdiffTime_MCU
 export HAS_TC
 export PTPOPENERRBITS
@@ -115,11 +121,19 @@ if test "$HAS_PTPdiffTimeIOC_MCU" = "y"; then
   SHIFTX=$(($SHIFTX + $WIDTH_PTP))
   SHIFTY=16
 fi &&
-  if test "$HAS_PTPNTdiffTime_MCU" = "y"; then
+  if test "$HAS_PTPdiffNTTime_MCU" = "y"; then
     ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid |
       sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
     ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid |
       sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
+    SHIFTX=$(($SHIFTX + $WIDTH_PTP))
+    SHIFTY=16
+  fi &&
+  if test "$HAS_PTPdiffTcNTPExttime_mcu" = "HAS_PTPdiffTcNTPExttime_mcu_yes"; then
+    ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid |
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTcNTPExttime_MCU/g" >>$$
+    ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid |
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTcNTPExttime_MCU/g" >>$$
     SHIFTX=$(($SHIFTX + $WIDTH_PTP))
     SHIFTY=16
   fi &&

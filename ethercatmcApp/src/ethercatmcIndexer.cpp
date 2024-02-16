@@ -1229,6 +1229,11 @@ int ethercatmcController::addPilsAsynDevLst(
     int indexWr = 1;
     int functionWr = defAsynPara.ethercatmcPTPdiffXYtime_MCU_;
     setAlarmStatusSeverityWrapper(indexWr, functionWr, asynSuccess);
+  } else if (!strcmp(paramName, "TcNTPExttime")) {
+    ctrlLocal.systemTcNTPExtTimeFunction = function;
+    int indexWr = 2;
+    int functionWr = defAsynPara.ethercatmcPTPdiffXYtime_MCU_;
+    setAlarmStatusSeverityWrapper(indexWr, functionWr, asynSuccess);
   }
   if (!statusOffset) {
     /* The device has no status, so assume that the status is OK,
@@ -1759,8 +1764,15 @@ asynStatus ethercatmcController::indexerPoll(void) {
           /* See if the TcTime exists. If yes, diff against PTP */
           if (ctrlLocal.systemTcUTCtimeFunction) {
             int indexRd = 0;
-            indexerTcUTCtime(ctrlLocal.systemTcUTCtimeFunction, indexRd,
-                             &timePTP_MCU);
+            int indexWr = 1;
+            indexerPTPdiffXYtime(ctrlLocal.systemTcUTCtimeFunction, indexRd,
+                                 indexWr, &timePTP_MCU);
+          }
+          if (ctrlLocal.systemTcNTPExtTimeFunction) {
+            int indexRd = 0;
+            int indexWr = 2;
+            indexerPTPdiffXYtime(ctrlLocal.systemTcNTPExtTimeFunction, indexRd,
+                                 indexWr, &timePTP_MCU);
           }
         }
       }
@@ -1799,8 +1811,9 @@ void ethercatmcController::indexerSystemUTCtime(int function,
   }
 }
 
-void ethercatmcController::indexerTcUTCtime(
-    int functionRd, int indexRd, const epicsTimeStamp *pTimePTP_MCU) {
+void ethercatmcController::indexerPTPdiffXYtime(
+    int functionRd, int indexRd, int indexWr,
+    const epicsTimeStamp *pTimePTP_MCU) {
   epicsInt64 oldValue = 0;
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
   getInteger64Param(indexRd, functionRd, &oldValue);
@@ -1818,7 +1831,6 @@ void ethercatmcController::indexerTcUTCtime(
             modNamEMC, timeTcUTC_MCU.secPastEpoch, timeTcUTC_MCU.nsec,
             msecPTPdiffTctime_MCU);
   {
-    int indexWr = 1;
     int functionWr = defAsynPara.ethercatmcPTPdiffXYtime_MCU_;
     (void)setDoubleParam(indexWr, functionWr, msecPTPdiffTctime_MCU);
   }

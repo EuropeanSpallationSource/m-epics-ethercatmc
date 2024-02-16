@@ -152,6 +152,21 @@ record(ai, "$(PREFIX)PTPdiffTCtime_MCU")
     field(SCAN, "1 second")
 }
 
+# Difference between PTP and TC NTP EXT inside the MCU/TwinCAT runtime
+record(ai, "$(PREFIX)PTPdiffTcNTPExttime_MCU")
+{
+    field(DTYP, "asynFloat64")
+    field(DESC, "Diff between PTP and NTP EXT in the MCU")
+    field(EGU,  "ms")
+    field(PREC, "6")
+    field(HIGH, "20")
+    field(LOW,  "-20")
+    field(HSV,  "1")
+    field(LSV,  "1")
+    field(INP,  "@asyn($(MOTOR_PORT),2)PTPdiffXYtime_MCU")
+    field(SCAN, "1 second")
+}
+
 # Calculate the severity
 # When the severity from all input links gets 0,
 # start a countdown
