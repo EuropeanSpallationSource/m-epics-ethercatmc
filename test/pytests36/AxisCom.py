@@ -80,6 +80,9 @@ class AxisCom:
             raise Exception("get None")
         return ret
 
+    def getMotorPvName(self):
+        return self.pvpfx
+
     def put(
         self,
         pvsuf,
@@ -128,6 +131,3 @@ class AxisCom:
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {pvsuf} value={value} ex={ex}"
             )
-
-    def getMotorPvName(self):
-        return self.pvpfx

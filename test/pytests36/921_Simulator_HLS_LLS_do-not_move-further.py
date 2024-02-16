@@ -56,16 +56,24 @@ def InitAllFor921(self, tc_no):
     self.axisMr.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
     # self.axisMr.waitForStop(tc_no, 2.0)
     self.axisMr.setValueOnSimulator(
-        tc_no, "fHighHardLimitPos", self.axisMr.VALtoRVAL(tc_no, myHighHardLimitPosVAL)
+        tc_no,
+        "fHighHardLimitPos",
+        self.axisMr.calcRVALfromVAL(tc_no, myHighHardLimitPosVAL),
     )
     self.axisMr.setValueOnSimulator(
-        tc_no, "fHighSoftLimitPos", self.axisMr.VALtoRVAL(tc_no, myHighHardLimitPosVAL)
+        tc_no,
+        "fHighSoftLimitPos",
+        self.axisMr.calcRVALfromVAL(tc_no, myHighHardLimitPosVAL),
     )
     self.axisMr.setValueOnSimulator(
-        tc_no, "fLowHardLimitPos", self.axisMr.VALtoRVAL(tc_no, myLowHardLimitPosVAL)
+        tc_no,
+        "fLowHardLimitPos",
+        self.axisMr.calcRVALfromVAL(tc_no, myLowHardLimitPosVAL),
     )
     self.axisMr.setValueOnSimulator(
-        tc_no, "fLowSoftLimitPos", self.axisMr.VALtoRVAL(tc_no, myLowHardLimitPosVAL)
+        tc_no,
+        "fLowSoftLimitPos",
+        self.axisMr.calcRVALfromVAL(tc_no, myLowHardLimitPosVAL),
     )
     self.axisMr.setSoftLimitsOff(tc_no)
     isMotorMaster = self.axisMr.getIsMotorMaster(tc_no)
@@ -198,7 +206,7 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
     rbv = float(self.axisCom.get(".RBV"))
-    softlimitPositionRAW = self.axisMr.VALtoRVAL(tc_no, rbv)
+    softlimitPositionRAW = self.axisMr.calcRVALfromVAL(tc_no, rbv)
     if lls:
         positionOffTheSoflimitVAL = rbv + 2 * twv
     elif hls:
@@ -208,7 +216,9 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} illegal lls={lls} hls={hls}"
         )
         assert False
-    positionOffTheSoflimitRAW = self.axisMr.VALtoRVAL(tc_no, positionOffTheSoflimitVAL)
+    positionOffTheSoflimitRAW = self.axisMr.calcRVALfromVAL(
+        tc_no, positionOffTheSoflimitVAL
+    )
     writeExpFileDontMoveThenMoveWhenOnLS(
         self, tc_no, expFileName, softlimitPositionRAW, positionOffTheSoflimitRAW
     )

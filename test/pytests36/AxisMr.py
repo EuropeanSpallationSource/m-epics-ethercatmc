@@ -117,15 +117,103 @@ class AxisMr:
     myPOSmid = 72  # low + BDST
     myPOShig = 96  # low + 2*BDST
 
-    def setFieldSPAM(self, tc_no, value):
-        if self.hasFieldSPAM is None:
-            vers = float(self.axisCom.get(".VERS"))
-            if vers >= 6.94 and vers <= 7.09:
-                self.hasFieldSPAM = True
-            else:
-                self.hasFieldSPAM = False
-        if self.hasFieldSPAM:
-            self.axisCom.put(".SPAM", value)
+    def calcAlmostEqual(self, tc_no, expected, actual, maxdelta, doPrint=True):
+        delta = math.fabs(expected - actual)
+        delta <= maxdelta
+        if delta <= maxdelta:
+            inrange = True
+        else:
+            inrange = False
+        if doPrint:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual!r} delta={delta} maxdelta={maxdelta} inrange={inrange}"
+            )
+        return inrange
+
+    def calcRVALfromVAL(self, tc_no, val):
+        mres = float(self.axisCom.get(".MRES"))
+        off = float(self.axisCom.get(".OFF"))
+        dir = int(self.axisCom.get(".DIR"))
+        if dir == 0:  # positive, the default
+            dir = +1
+        else:
+            dir = -1  # negative
+        dval = (val - off) * dir
+        rval = dval / mres
+        return rval
+
+    def calcTimeOut(self, destination, velocity):
+        rbv = self.axisCom.get(".RBV", use_monitor=False)
+        accl = self.axisCom.get(".ACCL", use_monitor=False)
+        delta = math.fabs(destination - rbv)
+        # timeout depends on the  accleration ramp
+        timeout = 2 * accl + 2.0
+        # if we have a velocity, use it
+        if velocity != 0.0:
+            timeout += delta / velocity
+        else:
+            timeout += 60.0
+        print(
+            f"calcTimeOut: rbv={rbv:.2f} destination={destination:.2f} velocity={velocity:.2f} timeout={timeout:.2f}"
+        )
+        return timeout
+
+    def cmpUnlinkExpectedActualFile(self, tc_no, expFileName, actFileName):
+        # compare actual and expFile
+        sameContent = False
+        wait_for_found = 3
+        while wait_for_found > 0:
+            try:
+                file = open(expFileName)
+                for line in file:
+                    if line[-1] == "\n":
+                        line = line[0:-1]
+                    print(
+                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {expFileName}: {str(line)}"
+                    )
+                file.close()
+                file = open(actFileName)
+                for line in file:
+                    if line[-1] == "\n":
+                        line = line[0:-1]
+                        if line == "EOF" and wait_for_found > 1:
+                            wait_for_found = 1
+                    print(
+                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {actFileName}: {str(line)}"
+                    )
+                file.close()
+                sameContent = filecmp.cmp(expFileName, actFileName, shallow=False)
+            except Exception as e:
+                print(
+                    "%s: cmpUnlinkExpectedActualFile expFileName=%s actFileName=%s wait_for_found=%f"
+                    % (tc_no, expFileName, actFileName, wait_for_found)
+                )
+                print(str(e))
+                time.sleep(0.5)
+
+            if sameContent:
+                os.unlink(expFileName)
+                os.unlink(actFileName)
+                return sameContent
+
+            time.sleep(polltime)
+            wait_for_found -= polltime
+
+        return sameContent
+
+    def doSTUPandSYNC(self, tc_no):
+        self.waitForMipZero(tc_no, 2)
+        self.waitForValueChanged(tc_no, ".STUP", 0, 0.0, 3.0)
+        self.axisCom.put(".STUP", 1)
+        self.waitForValueChanged(tc_no, ".STUP", 0, 0.0, 3.0)
+
+        self.axisCom.put(".SYNC", 1)
+        rbv = self.axisCom.get(".RBV", use_monitor=False)
+        self.waitForValueChanged(tc_no, ".VAL", rbv, 0.1, 2.0)
+        msta = int(self.axisCom.get(".MSTA", use_monitor=False))
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC msta={self.getMSTAtext(msta)}"
+        )
 
     def getFieldSPAM(
         self,
@@ -147,43 +235,37 @@ class AxisMr:
     ):
         return self.isMotorMasterAxis
 
-    def initializeMotorRecordOneField(self, tc_no, field_name, value):
-        oldVal = self.axisCom.get(field_name)
-
-        if oldVal is not None:
-            print(
-                "%s: initializeMotorRecordOneField field=%s oldVal=%f value=%f"
-                % (tc_no, field_name, oldVal, value)
-            )
-            if oldVal != value:
-                self.axisCom.put(field_name, value)
-        else:
-            print(
-                "%s: initializeMotorRecordOneField field=%s not found value=%f"
-                % (tc_no, field_name, value)
-            )
-
-    def initializeMotorRecordSimulatorAxis(self, tc_no):
-        self.initializeMotorRecordOneField(tc_no, ".VMAX", 50.0)
-        self.initializeMotorRecordOneField(tc_no, ".VELO", 20.0)
-        self.initializeMotorRecordOneField(tc_no, ".ACCL", 5.0)
-        self.initializeMotorRecordOneField(tc_no, ".JVEL", 5.0)
-        self.initializeMotorRecordOneField(tc_no, ".JAR", 20.0)
-
-        self.initializeMotorRecordOneField(tc_no, ".RDBD", 0.1)
-        # self.initializeMotorRecordOneField( tc_no, '.SPDB', 0.1)
-        self.initializeMotorRecordOneField(tc_no, ".BDST", 0.0)
-
-        cfgDHLM = 53.0
-        cfgDLLM = -54.0
-        self.setSoftLimitsOff(tc_no)
-        self.setValueOnSimulator(tc_no, "fActPosition", 0.0)
-        self.setValueOnSimulator(tc_no, "fHighSoftLimitPos", cfgDHLM)
-        self.setValueOnSimulator(tc_no, "fLowSoftLimitPos", cfgDLLM)
-        self.initializeMotorRecordOneField(tc_no, "-CfgDHLM-En", 1)
-        self.initializeMotorRecordOneField(tc_no, "-CfgDLLM-En", 1)
-        self.initializeMotorRecordOneField(tc_no, ".DHLM", cfgDHLM)
-        self.initializeMotorRecordOneField(tc_no, ".DLLM", cfgDLLM)
+    def getMIPtext(self, mip):
+        ret = ""
+        if mip & self.MIP_BIT_JOGF:
+            ret = ret + "JOGF "
+        if mip & self.MIP_BIT_JOGR:
+            ret = ret + "JOGR "
+        if mip & self.MIP_BIT_JOG_BL1:
+            ret = ret + "JOG_BL1 "
+        if mip & self.MIP_BIT_HOMF:
+            ret = ret + "HOMF "
+        if mip & self.MIP_BIT_HOMR:
+            ret = ret + "HOMR "
+        if mip & self.MIP_BIT_MOVE:
+            ret = ret + "MOVE "
+        if mip & self.MIP_BIT_LOAD_P:
+            ret = ret + "LOAD_P "
+        if mip & self.MIP_BIT_MOVE_BL:
+            ret = ret + "MOVE_BL "
+        if mip & self.MIP_BIT_DELAY_REQ:
+            ret = ret + "DELAY_REQ "
+        if mip & self.MIP_BIT_DELAY_ACK:
+            ret = ret + "DELAY_ACK "
+        if mip & self.MIP_BIT_JOG_REQ:
+            ret = ret + "JOG_REQ "
+        if mip & self.MIP_BIT_JOG_STOP:
+            ret = ret + "JOG_STOP "
+        if mip & self.MIP_BIT_JOG_BL2:
+            ret = ret + "JOG_BL2 "
+        if mip & self.MIP_BIT_EXTERNAL:
+            ret = ret + "EXTERNAL "
+        return ret
 
     def getMSTAtext(self, msta):
         ret = ""
@@ -237,78 +319,590 @@ class AxisMr:
             ret = ret + "..."
         return ret
 
-    def getMIPtext(self, mip):
-        ret = ""
-        if mip & self.MIP_BIT_JOGF:
-            ret = ret + "JOGF "
-        if mip & self.MIP_BIT_JOGR:
-            ret = ret + "JOGR "
-        if mip & self.MIP_BIT_JOG_BL1:
-            ret = ret + "JOG_BL1 "
-        if mip & self.MIP_BIT_HOMF:
-            ret = ret + "HOMF "
-        if mip & self.MIP_BIT_HOMR:
-            ret = ret + "HOMR "
-        if mip & self.MIP_BIT_MOVE:
-            ret = ret + "MOVE "
-        if mip & self.MIP_BIT_LOAD_P:
-            ret = ret + "LOAD_P "
-        if mip & self.MIP_BIT_MOVE_BL:
-            ret = ret + "MOVE_BL "
-        if mip & self.MIP_BIT_DELAY_REQ:
-            ret = ret + "DELAY_REQ "
-        if mip & self.MIP_BIT_DELAY_ACK:
-            ret = ret + "DELAY_ACK "
-        if mip & self.MIP_BIT_JOG_REQ:
-            ret = ret + "JOG_REQ "
-        if mip & self.MIP_BIT_JOG_STOP:
-            ret = ret + "JOG_STOP "
-        if mip & self.MIP_BIT_JOG_BL2:
-            ret = ret + "JOG_BL2 "
-        if mip & self.MIP_BIT_EXTERNAL:
-            ret = ret + "EXTERNAL "
-        return ret
+    def initializeMotorRecordOneField(self, tc_no, field_name, value):
+        oldVal = self.axisCom.get(field_name)
 
-    def VALtoRVAL(self, tc_no, val):
-        mres = float(self.axisCom.get(".MRES"))
-        off = float(self.axisCom.get(".OFF"))
-        dir = int(self.axisCom.get(".DIR"))
-        if dir == 0:  # positive, the default
-            dir = +1
-        else:
-            dir = -1  # negative
-        dval = (val - off) * dir
-        rval = dval / mres
-        return rval
-
-    def calcAlmostEqual(self, tc_no, expected, actual, maxdelta, doPrint=True):
-        delta = math.fabs(expected - actual)
-        delta <= maxdelta
-        if delta <= maxdelta:
-            inrange = True
-        else:
-            inrange = False
-        if doPrint:
+        if oldVal is not None:
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: calcAlmostEqual {tc_no} exp={expected} act={actual!r} delta={delta} maxdelta={maxdelta} inrange={inrange}"
+                "%s: initializeMotorRecordOneField field=%s oldVal=%f value=%f"
+                % (tc_no, field_name, oldVal, value)
             )
-        return inrange
-
-    def calcTimeOut(self, destination, velocity):
-        rbv = self.axisCom.get(".RBV", use_monitor=False)
-        accl = self.axisCom.get(".ACCL", use_monitor=False)
-        delta = math.fabs(destination - rbv)
-        # timeout depends on the  accleration ramp
-        timeout = 2 * accl + 2.0
-        # if we have a velocity, use it
-        if velocity != 0.0:
-            timeout += delta / velocity
+            if oldVal != value:
+                self.axisCom.put(field_name, value)
         else:
-            timeout += 60.0
+            print(
+                "%s: initializeMotorRecordOneField field=%s not found value=%f"
+                % (tc_no, field_name, value)
+            )
+
+    def initializeMotorRecordSimulatorAxis(self, tc_no):
+        self.initializeMotorRecordOneField(tc_no, ".VMAX", 50.0)
+        self.initializeMotorRecordOneField(tc_no, ".VELO", 20.0)
+        self.initializeMotorRecordOneField(tc_no, ".ACCL", 5.0)
+        self.initializeMotorRecordOneField(tc_no, ".JVEL", 5.0)
+        self.initializeMotorRecordOneField(tc_no, ".JAR", 20.0)
+
+        self.initializeMotorRecordOneField(tc_no, ".RDBD", 0.1)
+        # self.initializeMotorRecordOneField( tc_no, '.SPDB', 0.1)
+        self.initializeMotorRecordOneField(tc_no, ".BDST", 0.0)
+
+        cfgDHLM = 53.0
+        cfgDLLM = -54.0
+        self.setSoftLimitsOff(tc_no)
+        self.setValueOnSimulator(tc_no, "fActPosition", 0.0)
+        self.setValueOnSimulator(tc_no, "fHighSoftLimitPos", cfgDHLM)
+        self.setValueOnSimulator(tc_no, "fLowSoftLimitPos", cfgDLLM)
+        self.initializeMotorRecordOneField(tc_no, "-CfgDHLM-En", 1)
+        self.initializeMotorRecordOneField(tc_no, "-CfgDLLM-En", 1)
+        self.initializeMotorRecordOneField(tc_no, ".DHLM", cfgDHLM)
+        self.initializeMotorRecordOneField(tc_no, ".DLLM", cfgDLLM)
+
+    def jogCalcTimeout(self, tc_no, direction):
+        jvel = self.axisCom.get(".JVEL")
+        hlm = self.axisCom.get(".HLM")
+        llm = self.axisCom.get(".LLM")
+        rbv = self.axisCom.get(".RBV")
+        accl = self.axisCom.get(".ACCL")
+        deltah = math.fabs(hlm - rbv)
+        deltal = math.fabs(llm - rbv)
+        # TODO: we could use at the DIR field, which delta to use
+        # This can be done in a cleanup
+        if direction > 0:
+            delta = deltah
+        else:
+            delta = deltal
+        # TODO: add JAR to the calculation
+        time_to_wait = delta / jvel + 2 * accl + 2.0
         print(
-            f"calcTimeOut: rbv={rbv:.2f} destination={destination:.2f} velocity={velocity:.2f} timeout={timeout:.2f}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogCalcTimeout jogDirection={direction} rbv={rbv:.2f} delta={delta:.2f} jvel={jvel:.2f} time_to_wait={time_to_wait:.2f}"
         )
-        return timeout
+        return time_to_wait
+
+    def jogDirection(self, tc_no, direction):
+        time_to_wait = self.jogCalcTimeout(tc_no, direction)
+        self.jogDirectionTimeout(tc_no, direction, time_to_wait)
+
+    #    def movePosition(self, tc_no, destination, velocity, acceleration):
+    #        time_to_wait = 30
+    #        if velocity > 0:
+    #            distance = math.fabs(self.axisCom.get(".RBV") - destination)
+    #            time_to_wait += distance / velocity + 2 * acceleration
+    #        self.axisCom.put(".VAL", destination)
+    #        done = self.waitForStartAndDone(str(tc_no) + " movePosition", time_to_wait)
+
+    def jogDirectionTimeout(self, tc_no, direction, time_to_wait):
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogDirectionTimeout direction={direction} time_to_wait={time_to_wait}"
+        )
+        if direction > 0:
+            self.axisCom.put(".JOGF", 1)
+        else:
+            self.axisCom.put(".JOGR", 1)
+        self.waitForStartAndDone(str(tc_no) + " jogDirection", 30 + time_to_wait + 3.0)
+        if direction > 0:
+            self.axisCom.put(".JOGF", 0)
+        else:
+            self.axisCom.put(".JOGR", 0)
+
+    def motorInitAllForBDST(self, tc_no):
+        startPos = 0.0
+        # The next is needed to change MRES_23/24 further down
+        self.setValueOnSimulator(tc_no, "nAmplifierPercent", 0)
+        self.setValueOnSimulator(tc_no, "bAxisHomed", 1)
+        self.setValueOnSimulator(tc_no, "fLowHardLimitPos", -120)
+        self.setValueOnSimulator(tc_no, "fHighHardLimitPos", 120)
+        self.setValueOnSimulator(tc_no, "setMRES_23", 0)
+        self.setValueOnSimulator(tc_no, "setMRES_24", 0)
+        self.setValueOnSimulator(tc_no, "fActPosition", startPos)
+        self.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
+
+        self.axisCom.put("-ErrRst", 1)
+        # Prepare parameters for jogging and backlash
+        self.setSoftLimitsOff(tc_no)
+        self.axisCom.put(".MRES", self.myMRES)
+        self.axisCom.put(".DIR", self.myDIR)
+        self.axisCom.put(".OFF", self.myOFF)
+        self.axisCom.put(".VELO", self.myVELO)
+        self.axisCom.put(".ACCL", self.myACCL)
+
+        self.axisCom.put(".JVEL", self.myJVEL)
+        self.axisCom.put(".JAR", self.myJAR)
+
+        self.axisCom.put(".BVEL", self.myBVEL)
+        self.axisCom.put(".BACC", self.myBACC)
+        self.axisCom.put(".BDST", self.myBDST)
+        self.axisCom.put(".FRAC", self.myFRAC)
+        self.axisCom.put(".RTRY", self.myRTRY)
+        self.axisCom.put(".RMOD", motorRMOD_D)
+        self.axisCom.put(".DLY", self.myDLY)
+        self.axisCom.put(".SYNC", 1)
+        self.waitForValueChanged(tc_no, ".VAL", startPos, 0.1, 2.0)
+
+    def motorInitAllForBDSTIfNeeded(self, tc_no):
+        init_needed = 0
+        if self.axisCom.get(".MRES") != self.myMRES:
+            init_needed = init_needed + 1
+        if self.axisCom.get(".DIR") != self.myDIR:
+            init_needed = init_needed + 2
+        if self.axisCom.get(".OFF") != self.myOFF:
+            init_needed = init_needed + 1
+        if self.axisCom.get(".VELO") != self.myVELO:
+            init_needed = init_needed + 4
+        if self.axisCom.get(".ACCL") != self.myACCL:
+            init_needed = init_needed + 8
+        if self.axisCom.get(".JVEL") != self.myJVEL:
+            init_needed = init_needed + 16
+        if self.axisCom.get(".JAR") != self.myJAR:
+            init_needed = init_needed + 32
+        if self.axisCom.get(".BVEL") != self.myBVEL:
+            init_needed = init_needed + 64
+        if self.axisCom.get(".BACC") != self.myBACC:
+            init_needed = init_needed + 128
+        if self.axisCom.get(".RTRY") != self.myRTRY:
+            self.axisCom.put(".RTRY", self.myRTRY)
+        if self.axisCom.get(".BDST") != self.myBDST:
+            self.axisCom.put(".BDST", self.myBDST)
+        if self.axisCom.get(".DLY") != self.myDLY:
+            init_needed = init_needed + 256
+        if self.axisCom.get(".HLM") != 0.0:
+            init_needed = init_needed + 512
+        if self.axisCom.get(".LLM") != 0.0:
+            init_needed = init_needed + 1024
+        if init_needed == 0:
+            return
+        debug_text = f"{tc_no}#{lineno()} init_needed=0x{init_needed:X}"
+        self.axisCom.putDbgStrToLOG(debug_text, wait=True)
+        self.motorInitAllForBDST(tc_no)
+
+    # move into limit switch
+    # We need different combinations (WIP)
+    # - The direction (hit HLS or LLS)
+    # - "switch soft limits off" -or- set a very high/low soft limit instead
+    #    (or do nothing)
+    # - Use motorRecords JOG or use model 3 moveVel/moveAbs
+    # - Change the parameter from above before or after the movement started
+    #
+    def moveIntoLS(
+        self,
+        tc_no=0,
+        direction=-1,
+        doDisableSoftLimit=True,
+        setInfiniteSoftLimit=False,
+        movingMethod="JOG",
+        paramWhileMove=False,
+    ):
+        assert tc_no != 0
+        assert direction >= 0
+        old_VELO = self.axisCom.get(".VELO")
+        vmax = self.axisCom.get(".VMAX")
+        if vmax == 0.0:
+            vmax = old_VELO
+        jvel = self.axisCom.get(".JVEL")
+        if jvel == 0.0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} jvel={jvel}"
+            )
+            return False
+
+        old_DHLM = self.axisCom.get("-CfgDHLM")
+        old_DLLM = self.axisCom.get("-CfgDLLM")
+        margin = 1.1
+        if paramWhileMove:
+            margin = margin + 2
+        if movingMethod == "MoveVel":
+            movingFieldName = "-MoveVel"
+        if direction > 0:
+            softlimitFieldName = "-CfgDHLM"
+            nearly_infinite = 999999.0
+            soft_limit_pos = old_DHLM
+            jog_start_pos = soft_limit_pos - jvel - margin
+            ls_to_be_activated = self.MSTA_BIT_PLUS_LS
+            ls_not_to_be_activated = self.MSTA_BIT_MINUS_LS
+            if movingMethod == "JOG":
+                movingFieldName = ".JOGF"
+                movingFieldValue = 1
+            elif movingMethod == "MoveVel":
+                movingFieldValue = jvel
+        else:
+            softlimitFieldName = "-CfgDLLM"
+            nearly_infinite = -999999.0
+            soft_limit_pos = old_DLLM
+            jog_start_pos = soft_limit_pos + jvel + margin
+            ls_to_be_activated = self.MSTA_BIT_MINUS_LS
+            ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
+            if movingMethod == "JOG":
+                movingFieldName = ".JOGR"
+                movingFieldValue = 1
+            elif movingMethod == "MoveVel":
+                movingFieldValue = 0 - jvel
+            elif movingMethod == "MoveAbs":
+                movingFieldValue = 0 - jvel
+
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} paramWhileMove={paramWhileMove} margin={margin}"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} direction={direction } jog_start_pos={jog_start_pos:f}"
+        )
+        dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
+        if dmov != 1:
+            self.axisCom.put(".STOP", 1)
+        # Go away from limit switch
+        self.moveWait(tc_no, jog_start_pos)
+        if movingMethod == "MoveAbs":
+            movingFieldName = ".DVAL"
+            self.axisCom.put(".VELO", jvel)
+            movingFieldValue = nearly_infinite
+
+        if doDisableSoftLimit:
+            if paramWhileMove:
+                # Start jogging, switch soft limit off while jogging
+                #
+                wait_for_stop = self.jogCalcTimeout(tc_no, direction)
+                self.axisCom.put(movingFieldName, movingFieldValue)
+                wait_for_start = 2
+                self.waitForStart(tc_no, wait_for_start)
+                self.setSoftLimitsOff(tc_no, direction=direction)
+                try:
+                    self.waitForStop(tc_no, wait_for_stop)
+                except Exception:
+                    self.axisCom.put(".STOP", 1)
+                    try:
+                        self.waitForStop(tc_no, 2.0)
+                    except Exception as ex:
+                        print(
+                            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} ex={ex}"
+                        )
+                if direction > 0:
+                    self.axisCom.put(".JOGF", 0)
+                else:
+                    self.axisCom.put(".JOGR", 0)
+            else:
+                self.setSoftLimitsOff(tc_no, direction=direction)
+                time_to_wait = self.jogCalcTimeout(tc_no, direction)
+                self.axisCom.put(movingFieldName, movingFieldValue)
+                self.waitForStartAndDone(str(tc_no), 30 + time_to_wait + 3.0)
+        else:
+            if setInfiniteSoftLimit:
+                oldSoftLimitValue = self.axisCom.get(softlimitFieldName)
+                self.axisCom.put(softlimitFieldName, nearly_infinite)
+
+            time_to_wait = self.jogCalcTimeout(tc_no, direction)
+            self.axisCom.put(movingFieldName, movingFieldValue)
+            self.waitForStartAndDone(str(tc_no), 30 + time_to_wait + 3.0)
+
+        # Get values, check them later
+        lvio = int(self.axisCom.get(".LVIO"))
+        mstaE = int(self.axisCom.get(".MSTA"))
+        # Go away from limit switch
+        self.moveWait(tc_no, jog_start_pos)
+        self.axisCom.put(".VELO", old_VELO)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} msta={self.getMSTAtext(mstaE)} lvio={int(lvio)}"
+        )
+
+        if doDisableSoftLimit:
+            self.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM)
+        if setInfiniteSoftLimit:
+            self.axisCom.put(softlimitFieldName, oldSoftLimitValue)
+
+        passed = True
+        if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
+            errId = int(self.axisCom.get("-ErrId", use_monitor=False))
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} errId={errId:x}"
+            )
+            if errId == 0x4223:
+                self.resetAxis(tc_no)
+            else:
+                passed = False
+
+        if (mstaE & ls_not_to_be_activated) != 0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wrong LS activated"
+            )
+            passed = False
+
+        if (mstaE & ls_to_be_activated) == 0:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} LS was not activated"
+            )
+            passed = False
+
+        return passed
+
+    def moveWait(self, tc_no, destination):
+        rbv = self.axisCom.get(".RBV", use_monitor=False)
+        rdbd = self.axisCom.get(".RDBD")
+
+        inrange = self.calcAlmostEqual(tc_no, destination, rbv, rdbd, doPrint=False)
+        if inrange:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: moveWait destination={destination:.2f} rbv={rbv:.2f}"
+            )
+            return
+        timeout = 30
+        acceleration = self.axisCom.get(".ACCL")
+        velocity = self.axisCom.get(".VELO")
+        timeout += 2 * acceleration + 1.0
+        if velocity > 0:
+            distance = math.fabs(self.axisCom.get(".RBV") - destination)
+            timeout += distance / velocity
+
+        self.axisCom.put(".VAL", destination)
+        self.waitForStartAndDone(str(tc_no) + " moveWait", timeout)
+
+    def postMoveCheck(self, tc_no):
+        # Check the motor for the correct state at the end of move.
+        val = self.axisCom.get(".VAL")
+        rbv = self.axisCom.get(".RBV", use_monitor=False)
+        dmov = self.axisCom.get(".DMOV")
+        movn = self.axisCom.get(".MOVN")
+        stat = self.axisCom.get(".STAT")
+        sevr = self.axisCom.get(".SEVR")
+        lvio = self.axisCom.get(".LVIO")
+        miss = self.axisCom.get(".MISS")
+        rhls = self.axisCom.get(".RHLS")
+        rlls = self.axisCom.get(".RLLS")
+
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov:d} movn={movn:d} stat={stat:X} sevr={sevr} miss={miss:d} rhls={rhls:d} rlls={rlls:d} val={val:.2f} rbv={rbv:.2f}"
+        )
+        return (
+            dmov == 1
+            and movn == 0
+            and stat == 0
+            and sevr == 0
+            and lvio == 0
+            and miss == 0
+            and rhls == 0
+            and rlls == 0
+        )
+
+    def powerOnHomeAxis(self, tc_no):
+        self.setCNENandWait(tc_no, 1)
+        msta = int(self.axisCom.get(".MSTA"))
+        if not (msta & self.MSTA_BIT_HOMED):
+            # Get values to be able calculate a timeout
+            range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
+            hvel = self.axisCom.get(".HVEL")
+            accl = self.axisCom.get(".ACCL")
+            msta = int(self.axisCom.get(".MSTA"))
+
+            # Calculate the timeout, based on the driving range
+            if range_postion > 0 and hvel > 0:
+                time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
+            else:
+                time_to_wait = 180
+
+            # If we are sitting on the High limit switch, use HOMR
+            if msta & self.MSTA_BIT_PLUS_LS:
+                self.axisCom.put(".HOMR", 1)
+            else:
+                self.axisCom.put(".HOMF", 1)
+                self.waitForStartAndDone(tc_no, time_to_wait)
+            msta = int(self.axisCom.get(".MSTA"))
+            assert msta & self.MSTA_BIT_HOMED
+
+    def resetAxis(self, tc_no):
+        wait_for_ErrRst = 5
+        err = int(self.axisCom.get("-Err", use_monitor=False))
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} resetAxis err={int(err)}"
+        )
+
+        self.axisCom.put("-ErrRst", 1)
+        while wait_for_ErrRst > 0:
+            wait_for_ErrRst -= polltime
+            err = int(self.axisCom.get("-Err", use_monitor=False))
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wait_for_ErrRst={wait_for_ErrRst:.2f} err=0X{err:X}"
+            )
+            if not err:
+                return True
+            time.sleep(polltime)
+            wait_for_ErrRst -= polltime
+        return False
+
+    def setCNENandWait(self, tc_no, cnen):
+        wait_for_power_changed = 6.0
+        # capv_self.axisMr.capvput(
+        #     + "-DbgStrToLOG", "CNEN=" + str(cnen) + " " + tc_no[0:20], wait=True
+        # )
+        self.axisCom.put(".CNEN", cnen)
+        while wait_for_power_changed > 0:
+            msta = int(self.axisCom.get(".MSTA", use_monitor=False))
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_power_changed={wait_for_power_changed:.2f} cnen={cnen} msta={msta:04x} {self.getMSTAtext(msta)}"
+            print(debug_text)
+            if cnen and (msta & self.MSTA_BIT_AMPON):
+                return
+            if not cnen and not (msta & self.MSTA_BIT_AMPON):
+                return
+            time.sleep(polltime)
+            wait_for_power_changed -= polltime
+        raise Exception(debug_text)
+
+    def setFieldSPAM(self, tc_no, value):
+        if self.hasFieldSPAM is None:
+            vers = float(self.axisCom.get(".VERS"))
+            if vers >= 6.94 and vers <= 7.09:
+                self.hasFieldSPAM = True
+            else:
+                self.hasFieldSPAM = False
+        if self.hasFieldSPAM:
+            self.axisCom.put(".SPAM", value)
+
+    def setMotorStartPos(self, tc_no, startpos):
+        self.setValueOnSimulator(tc_no, "fActPosition", startpos)
+        self.doSTUPandSYNC(tc_no)
+        maxDelta = 0.1
+        timeout = 3.0
+        valueVALok = self.waitForValueChanged(
+            tc_no, ".VAL", startpos, maxDelta, timeout
+        )
+        return valueVALok
+
+    def setSoftLimitsOff(self, tc_no, direction=-1):
+        actDHLM = float(self.axisCom.get(".DHLM", use_monitor=False))
+        actDLLM = float(self.axisCom.get(".DLLM", use_monitor=False))
+
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff direction={direction} actDHLM={actDHLM} actDLLM={actDLLM}"
+        )
+        # switch off the controller soft limits
+        if direction == 0:
+            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+        else:
+            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
+            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
+
+        maxTime = 10  # seconds maximum to let read only parameters ripple through
+        maxDelta = 0.05  # 5 % error tolerance margin
+        while maxTime > 0:
+            self.axisCom.put(".DLLM", 0.0)
+            self.axisCom.put(".DHLM", 0.0)
+
+            actDHLM = float(self.axisCom.get(".DHLM", use_monitor=False))
+            actDLLM = float(self.axisCom.get(".DLLM", use_monitor=False))
+
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff dhlm={actDHLM} dllm={actDLLM}"
+            )
+            resH = self.calcAlmostEqual(tc_no, 0.0, actDHLM, maxDelta)
+            resL = self.calcAlmostEqual(tc_no, 0.0, actDLLM, maxDelta)
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: setSoftLimitsOff actDHLM={actDHLM} actDLLM={actDLLM} resH={resH} resL={resL}"
+            print(debug_text)
+            if resH and resL:
+                return
+
+            time.sleep(polltime)
+            maxTime = maxTime - polltime
+        raise Exception(debug_text)
+        assert False
+
+    def setSoftLimitsOn(
+        self, tc_no, low_limit=0.0, high_limit=0.0, initAbsMinMax=False
+    ):
+        if initAbsMinMax:
+            high_limit = self.axisCom.get("-CfgPMAX-RB")
+            low_limit = self.axisCom.get("-CfgPMIN-RB")
+
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit={low_limit} high_limit={high_limit} initAbsMinMax={initAbsMinMax}"
+        )
+        # switch on the controller soft limits
+        try:
+            self.axisCom.put("-CfgDHLM", high_limit, wait=True, timeout=2)
+            self.axisCom.put("-CfgDLLM", low_limit, wait=True, timeout=2)
+            self.axisCom.put("-CfgDHLM-En", 1, wait=True, timeout=2)
+            self.axisCom.put("-CfgDLLM-En", 1, wait=True, timeout=2)
+        finally:
+            oldRBV = self.axisCom.get(".RBV")
+
+        if oldRBV < 0:
+            self.axisCom.put(".LLM", low_limit)
+            self.axisCom.put(".HLM", high_limit)
+        else:
+            self.axisCom.put(".HLM", high_limit)
+            self.axisCom.put(".LLM", low_limit)
+
+    def setValueOnSimulator(self, tc_no, var, value):
+        var = str(var)
+        value = str(value)
+        outStr = "Sim.this." + var + "=" + value
+        print(
+            "%s/%s: DbgStrToMCU var=%s value=%s outStr=%s"
+            % (tc_no, self.url_string, var, value, outStr)
+        )
+        if not "TODOXXXX".startswith("pva://"):
+            lenOutStr = len(outStr)
+            if lenOutStr >= 40:
+                print(
+                    "%s: setValueOnSimulator lenOutStr=%d outStr=%s"
+                    % (tc_no, lenOutStr, outStr)
+                )
+                assert len(outStr) < 40
+        self.axisCom.put("-DbgStrToMCU", outStr, wait=True)
+        stat = int(self.axisCom.get("-DbgStrToMCU.STAT", use_monitor=False))
+        sevr = int(self.axisCom.get("-DbgStrToMCU.SEVR", use_monitor=False))
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: setValueOnSimulator var={var} value={value} stat={stat} sevr={sevr}"
+        )
+        if stat != 0 or sevr != 0:
+            debug_text = f"stat={stat} sevr={sevr}"
+            raise Exception(debug_text)
+
+    def verifyRBVinsideRDBD(self, tc_no, position):
+        """"""
+        rdbd = self.axisCom.get(".RDBD")
+        rbv = self.axisCom.get(".RBV", use_monitor=False)
+
+        if (rbv < position - rdbd) or (rbv > position + rdbd):
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: verifyRBVinsideRDBD position={position} rbv={rbv:.2f} rdbd={rdbd}"
+            )
+            return False
+        return True
+
+    def waitForMipZero(self, tc_no, wait_for_mip_zero):
+        while wait_for_mip_zero > -10.0:  # Extra long wait
+            wait_for_mip_zero -= polltime
+            mip = int(self.axisCom.get(".MIP", use_monitor=False))
+            rbv = self.axisCom.get(".RBV", use_monitor=False)
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_mip_zero={wait_for_mip_zero:.2f} mip={self.getMIPtext(mip)} (0x{mip:04x}) rbv={rbv:.2f}"
+            print(debug_text)
+            if not mip:
+                return
+            time.sleep(polltime)
+            wait_for_mip_zero -= polltime
+        raise Exception(debug_text)
+
+    def waitForPowerOff(self, tc_no, wait_for_powerOff):
+        while wait_for_powerOff > 0:
+            wait_for_powerOff -= polltime
+            msta = int(self.axisCom.get(".MSTA", use_monitor=False))
+            powerOn = msta & self.MSTA_BIT_AMPON
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_powerOff={wait_for_powerOff:.2f} powerOn={int(powerOn)}"
+            print(debug_text)
+            if not powerOn:
+                return True
+            time.sleep(polltime)
+            wait_for_powerOff -= polltime
+        raise Exception(debug_text)
+
+    def waitForPowerOn(self, tc_no, wait_for_powerOn):
+        while wait_for_powerOn > 0:
+            wait_for_powerOn -= polltime
+            msta = int(self.axisCom.get(".MSTA", use_monitor=False))
+            powerOn = msta & self.MSTA_BIT_AMPON
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_powerOn={wait_for_powerOn:.2f} powerOn={int(powerOn)}"
+            print(debug_text)
+            if powerOn:
+                return
+            time.sleep(polltime)
+            wait_for_powerOn -= polltime
+        raise Exception(debug_text)
 
     def waitForStart(self, tc_no, wait_for_start):
         while wait_for_start > 0:
@@ -323,19 +917,6 @@ class AxisMr:
                 return
             time.sleep(polltime)
             wait_for_start -= polltime
-        raise Exception(debug_text)
-
-    def waitForStop(self, tc_no, wait_for_stop):
-        while wait_for_stop > 0:
-            dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
-            movn = int(self.axisCom.get(".MOVN", use_monitor=False))
-            rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_stop={wait_for_stop:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
-            print(debug_text)
-            if not movn and dmov:
-                return
-            time.sleep(polltime)
-            wait_for_stop -= polltime
         raise Exception(debug_text)
 
     def waitForStartAndDone(self, tc_no, wait_for_done):
@@ -374,43 +955,17 @@ class AxisMr:
         )
         raise Exception(debug_text)
 
-    def waitForMipZero(self, tc_no, wait_for_mip_zero):
-        while wait_for_mip_zero > -10.0:  # Extra long wait
-            wait_for_mip_zero -= polltime
-            mip = int(self.axisCom.get(".MIP", use_monitor=False))
+    def waitForStop(self, tc_no, wait_for_stop):
+        while wait_for_stop > 0:
+            dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
+            movn = int(self.axisCom.get(".MOVN", use_monitor=False))
             rbv = self.axisCom.get(".RBV", use_monitor=False)
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_mip_zero={wait_for_mip_zero:.2f} mip={self.getMIPtext(mip)} (0x{mip:04x}) rbv={rbv:.2f}"
+            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_stop={wait_for_stop:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
             print(debug_text)
-            if not mip:
+            if not movn and dmov:
                 return
             time.sleep(polltime)
-            wait_for_mip_zero -= polltime
-        raise Exception(debug_text)
-
-    def waitForPowerOn(self, tc_no, wait_for_powerOn):
-        while wait_for_powerOn > 0:
-            wait_for_powerOn -= polltime
-            msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-            powerOn = msta & self.MSTA_BIT_AMPON
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_powerOn={wait_for_powerOn:.2f} powerOn={int(powerOn)}"
-            print(debug_text)
-            if powerOn:
-                return
-            time.sleep(polltime)
-            wait_for_powerOn -= polltime
-        raise Exception(debug_text)
-
-    def waitForPowerOff(self, tc_no, wait_for_powerOff):
-        while wait_for_powerOff > 0:
-            wait_for_powerOff -= polltime
-            msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-            powerOn = msta & self.MSTA_BIT_AMPON
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_powerOff={wait_for_powerOff:.2f} powerOn={int(powerOn)}"
-            print(debug_text)
-            if not powerOn:
-                return True
-            time.sleep(polltime)
-            wait_for_powerOff -= polltime
+            wait_for_stop -= polltime
         raise Exception(debug_text)
 
     def waitForValueChanged(
@@ -448,169 +1003,100 @@ class AxisMr:
             time_to_wait -= polltime
         return False
 
-    def jogDirectionTimeout(self, tc_no, direction, time_to_wait):
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogDirectionTimeout direction={direction} time_to_wait={time_to_wait}"
-        )
-        if direction > 0:
-            self.axisCom.put(".JOGF", 1)
-        else:
-            self.axisCom.put(".JOGR", 1)
-        self.waitForStartAndDone(str(tc_no) + " jogDirection", 30 + time_to_wait + 3.0)
-        if direction > 0:
-            self.axisCom.put(".JOGF", 0)
-        else:
-            self.axisCom.put(".JOGR", 0)
+    def writeExpFileJOG_BDST(
+        self,
+        tc_no,
+        expFileName,
+        myDirection,
+        frac,
+        encRel,
+        maxcnt,
+        motorStartPos,
+        motorEndPos,
+    ):
+        # vers = float(self.axisCom.get(".VERS"))
+        # motor_master = False
+        # if vers > 7.19:
+        #    motor_master = True
 
-    def jogCalcTimeout(self, tc_no, direction):
-        jvel = self.axisCom.get(".JVEL")
-        hlm = self.axisCom.get(".HLM")
-        llm = self.axisCom.get(".LLM")
-        rbv = self.axisCom.get(".RBV")
-        accl = self.axisCom.get(".ACCL")
-        deltah = math.fabs(hlm - rbv)
-        deltal = math.fabs(llm - rbv)
-        # TODO: we could use at the DIR field, which delta to use
-        # This can be done in a cleanup
-        if direction > 0:
-            delta = deltah
-        else:
-            delta = deltal
-        # TODO: add JAR to the calculation
-        time_to_wait = delta / jvel + 2 * accl + 2.0
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogCalcTimeout jogDirection={direction} rbv={rbv:.2f} delta={delta:.2f} jvel={jvel:.2f} time_to_wait={time_to_wait:.2f}"
-        )
-        return time_to_wait
-
-    def jogDirection(self, tc_no, direction):
-        time_to_wait = self.jogCalcTimeout(tc_no, direction)
-        self.jogDirectionTimeout(tc_no, direction, time_to_wait)
-
-    #    def movePosition(self, tc_no, destination, velocity, acceleration):
-    #        time_to_wait = 30
-    #        if velocity > 0:
-    #            distance = math.fabs(self.axisCom.get(".RBV") - destination)
-    #            time_to_wait += distance / velocity + 2 * acceleration
-    #        self.axisCom.put(".VAL", destination)
-    #        done = self.waitForStartAndDone(str(tc_no) + " movePosition", time_to_wait)
-
-    def moveWait(self, tc_no, destination):
-        rbv = self.axisCom.get(".RBV", use_monitor=False)
-        rdbd = self.axisCom.get(".RDBD")
-
-        inrange = self.calcAlmostEqual(tc_no, destination, rbv, rdbd, doPrint=False)
-        if inrange:
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: moveWait destination={destination:.2f} rbv={rbv:.2f}"
-            )
-            return
-        timeout = 30
-        acceleration = self.axisCom.get(".ACCL")
-        velocity = self.axisCom.get(".VELO")
-        timeout += 2 * acceleration + 1.0
-        if velocity > 0:
-            distance = math.fabs(self.axisCom.get(".RBV") - destination)
-            timeout += distance / velocity
-
-        self.axisCom.put(".VAL", destination)
-        self.waitForStartAndDone(str(tc_no) + " moveWait", timeout)
-
-    def setValueOnSimulator(self, tc_no, var, value):
-        var = str(var)
-        value = str(value)
-        outStr = "Sim.this." + var + "=" + value
-        print(
-            "%s/%s: DbgStrToMCU var=%s value=%s outStr=%s"
-            % (tc_no, self.url_string, var, value, outStr)
-        )
-        if not "TODOXXXX".startswith("pva://"):
-            lenOutStr = len(outStr)
-            if lenOutStr >= 40:
-                print(
-                    "%s: setValueOnSimulator lenOutStr=%d outStr=%s"
-                    % (tc_no, lenOutStr, outStr)
-                )
-                assert len(outStr) < 40
-        self.axisCom.put("-DbgStrToMCU", outStr, wait=True)
-        stat = int(self.axisCom.get("-DbgStrToMCU.STAT", use_monitor=False))
-        sevr = int(self.axisCom.get("-DbgStrToMCU.SEVR", use_monitor=False))
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: setValueOnSimulator var={var} value={value} stat={stat} sevr={sevr}"
-        )
-        if stat != 0 or sevr != 0:
-            debug_text = f"stat={stat} sevr={sevr}"
-            raise Exception(debug_text)
-
-    def motorInitAllForBDSTIfNeeded(self, tc_no):
-        init_needed = 0
-        if self.axisCom.get(".MRES") != self.myMRES:
-            init_needed = init_needed + 1
-        if self.axisCom.get(".DIR") != self.myDIR:
-            init_needed = init_needed + 2
-        if self.axisCom.get(".OFF") != self.myOFF:
-            init_needed = init_needed + 1
-        if self.axisCom.get(".VELO") != self.myVELO:
-            init_needed = init_needed + 4
-        if self.axisCom.get(".ACCL") != self.myACCL:
-            init_needed = init_needed + 8
-        if self.axisCom.get(".JVEL") != self.myJVEL:
-            init_needed = init_needed + 16
-        if self.axisCom.get(".JAR") != self.myJAR:
-            init_needed = init_needed + 32
-        if self.axisCom.get(".BVEL") != self.myBVEL:
-            init_needed = init_needed + 64
-        if self.axisCom.get(".BACC") != self.myBACC:
-            init_needed = init_needed + 128
-        if self.axisCom.get(".RTRY") != self.myRTRY:
-            self.axisCom.put(".RTRY", self.myRTRY)
-        if self.axisCom.get(".BDST") != self.myBDST:
-            self.axisCom.put(".BDST", self.myBDST)
-        if self.axisCom.get(".DLY") != self.myDLY:
-            init_needed = init_needed + 256
-        if self.axisCom.get(".HLM") != 0.0:
-            init_needed = init_needed + 512
-        if self.axisCom.get(".LLM") != 0.0:
-            init_needed = init_needed + 1024
-        if init_needed == 0:
-            return
-        debug_text = f"{tc_no}#{lineno()} init_needed=0x{init_needed:X}"
+        bdst = float(self.axisCom.get(".BDST", timeout=2.0, use_monitor=False))
+        debug_text = f"{tc_no}#{lineno()} Start={motorStartPos} End={motorEndPos} bdst={bdst} encRel={encRel}"
         self.axisCom.putDbgStrToLOG(debug_text, wait=True)
-        self.motorInitAllForBDST(tc_no)
+        # Create a "expected" file
+        expFile = open(expFileName, "w")
 
-    def motorInitAllForBDST(self, tc_no):
-        startPos = 0.0
-        # The next is needed to change MRES_23/24 further down
-        self.setValueOnSimulator(tc_no, "nAmplifierPercent", 0)
-        self.setValueOnSimulator(tc_no, "bAxisHomed", 1)
-        self.setValueOnSimulator(tc_no, "fLowHardLimitPos", -120)
-        self.setValueOnSimulator(tc_no, "fHighHardLimitPos", 120)
-        self.setValueOnSimulator(tc_no, "setMRES_23", 0)
-        self.setValueOnSimulator(tc_no, "setMRES_24", 0)
-        self.setValueOnSimulator(tc_no, "fActPosition", startPos)
-        self.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
+        # The jogging command
+        line1 = (
+            "move velocity direction=%d max_velocity=%g acceleration=%g motorPosNow=%g"
+            % (myDirection, self.myJVEL, self.myJAR, motorStartPos)
+        )
+        deltaForth = bdst
+        # The record tells us to go "delta * frac". Once we have travelled, we are too far
+        # The record will read that we are too far, and ask to go back "too far", overcompensated
+        # again with frac
+        deltaBack = deltaForth * frac
+        if encRel:
+            # Move back in relative mode
+            line2 = (
+                "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                % (0 - deltaForth, self.myVELO, self.myAR, motorEndPos)
+            )
+            # Move relative forward with backlash parameters
+            motorPosNow = motorEndPos - deltaForth
+            line3 = (
+                "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                % (deltaBack, self.myBVEL, self.myBAR, motorPosNow)
+            )
+            expFile.write(f"{line1}\n{line2}\n{line3}\n")
+            rtry = self.axisCom.get(".RTRY", use_monitor=False)
+            rcnt = self.axisCom.get(".RCNT", use_monitor=False)
+            while rtry > rcnt and frac != 1.0:
+                # motorRecord will do retries.
+                motorPosNow = motorPosNow + deltaBack
+                # Backlash is DVAL - BDST (with DVAL == motorEndPos)
+                newMotorPos = motorEndPos - bdst
+                commandedDelta = (newMotorPos - motorPosNow) * frac
+                line4 = (
+                    "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                    % (commandedDelta, self.myVELO, self.myAR, motorPosNow)
+                )
+                expFile.write(f"{line4}\n")
+                motorPosNow = motorPosNow + commandedDelta
+                # Move the opposite direction; motorRecord will multiply with frac (again)
+                newMotorPos = motorEndPos
+                commandedDelta = (newMotorPos - motorPosNow) * frac
+                line5 = (
+                    "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                    % (commandedDelta, self.myBVEL, self.myBAR, motorPosNow)
+                )
+                expFile.write(f"{line5}\n")
+                rtry = rtry - 1
 
-        self.axisCom.put("-ErrRst", 1)
-        # Prepare parameters for jogging and backlash
-        self.setSoftLimitsOff(tc_no)
-        self.axisCom.put(".MRES", self.myMRES)
-        self.axisCom.put(".DIR", self.myDIR)
-        self.axisCom.put(".OFF", self.myOFF)
-        self.axisCom.put(".VELO", self.myVELO)
-        self.axisCom.put(".ACCL", self.myACCL)
+        else:
+            expFile.write(f"{line1}\n")
+            startPosLine2 = motorEndPos
+            # Move back in positioning mode
+            while maxcnt > 0:
+                line2 = (
+                    "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                    % (motorEndPos - bdst, self.myVELO, self.myAR, startPosLine2)
+                )
+                # Move forward with backlash parameters times frac
+                # double currpos = pmr->dval / pmr->mres;
+                # double newpos = bpos + pmr->frac * (currpos - bpos);
+                posNow = motorEndPos - bdst
+                deltaToMove = bdst * frac
+                endPosLine3 = posNow + deltaToMove
+                line3 = (
+                    "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
+                    % (endPosLine3, self.myBVEL, self.myBAR, posNow)
+                )
+                startPosLine2 = endPosLine3
+                expFile.write(f"{line2}\n{line3}\n")
+                maxcnt = maxcnt - 1
 
-        self.axisCom.put(".JVEL", self.myJVEL)
-        self.axisCom.put(".JAR", self.myJAR)
-
-        self.axisCom.put(".BVEL", self.myBVEL)
-        self.axisCom.put(".BACC", self.myBACC)
-        self.axisCom.put(".BDST", self.myBDST)
-        self.axisCom.put(".FRAC", self.myFRAC)
-        self.axisCom.put(".RTRY", self.myRTRY)
-        self.axisCom.put(".RMOD", motorRMOD_D)
-        self.axisCom.put(".DLY", self.myDLY)
-        self.axisCom.put(".SYNC", 1)
-        self.waitForValueChanged(tc_no, ".VAL", startPos, 0.1, 2.0)
+        expFile.write("EOF\n")
+        expFile.close()
 
     def writeExpFileRMOD_X(
         self,
@@ -799,489 +1285,3 @@ class AxisMr:
                 cnt += 1
         expFile.write("EOF\n")
         expFile.close()
-
-    def writeExpFileJOG_BDST(
-        self,
-        tc_no,
-        expFileName,
-        myDirection,
-        frac,
-        encRel,
-        maxcnt,
-        motorStartPos,
-        motorEndPos,
-    ):
-        # vers = float(self.axisCom.get(".VERS"))
-        # motor_master = False
-        # if vers > 7.19:
-        #    motor_master = True
-
-        bdst = float(self.axisCom.get(".BDST", timeout=2.0, use_monitor=False))
-        debug_text = f"{tc_no}#{lineno()} Start={motorStartPos} End={motorEndPos} bdst={bdst} encRel={encRel}"
-        self.axisCom.putDbgStrToLOG(debug_text, wait=True)
-        # Create a "expected" file
-        expFile = open(expFileName, "w")
-
-        # The jogging command
-        line1 = (
-            "move velocity direction=%d max_velocity=%g acceleration=%g motorPosNow=%g"
-            % (myDirection, self.myJVEL, self.myJAR, motorStartPos)
-        )
-        deltaForth = bdst
-        # The record tells us to go "delta * frac". Once we have travelled, we are too far
-        # The record will read that we are too far, and ask to go back "too far", overcompensated
-        # again with frac
-        deltaBack = deltaForth * frac
-        if encRel:
-            # Move back in relative mode
-            line2 = (
-                "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                % (0 - deltaForth, self.myVELO, self.myAR, motorEndPos)
-            )
-            # Move relative forward with backlash parameters
-            motorPosNow = motorEndPos - deltaForth
-            line3 = (
-                "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                % (deltaBack, self.myBVEL, self.myBAR, motorPosNow)
-            )
-            expFile.write(f"{line1}\n{line2}\n{line3}\n")
-            rtry = self.axisCom.get(".RTRY", use_monitor=False)
-            rcnt = self.axisCom.get(".RCNT", use_monitor=False)
-            while rtry > rcnt and frac != 1.0:
-                # motorRecord will do retries.
-                motorPosNow = motorPosNow + deltaBack
-                # Backlash is DVAL - BDST (with DVAL == motorEndPos)
-                newMotorPos = motorEndPos - bdst
-                commandedDelta = (newMotorPos - motorPosNow) * frac
-                line4 = (
-                    "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                    % (commandedDelta, self.myVELO, self.myAR, motorPosNow)
-                )
-                expFile.write(f"{line4}\n")
-                motorPosNow = motorPosNow + commandedDelta
-                # Move the opposite direction; motorRecord will multiply with frac (again)
-                newMotorPos = motorEndPos
-                commandedDelta = (newMotorPos - motorPosNow) * frac
-                line5 = (
-                    "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                    % (commandedDelta, self.myBVEL, self.myBAR, motorPosNow)
-                )
-                expFile.write(f"{line5}\n")
-                rtry = rtry - 1
-
-        else:
-            expFile.write(f"{line1}\n")
-            startPosLine2 = motorEndPos
-            # Move back in positioning mode
-            while maxcnt > 0:
-                line2 = (
-                    "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                    % (motorEndPos - bdst, self.myVELO, self.myAR, startPosLine2)
-                )
-                # Move forward with backlash parameters times frac
-                # double currpos = pmr->dval / pmr->mres;
-                # double newpos = bpos + pmr->frac * (currpos - bpos);
-                posNow = motorEndPos - bdst
-                deltaToMove = bdst * frac
-                endPosLine3 = posNow + deltaToMove
-                line3 = (
-                    "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g"
-                    % (endPosLine3, self.myBVEL, self.myBAR, posNow)
-                )
-                startPosLine2 = endPosLine3
-                expFile.write(f"{line2}\n{line3}\n")
-                maxcnt = maxcnt - 1
-
-        expFile.write("EOF\n")
-        expFile.close()
-
-    def cmpUnlinkExpectedActualFile(self, tc_no, expFileName, actFileName):
-        # compare actual and expFile
-        sameContent = False
-        wait_for_found = 3
-        while wait_for_found > 0:
-            try:
-                file = open(expFileName)
-                for line in file:
-                    if line[-1] == "\n":
-                        line = line[0:-1]
-                    print(
-                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {expFileName}: {str(line)}"
-                    )
-                file.close()
-                file = open(actFileName)
-                for line in file:
-                    if line[-1] == "\n":
-                        line = line[0:-1]
-                        if line == "EOF" and wait_for_found > 1:
-                            wait_for_found = 1
-                    print(
-                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {actFileName}: {str(line)}"
-                    )
-                file.close()
-                sameContent = filecmp.cmp(expFileName, actFileName, shallow=False)
-            except Exception as e:
-                print(
-                    "%s: cmpUnlinkExpectedActualFile expFileName=%s actFileName=%s wait_for_found=%f"
-                    % (tc_no, expFileName, actFileName, wait_for_found)
-                )
-                print(str(e))
-                time.sleep(0.5)
-
-            if sameContent:
-                os.unlink(expFileName)
-                os.unlink(actFileName)
-                return sameContent
-
-            time.sleep(polltime)
-            wait_for_found -= polltime
-
-        return sameContent
-
-    def setMotorStartPos(self, tc_no, startpos):
-        self.setValueOnSimulator(tc_no, "fActPosition", startpos)
-        self.doSTUPandSYNC(tc_no)
-        maxDelta = 0.1
-        timeout = 3.0
-        valueVALok = self.waitForValueChanged(
-            tc_no, ".VAL", startpos, maxDelta, timeout
-        )
-        return valueVALok
-
-    def setSoftLimitsOff(self, tc_no, direction=-1):
-        actDHLM = float(self.axisCom.get(".DHLM", use_monitor=False))
-        actDLLM = float(self.axisCom.get(".DLLM", use_monitor=False))
-
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff direction={direction} actDHLM={actDHLM} actDLLM={actDLLM}"
-        )
-        # switch off the controller soft limits
-        if direction == 0:
-            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
-            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-        else:
-            self.axisCom.put("-CfgDHLM-En", 0, wait=True)
-            self.axisCom.put("-CfgDLLM-En", 0, wait=True)
-
-        maxTime = 10  # seconds maximum to let read only parameters ripple through
-        maxDelta = 0.05  # 5 % error tolerance margin
-        while maxTime > 0:
-            self.axisCom.put(".DLLM", 0.0)
-            self.axisCom.put(".DHLM", 0.0)
-
-            actDHLM = float(self.axisCom.get(".DHLM", use_monitor=False))
-            actDLLM = float(self.axisCom.get(".DLLM", use_monitor=False))
-
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOff dhlm={actDHLM} dllm={actDLLM}"
-            )
-            resH = self.calcAlmostEqual(tc_no, 0.0, actDHLM, maxDelta)
-            resL = self.calcAlmostEqual(tc_no, 0.0, actDLLM, maxDelta)
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: setSoftLimitsOff actDHLM={actDHLM} actDLLM={actDLLM} resH={resH} resL={resL}"
-            print(debug_text)
-            if resH and resL:
-                return
-
-            time.sleep(polltime)
-            maxTime = maxTime - polltime
-        raise Exception(debug_text)
-        assert False
-
-    def setSoftLimitsOn(
-        self, tc_no, low_limit=0.0, high_limit=0.0, initAbsMinMax=False
-    ):
-        if initAbsMinMax:
-            high_limit = self.axisCom.get("-CfgPMAX-RB")
-            low_limit = self.axisCom.get("-CfgPMIN-RB")
-
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit={low_limit} high_limit={high_limit} initAbsMinMax={initAbsMinMax}"
-        )
-        # switch on the controller soft limits
-        try:
-            self.axisCom.put("-CfgDHLM", high_limit, wait=True, timeout=2)
-            self.axisCom.put("-CfgDLLM", low_limit, wait=True, timeout=2)
-            self.axisCom.put("-CfgDHLM-En", 1, wait=True, timeout=2)
-            self.axisCom.put("-CfgDLLM-En", 1, wait=True, timeout=2)
-        finally:
-            oldRBV = self.axisCom.get(".RBV")
-
-        if oldRBV < 0:
-            self.axisCom.put(".LLM", low_limit)
-            self.axisCom.put(".HLM", high_limit)
-        else:
-            self.axisCom.put(".HLM", high_limit)
-            self.axisCom.put(".LLM", low_limit)
-
-    def doSTUPandSYNC(self, tc_no):
-        self.waitForMipZero(tc_no, 2)
-        self.waitForValueChanged(tc_no, ".STUP", 0, 0.0, 3.0)
-        self.axisCom.put(".STUP", 1)
-        self.waitForValueChanged(tc_no, ".STUP", 0, 0.0, 3.0)
-
-        self.axisCom.put(".SYNC", 1)
-        rbv = self.axisCom.get(".RBV", use_monitor=False)
-        self.waitForValueChanged(tc_no, ".VAL", rbv, 0.1, 2.0)
-        msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} doSTUPandSYNC msta={self.getMSTAtext(msta)}"
-        )
-
-    def setCNENandWait(self, tc_no, cnen):
-        wait_for_power_changed = 6.0
-        # capv_self.axisMr.capvput(
-        #     + "-DbgStrToLOG", "CNEN=" + str(cnen) + " " + tc_no[0:20], wait=True
-        # )
-        self.axisCom.put(".CNEN", cnen)
-        while wait_for_power_changed > 0:
-            msta = int(self.axisCom.get(".MSTA", use_monitor=False))
-            debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_power_changed={wait_for_power_changed:.2f} cnen={cnen} msta={msta:04x} {self.getMSTAtext(msta)}"
-            print(debug_text)
-            if cnen and (msta & self.MSTA_BIT_AMPON):
-                return
-            if not cnen and not (msta & self.MSTA_BIT_AMPON):
-                return
-            time.sleep(polltime)
-            wait_for_power_changed -= polltime
-        raise Exception(debug_text)
-
-    def resetAxis(self, tc_no):
-        wait_for_ErrRst = 5
-        err = int(self.axisCom.get("-Err", use_monitor=False))
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} resetAxis err={int(err)}"
-        )
-
-        self.axisCom.put("-ErrRst", 1)
-        while wait_for_ErrRst > 0:
-            wait_for_ErrRst -= polltime
-            err = int(self.axisCom.get("-Err", use_monitor=False))
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wait_for_ErrRst={wait_for_ErrRst:.2f} err=0X{err:X}"
-            )
-            if not err:
-                return True
-            time.sleep(polltime)
-            wait_for_ErrRst -= polltime
-        return False
-
-    def powerOnHomeAxis(self, tc_no):
-        self.setCNENandWait(tc_no, 1)
-        msta = int(self.axisCom.get(".MSTA"))
-        if not (msta & self.MSTA_BIT_HOMED):
-            # Get values to be able calculate a timeout
-            range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
-            hvel = self.axisCom.get(".HVEL")
-            accl = self.axisCom.get(".ACCL")
-            msta = int(self.axisCom.get(".MSTA"))
-
-            # Calculate the timeout, based on the driving range
-            if range_postion > 0 and hvel > 0:
-                time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
-            else:
-                time_to_wait = 180
-
-            # If we are sitting on the High limit switch, use HOMR
-            if msta & self.MSTA_BIT_PLUS_LS:
-                self.axisCom.put(".HOMR", 1)
-            else:
-                self.axisCom.put(".HOMF", 1)
-                self.waitForStartAndDone(tc_no, time_to_wait)
-            msta = int(self.axisCom.get(".MSTA"))
-            assert msta & self.MSTA_BIT_HOMED
-
-    def verifyRBVinsideRDBD(self, tc_no, position):
-        """"""
-        rdbd = self.axisCom.get(".RDBD")
-        rbv = self.axisCom.get(".RBV", use_monitor=False)
-
-        if (rbv < position - rdbd) or (rbv > position + rdbd):
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: verifyRBVinsideRDBD position={position} rbv={rbv:.2f} rdbd={rdbd}"
-            )
-            return False
-        return True
-
-    def postMoveCheck(self, tc_no):
-        # Check the motor for the correct state at the end of move.
-        val = self.axisCom.get(".VAL")
-        rbv = self.axisCom.get(".RBV", use_monitor=False)
-        dmov = self.axisCom.get(".DMOV")
-        movn = self.axisCom.get(".MOVN")
-        stat = self.axisCom.get(".STAT")
-        sevr = self.axisCom.get(".SEVR")
-        lvio = self.axisCom.get(".LVIO")
-        miss = self.axisCom.get(".MISS")
-        rhls = self.axisCom.get(".RHLS")
-        rlls = self.axisCom.get(".RLLS")
-
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov:d} movn={movn:d} stat={stat:X} sevr={sevr} miss={miss:d} rhls={rhls:d} rlls={rlls:d} val={val:.2f} rbv={rbv:.2f}"
-        )
-        return (
-            dmov == 1
-            and movn == 0
-            and stat == 0
-            and sevr == 0
-            and lvio == 0
-            and miss == 0
-            and rhls == 0
-            and rlls == 0
-        )
-
-    # move into limit switch
-    # We need different combinations (WIP)
-    # - The direction (hit HLS or LLS)
-    # - "switch soft limits off" -or- set a very high/low soft limit instead
-    #    (or do nothing)
-    # - Use motorRecords JOG or use model 3 moveVel/moveAbs
-    # - Change the parameter from above before or after the movement started
-    #
-    def moveIntoLS(
-        self,
-        tc_no=0,
-        direction=-1,
-        doDisableSoftLimit=True,
-        setInfiniteSoftLimit=False,
-        movingMethod="JOG",
-        paramWhileMove=False,
-    ):
-        assert tc_no != 0
-        assert direction >= 0
-        old_VELO = self.axisCom.get(".VELO")
-        vmax = self.axisCom.get(".VMAX")
-        if vmax == 0.0:
-            vmax = old_VELO
-        jvel = self.axisCom.get(".JVEL")
-        if jvel == 0.0:
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} jvel={jvel}"
-            )
-            return False
-
-        old_DHLM = self.axisCom.get("-CfgDHLM")
-        old_DLLM = self.axisCom.get("-CfgDLLM")
-        margin = 1.1
-        if paramWhileMove:
-            margin = margin + 2
-        if movingMethod == "MoveVel":
-            movingFieldName = "-MoveVel"
-        if direction > 0:
-            softlimitFieldName = "-CfgDHLM"
-            nearly_infinite = 999999.0
-            soft_limit_pos = old_DHLM
-            jog_start_pos = soft_limit_pos - jvel - margin
-            ls_to_be_activated = self.MSTA_BIT_PLUS_LS
-            ls_not_to_be_activated = self.MSTA_BIT_MINUS_LS
-            if movingMethod == "JOG":
-                movingFieldName = ".JOGF"
-                movingFieldValue = 1
-            elif movingMethod == "MoveVel":
-                movingFieldValue = jvel
-        else:
-            softlimitFieldName = "-CfgDLLM"
-            nearly_infinite = -999999.0
-            soft_limit_pos = old_DLLM
-            jog_start_pos = soft_limit_pos + jvel + margin
-            ls_to_be_activated = self.MSTA_BIT_MINUS_LS
-            ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
-            if movingMethod == "JOG":
-                movingFieldName = ".JOGR"
-                movingFieldValue = 1
-            elif movingMethod == "MoveVel":
-                movingFieldValue = 0 - jvel
-            elif movingMethod == "MoveAbs":
-                movingFieldValue = 0 - jvel
-
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} paramWhileMove={paramWhileMove} margin={margin}"
-        )
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} direction={direction } jog_start_pos={jog_start_pos:f}"
-        )
-        dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
-        if dmov != 1:
-            self.axisCom.put(".STOP", 1)
-        # Go away from limit switch
-        self.moveWait(tc_no, jog_start_pos)
-        if movingMethod == "MoveAbs":
-            movingFieldName = ".DVAL"
-            self.axisCom.put(".VELO", jvel)
-            movingFieldValue = nearly_infinite
-
-        if doDisableSoftLimit:
-            if paramWhileMove:
-                # Start jogging, switch soft limit off while jogging
-                #
-                wait_for_stop = self.jogCalcTimeout(tc_no, direction)
-                self.axisCom.put(movingFieldName, movingFieldValue)
-                wait_for_start = 2
-                self.waitForStart(tc_no, wait_for_start)
-                self.setSoftLimitsOff(tc_no, direction=direction)
-                try:
-                    self.waitForStop(tc_no, wait_for_stop)
-                except Exception:
-                    self.axisCom.put(".STOP", 1)
-                    try:
-                        self.waitForStop(tc_no, 2.0)
-                    except Exception as ex:
-                        print(
-                            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} ex={ex}"
-                        )
-                if direction > 0:
-                    self.axisCom.put(".JOGF", 0)
-                else:
-                    self.axisCom.put(".JOGR", 0)
-            else:
-                self.setSoftLimitsOff(tc_no, direction=direction)
-                time_to_wait = self.jogCalcTimeout(tc_no, direction)
-                self.axisCom.put(movingFieldName, movingFieldValue)
-                self.waitForStartAndDone(str(tc_no), 30 + time_to_wait + 3.0)
-        else:
-            if setInfiniteSoftLimit:
-                oldSoftLimitValue = self.axisCom.get(softlimitFieldName)
-                self.axisCom.put(softlimitFieldName, nearly_infinite)
-
-            time_to_wait = self.jogCalcTimeout(tc_no, direction)
-            self.axisCom.put(movingFieldName, movingFieldValue)
-            self.waitForStartAndDone(str(tc_no), 30 + time_to_wait + 3.0)
-
-        # Get values, check them later
-        lvio = int(self.axisCom.get(".LVIO"))
-        mstaE = int(self.axisCom.get(".MSTA"))
-        # Go away from limit switch
-        self.moveWait(tc_no, jog_start_pos)
-        self.axisCom.put(".VELO", old_VELO)
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} msta={self.getMSTAtext(mstaE)} lvio={int(lvio)}"
-        )
-
-        if doDisableSoftLimit:
-            self.setSoftLimitsOn(tc_no, old_DLLM, old_DHLM)
-        if setInfiniteSoftLimit:
-            self.axisCom.put(softlimitFieldName, oldSoftLimitValue)
-
-        passed = True
-        if (mstaE & self.MSTA_BIT_PROBLEM) != 0:
-            errId = int(self.axisCom.get("-ErrId", use_monitor=False))
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} msta={mstaE:x} errId={errId:x}"
-            )
-            if errId == 0x4223:
-                self.resetAxis(tc_no)
-            else:
-                passed = False
-
-        if (mstaE & ls_not_to_be_activated) != 0:
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wrong LS activated"
-            )
-            passed = False
-
-        if (mstaE & ls_to_be_activated) == 0:
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} LS was not activated"
-            )
-            passed = False
-
-        return passed
