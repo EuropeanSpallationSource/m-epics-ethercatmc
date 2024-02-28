@@ -1,4 +1,4 @@
-record(ai, "$(PREFIX)$(MOTOR_NAME)-Temp")
+record(ai, "$(PREFIX)$(AXIS_NAME)-Temp")
 {
     field(DTYP, "asynFloat64")
     field(DESC, "$(DESC=MotorTemperature)")

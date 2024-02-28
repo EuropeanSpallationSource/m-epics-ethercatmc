@@ -1,5 +1,5 @@
 # Aux bits 0..7 combined as mbbi
-record(mbbi, "$(PREFIX)$(MOTOR_NAME)-$(AUXBITS07)") {
+record(mbbi, "$(PREFIX)$(AXIS_NAME)-$(AUXBITS07)") {
     field(DESC,"StatusCode")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBits07")

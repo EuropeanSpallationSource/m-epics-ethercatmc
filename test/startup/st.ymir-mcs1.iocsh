@@ -19,7 +19,7 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 # AXIS 1
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=HvSht:MC-Pne-01)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=HvSht:MC-Pne-01)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
 < ethercatmcShutter.iocsh
 
@@ -27,7 +27,7 @@ epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
 # AXIS 2
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=Fil:MC-Pne-01)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=Fil:MC-Pne-01)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
 < ethercatmcShutter.iocsh
 
@@ -35,7 +35,7 @@ epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
 # AXIS 3
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=Fil:MC-Pne-02)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=Fil:MC-Pne-02)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=3)")
 < ethercatmcShutter.iocsh
 
@@ -43,7 +43,7 @@ epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=3)")
 # AXIS 4
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=Spare-AXIS-1)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=Spare-AXIS-1)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=4)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -54,7 +54,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 5
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=Spare-AXIS-2)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=Spare-AXIS-2)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=5)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -65,7 +65,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 6
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlYp-01)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=ColSl1:MC-SlYp-01)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=6)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -76,7 +76,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 7
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlYm-01)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=ColSl1:MC-SlYm-01)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=7)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -87,7 +87,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 8
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlZp-01)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=ColSl1:MC-SlZp-01)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=8)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -98,7 +98,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 9
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlZm-01)")
+epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=ColSl1:MC-SlZm-01)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=9)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)

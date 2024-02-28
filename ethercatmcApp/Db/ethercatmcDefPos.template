@@ -6,19 +6,19 @@
 
 # This record contains an index to the list of positions for motor.
 # The multipositioner writes to the VAL field to select one.
-record(longout, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL") {
+record(longout, "$(PREFIX)$(AXIS_NAME)-DefPosSEL") {
   field(DESC, "Select defined motor position")
-  field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC1")
+  field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosSELCALC1")
 }
 
 #
 # Range check of the index - must be 0..11
 #
-record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC1") {
-  field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC2")
+record(calcout, "$(PREFIX)$(AXIS_NAME)-DefPosSELCALC1") {
+  field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosSELCALC2")
   field(CALC, "(A>=0 && A<12)?1:0")
-  field(INPA, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL.VAL")
-  field(OUT, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.SELN PP")
+  field(INPA, "$(PREFIX)$(AXIS_NAME)-DefPosSEL.VAL")
+  field(OUT, "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.SELN PP")
   field(OOPT, "When Non-zero")
   field(DOPT, "Use OCAL")
   field(OCAL, "A")
@@ -27,27 +27,27 @@ record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC1") {
 #
 # Set up .OMSL field
 #
-record(calcout, "$(PREFIX)$(MOTOR_NAME)-DefPosSELCALC2") {
-  field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosSetDOL_")
+record(calcout, "$(PREFIX)$(AXIS_NAME)-DefPosSELCALC2") {
+  field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosSetDOL_")
   field(CALC, "(A>=0 && A<12)?1:0")
-  field(INPA, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME).OMSL")
+  field(INPA, "$(PREFIX)$(AXIS_NAME)-DefPosSEL")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME).OMSL")
 }
 
 #
 # Set up .DOL field
 #
-record(stringout, "$(PREFIX)$(MOTOR_NAME)-DefPosSetDOL_") {
-  field(VAL, "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1")
-  field(OUT, "$(PREFIX)$(MOTOR_NAME).DOL CP")
+record(stringout, "$(PREFIX)$(AXIS_NAME)-DefPosSetDOL_") {
+  field(VAL, "$(PREFIX)$(AXIS_NAME)-DefPosSEL1")
+  field(OUT, "$(PREFIX)$(AXIS_NAME).DOL CP")
 }
 
 #
 # The sel record itself, the heart of our business.
 #
-record(sel,     "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1") {
+record(sel,     "$(PREFIX)$(AXIS_NAME)-DefPosSEL1") {
     field(DESC, "Predefined Positions")
-    field(FLNK, "$(PREFIX)$(MOTOR_NAME)")
+    field(FLNK, "$(PREFIX)$(AXIS_NAME)")
     field(EGU,  "$(EGU)")
     field(PREC, "$(PREC)")
     field(SELM, "$(SELM=0)")
@@ -59,146 +59,146 @@ record(sel,     "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1") {
 #
 # Records to hold the value for the 12 positions
 #
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALA") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALA") {
   field(DESC, "First position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALA=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.A")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.A")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALB") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALB") {
   field(DESC, "Second position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALB=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.B")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.B")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALC") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALC") {
   field(DESC, "Third position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALC=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.C")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.C")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALD") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALD") {
   field(DESC, "Fourth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALD=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.D")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.D")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALE") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALE") {
   field(DESC, "Fifth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALE=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.E")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.E")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALF") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALF") {
   field(DESC, "Sixth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALF=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.F")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.F")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALG") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALG") {
   field(DESC, "Seventh position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALG=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.G")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.G")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALH") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALH") {
   field(DESC, "Eigth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALH=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.H")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.H")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALI") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALI") {
   field(DESC, "Ninth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALI=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.I")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.I")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALJ") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALJ") {
   field(DESC, "Tenth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALJ=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.J")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.J")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALK") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALK") {
   field(DESC, "Eleventh position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALK=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.K")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.K")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(PREFIX)$(MOTOR_NAME)-DefPosVALL") {
+record(ao, "$(PREFIX)$(AXIS_NAME)-DefPosVALL") {
   field(DESC, "Twelth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALL=0)")
-  field(OUT,  "$(PREFIX)$(MOTOR_NAME)-DefPosSEL1.L")
+  field(OUT,  "$(PREFIX)$(AXIS_NAME)-DefPosSEL1.L")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(PREFIX)$(MOTOR_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(PREFIX)$(AXIS_NAME)-DefPosCALCSEL")
 }
 
