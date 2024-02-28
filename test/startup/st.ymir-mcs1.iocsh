@@ -14,7 +14,7 @@ epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=10.102.10.44.1.1;amsNet
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
 epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 
-iocshLoad("$(ethercatmc_DIR)ethercatmcController.iocsh")
+< ethercatmcController.iocsh
 
 #
 # AXIS 3
@@ -26,8 +26,8 @@ epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
-iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
-iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
 
 #
 # AXIS 4
@@ -39,8 +39,8 @@ epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
-iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
-iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
 
 #
 # AXIS 5
@@ -52,8 +52,8 @@ epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
-iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
-iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
 
 #
 # AXIS 6
@@ -65,8 +65,8 @@ epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
-iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
-iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
 
 epicsEnvSet("MOVINGPOLLPERIOD", "9")
 epicsEnvSet("IDLEPOLLPERIOD",   "100")
