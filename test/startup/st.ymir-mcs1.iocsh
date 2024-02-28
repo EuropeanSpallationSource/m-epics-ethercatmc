@@ -1,4 +1,4 @@
-require ethercatmc
+require ethercatmc,USER
 
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 epicsEnvSet("IPADDR",        "$(SM_IPADDR=10.102.10.44)")
@@ -7,7 +7,6 @@ epicsEnvSet("AMSNETIDIOC",   "$(SM_AMSNETID=10.102.10.49.1.1)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("PREFIX",        "$(SM_PREFIX=YMIR-)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
-#epicsEnvSet("SM_NOAXES",     "9")
 epicsEnvSet("ECM_NUMAXES",     "9")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=10.102.10.44.1.1;amsNetIdLocal=$(AMSNETIDIOC)")
 
@@ -17,26 +16,35 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 < ethercatmcController.iocsh
 
 #
+# AXIS 1
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=HvSht:MC-Pne-01)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
+< ethercatmcShutter.iocsh
+
+#
+# AXIS 2
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=Fil:MC-Pne-01)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
+< ethercatmcShutter.iocsh
+
+#
 # AXIS 3
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlYp-01)")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=Fil:MC-Pne-02)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=3)")
-epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
-< ethercatmcIndexerAxis.iocsh
-< ethercatmcAxisdebug.iocsh
+< ethercatmcShutter.iocsh
 
 #
 # AXIS 4
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlYm-01)")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=Spare-AXIS-1)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=4)")
-epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -46,10 +54,8 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 5
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlZp-01)")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=Spare-AXIS-2)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=5)")
-epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -59,10 +65,41 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 6
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlZm-01)")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlYp-01)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=6)")
-epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# AXIS 7
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlYm-01)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=7)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# AXIS 8
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlZp-01)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=8)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# AXIS 9
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("MOTOR_NAME",      "$(SM_MOTOR_NAME=ColSl1:MC-SlZm-01)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=9)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -71,7 +108,3 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 epicsEnvSet("MOVINGPOLLPERIOD", "9")
 epicsEnvSet("IDLEPOLLPERIOD",   "100")
 ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
-
-
-
-
