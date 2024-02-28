@@ -91,7 +91,6 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 epicsEnvSet("AXISCONFIG",    "")
 epicsEnvSet("AXIS_NAME",    "Shutter")
 epicsEnvSet("AXIS_NO",       "5")
-epicsEnvSet("R",             "Shutter:")
 
 < ethercatmcShutter.iocsh
 
