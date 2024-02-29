@@ -4,6 +4,17 @@
 
 #include "ethercatmcIndexerAxis.h"
 
+#if 0
+/* This version gives:
+   warning:
+      'rset' is deprecated [-Wdeprecated-declarations]
+    rset            *prset;
+*/
+#include <dbAccess.h> /* interruptAccept */
+#else
+#include <dbCoreAPI.h>
+DBCORE_API extern volatile int interruptAccept;
+#endif
 #include <epicsThread.h>
 #include <errno.h>
 #include <math.h>
@@ -597,10 +608,79 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function, int newValue,
   return setIntegerParam(function, newValue);
 }
 
+int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
+  asynStatus status = asynSuccess;
+  unsigned paramIndex;
+  double paramfValue = 0.0;
+
+  /* Our internal maximumum for AUX bits resulting in an mbbi */
+#define MAX_AUX_BIT_FOR_ENUM 8
+
+  /* asyn/asyn/devEpics/devAsynInt32.c */
+#define MAX_ENUM_STRING_SIZE 26
+
+  struct {
+    char enumChars[MAX_AUX_BIT_FOR_ENUM][MAX_ENUM_STRING_SIZE];
+    char *enumStrings[MAX_AUX_BIT_FOR_ENUM];
+    int enumValues[MAX_AUX_BIT_FOR_ENUM];
+    int enumSeverities[MAX_AUX_BIT_FOR_ENUM];
+  } auxBitEnumsForAsyn;
+  unsigned auxBitIdx;
+  unsigned numsAuxBitsForEnum = 0;
+  memset(&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
+  for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_FOR_ENUM; auxBitIdx++) {
+    int function = pC_->defAsynPara.ethercatmcNamAux0_ + (int)auxBitIdx;
+    asynStatus status;
+    /* Leave one byte for '\0' */
+    int length = (int)sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
+    auxBitEnumsForAsyn.enumStrings[auxBitIdx] =
+        &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
+    status = pC_->getStringParam(axisNo_, function, length,
+                                 auxBitEnumsForAsyn.enumStrings[auxBitIdx]);
+    if (status) {
+      break;
+    }
+    auxBitEnumsForAsyn.enumValues[auxBitIdx] = 1 << auxBitIdx;
+    numsAuxBitsForEnum++;
+  }
+  pC_->doCallbacksEnum(auxBitEnumsForAsyn.enumStrings,
+                       auxBitEnumsForAsyn.enumValues,
+                       auxBitEnumsForAsyn.enumSeverities, numsAuxBitsForEnum,
+                       pC_->defAsynPara.ethercatmcAuxBits07_, axisNo_);
+
+  for (paramIndex = 0; paramIndex < (sizeof(drvlocal.clean.PILSparamPerm) /
+                                     sizeof(drvlocal.clean.PILSparamPerm[0]));
+       paramIndex++) {
+    if (drvlocal.clean.enumparam_read_id[paramIndex]) {
+      unsigned enumparam_read_id = drvlocal.clean.enumparam_read_id[paramIndex];
+      status = pC_->indexerV3readParameterEnums(
+          this, paramIndex, enumparam_read_id, drvlocal.clean.lenInPlcPara);
+      /* We must read the enums before reading the value
+         If reading ths enum fails, do not read the value */
+      if (!status) {
+        status = pC_->indexerParamRead(this, drvlocal.clean.paramIfOffset,
+                                       paramIndex, &paramfValue);
+        if (!status) {
+          int initial = 1;
+          pC_->parameterFloatReadBack(axisNo_, initial, paramIndex,
+                                      paramfValue);
+        }
+      }
+      if (status) {
+        /* reading failed, try again later */
+        return 0;
+      } else {
+        /* Once read succesfully, do not read again */
+        drvlocal.clean.enumparam_read_id[paramIndex] = 0;
+      }
+    }
+  }
+  return 1;
+}
+
 void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
                                                    unsigned paramCtrl,
                                                    double paramfValue) {
-  asynStatus status = asynSuccess;
   if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
     unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
     drvlocal.clean.param_read_ok_once[paramIndex] = 1;
@@ -679,42 +759,8 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
                 "%spoll(%d) idxAuxBits=0x%08X hasPolledAllEnums=%d\n",
                 modNamEMC, axisNo_, idxAuxBits & 0xFF,
                 drvlocal.clean.hasPolledAllEnums);
-      if (!drvlocal.clean.hasPolledAllEnums) {
-        unsigned paramIndex;
-        readAuxBitNamesEnums();
-        drvlocal.clean.hasPolledAllEnums = 1; /* May be overwritten below */
-        for (paramIndex = 0;
-             paramIndex < (sizeof(drvlocal.clean.PILSparamPerm) /
-                           sizeof(drvlocal.clean.PILSparamPerm[0]));
-             paramIndex++) {
-          if (drvlocal.clean.enumparam_read_id[paramIndex]) {
-            unsigned enumparam_read_id =
-                drvlocal.clean.enumparam_read_id[paramIndex];
-            status = pC_->indexerV3readParameterEnums(
-                this, paramIndex, enumparam_read_id,
-                drvlocal.clean.lenInPlcPara);
-            /* We must read the enums before reading the value
-               If reading ths enum fails, do not read the value */
-            if (!status) {
-              status = pC_->indexerParamRead(this, drvlocal.clean.paramIfOffset,
-                                             paramIndex, &paramfValue);
-              if (!status) {
-                int initial = 1;
-                pC_->parameterFloatReadBack(axisNo_, initial, paramIndex,
-                                            paramfValue);
-              }
-            }
-            if (status) {
-              /* reading failed, try again later */
-              drvlocal.clean.hasPolledAllEnums = 0;
-            } else {
-              /* Once read succesfully , do not read again */
-              drvlocal.clean.enumparam_read_id[paramIndex] = 0;
-            }
-          }
-        }
-      }
     }
+
     if (drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx]) {
       uint16_t paramIndex =
           drvlocal.clean.pollNowParams[drvlocal.clean.pollNowIdx];
@@ -786,10 +832,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
 
   if (drvlocal.dirty.initialPollNeeded) {
     switch (drvlocal.clean.iTypCode) {
-      case 0x1E04:
-        readAuxBitNamesEnums();
-        status = asynSuccess;
-        break;
       case 0x5010:
         status = pC_->indexerReadAxisParameters(this, drvlocal.clean.devNum);
         break;
@@ -873,7 +915,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
               modNamEMC, axisNo_, drvlocal.clean.iTypCode,
               drvlocal.clean.iOffset, statusReasonAux);
   } else if (drvlocal.clean.iTypCode == 0x1E04) {
-    readAuxBitNamesEnums();
     struct {
       uint8_t currentValue[2];
       uint8_t targetValue[2];
@@ -1050,7 +1091,14 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
         axisNo_, pC_->defAsynPara.ethercatmcRBV_TSE_, RBV_TSEstatus);
   }
   /* Read back parameters */
-  pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
+  if (drvlocal.clean.iTypCode == 0x5010) {
+    pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
+  }
+  if (drvlocal.clean.iTypCode == 0x5010 || drvlocal.clean.iTypCode == 0x1E04) {
+    if (!drvlocal.clean.hasPolledAllEnums && interruptAccept) {
+      drvlocal.clean.hasPolledAllEnums = readEnumsAndValueAndCallbackIntoMbbi();
+    }
+  }
 
   if ((idxStatusCode != drvlocal.dirty.idxStatusCode) ||
       (errorID != drvlocal.dirty.old_ErrorId)) {
@@ -1375,45 +1423,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   }
   callParamCallbacks();
   return status;
-}
-
-void ethercatmcIndexerAxis::readAuxBitNamesEnums(void) {
-  /* Our internal maximumum for AUX bits resulting in an mbbi */
-#define MAX_AUX_BIT_FOR_ENUM 8
-
-  /* asyn/asyn/devEpics/devAsynInt32.c */
-#define MAX_ENUM_STRING_SIZE 26
-
-  struct {
-    char enumChars[MAX_AUX_BIT_FOR_ENUM][MAX_ENUM_STRING_SIZE];
-    char *enumStrings[MAX_AUX_BIT_FOR_ENUM];
-    int enumValues[MAX_AUX_BIT_FOR_ENUM];
-    int enumSeverities[MAX_AUX_BIT_FOR_ENUM];
-  } auxBitEnumsForAsyn;
-  unsigned auxBitIdx;
-  unsigned numsAuxBitsForEnum = 0;
-
-  memset(&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
-
-  for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_FOR_ENUM; auxBitIdx++) {
-    int function = pC_->defAsynPara.ethercatmcNamAux0_ + (int)auxBitIdx;
-    asynStatus status;
-    /* Leave one byte for '\0' */
-    int length = (int)sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
-    auxBitEnumsForAsyn.enumStrings[auxBitIdx] =
-        &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
-    status = pC_->getStringParam(axisNo_, function, length,
-                                 auxBitEnumsForAsyn.enumStrings[auxBitIdx]);
-    if (status) {
-      break;
-    }
-    auxBitEnumsForAsyn.enumValues[auxBitIdx] = 1 << auxBitIdx;
-    numsAuxBitsForEnum++;
-  }
-  pC_->doCallbacksEnum(auxBitEnumsForAsyn.enumStrings,
-                       auxBitEnumsForAsyn.enumValues,
-                       auxBitEnumsForAsyn.enumSeverities, numsAuxBitsForEnum,
-                       pC_->defAsynPara.ethercatmcAuxBits07_, axisNo_);
 }
 
 asynStatus ethercatmcIndexerAxis::resetAxis(void) {

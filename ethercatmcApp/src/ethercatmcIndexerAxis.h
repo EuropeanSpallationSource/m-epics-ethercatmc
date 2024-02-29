@@ -82,11 +82,11 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
   void setAuxBitsHomeSwitchMask(unsigned auxBitsHomeSwitchMask);
   void addPollNowParam(uint8_t paramIndex);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
+  int readEnumsAndValueAndCallbackIntoMbbi(void);
   void pollReadBackParameters(unsigned idxAuxBits, unsigned paramCtrl,
                               double paramfValue);
   asynStatus poll(bool *moving);
   asynStatus doThePoll(bool cached, bool *moving);
-  void readAuxBitNamesEnums(void);
   asynStatus resetAxis(void);
   bool pollPowerIsOn(void);
   asynStatus setClosedLoop(bool closedLoop);
