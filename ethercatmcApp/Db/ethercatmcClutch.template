@@ -1,4 +1,4 @@
-record(bo, "$(PREFIX)$(AXIS_NAME)-Clutch")
+record(bo, "$(SYSPFX)$(AXIS_NAME)-Clutch")
 {
     field(DTYP, "asynInt32")
     field(DESC, "$(DESC=Clutch)")

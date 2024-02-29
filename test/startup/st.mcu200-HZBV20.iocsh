@@ -8,8 +8,8 @@ epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("PREFIX",        "$(SM_PREFIX=HZB-V20:)")
-epicsEnvSet("P",             "$(SM_PREFIX=HZB-V20:)")
+epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=HZB-V20:)")
+epicsEnvSet("P",             "$(SM_SYSPFX=HZB-V20:)")
 < ethercatmcController.iocsh
 
 # Common to all axes

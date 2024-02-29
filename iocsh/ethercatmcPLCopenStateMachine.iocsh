@@ -1,3 +1,3 @@
 ethercatmcCreateAsynParam $(MOTOR_PORT) PLCopenStateMachine Int32
 
-dbLoadRecords("ethercatmcPLCopenStateMachine.template", "PREFIX=$(PREFIX), AXIS_NAME=$(AXIS_NAME), DESC=$(DESC), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO), FB_NAME=PLCopenStateMachine")
+dbLoadRecords("ethercatmcPLCopenStateMachine.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), DESC=$(DESC), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO), FB_NAME=PLCopenStateMachine")

@@ -1,1 +1,1 @@
-dbLoadRecords("ethercatmcRawMtrEnc.template", "PREFIX=$(PREFIX), AXIS_NAME=$(AXIS_NAME), DESC=$(DESC), PREC=$(PREC), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
+dbLoadRecords("ethercatmcRawMtrEnc.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), DESC=$(DESC), PREC=$(PREC), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")

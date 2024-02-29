@@ -33,4 +33,4 @@ ethercatmcCreateAsynParam $(MOTOR_PORT) TimeOffsetDiffEL6688 Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) SystemUTCtime        Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) DCTIME               Int64
 
-dbLoadRecords("ethercatmcEL6688-PTP.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT)")
+dbLoadRecords("ethercatmcEL6688-PTP.template", "SYSPFX=$(SYSPFX), MOTOR_PORT=$(MOTOR_PORT)")

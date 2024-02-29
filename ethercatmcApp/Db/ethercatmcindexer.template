@@ -1,29 +1,29 @@
 
-record(stringin, "$(PREFIX)$(AXIS_NAME)-DESC-RB") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-DESC-RB") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDESC-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(stringout, "$(PREFIX)$(AXIS_NAME)-DESC_") {
-    field(DOL, "$(PREFIX)$(AXIS_NAME)-DESC-RB CP")
-    field(OUT, "$(PREFIX)$(AXIS_NAME).DESC")
+record(stringout, "$(SYSPFX)$(AXIS_NAME)-DESC_") {
+    field(DOL, "$(SYSPFX)$(AXIS_NAME)-DESC-RB CP")
+    field(OUT, "$(SYSPFX)$(AXIS_NAME).DESC")
     field(OMSL, "closed_loop")
 }
 
-record(stringin, "$(PREFIX)$(AXIS_NAME)-EGU-RB") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-EGU-RB") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgEGU-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(stringout, "$(PREFIX)$(AXIS_NAME)-EGU_") {
-    field(DOL, "$(PREFIX)$(AXIS_NAME)-EGU-RB CP")
-    field(OUT, "$(PREFIX)$(AXIS_NAME).EGU")
+record(stringout, "$(SYSPFX)$(AXIS_NAME)-EGU_") {
+    field(DOL, "$(SYSPFX)$(AXIS_NAME)-EGU-RB CP")
+    field(OUT, "$(SYSPFX)$(AXIS_NAME).EGU")
     field(OMSL, "closed_loop")
 }
 
-record(ai,"$(PREFIX)$(AXIS_NAME)-RBV-TSE") {
+record(ai,"$(SYSPFX)$(AXIS_NAME)-RBV-TSE") {
     field(DESC, "Position PLC timestamped")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -32,7 +32,7 @@ record(ai,"$(PREFIX)$(AXIS_NAME)-RBV-TSE") {
     field(TSE, -2)
 }
 
-record(mbbo,"$(PREFIX)$(AXIS_NAME)-PollScaling") {
+record(mbbo,"$(SYSPFX)$(AXIS_NAME)-PollScaling") {
     field(DESC,"PollScaling")
     field(DTYP, "asynInt32")
     field(VAL,  "$(VAL=2)")

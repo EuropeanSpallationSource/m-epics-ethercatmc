@@ -1,4 +1,4 @@
-record(mbbiDirect, "$(PREFIX)$(AXIS_NAME)-StatusBits")
+record(mbbiDirect, "$(SYSPFX)$(AXIS_NAME)-StatusBits")
 {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "StatusBits")
@@ -6,137 +6,137 @@ record(mbbiDirect, "$(PREFIX)$(AXIS_NAME)-StatusBits")
     field(SCAN, "I/O Intr")
 }
 
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit0") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit0") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit0")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit1") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit1") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit1")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit2") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit2") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit2")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit3") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit3") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit3")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit4") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit4") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit4")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit5") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit5") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit5")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit6") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit6") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit6")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit7") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit7") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit7")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit8") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit8") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit8")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit9") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit9") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit9")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit10") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit10") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit10")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit10") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit10") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit10")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit11") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit11") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit11")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit12") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit12") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit12")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit13") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit13") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit13")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit14") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit14") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit14")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit15") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit15") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit15")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit16") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit16") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit16")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit17") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit17") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit17")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit18") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit18") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit18")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit19") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit19") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit19")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit20") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit20") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit20")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit21") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit21") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit21")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit22") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit22") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit22")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamAuxBit23") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamAuxBit23") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit23")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamBit24") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamBit24") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamBit24")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)$(AXIS_NAME)-NamBit25") {
+record(stringin, "$(SYSPFX)$(AXIS_NAME)-NamBit25") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamBit25")
     field(SCAN, "I/O Intr")

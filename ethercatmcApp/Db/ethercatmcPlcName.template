@@ -1,5 +1,5 @@
 # The Name of the system
-record(stringin, "$(PREFIX)PlcName") {
+record(stringin, "$(SYSPFX)PlcName") {
     field(DTYP, "asynOctetRead")
     field(INP, "@asyn($(MOTOR_PORT),0)MOTOR_MESSAGE_TEXT")
     field(SCAN, "I/O Intr")
@@ -7,22 +7,22 @@ record(stringin, "$(PREFIX)PlcName") {
 
 
 # The IPADDR of the MCU
-record(stringout, "$(PREFIX)IPADDR") {
+record(stringout, "$(SYSPFX)IPADDR") {
     field(VAL, "$(IPADDR)")
 }
 
 # The AMSNETID of the IOC
-record(stringout, "$(PREFIX)AMSNETIDIOC") {
+record(stringout, "$(SYSPFX)AMSNETIDIOC") {
     field(VAL, "$(AMSNETIDIOC)")
 }
 
 
 # The IPPORT of the system
-record(stringout, "$(PREFIX)IPPORT") {
+record(stringout, "$(SYSPFX)IPPORT") {
     field(VAL, "$(IPPORT)")
 }
 
 
-record (asyn, "$(PREFIX)$(MOTOR_PORT):asyn")
+record (asyn, "$(SYSPFX)$(MOTOR_PORT):asyn")
 {
 }

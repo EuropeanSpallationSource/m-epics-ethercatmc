@@ -1,4 +1,4 @@
-record(bo, "$(PREFIX)$(AXIS_NAME)-ReleaseBrake")
+record(bo, "$(SYSPFX)$(AXIS_NAME)-ReleaseBrake")
 {
     field(DTYP, "asynInt32")
     field(DESC, "$(DESC=Clutch)")

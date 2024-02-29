@@ -5,7 +5,7 @@ epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.38.65)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("AMSNETIDIOC",   "172.30.38.12.1.1")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("PREFIX",        "YMIR-4004:MC-MCU-002:")
+epicsEnvSet("SYSPFX",        "YMIR-4004:MC-MCU-002:")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "3")
 
@@ -20,7 +20,7 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 # Axis 1
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("PREFIX",        "YMIR-4004:MC-Rz-01:")
+epicsEnvSet("SYSPFX",        "YMIR-4004:MC-Rz-01:")
 epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
@@ -34,7 +34,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 2
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("PREFIX",        "YMIR-4004:MC-MCU-02:")
+epicsEnvSet("SYSPFX",        "YMIR-4004:MC-MCU-02:")
 epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
@@ -48,7 +48,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 3
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("PREFIX",        "YMIR-4004:MC-MCU-02:")
+epicsEnvSet("SYSPFX",        "YMIR-4004:MC-MCU-02:")
 epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr3)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
@@ -63,7 +63,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 4
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("PREFIX",        "YMIR-4004:MC-MCU-02:")
+epicsEnvSet("SYSPFX",        "YMIR-4004:MC-MCU-02:")
 epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr4)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")

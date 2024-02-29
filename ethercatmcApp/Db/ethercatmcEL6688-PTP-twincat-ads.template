@@ -1,4 +1,4 @@
-record(mbbi,  "$(PREFIX)PTPState") {
+record(mbbi,  "$(SYSPFX)PTPState") {
     field(DESC, "PTP state EtherCAT bus")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(ASYN_PORT),0,1)ADSPORT=852/EL6688_PTP.nPTPState?")
@@ -41,7 +41,7 @@ record(mbbi,  "$(PREFIX)PTPState") {
     field(FFSV, "2")
 }
 
-record(longin, "$(PREFIX)PTPOffset")
+record(longin, "$(SYSPFX)PTPOffset")
 {
     field(DTYP, "asynInt32")
     field(DESC, "PTPOffset")
@@ -50,7 +50,7 @@ record(longin, "$(PREFIX)PTPOffset")
     field(SCAN, "1 second")
 }
 
-record(longin, "$(PREFIX)PTPSyncSeqNum")
+record(longin, "$(SYSPFX)PTPSyncSeqNum")
 {
     field(DTYP, "asynInt32")
     field(DESC, "PTPSyncSeqNum")
@@ -59,7 +59,7 @@ record(longin, "$(PREFIX)PTPSyncSeqNum")
     field(SCAN, "1 second")
 }
 
-record(int64in, "$(PREFIX)DcToExtTimeOffset")
+record(int64in, "$(SYSPFX)DcToExtTimeOffset")
 {
     field(DTYP, "asynInt64")
     field(DESC, "DcToExtTimeOffsetSystem")
@@ -68,7 +68,7 @@ record(int64in, "$(PREFIX)DcToExtTimeOffset")
     field(SCAN, "1 second")
 }
 
-record(int64in, "$(PREFIX)SystemUTCtime")
+record(int64in, "$(SYSPFX)SystemUTCtime")
 {
     field(DTYP, "asynInt64")
     field(DESC, "SystemUTCtime")
@@ -77,7 +77,7 @@ record(int64in, "$(PREFIX)SystemUTCtime")
     field(SCAN, "1 second")
 }
 
-record(int64in, "$(PREFIX)SystemUTCtime-TSE")
+record(int64in, "$(SYSPFX)SystemUTCtime-TSE")
 {
     field(DTYP, "asynInt64")
     field(DESC, "SystemUTCtime")
@@ -87,7 +87,7 @@ record(int64in, "$(PREFIX)SystemUTCtime-TSE")
     field(TSE, -2)
 }
 
-record(longin, "$(PREFIX)PTPErrorStatus")
+record(longin, "$(SYSPFX)PTPErrorStatus")
 {
     field(DTYP, "asynInt32")
     field(DESC, "PTPErrorStatus")
@@ -104,7 +104,7 @@ record(longin, "$(PREFIX)PTPErrorStatus")
 # Typically the MCU has an EL6688 with PTP
 # Since the PLC cycle time is 10msec,
 # we allow 10msec larger values for HIGH/HIHI
-record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
+record(ai, "$(SYSPFX)PTPdiffTimeIOC_MCU")
 {
     field(DTYP, "asynFloat64")
     field(DESC, "Diff between IOC time and MCU time")
@@ -121,29 +121,29 @@ record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
 # Calculate the severity
 # When the severity from all input links gets 0,
 # start a countdown
-record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
+record(transform, "$(SYSPFX)PTPAlarmSevrCalc") {
   field(DESC, "Alarm Severity of PTP")
   field(SCAN, "1 second")
   field(COPT, "Always")
   # Counter before allGood gets true
   field(INPA, "11")
-  field(INPB, "$(PREFIX)PTPState.SEVR              CP MS")
-  field(INPC, "$(PREFIX)PTPOffset.SEVR             CP MS")
-  field(INPD, "$(PREFIX)PTPErrorStatus.SEVR        CP MS")
-  field(INPE, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
+  field(INPB, "$(SYSPFX)PTPState.SEVR              CP MS")
+  field(INPC, "$(SYSPFX)PTPOffset.SEVR             CP MS")
+  field(INPD, "$(SYSPFX)PTPErrorStatus.SEVR        CP MS")
+  field(INPE, "$(SYSPFX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
   field(CLCN, "b || c || d || e")
   # O is LED visible
   field(CLCO, "N ? A : (O > 0 ? O - 1 : O)")
   # P is all good
   field(CLCP, "O > 0 ? 0 : 1")
-  field(FLNK, "$(PREFIX)PTPallGood")
+  field(FLNK, "$(SYSPFX)PTPallGood")
 
 }
 
-record(bo,  "$(PREFIX)PTPallGood") {
+record(bo,  "$(SYSPFX)PTPallGood") {
   field(DESC, "PTP is all good")
   field(DTYP, "asynInt32")
-  field(DOL,  "$(PREFIX)PTPAlarmSevrCalc.P CP MS")
+  field(DOL,  "$(SYSPFX)PTPAlarmSevrCalc.P CP MS")
   field(OMSL, "closed_loop")
   #field(OUT,  "@asyn($(MOTOR_PORT),0,1)ADSPORT=852/PTPallGood")
   field(ZNAM, "No")

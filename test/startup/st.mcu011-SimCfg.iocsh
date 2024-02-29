@@ -7,7 +7,7 @@ epicsEnvSet("IPADDR",        "127.0.0.1")
 #epicsEnvSet("IPADDR",       "192.168.88.61")
 epicsEnvSet("IPPORT",        "5000")
 epicsEnvSet("ASYN_PORT",     "MC_CPU1")
-epicsEnvSet("PREFIX",        "IOC:")
+epicsEnvSet("SYSPFX",        "IOC:")
 epicsEnvSet("EGU",           "mm")
 epicsEnvSet("PREC",          "3")
 < ethercatmcController.iocsh

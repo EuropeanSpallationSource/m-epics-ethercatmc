@@ -1,4 +1,4 @@
-record(mbbi,  "$(PREFIX)PTPState") {
+record(mbbi,  "$(SYSPFX)PTPState") {
     field(DESC, "PTP state EtherCAT bus")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPState")
@@ -41,7 +41,7 @@ record(mbbi,  "$(PREFIX)PTPState") {
     field(FFSV, "2")
 }
 
-record(longin, "$(PREFIX)PTPOffset")
+record(longin, "$(SYSPFX)PTPOffset")
 {
     field(DTYP, "asynInt32")
     field(DESC, "PTPOffset")
@@ -50,7 +50,7 @@ record(longin, "$(PREFIX)PTPOffset")
     field(SCAN, "1 second")
 }
 
-record(longin, "$(PREFIX)PTPSyncSeqNum")
+record(longin, "$(SYSPFX)PTPSyncSeqNum")
 {
     field(DTYP, "asynInt32")
     field(DESC, "PTPSyncSeqNum")
@@ -59,7 +59,7 @@ record(longin, "$(PREFIX)PTPSyncSeqNum")
     field(SCAN, "1 second")
 }
 
-record(int64in, "$(PREFIX)DcToExtTimeOffset")
+record(int64in, "$(SYSPFX)DcToExtTimeOffset")
 {
     field(DTYP, "asynInt64")
     field(DESC, "DcToExtTimeOffsetSystem")
@@ -68,7 +68,7 @@ record(int64in, "$(PREFIX)DcToExtTimeOffset")
     field(SCAN, "1 second")
 }
 
-record(int64in, "$(PREFIX)SystemUTCtime")
+record(int64in, "$(SYSPFX)SystemUTCtime")
 {
     field(DTYP, "asynInt64")
     field(DESC, "SystemUTCtime")
@@ -77,7 +77,7 @@ record(int64in, "$(PREFIX)SystemUTCtime")
     field(SCAN, "1 second")
 }
 
-record(int64in, "$(PREFIX)SystemUTCtime-TSE")
+record(int64in, "$(SYSPFX)SystemUTCtime-TSE")
 {
     field(DTYP, "asynInt64")
     field(DESC, "SystemUTCtime")
@@ -87,7 +87,7 @@ record(int64in, "$(PREFIX)SystemUTCtime-TSE")
     field(TSE, -2)
 }
 
-record(longin, "$(PREFIX)PTPErrorStatus")
+record(longin, "$(SYSPFX)PTPErrorStatus")
 {
     field(DTYP, "asynInt32")
     field(DESC, "PTPErrorStatus")
@@ -105,7 +105,7 @@ record(longin, "$(PREFIX)PTPErrorStatus")
 # Typically the MCU has an EL6688 with PTP
 # Since the PLC cycle time is 10msec,
 # we allow 10msec larger values for HIGH/HIHI
-record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
+record(ai, "$(SYSPFX)PTPdiffTimeIOC_MCU")
 {
     field(DTYP, "asynFloat64")
     field(DESC, "Diff between IOC time and MCU time")
@@ -123,7 +123,7 @@ record(ai, "$(PREFIX)PTPdiffTimeIOC_MCU")
 # Difference between PTP and NT time inside the MCU
 # Note: NT time is "outside" the TwinCAT subsystem
 #
-record(ai, "$(PREFIX)PTPdiffNTtime_MCU")
+record(ai, "$(SYSPFX)PTPdiffNTtime_MCU")
 {
     field(DTYP, "asynFloat64")
     field(DESC, "Diff between PTP and NTP in the MCU")
@@ -138,7 +138,7 @@ record(ai, "$(PREFIX)PTPdiffNTtime_MCU")
 }
 
 # Difference between PTP and TC time inside the MCU
-record(ai, "$(PREFIX)PTPdiffTCtime_MCU")
+record(ai, "$(SYSPFX)PTPdiffTCtime_MCU")
 {
     field(DTYP, "asynFloat64")
     field(DESC, "Diff between PTP and TC in the MCU")
@@ -153,7 +153,7 @@ record(ai, "$(PREFIX)PTPdiffTCtime_MCU")
 }
 
 # Difference between PTP and TC NTP EXT inside the MCU/TwinCAT runtime
-record(ai, "$(PREFIX)PTPdiffTcNTPExttime_MCU")
+record(ai, "$(SYSPFX)PTPdiffTcNTPExttime_MCU")
 {
     field(DTYP, "asynFloat64")
     field(DESC, "Diff between PTP and NTP EXT in the MCU")
@@ -170,29 +170,29 @@ record(ai, "$(PREFIX)PTPdiffTcNTPExttime_MCU")
 # Calculate the severity
 # When the severity from all input links gets 0,
 # start a countdown
-record(transform, "$(PREFIX)PTPAlarmSevrCalc") {
+record(transform, "$(SYSPFX)PTPAlarmSevrCalc") {
   field(DESC, "Alarm Severity of PTP")
   field(SCAN, "1 second")
   field(COPT, "Always")
   # Counter before allGood gets true
   field(INPA, "11")
-  field(INPB, "$(PREFIX)PTPState.SEVR              CP MS")
-  field(INPC, "$(PREFIX)PTPOffset.SEVR             CP MS")
-  field(INPD, "$(PREFIX)PTPErrorStatus.SEVR        CP MS")
-  field(INPE, "$(PREFIX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
+  field(INPB, "$(SYSPFX)PTPState.SEVR              CP MS")
+  field(INPC, "$(SYSPFX)PTPOffset.SEVR             CP MS")
+  field(INPD, "$(SYSPFX)PTPErrorStatus.SEVR        CP MS")
+  field(INPE, "$(SYSPFX)PTPdiffTimeIOC_MCU.SEVR    CP MS")
   field(CLCN, "b || c || d || e")
   # O is LED visible
   field(CLCO, "N ? A : (O > 0 ? O - 1 : O)")
   # P is all good
   field(CLCP, "O > 0 ? 0 : 1")
-  field(FLNK, "$(PREFIX)PTPallGood")
+  field(FLNK, "$(SYSPFX)PTPallGood")
 
 }
 
-record(bo,  "$(PREFIX)PTPallGood") {
+record(bo,  "$(SYSPFX)PTPallGood") {
   field(DESC, "PTP is all good")
   field(DTYP, "asynInt32")
-  field(DOL,  "$(PREFIX)PTPAlarmSevrCalc.P CP MS")
+  field(DOL,  "$(SYSPFX)PTPAlarmSevrCalc.P CP MS")
   field(OMSL, "closed_loop")
   field(OUT,  "@asyn($(MOTOR_PORT),0)PTPallGood")
   field(ZNAM, "No")
@@ -201,7 +201,7 @@ record(bo,  "$(PREFIX)PTPallGood") {
 }
 
 
-record(longin, "$(PREFIX)PTPErrorStatus-StatusBits")
+record(longin, "$(SYSPFX)PTPErrorStatus-StatusBits")
 {
     field(DTYP, "asynInt32")
     field(DESC, "PTPErrorStatus")
@@ -210,127 +210,127 @@ record(longin, "$(PREFIX)PTPErrorStatus-StatusBits")
     field(SCAN, "I/O Intr")
 }
 
-record(stringin, "$(PREFIX)PTPErrBitNam0") {
+record(stringin, "$(SYSPFX)PTPErrBitNam0") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit0")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam1") {
+record(stringin, "$(SYSPFX)PTPErrBitNam1") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit1")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam2") {
+record(stringin, "$(SYSPFX)PTPErrBitNam2") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit2")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam3") {
+record(stringin, "$(SYSPFX)PTPErrBitNam3") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit3")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam4") {
+record(stringin, "$(SYSPFX)PTPErrBitNam4") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit4")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam5") {
+record(stringin, "$(SYSPFX)PTPErrBitNam5") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit5")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam6") {
+record(stringin, "$(SYSPFX)PTPErrBitNam6") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit6")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam7") {
+record(stringin, "$(SYSPFX)PTPErrBitNam7") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit7")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam8") {
+record(stringin, "$(SYSPFX)PTPErrBitNam8") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit8")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam9") {
+record(stringin, "$(SYSPFX)PTPErrBitNam9") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit9")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam10") {
+record(stringin, "$(SYSPFX)PTPErrBitNam10") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit10")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam10") {
+record(stringin, "$(SYSPFX)PTPErrBitNam10") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit10")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam11") {
+record(stringin, "$(SYSPFX)PTPErrBitNam11") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit11")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam12") {
+record(stringin, "$(SYSPFX)PTPErrBitNam12") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit12")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam13") {
+record(stringin, "$(SYSPFX)PTPErrBitNam13") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit13")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam14") {
+record(stringin, "$(SYSPFX)PTPErrBitNam14") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit14")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam15") {
+record(stringin, "$(SYSPFX)PTPErrBitNam15") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit15")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam16") {
+record(stringin, "$(SYSPFX)PTPErrBitNam16") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit16")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam17") {
+record(stringin, "$(SYSPFX)PTPErrBitNam17") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit17")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam18") {
+record(stringin, "$(SYSPFX)PTPErrBitNam18") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit18")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam19") {
+record(stringin, "$(SYSPFX)PTPErrBitNam19") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit19")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam20") {
+record(stringin, "$(SYSPFX)PTPErrBitNam20") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit20")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam21") {
+record(stringin, "$(SYSPFX)PTPErrBitNam21") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit21")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam22") {
+record(stringin, "$(SYSPFX)PTPErrBitNam22") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit22")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(PREFIX)PTPErrBitNam23") {
+record(stringin, "$(SYSPFX)PTPErrBitNam23") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamAuxBit23")
     field(SCAN, "I/O Intr")

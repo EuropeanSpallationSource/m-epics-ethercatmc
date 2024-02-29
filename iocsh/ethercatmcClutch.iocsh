@@ -1,3 +1,3 @@
 ethercatmcCreateAsynParam $(MOTOR_PORT) Clutch Int32
 
-dbLoadRecords("ethercatmcClutch.template", "PREFIX=$(PREFIX), AXIS_NAME=$(AXIS_NAME), DESC=$(DESC), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
+dbLoadRecords("ethercatmcClutch.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), DESC=$(DESC), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")

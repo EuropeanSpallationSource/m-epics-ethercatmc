@@ -335,8 +335,8 @@ done
 
 # log/tee to file
 if test "$DOLOG" = y; then
-  if test -n "$SM_PREFIX"; then
-    LOG_TXT=log-$(echo $SM_PREFIX | sed -e "s/:$//g" | tr ":" "-").txt
+  if test -n "$SM_SYSPFX"; then
+    LOG_TXT=log-$(echo $SM_SYSPFX | sed -e "s/:$//g" | tr ":" "-").txt
   else
     LOG_TXT=log-$MOTORCFG.txt
   fi

@@ -1,1 +1,1 @@
-dbLoadRecords("ethercatmcslitAvoidCollSoftlimits.template", "PREFIX=$(PREFIX), SLIT=$(SLIT), mXp=$(mXp), mXn=$(mXn) ")
+dbLoadRecords("ethercatmcslitAvoidCollSoftlimits.template", "SYSPFX=$(SYSPFX), SLIT=$(SLIT), mXp=$(mXp), mXn=$(mXn) ")

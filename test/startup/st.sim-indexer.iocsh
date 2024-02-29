@@ -6,7 +6,7 @@ epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("AMSNETIDIOC",   "$(SM_AMSNETID=127.0.0.1.1.1)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("PREFIX",        "$(SM_PREFIX=IOC:)")
+epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=IOC:)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 # 5 axes: 4 motors, axis 5 is shutter
 epicsEnvSet("ECM_NUMAXES",   "5")

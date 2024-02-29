@@ -1,56 +1,56 @@
-record(ao, "$(PREFIX)$(AXIS_NAME)-CfgVELO-RB_")
+record(ao, "$(SYSPFX)$(AXIS_NAME)-CfgVELO-RB_")
 {
     field(PREC, "$(PREC)")
-    field(DOL,  "$(PREFIX)$(AXIS_NAME)-CfgVELO-RB CP")
-    field(OUT,  "$(PREFIX)$(AXIS_NAME).VELO")
+    field(DOL,  "$(SYSPFX)$(AXIS_NAME)-CfgVELO-RB CP")
+    field(OUT,  "$(SYSPFX)$(AXIS_NAME).VELO")
     field(OMSL, "closed_loop")
 }
 
-record(ao, "$(PREFIX)$(AXIS_NAME)-CfgVMAX-RB_")
+record(ao, "$(SYSPFX)$(AXIS_NAME)-CfgVMAX-RB_")
 {
     field(PREC, "$(PREC)")
-    field(DOL,  "$(PREFIX)$(AXIS_NAME)-CfgVMAX-RB CP")
-    field(OUT,  "$(PREFIX)$(AXIS_NAME).VMAX")
+    field(DOL,  "$(SYSPFX)$(AXIS_NAME)-CfgVMAX-RB CP")
+    field(OUT,  "$(SYSPFX)$(AXIS_NAME).VMAX")
     field(OMSL, "closed_loop")
 }
 
-record(ao, "$(PREFIX)$(AXIS_NAME)-CfgJVEL-RB_")
+record(ao, "$(SYSPFX)$(AXIS_NAME)-CfgJVEL-RB_")
 {
     field(PREC, "$(PREC)")
-    field(DOL,  "$(PREFIX)$(AXIS_NAME)-CfgJVEL-RB CP")
-    field(OUT,  "$(PREFIX)$(AXIS_NAME).JVEL")
+    field(DOL,  "$(SYSPFX)$(AXIS_NAME)-CfgJVEL-RB CP")
+    field(OUT,  "$(SYSPFX)$(AXIS_NAME).JVEL")
     field(OMSL, "closed_loop")
 }
 
-record(ao, "$(PREFIX)$(AXIS_NAME)-CfgHVEL_")
+record(ao, "$(SYSPFX)$(AXIS_NAME)-CfgHVEL_")
 {
     field(PREC, "$(PREC)")
-    field(DOL,  "$(PREFIX)$(AXIS_NAME)-CfgHVEL-RB CP")
-    field(OUT,  "$(PREFIX)$(AXIS_NAME).HVEL")
+    field(DOL,  "$(SYSPFX)$(AXIS_NAME)-CfgHVEL-RB CP")
+    field(OUT,  "$(SYSPFX)$(AXIS_NAME).HVEL")
     field(OMSL, "closed_loop")
 }
 
-record(ao, "$(PREFIX)$(AXIS_NAME)-CfgACCS-RB_")
+record(ao, "$(SYSPFX)$(AXIS_NAME)-CfgACCS-RB_")
 {
     field(PREC, "$(PREC)")
-    field(DOL,  "$(PREFIX)$(AXIS_NAME)-CfgACCS-RB CP")
-    field(OUT,  "$(PREFIX)$(AXIS_NAME).ACCS")
+    field(DOL,  "$(SYSPFX)$(AXIS_NAME)-CfgACCS-RB CP")
+    field(OUT,  "$(SYSPFX)$(AXIS_NAME).ACCS")
     field(OMSL, "closed_loop")
 }
 
-record(ao, "$(PREFIX)$(AXIS_NAME)-CfgRDBD-RB_")
+record(ao, "$(SYSPFX)$(AXIS_NAME)-CfgRDBD-RB_")
 {
     field(PREC, "$(PREC)")
-    field(DOL,  "$(PREFIX)$(AXIS_NAME)-CfgRDBD-RB CP")
-    field(OUT,  "$(PREFIX)$(AXIS_NAME).RDBD")
+    field(DOL,  "$(SYSPFX)$(AXIS_NAME)-CfgRDBD-RB CP")
+    field(OUT,  "$(SYSPFX)$(AXIS_NAME).RDBD")
     field(OMSL, "closed_loop")
 }
 
-record(ao, "$(PREFIX)$(AXIS_NAME)-CfgSPDB_")
+record(ao, "$(SYSPFX)$(AXIS_NAME)-CfgSPDB_")
 {
     field(PREC, "$(PREC)")
-    field(DOL,  "$(PREFIX)$(AXIS_NAME)-CfgSPDB-RB CP")
-    field(OUT,  "$(PREFIX)$(AXIS_NAME).SPDB")
+    field(DOL,  "$(SYSPFX)$(AXIS_NAME)-CfgSPDB-RB CP")
+    field(OUT,  "$(SYSPFX)$(AXIS_NAME).SPDB")
     field(OMSL, "closed_loop")
 }
 

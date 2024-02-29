@@ -1,2 +1,2 @@
-dbLoadRecords("ethercatmcEL6688-PTP-twincat-ads.template", "PREFIX=$(PREFIX), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT)")
+dbLoadRecords("ethercatmcEL6688-PTP-twincat-ads.template", "SYSPFX=$(SYSPFX), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT)")
 
