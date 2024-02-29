@@ -12,7 +12,7 @@ History of this driver.
   And, that is important, exposes all needed asyn-parameters to drive
   a motor with "ao" records, what we use for testing. See
   ethercatmcdebug.template:
-     record(ao, "$(PREFIX)$(MOTOR_NAME)-MoveAbs")
+     record(ao, "$(PREFIX)$(AXIS_NAME)-MoveAbs")
 
 
 1 History

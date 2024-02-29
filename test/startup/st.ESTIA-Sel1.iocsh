@@ -26,7 +26,7 @@ epicsEnvSet("DESC",          "motor")
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr1)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr1)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -39,7 +39,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr2)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -52,7 +52,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr3)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr3)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -65,7 +65,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr4)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr4)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -78,7 +78,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr5)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr5)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=5)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -91,7 +91,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr6)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr6)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=6)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -105,7 +105,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr7)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr7)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=7)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -118,7 +118,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr8)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr8)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=8)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -134,7 +134,7 @@ epicsEnvSet("AUXBITS07",     "HexScrew")
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr9)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr9)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=9)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -149,7 +149,7 @@ epicsEnvSet("AUXBITS07",     "HexScrew")
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr10)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr10)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=10)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -162,7 +162,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr11)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr11)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=11)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -175,7 +175,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr12)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr12)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=12)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -189,7 +189,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr13)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr13)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=13)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -202,7 +202,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr14)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr14)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=14)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -215,7 +215,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr15)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr15)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=15)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -228,7 +228,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr16)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr16)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=16)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -241,7 +241,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr17)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr17)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=17)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -254,7 +254,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 ###############################################
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=Mtr18)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr18)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=18)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)

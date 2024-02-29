@@ -21,7 +21,7 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 #
 # Health status
 #
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=PlcHealth)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=PlcHealth)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=0)")
 epicsEnvSet("DESC",          "PlcHealth")
 epicsEnvSet("EGU",           "PlcHealth")
@@ -31,10 +31,8 @@ epicsEnvSet("EGU",           "PlcHealth")
 # Axis 1
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m1)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m1)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
-epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -53,7 +51,7 @@ epicsEnvSet("AUX_BIT_NAME_P",  "AUXBITnotHomed")
 # Axis 2
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m2)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m2)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -65,7 +63,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 3
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m3)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m3)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -77,7 +75,7 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 4
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "$(SM_MOTOR_NAME=m4)")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m4)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
@@ -89,14 +87,13 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 5, shutter
 #
 epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("MOTOR_NAME",    "Shutter")
+epicsEnvSet("AXIS_NAME",    "Shutter")
 epicsEnvSet("AXIS_NO",       "5")
-epicsEnvSet("R",             "Shutter:")
 
 < ethercatmcShutter.iocsh
 
 # Motorrecord to debug
-#epicsEnvSet("MOTOR_NAME",    "Shutter")
+#epicsEnvSet("AXIS_NAME",    "Shutter")
 #< ethercatmcIndexerAxis.iocsh
 
 # Faster polling

@@ -1,4 +1,4 @@
-record(bo, "$(PREFIX)$(MOTOR_NAME)-OpenClutch")
+record(bo, "$(PREFIX)$(AXIS_NAME)-OpenClutch")
 {
     field(DTYP, "asynInt32")
     field(DESC, "$(DESC=Clutch)")
