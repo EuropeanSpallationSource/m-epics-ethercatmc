@@ -1,13 +1,14 @@
-require ethercatmc,USER
+require calc
+require ethercatmc
 
-epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=10.102.10.44)")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
-epicsEnvSet("AMSNETIDIOC",   "$(SM_AMSNETID=10.102.10.49.1.1)")
-epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("PREFIX",        "$(SM_PREFIX=YMIR-)")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
-epicsEnvSet("ECM_NUMAXES",     "9")
+epicsEnvSet("MOTOR_PORT",    "MCU1")
+epicsEnvSet("IPADDR",        "10.102.10.44")
+epicsEnvSet("IPPORT",        "48898")
+epicsEnvSet("AMSNETIDIOC",   "10.102.10.49.1.1")
+epicsEnvSet("ASYN_PORT",     "MC_CPU1")
+epicsEnvSet("PREFIX",        "YMIR-")
+epicsEnvSet("PREC",          "3")
+epicsEnvSet("ECM_NUMAXES",   "9")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=10.102.10.44.1.1;amsNetIdLocal=$(AMSNETIDIOC)")
 
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
@@ -19,34 +20,34 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 # AXIS 1
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=HvSht:MC-Pne-01)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
+epicsEnvSet("AXIS_NAME",       "HvSht:MC-Pne-01")
+epicsEnvSet("AXIS_NO",         "1")
 < ethercatmcShutter.iocsh
 
 #
 # AXIS 2
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=Fil:MC-Pne-01)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
+epicsEnvSet("AXIS_NAME",       "Fil:MC-Pne-01")
+epicsEnvSet("AXIS_NO",         "2")
 < ethercatmcShutter.iocsh
 
 #
 # AXIS 3
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=Fil:MC-Pne-02)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=3)")
+epicsEnvSet("AXIS_NAME",       "Fil:MC-Pne-02")
+epicsEnvSet("AXIS_NO",         "3")
 < ethercatmcShutter.iocsh
 
 #
 # AXIS 4
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=Spare-AXIS-1)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=4)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
+epicsEnvSet("AXIS_NAME",      "Spare-AXIS-1")
+epicsEnvSet("AXIS_NO",         "4")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -54,10 +55,10 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 5
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=Spare-AXIS-2)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=5)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
+epicsEnvSet("AXIS_NAME",       "Spare-AXIS-2")
+epicsEnvSet("AXIS_NO",         "5")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -65,10 +66,10 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 6
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=ColSl1:MC-SlYp-01)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=6)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
+epicsEnvSet("AXIS_NAME",       "ColSl1:MC-SlYp-01")
+epicsEnvSet("AXIS_NO",         "6")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -76,10 +77,10 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 7
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=ColSl1:MC-SlYm-01)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=7)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
+epicsEnvSet("AXIS_NAME",       "ColSl1:MC-SlYm-01")
+epicsEnvSet("AXIS_NO",         "7")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -87,10 +88,10 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 8
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=ColSl1:MC-SlZp-01)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=8)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
+epicsEnvSet("AXIS_NAME",       "ColSl1:MC-SlZp-01")
+epicsEnvSet("AXIS_NO",         "8")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
@@ -98,10 +99,10 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # AXIS 9
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("AXIS_NAME",      "$(SM_AXIS_NAME=ColSl1:MC-SlZm-01)")
-epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=9)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
+epicsEnvSet("AXIS_NAME",       "ColSl1:MC-SlZm-01")
+epicsEnvSet("AXIS_NO",         "9")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
