@@ -1,4 +1,4 @@
-record(longin, "$(SYSPFX)TS_NS")
+record(longin, "$(SYSPFX)$(REG_NAME)TS_NS")
 {
     field(DTYP, "asynInt32")
     field(DESC, "TS_NS fraction")

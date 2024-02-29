@@ -16,7 +16,7 @@ Note that all records should have 2 generic alarm:
           DEVICE STATE is the alarm state "state": The device is not usable:
           broken, not configured in the MCU. Some action is needed.
 
-$(SYSPFX)PTPState
+$(SYSPFX)$(REG_NAME)PTPState
         Reflects the PTP state inside the EL6688 terminal.
         The "good" value is "PTP:SLAVE"
         A really problematic state is "PTP:NO_CABLE":
@@ -28,13 +28,13 @@ $(SYSPFX)PTPState
           MAJOR     STATE     "PTP:NO_CABLE"
           MINOR     STATE     all other states (e.g. PTP:LISTENING)
 
-$(SYSPFX)PTPOffset
+$(SYSPFX)$(REG_NAME)PTPOffset
         Alarms:
           INVALID DEVICE STATE (PTPState has an alarm)
           MINOR   DEVICE HIGH  (PTPOffset is > +5000nsec. The MCU decides this!)
           MINOR   DEVICE LOW   (PTPOffset is < -5000nsec. The MCU decides this!)
 
-$(SYSPFX)PTPErrorStatus
+$(SYSPFX)$(REG_NAME)PTPErrorStatus
         Mainly used to collect the bits around the "EL6688 diag" structure.
         None of the bits should be true under "all good" conditions.
         Note: Once the the "NotSynchronized" bit becomes false,
@@ -47,7 +47,7 @@ $(SYSPFX)PTPErrorStatus
         Alarms:
           MINOR DEVICE HIGH   (one of the bits is set)
 
-$(SYSPFX)PTPdiffTimeIOC_MCU
+$(SYSPFX)$(REG_NAME)PTPdiffTimeIOC_MCU
         Shows the difference between the UTC time inside the IOC,
         which is typically synchronized via NTP,
         and the "UTC time" inside the MCU based on PTP.
@@ -65,11 +65,11 @@ $(SYSPFX)PTPdiffTimeIOC_MCU
           MINOR DEVICE LOW
           MINOR DEVICE HIGH
 
-$(SYSPFX)PTPallGood
+$(SYSPFX)$(REG_NAME)PTPallGood
         My favorite record.
-        With help of $(SYSPFX)PTPAlarmSevrCalc an "overall good state"
+        With help of $(SYSPFX)$(REG_NAME)PTPAlarmSevrCalc an "overall good state"
         is calculated, summarizing all PTP records from above.
-        Note that $(SYSPFX)PTPAlarmSevrCalc has it's own timer,
+        Note that $(SYSPFX)$(REG_NAME)PTPAlarmSevrCalc has it's own timer,
         so that the PTPallGood will become Yes some seconds after
         all alarms have disappeared.
         The record itself has the value "Yes" or "No", and beside this,
@@ -77,7 +77,7 @@ $(SYSPFX)PTPallGood
         Alarms:
           MINOR RECORD LINK
 
-$(SYSPFX)TS_NS
+$(SYSPFX)$(REG_NAME)TS_NS
         The nano-second fraction of the 1Hz pulse.
         The 1Hz pulse is created inside the timing system ("EVR") and
         feed into an EL1252-0050 (the 5 volt version) to verify e.g.
