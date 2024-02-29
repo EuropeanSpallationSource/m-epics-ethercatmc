@@ -1,6 +1,6 @@
 record(motor,"$(SYSPFX)$(AXIS_NAME)")
 {
-	field(DESC,"$(DESC)")
+	field(DESC,"$(AXIS_NAME)")
 	field(CARD,"$(AXIS_NO=0)")
 	field(DTYP,"asynMotor")
 	field(DVAL,"$(DVAL=0)")
