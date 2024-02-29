@@ -49,7 +49,7 @@ record(longout,  "$(PREFIX)$(AXIS_NAME)SP") {
 # Error
 record(bi, "$(PREFIX)$(AXIS_NAME)Err")
 {
-    field(DESC, "$(PREFIX)$(AXIS_NAME) Error from TwinCAT")
+    field(DESC, "Error from TwinCAT")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MCUErr")
     field(SCAN, "I/O Intr")
