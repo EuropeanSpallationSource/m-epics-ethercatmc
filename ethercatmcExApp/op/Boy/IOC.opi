@@ -1351,6 +1351,75 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
+        <path>motor-6.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <PREFIX>YMIR-MCS1:MC-MCU-01:</PREFIX>
+          <P>YMIR-</P>
+          <M1>mcs1:MC-Spare-01:Mtr</M1>
+          <M2>mcs1:MC-Spare-02:Mtr</M2>
+          <M3>ColSl1:MC-SlYp-01:Mtr</M3>
+          <M4>ColSl1:MC-SlYm-01:Mtr</M4>
+          <M5>ColSl1:MC-SlZp-01:Mtr</M5>
+          <M6>ColSl1:MC-SlZm-01:Mtr</M6>
+          <R1>mcs1:MC-Spare-01:Mtr-</R1>
+          <R2>mcs1:MC-Spare-02:Mtr-</R2>
+          <R3>ColSl1:MC-SlYp-01:Mtr-</R3>
+          <R4>ColSl1:MC-SlYm-01:Mtr-</R4>
+          <R5>ColSl1:MC-SlZp-01:Mtr-</R5>
+          <R6>ColSl1:MC-SlZm-01:Mtr-</R6>
+        </macros>
+        <mode>1</mode>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>31</height>
+    <image></image>
+    <name>Action Button_15</name>
+    <push_action_index>0</push_action_index>
+    <pv_name></pv_name>
+    <pv_value />
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <style>0</style>
+    <text>YMIR-MCS1</text>
+    <toggle_button>false</toggle_button>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Action Button</widget_type>
+    <width>180</width>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
+    <x>182</x>
+    <y>216</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
         <path>motor-3.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
@@ -1409,7 +1478,7 @@ $(pv_value)</tooltip>
     <width>180</width>
     <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>182</x>
-    <y>216</y>
+    <y>252</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
@@ -1472,7 +1541,7 @@ $(pv_value)</tooltip>
     <width>180</width>
     <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>182</x>
-    <y>252</y>
+    <y>288</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
@@ -1531,7 +1600,7 @@ $(pv_value)</tooltip>
     <width>180</width>
     <wuid>-5fa237c5:1486496e2b9:-7f3c</wuid>
     <x>182</x>
-    <y>288</y>
+    <y>324</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
@@ -1600,7 +1669,7 @@ $(pv_value)</tooltip>
     <width>180</width>
     <wuid>1d681a25:1522fd92503:-61b1</wuid>
     <x>182</x>
-    <y>324</y>
+    <y>360</y>
   </widget>
 
 </display>
