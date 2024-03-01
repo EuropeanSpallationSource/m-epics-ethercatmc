@@ -333,19 +333,21 @@ while test "$PARAM" != ""; do
   esac
 done
 
+# move old log file into logs
+if test -n "$SM_SYSPFX"; then
+  LOG_TXT=log-$(echo $SM_SYSPFX | sed -e "s/:$//g" | tr ":" "-").txt
+else
+  LOG_TXT=log-$MOTORCFG.txt
+fi
+export LOG_TXT
+if test -f $LOG_TXT; then
+  timestamp=$(date "+%y-%m-%d-%H.%M.%S")
+  mkdir -p ../logs/ &&
+    mv $LOG_TXT ../logs/$timestamp-$MOTORCFG.txt || exit 1
+fi
+
 # log/tee to file
 if test "$DOLOG" = y; then
-  if test -n "$SM_SYSPFX"; then
-    LOG_TXT=log-$(echo $SM_SYSPFX | sed -e "s/:$//g" | tr ":" "-").txt
-  else
-    LOG_TXT=log-$MOTORCFG.txt
-  fi
-  export LOG_TXT
-  if test -f $LOG_TXT; then
-    timestamp=$(date "+%y-%m-%d-%H.%M.%S")
-    mkdir -p ../logs/ &&
-      mv $LOG_TXT ../logs/$timestamp-$MOTORCFG.txt || exit 1
-  fi
   DOLOG=" 2>&1 | tee $PWD/$LOG_TXT"
   shift
 fi
