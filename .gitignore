@@ -13,6 +13,7 @@ ethercatmc.Makefile
 html/
 include/
 iocBoot/
+.iocsh_history
 lib/
 logs/
 O.*
