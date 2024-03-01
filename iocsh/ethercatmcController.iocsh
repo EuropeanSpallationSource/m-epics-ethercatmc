@@ -49,7 +49,7 @@ asynSetTraceInfoMask("$(ASYN_PORT)", -1, 5)
 
 ethercatmcCreateController("$(MOTOR_PORT)", "$(ASYN_PORT)", "$(NUMAXES)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)", "$(ECC_OPTIONS)")
 
-dbLoadRecords("ethercatmcPlcName.template", "SYSPFX=$(SYSPFX), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), IPADDR=$(IPADDR), AMSNETIDIOC=$(AMSNETIDIOC), IPPORT=$(IPPORT)")
+dbLoadRecords("ethercatmcPlcName.template", "SYSPFX=$(SYSPFX), REG_NAME=$(REG_NAME), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), IPADDR=$(IPADDR), AMSNETIDIOC=$(AMSNETIDIOC), IPPORT=$(IPPORT)")
 
 asynSetOption $(ASYN_PORT) -1 disconnectOnReadTimeout Y
 asynShowOption $(ASYN_PORT) -1 disconnectOnReadTimeout
