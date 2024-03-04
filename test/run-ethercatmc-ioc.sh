@@ -349,7 +349,6 @@ fi
 # log/tee to file
 if test "$DOLOG" = y; then
   DOLOG=" 2>&1 | tee $PWD/$LOG_TXT"
-  shift
 fi
 export DOLOG
 
