@@ -1,4 +1,4 @@
-record(longin, "$(SYSPFX)$(REG_NAME)TS_NS_POS")
+record(longin, "$(SYSPFX)$(MCUPFX)TS_NS_POS")
 {
     field(DTYP, "asynInt32")
     field(DESC, "TS_NS_POS fraction")
@@ -7,7 +7,7 @@ record(longin, "$(SYSPFX)$(REG_NAME)TS_NS_POS")
     field(SCAN, "1 second")
 }
 
-record(longin, "$(SYSPFX)$(REG_NAME)TS_NS_NEG")
+record(longin, "$(SYSPFX)$(MCUPFX)TS_NS_NEG")
 {
     field(DTYP, "asynInt32")
     field(DESC, "TS_NS_NEG fraction")

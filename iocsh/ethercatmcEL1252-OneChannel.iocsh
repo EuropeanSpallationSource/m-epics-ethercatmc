@@ -1,4 +1,4 @@
 ethercatmcCreateAsynParam $(MOTOR_PORT) UTCEL1252P Int64
 ethercatmcCreateAsynParam $(MOTOR_PORT) UTCEL1252N Int64
 
-dbLoadRecords("ethercatmcEL1252-OneChannel.template", "SYSPFX=$(SYSPFX), REG_NAME=$(REG_NAME), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO)")
+dbLoadRecords("ethercatmcEL1252-OneChannel.template", "SYSPFX=$(SYSPFX), MCUPFX=$(MCUPFX), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO)")

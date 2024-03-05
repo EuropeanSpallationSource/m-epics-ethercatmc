@@ -1,4 +1,4 @@
 ethercatmcCreateAsynParam $(MOTOR_PORT) TS_NS_POS             Int32
 ethercatmcCreateAsynParam $(MOTOR_PORT) TS_NS_NEG             Int32
 
-dbLoadRecords("ethercatmcEL6688-EL1252-PTP-POS-NEG.template", "SYSPFX=$(SYSPFX), REG_NAME=$(REG_NAME), MOTOR_PORT=$(MOTOR_PORT)")
+dbLoadRecords("ethercatmcEL6688-EL1252-PTP-POS-NEG.template", "SYSPFX=$(SYSPFX), MCUPFX=$(MCUPFX), MOTOR_PORT=$(MOTOR_PORT)")

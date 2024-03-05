@@ -7,7 +7,7 @@ epicsEnvSet("AMSNETIDIOC",   "172.30.38.12.1.1")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("SYSPFX",        "YMIR-4004:MC-MCU-002:")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
-epicsEnvSet("REG_NAME",      "")
+epicsEnvSet("MCUPFX",      "")
 epicsEnvSet("SM_NOAXES",     "3")
 
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.79.68.216.1.1;amsNetIdLocal=$(AMSNETIDIOC)"

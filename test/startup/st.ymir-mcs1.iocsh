@@ -9,7 +9,7 @@ epicsEnvSet("ASYN_PORT",     "MC_CPU1")
 # prefix for all, system in ESS naming convention
 epicsEnvSet("SYSPFX",        "YMIR-")
 # prefix for all MCU-ish records like PTP
-epicsEnvSet("REG_NAME",      "MCS1:MC-MCU-01:")
+epicsEnvSet("MCUPFX",      "MCS1:MC-MCU-01:")
 epicsEnvSet("PREC",          "3")
 epicsEnvSet("ECM_NUMAXES",   "9")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=10.102.10.44.1.1;amsNetIdLocal=$(AMSNETIDIOC)")
