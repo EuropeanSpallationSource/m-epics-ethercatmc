@@ -6,6 +6,7 @@ epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.7.92)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=LabS-MCAG:MC-MCU-24:)")
+epicsEnvSet("REG_NAME",      "")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "2")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.65.73.226.1.1;amsNetIdLocal=172.30.38.12.1.1"

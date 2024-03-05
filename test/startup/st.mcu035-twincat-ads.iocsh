@@ -6,6 +6,7 @@ epicsEnvSet("REMOTEAMSNETID", "5.36.136.2.1.1")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=LabS-MCAG:MC-MCU-1035:)")
 epicsEnvSet("P",             "$(SM_SYSPFX=LabS-MCAG:MC-MCU-1035:)")
+epicsEnvSet("REG_NAME",      "")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "1")
 epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=$(REMOTEAMSNETID);amsNetIdLocal=$(AMSNETIDIOC)"
