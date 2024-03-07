@@ -129,6 +129,7 @@ generate_st_cmd_e3() {
   >$stcmddst &&
     cat >>$stcmddst <<-EOF
 require essioc
+require calc
 require ethercatmc
 EOF
   sed <../../test/startup/st.${MOTORCFG}.iocsh \

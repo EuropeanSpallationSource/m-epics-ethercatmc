@@ -1,6 +1,3 @@
-require calc
-require ethercatmc
-
 epicsEnvSet("MOTOR_PORT",    "MCU1")
 epicsEnvSet("IPADDR",        "10.102.10.44")
 epicsEnvSet("IPPORT",        "48898")

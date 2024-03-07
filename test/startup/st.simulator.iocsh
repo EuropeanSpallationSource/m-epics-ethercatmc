@@ -1,6 +1,3 @@
-require asyn,4.31
-require ethercatmc,USER
-
 epicsEnvSet("ECM_NUMAXES",   "1")
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 

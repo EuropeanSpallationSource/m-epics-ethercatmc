@@ -1,5 +1,3 @@
-require ethercatmc,USER
-
 epicsEnvSet("ECM_NUMAXES",   "4")
 epicsEnvSet("MOTOR_PORT",    "MCU1")
 
