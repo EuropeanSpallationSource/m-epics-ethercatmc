@@ -33,7 +33,7 @@ shellcheck:
     - ./check-test-methods-sorted.sh
 
 shfmt:
-  image: mvdan/shfmt:v3.2.0-alpine
+  image: mvdan/shfmt:v3.8.0-alpine
   stage: check
   before_script:
     - shfmt -version
