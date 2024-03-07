@@ -133,7 +133,7 @@ require calc
 require ethercatmc
 EOF
   sed <../../test/startup/st.${MOTORCFG}.iocsh \
-    -e "s/^cd /#cd /" |
+    -e "s/^cd /#cd /" -e 's/^ *< *\([^ ]*\)/iocshLoad("$(ethercatmc_DIR)\1")/g' |
     grep -v '^  *#' >>$stcmddst || {
     echo >&2 can not create stcmddst $stcmddst
     exit 1
