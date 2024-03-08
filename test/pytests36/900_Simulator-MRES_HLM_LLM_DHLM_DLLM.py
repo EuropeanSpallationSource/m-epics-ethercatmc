@@ -381,9 +381,8 @@ class Test(unittest.TestCase):
     # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20], wait=True)
     oldSPAM = axisMr.getFieldSPAM(tc_no)
     axisMr.setFieldSPAM(tc_no, 255)
-    vers = float(axisCom.get(".VERS"))
-    if vers >= 6.94 and vers <= 7.09:
-        hasROlimit = True
+    hasROlimit = axisMr.hasROlimit
+    if hasROlimit:
         drvUseEGU_RB = axisCom.get("-DrvUseEGU-RB")
         drvUseEGU = 0
         if drvUseEGU_RB == 1:
@@ -397,7 +396,7 @@ class Test(unittest.TestCase):
         hasRhlmRllm = False
 
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} vers={vers:g} hasROlimit={int(hasROlimit)} hasRhlmRllm={hasRhlmRllm}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} hasROlimit={hasROlimit} hasROlimit={int(hasROlimit)} hasRhlmRllm={hasRhlmRllm}"
     )
 
     def test_TC_900010(self):
@@ -410,9 +409,6 @@ class Test(unittest.TestCase):
         tc_no = 900100
         encRel = 0
         self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
-        # vers = float(self.axisCom.get("(self. + '.VERS'))
-        # print('%s vers=%g' %  (tc_no, vers))
-        # self.assertEqual(0, 1, '1 != 0')
         testPassed = readBackParamVerify(self, tc_no, "-DrvUseEGU-RB", 0)
 
         InitVeloAcc(self, tc_no, encRel)
@@ -562,7 +558,7 @@ class Test(unittest.TestCase):
             self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
 
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} vers={self.vers:g} hasROlimit={int(self.hasROlimit)}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} hasROlimit={int(self.hasROlimit)}"
             )
             self.assertEqual(1, self.hasROlimit, "motorRecord supports RO soft limits")
 

@@ -45,10 +45,16 @@ class AxisMr:
                 vers = float(self.axisCom.get(".VERS"))
                 # 7.09 is rounded to 7.0900001xxx; use 7.091
                 if vers >= 6.94 and vers <= 7.091:
+                    self.hasFieldACCS = True
                     self.hasFieldSPAM = True
+                    self.hasFieldMFLG = True
+                    self.hasROlimit = True
                     self.isMotorMasterAxis = False
                 else:
+                    self.hasFieldACCS = False
                     self.hasFieldSPAM = False
+                    self.hasFieldMFLG = False
+                    self.hasROlimit = False
                     self.isMotorMasterAxis = True
                 return
             except:  # noqa: E722
@@ -220,12 +226,6 @@ class AxisMr:
         self,
         tc_no,
     ):
-        if self.hasFieldSPAM is None:
-            vers = float(self.axisCom.get(".VERS"))
-            if vers >= 6.94 and vers <= 7.09:
-                self.hasFieldSPAM = True
-            else:
-                self.hasFieldSPAM = False
         if self.hasFieldSPAM:
             return self.axisCom.get(".SPAM")
         return None
@@ -744,12 +744,6 @@ class AxisMr:
         raise Exception(debug_text)
 
     def setFieldSPAM(self, tc_no, value):
-        if self.hasFieldSPAM is None:
-            vers = float(self.axisCom.get(".VERS"))
-            if vers >= 6.94 and vers <= 7.09:
-                self.hasFieldSPAM = True
-            else:
-                self.hasFieldSPAM = False
         if self.hasFieldSPAM:
             self.axisCom.put(".SPAM", value)
 

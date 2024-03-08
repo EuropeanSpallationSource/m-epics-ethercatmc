@@ -152,8 +152,7 @@ def moveVALnewRBVnewValWrapper(
         self, tc_no, startpos, firstVal, pointOfReturnPos, secondVal, ntm
     )
 
-    vers = float(self.axisCom.get(".VERS"))
-    if vers < 7.07 or vers > 7.09:
+    if not self.axisMr.hasFieldMFLG:
         return
     mflg = int(self.axisCom.get(".MFLG"))
     mf_ntm_update_bit = 32

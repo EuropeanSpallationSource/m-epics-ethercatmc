@@ -388,14 +388,11 @@ def jogTheMotorTestWrapper(self, tc_no, mres=0, dir=-1, jvel=8.0, jar=3.0):
 
 def jogTheMotorTestWrapperJogDir(self, tc_no, mres=0, dir=-1, jogDir=-1, jvel=0, jar=0):
     # Check which motorRecord version we have
-    vers = float(self.axisCom.get(".VERS"))
-    if vers >= 6.94 and vers <= 7.09:
+    hasDrvUseEGUfeature = self.axisMr.hasFieldMFLG
+    if hasDrvUseEGUfeature:
         # Special feature: The motorRecord can talk to the driver
         # in EGU. Changing MRES does NOT affect velocity
-        hasDrvUseEGUfeature = True
         self.axisCom.put("-DrvUseEGU", 0)
-    else:
-        hasDrvUseEGUfeature = False
 
     jogTheMotorWithMRES(
         self, tc_no, mres=mres, dir=dir, jogDir=jogDir, jvel=jvel, jar=jar

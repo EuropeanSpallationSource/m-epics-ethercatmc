@@ -84,11 +84,7 @@ class Test(unittest.TestCase):
     per10_UserPosition = round((9 * llm + 1 * hlm) / 10)
     per20_UserPosition = round((8 * llm + 2 * hlm) / 10)
     msta = int(axisCom.get(".MSTA"))
-    vers = float(axisCom.get(".VERS"))
-    if vers >= 6.94 and vers <= 7.09:
-        hasACCSfield = True
-    else:
-        hasACCSfield = False
+    hasFieldACCS = axisMr.hasFieldACCS
 
     # Make sure that motor is homed
     def test_TC_9311(self):
@@ -108,42 +104,42 @@ class Test(unittest.TestCase):
     def test_TC_9313(self):
         tc_no = "9313"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-        if self.hasACCSfield:
+        if self.hasFieldACCS:
             #                                            vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0, 6.0, 0.2, -1, 30)
 
     def test_TC_9314(self):
         tc_no = "9314"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-        if self.hasACCSfield:
+        if self.hasFieldACCS:
             #                                           vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.2, -1, 5)
 
     def test_TC_9315(self):
         tc_no = "9315"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-        if self.hasACCSfield:
+        if self.hasFieldACCS:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.4, -1, 2.5)
 
     def test_TC_9316(self):
         tc_no = "9316"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-        if self.hasACCSfield:
+        if self.hasFieldACCS:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 4.0, 4.0, 0.5, -1, 8.0)
 
     def test_TC_9317(self):
         tc_no = "9317"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-        if self.hasACCSfield:
+        if self.hasFieldACCS:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, 0.5, -1, 16.0)
 
     def test_TC_9318(self):
         tc_no = "9318"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-        if self.hasACCSfield:
+        if self.hasFieldACCS:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, -1.0, 16.0, 16.0)
 
@@ -151,7 +147,7 @@ class Test(unittest.TestCase):
     def test_TC_9319(self):
         tc_no = "9319"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-        if self.hasACCSfield:
+        if self.hasFieldACCS:
             #                                             vbas, velo. accl, accs, expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 4.0, -1.0, -1.0, 16.0)
 

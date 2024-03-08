@@ -123,9 +123,8 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
-    # self.axisCom.put('-DbgStrToLOG', "Start " + os.path.basename(__file__)[0:20])
-    vers = float(axisCom.get(".VERS"))
-    if vers >= 6.94 and vers <= 7.09:
+    hasDrvUseEGUfeature = axisMr.hasFieldMFLG
+    if hasDrvUseEGUfeature:
         drvUseEGU_RB = axisCom.get("-DrvUseEGU-RB")
         drvUseEGU = 0
         if drvUseEGU_RB == 1:
