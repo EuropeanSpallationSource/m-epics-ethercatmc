@@ -43,7 +43,8 @@ class AxisMr:
             # Dummy read to give the IOC time to start
             try:
                 vers = float(self.axisCom.get(".VERS"))
-                if vers >= 6.94 and vers <= 7.09:
+                # 7.09 is rounded to 7.0900001xxx; use 7.091
+                if vers >= 6.94 and vers <= 7.091:
                     self.hasFieldSPAM = True
                     self.isMotorMasterAxis = False
                 else:
