@@ -418,7 +418,7 @@ $(pv_value)</tooltip>
           <PREFIX>LabS-MCAG:MC-MCU-19:</PREFIX>
           <P>LabS-MCAG:MC-MCU-19:</P>
           <M1>Mtr1</M1>
-          <M2>Mtr1</M2>
+          <M2>Mtr2</M2>
           <R1>Mtr1-</R1>
           <R2>Mtr2-</R2>
         </macros>
