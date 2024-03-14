@@ -92,6 +92,16 @@ genMatrix() {
       shutter)
         OPIMID=shutterx.mid
         ;;
+      s)
+        OPIMID=shutterx.mid
+        HIGHT=$MOTORHIGHT
+        x=$(($cntx * $WIDTH))
+        cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+        echo xcmd=$cmd "<$OPIMID"
+        eval $cmd <$OPIMID >>$$
+        im=$(($im + 1))
+        cntx=$(($cntx + 1))
+        ;;
       temp)
         OPIMID_EGU_TEMP=motorx-temp-rbv.mid
         ;;

@@ -6,8 +6,8 @@
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>IOC:</PREFIX>
           <P>IOC:</P>
-          <M>Shutter:</M>
-          <R>Shutter:</R>
+          <M1>Shutter</M1>
+          <R1>Shutter</R1>
         </macros>
         <mode>1</mode>
         <description></description>

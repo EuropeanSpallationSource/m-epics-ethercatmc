@@ -16,6 +16,7 @@ GNERATEDOPIS = \
   ../motor-4x4-temp.opi \
   ../motor-estiaSel1-temp.opi \
   ../motor-estiaSel2-temp.opi \
+  ../motor-ymir-mcs1-temp.opi \
   ../ethercatmcaxisConfig.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
   ../ethercatmcaxisExpert-tc.opi \
@@ -167,6 +168,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-estiaSel2-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid tempsensor.mid
 	./genMotorShutter.sh $@ temp m m m m m n m m m m m n m m m m n t t t t t n t t t t t n t t
+
+../motor-ymir-mcs1-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid tempsensor.mid
+	./genMotorShutter.sh $@ temp m m m m m m n shutter s s s
 
 ../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
 	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@

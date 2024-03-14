@@ -20,7 +20,7 @@
     <include_parent_macros>true</include_parent_macros>
     <PREFIX>IOC:</PREFIX>
     <P>$(PREFIX)</P>
-    <R></R>
+    <R1></R1>
   </macros>
   <name></name>
   <rules />
@@ -734,8 +734,8 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>Labs-MCAG:MC-MCU-032:</PREFIX>
           <P>Labs-MCAG:MC-MCU-032:</P>
-          <M>Shutter</M>
-          <R>Shutter-</R>
+          <M1>Shutter</M1>
+          <R1>Shutter-</R1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1231,8 +1231,8 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>IOC:</PREFIX>
           <P>IOC:</P>
-          <M>Shutter:</M>
-          <R>Shutter:</R>
+          <M1>Shutter</M1>
+          <R1>Shutter</R1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1351,7 +1351,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-6.opi</path>
+        <path>motor-ymir-mcs1-temp.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>YMIR-MCS1:MC-MCU-01:</PREFIX>
@@ -1362,12 +1362,18 @@ $(pv_value)</tooltip>
           <M4>ColSl1:MC-SlYm-01:Mtr</M4>
           <M5>ColSl1:MC-SlZp-01:Mtr</M5>
           <M6>ColSl1:MC-SlZm-01:Mtr</M6>
+          <M7>HvSht:MC-Pne-01:Sht</M7>
+          <M8>Fil:MC-Pne-01:Sht</M8>
+          <M9>Fil:MC-Pne-02:Sht</M9>
           <R1>mcs1:MC-Spare-01:Mtr-</R1>
           <R2>mcs1:MC-Spare-02:Mtr-</R2>
           <R3>ColSl1:MC-SlYp-01:Mtr-</R3>
           <R4>ColSl1:MC-SlYm-01:Mtr-</R4>
           <R5>ColSl1:MC-SlZp-01:Mtr-</R5>
           <R6>ColSl1:MC-SlZm-01:Mtr-</R6>
+          <R7>HvSht:MC-Pne-01:Sht</R7>
+          <R8>Fil:MC-Pne-01:Sht</R8>
+          <R9>Fil:MC-Pne-02:Sht</R9>
         </macros>
         <mode>1</mode>
         <description></description>
