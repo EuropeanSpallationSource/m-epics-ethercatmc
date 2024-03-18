@@ -16,9 +16,9 @@ epicsEnvSet("IDLEPOLLPERIOD",   "$(ECM_IDLEPOLLPERIOD=1000)")
 ## One of the 2 needs to be done, either drvAsynIPPortConfigure+Eos
 ## Or
 ## adsAsynPortDriverConfigure
-## Note that ./run-ADS-ioc.sh will patch this file as needed
+## Note ./run-ethercatmc-ioc.sh --epics-twincat-ads will comment out the next line
+## and comment in the over-next line
 drvAsynIPPortConfigure("$(ASYN_PORT)","$(IPADDR):$(IPPORT)",0,0,0)
-
 #adsAsynPortDriverConfigure("$(ASYN_PORT)","$(IPADDR)","$(REMOTEAMSNETID)","$(ADSPORT)" ,1000,0,0,50,100,1000,0)
 
 #/* traceMask definitions*/
