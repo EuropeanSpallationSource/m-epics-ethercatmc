@@ -821,11 +821,9 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   unsigned idxAuxBits = 0;
   int homed = 0;
   int motorRecDirection = -1;
-  char nameAuxBits[36];
 
   /* Don't leave *moving un-initialized, if we return early */
   *moving = false;
-  nameAuxBits[0] = '\0';
   pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_, &motorRecDirection);
   if (!drvlocal.clean.iTypCode) {
     /* No axis, (may be dummy-axis 0), return */
@@ -1298,119 +1296,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
         drvlocal.dirty.idxStatusCode != idxStatusCode ||
         idxAuxBits != drvlocal.clean.old_idxAuxBitsWritten ||
         idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-      const char *msgTxtFromDriver = NULL;
-      char sErrorMessage[40];
-      char charEorW = 'E';
-      int showPowerOff = 0;
-      memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
-      if (!powerIsOn) {
-        int motorPowerAutoOnOff;
-        pC_->getIntegerParam(axisNo_, pC_->motorPowerAutoOnOff_,
-                             &motorPowerAutoOnOff);
-        if (!motorPowerAutoOnOff) {
-          showPowerOff = 1;
-        }
-      }
-      if (showPowerOff) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
-                 "PowerOff");
-      } else if (hasError) {
-        const char *errIdString = errStringFromErrId(errorID);
-        if (errIdString[0]) {
-          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X",
-                   charEorW, errIdString, errorID);
-        } else {
-          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1,
-                   "%c: TwinCAT Err %X", charEorW, errorID);
-        }
-      } else if (!homed) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
-                 "Axis not homed");
-      }
-      setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, &sErrorMessage[0]);
-      /* TODO:
-      axis can not be moved at all: poweroff, localmode, interlock, axis in
-      reset state axis can be partly moved: Limit switch, interlock Fwd/Bwd axis
-      is not homed ??? axis can be moved */
-      /* continue with msgtxt */
-      if (!nowMoving) {
-        /* A moving axis should show moving, homing ...*/
-        if (sErrorMessage[0]) {
-          msgTxtFromDriver =
-              &sErrorMessage[0]; /* There is an important text already */
-        } else if (localMode) {
-          msgTxtFromDriver = "localMode";
-        } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                      drvlocal.clean.auxBitsInterlockBwdMask)) {
-          if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
-                                   drvlocal.clean.auxBitsInterlockBwdMask)) ==
-               drvlocal.clean.auxBitsInterlockFwdMask)) {
-            msgTxtFromDriver = "InterlockFwd";
-          } else if (((statusReasonAux &
-                       (drvlocal.clean.auxBitsInterlockFwdMask |
-                        drvlocal.clean.auxBitsInterlockBwdMask)) ==
-                      drvlocal.clean.auxBitsInterlockBwdMask)) {
-            msgTxtFromDriver = "InterlockBwd";
-          } else {
-            msgTxtFromDriver = "InterlockFwdBwd";
-          }
-        } else if (errorID) {
-          charEorW = 'W';
-          const char *errIdString = errStringFromErrId(errorID);
-          if (errIdString[0]) {
-            snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X",
-                     charEorW, errIdString, errorID);
-          } else {
-            snprintf(sErrorMessage, sizeof(sErrorMessage) - 1,
-                     "%c: TwinCAT Err %X", charEorW, errorID);
-          }
-        }
-        if (sErrorMessage[0]) {
-          msgTxtFromDriver =
-              &sErrorMessage[0]; /* There is an important text already */
-        } else if (msgTxtFromDriver) {
-          ;  // nothing. keep the message */
-        } else {
-          int function = 0;
-          switch (statusReasonAux & 0xFF) {
-            case 1:
-              function = pC_->defAsynPara.ethercatmcNamAux0_;
-              break;
-            case 2:
-              function = pC_->defAsynPara.ethercatmcNamAux1_;
-              break;
-            case 4:
-              function = pC_->defAsynPara.ethercatmcNamAux2_;
-              break;
-            case 8:
-              function = pC_->defAsynPara.ethercatmcNamAux3_;
-              break;
-            case 16:
-              function = pC_->defAsynPara.ethercatmcNamAux4_;
-              break;
-            case 32:
-              function = pC_->defAsynPara.ethercatmcNamAux5_;
-              break;
-            case 64:
-              function = pC_->defAsynPara.ethercatmcNamAux6_;
-              break;
-            case 128:
-              function = pC_->defAsynPara.ethercatmcNamAux7_;
-              break;
-            default:
-              break;
-          }
-          if (function) {
-            asynStatus status = pC_->getStringParam(
-                axisNo_, function, (int)sizeof(nameAuxBits), &nameAuxBits[0]);
-            if (status == asynSuccess) {
-              msgTxtFromDriver = &nameAuxBits[0];
-            }
-          }
-        }
-      }
-      drvlocal.dirty.motorPowerAutoOnOff = 0;
-      updateMsgTxtFromDriver(msgTxtFromDriver);
+      pollErrTxtMsgTxt(hasError, errorID, idxStatusCode, idxAuxBits, localMode,
+                       statusReasonAux);
     }
     if (drvlocal.clean.hasPolledAllEnums) {
       drvlocal.clean.old_idxAuxBitsWritten = idxAuxBits;
@@ -1426,6 +1313,133 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   }
   callParamCallbacks();
   return status;
+}
+
+void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
+                                             idxStatusCodeType idxStatusCode,
+                                             unsigned idxAuxBits, int localMode,
+                                             unsigned statusReasonAux) {
+  const char *msgTxtFromDriver = NULL;
+  char sErrorMessage[40];
+  char charEorW = 'E';
+  int showPowerOff = 0;
+  int powerIsOn = 0;
+  int homed = 0;
+  int nowMoving = 1;
+  pC_->getIntegerParam(axisNo_, pC_->motorStatusPowerOn_, &powerIsOn);
+  pC_->getIntegerParam(axisNo_, pC_->motorStatusHomed_, &homed);
+  pC_->getIntegerParam(axisNo_, pC_->motorStatusMoving_, &nowMoving);
+  memset(&sErrorMessage[0], 0, sizeof(sErrorMessage));
+  if (!powerIsOn) {
+    int motorPowerAutoOnOff;
+    pC_->getIntegerParam(axisNo_, pC_->motorPowerAutoOnOff_,
+                         &motorPowerAutoOnOff);
+    if (!motorPowerAutoOnOff) {
+      showPowerOff = 1;
+    }
+  }
+  if (showPowerOff) {
+    snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
+             "PowerOff");
+  } else if (hasError) {
+    const char *errIdString = errStringFromErrId(errorID);
+    if (errIdString[0]) {
+      snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X", charEorW,
+               errIdString, errorID);
+    } else {
+      snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: TwinCAT Err %X",
+               charEorW, errorID);
+    }
+  } else if (!homed) {
+    snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
+             "Axis not homed");
+  }
+  setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, &sErrorMessage[0]);
+  /* TODO:
+  axis can not be moved at all: poweroff, localmode, interlock, axis in
+  reset state axis can be partly moved: Limit switch, interlock Fwd/Bwd axis
+  is not homed ??? axis can be moved */
+  /* continue with msgtxt */
+  if (!nowMoving) {
+    /* A moving axis should show moving, homing ...*/
+    if (sErrorMessage[0]) {
+      msgTxtFromDriver =
+          &sErrorMessage[0]; /* There is an important text already */
+    } else if (localMode) {
+      msgTxtFromDriver = "localMode";
+    } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                                  drvlocal.clean.auxBitsInterlockBwdMask)) {
+      if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
+                               drvlocal.clean.auxBitsInterlockBwdMask)) ==
+           drvlocal.clean.auxBitsInterlockFwdMask)) {
+        msgTxtFromDriver = "InterlockFwd";
+      } else if (((statusReasonAux &
+                   (drvlocal.clean.auxBitsInterlockFwdMask |
+                    drvlocal.clean.auxBitsInterlockBwdMask)) ==
+                  drvlocal.clean.auxBitsInterlockBwdMask)) {
+        msgTxtFromDriver = "InterlockBwd";
+      } else {
+        msgTxtFromDriver = "InterlockFwdBwd";
+      }
+    } else if (errorID) {
+      charEorW = 'W';
+      const char *errIdString = errStringFromErrId(errorID);
+      if (errIdString[0]) {
+        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X",
+                 charEorW, errIdString, errorID);
+      } else {
+        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: TwinCAT Err %X",
+                 charEorW, errorID);
+      }
+    }
+    if (sErrorMessage[0]) {
+      msgTxtFromDriver =
+          &sErrorMessage[0]; /* There is an important text already */
+    } else if (msgTxtFromDriver) {
+      ;  // nothing. keep the message */
+    } else {
+      int function = 0;
+      switch (statusReasonAux & 0xFF) {
+        case 1:
+          function = pC_->defAsynPara.ethercatmcNamAux0_;
+          break;
+        case 2:
+          function = pC_->defAsynPara.ethercatmcNamAux1_;
+          break;
+        case 4:
+          function = pC_->defAsynPara.ethercatmcNamAux2_;
+          break;
+        case 8:
+          function = pC_->defAsynPara.ethercatmcNamAux3_;
+          break;
+        case 16:
+          function = pC_->defAsynPara.ethercatmcNamAux4_;
+          break;
+        case 32:
+          function = pC_->defAsynPara.ethercatmcNamAux5_;
+          break;
+        case 64:
+          function = pC_->defAsynPara.ethercatmcNamAux6_;
+          break;
+        case 128:
+          function = pC_->defAsynPara.ethercatmcNamAux7_;
+          break;
+        default:
+          break;
+      }
+      if (function) {
+        char nameAuxBits[36];
+        nameAuxBits[0] = '\0';
+        asynStatus status = pC_->getStringParam(
+            axisNo_, function, (int)sizeof(nameAuxBits), &nameAuxBits[0]);
+        if (status == asynSuccess) {
+          msgTxtFromDriver = &nameAuxBits[0];
+        }
+      }
+    }
+  }
+  drvlocal.dirty.motorPowerAutoOnOff = 0;
+  updateMsgTxtFromDriver(msgTxtFromDriver);
 }
 
 asynStatus ethercatmcIndexerAxis::resetAxis(void) {

@@ -1,6 +1,7 @@
 #ifndef ETHERCATMCINDEXERAXIS_H
 #define ETHERCATMCINDEXERAXIS_H
 #include <asynMotorAxis.h>
+#include <ethercatmcController.h>
 #include <stdint.h>
 
 /* Parameter interface */
@@ -87,6 +88,9 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
                               double paramfValue);
   asynStatus poll(bool *moving);
   asynStatus doThePoll(bool cached, bool *moving);
+  void pollErrTxtMsgTxt(int hasError, int errorID,
+                        idxStatusCodeType idxStatusCode, unsigned idxAuxBits,
+                        int localMode, unsigned statusReasonAux);
   asynStatus resetAxis(void);
   bool pollPowerIsOn(void);
   asynStatus setClosedLoop(bool closedLoop);
