@@ -1101,8 +1101,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     }
   }
 
-  if ((idxStatusCode != drvlocal.dirty.idxStatusCode) ||
-      (errorID != drvlocal.dirty.old_ErrorId)) {
+  if ((idxStatusCode != drvlocal.dirty.idxStatusCodeLog) ||
+      (errorID != drvlocal.dirty.old_ErrorIdLog)) {
     if (errorID) {
       asynPrint(pC_->pasynUserController_, traceMask,
                 "%spoll(%d) statusReasonAux=0x%08X (%s) errorID=0x%04X \"%s\" "
@@ -1121,6 +1121,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
                 modNamEMC, axisNo_, idxStatusCodeTypeToStr(idxStatusCode),
                 actPosition);
     }
+    drvlocal.dirty.old_ErrorIdLog = errorID;
+    drvlocal.dirty.idxStatusCodeLog = idxStatusCode;
   }
   if (auxbitsValid) {
     if (idxAuxBits != drvlocal.clean.old_idxAuxBitsPrinted) {
@@ -1282,7 +1284,12 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     setIntegerParam(pC_->motorStatusProblem_,
                     drvlocal.clean.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
-
+  } /* auxbitsValid */
+  if (idxStatusCode == idxStatusCodeRESET) {
+    const static char *sErrorMessageReset = "AxisRESET";
+    setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, sErrorMessageReset);
+    updateMsgTxtFromDriver(sErrorMessageReset);
+  } else if (auxbitsValid) {
     /* extra Error Text, only showing errors, no info
        Most important things, in the order that the operator
        can (try to) fix things:
@@ -1291,23 +1298,24 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
        - reset the axis, if there is an error
        - home the axis, if not homed */
     if (hasError || drvlocal.dirty.old_hasError ||
-        drvlocal.dirty.old_ErrorId != errorID ||
+        drvlocal.dirty.old_ErrorIdMsgTxt != errorID ||
         drvlocal.dirty.motorPowerAutoOnOff ||
-        drvlocal.dirty.idxStatusCode != idxStatusCode ||
+        drvlocal.dirty.idxStatusCodeMsgTxt != idxStatusCode ||
         idxAuxBits != drvlocal.clean.old_idxAuxBitsWritten ||
         idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-      pollErrTxtMsgTxt(hasError, errorID, idxStatusCode, idxAuxBits, localMode,
+      pollErrTxtMsgTxt(hasError, errorID, idxAuxBits, localMode,
                        statusReasonAux);
+      drvlocal.dirty.motorPowerAutoOnOff = 0;
+      drvlocal.dirty.old_hasError = hasError;
+      drvlocal.clean.statusReasonAux = statusReasonAux;
+      drvlocal.dirty.idxStatusCodeMsgTxt = idxStatusCode;
+      drvlocal.dirty.old_ErrorIdMsgTxt = errorID;
     }
-    if (drvlocal.clean.hasPolledAllEnums) {
-      drvlocal.clean.old_idxAuxBitsWritten = idxAuxBits;
-      drvlocal.dirty.old_idxAuxBits = idxAuxBits;
-    }
-    drvlocal.dirty.old_hasError = hasError;
-  } /* auxbitsValid */
-  drvlocal.clean.statusReasonAux = statusReasonAux;
-  drvlocal.dirty.idxStatusCode = idxStatusCode;
-  drvlocal.dirty.old_ErrorId = errorID;
+  }
+  if (drvlocal.clean.hasPolledAllEnums) {
+    drvlocal.clean.old_idxAuxBitsWritten = idxAuxBits;
+    drvlocal.dirty.old_idxAuxBits = idxAuxBits;
+  }
   if (motorRecDirection >= 0) {
     drvlocal.dirty.motorRecDirection = motorRecDirection;
   }
@@ -1316,7 +1324,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
 }
 
 void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
-                                             idxStatusCodeType idxStatusCode,
                                              unsigned idxAuxBits, int localMode,
                                              unsigned statusReasonAux) {
   const char *msgTxtFromDriver = NULL;
@@ -1438,7 +1445,6 @@ void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
       }
     }
   }
-  drvlocal.dirty.motorPowerAutoOnOff = 0;
   updateMsgTxtFromDriver(msgTxtFromDriver);
 }
 

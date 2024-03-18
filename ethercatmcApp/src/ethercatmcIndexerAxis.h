@@ -88,8 +88,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
                               double paramfValue);
   asynStatus poll(bool *moving);
   asynStatus doThePoll(bool cached, bool *moving);
-  void pollErrTxtMsgTxt(int hasError, int errorID,
-                        idxStatusCodeType idxStatusCode, unsigned idxAuxBits,
+  void pollErrTxtMsgTxt(int hasError, int errorID, unsigned idxAuxBits,
                         int localMode, unsigned statusReasonAux);
   asynStatus resetAxis(void);
   bool pollPowerIsOn(void);
@@ -106,13 +105,15 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
   struct {
     const char *externalEncoderStr;
     struct {
-      int old_ErrorId;
+      int old_ErrorIdLog;
+      int old_ErrorIdMsgTxt;
       int old_hasError;
       unsigned int oldStatusDisconnected : 1;
       unsigned int initialPollNeeded : 1;
       unsigned int motorPowerAutoOnOff : 1;
       int motorRecDirection;
-      unsigned idxStatusCode;
+      unsigned idxStatusCodeLog;
+      unsigned idxStatusCodeMsgTxt;
       unsigned old_idxAuxBits;
     } dirty;
     struct {
