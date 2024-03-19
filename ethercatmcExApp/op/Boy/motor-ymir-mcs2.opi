@@ -26521,7 +26521,7 @@ $(pv_value)</tooltip>
     <format_type>1</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(M19)-DESC-RB</pv_name>
+    <pv_name>$(P)$(M19)DESC-RB</pv_name>
     <background_color>
       <color name="Gray_0" red="255" green="255" blue="255" />
     </background_color>
@@ -26632,7 +26632,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>($(P)$(M19)-)</text>
+    <text>($(P)$(M19))</text>
     <font>
       <fontdata fontName="Sans" height="6" style="0" />
     </font>
@@ -26700,7 +26700,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M19)-Closed</pv>
+        <pv trig="true">$(P)$(M19)Closed</pv>
       </rule>
     </rules>
     <pv_value />
@@ -26737,7 +26737,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(M19)-AuxBits07</pv_name>
+    <pv_name>$(P)$(M19)AuxBits07</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -26818,7 +26818,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M19)-Opened</pv>
+        <pv trig="true">$(P)$(M19)Opened</pv>
       </rule>
     </rules>
     <pv_value />
@@ -26872,7 +26872,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <transparent>false</transparent>
     <selector_type>0</selector_type>
-    <pv_name>$(P)$(M19)-Open</pv_name>
+    <pv_name>$(P)$(M19)Open</pv_name>
     <foreground_color>
       <color name="Gray_14" red="0" green="0" blue="0" />
     </foreground_color>
@@ -26963,7 +26963,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(M19)-Open</pv_name>
+    <pv_name>$(P)$(M19)Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -26992,7 +26992,7 @@ $(pv_value)</tooltip>
     <y>727</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(M19)-Open</pv_name>
+        <pv_name>$(P)$(M19)Open</pv_name>
         <value>0</value>
         <timeout>10</timeout>
         <description></description>
@@ -27035,7 +27035,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(M19)-StatusCode</pv_name>
+    <pv_name>$(P)$(M19)StatusCode</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -27046,7 +27046,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M19)-StatusCode.SEVR</pv>
+        <pv trig="true">$(P)$(M19)StatusCode.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -27081,7 +27081,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(M19)-Open</pv_name>
+    <pv_name>$(P)$(M19)Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -27109,7 +27109,7 @@ $(pv_value)</tooltip>
     </border_color>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(M19)-Open</pv_name>
+        <pv_name>$(P)$(M19)Open</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -27140,7 +27140,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(M19)-Closed</pv_name>
+    <pv_name>$(P)$(M19)Closed</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -27191,7 +27191,7 @@ $(pv_value)</tooltip>
     <format_type>4</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(M19)-Opened</pv_name>
+    <pv_name>$(P)$(M19)Opened</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -27250,7 +27250,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M19)-MsgTxt</pv_name>
+    <pv_name>$(P)$(M19)MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -27339,7 +27339,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(M19)-ErrRst</pv_name>
+    <pv_name>$(P)$(M19)ErrRst</pv_name>
     <background_color>
       <color name="alarm" red="0" green="0" blue="253" />
     </background_color>
@@ -27363,7 +27363,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="(pv0==0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M19)-Err</pv>
+        <pv trig="true">$(P)$(M19)Err</pv>
       </rule>
     </rules>
     <push_action_index>0</push_action_index>
@@ -27377,7 +27377,7 @@ $(pv_value)</tooltip>
     <y>802</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(M19)-ErrRst</pv_name>
+        <pv_name>$(P)$(M19)ErrRst</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -27400,7 +27400,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(M19)-Stop</pv_name>
+    <pv_name>$(P)$(M19)Stop</pv_name>
     <background_color>
       <color name="alarm" red="253" green="0" blue="0" />
     </background_color>
@@ -27428,7 +27428,7 @@ $(pv_value)</tooltip>
     <y>802</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(M19)-Stop</pv_name>
+        <pv_name>$(P)$(M19)Stop</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -27458,7 +27458,7 @@ $(pv_value)</tooltip>
     <format_type>1</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(M20)-DESC-RB</pv_name>
+    <pv_name>$(P)$(M20)DESC-RB</pv_name>
     <background_color>
       <color name="Gray_0" red="255" green="255" blue="255" />
     </background_color>
@@ -27569,7 +27569,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>($(P)$(M20)-)</text>
+    <text>($(P)$(M20))</text>
     <font>
       <fontdata fontName="Sans" height="6" style="0" />
     </font>
@@ -27637,7 +27637,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M20)-Closed</pv>
+        <pv trig="true">$(P)$(M20)Closed</pv>
       </rule>
     </rules>
     <pv_value />
@@ -27674,7 +27674,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(M20)-AuxBits07</pv_name>
+    <pv_name>$(P)$(M20)AuxBits07</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -27755,7 +27755,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M20)-Opened</pv>
+        <pv trig="true">$(P)$(M20)Opened</pv>
       </rule>
     </rules>
     <pv_value />
@@ -27809,7 +27809,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <transparent>false</transparent>
     <selector_type>0</selector_type>
-    <pv_name>$(P)$(M20)-Open</pv_name>
+    <pv_name>$(P)$(M20)Open</pv_name>
     <foreground_color>
       <color name="Gray_14" red="0" green="0" blue="0" />
     </foreground_color>
@@ -27900,7 +27900,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(M20)-Open</pv_name>
+    <pv_name>$(P)$(M20)Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -27929,7 +27929,7 @@ $(pv_value)</tooltip>
     <y>727</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(M20)-Open</pv_name>
+        <pv_name>$(P)$(M20)Open</pv_name>
         <value>0</value>
         <timeout>10</timeout>
         <description></description>
@@ -27972,7 +27972,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(M20)-StatusCode</pv_name>
+    <pv_name>$(P)$(M20)StatusCode</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -27983,7 +27983,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M20)-StatusCode.SEVR</pv>
+        <pv trig="true">$(P)$(M20)StatusCode.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -28018,7 +28018,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(M20)-Open</pv_name>
+    <pv_name>$(P)$(M20)Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -28046,7 +28046,7 @@ $(pv_value)</tooltip>
     </border_color>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(M20)-Open</pv_name>
+        <pv_name>$(P)$(M20)Open</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -28077,7 +28077,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(M20)-Closed</pv_name>
+    <pv_name>$(P)$(M20)Closed</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -28128,7 +28128,7 @@ $(pv_value)</tooltip>
     <format_type>4</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(M20)-Opened</pv_name>
+    <pv_name>$(P)$(M20)Opened</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -28187,7 +28187,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M20)-MsgTxt</pv_name>
+    <pv_name>$(P)$(M20)MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -28276,7 +28276,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(M20)-ErrRst</pv_name>
+    <pv_name>$(P)$(M20)ErrRst</pv_name>
     <background_color>
       <color name="alarm" red="0" green="0" blue="253" />
     </background_color>
@@ -28300,7 +28300,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="(pv0==0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(M20)-Err</pv>
+        <pv trig="true">$(P)$(M20)Err</pv>
       </rule>
     </rules>
     <push_action_index>0</push_action_index>
@@ -28314,7 +28314,7 @@ $(pv_value)</tooltip>
     <y>802</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(M20)-ErrRst</pv_name>
+        <pv_name>$(P)$(M20)ErrRst</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -28337,7 +28337,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(M20)-Stop</pv_name>
+    <pv_name>$(P)$(M20)Stop</pv_name>
     <background_color>
       <color name="alarm" red="253" green="0" blue="0" />
     </background_color>
@@ -28365,7 +28365,7 @@ $(pv_value)</tooltip>
     <y>802</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(M20)-Stop</pv_name>
+        <pv_name>$(P)$(M20)Stop</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>

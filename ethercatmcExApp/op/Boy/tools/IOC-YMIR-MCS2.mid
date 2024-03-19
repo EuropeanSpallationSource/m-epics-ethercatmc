@@ -4,7 +4,7 @@
         <path>motor-ymir-mcs2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <PREFIX>YMIR-MCS2:MC-MCU-01:</PREFIX>
+          <PREFIX>YMIR-MCS2:MC-MCU-02:</PREFIX>
           <P>YMIR-</P>
           <M1>mcs2:MC-Spare-01:Mtr</M1>
           <M2>mcs2:MC-Spare-02:Mtr</M2>
