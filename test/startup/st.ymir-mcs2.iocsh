@@ -1,0 +1,236 @@
+require essioc
+require calc
+require ethercatmc
+iocshLoad("$(essioc_DIR)/common_config.iocsh")
+epicsEnvSet("MOTOR_PORT",    "MCU1")
+epicsEnvSet("IPADDR",        "10.102.10.22")
+epicsEnvSet("IPPORT",        "48898")
+epicsEnvSet("AMSNETIDIOC",   "10.102.10.45.1.1")
+epicsEnvSet("ASYN_PORT",     "MC_CPU1")
+epicsEnvSet("SYSPFX",        "YMIR-")
+epicsEnvSet("REG_NAME",      "MCS2:MC-MCU-02:")
+epicsEnvSet("PREC",          "3")
+epicsEnvSet("ECM_NUMAXES",   "20")
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=10.102.10.22.1.1;amsNetIdLocal=$(AMSNETIDIOC)")
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcController.iocsh")
+#
+# AXIS 1
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "mcs2:MC-Spare-01:Mtr")
+epicsEnvSet("AXIS_NO",         "1")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+#
+# AXIS 2
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "mcs2:MC-Spare-02:Mtr")
+epicsEnvSet("AXIS_NO",         "2")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+#
+# AXIS 3
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DivSl2:MC-SlYp-01:Mtr")
+epicsEnvSet("AXIS_NO",         "3")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+#
+# AXIS 4
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DivSl2:MC-SlYm-01:Mtr")
+epicsEnvSet("AXIS_NO",         "4")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+#
+# AXIS 5
+#
+epicsEnvSet("AXISCONFIG",      "")
+
+epicsEnvSet("AXIS_NAME",       "DivSl2:MC-SlZp-01:Mtr")
+epicsEnvSet("AXIS_NO",         "5")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 6
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DivSl2:MC-SlZm-01:Mtr")
+epicsEnvSet("AXIS_NO",         "6")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 7
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "BmScn:MC-LinY-01:Mtr")
+epicsEnvSet("AXIS_NO",         "7")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 8
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "SpRot:MC-RotZ-01:Mtr")
+epicsEnvSet("AXIS_NO",         "8")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 9
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "SpGon:MC-RotX-01:Mtr")
+epicsEnvSet("AXIS_NO",         "9")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 10
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "SpGon:MC-RotY-01:Mtr")
+epicsEnvSet("AXIS_NO",         "10")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 11
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DetLft:MC-LinZ-01:Mtr")
+epicsEnvSet("AXIS_NO",         "11")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 12
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DetLin:MC-LinY-01:Mtr")
+epicsEnvSet("AXIS_NO",         "12")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 13
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "SpChg:MC-LinY-01:Mtr")
+epicsEnvSet("AXIS_NO",         "13")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 14
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "mcs2:MC-Spare-03:Mtr")
+epicsEnvSet("AXIS_NO",         "14")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 15
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DivSl2:MC-SlYc-01:Mtr")
+epicsEnvSet("AXIS_NO",         "15")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 16
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DivSl2:MC-SlYg-01:Mtr")
+epicsEnvSet("AXIS_NO",         "16")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 17
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DivSl2:MC-SlZc-01:Mtr")
+epicsEnvSet("AXIS_NO",         "17")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+
+# AXIS 18
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "DivSl2:MC-SlZg-01:Mtr")
+epicsEnvSet("AXIS_NO",         "18")
+epicsEnvSet("RAWENCSTEP_ADEL", "0")
+epicsEnvSet("RAWENCSTEP_MDEL", "0")
+iocshLoad("$(ethercatmc_DIR)ethercatmcIndexerAxis.iocsh")
+iocshLoad("$(ethercatmc_DIR)ethercatmcAxisdebug.iocsh")
+
+#
+# AXIS 19
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "mcs2:MC-Spare-01:Sht")
+epicsEnvSet("AXIS_NO",         "19")
+iocshLoad("$(ethercatmc_DIR)ethercatmcShutter.iocsh")
+
+#
+# AXIS 20
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("AXIS_NAME",       "mcs2:MC-Spare-02:Sht")
+epicsEnvSet("AXIS_NO",         "20")
+iocshLoad("$(ethercatmc_DIR)ethercatmcShutter.iocsh")
+
+epicsEnvSet("MOVINGPOLLPERIOD", "9")
+epicsEnvSet("IDLEPOLLPERIOD",   "100")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
+
+iocinit()
+
