@@ -181,7 +181,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)HomeVis</pv>
+        <pv trig="true">$(P)$(M)-HomeVis</pv>
       </rule>
     </rules>
     <scale_options>
@@ -253,7 +253,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)HomeVis</pv>
+        <pv trig="true">$(P)$(M)-HomeVis</pv>
       </rule>
     </rules>
     <scale_options>
@@ -397,7 +397,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0 != 0">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)FoffVis</pv>
+        <pv trig="true">$(P)$(M)-FoffVis</pv>
       </rule>
     </rules>
     <scale_options>
@@ -462,7 +462,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)StatusCode.SEVR</pv>
+        <pv trig="true">$(P)$(M)-StatusCode.SEVR</pv>
       </rule>
     </rules>
     <scale_options>

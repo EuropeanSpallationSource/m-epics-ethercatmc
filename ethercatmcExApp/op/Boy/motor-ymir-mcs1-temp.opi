@@ -987,7 +987,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R1)MsgTxt</pv_name>
+    <pv_name>$(P)$(M1)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -1457,7 +1457,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (Basic)</description>
@@ -1467,7 +1466,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (Expert)</description>
@@ -1477,7 +1475,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (setup)</description>
@@ -2459,7 +2456,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R2)MsgTxt</pv_name>
+    <pv_name>$(P)$(M2)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -2929,7 +2926,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (Basic)</description>
@@ -2939,7 +2935,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (Expert)</description>
@@ -2949,7 +2944,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (setup)</description>
@@ -3931,7 +3925,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R3)MsgTxt</pv_name>
+    <pv_name>$(P)$(M3)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -4401,7 +4395,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>
-          <R>$(R3)</R>
         </macros>
         <replace>0</replace>
         <description>$(M3) (Basic)</description>
@@ -4411,7 +4404,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>
-          <R>$(R3)</R>
         </macros>
         <replace>0</replace>
         <description>$(M3) (Expert)</description>
@@ -4421,7 +4413,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>
-          <R>$(R3)</R>
         </macros>
         <replace>0</replace>
         <description>$(M3) (setup)</description>
@@ -5403,7 +5394,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R4)MsgTxt</pv_name>
+    <pv_name>$(P)$(M4)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -5873,7 +5864,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M4)</M>
-          <R>$(R4)</R>
         </macros>
         <replace>0</replace>
         <description>$(M4) (Basic)</description>
@@ -5883,7 +5873,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M4)</M>
-          <R>$(R4)</R>
         </macros>
         <replace>0</replace>
         <description>$(M4) (Expert)</description>
@@ -5893,7 +5882,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M4)</M>
-          <R>$(R4)</R>
         </macros>
         <replace>0</replace>
         <description>$(M4) (setup)</description>
@@ -6875,7 +6863,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R5)MsgTxt</pv_name>
+    <pv_name>$(P)$(M5)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -7345,7 +7333,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
-          <R>$(R5)</R>
         </macros>
         <replace>0</replace>
         <description>$(M5) (Basic)</description>
@@ -7355,7 +7342,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
-          <R>$(R5)</R>
         </macros>
         <replace>0</replace>
         <description>$(M5) (Expert)</description>
@@ -7365,7 +7351,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
-          <R>$(R5)</R>
         </macros>
         <replace>0</replace>
         <description>$(M5) (setup)</description>
@@ -8347,7 +8332,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R6)MsgTxt</pv_name>
+    <pv_name>$(P)$(M6)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -8817,7 +8802,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
-          <R>$(R6)</R>
         </macros>
         <replace>0</replace>
         <description>$(M6) (Basic)</description>
@@ -8827,7 +8811,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
-          <R>$(R6)</R>
         </macros>
         <replace>0</replace>
         <description>$(M6) (Expert)</description>
@@ -8837,7 +8820,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
-          <R>$(R6)</R>
         </macros>
         <replace>0</replace>
         <description>$(M6) (setup)</description>
@@ -9091,7 +9073,7 @@ $(pv_value)</tooltip>
     <format_type>1</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R7)DESC-RB</pv_name>
+    <pv_name>$(P)$(M7)-DESC-RB</pv_name>
     <background_color>
       <color name="Gray_0" red="255" green="255" blue="255" />
     </background_color>
@@ -9202,7 +9184,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>($(P)$(R7))</text>
+    <text>($(P)$(M7)-)</text>
     <font>
       <fontdata fontName="Sans" height="6" style="0" />
     </font>
@@ -9270,7 +9252,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R7)Closed</pv>
+        <pv trig="true">$(P)$(M7)-Closed</pv>
       </rule>
     </rules>
     <pv_value />
@@ -9307,7 +9289,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R7)AuxBits07</pv_name>
+    <pv_name>$(P)$(M7)-AuxBits07</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -9388,7 +9370,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R7)Opened</pv>
+        <pv trig="true">$(P)$(M7)-Opened</pv>
       </rule>
     </rules>
     <pv_value />
@@ -9442,7 +9424,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <transparent>false</transparent>
     <selector_type>0</selector_type>
-    <pv_name>$(P)$(R7)Open</pv_name>
+    <pv_name>$(P)$(M7)-Open</pv_name>
     <foreground_color>
       <color name="Gray_14" red="0" green="0" blue="0" />
     </foreground_color>
@@ -9533,7 +9515,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R7)Open</pv_name>
+    <pv_name>$(P)$(M7)-Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -9562,7 +9544,7 @@ $(pv_value)</tooltip>
     <y>319</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R7)Open</pv_name>
+        <pv_name>$(P)$(M7)-Open</pv_name>
         <value>0</value>
         <timeout>10</timeout>
         <description></description>
@@ -9605,7 +9587,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(R7)StatusCode</pv_name>
+    <pv_name>$(P)$(M7)-StatusCode</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -9616,7 +9598,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R7)StatusCode.SEVR</pv>
+        <pv trig="true">$(P)$(M7)-StatusCode.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -9651,7 +9633,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R7)Open</pv_name>
+    <pv_name>$(P)$(M7)-Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -9679,7 +9661,7 @@ $(pv_value)</tooltip>
     </border_color>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R7)Open</pv_name>
+        <pv_name>$(P)$(M7)-Open</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -9710,7 +9692,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R7)Closed</pv_name>
+    <pv_name>$(P)$(M7)-Closed</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -9761,7 +9743,7 @@ $(pv_value)</tooltip>
     <format_type>4</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R7)Opened</pv_name>
+    <pv_name>$(P)$(M7)-Opened</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -9820,7 +9802,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R7)MsgTxt</pv_name>
+    <pv_name>$(P)$(M7)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -9909,7 +9891,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R7)ErrRst</pv_name>
+    <pv_name>$(P)$(M7)-ErrRst</pv_name>
     <background_color>
       <color name="alarm" red="0" green="0" blue="253" />
     </background_color>
@@ -9933,7 +9915,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="(pv0==0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R7)Err</pv>
+        <pv trig="true">$(P)$(M7)-Err</pv>
       </rule>
     </rules>
     <push_action_index>0</push_action_index>
@@ -9947,7 +9929,7 @@ $(pv_value)</tooltip>
     <y>394</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R7)ErrRst</pv_name>
+        <pv_name>$(P)$(M7)-ErrRst</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -9970,7 +9952,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R7)Stop</pv_name>
+    <pv_name>$(P)$(M7)-Stop</pv_name>
     <background_color>
       <color name="alarm" red="253" green="0" blue="0" />
     </background_color>
@@ -9998,7 +9980,7 @@ $(pv_value)</tooltip>
     <y>394</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R7)Stop</pv_name>
+        <pv_name>$(P)$(M7)-Stop</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -10028,7 +10010,7 @@ $(pv_value)</tooltip>
     <format_type>1</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R8)DESC-RB</pv_name>
+    <pv_name>$(P)$(M8)-DESC-RB</pv_name>
     <background_color>
       <color name="Gray_0" red="255" green="255" blue="255" />
     </background_color>
@@ -10139,7 +10121,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>($(P)$(R8))</text>
+    <text>($(P)$(M8)-)</text>
     <font>
       <fontdata fontName="Sans" height="6" style="0" />
     </font>
@@ -10207,7 +10189,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R8)Closed</pv>
+        <pv trig="true">$(P)$(M8)-Closed</pv>
       </rule>
     </rules>
     <pv_value />
@@ -10244,7 +10226,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R8)AuxBits07</pv_name>
+    <pv_name>$(P)$(M8)-AuxBits07</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -10325,7 +10307,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R8)Opened</pv>
+        <pv trig="true">$(P)$(M8)-Opened</pv>
       </rule>
     </rules>
     <pv_value />
@@ -10379,7 +10361,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <transparent>false</transparent>
     <selector_type>0</selector_type>
-    <pv_name>$(P)$(R8)Open</pv_name>
+    <pv_name>$(P)$(M8)-Open</pv_name>
     <foreground_color>
       <color name="Gray_14" red="0" green="0" blue="0" />
     </foreground_color>
@@ -10470,7 +10452,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R8)Open</pv_name>
+    <pv_name>$(P)$(M8)-Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -10499,7 +10481,7 @@ $(pv_value)</tooltip>
     <y>319</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R8)Open</pv_name>
+        <pv_name>$(P)$(M8)-Open</pv_name>
         <value>0</value>
         <timeout>10</timeout>
         <description></description>
@@ -10542,7 +10524,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(R8)StatusCode</pv_name>
+    <pv_name>$(P)$(M8)-StatusCode</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -10553,7 +10535,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R8)StatusCode.SEVR</pv>
+        <pv trig="true">$(P)$(M8)-StatusCode.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -10588,7 +10570,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R8)Open</pv_name>
+    <pv_name>$(P)$(M8)-Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -10616,7 +10598,7 @@ $(pv_value)</tooltip>
     </border_color>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R8)Open</pv_name>
+        <pv_name>$(P)$(M8)-Open</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -10647,7 +10629,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R8)Closed</pv_name>
+    <pv_name>$(P)$(M8)-Closed</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -10698,7 +10680,7 @@ $(pv_value)</tooltip>
     <format_type>4</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R8)Opened</pv_name>
+    <pv_name>$(P)$(M8)-Opened</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -10757,7 +10739,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R8)MsgTxt</pv_name>
+    <pv_name>$(P)$(M8)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -10846,7 +10828,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R8)ErrRst</pv_name>
+    <pv_name>$(P)$(M8)-ErrRst</pv_name>
     <background_color>
       <color name="alarm" red="0" green="0" blue="253" />
     </background_color>
@@ -10870,7 +10852,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="(pv0==0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R8)Err</pv>
+        <pv trig="true">$(P)$(M8)-Err</pv>
       </rule>
     </rules>
     <push_action_index>0</push_action_index>
@@ -10884,7 +10866,7 @@ $(pv_value)</tooltip>
     <y>394</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R8)ErrRst</pv_name>
+        <pv_name>$(P)$(M8)-ErrRst</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -10907,7 +10889,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R8)Stop</pv_name>
+    <pv_name>$(P)$(M8)-Stop</pv_name>
     <background_color>
       <color name="alarm" red="253" green="0" blue="0" />
     </background_color>
@@ -10935,7 +10917,7 @@ $(pv_value)</tooltip>
     <y>394</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R8)Stop</pv_name>
+        <pv_name>$(P)$(M8)-Stop</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -10965,7 +10947,7 @@ $(pv_value)</tooltip>
     <format_type>1</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R9)DESC-RB</pv_name>
+    <pv_name>$(P)$(M9)-DESC-RB</pv_name>
     <background_color>
       <color name="Gray_0" red="255" green="255" blue="255" />
     </background_color>
@@ -11076,7 +11058,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>($(P)$(R9))</text>
+    <text>($(P)$(M9)-)</text>
     <font>
       <fontdata fontName="Sans" height="6" style="0" />
     </font>
@@ -11144,7 +11126,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R9)Closed</pv>
+        <pv trig="true">$(P)$(M9)-Closed</pv>
       </rule>
     </rules>
     <pv_value />
@@ -11181,7 +11163,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R9)AuxBits07</pv_name>
+    <pv_name>$(P)$(M9)-AuxBits07</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -11262,7 +11244,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="!(pv0!=0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R9)Opened</pv>
+        <pv trig="true">$(P)$(M9)-Opened</pv>
       </rule>
     </rules>
     <pv_value />
@@ -11316,7 +11298,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <transparent>false</transparent>
     <selector_type>0</selector_type>
-    <pv_name>$(P)$(R9)Open</pv_name>
+    <pv_name>$(P)$(M9)-Open</pv_name>
     <foreground_color>
       <color name="Gray_14" red="0" green="0" blue="0" />
     </foreground_color>
@@ -11407,7 +11389,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R9)Open</pv_name>
+    <pv_name>$(P)$(M9)-Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -11436,7 +11418,7 @@ $(pv_value)</tooltip>
     <y>319</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R9)Open</pv_name>
+        <pv_name>$(P)$(M9)-Open</pv_name>
         <value>0</value>
         <timeout>10</timeout>
         <description></description>
@@ -11479,7 +11461,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(R9)StatusCode</pv_name>
+    <pv_name>$(P)$(M9)-StatusCode</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -11490,7 +11472,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R9)StatusCode.SEVR</pv>
+        <pv trig="true">$(P)$(M9)-StatusCode.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -11525,7 +11507,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R9)Open</pv_name>
+    <pv_name>$(P)$(M9)-Open</pv_name>
     <background_color>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
@@ -11553,7 +11535,7 @@ $(pv_value)</tooltip>
     </border_color>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R9)Open</pv_name>
+        <pv_name>$(P)$(M9)-Open</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -11584,7 +11566,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R9)Closed</pv_name>
+    <pv_name>$(P)$(M9)-Closed</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -11635,7 +11617,7 @@ $(pv_value)</tooltip>
     <format_type>4</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>$(P)$(R9)Opened</pv_name>
+    <pv_name>$(P)$(M9)-Opened</pv_name>
     <background_color>
       <color name="Gray_3" red="200" green="200" blue="200" />
     </background_color>
@@ -11694,7 +11676,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R9)MsgTxt</pv_name>
+    <pv_name>$(P)$(M9)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -11783,7 +11765,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R9)ErrRst</pv_name>
+    <pv_name>$(P)$(M9)-ErrRst</pv_name>
     <background_color>
       <color name="alarm" red="0" green="0" blue="253" />
     </background_color>
@@ -11807,7 +11789,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="(pv0==0)">
           <value>false</value>
         </exp>
-        <pv trig="true">$(P)$(R9)Err</pv>
+        <pv trig="true">$(P)$(M9)-Err</pv>
       </rule>
     </rules>
     <push_action_index>0</push_action_index>
@@ -11821,7 +11803,7 @@ $(pv_value)</tooltip>
     <y>394</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R9)ErrRst</pv_name>
+        <pv_name>$(P)$(M9)-ErrRst</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>
@@ -11844,7 +11826,7 @@ $(pv_value)</tooltip>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
-    <pv_name>$(P)$(R9)Stop</pv_name>
+    <pv_name>$(P)$(M9)-Stop</pv_name>
     <background_color>
       <color name="alarm" red="253" green="0" blue="0" />
     </background_color>
@@ -11872,7 +11854,7 @@ $(pv_value)</tooltip>
     <y>394</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>$(P)$(R9)Stop</pv_name>
+        <pv_name>$(P)$(M9)-Stop</pv_name>
         <value>1</value>
         <timeout>10</timeout>
         <description></description>

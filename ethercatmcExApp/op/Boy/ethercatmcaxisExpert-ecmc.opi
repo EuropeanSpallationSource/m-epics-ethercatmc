@@ -385,7 +385,7 @@ $(pv_value)</tooltip>
     <on_label>ErrRst</on_label>
     <password></password>
     <push_action_index>1</push_action_index>
-    <pv_name>$(P)$(R)ErrRst</pv_name>
+    <pv_name>$(P)$(M)-ErrRst</pv_name>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
@@ -1317,7 +1317,7 @@ $(pv_value)</tooltip>
       <color name="Major" red="255" green="0" blue="0" />
     </on_color>
     <on_label>Err</on_label>
-    <pv_name>$(P)$(R)Err</pv_name>
+    <pv_name>$(P)$(M)-Err</pv_name>
     <pv_value />
     <rules>
     </rules>
@@ -2203,7 +2203,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)RawEncStep.SEVR</pv>
+        <pv trig="true">$(P)$(M)-RawEncStep.SEVR</pv>
       </rule>
     </rules>
     <scripts />
@@ -3415,7 +3415,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>1</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)Vel-RB</pv_name>
+    <pv_name>$(P)$(M)-Vel-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -3472,7 +3472,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>1</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)Acc-RB</pv_name>
+    <pv_name>$(P)$(M)-Acc-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -3611,7 +3611,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>2</precision>
     <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(R)HomProc-RB.RVAL</pv_name>
+    <pv_name>$(P)$(M)-HomProc-RB.RVAL</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -3622,7 +3622,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)HomProc-RB.SEVR</pv>
+        <pv trig="true">$(P)$(M)-HomProc-RB.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3732,7 +3732,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>1</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)VelAct</pv_name>
+    <pv_name>$(P)$(M)-VelAct</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -3905,7 +3905,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_29</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)MsgTxt</pv_name>
+    <pv_name>$(P)$(M)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3965,7 +3965,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_29</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)ErrTxt</pv_name>
+    <pv_name>$(P)$(M)-ErrTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>

@@ -987,7 +987,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R1)MsgTxt</pv_name>
+    <pv_name>$(P)$(M1)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -1457,7 +1457,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (Basic)</description>
@@ -1467,7 +1466,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (Expert)</description>
@@ -1477,7 +1475,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (setup)</description>
@@ -2449,7 +2446,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R2)MsgTxt</pv_name>
+    <pv_name>$(P)$(M2)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -2919,7 +2916,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (Basic)</description>
@@ -2929,7 +2925,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (Expert)</description>
@@ -2939,7 +2934,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (setup)</description>
@@ -3911,7 +3905,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R3)MsgTxt</pv_name>
+    <pv_name>$(P)$(M3)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -4381,7 +4375,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>
-          <R>$(R3)</R>
         </macros>
         <replace>0</replace>
         <description>$(M3) (Basic)</description>
@@ -4391,7 +4384,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>
-          <R>$(R3)</R>
         </macros>
         <replace>0</replace>
         <description>$(M3) (Expert)</description>
@@ -4401,7 +4393,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M3)</M>
-          <R>$(R3)</R>
         </macros>
         <replace>0</replace>
         <description>$(M3) (setup)</description>
@@ -5373,7 +5364,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R4)MsgTxt</pv_name>
+    <pv_name>$(P)$(M4)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -5843,7 +5834,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M4)</M>
-          <R>$(R4)</R>
         </macros>
         <replace>0</replace>
         <description>$(M4) (Basic)</description>
@@ -5853,7 +5843,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M4)</M>
-          <R>$(R4)</R>
         </macros>
         <replace>0</replace>
         <description>$(M4) (Expert)</description>
@@ -5863,7 +5852,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M4)</M>
-          <R>$(R4)</R>
         </macros>
         <replace>0</replace>
         <description>$(M4) (setup)</description>
@@ -6835,7 +6823,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R5)MsgTxt</pv_name>
+    <pv_name>$(P)$(M5)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -7305,7 +7293,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
-          <R>$(R5)</R>
         </macros>
         <replace>0</replace>
         <description>$(M5) (Basic)</description>
@@ -7315,7 +7302,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
-          <R>$(R5)</R>
         </macros>
         <replace>0</replace>
         <description>$(M5) (Expert)</description>
@@ -7325,7 +7311,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M5)</M>
-          <R>$(R5)</R>
         </macros>
         <replace>0</replace>
         <description>$(M5) (setup)</description>
@@ -8297,7 +8282,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R6)MsgTxt</pv_name>
+    <pv_name>$(P)$(M6)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -8767,7 +8752,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
-          <R>$(R6)</R>
         </macros>
         <replace>0</replace>
         <description>$(M6) (Basic)</description>
@@ -8777,7 +8761,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
-          <R>$(R6)</R>
         </macros>
         <replace>0</replace>
         <description>$(M6) (Expert)</description>
@@ -8787,7 +8770,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M6)</M>
-          <R>$(R6)</R>
         </macros>
         <replace>0</replace>
         <description>$(M6) (setup)</description>
@@ -9759,7 +9741,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R7)MsgTxt</pv_name>
+    <pv_name>$(P)$(M7)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -10229,7 +10211,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M7)</M>
-          <R>$(R7)</R>
         </macros>
         <replace>0</replace>
         <description>$(M7) (Basic)</description>
@@ -10239,7 +10220,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M7)</M>
-          <R>$(R7)</R>
         </macros>
         <replace>0</replace>
         <description>$(M7) (Expert)</description>
@@ -10249,7 +10229,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M7)</M>
-          <R>$(R7)</R>
         </macros>
         <replace>0</replace>
         <description>$(M7) (setup)</description>
@@ -11221,7 +11200,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R8)MsgTxt</pv_name>
+    <pv_name>$(P)$(M8)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -11691,7 +11670,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M8)</M>
-          <R>$(R8)</R>
         </macros>
         <replace>0</replace>
         <description>$(M8) (Basic)</description>
@@ -11701,7 +11679,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M8)</M>
-          <R>$(R8)</R>
         </macros>
         <replace>0</replace>
         <description>$(M8) (Expert)</description>
@@ -11711,7 +11688,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M8)</M>
-          <R>$(R8)</R>
         </macros>
         <replace>0</replace>
         <description>$(M8) (setup)</description>
@@ -12683,7 +12659,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R9)MsgTxt</pv_name>
+    <pv_name>$(P)$(M9)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -13153,7 +13129,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M9)</M>
-          <R>$(R9)</R>
         </macros>
         <replace>0</replace>
         <description>$(M9) (Basic)</description>
@@ -13163,7 +13138,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M9)</M>
-          <R>$(R9)</R>
         </macros>
         <replace>0</replace>
         <description>$(M9) (Expert)</description>
@@ -13173,7 +13147,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M9)</M>
-          <R>$(R9)</R>
         </macros>
         <replace>0</replace>
         <description>$(M9) (setup)</description>
@@ -14145,7 +14118,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R10)MsgTxt</pv_name>
+    <pv_name>$(P)$(M10)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -14615,7 +14588,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M10)</M>
-          <R>$(R10)</R>
         </macros>
         <replace>0</replace>
         <description>$(M10) (Basic)</description>
@@ -14625,7 +14597,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M10)</M>
-          <R>$(R10)</R>
         </macros>
         <replace>0</replace>
         <description>$(M10) (Expert)</description>
@@ -14635,7 +14606,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M10)</M>
-          <R>$(R10)</R>
         </macros>
         <replace>0</replace>
         <description>$(M10) (setup)</description>
@@ -15607,7 +15577,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R11)MsgTxt</pv_name>
+    <pv_name>$(P)$(M11)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -16077,7 +16047,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M11)</M>
-          <R>$(R11)</R>
         </macros>
         <replace>0</replace>
         <description>$(M11) (Basic)</description>
@@ -16087,7 +16056,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M11)</M>
-          <R>$(R11)</R>
         </macros>
         <replace>0</replace>
         <description>$(M11) (Expert)</description>
@@ -16097,7 +16065,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M11)</M>
-          <R>$(R11)</R>
         </macros>
         <replace>0</replace>
         <description>$(M11) (setup)</description>
@@ -17069,7 +17036,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R12)MsgTxt</pv_name>
+    <pv_name>$(P)$(M12)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -17539,7 +17506,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M12)</M>
-          <R>$(R12)</R>
         </macros>
         <replace>0</replace>
         <description>$(M12) (Basic)</description>
@@ -17549,7 +17515,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M12)</M>
-          <R>$(R12)</R>
         </macros>
         <replace>0</replace>
         <description>$(M12) (Expert)</description>
@@ -17559,7 +17524,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M12)</M>
-          <R>$(R12)</R>
         </macros>
         <replace>0</replace>
         <description>$(M12) (setup)</description>
@@ -18531,7 +18495,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R13)MsgTxt</pv_name>
+    <pv_name>$(P)$(M13)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -19001,7 +18965,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M13)</M>
-          <R>$(R13)</R>
         </macros>
         <replace>0</replace>
         <description>$(M13) (Basic)</description>
@@ -19011,7 +18974,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M13)</M>
-          <R>$(R13)</R>
         </macros>
         <replace>0</replace>
         <description>$(M13) (Expert)</description>
@@ -19021,7 +18983,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M13)</M>
-          <R>$(R13)</R>
         </macros>
         <replace>0</replace>
         <description>$(M13) (setup)</description>
@@ -19993,7 +19954,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R14)MsgTxt</pv_name>
+    <pv_name>$(P)$(M14)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -20463,7 +20424,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M14)</M>
-          <R>$(R14)</R>
         </macros>
         <replace>0</replace>
         <description>$(M14) (Basic)</description>
@@ -20473,7 +20433,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M14)</M>
-          <R>$(R14)</R>
         </macros>
         <replace>0</replace>
         <description>$(M14) (Expert)</description>
@@ -20483,7 +20442,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M14)</M>
-          <R>$(R14)</R>
         </macros>
         <replace>0</replace>
         <description>$(M14) (setup)</description>
@@ -21455,7 +21413,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R15)MsgTxt</pv_name>
+    <pv_name>$(P)$(M15)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -21925,7 +21883,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M15)</M>
-          <R>$(R15)</R>
         </macros>
         <replace>0</replace>
         <description>$(M15) (Basic)</description>
@@ -21935,7 +21892,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M15)</M>
-          <R>$(R15)</R>
         </macros>
         <replace>0</replace>
         <description>$(M15) (Expert)</description>
@@ -21945,7 +21901,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M15)</M>
-          <R>$(R15)</R>
         </macros>
         <replace>0</replace>
         <description>$(M15) (setup)</description>
@@ -22917,7 +22872,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R16)MsgTxt</pv_name>
+    <pv_name>$(P)$(M16)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -23387,7 +23342,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M16)</M>
-          <R>$(R16)</R>
         </macros>
         <replace>0</replace>
         <description>$(M16) (Basic)</description>
@@ -23397,7 +23351,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M16)</M>
-          <R>$(R16)</R>
         </macros>
         <replace>0</replace>
         <description>$(M16) (Expert)</description>
@@ -23407,7 +23360,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M16)</M>
-          <R>$(R16)</R>
         </macros>
         <replace>0</replace>
         <description>$(M16) (setup)</description>

@@ -20,7 +20,6 @@
     <include_parent_macros>true</include_parent_macros>
     <PREFIX>IOC:</PREFIX>
     <P>$(PREFIX)</P>
-    <R1></R1>
   </macros>
   <name></name>
   <rules />
@@ -47,10 +46,6 @@
           <M2>m2</M2>
           <M3>m3</M3>
           <M4>m4</M4>
-          <R1>m1-</R1>
-          <R2>m2-</R2>
-          <R3>m3-</R3>
-          <R4>m4-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -109,7 +104,6 @@ $(pv_value)</tooltip>
           <PREFIX>LabS-MCAG:MC-MCU-06:</PREFIX>
           <P>LabS-MCAG:MC-MCU-06:</P>
           <M1>m1</M1>
-          <R1>m1-</R1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -168,7 +162,6 @@ $(pv_value)</tooltip>
           <PREFIX>LabS-MCAG:MC-MCU-07:</PREFIX>
           <P>LabS-MCAG:MC-MCU-07:</P>
           <M1>m1</M1>
-          <R1>m1-</R1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -230,10 +223,6 @@ $(pv_value)</tooltip>
           <M2>m2</M2>
           <M3>m3</M3>
           <M4>m4</M4>
-          <R1>m1-</R1>
-          <R2>m2-</R2>
-          <R3>m3-</R3>
-          <R4>m4-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -295,10 +284,6 @@ $(pv_value)</tooltip>
           <M2>xg</M2>
           <M3>xr</M3>
           <M4>xl</M4>
-          <R1>xp-</R1>
-          <R2>xg-</R2>
-          <R3>xr-</R3>
-          <R4>xl-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -358,8 +343,6 @@ $(pv_value)</tooltip>
           <P>LabS-MCAG:MC-MCU-15:</P>
           <M1>m1</M1>
           <M2>m2</M2>
-          <R1>m1-</R1>
-          <R2>m2-</R2>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -419,8 +402,6 @@ $(pv_value)</tooltip>
           <P>LabS-MCAG:MC-MCU-19:</P>
           <M1>Mtr1</M1>
           <M2>Mtr2</M2>
-          <R1>Mtr1-</R1>
-          <R2>Mtr2-</R2>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -482,10 +463,6 @@ $(pv_value)</tooltip>
           <M2>m2</M2>
           <M3>m3</M3>
           <M4>m4</M4>
-          <R1>m1-</R1>
-          <R2>m2-</R2>
-          <R3>m3-</R3>
-          <R4>m4-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -547,10 +524,6 @@ $(pv_value)</tooltip>
           <M2>xg</M2>
           <M3>xr</M3>
           <M4>xl</M4>
-          <R1>xp-</R1>
-          <R2>xg-</R2>
-          <R3>xr-</R3>
-          <R4>xl-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -610,8 +583,6 @@ $(pv_value)</tooltip>
           <P>LabS-MCAG:MC-MCU-26:</P>
           <M1>m1</M1>
           <M2>m2</M2>
-          <R1>m1-</R1>
-          <R2>m2-</R2>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -673,10 +644,6 @@ $(pv_value)</tooltip>
           <M2>m2</M2>
           <M3>m3</M3>
           <M4>m4</M4>
-          <R1>m1-</R1>
-          <R2>m2-</R2>
-          <R3>m3-</R3>
-          <R4>m4-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -735,7 +702,6 @@ $(pv_value)</tooltip>
           <PREFIX>Labs-MCAG:MC-MCU-032:</PREFIX>
           <P>Labs-MCAG:MC-MCU-032:</P>
           <M1>Shutter</M1>
-          <R1>Shutter-</R1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -923,22 +889,6 @@ $(pv_value)</tooltip>
           <M14>Mtr14</M14>
           <M15>Mtr15</M15>
           <M16>Mtr16</M16>
-          <R1>Mtr1-</R1>
-          <R2>Mtr2-</R2>
-          <R3>Mtr3-</R3>
-          <R4>Mtr4-</R4>
-          <R5>Mtr5-</R5>
-          <R6>Mtr6-</R6>
-          <R7>Mtr7-</R7>
-          <R8>Mtr8-</R8>
-          <R9>Mtr9-</R9>
-          <R10>Mtr10-</R10>
-          <R11>Mtr11-</R11>
-          <R12>Mtr12-</R12>
-          <R13>Mtr13-</R13>
-          <R14>Mtr14-</R14>
-          <R15>Mtr15-</R15>
-          <R16>Mtr16-</R16>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1012,22 +962,6 @@ $(pv_value)</tooltip>
           <M14>Mtr14</M14>
           <M15>Mtr15</M15>
           <M16>Mtr16</M16>
-          <R1>Mtr1-</R1>
-          <R2>Mtr2-</R2>
-          <R3>Mtr3-</R3>
-          <R4>Mtr4-</R4>
-          <R5>Mtr5-</R5>
-          <R6>Mtr6-</R6>
-          <R7>Mtr7-</R7>
-          <R8>Mtr8-</R8>
-          <R9>Mtr9-</R9>
-          <R10>Mtr10-</R10>
-          <R11>Mtr11-</R11>
-          <R12>Mtr12-</R12>
-          <R13>Mtr13-</R13>
-          <R14>Mtr14-</R14>
-          <R15>Mtr15-</R15>
-          <R16>Mtr16-</R16>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1097,18 +1031,6 @@ $(pv_value)</tooltip>
           <M10>MCU-01:m10</M10>
           <M11>MCU-01:m11</M11>
           <M12>MCU-01:m12</M12>
-          <R1>SLT-01:SltH-Center-</R1>
-          <R2>SLT-01:SltH-Gap-</R2>
-          <R3>SLT-01:SltH-xn-</R3>
-          <R4>SLT-01:SltH-xp-</R4>
-          <R5>SLT-01:SltV-Center-</R5>
-          <R6>SLT-01:SltV-Gap-</R6>
-          <R7>SLT-01:SltV-xn-</R7>
-          <R8>SLT-01:SltV-xp-</R8>
-          <R9>MCU-01:m9-</R9>
-          <R10>MCU-01:m10-</R10>
-          <R11>MCU-01:m11-</R11>
-          <R12>MCU-01:m12-</R12>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1170,10 +1092,6 @@ $(pv_value)</tooltip>
           <M2>SpGon1:MC-RotY-01:Mtr</M2>
           <M3>SpRot1:MC-RotZ-01:Mtr</M3>
           <M4>CamLft:MC-LinZ-01:Mtr</M4>
-          <R1>SpGon1:MC-RotX-01:Mtr-</R1>
-          <R2>SpGon1:MC-RotY-01:Mtr-</R2>
-          <R3>SpRot1:MC-RotZ-01:Mtr-</R3>
-          <R4>CamLft:MC-LinZ-01:Mtr-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1231,8 +1149,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>IOC:</PREFIX>
           <P>IOC:</P>
-          <M1>Shutter</M1>
-          <R1>Shutter</R1>
+          <M1>Sht-</M1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1271,7 +1188,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:Shutter</text>
+    <text>IOC:Sht</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1295,10 +1212,6 @@ $(pv_value)</tooltip>
           <M3>MC-MCU-02:Mtr3</M3>
           <M3>MC-MCU-02:Mtr3</M3>
           <M4>MC-MCU-02:Mtr4</M4>
-          <R1>MC-Rz-01:m-</R1>
-          <R2>MC-MCU-02:Mtr2-</R2>
-          <R3>MC-MCU-02:Mtr3-</R3>
-          <R4>MC-MCU-02:Mtr4-</R4>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1365,15 +1278,6 @@ $(pv_value)</tooltip>
           <M7>HvSht:MC-Pne-01:Sht</M7>
           <M8>Fil:MC-Pne-01:Sht</M8>
           <M9>Fil:MC-Pne-02:Sht</M9>
-          <R1>mcs1:MC-Spare-01:Mtr-</R1>
-          <R2>mcs1:MC-Spare-02:Mtr-</R2>
-          <R3>ColSl1:MC-SlYp-01:Mtr-</R3>
-          <R4>ColSl1:MC-SlYm-01:Mtr-</R4>
-          <R5>ColSl1:MC-SlZp-01:Mtr-</R5>
-          <R6>ColSl1:MC-SlZm-01:Mtr-</R6>
-          <R7>HvSht:MC-Pne-01:Sht</R7>
-          <R8>Fil:MC-Pne-01:Sht</R8>
-          <R9>Fil:MC-Pne-02:Sht</R9>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1426,6 +1330,83 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
+        <path>motor-ymir-mcs2.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <PREFIX>YMIR-MCS2:MC-MCU-01:</PREFIX>
+          <P>YMIR-</P>
+          <M1>mcs2:MC-Spare-01:Mtr</M1>
+          <M2>mcs2:MC-Spare-02:Mtr</M2>
+          <M3>DivSl2:MC-SlYp-01:Mtr</M3>
+          <M4>DivSl2:MC-SlYm-01:Mtr</M4>
+          <M5>DivSl2:MC-SlZp-01:Mtr</M5>
+          <M6>DivSl2:MC-SlZm-01:Mtr</M6>
+          <M7>BmScn:MC-LinY-01:Mtr</M7>
+          <M8>SpRot:MC-RotZ-01:Mtr</M8>
+          <M9>SpGon:MC-RotX-01:Mtr</M9>
+          <M10>SpGon:MC-RotY-01:Mtr</M10>
+          <M11>DetLft:MC-LinZ-01:Mtr</M11>
+          <M12>DetLin:MC-LinY-01:Mtr</M12>
+          <M13>SpChg:MC-LinY-01:Mtr</M13>
+          <M14>mcs2:MC-Spare-03:Mtr</M14>
+          <M15>DivSl2:MC-SlYc-01:Mtr</M15>
+          <M16>DivSl2:MC-SlYg-01:Mtr</M16>
+          <M17>DivSl2:MC-SlZc-01:Mtr</M17>
+          <M18>DivSl2:MC-SlZg-01:Mtr</M18>
+          <M19>mcs2:MC-Spare-01:Sht</M19>
+          <M20>mcs2:MC-Spare-02:Sht</M20>
+        </macros>
+        <mode>1</mode>
+        <description></description>
+      </action>
+    </actions>
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName=".SF NS Text" height="11" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>31</height>
+    <image></image>
+    <name>Action Button_15</name>
+    <push_action_index>0</push_action_index>
+    <pv_name></pv_name>
+    <pv_value />
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <style>0</style>
+    <text>YMIR-MCS2</text>
+    <toggle_button>false</toggle_button>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <visible>true</visible>
+    <widget_type>Action Button</widget_type>
+    <width>180</width>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
+    <x>182</x>
+    <y>252</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
         <path>motor-3.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
@@ -1434,9 +1415,6 @@ $(pv_value)</tooltip>
           <M1>MC-Rz-01:m</M1>
           <M2>MC-MCU-02:Mtr2</M2>
           <M3>MC-MCU-02:Mtr3</M3>
-          <R1>MC-Rz-01:m-</R1>
-          <R2>MC-MCU-02:Mtr2-</R2>
-          <R3>MC-MCU-02:Mtr3-</R3>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1484,7 +1462,7 @@ $(pv_value)</tooltip>
     <width>180</width>
     <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>182</x>
-    <y>252</y>
+    <y>288</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
@@ -1497,9 +1475,6 @@ $(pv_value)</tooltip>
           <M1>SpScn:MC-X-01:Mtr</M1>
           <M2>SpScn:MC-Y-01:Mtr</M2>
           <M3>SpScn:MC-Z-01:Mtr</M3>
-          <R1>SpScn:MC-X-01:Mtr-</R1>
-          <R2>SpScn:MC-Y-01:Mtr-</R2>
-          <R3>SpScn:MC-Z-01:Mtr-</R3>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1547,7 +1522,7 @@ $(pv_value)</tooltip>
     <width>180</width>
     <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>182</x>
-    <y>288</y>
+    <y>324</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
@@ -1556,9 +1531,7 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M1>m1</M1>
-          <R1>m1-</R1>
           <M2>m2</M2>
-          <R2>m2-</R2>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1606,7 +1579,7 @@ $(pv_value)</tooltip>
     <width>180</width>
     <wuid>-5fa237c5:1486496e2b9:-7f3c</wuid>
     <x>182</x>
-    <y>324</y>
+    <y>360</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
@@ -1622,12 +1595,6 @@ $(pv_value)</tooltip>
           <M4>m4</M4>
           <M5>m5</M5>
           <M6>m6</M6>
-          <R1>m1-</R1>
-          <R2>m2-</R2>
-          <R3>m3-</R3>
-          <R4>m4-</R4>
-          <R5>m5-</R5>
-          <R6>m6-</R6>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -1675,7 +1642,7 @@ $(pv_value)</tooltip>
     <width>180</width>
     <wuid>1d681a25:1522fd92503:-61b1</wuid>
     <x>182</x>
-    <y>360</y>
+    <y>396</y>
   </widget>
 
 </display>

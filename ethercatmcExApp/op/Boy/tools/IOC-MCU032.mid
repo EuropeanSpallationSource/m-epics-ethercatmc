@@ -7,7 +7,6 @@
           <PREFIX>Labs-MCAG:MC-MCU-032:</PREFIX>
           <P>Labs-MCAG:MC-MCU-032:</P>
           <M1>Shutter</M1>
-          <R1>Shutter-</R1>
         </macros>
         <mode>1</mode>
         <description></description>

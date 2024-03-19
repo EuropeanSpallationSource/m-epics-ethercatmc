@@ -5,9 +5,7 @@
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M1>m1</M1>
-          <R1>m1-</R1>
           <M2>m2</M2>
-          <R2>m2-</R2>
         </macros>
         <mode>1</mode>
         <description></description>

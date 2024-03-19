@@ -9,9 +9,6 @@
           <M1>SpScn:MC-X-01:Mtr</M1>
           <M2>SpScn:MC-Y-01:Mtr</M2>
           <M3>SpScn:MC-Z-01:Mtr</M3>
-          <R1>SpScn:MC-X-01:Mtr-</R1>
-          <R2>SpScn:MC-Y-01:Mtr-</R2>
-          <R3>SpScn:MC-Z-01:Mtr-</R3>
         </macros>
         <mode>1</mode>
         <description></description>

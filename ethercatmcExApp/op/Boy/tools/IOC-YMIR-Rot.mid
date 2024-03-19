@@ -9,9 +9,6 @@
           <M1>MC-Rz-01:m</M1>
           <M2>MC-MCU-02:Mtr2</M2>
           <M3>MC-MCU-02:Mtr3</M3>
-          <R1>MC-Rz-01:m-</R1>
-          <R2>MC-MCU-02:Mtr2-</R2>
-          <R3>MC-MCU-02:Mtr3-</R3>
         </macros>
         <mode>1</mode>
         <description></description>

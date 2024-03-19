@@ -1,13 +1,31 @@
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>shutter-1.opi</path>
+        <path>motor-ymir-mcs2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <PREFIX>IOC:</PREFIX>
-          <P>IOC:</P>
-          <M1>Shutter</M1>
-          <R1>Shutter</R1>
+          <PREFIX>YMIR-MCS2:MC-MCU-01:</PREFIX>
+          <P>YMIR-</P>
+          <M1>mcs2:MC-Spare-01:Mtr</M1>
+          <M2>mcs2:MC-Spare-02:Mtr</M2>
+          <M3>DivSl2:MC-SlYp-01:Mtr</M3>
+          <M4>DivSl2:MC-SlYm-01:Mtr</M4>
+          <M5>DivSl2:MC-SlZp-01:Mtr</M5>
+          <M6>DivSl2:MC-SlZm-01:Mtr</M6>
+          <M7>BmScn:MC-LinY-01:Mtr</M7>
+          <M8>SpRot:MC-RotZ-01:Mtr</M8>
+          <M9>SpGon:MC-RotX-01:Mtr</M9>
+          <M10>SpGon:MC-RotY-01:Mtr</M10>
+          <M11>DetLft:MC-LinZ-01:Mtr</M11>
+          <M12>DetLin:MC-LinY-01:Mtr</M12>
+          <M13>SpChg:MC-LinY-01:Mtr</M13>
+          <M14>mcs2:MC-Spare-03:Mtr</M14>
+          <M15>DivSl2:MC-SlYc-01:Mtr</M15>
+          <M16>DivSl2:MC-SlYg-01:Mtr</M16>
+          <M17>DivSl2:MC-SlZc-01:Mtr</M17>
+          <M18>DivSl2:MC-SlZg-01:Mtr</M18>
+          <M19>mcs2:MC-Spare-01:Sht</M19>
+          <M20>mcs2:MC-Spare-02:Sht</M20>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -34,7 +52,7 @@
     </foreground_color>
     <height>31</height>
     <image></image>
-    <name>Action Button_3</name>
+    <name>Action Button_15</name>
     <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
@@ -46,14 +64,14 @@
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:Shutter</text>
+    <text>YMIR-MCS2</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
     <width>180</width>
-    <wuid>1d681a25:1522fd92503:-61c8</wuid>
+    <wuid>-23224cdf:15ca5e28b9e:-7fd5</wuid>
     <x>0</x>
     <y>0</y>
   </widget>

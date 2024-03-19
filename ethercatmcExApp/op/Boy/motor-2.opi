@@ -987,7 +987,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R1)MsgTxt</pv_name>
+    <pv_name>$(P)$(M1)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -1457,7 +1457,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (Basic)</description>
@@ -1467,7 +1466,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (Expert)</description>
@@ -1477,7 +1475,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M1)</M>
-          <R>$(R1)</R>
         </macros>
         <replace>0</replace>
         <description>$(M1) (setup)</description>
@@ -2449,7 +2446,7 @@ $(pv_value)</tooltip>
     <name>Text Update</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R2)MsgTxt</pv_name>
+    <pv_name>$(P)$(M2)-MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules />
@@ -2919,7 +2916,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (Basic)</description>
@@ -2929,7 +2925,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (Expert)</description>
@@ -2939,7 +2934,6 @@ $(pv_value)</tooltip>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M>$(M2)</M>
-          <R>$(R2)</R>
         </macros>
         <replace>0</replace>
         <description>$(M2) (setup)</description>

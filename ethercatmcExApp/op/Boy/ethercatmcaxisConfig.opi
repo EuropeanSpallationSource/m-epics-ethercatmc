@@ -218,7 +218,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgSREV-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgSREV-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -373,7 +373,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgUREV-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgUREV-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -471,7 +471,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgPMAX-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgPMAX-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -482,7 +482,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)CfgPMAX-RB.STAT</pv>
+        <pv trig="true">$(P)$(M)-CfgPMAX-RB.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -578,7 +578,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgPMIN-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgPMIN-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -589,7 +589,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)CfgPMIN-RB.STAT</pv>
+        <pv trig="true">$(P)$(M)-CfgPMIN-RB.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -685,7 +685,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgVELO-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgVELO-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -742,7 +742,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgVMAX-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgVMAX-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -840,7 +840,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgJVEL-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgJVEL-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -897,7 +897,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgHVEL-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgHVEL-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -908,7 +908,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)CfgHVEL-RB.STAT</pv>
+        <pv trig="true">$(P)$(M)-CfgHVEL-RB.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1004,7 +1004,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgPOSLAG-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgPOSLAG-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -1015,7 +1015,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)CfgPOSLAG-RB.STAT</pv>
+        <pv trig="true">$(P)$(M)-CfgPOSLAG-RB.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1116,7 +1116,7 @@ $(pv_value)</tooltip>
       <color red="0" green="255" blue="0" />
     </on_color>
     <on_label>ON</on_label>
-    <pv_name>$(P)$(R)CfgPOSLAG-En-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgPOSLAG-En-RB</pv_name>
     <pv_value />
     <rules>
       <rule name="CfgPOSLAG-En-RB-Visible" prop_id="visible" out_exp="false">
@@ -1126,7 +1126,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)CfgPOSLAG-En-RB.STAT</pv>
+        <pv trig="true">$(P)$(M)-CfgPOSLAG-En-RB.STAT</pv>
       </rule>
     </rules>
 
@@ -1221,7 +1221,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgPOSLAG-Tim-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgPOSLAG-Tim-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -1232,7 +1232,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)CfgPOSLAG-Tim-RB.STAT</pv>
+        <pv trig="true">$(P)$(M)-CfgPOSLAG-Tim-RB.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1287,7 +1287,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgRDBD-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgRDBD-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -1349,7 +1349,7 @@ $(pv_value)</tooltip>
       <color red="0" green="255" blue="0" />
     </on_color>
     <on_label>ON</on_label>
-    <pv_name>$(P)$(R)CfgRDBD-En-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgRDBD-En-RB</pv_name>
     <pv_value />
     <rules />
     <scale_options>
@@ -1443,7 +1443,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgRDBD-Tim-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgRDBD-Tim-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -1454,7 +1454,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=17">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(R)CfgRDBD-Tim-RB.STAT</pv>
+        <pv trig="true">$(P)$(M)-CfgRDBD-Tim-RB.STAT</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1550,7 +1550,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgDHLM-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgDHLM-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -1612,7 +1612,7 @@ $(pv_value)</tooltip>
       <color red="0" green="255" blue="0" />
     </on_color>
     <on_label>ON</on_label>
-    <pv_name>$(P)$(R)CfgDHLM-En-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgDHLM-En-RB</pv_name>
     <pv_value />
     <rules />
     <scale_options>
@@ -1706,7 +1706,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)CfgDLLM-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgDLLM-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -1768,7 +1768,7 @@ $(pv_value)</tooltip>
       <color red="0" green="255" blue="0" />
     </on_color>
     <on_label>ON</on_label>
-    <pv_name>$(P)$(R)CfgDLLM-En-RB</pv_name>
+    <pv_name>$(P)$(M)-CfgDLLM-En-RB</pv_name>
     <pv_value />
     <rules />
     <scale_options>
@@ -1862,7 +1862,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>2</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)HomProc-RB</pv_name>
+    <pv_name>$(P)$(M)-HomProc-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -1960,7 +1960,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(R)HomPos-RB</pv_name>
+    <pv_name>$(P)$(M)-HomPos-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>

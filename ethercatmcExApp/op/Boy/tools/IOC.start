@@ -20,7 +20,6 @@
     <include_parent_macros>true</include_parent_macros>
     <PREFIX>IOC:</PREFIX>
     <P>$(PREFIX)</P>
-    <R1></R1>
   </macros>
   <name></name>
   <rules />

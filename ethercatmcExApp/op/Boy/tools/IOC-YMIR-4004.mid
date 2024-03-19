@@ -11,10 +11,6 @@
           <M3>MC-MCU-02:Mtr3</M3>
           <M3>MC-MCU-02:Mtr3</M3>
           <M4>MC-MCU-02:Mtr4</M4>
-          <R1>MC-Rz-01:m-</R1>
-          <R2>MC-MCU-02:Mtr2-</R2>
-          <R3>MC-MCU-02:Mtr3-</R3>
-          <R4>MC-MCU-02:Mtr4-</R4>
         </macros>
         <mode>1</mode>
         <description></description>

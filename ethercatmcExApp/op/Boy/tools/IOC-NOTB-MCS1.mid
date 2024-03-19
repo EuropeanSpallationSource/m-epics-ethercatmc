@@ -10,10 +10,6 @@
           <M2>SpGon1:MC-RotY-01:Mtr</M2>
           <M3>SpRot1:MC-RotZ-01:Mtr</M3>
           <M4>CamLft:MC-LinZ-01:Mtr</M4>
-          <R1>SpGon1:MC-RotX-01:Mtr-</R1>
-          <R2>SpGon1:MC-RotY-01:Mtr-</R2>
-          <R3>SpRot1:MC-RotZ-01:Mtr-</R3>
-          <R4>CamLft:MC-LinZ-01:Mtr-</R4>
         </macros>
         <mode>1</mode>
         <description></description>

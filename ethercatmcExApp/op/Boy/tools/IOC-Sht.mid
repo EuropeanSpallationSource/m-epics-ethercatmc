@@ -1,13 +1,12 @@
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-2.opi</path>
+        <path>shutter-1.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <PREFIX>LabS-MCAG:MC-MCU-26:</PREFIX>
-          <P>LabS-MCAG:MC-MCU-26:</P>
-          <M1>m1</M1>
-          <M2>m2</M2>
+          <PREFIX>IOC:</PREFIX>
+          <P>IOC:</P>
+          <M1>Sht-</M1>
         </macros>
         <mode>1</mode>
         <description></description>
@@ -34,7 +33,7 @@
     </foreground_color>
     <height>31</height>
     <image></image>
-    <name>Action Button_8</name>
+    <name>Action Button_3</name>
     <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
@@ -46,14 +45,14 @@
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>MC-MCU026</text>
+    <text>IOC:Sht</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
     <width>180</width>
-    <wuid>1d681a25:1522fd92503:-61ae</wuid>
+    <wuid>1d681a25:1522fd92503:-61c8</wuid>
     <x>0</x>
     <y>0</y>
   </widget>
