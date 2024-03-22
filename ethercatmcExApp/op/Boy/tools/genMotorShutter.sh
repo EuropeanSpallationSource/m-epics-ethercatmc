@@ -171,13 +171,13 @@ fi &&
   if test "$HAS_ECMC" = "y"; then
     touch $FILE &&
       chmod +w $FILE &&
-      sed -e "s!ethercatmcaxisExpert-tc.opi!ethercatmcaxisExpert-ecmc.opi!" <$$ >$FILE &&
+      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-ecmc.opi!" <$$ >$FILE &&
       rm $$ &&
       chmod -w $FILE
   elif test "$HAS_PTP" != ""; then
     touch $FILE &&
       chmod +w $FILE &&
-      sed -e "s!ethercatmcaxisExpert-tc.opi!ethercatmcaxisExpert-tc-ptp.opi!" <$$ >$FILE &&
+      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-pils-ptp.opi!" <$$ >$FILE &&
       rm $$ &&
       chmod -w $FILE
   else
