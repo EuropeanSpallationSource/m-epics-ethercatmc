@@ -13,6 +13,7 @@ TEMPSENSORHIGHT=36
 EXT=opi
 
 HAS_ECMC=""
+HAS_PILS=""
 HAS_PTP=""
 OPIMID_EGU_TEMP=motorx-egu-rbv.mid
 y0=16
@@ -135,7 +136,11 @@ FILE=$1
 shift
 BASENAMEF=${FILE##*/}
 
-if test "$1" = "ecmc"; then
+if test "$1" = "pils"; then
+  shift
+  HAS_PILS=y
+  export HAS_PILS
+elif test "$1" = "ecmc"; then
   shift
   HAS_ECMC=y
   export HAS_ECMC

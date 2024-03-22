@@ -122,55 +122,55 @@ AUXBITS_STATUSWORD="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 2
 AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 1 x 1
+	./genMotorShutter.sh $@ pils 1 x 1
 
 ../motor-0-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ ptp
+	./genMotorShutter.sh $@ pils ptp
 
 ../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ ptp 1 x 1
+	./genMotorShutter.sh $@ pils ptp 1 x 1
 
 ../motor-2-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 2 x 1
+	./genMotorShutter.sh $@ pils 2 x 1
 
 ../motor-3-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 3 x 1
+	./genMotorShutter.sh $@ pils 3 x 1
 
 ../motor-3-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ ptp 3 x 1
+	./genMotorShutter.sh $@ pils ptp 3 x 1
 
 ../motor-4-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 4 x 1
+	./genMotorShutter.sh $@ pils 4 x 1
 
 ../motor-4-ecmc.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ ecmc 4 x 1
 
 ../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ ptp 4 x 1
+	./genMotorShutter.sh $@ pils ptp 4 x 1
 
 ../motor-5-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 5 x 1
+	./genMotorShutter.sh $@ pils 5 x 1
 
 ../motor-6-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 6 x 1
+	./genMotorShutter.sh $@ pils 6 x 1
 
 ../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 4 x 4
+	./genMotorShutter.sh $@ pils 4 x 4
 
 ../motor-4x4-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid
-	./genMotorShutter.sh $@ temp m m m m n m m m m n m m m m n m m m m
+	./genMotorShutter.sh $@ pils temp m m m m n m m m m n m m m m n m m m m
 
 ../motor-estiaSel1-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid tempsensor.mid
-	./genMotorShutter.sh $@ temp m m m m m n m m m m m n m m m n t t t t t n t t t t t n t t
+	./genMotorShutter.sh $@ pils temp m m m m m n m m m m m n m m m n t t t t t n t t t t t n t t
 
 ../motor-estiaSel2-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid tempsensor.mid
-	./genMotorShutter.sh $@ temp m m m m m n m m m m m n m m m m n t t t t t n t t t t t n t t
+	./genMotorShutter.sh $@ pils temp m m m m m n m m m m m n m m m m n t t t t t n t t t t t n t t
 
 ../motor-ymir-mcs1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ m m m m m m n shutter s s s
+	./genMotorShutter.sh $@ pils m m m m m m n shutter s s s
 
 ../motor-ymir-mcs2-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@  m m m m m n m m m m m n m m m m m n m m m shutter s s
+	./genMotorShutter.sh $@ pils  m m m m m n m m m m m n m m m m m n m m m shutter s s
 
 ../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
 	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
@@ -203,7 +203,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	./genExpertWithAuxBits.sh $@ ethercatmcStatusWord1802 $(AUXBITS_STATUSWORD)
 
 ../shutter-1.opi: $(DEPENDENCIES_FOR_SHUTTER_OPI)
-	./genMotorShutter.sh $@ shutter 1 x 1
+	./genMotorShutter.sh $@ pils shutter 1 x 1
 
 ../IOC.opi: Makefile genIOC.sh IOC*.*
 	./genIOC.sh ../IOC.opi IOC
