@@ -38,7 +38,7 @@ HAS_PTPdiffNTTime_MCU=""
 HAS_PTPdiffTcNTPExttime_mcu=""
 HAS_PTP=""
 HAS_PTP_TS_NS_POS_NEG=""
-HAS_TC=""
+HAS_PILS=""
 PTPOPENERRBITS=0
 PARAM="$1"
 while test "$PARAM" != ""; do
@@ -77,8 +77,8 @@ while test "$PARAM" != ""; do
       shift
       PARAM="$1"
       ;;
-    tc)
-      HAS_TC="y"
+    pils)
+      HAS_PILS="y"
       shift
       PARAM="$1"
       ;;
@@ -98,7 +98,7 @@ export HAS_PTPdiffTimeIOC_MCU
 export HAS_PTPdiffNTTime_MCU
 export HAS_PTPdiffTcNTPExttime_mcu
 export HAS_PTPTCdiffTime_MCU
-export HAS_TC
+export HAS_PILS
 export PTPOPENERRBITS
 
 im=0
@@ -165,14 +165,14 @@ echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
 cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
   echo $0: $BASENAME cmd=$cmd &&
   eval $cmd <$BASENAME.mid >>$$ &&
-  if test "$HAS_TC" = "y"; then
+  if test "$HAS_PILS" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-    echo $0: HAS_TC cmd=$cmd
-    eval $cmd <tc.mid >>$$
+    echo $0: HAS_PILS cmd=$cmd
+    eval $cmd <pils.mid >>$$
   fi &&
   if test "$HAS_ECMC" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-    echo $0: HAS_TC cmd=$cmd
+    echo $0: HAS_PILS cmd=$cmd
     eval $cmd <ecmc.mid >>$$
   fi &&
   for n in $@; do

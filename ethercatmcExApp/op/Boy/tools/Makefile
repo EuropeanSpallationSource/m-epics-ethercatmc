@@ -101,8 +101,8 @@ DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.start
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.end
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ptp.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += tc.mid
 
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI = Makefile
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += genExpertWithAuxBits.sh
@@ -181,13 +181,13 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 # Generate ethercatmcaxisExpert*.opi out of
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
 ../ethercatmcaxisExpert-tc.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
-	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert tc $(AUXBITS_EXPERT)
+	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert pils $(AUXBITS_EXPERT)
 
 ../ethercatmcaxisExpert-ecmc.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert ecmc
 
 ../ethercatmcaxisExpert-tc-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
-	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert tc ptp $(AUXBITS_EXPERT)
+	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert pils ptp $(AUXBITS_EXPERT)
 
 # Generate ethercatmcShutter*.opi out of
 #   ethercatmcShutter.mid and ethercatmcShutter.end
