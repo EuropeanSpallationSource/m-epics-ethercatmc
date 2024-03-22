@@ -10,6 +10,10 @@ shift
 BASENAME=$1
 shift
 
+# Default for the majority
+STATUSCODE='$(M)-StatusCode'
+STATUSBITS='$(M)-StatusBits'
+NAMAUXBIT='$(M)-NamAuxBit'
 case $BASENAME in
   ethercatmcShutter)
     yaux=298
@@ -19,6 +23,7 @@ case $BASENAME in
     ;;
   ethercatmcPTPErrBits)
     yaux=18
+    STATUSCODE=StatusCode
     STATUSBITS=PTPErrorStatus
     NAMAUXBIT=PTPErrBitNam
     ;;
@@ -172,14 +177,14 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
   fi &&
   if test "$HAS_ECMC" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-    echo $0: HAS_PILS cmd=$cmd
+    echo $0: HAS_ECMC cmd=$cmd
     eval $cmd <ecmc.mid >>$$
   fi &&
   for n in $@; do
     yaux=$(($yaux + 20))
     cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
     echo cmd=$cmd
-    eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g" >>$$
+    eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>$$
   done
 cat $BASENAME.end >>$$ &&
   mv -f $$ $FILE &&
