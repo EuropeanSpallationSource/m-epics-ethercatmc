@@ -1,17 +1,16 @@
 
 GNERATEDOPIS = \
   ../motor-0-ptp.opi \
-  ../motor-1.opi \
+  ../motor-1-pils.opi \
   ../motor-1-ptp.opi \
-  ../motor-2.opi \
-  ../motor-3.opi \
+  ../motor-2-pils.opi \
+  ../motor-3-pils.opi \
   ../motor-3-ptp.opi \
-  ../motor-4.opi \
+  ../motor-4-pils.opi \
   ../motor-4-ptp.opi \
   ../motor-4-ecmc.opi \
-  ../motor-5.opi \
-  ../motor-6.opi  \
-  ../motor-4x3.opi \
+  ../motor-5-pils.opi \
+  ../motor-6-pils.opi  \
   ../motor-4x4.opi \
   ../motor-4x4-temp.opi \
   ../motor-estiaSel1-temp.opi \
@@ -122,7 +121,7 @@ AUXBITS_SHUTTER="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
 AUXBITS_STATUSWORD="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23"
 AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
-../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+../motor-1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 1 x 1
 
 ../motor-0-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
@@ -131,16 +130,16 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ ptp 1 x 1
 
-../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+../motor-2-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 2 x 1
 
-../motor-3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+../motor-3-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 3 x 1
 
 ../motor-3-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ ptp 3 x 1
 
-../motor-4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+../motor-4-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 4 x 1
 
 ../motor-4-ecmc.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
@@ -149,14 +148,11 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ ptp 4 x 1
 
-../motor-5.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+../motor-5-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 5 x 1
 
-../motor-6.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+../motor-6-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 6 x 1
-
-../motor-4x3.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
-	./genMotorShutter.sh $@ 4 x 3
 
 ../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 4 x 4

@@ -8,7 +8,7 @@
   <scripts />
   <show_ruler>true</show_ruler>
   <height>200</height>
-  <name>motor-2.opi</name>
+  <name>motor-2-pils.opi</name>
   <snap_to_geometry>false</snap_to_geometry>
   <show_grid>false</show_grid>
   <background_color>

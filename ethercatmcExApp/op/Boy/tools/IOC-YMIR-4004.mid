@@ -1,7 +1,7 @@
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-4.opi</path>
+        <path>motor-4-pils.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>YMIR-4004:MC-MCU-002:</PREFIX>
