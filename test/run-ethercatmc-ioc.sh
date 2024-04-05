@@ -218,9 +218,8 @@ fi
 
 NOMAKE=""
 NORUN=""
+EPICSTWINCATADS=""
 DOLOG=""
-ASYNPORTCONFIGUREDONTUSE="adsAsynPortDriverConfigure"
-ASYNPORTCONFIGUREUSE="drvAsynIPPortConfigure"
 
 # pick up some arguments
 PARAM="$1"
@@ -229,15 +228,17 @@ while test "$PARAM" != ""; do
     --no-make)
       NOMAKE=y
       shift
+      PARAM="$1"
       ;;
     --no-run)
       NORUN=y
       shift
+      PARAM="$1"
       ;;
     --epics-twincat-ads)
-      ASYNPORTCONFIGUREUSE=adsAsynPortDriverConfigure
-      ASYNPORTCONFIGUREDONTUSE=drvAsynIPPortConfigure
+      EPICSTWINCATADS=y
       shift
+      PARAM="$1"
       ;;
     -h | --help)
       help_and_exit "$@"
@@ -245,12 +246,24 @@ while test "$PARAM" != ""; do
     -l)
       DOLOG=y
       shift
+      PARAM="$1"
       ;;
     *)
       PARAM="" # end the loop
       ;;
   esac
 done
+
+# Which of the 2 commands needs to be run ?
+# Only one of them: Either ADS or TCP
+if test "$EPICSTWINCATADS" = y; then
+  ASYNPORTCONFIGUREUSE="adsAsynPortDriverConfigure"
+  ASYNPORTCONFIGUREDONTUSE="drvAsynIPPortConfigure"
+else
+  ASYNPORTCONFIGUREUSE="drvAsynIPPortConfigure"
+  ASYNPORTCONFIGUREDONTUSE="adsAsynPortDriverConfigure"
+fi
+
 
 export NOMAKE
 export NORUN

@@ -1,16 +1,23 @@
 epicsEnvSet("ECM_NUMAXES",   "6")
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=192.168.242.60)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("AMSNETIDIOC",   "192.168.242.77.1.1")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=IOC:)")
-epicsEnvSet("MCUPFX",      "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m1)")
+epicsEnvSet("MCUPFX",        "")
+epicsEnvSet("AXIS_NAME",     "$(SM_AXIS_NAME=m1)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
 epicsEnvSet("DESC",          "$(SM_DESC=Lower=Right)")
 epicsEnvSet("EGU",           "$(SM_EGU=mm)")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",     "2")
+# PILS would need this
+#epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=192.168.88.60.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
+# But ADS needs this:
+epicsEnvSet("ADSPORT",        852)
+epicsEnvSet("REMOTEAMSNETID", 192.168.88.60.1.1)
 
 # And this reads the input of an incremental encoder terminal
 # on the EtherCAT bus. Works with the simulator.
