@@ -31,7 +31,7 @@ Open another terminal window and execute the following commands:
 
 ```
 cd <local-repository>/ethercatmc/test
-./run-ethercatmc-ioc.sh SolAxis-SimCfgDbg
+./run-ethercatmc-ioc.sh sim-indexer
 ```
 
 Pressing RETURN then executing `dbl` will show the list of available PVs.
