@@ -20,6 +20,7 @@ GNERATEDOPIS = \
   ../motor-ymir-mcs1-pils.opi \
   ../motor-ymir-mcs2-pils.opi \
   ../ethercatmcaxisConfig.opi \
+  ../ethercatmcaxisConfig-pils.opi \
   ../ethercatmcaxisExpert.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
   ../ethercatmcaxisExpert-pils.opi \
@@ -43,6 +44,11 @@ clean:
 DEPENDENCIES_FOR_CONFIG_OPI = \
         ethercatmcaxisConfig.start \
         ethercatmcaxisConfig.mid \
+        ethercatmcaxisConfig.end
+
+DEPENDENCIES_FOR_CONFIG_PILS_OPI = \
+        ethercatmcaxisConfig.start \
+        ethercatmcaxisConfig-pils.mid \
         ethercatmcaxisConfig.end
 
 
@@ -182,6 +188,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	./genMotorShutter.sh $@ pils  m m m m m n m m m m m n m m m m m n m m m shutter s s
 
 ../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
+	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
+
+../ethercatmcaxisConfig-pils.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile
 	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
 
 #../ethercatmcaxisConfig-ecmc.opi \
