@@ -179,6 +179,7 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <foff-vis.mid >>$$
     eval $cmd <homf-homr-vis.mid >>$$
     eval $cmd <inhibitf-inhibitr.mid >>$$
+    eval $cmd <pils-errtxt.mid >>$$
     eval $cmd <pils-status-bit24-25.mid >>$$
     eval $cmd <pils-statuscode.mid >>$$
   elif test "$HAS_ECMC" = "y"; then
