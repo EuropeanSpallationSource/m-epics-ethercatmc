@@ -1,7 +1,7 @@
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-2.opi</path>
+        <path>motor-2-pils.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <M1>m1</M1>
@@ -44,7 +44,7 @@
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>IOC:m1-m2</text>
+    <text>IOC:m1-m2-pils</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>

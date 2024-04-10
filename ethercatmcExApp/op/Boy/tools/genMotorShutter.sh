@@ -152,9 +152,11 @@ fi &&
   fi &&
   sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!" <motorx.start >$$ &&
   echo "Creating $FILE" &&
-  cat plcName.mid >>$$ &&
-  cat plcHealthStatus.mid >>$$ &&
-  cat plcIPADDR_PORT.mid >>$$ &&
+  if test "$HAS_PILS" = "y"; then
+    cat plcName.mid >>$$ &&
+    cat plcHealthStatus.mid >>$$ &&
+    cat plcIPADDR_PORT.mid >>$$
+  fi &&
   if test "$HAS_PTP" != ""; then
     cmd=$(echo ./shiftopi.py --shiftx 0 --shifty 16 --shiftm 0)
     echo cmd=$cmd "<openPTPErrBits.mid"
@@ -178,6 +180,12 @@ fi &&
     touch $FILE &&
       chmod +w $FILE &&
       sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-pils-ptp.opi!" <$$ >$FILE &&
+      rm $$ &&
+      chmod -w $FILE
+  elif test "$HAS_PILS" = ""; then
+    touch $FILE &&
+      chmod +w $FILE &&
+      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert.opi!" <$$ >$FILE &&
       rm $$ &&
       chmod -w $FILE
   else
