@@ -175,7 +175,12 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
   if test "$HAS_PILS" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_PILS cmd=$cmd
-    eval $cmd <pils.mid >>$$
+    eval $cmd <cnen-vis.mid >>$$
+    eval $cmd <foff-vis.mid >>$$
+    eval $cmd <homf-homr-vis.mid >>$$
+    eval $cmd <inhibitf-inhibitr.mid >>$$
+    eval $cmd <pils-status-bit24-25.mid >>$$
+    eval $cmd <pils-statuscode.mid >>$$
   fi &&
   if test "$HAS_ECMC" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
