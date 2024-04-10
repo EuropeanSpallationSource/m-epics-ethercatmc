@@ -181,11 +181,17 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <inhibitf-inhibitr.mid >>$$
     eval $cmd <pils-status-bit24-25.mid >>$$
     eval $cmd <pils-statuscode.mid >>$$
-  fi &&
-  if test "$HAS_ECMC" = "y"; then
+  elif test "$HAS_ECMC" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_ECMC cmd=$cmd
     eval $cmd <ecmc.mid >>$$
+  elif test "$BASENAME" = "ethercatmcaxisExpert"; then
+    # The old etthercatmc (no pils)
+    cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+    echo $0: Neither_PILS_NOR_ECMC cmd=$cmd
+    eval $cmd <cnen-vis.mid >>$$
+    eval $cmd <foff-vis.mid >>$$
+    eval $cmd <homf-homr-vis.mid >>$$
   fi &&
   for n in $@; do
     yaux=$(($yaux + 20))
