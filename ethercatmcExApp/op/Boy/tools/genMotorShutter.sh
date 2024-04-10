@@ -154,8 +154,8 @@ fi &&
   echo "Creating $FILE" &&
   if test "$HAS_PILS" = "y"; then
     cat plcName.mid >>$$ &&
-    cat plcHealthStatus.mid >>$$ &&
-    cat plcIPADDR_PORT.mid >>$$
+      cat plcHealthStatus.mid >>$$ &&
+      cat plcIPADDR_PORT.mid >>$$
   fi &&
   if test "$HAS_PTP" != ""; then
     cmd=$(echo ./shiftopi.py --shiftx 0 --shifty 16 --shiftm 0)

@@ -264,7 +264,6 @@ else
   ASYNPORTCONFIGUREDONTUSE="adsAsynPortDriverConfigure"
 fi
 
-
 export NOMAKE
 export NORUN
 export ASYNPORTCONFIGUREDONTUSE

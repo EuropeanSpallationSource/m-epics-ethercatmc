@@ -114,7 +114,7 @@ echo "Creating $FILE" &&
   cat $BASENAME.start >$$ &&
   if test "$HAS_PILS" = "y"; then
     cat plcName.mid >>$$ &&
-    y=$(($y + 16))
+      y=$(($y + 16))
   fi &&
   if test $PTPOPENERRBITS != 0; then
     cat openPTPErrBits.mid >>$$
