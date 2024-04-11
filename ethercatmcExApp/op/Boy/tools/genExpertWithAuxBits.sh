@@ -168,7 +168,7 @@ fi &&
 y=$(($y + $SHIFTY))         # shift one line from low to have PTP in the middle
 
 echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
-
+ETHERCATMCAXISCONFIG_OPI=ethercatmcaxisConfig-pils.opi
 cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
   echo $0: $BASENAME cmd=$cmd &&
   eval $cmd <$BASENAME.mid >>$$ &&
@@ -188,6 +188,7 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <ecmc.mid >>$$
   elif test "$BASENAME" = "ethercatmcaxisExpert"; then
     # The old etthercatmc (no pils)
+    ETHERCATMCAXISCONFIG_OPI=ethercatmcaxisConfig.opi
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: Neither_PILS_NOR_ECMC cmd=$cmd
     eval $cmd <cnen-vis.mid >>$$
@@ -200,6 +201,8 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     echo cmd=$cmd
     eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>$$
   done
-cat $BASENAME.end >>$$ &&
-  mv -f $$ $FILE &&
-  chmod -w $FILE
+  touch "$FILE" &&
+  chmod +w "$FILE" &&
+  cat $BASENAME.end >>$$ &&
+    sed -e "s!ethercatmcaxisConfig-pils.opi!$ETHERCATMCAXISCONFIG_OPI!" <$$ >"$FILE"
+  chmod -w "$FILE"
