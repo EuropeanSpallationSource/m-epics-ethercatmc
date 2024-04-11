@@ -201,8 +201,8 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     echo cmd=$cmd
     eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>$$
   done
-  touch "$FILE" &&
+touch "$FILE" &&
   chmod +w "$FILE" &&
   cat $BASENAME.end >>$$ &&
-    sed -e "s!ethercatmcaxisConfig-pils.opi!$ETHERCATMCAXISCONFIG_OPI!" <$$ >"$FILE"
-  chmod -w "$FILE"
+  sed -e "s!ethercatmcaxisConfig-pils.opi!$ETHERCATMCAXISCONFIG_OPI!" <$$ >"$FILE"
+chmod -w "$FILE"
