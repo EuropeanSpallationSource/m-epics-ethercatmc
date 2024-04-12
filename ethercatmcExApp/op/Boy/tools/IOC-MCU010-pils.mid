@@ -48,7 +48,7 @@
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>MC-MCU010</text>
+    <text>MC-MCU010-pils</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
