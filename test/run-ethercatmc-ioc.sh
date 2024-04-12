@@ -14,12 +14,15 @@ APPXX=ethercatmc
 # shellcheck disable=SC2012
 TOP=$(echo $PWD/.. | sed -e "s%/test/\.\.$%%")
 export APPXX
-EPICS_EEE_E3=classic
 DOLOG=
+EPICS_EEE_E3=classic
+EPICSTWINCATADS=""
 HOST=""
-MOTORPORT=""
-REMOTEAMSNETID=""
 LOCALAMSNETID=""
+MOTORPORT=""
+NOMAKE=""
+NORUN=""
+REMOTEAMSNETID=""
 
 ## functions
 help_and_exit() {
@@ -33,6 +36,9 @@ help_and_exit() {
     case $cmd in
       *sim-indexer)
         echo >&2 $0 " $cmd"
+        ;;
+      *-ads)
+        echo >&2 $0 " $cmd" " <ip>:48898"
         ;;
       *-indexer)
         echo >&2 $0 " $cmd" " <ip>:48898"
@@ -216,11 +222,6 @@ if test -z "$EPICS_HOST_ARCH"; then
   exit 1
 fi
 
-NOMAKE=""
-NORUN=""
-EPICSTWINCATADS=""
-DOLOG=""
-
 # pick up some arguments
 PARAM="$1"
 while test "$PARAM" != ""; do
@@ -254,19 +255,8 @@ while test "$PARAM" != ""; do
   esac
 done
 
-# Which of the 2 commands needs to be run ?
-# Only one of them: Either ADS or TCP
-if test "$EPICSTWINCATADS" = y; then
-  ASYNPORTCONFIGUREUSE="adsAsynPortDriverConfigure"
-  ASYNPORTCONFIGUREDONTUSE="drvAsynIPPortConfigure"
-else
-  ASYNPORTCONFIGUREUSE="drvAsynIPPortConfigure"
-  ASYNPORTCONFIGUREDONTUSE="adsAsynPortDriverConfigure"
-fi
-
 export NOMAKE
 export NORUN
-export ASYNPORTCONFIGUREDONTUSE
 
 MOTORCFG="$1"
 export MOTORCFG
@@ -278,14 +268,30 @@ shift
 
 # motor port is different for indexer
 case $MOTORCFG in
+  *-ads)
+    MOTORPORT=48898
+    EPICSTWINCATADS=y
+    ;;
   *sim-indexer) ;;
-  *indexer)
+  *-indexer)
     MOTORPORT=48898
     ;;
   *)
     MOTORPORT=5000
     ;;
 esac
+
+# Which of the 2 commands needs to be run ?
+# Only one of them: Either ADS or TCP
+if test "$EPICSTWINCATADS" = y; then
+  ASYNPORTCONFIGUREUSE="adsAsynPortDriverConfigure"
+  ASYNPORTCONFIGUREDONTUSE="drvAsynIPPortConfigure"
+else
+  ASYNPORTCONFIGUREUSE="drvAsynIPPortConfigure"
+  ASYNPORTCONFIGUREDONTUSE="adsAsynPortDriverConfigure"
+fi
+export ASYNPORTCONFIGUREUSE
+export ASYNPORTCONFIGUREDONTUSE
 
 PARAM="$1"
 while test "$PARAM" != ""; do

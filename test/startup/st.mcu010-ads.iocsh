@@ -1,0 +1,42 @@
+epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
+epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
+epicsEnvSet("AMSNETIDIOC",   "LOCALAMSNETIDXX")
+epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=LabS-MCAG:MC-MCU-10:)")
+epicsEnvSet("MCUPFX",      "")
+epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",     "2")
+epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
+epicsEnvSet("ECM_OPTIONS",   "")
+
+epicsEnvSet("MOVINGPOLLPERIOD", "200")
+epicsEnvSet("IDLEPOLLPERIOD",   "500")
+< ethercatmcController.iocsh
+
+
+#
+# Axis 1
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m1)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 2
+#
+epicsEnvSet("AXISCONFIG",    "")
+epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m2)")
+epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+< ethercatmcAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
