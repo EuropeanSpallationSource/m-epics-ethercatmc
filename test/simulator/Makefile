@@ -81,6 +81,7 @@ MOTOROBJS=\
 
 TELOBJS=\
  $(BIN)/ads.o \
+ $(BIN)/logerr_info.o \
  $(BIN)/main.o \
  $(BIN)/sock-ads.o \
  $(BIN)/sock-util.o \
@@ -113,6 +114,11 @@ $(BIN)/ads.o: \
  cmd_Sim_Ads.h \
  ads.c
 	$(CC) -c $(CFLAGS) ads.c -o $@
+
+$(BIN)/logerr_info.o: \
+ Makefile \
+ logerr_info.h
+	$(CC) -c $(CFLAGS) logerr_info.c -o $@
 
 $(BIN)/main.o: \
  Makefile \
@@ -195,6 +201,7 @@ $(BIN)/cmd_TCPsim.o: \
 
 $(BIN)/hw_motor.o: \
  Makefile \
+ logerr_info.h \
  hw_motor.h \
  max_axes.h \
  hw_motor.c

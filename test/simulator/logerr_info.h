@@ -4,6 +4,7 @@
 #include <stdio.h>  /* FILE */
 #include <stdlib.h> /* exit() */
 #include <string.h> /* strerror */
+#include <time.h>
 
 #include "cmd_buf.h"
 
@@ -11,6 +12,7 @@ extern unsigned int debug_print_flags;
 extern unsigned int die_on_error_flags;
 
 extern FILE *stdlog;
+const char *epicsBaseDebugStripPath(const char *file);
 
 #define PRINT_STDOUT_BIT0() (debug_print_flags & 1)
 #define PRINT_STDOUT_BIT1() (debug_print_flags & (1 << 1))
@@ -31,6 +33,28 @@ extern FILE *stdlog;
 #define LOGINFO3(fmt, ...)                                              \
   do {                                                                  \
     if (PRINT_STDOUT_BIT3()) (void)fprintf(stdlog, fmt, ##__VA_ARGS__); \
+  } while (0)
+
+#define LOGTIME3(fmt, ...)                                                 \
+  do {                                                                     \
+    if (PRINT_STDOUT_BIT3()) {                                             \
+      struct timespec ts;                                                  \
+      char nowSecondsText[25];                                             \
+      char nowNanoSecText[5];                                              \
+      nowSecondsText[0] = 0;                                               \
+      nowNanoSecText[0] = 0;                                               \
+      if (!clock_gettime(CLOCK_REALTIME, &ts)) {                           \
+        struct tm now;                                                     \
+        if (localtime_r(&ts.tv_sec, &now)) {                               \
+          strftime(nowSecondsText, sizeof(nowSecondsText),                 \
+                   "%Y/%m/%d %H:%M:%S", &now);                             \
+          snprintf(nowNanoSecText, sizeof(nowNanoSecText), ".03%d",        \
+                   (int)ts.tv_nsec / 1000000);                             \
+        }                                                                  \
+      }                                                                    \
+      fprintf(stdlog, "%s%s %s:%-4d " fmt, nowSecondsText, nowNanoSecText, \
+              epicsBaseDebugStripPath(__FILE__), __LINE__, __VA_ARGS__);   \
+    }                                                                      \
   } while (0)
 
 #define LOGINFO4(fmt, ...)                                              \

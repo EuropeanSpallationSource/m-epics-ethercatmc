@@ -6,6 +6,7 @@
 #include <string.h>
 #include <sys/time.h>
 
+#include "logerr_info.h"
 #include "sock-util.h" /* stdlog */
 
 #define NINT(f) (long)((f) > 0 ? (f) + 0.5 : (f)-0.5) /* Nearest integer. */
@@ -819,11 +820,10 @@ double getMotorPos(int axis_no) {
 }
 
 void setMotorPos(int axis_no, double value, int flags) {
+  LOGTIME3("setMotorPos(%d) value=%g flags=0x%x\n", axis_no, value, flags);
   AXIS_CHECK_RETURN(axis_no);
   int stillMoving = isMotorMoving(axis_no);
   StopInternal(axis_no);
-  fprintf(stdlog, "%s/%s:%d axis_no=%d value=%g flags=0x%x\n", __FILE__,
-          __FUNCTION__, __LINE__, axis_no, value, flags);
   motor_axis[axis_no].homed = 1;
   if (flags & SET_MOTOR_POS_FLAGS_KEEP_MOVING) {
     motor_axis[axis_no].moving.velo.stillMoving = stillMoving;
