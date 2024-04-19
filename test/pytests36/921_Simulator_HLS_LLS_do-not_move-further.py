@@ -41,9 +41,10 @@ maxDelta = 0.01
 
 
 def InitAllFor921(self, tc_no):
-    self.axisCom.put(".MRES", 1.0)
-    self.axisCom.put(".DIR", 0)
+    if self.initAllFor921Done is True:
+        return
     self.axisCom.put(".VELO", myVELO)
+    self.axisCom.put(".BVEL", myVELO / 2.0)
     self.axisCom.put(".JVEL", myJVEL)
     self.axisCom.put(".ACCL", myACCL)
     self.axisCom.put(".ACCS", myACCS)
@@ -80,6 +81,7 @@ def InitAllFor921(self, tc_no):
     if isMotorMaster:
         self.axisCom.put("-PwrAuto", 0)
     self.axisMr.powerOnHomeAxis(tc_no)
+    self.initAllFor921Done = True
 
 
 def writeExpFileDontMoveThenMoveWhenOnLS(
@@ -288,7 +290,6 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperAllFields(
 
     counter = 0
     for field in field_value_to_be_tested:
-        counter = counter + 1
         value = field_value_to_be_tested[field]
         moveIntoLimitSwitchCheckMoveOrNotOneField(
             self,
@@ -300,6 +301,7 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperAllFields(
             value=value,
             bdst=bdst,
         )
+        counter = counter + 1
 
 
 def moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
@@ -310,8 +312,8 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
     )
     assert mres != 0
     assert dirPlusMinus != 0
+    InitAllFor921(self, tc_no)
     counter = 0
-    self.axisCom.put(".BVEL", myVELO / 2.0)
     twv = float(self.axisCom.get(".TWV"))
     # Avoid testing BDST in the master axis for now
     if self.axisMr.isMotorMasterAxis:
@@ -336,6 +338,7 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
 class Test(unittest.TestCase):
     drvUseEGU_RB = None
     drvUseEGU = 0
+    initAllFor921Done = False
     url_string = os.getenv("TESTEDMOTORAXIS")
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
@@ -344,17 +347,8 @@ class Test(unittest.TestCase):
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
-    # Initialize
-    def test_TC_92100000(self):
-        tc_no = 92100000
-        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
-        self.axisMr.setFieldSPAM(tc_no, 2047)
-
-        InitAllFor921(self, tc_no)
-        self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
-
-    def test_TC_92110000(self):
-        tc_no = 92110000
+    def test_TC_921010000(self):
+        tc_no = 921010000
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
@@ -364,8 +358,8 @@ class Test(unittest.TestCase):
             self, tc_no, mres=0.1, dirPlusMinus=1, lsToBeActiveted="LLS"
         )
 
-    def test_TC_92120000(self):
-        tc_no = 92120000
+    def test_TC_921020000(self):
+        tc_no = 921020000
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
@@ -375,8 +369,8 @@ class Test(unittest.TestCase):
             self, tc_no, mres=0.1, dirPlusMinus=1, lsToBeActiveted="HLS"
         )
 
-    def test_TC_92130000(self):
-        tc_no = 92130000
+    def test_TC_921030000(self):
+        tc_no = 921030000
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
@@ -386,8 +380,8 @@ class Test(unittest.TestCase):
             self, tc_no, mres=0.1, dirPlusMinus=1, lsToBeActiveted="LLS"
         )
 
-    def test_TC_92140000(self):
-        tc_no = 92140000
+    def test_TC_921040000(self):
+        tc_no = 921040000
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
@@ -397,8 +391,8 @@ class Test(unittest.TestCase):
             self, tc_no, mres=0.1, dirPlusMinus=1, lsToBeActiveted="HLS"
         )
 
-    def test_TC_92150000(self):
-        tc_no = 92150000
+    def test_TC_921050000(self):
+        tc_no = 921050000
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
@@ -408,8 +402,8 @@ class Test(unittest.TestCase):
             self, tc_no, mres=-0.1, dirPlusMinus=1, lsToBeActiveted="LLS"
         )
 
-    def test_TC_92160000(self):
-        tc_no = 92160000
+    def test_TC_921060000(self):
+        tc_no = 921060000
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
@@ -419,8 +413,8 @@ class Test(unittest.TestCase):
             self, tc_no, mres=-0.1, dirPlusMinus=1, lsToBeActiveted="HLS"
         )
 
-    def test_TC_92170000(self):
-        tc_no = 92170000
+    def test_TC_921070000(self):
+        tc_no = 921070000
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
@@ -430,8 +424,8 @@ class Test(unittest.TestCase):
             self, tc_no, mres=-0.1, dirPlusMinus=1, lsToBeActiveted="LLS"
         )
 
-    def test_TC_92180000(self):
-        tc_no = 92180000
+    def test_TC_921080000(self):
+        tc_no = 921080000
         self.assertEqual(
             0,
             int(self.axisCom.get(".MSTA")) & self.axisMr.MSTA_BIT_PROBLEM,
