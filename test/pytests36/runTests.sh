@@ -209,6 +209,15 @@ fi
 # shellcheck disable=SC2035
 black *.py
 
+#Check ruff, the fast Python linter and code formatter
+RUFF_VERSION=0.1.7
+if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
+  echo >&2 ruff not found or wrong version
+  exit 1
+fi
+# shellcheck disable=SC2035
+ruff *.py
+
 # See if we have a local EPICS installation
 uname_s=$(uname -s 2>/dev/null || echo unknown)
 uname_m=$(uname -m 2>/dev/null || echo unknown)
