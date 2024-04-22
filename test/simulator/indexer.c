@@ -2163,8 +2163,8 @@ static unsigned indexerMotorParamWrite(unsigned motor_axis_no,
           setAmplifierPercent(motor_axis_no, 0);
         }
       }
-      return ret;
     }
+      return ret;
     case PARAM_IDX_HOME_POSITION_FLOAT32:
       setHomePos(motor_axis_no, fValue);
       return ret;

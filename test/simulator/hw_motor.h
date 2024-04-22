@@ -95,7 +95,10 @@ double getMRES_24(int axis_no);
 int setMRES_24(int axis_no, double value);
 
 double getMotorPos(int axis_no);
-void setMotorPos(int axis_no, double value, int flags);
+void setMotorPos_fl(int axis_no, double value, int flags, const char *file,
+                    int line_no);
+#define setMotorPos(a, b, c) setMotorPos_fl(a, b, c, __FILE__, __LINE__)
+
 void setPositionJitter(int axis_no, double value);
 
 double getEncoderPos(int axis_no);

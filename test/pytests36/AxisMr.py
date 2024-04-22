@@ -20,7 +20,6 @@ motorRMOD_A = 1  # "Arithmetic"
 motorRMOD_G = 2  # "Geometric"
 motorRMOD_I = 3  # "In-Position"
 
-
 polltime = 0.2
 
 
@@ -99,6 +98,15 @@ class AxisMr:
     MIP_BIT_JOG_BL2 = 0x4000
     MIP_BIT_EXTERNAL = 0x8000
 
+    MF_HOME_ON_LS = 1
+    MF_LS_RAMPDOWN = 1 << 1
+    MF_NO_STOP_ONLS = 1 << 2
+    MF_DRIVER_USES_EGU = 1 << 3
+    MF_ADJ_AFTER_HOMED = 1 << 4
+    MF_NTM_UPDATE = 1 << 5
+    MF_NOT_HOMED_PROBLEM = 1 << 6
+    MF_NO_TWEAK_ONLS = 1 << 7
+
     # Values to be used for backlash test
     # Note: Make sure to use different values to hae a good
     # test coverage
@@ -138,7 +146,27 @@ class AxisMr:
         return inrange
 
     def calcRVALfromVAL(self, tc_no, val):
-        mres = float(self.axisCom.get(".MRES"))
+        # We have one PV as a readback from the driver
+        drvUseEGUmcu = int(self.axisCom.get("-DrvUseEGU-RB"))
+        if self.hasFieldMFLG:
+            mflg = int(self.axisCom.get(".MFLG"))
+            if mflg & self.MF_DRIVER_USES_EGU:
+                drvUseEGUmotorRecord = 1
+            else:
+                drvUseEGUmotorRecord = 0
+            # What we have in the driver should match 'the motor flags' in the motorRecord
+            if drvUseEGUmotorRecord != drvUseEGUmcu:
+                print(
+                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: calcRVALfromVAL mflg=0x{mflg:04x} drvUseEGUmotorRecord={drvUseEGUmotorRecord} drvUseEGUmcu={drvUseEGUmcu}"
+                )
+            assert drvUseEGUmotorRecord == drvUseEGUmcu
+        mres = self.axisCom.get(".MRES")
+        if drvUseEGUmcu == 1:
+            # keep the sign
+            if mres < 0.0:
+                mres = -1.0
+            else:
+                mres = 1.0
         off = float(self.axisCom.get(".OFF"))
         dir = int(self.axisCom.get(".DIR"))
         if dir == 0:  # positive, the default

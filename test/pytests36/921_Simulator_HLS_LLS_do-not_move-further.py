@@ -41,8 +41,14 @@ maxDelta = 0.01
 
 
 def InitAllFor921(self, tc_no):
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: self.initAllFor921Done={self.initAllFor921Done}"
+    )
     if self.initAllFor921Done is True:
         return
+    self.axisMr.setValueOnSimulator(tc_no, "nAmplifierPercent", 0)
+    self.axisMr.setValueOnSimulator(tc_no, "setMRES_23", 0)
+    self.axisMr.setValueOnSimulator(tc_no, "setMRES_24", 0)
     drvUseEGU_RB = self.axisCom.get("-DrvUseEGU-RB")
     if drvUseEGU_RB == 1:
         self.axisCom.put("-DrvUseEGU", 0)
@@ -115,11 +121,16 @@ def writeExpFileDontMoveThenMoveWhenOnLS(
 
     # We should move away from the LS
     bdst = float(self.axisCom.get(".BDST"))
+    mres = float(self.axisCom.get(".MRES"))
+    if mres < 0.0:
+        bdstRAW = 0.0 - bdst
+    else:
+        bdstRAW = bdst
     diff = endPosRAW - startPosRAW
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: bdst={bdst:.2f} diff={diff:.2f}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: bdst={bdst:.2f} bdstRAW={bdstRAW:.2f} diff={diff:.2f}"
     )
-    if bdst == 0:
+    if bdstRAW == 0:
         line1 = (
             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
             % (endPosRAW, velo, accs, startPosRAW)
@@ -139,7 +150,7 @@ def writeExpFileDontMoveThenMoveWhenOnLS(
         # if diff * bdst > 0 and fabs(diff) < fabs(bdst):
         #    # Same direction, short move
         #    line2 =
-        intermediatePositionRAW = endPosRAW - bdst
+        intermediatePositionRAW = endPosRAW - bdstRAW
         line2 = (
             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
             % (intermediatePositionRAW, velo, accs, startPosRAW)
@@ -182,19 +193,23 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} oldDir={oldDir} dir={dir} mres={mres} oldMres={oldMres} dirOrMresChanged={dirOrMresChanged}"
     )
-    if dirOrMresChanged:
+    while dirOrMresChanged:
         # Need to go to 0.0, before DIR can be reverted
         # self.axisMr.setValueOnSimulator(tc_no, "fSimForcePos", 0.0)
+        self.axisCom.put(".OFF", 0.0)
         self.axisMr.moveWait(tc_no, 0.0)
-        self.axisCom.put(".DIR", dir)
+        if oldDir != dir:
+            self.axisCom.put(".DIR", dir)
+        if mres != oldMres:
+            self.axisCom.put(".MRES", mres)
         self.axisCom.put(".OFF", 0.0)
         rbv = float(self.axisCom.get(".RBV"))
         drbv = float(self.axisCom.get(".DRBV"))
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} rbv={rbv:.2f} drbv={drbv:.2f}"
         )
-        assert rbv == 0.0
-        assert drbv == 0.0
+        if rbv == 0.0 and drbv == 0.0:
+            dirOrMresChanged = False
 
     twv = float(self.axisCom.get(".TWV"))
     if lsToBeActiveted == "LLS":
@@ -230,21 +245,25 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
     rbv = float(self.axisCom.get(".RBV"))
-    softlimitPositionRAW = self.axisMr.calcRVALfromVAL(tc_no, rbv)
+    rrbv = self.axisMr.calcRVALfromVAL(tc_no, rbv)
     if lls:
-        positionOffTheSoflimitVAL = rbv + 2 * twv
+        soflimitNotActivatedVAL = rbv + 2 * twv
     elif hls:
-        positionOffTheSoflimitVAL = rbv - 2 * twv
+        soflimitNotActivatedVAL = rbv - 2 * twv
     else:
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} illegal lls={lls} hls={hls}"
         )
         assert False
-    positionOffTheSoflimitRAW = self.axisMr.calcRVALfromVAL(
-        tc_no, positionOffTheSoflimitVAL
+    soflimitNotActivatedRAW = self.axisMr.calcRVALfromVAL(
+        tc_no, soflimitNotActivatedVAL
     )
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} rbv={rbv:.2f} rrbv={rrbv:.2f}, soflimitNotActivated USER={soflimitNotActivatedVAL:.2f} RAW={soflimitNotActivatedRAW:.2f}"
+    )
+
     writeExpFileDontMoveThenMoveWhenOnLS(
-        self, tc_no, expFileName, softlimitPositionRAW, positionOffTheSoflimitRAW
+        self, tc_no, expFileName, rrbv, soflimitNotActivatedRAW
     )
     self.axisMr.setValueOnSimulator(tc_no, "log", actFileName)
     # try to move beyond the limit switch, then away from it
@@ -254,6 +273,7 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
     )
     had_ex = False
     try:
+        # first movement: This should be suppressed, since limit switch actived
         if field == ".VAL" or field == ".DVAL":
             self.axisMr.moveWait(tc_no, value)
         elif field == ".TWF" or field == ".TWR" or field == ".JOGF" or field == ".JOGR":
@@ -263,7 +283,9 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} illegal field={field}"
             )
             assert False
-        self.axisMr.moveWait(tc_no, positionOffTheSoflimitVAL)
+        # second movement: Move away from limit switch
+        # only this movement should be found in the log
+        self.axisMr.moveWait(tc_no, soflimitNotActivatedVAL)
 
     except:  # noqa: E722
         had_ex = True
@@ -330,7 +352,7 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
     self, tc_no, mres=0, dirFieldPlusMinus=0, lsToBeActiveted=""
 ):
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} mres{mres} dirFieldPlusMinus={dirFieldPlusMinus} lsToBeActiveted={lsToBeActiveted} "
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} mres{mres} dirFieldPlusMinus={dirFieldPlusMinus} lsToBeActiveted={lsToBeActiveted}"
     )
     assert mres != 0
     assert dirFieldPlusMinus != 0

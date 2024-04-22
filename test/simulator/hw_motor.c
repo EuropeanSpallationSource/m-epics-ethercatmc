@@ -791,8 +791,10 @@ double getMotorPos(int axis_no) {
   return motor_axis[axis_no].MotorPosReported;
 }
 
-void setMotorPos(int axis_no, double value, int flags) {
-  LOGTIME3("setMotorPos(%d) value=%g flags=0x%x\n", axis_no, value, flags);
+void setMotorPos_fl(int axis_no, double value, int flags, const char *file,
+                    int line_no) {
+  LOGTIME3("setMotorPos(%d) (%s:%d) value=%g flags=0x%x\n", axis_no, file,
+           line_no, value, flags);
   AXIS_CHECK_RETURN(axis_no);
   int stillMoving = isMotorMoving(axis_no);
   StopInternal(axis_no);
