@@ -145,6 +145,16 @@ class AxisMr:
             )
         return inrange
 
+    def calcDVALfromVAL(self, tc_no, val):
+        off = float(self.axisCom.get(".OFF"))
+        dir = int(self.axisCom.get(".DIR"))
+        if dir == 0:  # positive, the default
+            dir = +1
+        else:
+            dir = -1  # negative
+        dval = (val - off) * dir
+        return dval
+
     def calcRVALfromVAL(self, tc_no, val):
         # We have one PV as a readback from the driver
         drvUseEGUmcu = int(self.axisCom.get("-DrvUseEGU-RB"))
@@ -167,13 +177,7 @@ class AxisMr:
                 mres = -1.0
             else:
                 mres = 1.0
-        off = float(self.axisCom.get(".OFF"))
-        dir = int(self.axisCom.get(".DIR"))
-        if dir == 0:  # positive, the default
-            dir = +1
-        else:
-            dir = -1  # negative
-        dval = (val - off) * dir
+        dval = self.calcDVALfromVAL(tc_no, val)
         rval = dval / mres
         return rval
 
@@ -660,7 +664,7 @@ class AxisMr:
 
         return passed
 
-    def moveWait(self, tc_no, destination):
+    def moveWait(self, tc_no, destination, field=".VAL"):
         rbv = self.axisCom.get(".RBV", use_monitor=False)
         rdbd = self.axisCom.get(".RDBD")
 
@@ -678,7 +682,7 @@ class AxisMr:
             distance = math.fabs(self.axisCom.get(".RBV") - destination)
             timeout += distance / velocity
 
-        self.axisCom.put(".VAL", destination)
+        self.axisCom.put(field, destination)
         self.waitForStartAndDone(str(tc_no) + " moveWait", timeout)
 
     def postMoveCheck(self, tc_no):
