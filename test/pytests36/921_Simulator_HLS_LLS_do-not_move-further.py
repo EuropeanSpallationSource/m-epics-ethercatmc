@@ -101,6 +101,7 @@ def InitAllFor921(self, tc_no):
         self.axisCom.put("-PwrAuto", 0)
     self.axisMr.powerOnHomeAxis(tc_no)
     self.initAllFor921Done = True
+    self.axisMr.setFieldSPAM(tc_no, 2047)
 
 
 def writeExpFileDontMoveThenMoveWhenOnLS(
@@ -203,12 +204,16 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
         if mres != oldMres:
             self.axisCom.put(".MRES", mres)
         self.axisCom.put(".OFF", 0.0)
+        self.axisMr.setValueOnSimulator(tc_no, "fSimForcePos", 0.0)
         rbv = float(self.axisCom.get(".RBV"))
         drbv = float(self.axisCom.get(".DRBV"))
+        mip = int(self.axisCom.get(".DRBV"))
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} rbv={rbv:.2f} drbv={drbv:.2f}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} rbv={rbv:.2f} drbv={drbv:.2f} mip={self.axisMr.getMIPtext(mip)}"
         )
-        if rbv == 0.0 and drbv == 0.0:
+        oldDir = int(self.axisCom.get(".DIR"))
+        oldMres = float(self.axisCom.get(".MRES"))
+        if rbv == 0.0 and drbv == 0.0 and mip == 0:
             dirOrMresChanged = False
 
     twv = float(self.axisCom.get(".TWV"))
@@ -248,8 +253,10 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
     rrbv = self.axisMr.calcRVALfromVAL(tc_no, rbv)
     if lls:
         soflimitNotActivatedVAL = rbv + 2 * twv
+        soflimitActivatedVAL = rbv - 2 * twv
     elif hls:
         soflimitNotActivatedVAL = rbv - 2 * twv
+        soflimitActivatedVAL = rbv + 2 * twv
     else:
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} illegal lls={lls} hls={hls}"
@@ -259,7 +266,7 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
         tc_no, soflimitNotActivatedVAL
     )
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} rbv={rbv:.2f} rrbv={rrbv:.2f}, soflimitNotActivated USER={soflimitNotActivatedVAL:.2f} RAW={soflimitNotActivatedRAW:.2f}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} field={field} rbv={rbv:.2f} rrbv={rrbv:.2f}, soflimitNotActivated USER={soflimitNotActivatedVAL:.2f} RAW={soflimitNotActivatedRAW:.2f}"
     )
 
     writeExpFileDontMoveThenMoveWhenOnLS(
@@ -274,7 +281,9 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
     had_ex = False
     try:
         # first movement: This should be suppressed, since limit switch actived
-        if field == ".VAL" or field == ".DVAL":
+        if field == ".VAL":
+            # Change value if MRES < 0
+            value = soflimitActivatedVAL
             self.axisMr.moveWait(tc_no, value)
         elif field == ".TWF" or field == ".TWR" or field == ".JOGF" or field == ".JOGR":
             self.axisCom.put(field, value, wait=True, timeout=60)
@@ -327,9 +336,8 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperAllFields(
         ".JOG" + rf: 1,
     }
     if not self.axisMr.isMotorMasterAxis:
-        # Add VAL and DVAL and tweak
+        # Add VAL and tweak
         field_value_to_be_tested[".VAL"] = beyondLimitSwitchPosVAL
-        field_value_to_be_tested[".DVAL"] = beyondLimitSwitchPosVAL * dirFieldPlusMinus
         field_value_to_be_tested[".TW" + rf] = 1
 
     counter = 0
@@ -364,6 +372,7 @@ def moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
         BDSTs = [0.0]
     else:
         BDSTs = [0.0, twv / 2.0, -twv / 2.0]
+        BDSTs = [0.0]
     for bdst in BDSTs:
         counter = counter + 10
         print(
