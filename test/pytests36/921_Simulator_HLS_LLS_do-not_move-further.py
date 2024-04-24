@@ -430,7 +430,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=1.0, dirFieldPlusMinus=1, lsToBeActiveted="LLS"
+            self, tc_no, mres=1.0, dirFieldPlusMinus=-1, lsToBeActiveted="LLS"
         )
 
     def test_TC_921040000(self):
@@ -441,7 +441,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=1.0, dirFieldPlusMinus=1, lsToBeActiveted="HLS"
+            self, tc_no, mres=1.0, dirFieldPlusMinus=-1, lsToBeActiveted="HLS"
         )
 
     def test_TC_921050000(self):
@@ -474,7 +474,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=-1.0, dirFieldPlusMinus=1, lsToBeActiveted="LLS"
+            self, tc_no, mres=-1.0, dirFieldPlusMinus=-1, lsToBeActiveted="LLS"
         )
 
     def test_TC_921080000(self):
@@ -485,7 +485,7 @@ class Test(unittest.TestCase):
             "MSTA.Problem should be 0",
         )
         moveIntoLimitSwitchCheckMoveOrNotWrapperBDST(
-            self, tc_no, mres=-1.0, dirFieldPlusMinus=1, lsToBeActiveted="HLS"
+            self, tc_no, mres=-1.0, dirFieldPlusMinus=-1, lsToBeActiveted="HLS"
         )
 
     def teardown_class(self):
