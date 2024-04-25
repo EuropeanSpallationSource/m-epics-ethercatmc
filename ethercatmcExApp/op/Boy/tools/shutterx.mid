@@ -814,9 +814,10 @@ $(pv_value)</tooltip>
         <path>ethercatmcShutter.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <M>$(M1)</M>
         </macros>
         <replace>0</replace>
-        <description>$(M) (Shutter)</description>
+        <description>$(M1) (Shutter)</description>
       </action>
     </actions>
     <tooltip>$(pv_name)

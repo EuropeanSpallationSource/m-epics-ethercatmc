@@ -70,7 +70,7 @@
     <on_label>close</on_label>
     <password></password>
     <push_action_index>0</push_action_index>
-    <pv_name>$(P)$(M)-Open</pv_name>
+    <pv_name>$(P)$(M)Open</pv_name>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
@@ -133,7 +133,7 @@ $(pv_value)</tooltip>
     <on_label>ErrRst</on_label>
     <password></password>
     <push_action_index>1</push_action_index>
-    <pv_name>$(P)$(M)-ErrRst</pv_name>
+    <pv_name>$(P)$(M)ErrRst</pv_name>
     <pv_value />
     <released_action_index>0</released_action_index>
     <rules>
@@ -191,7 +191,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-DESC-RB</pv_name>
+    <pv_name>$(P)$(M)DESC-RB</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -293,7 +293,7 @@ $(pv_value)</tooltip>
     </on_color>
     <on_label>Cl</on_label>
     <off_label></off_label>
-    <pv_name>$(P)$(M)-Closed</pv_name>
+    <pv_name>$(P)$(M)Closed</pv_name>
     <pv_value />
     <rules>
     </rules>
@@ -346,7 +346,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-Target</pv_name>
+    <pv_name>$(P)$(M)Target</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -403,7 +403,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-Actual</pv_name>
+    <pv_name>$(P)$(M)Actual</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -464,7 +464,7 @@ $(pv_value)</tooltip>
     </on_color>
     <on_label>Op</on_label>
     <off_label></off_label>
-    <pv_name>$(P)$(M)-Opened</pv_name>
+    <pv_name>$(P)$(M)Opened</pv_name>
     <pv_value />
     <rules>
     </rules>
@@ -558,7 +558,7 @@ $(pv_value)</tooltip>
     <name>Text Input</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-SP</pv_name>
+    <pv_name>$(P)$(M)SP</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
      <rules>
@@ -616,7 +616,7 @@ $(pv_value)</tooltip>
     <password_input>false</password_input>
     <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
-    <pv_name>$(P)$(M)-StatusCode</pv_name>
+    <pv_name>$(P)$(M)StatusCode</pv_name>
     <pv_value />
     <read_only>false</read_only>
     <rules>
@@ -627,7 +627,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-StatusCode.SEVR</pv>
+        <pv trig="true">$(P)$(M)StatusCode.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -684,7 +684,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_29</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-MsgTxt</pv_name>
+    <pv_name>$(P)$(M)MsgTxt</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -747,7 +747,7 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="ReasonBitLED25-Visible" prop_id="visible" out_exp="false">
@@ -757,7 +757,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamBit25.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamBit25.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -811,7 +811,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamBit25</pv_name>
+    <pv_name>$(P)$(M)NamBit25</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -822,7 +822,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamBit25.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamBit25.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -883,7 +883,7 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="ReasonBitLED24-Visible" prop_id="visible" out_exp="false">
@@ -893,7 +893,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamBit24.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamBit24.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -947,7 +947,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamBit24</pv_name>
+    <pv_name>$(P)$(M)NamBit24</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -958,7 +958,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamBit24.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamBit24.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1019,7 +1019,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED23-Visible" prop_id="visible" out_exp="false">
@@ -1029,7 +1029,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit23.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit23.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1083,7 +1083,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit23</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit23</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1094,7 +1094,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit23.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit23.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1155,7 +1155,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED22-Visible" prop_id="visible" out_exp="false">
@@ -1165,7 +1165,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit22.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit22.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1219,7 +1219,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit22</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit22</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1230,7 +1230,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit22.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit22.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1291,7 +1291,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED21-Visible" prop_id="visible" out_exp="false">
@@ -1301,7 +1301,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit21.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit21.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1355,7 +1355,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit21</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit21</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1366,7 +1366,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit21.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit21.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1427,7 +1427,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED20-Visible" prop_id="visible" out_exp="false">
@@ -1437,7 +1437,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit20.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit20.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1491,7 +1491,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit20</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit20</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1502,7 +1502,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit20.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit20.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1563,7 +1563,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED19-Visible" prop_id="visible" out_exp="false">
@@ -1573,7 +1573,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit19.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit19.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1627,7 +1627,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit19</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit19</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1638,7 +1638,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit19.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit19.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1699,7 +1699,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED18-Visible" prop_id="visible" out_exp="false">
@@ -1709,7 +1709,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit18.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit18.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1763,7 +1763,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit18</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit18</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1774,7 +1774,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit18.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit18.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1835,7 +1835,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED17-Visible" prop_id="visible" out_exp="false">
@@ -1845,7 +1845,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit17.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit17.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1899,7 +1899,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit17</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit17</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1910,7 +1910,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit17.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit17.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1971,7 +1971,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED16-Visible" prop_id="visible" out_exp="false">
@@ -1981,7 +1981,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit16.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit16.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2035,7 +2035,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit16</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit16</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2046,7 +2046,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit16.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit16.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2107,7 +2107,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED15-Visible" prop_id="visible" out_exp="false">
@@ -2117,7 +2117,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit15.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit15.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2171,7 +2171,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit15</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit15</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2182,7 +2182,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit15.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit15.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2243,7 +2243,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED14-Visible" prop_id="visible" out_exp="false">
@@ -2253,7 +2253,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit14.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit14.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2307,7 +2307,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit14</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit14</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2318,7 +2318,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit14.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit14.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2379,7 +2379,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED13-Visible" prop_id="visible" out_exp="false">
@@ -2389,7 +2389,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit13.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit13.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2443,7 +2443,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit13</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit13</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2454,7 +2454,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit13.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit13.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2515,7 +2515,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED5-Visible" prop_id="visible" out_exp="false">
@@ -2525,7 +2525,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit5.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2579,7 +2579,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit5</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit5</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2590,7 +2590,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit5.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2651,7 +2651,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED4-Visible" prop_id="visible" out_exp="false">
@@ -2661,7 +2661,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit4.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2715,7 +2715,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit4</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit4</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2726,7 +2726,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit4.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2787,7 +2787,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED3-Visible" prop_id="visible" out_exp="false">
@@ -2797,7 +2797,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit3.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2851,7 +2851,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit3</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit3</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2862,7 +2862,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit3.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2923,7 +2923,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED2-Visible" prop_id="visible" out_exp="false">
@@ -2933,7 +2933,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit2.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2987,7 +2987,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit2</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit2</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2998,7 +2998,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit2.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3059,7 +3059,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED1-Visible" prop_id="visible" out_exp="false">
@@ -3069,7 +3069,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit1.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3123,7 +3123,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit1</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit1</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3134,7 +3134,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit1.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3195,7 +3195,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)-StatusBits</pv_name>
+    <pv_name>$(P)$(M)StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED0-Visible" prop_id="visible" out_exp="false">
@@ -3205,7 +3205,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit0.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3259,7 +3259,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)-NamAuxBit0</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit0</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3270,7 +3270,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)-NamAuxBit0.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>

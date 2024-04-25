@@ -9809,9 +9809,10 @@ $(pv_value)</tooltip>
         <path>ethercatmcShutter.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <M>$(M7)</M>
         </macros>
         <replace>0</replace>
-        <description>$(M) (Shutter)</description>
+        <description>$(M7) (Shutter)</description>
       </action>
     </actions>
     <tooltip>$(pv_name)
@@ -10746,9 +10747,10 @@ $(pv_value)</tooltip>
         <path>ethercatmcShutter.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <M>$(M8)</M>
         </macros>
         <replace>0</replace>
-        <description>$(M) (Shutter)</description>
+        <description>$(M8) (Shutter)</description>
       </action>
     </actions>
     <tooltip>$(pv_name)
@@ -11683,9 +11685,10 @@ $(pv_value)</tooltip>
         <path>ethercatmcShutter.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
+          <M>$(M9)</M>
         </macros>
         <replace>0</replace>
-        <description>$(M) (Shutter)</description>
+        <description>$(M9) (Shutter)</description>
       </action>
     </actions>
     <tooltip>$(pv_name)

@@ -16,6 +16,9 @@ STATUSBITS='$(M)-StatusBits'
 NAMAUXBIT='$(M)-NamAuxBit'
 case $BASENAME in
   ethercatmcShutter)
+    STATUSCODE='$(M)StatusCode'
+    STATUSBITS='$(M)StatusBits'
+    NAMAUXBIT='$(M)NamAuxBit'
     yaux=298
     ;;
   ethercatmcaxisExpert)
