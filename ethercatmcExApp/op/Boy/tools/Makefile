@@ -197,7 +197,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
 
 ../ethercatmcaxisConfig-pils.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile
-	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
+	cat $(DEPENDENCIES_FOR_CONFIG_PILS_OPI)  >$@
 
 #../ethercatmcaxisConfig-ecmc.opi \
 
