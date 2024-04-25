@@ -50,9 +50,9 @@ genMatrix() {
               x=$(($cntx * $WIDTH))
               cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
               echo xcmd=$cmd "<$OPIMID"
-              eval $cmd <$OPIMID >>$$
+              eval $cmd <$OPIMID >>/tmp/$$
               if test "$OPIMID_EGU_TEMP"; then
-                eval $cmd <$OPIMID_EGU_TEMP >>$$
+                eval $cmd <$OPIMID_EGU_TEMP >>/tmp/$$
               fi
               im=$(($im + 1))
               cntx=$(($cntx + 1))
@@ -75,9 +75,9 @@ genMatrix() {
         x=$(($cntx * $WIDTH))
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
         echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>$$
+        eval $cmd <$OPIMID >>/tmp/$$
         if test "$OPIMID_EGU_TEMP"; then
-          eval $cmd <$OPIMID_EGU_TEMP >>$$
+          eval $cmd <$OPIMID_EGU_TEMP >>/tmp/$$
         fi
         im=$(($im + 1))
         cntx=$(($cntx + 1))
@@ -99,7 +99,7 @@ genMatrix() {
         x=$(($cntx * $WIDTH))
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
         echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>$$
+        eval $cmd <$OPIMID >>/tmp/$$
         im=$(($im + 1))
         cntx=$(($cntx + 1))
         ;;
@@ -112,7 +112,7 @@ genMatrix() {
         x=$(($cntx * $WIDTH))
         cmd=$(echo OPIMID=$OPIMID ./shiftopi.py --shiftx $x --shifty $y --shiftt $it)
         echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>$$
+        eval $cmd <$OPIMID >>/tmp/$$
         it=$(($it + 1))
         cntx=$(($cntx + 1))
         ;;
@@ -150,45 +150,45 @@ fi &&
     HAS_PTP="-ptp"
     export HAS_PTP
   fi &&
-  sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!" <motorx.start >$$ &&
+  sed -e "s!<name>motorx</name>!<name>$BASENAMEF</name>!" <motorx.start >/tmp/$$ &&
   echo "Creating $FILE" &&
   if test "$HAS_PILS" = "y"; then
-    cat plcName.mid >>$$ &&
-      cat plcHealthStatus.mid >>$$ &&
-      cat plcIPADDR_PORT.mid >>$$
+    cat plcName.mid >>/tmp/$$ &&
+      cat plcHealthStatus.mid >>/tmp/$$ &&
+      cat plcIPADDR_PORT.mid >>/tmp/$$
   fi &&
   if test "$HAS_PTP" != ""; then
     cmd=$(echo ./shiftopi.py --shiftx 0 --shifty 16 --shiftm 0)
     echo cmd=$cmd "<openPTPErrBits.mid"
-    eval $cmd <openPTPErrBits.mid >>$$
+    eval $cmd <openPTPErrBits.mid >>/tmp/$$
     cmd=$(echo ./shiftopi.py --shiftx 100 --shifty 16 --shiftm 0)
     echo cmd=$cmd "<ptp.mid"
-    eval $cmd <ptp.mid >>$$
+    eval $cmd <ptp.mid >>/tmp/$$
     cmd=$(echo ./shiftopi.py --shiftx $((282 + 100)) --shifty 16)
     echo cmd=$cmd "ptp-ts-ns.mid"
-    eval $cmd <ptp-ts-ns.mid >>$$
+    eval $cmd <ptp-ts-ns.mid >>/tmp/$$
   fi &&
   genMatrix "$@" &&
-  cat motorx.end >>$$ &&
+  cat motorx.end >>/tmp/$$ &&
   if test "$HAS_ECMC" = "y"; then
     touch $FILE &&
       chmod +w $FILE &&
-      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-ecmc.opi!" <$$ >$FILE &&
-      rm $$ &&
+      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-ecmc.opi!" </tmp/$$ >$FILE &&
+      rm /tmp/$$ &&
       chmod -w $FILE
   elif test "$HAS_PTP" != ""; then
     touch $FILE &&
       chmod +w $FILE &&
-      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-pils-ptp.opi!" <$$ >$FILE &&
-      rm $$ &&
+      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-pils-ptp.opi!" </tmp/$$ >$FILE &&
+      rm /tmp/$$ &&
       chmod -w $FILE
   elif test "$HAS_PILS" = ""; then
     touch $FILE &&
       chmod +w $FILE &&
-      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert.opi!" <$$ >$FILE &&
-      rm $$ &&
+      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert.opi!" </tmp/$$ >$FILE &&
+      rm /tmp/$$ &&
       chmod -w $FILE
   else
-    mv -f $$ $FILE &&
+    mv -f /tmp/$$ $FILE &&
       chmod -w $FILE
   fi

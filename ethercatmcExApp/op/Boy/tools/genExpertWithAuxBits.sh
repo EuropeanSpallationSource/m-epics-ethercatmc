@@ -114,57 +114,57 @@ x=0
 y=0
 
 echo "Creating $FILE" &&
-  cat $BASENAME.start >$$ &&
+  cat $BASENAME.start >/tmp/$$ &&
   if test "$HAS_PILS" = "y"; then
-    cat plcName.mid >>$$ &&
+    cat plcName.mid >>/tmp/$$ &&
       y=$(($y + 16))
   fi &&
   if test $PTPOPENERRBITS != 0; then
-    cat openPTPErrBits.mid >>$$
+    cat openPTPErrBits.mid >>/tmp/$$
   fi &&
   WIDTH_PTP=78
 SHIFTX=$(($PTPOPENERRBITS + 282)) # PTP fields are from left to right
 SHIFTY=0                          # Set to 16 further down, if any PTP is here
 if test "$HAS_PTPdiffTimeIOC_MCU" = "y"; then
-  ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid >>$$
-  ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid >>$$
+  ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid >>/tmp/$$
+  ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid >>/tmp/$$
   SHIFTX=$(($SHIFTX + $WIDTH_PTP))
   SHIFTY=16
 fi &&
   if test "$HAS_PTPdiffNTTime_MCU" = "y"; then
     ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>/tmp/$$
     ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>$$
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffNTtime_MCU/g" >>/tmp/$$
     SHIFTX=$(($SHIFTX + $WIDTH_PTP))
     SHIFTY=16
   fi &&
   if test "$HAS_PTPdiffTcNTPExttime_mcu" = "HAS_PTPdiffTcNTPExttime_mcu_yes"; then
     ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTcNTPExttime_MCU/g" >>$$
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTcNTPExttime_MCU/g" >>/tmp/$$
     ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTcNTPExttime_MCU/g" >>$$
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTcNTPExttime_MCU/g" >>/tmp/$$
     SHIFTX=$(($SHIFTX + $WIDTH_PTP))
     SHIFTY=16
   fi &&
   if test "$HAS_PTPTCdiffTime_MCU" = "y"; then
     ./shiftopi.py --shiftx $SHIFTX --shifty $y <PTPdiffTimeIOC_MCU-HIGH-LOW.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTCtime_MCU/g" >>$$
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTCtime_MCU/g" >>/tmp/$$
     ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <PTPdiffTimeIOC_MCU.mid |
-      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTCtime_MCU/g" >>$$
+      sed -e "s/PTPdiffTimeIOC_MCU/PTPdiffTCtime_MCU/g" >>/tmp/$$
     SHIFTX=$(($SHIFTX + $WIDTH_PTP))
     SHIFTY=16
   fi &&
   if test "$HAS_PTP_TS_NS_POS_NEG" = "y"; then
-    ./shiftopi.py --shiftx $SHIFTX --shifty $y <ptp-ts-ns-pos-neg.mid >>$$
-    ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <ptp-ts-ns.mid >>$$
+    ./shiftopi.py --shiftx $SHIFTX --shifty $y <ptp-ts-ns-pos-neg.mid >>/tmp/$$
+    ./shiftopi.py --shiftx $SHIFTX --shifty $((y + 16)) <ptp-ts-ns.mid >>/tmp/$$
     SHIFTX=$(($SHIFTX + $WIDTH_PTP))
     SHIFTY=16
   fi &&
   yaux=$(($yaux + $SHIFTY)) # shift one line from high to have PTP in the middle
 y=$(($y + $SHIFTY))         # shift one line from high to have PTP in the middle
 if test "$HAS_PTP" = "y"; then
-  ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y <ptp.mid >>$$
+  ./shiftopi.py --shiftx $PTPOPENERRBITS --shifty $y <ptp.mid >>/tmp/$$
   SHIFTY=16
 fi &&
   yaux=$(($yaux + $SHIFTY)) # shift one line from low to have PTP in the middle
@@ -174,38 +174,38 @@ echo $0: FILE=$FILE BASENAME=$BASENAME rest=$@
 ETHERCATMCAXISCONFIG_OPI=ethercatmcaxisConfig-pils.opi
 cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
   echo $0: $BASENAME cmd=$cmd &&
-  eval $cmd <$BASENAME.mid >>$$ &&
+  eval $cmd <$BASENAME.mid >>/tmp/$$ &&
   if test "$HAS_PILS" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_PILS cmd=$cmd
-    eval $cmd <cnen-vis.mid >>$$
-    eval $cmd <foff-vis.mid >>$$
-    eval $cmd <homf-homr-vis.mid >>$$
-    eval $cmd <inhibitf-inhibitr.mid >>$$
-    eval $cmd <pils-errtxt.mid >>$$
-    eval $cmd <pils-status-bit24-25.mid >>$$
-    eval $cmd <pils-statuscode.mid >>$$
+    eval $cmd <cnen-vis.mid >>/tmp/$$
+    eval $cmd <foff-vis.mid >>/tmp/$$
+    eval $cmd <homf-homr-vis.mid >>/tmp/$$
+    eval $cmd <inhibitf-inhibitr.mid >>/tmp/$$
+    eval $cmd <pils-errtxt.mid >>/tmp/$$
+    eval $cmd <pils-status-bit24-25.mid >>/tmp/$$
+    eval $cmd <pils-statuscode.mid >>/tmp/$$
   elif test "$HAS_ECMC" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_ECMC cmd=$cmd
-    eval $cmd <ecmc.mid >>$$
+    eval $cmd <ecmc.mid >>/tmp/$$
   elif test "$BASENAME" = "ethercatmcaxisExpert"; then
     # The old etthercatmc (no pils)
     ETHERCATMCAXISCONFIG_OPI=ethercatmcaxisConfig.opi
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: Neither_PILS_NOR_ECMC cmd=$cmd
-    eval $cmd <cnen-vis.mid >>$$
-    eval $cmd <foff-vis.mid >>$$
-    eval $cmd <homf-homr-vis.mid >>$$
+    eval $cmd <cnen-vis.mid >>/tmp/$$
+    eval $cmd <foff-vis.mid >>/tmp/$$
+    eval $cmd <homf-homr-vis.mid >>/tmp/$$
   fi &&
   for n in $@; do
     yaux=$(($yaux + 20))
     cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
     echo cmd=$cmd
-    eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>$$
+    eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>/tmp/$$
   done
 touch "$FILE" &&
   chmod +w "$FILE" &&
-  cat $BASENAME.end >>$$ &&
-  sed -e "s!ethercatmcaxisConfig-pils.opi!$ETHERCATMCAXISCONFIG_OPI!" <$$ >"$FILE"
+  cat $BASENAME.end >>/tmp/$$ &&
+  sed -e "s!ethercatmcaxisConfig-pils.opi!$ETHERCATMCAXISCONFIG_OPI!" </tmp/$$ >"$FILE"
 chmod -w "$FILE"

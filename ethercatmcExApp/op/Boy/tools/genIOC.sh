@@ -11,11 +11,11 @@ echo $0: OTHEROPIS=$OTHEROPIS
 x=0
 y=0
 echo "Creating $FILE" &&
-  cat $BASENAME.start >$$ &&
+  cat $BASENAME.start >/tmp/$$ &&
   for f in $MCUOPIS; do
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y)
     echo $0: cmd=$cmd
-    eval $cmd <$f >>$$
+    eval $cmd <$f >>/tmp/$$
     y=$(($y + 36))
   done &&
   y=0 &&
@@ -23,9 +23,9 @@ echo "Creating $FILE" &&
   for f in $OTHEROPIS; do
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y)
     echo $0: cmd=$cmd
-    eval $cmd <$f >>$$
+    eval $cmd <$f >>/tmp/$$
     y=$(($y + 36))
   done &&
-  cat $BASENAME.end >>$$ &&
-  mv -f $$ $FILE &&
+  cat $BASENAME.end >>/tmp/$$ &&
+  mv -f /tmp/$$ $FILE &&
   chmod -w $FILE
