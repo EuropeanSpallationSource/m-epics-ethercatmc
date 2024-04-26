@@ -230,7 +230,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	./genExpertWithAuxBits.sh $@ ethercatmcStatusWord1802 $(AUXBITS_STATUSWORD)
 
 ../shutter-1.opi: $(DEPENDENCIES_FOR_SHUTTER_OPI)
-	./genMotorShutter.sh $@ pils shutter 1 x 1
+	./genMotorShutter.sh $@ pils shutter s
 
 ../IOC.opi: Makefile genIOC.sh IOC*.*
 	./genIOC.sh ../IOC.opi IOC
