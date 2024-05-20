@@ -1,7 +1,7 @@
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-2-pils.opi</path>
+        <path>motor-2.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>LabS-MCAG:MC-MCU-19:</PREFIX>
@@ -34,7 +34,7 @@
     </foreground_color>
     <height>31</height>
     <image></image>
-    <name>Action Button_8</name>
+    <name>Action Button_2</name>
     <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
@@ -46,14 +46,14 @@
     </scale_options>
     <scripts />
     <style>0</style>
-    <text>MC-MCU019</text>
+    <text>MC-MCU019-ads</text>
     <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Action Button</widget_type>
     <width>180</width>
-    <wuid>1d681a25:1922fd92503:-61ae</wuid>
+    <wuid>656a2d8c:15258ee659a:-788d</wuid>
     <x>0</x>
     <y>0</y>
   </widget>
