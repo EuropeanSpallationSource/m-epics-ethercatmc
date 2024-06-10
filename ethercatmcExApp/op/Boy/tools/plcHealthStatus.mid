@@ -15,7 +15,7 @@
   <transparent>false</transparent>
   <pv_name></pv_name>
   <background_color>
-    <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+    <color red="51" green="153" blue="0" />
   </background_color>
   <foreground_color>
     <color name="Gray_0" red="255" green="255" blue="255" />

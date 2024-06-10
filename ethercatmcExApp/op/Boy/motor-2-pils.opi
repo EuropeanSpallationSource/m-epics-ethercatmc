@@ -99,7 +99,7 @@ $(pv_value)</tooltip>
   <transparent>false</transparent>
   <pv_name></pv_name>
   <background_color>
-    <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+    <color red="51" green="153" blue="0" />
   </background_color>
   <foreground_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
@@ -267,7 +267,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="MEDM_COLOR_60" red="115" green="255" blue="107" />
+      <color  red="115" green="255" blue="107" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -458,7 +458,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="alarm" red="253" green="0" blue="0" />
+      <color red="253" green="0" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -525,7 +525,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="alarm" red="253" green="128" blue="0" />
+      <color red="253" green="128" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -592,7 +592,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="alarm" red="253" green="0" blue="0" />
+      <color red="253" green="0" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -659,7 +659,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="alarm" red="253" green="128" blue="0" />
+      <color red="253" green="128" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -1430,7 +1430,7 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <pv_name></pv_name>
     <background_color>
-      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+      <color  red="51" green="153" blue="0" />
     </background_color>
     <foreground_color>
       <color name="Gray_0" red="255" green="255" blue="255" />
@@ -1499,10 +1499,10 @@ $(pv_value)</tooltip>
     </scale_options>
     <pv_name>$(P)$(M1)-ErrRst</pv_name>
     <background_color>
-      <color name="alarm" red="0" green="0" blue="253" />
+      <color red="0" green="0" blue="253" />
     </background_color>
     <foreground_color>
-      <color name="MEDM_COLOR_31" red="253" green="253" blue="253" />
+      <color red="253" green="253" blue="253" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
@@ -1560,10 +1560,10 @@ $(pv_value)</tooltip>
     </scale_options>
     <pv_name>$(P)$(M1).STOP</pv_name>
     <background_color>
-      <color name="alarm" red="253" green="0" blue="0" />
+      <color red="253" green="0" blue="0" />
     </background_color>
     <foreground_color>
-      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
+      <color red="249" green="218" blue="60" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
@@ -1726,7 +1726,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="MEDM_COLOR_60" red="115" green="255" blue="107" />
+      <color  red="115" green="255" blue="107" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -1917,7 +1917,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="alarm" red="253" green="0" blue="0" />
+      <color red="253" green="0" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -1984,7 +1984,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="alarm" red="253" green="128" blue="0" />
+      <color red="253" green="128" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -2051,7 +2051,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="alarm" red="253" green="0" blue="0" />
+      <color red="253" green="0" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -2118,7 +2118,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="alarm" red="253" green="128" blue="0" />
+      <color red="253" green="128" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -2889,7 +2889,7 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <pv_name></pv_name>
     <background_color>
-      <color name="MEDM_COLOR_17" red="51" green="153" blue="0" />
+      <color  red="51" green="153" blue="0" />
     </background_color>
     <foreground_color>
       <color name="Gray_0" red="255" green="255" blue="255" />
@@ -2958,10 +2958,10 @@ $(pv_value)</tooltip>
     </scale_options>
     <pv_name>$(P)$(M2)-ErrRst</pv_name>
     <background_color>
-      <color name="alarm" red="0" green="0" blue="253" />
+      <color red="0" green="0" blue="253" />
     </background_color>
     <foreground_color>
-      <color name="MEDM_COLOR_31" red="253" green="253" blue="253" />
+      <color red="253" green="253" blue="253" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
@@ -3019,10 +3019,10 @@ $(pv_value)</tooltip>
     </scale_options>
     <pv_name>$(P)$(M2).STOP</pv_name>
     <background_color>
-      <color name="alarm" red="253" green="0" blue="0" />
+      <color red="253" green="0" blue="0" />
     </background_color>
     <foreground_color>
-      <color name="MEDM_COLOR_31" red="249" green="218" blue="60" />
+      <color red="249" green="218" blue="60" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>

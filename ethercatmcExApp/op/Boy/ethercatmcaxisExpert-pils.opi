@@ -112,7 +112,7 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_1</name>
     <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
+      <color red="149" green="125" blue="71" />
     </off_color>
     <off_label>STOP</off_label>
     <on_color>
@@ -175,7 +175,7 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_5</name>
     <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
+      <color red="149" green="125" blue="71" />
     </off_color>
     <off_label>JOGR</off_label>
     <on_color>
@@ -247,7 +247,7 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_6</name>
     <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
+      <color red="149" green="125" blue="71" />
     </off_color>
     <off_label>JOGF</off_label>
     <on_color>
@@ -376,7 +376,7 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_14</name>
     <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
+      <color red="149" green="125" blue="71" />
     </off_color>
     <off_label>ErrRst</off_label>
     <on_color>
@@ -753,7 +753,7 @@ $(pv_value)</tooltip>
     <height>40</height>
     <name>LED Template_18</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>lls</off_label>
     <on_color>
@@ -812,7 +812,7 @@ $(pv_value)</tooltip>
     <height>40</height>
     <name>LED Template_19</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>hls</off_label>
     <on_color>
@@ -1192,7 +1192,7 @@ $(pv_value)</tooltip>
     <height>40</height>
     <name>LED Template_12</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>movn</off_label>
     <on_color>
@@ -1251,7 +1251,7 @@ $(pv_value)</tooltip>
     <height>40</height>
     <name>LED Template_13</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>dmov</off_label>
     <on_color>
@@ -1310,7 +1310,7 @@ $(pv_value)</tooltip>
     <height>40</height>
     <name>LED Template_15</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>err</off_label>
     <on_color>
@@ -1369,7 +1369,7 @@ $(pv_value)</tooltip>
     <height>40</height>
     <name>LED Template_16</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>miss</off_label>
     <on_color>
@@ -1428,7 +1428,7 @@ $(pv_value)</tooltip>
     <height>40</height>
     <name>LED Template_14</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>lvio</off_label>
     <on_color>
@@ -1611,7 +1611,7 @@ $(pv_value)</tooltip>
     <height>40</height>
     <name>LED Template_17</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>alarm</off_label>
     <off_state></off_state>
@@ -2024,7 +2024,7 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_11</name>
     <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
+      <color red="149" green="125" blue="71" />
     </off_color>
     <off_label>DIR</off_label>
     <on_color>
@@ -2939,7 +2939,7 @@ $(pv_value)</tooltip>
     <labels_from_pv>false</labels_from_pv>
     <name>Boolean Button Template_10</name>
     <off_color>
-      <color name="IO PV OFF" red="149" green="125" blue="71" />
+      <color red="149" green="125" blue="71" />
     </off_color>
     <off_label>UEIP</off_label>
     <on_color>
@@ -3842,7 +3842,7 @@ $(pv_value)</tooltip>
     <height>24</height>
     <name>LED Template_51</name>
     <off_color>
-      <color name="IO PV OFF" red="77" green="77" blue="77" />
+      <color red="77" green="77" blue="77" />
     </off_color>
     <off_label>pw</off_label>
     <on_color>
