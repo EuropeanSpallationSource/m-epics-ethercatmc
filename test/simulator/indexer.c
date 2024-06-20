@@ -2499,7 +2499,14 @@ static int indexerHandleIndexerCmd(unsigned offset, unsigned lenInPlc,
                 sizeof(netData.memoryStruct.indexer_info.infoType4.name));
         netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
         return 0;
+      } else if (infoType >= 40 && infoType < 72) {
+        /* custom parameter name */
+        memset(&netData.memoryStruct.indexer_info.infoType4.name, 0,
+               sizeof(netData.memoryStruct.indexer_info.infoType4.name));
+        netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
+        return 0;
       }
+
       RETURN_ERROR_OR_DIE(__LINE__, "%s/%s:%d invalid infoType. infoType=%d",
                           __FILE__, __FUNCTION__, __LINE__, infoType);
   }
