@@ -401,7 +401,7 @@ $(pv_value)</tooltip>
       <color red="30" green="144" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="Gray_14" red="0" green="0" blue="0" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -780,7 +780,7 @@ $(pv_value)</tooltip>
       <color name="Gray_0" red="255" green="255" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+      <color red="10" green="0" blue="184" />
     </foreground_color>
     <widget_type>Text Update</widget_type>
     <enabled>true</enabled>
@@ -825,7 +825,7 @@ $(pv_value)</tooltip>
       <color red="255" green="255" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="255" green="128" blue="0" />
+      <color red="255" green="128" blue="0" />
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
@@ -879,10 +879,10 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <pv_name>$(P)$(M1).LLM</pv_name>
     <background_color>
-      <color name="Gray_3" red="200" green="200" blue="200" />
+      <color red="200" green="200" blue="200" />
     </background_color>
     <foreground_color>
-      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+      <color red="10" green="0" blue="184" />
     </foreground_color>
     <widget_type>Text Update</widget_type>
     <enabled>true</enabled>
@@ -930,10 +930,10 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <pv_name>$(P)$(M1).HLM</pv_name>
     <background_color>
-      <color name="Gray_3" red="200" green="200" blue="200" />
+      <color red="200" green="200" blue="200" />
     </background_color>
     <foreground_color>
-      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+      <color red="10" green="0" blue="184" />
     </foreground_color>
     <widget_type>Text Update</widget_type>
     <enabled>true</enabled>
@@ -979,7 +979,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="Gray_14" red="0" green="0" blue="0" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <format_type>4</format_type>
     <height>19</height>
@@ -1029,7 +1029,7 @@ $(pv_value)</tooltip>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="Gray_14" red="0" green="0" blue="0" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
@@ -1111,7 +1111,7 @@ $(pv_value)</tooltip>
     <selector_type>0</selector_type>
     <pv_name>$(P)$(M1).TWV</pv_name>
     <foreground_color>
-      <color name="Gray_14" red="0" green="0" blue="0" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
@@ -1146,7 +1146,7 @@ $(pv_value)</tooltip>
       <color name="ioc_write_bg" red="115" green="223" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="Gray_14" red="0" green="0" blue="0" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
@@ -1228,7 +1228,7 @@ $(pv_value)</tooltip>
     <selector_type>0</selector_type>
     <pv_name>$(P)$(M1).VAL</pv_name>
     <foreground_color>
-      <color name="Gray_14" red="0" green="0" blue="0" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
@@ -1294,7 +1294,7 @@ $(pv_value)</tooltip>
     <selector_type>0</selector_type>
     <pv_name>$(P)$(M1).VAL</pv_name>
     <foreground_color>
-      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+      <color red="10" green="0" blue="184" />
     </foreground_color>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
@@ -1381,7 +1381,7 @@ $(pv_value)</tooltip>
       <color red="255" green="255" blue="255" />
     </background_color>
     <foreground_color>
-      <color name="warning" red="251" green="243" blue="74" />
+      <color red="251" green="243" blue="74" />
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
