@@ -507,6 +507,52 @@ asynStatus ethercatmcController::indexerReadAxisParametersV2(
           pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex] =
               8; /* sizeof(double) */
         }
+        if (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+            paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA) {
+          /*
+             Read the name of the custom parameter.
+             This is an un-official ESS feature.
+             info type 40, the first un-used info type
+             corresponds to parameter 192, the first custom parameter
+          */
+          char customParaName[34];
+          unsigned infoType40plus =
+              paramIndex - PARAM_IF_IDX_FIRST_CUSTOM_PARA + 40;
+          memset(&customParaName, 0, sizeof(customParaName));
+          status = readDeviceIndexerV2(devNum, infoType40plus, customParaName,
+                                       sizeof(customParaName) - 1);
+          asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO,
+                    "%s%s paramIndex=%u customParaName='%s' status=%s (%d)\n",
+                    modNamEMC, functionName, paramIndex, customParaName,
+                    ethercatmcstrStatus(status), (int)status);
+          if (status == asynSuccess && customParaName[0]) {
+            int function;
+            status = findParam(customParaName, &function);
+            if (status == asynSuccess) {
+              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                        "%s%s exist function=%d customParaName=%s\n", modNamEMC,
+                        functionName, function, customParaName);
+            } else {
+              status = createParam(customParaName, asynParamFloat64, &function);
+              asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                        "%s%s(%u) created function=%d "
+                        "paramName=%s status=%s (%d)\n",
+                        modNamEMC, functionName, axisNo, function,
+                        customParaName, ethercatmcstrStatus(status),
+                        (int)status);
+            }
+            if (status == asynSuccess) {
+              unsigned paramIndexCustom =
+                  paramIndex - PARAM_IF_IDX_FIRST_CUSTOM_PARA;
+              /* Set the length, possibly overwriting the default from above */
+              pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex] = 8;
+              ctrlLocal.functionFromParamIndex[paramIndex] = function;
+              memcpy(&ctrlLocal.customParaName[paramIndexCustom],
+                     customParaName,
+                     sizeof(ctrlLocal.customParaName[paramIndexCustom]) - 1);
+            }
+          }
+        }
       }
     }
   }

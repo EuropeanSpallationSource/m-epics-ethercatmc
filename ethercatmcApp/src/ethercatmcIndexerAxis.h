@@ -21,11 +21,6 @@
 #define PARAM_IF_CMD_ERR_READONLY 0xC000
 #define PARAM_IF_CMD_ERR_RETRY_LATER 0xE000
 
-/* Some parameters are functions */
-#define PARAM_IF_IDX_FIRST_FUNCTION 128
-#define PARAM_IF_IDX_FIRST_CUSTOM_PARA 192
-#define PARAM_IF_IDX_LAST_CUSTOM_PARA 223
-
 typedef enum {
   PILSparamPermNone = 0,
   PILSparamPermRead = 1,

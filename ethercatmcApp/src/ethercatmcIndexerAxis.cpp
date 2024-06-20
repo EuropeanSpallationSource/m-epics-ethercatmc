@@ -321,7 +321,7 @@ void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex) {
       asynPrint(
           pC_->pasynUserController_, ASYN_TRACE_INFO,
           "%saddPollNowParam(%d) paramIndex=%s (%d) already at pollNowIdx=%u\n",
-          modNamEMC, axisNo_, plcParamIndexTxtFromParamIndex(paramIndex),
+          modNamEMC, axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex),
           paramIndex, (unsigned)pollNowIdx);
       return;
     }
@@ -330,7 +330,7 @@ void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex) {
       asynPrint(
           pC_->pasynUserController_, ASYN_TRACE_INFO,
           "%saddPollNowParam(%d) paramIndex=%s (%d) new at pollNowIdx=%u\n",
-          modNamEMC, axisNo_, plcParamIndexTxtFromParamIndex(paramIndex),
+          modNamEMC, axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex),
           paramIndex, (unsigned)pollNowIdx);
       return;
     }
@@ -689,8 +689,8 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
     drvlocal.clean.param_read_ok_once[paramIndex] = 1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
               "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n", modNamEMC,
-              axisNo_, plcParamIndexTxtFromParamIndex(paramIndex), paramCtrl,
-              paramfValue);
+              axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex),
+              paramCtrl, paramfValue);
     if ((paramCtrl != drvlocal.clean.old_paramCtrl) ||
         (paramfValue != drvlocal.clean.old_paramValue)) {
       /* The enums must have been read.
@@ -770,8 +770,8 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
       uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD + paramIndex;
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
                 "%spollNext(%d) paramCtrl=%s (0x%x) paramValue=%f\n", modNamEMC,
-                axisNo_, plcParamIndexTxtFromParamIndex(paramIndex), paramCtrl,
-                paramfValue);
+                axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex),
+                paramCtrl, paramfValue);
       pC_->setPlcMemoryInteger(drvlocal.clean.paramIfOffset, newParamCtrl,
                                sizeof(newParamCtrl));
     }

@@ -61,9 +61,10 @@ const char *paramIfCmdToString(unsigned cmdSubParamIndex) {
 }
 }
 
-extern "C" {
-const char *plcParamIndexTxtFromParamIndex(unsigned cmdSubParamIndex) {
-  switch (cmdSubParamIndex & PARAM_IF_IDX_MASK) {
+const char *ethercatmcController::plcParamIndexTxtFromParamIndex(
+    unsigned cmdSubParamIndex) {
+  unsigned paramIndex = cmdSubParamIndex & PARAM_IF_IDX_MASK;
+  switch (paramIndex) {
     case 0:
       return "PARAM_ZERO";
     case PARAM_IDX_OPMODE_AUTO_UINT:
@@ -129,9 +130,18 @@ const char *plcParamIndexTxtFromParamIndex(unsigned cmdSubParamIndex) {
     case PARAM_IDX_MAX_VELO_FLOAT:
       return "MAX_VELO";
     default:
+      if ((paramIndex < (sizeof(ctrlLocal.functionFromParamIndex) /
+                         sizeof(ctrlLocal.functionFromParamIndex[0]))) &&
+          ctrlLocal.functionFromParamIndex[paramIndex]) {
+        if (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+            paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA) {
+          unsigned paramIndexCustom =
+              paramIndex - PARAM_IF_IDX_FIRST_CUSTOM_PARA;
+          return (const char *)&ctrlLocal.customParaName[paramIndexCustom];
+        }
+      }
       return "PX";
   }
-}
 };
 
 extern "C" {
@@ -139,8 +149,13 @@ int paramIndexIsIntegerV2(unsigned paramIndex) {
   if (paramIndex < 30) {
     /* parameters below 30 are unsigned integers in the PLC */
     return 1;
-  } else if (paramIndex >= 192 && paramIndex <= 200) {
-    /* Parameters 192 .. 200 are integers as well */
+  } else if (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+             paramIndex <= 194) {
+    /*
+       Parameters 192 .. 194 had been defined as integers
+       some time ago. Keep this as legacy.
+       See customParaName in ethercatmcIndexerV2.cpp
+    */
     return 1;
   } else {
     return 0;
@@ -176,12 +191,14 @@ int paramIndexIsParameterToPoll(unsigned paramIndex) {
 int paramIndexIsReadLaterInBackground(unsigned paramIndex) {
   switch (paramIndex) {
     case PARAM_IDX_UNITS_PER_REV_FLOAT:
-      return 1;
     case PARAM_IDX_STEPS_PER_REV_FLOAT:
-      return 1;
     case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
       return 1;
     default:
+      if ((paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+           paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA)) {
+        return 1;
+      }
       return 0;
   }
 }
@@ -790,6 +807,10 @@ int ethercatmcController::paramIndexToFunction(unsigned paramIndex) {
     case PARAM_IDX_MAX_VELO_FLOAT:
       return defAsynPara.ethercatmcCfgVMAX_RB_;
     default:
+      if (paramIndex < (sizeof(ctrlLocal.functionFromParamIndex) /
+                        sizeof(ctrlLocal.functionFromParamIndex[0]))) {
+        return ctrlLocal.functionFromParamIndex[paramIndex];
+      }
       return 0;
   }
 }
@@ -929,6 +950,12 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo, int initial,
                        "vmax");
       }
       break;
+    default:
+      int function = paramIndexToFunction(paramIndex);
+      if (function) {
+        updateCfgValue(axisNo, function, fValue,
+                       plcParamIndexTxtFromParamIndex(paramIndex));
+      }
   }
 }
 
@@ -1970,6 +1997,9 @@ void ethercatmcController::indexerDisconnected(void) {
       }
     }
     memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
+    memset(&ctrlLocal.customParaName, 0, sizeof(ctrlLocal.customParaName));
+    memset(&ctrlLocal.functionFromParamIndex, 0,
+           sizeof(ctrlLocal.functionFromParamIndex));
     ctrlLocal.numPilsAsynDevInfo = 0;
   }
   free(ctrlLocal.pIndexerProcessImage);
