@@ -40,10 +40,11 @@ class AxisMr:
         )
         while now < end_seconds:
             # Dummy read to give the IOC time to start
+            self.hasFieldACCSwithVBASfix = False
             try:
                 vers = float(self.axisCom.get(".VERS"))
                 # 7.09 is rounded to 7.0900001xxx; use 7.091
-                if vers >= 6.94 and vers <= 7.091:
+                if (vers >= 6.94 and vers <= 7.091) or (vers >= 7.23 and vers < 7.29):
                     self.hasFieldACCS = True
                     self.hasFieldSPAM = True
                     self.hasFieldMFLG = True
@@ -51,10 +52,18 @@ class AxisMr:
                     self.isMotorMasterAxis = False
                 else:
                     self.hasFieldACCS = False
+                    self.hasFieldACCSwithVBASfix = False
                     self.hasFieldSPAM = False
                     self.hasFieldMFLG = False
                     self.hasROlimit = False
                     self.isMotorMasterAxis = True
+                # Upstream has ACCS/ACCL which takes VBAS into account
+                # ess-master has this since 7.11
+                if vers >= 7.23:
+                    self.hasFieldACCSwithVBASfix = True
+                print(
+                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} AxisMr.__init__ isMotorMasterAxis={self.isMotorMasterAxis} hasFieldACCS={self.hasFieldACCS} hasFieldACCSwithVBASfix={self.hasFieldACCSwithVBASfix}"
+                )
                 return
             except:  # noqa: E722
                 pass
@@ -1148,15 +1157,9 @@ class AxisMr:
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: writeExpFileRMOD_X encRel={encRel} motorStartPos={motorStartPos} motorEndPos={motorEndPos} directionOfMove{directionOfMove} directionOfBL={directionOfBL}"
         )
-        vers = float(self.axisCom.get(".VERS"))
-
         need_007_017_tweak = False
         if 92007 == tc_no or 92017 == tc_no:
             need_007_017_tweak = True
-
-        motor_master = False
-        if vers > 7.19:
-            motor_master = True
 
         if rmod == motorRMOD_I:
             maxcnt = 1  # motorRMOD_I means effecttivly "no retry"
@@ -1216,7 +1219,7 @@ class AxisMr:
                         % (delta * frac, self.myBVEL, self.myBAR, motorStartPos)
                     )
                 else:
-                    if motor_master:
+                    if self.isMotorMasterAxis:
                         deltaFrac = delta * frac
                     else:
                         deltaFrac = delta
@@ -1232,7 +1235,7 @@ class AxisMr:
                     # The way the simulation is written,
                     # the motor/master re-tries and moves from startpos to startpos
                     # But not in the last round
-                    if motor_master and (cnt < maxcnt - 1):
+                    if self.isMotorMasterAxis and (cnt < maxcnt - 1):
                         line2 = (
                             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
                             % (motorStartPos, self.myVELO, self.myAR, motorStartPos)
@@ -1288,7 +1291,7 @@ class AxisMr:
                     # double currpos = pmr->dval / pmr->mres;
                     # double newpos = bpos + pmr->frac * (currpos - bpos);
                     bpos = motorEndPos - bdst
-                    if motor_master:
+                    if self.isMotorMasterAxis:
                         destPos2 = bpos + frac * (motorEndPos - bpos)
                     else:
                         destPos2 = motorEndPos

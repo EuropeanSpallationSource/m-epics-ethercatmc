@@ -26,7 +26,6 @@ def getAccEGUfromMCU(self, tc_no):
 
 def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAccEGU):
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
-
     # Put the values which the test case wanted
     if vbas > -1:
         self.axisCom.put(".VBAS", vbas)
@@ -36,24 +35,28 @@ def check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, vbas, velo, accl, accs, expAcc
         self.axisCom.put(".ACCL", accl)
     if accs > -1:
         self.axisCom.put(".ACCS", accs)
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} hasFieldACCS={self.hasFieldACCS} hasFieldACCSwithVBASfix={self.hasFieldACCSwithVBASfix}"
+    )
     # Move the  2 mm (hardcoded) + RDBD
     destination = 2.0 + self.axisCom.get(".VAL") + 2 * self.axisCom.get(".RDBD")
     self.axisMr.moveWait(tc_no, destination)
-    resAccEGU = getAccEGUfromMCU(self, tc_no)
-    print(
-        "%s: check_accEGU_ACCS_ACCL_VELO vbas=%f velo=%f accl=%f accs=%f expAccEGU=%f resAccEGU=%f"
-        % (tc_no, vbas, velo, accl, accs, expAccEGU, resAccEGU)
-    )
+    actAccEGU = getAccEGUfromMCU(self, tc_no)
     actVelo = self.axisCom.get(".VELO", use_monitor=False)
+    actVbas = self.axisCom.get(".VBAS", use_monitor=False)
     actAccl = self.axisCom.get(".ACCL", use_monitor=False)
     actAccs = self.axisCom.get(".ACCS", use_monitor=False)
-    expAccs = actVelo / actAccl
-    expAccl = actVelo / actAccs
+    if self.hasFieldACCSwithVBASfix and actVbas > 0 and actVelo > actVbas:
+        expAccs = (actVelo - actVbas) / actAccl
+        expAccl = (actVelo - actVbas) / actAccs
+    else:
+        expAccs = actVelo / actAccl
+        expAccl = actVelo / actAccs
     print(
-        "%s expAccl=%f expAccs=%f actVelo=%f actAccl=%f actAccs=%f"
-        % (tc_no, expAccl, expAccs, actVelo, actAccl, actAccs)
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} actVelo={actVelo:.3f} actVbas={actVbas:.3f} expAccl={expAccl:.3f} actAccl={actAccl:.3f} expAccs={expAccs:.3f} actAccs={actAccs:.3f}"
     )
-    accOK = self.axisMr.calcAlmostEqual(tc_no, expAccEGU, resAccEGU, 0.1)
+
+    accOK = self.axisMr.calcAlmostEqual(tc_no, expAccEGU, actAccEGU, 0.1)
     acclOK = self.axisMr.calcAlmostEqual(tc_no, expAccl, actAccl, 0.1)
     accsOK = self.axisMr.calcAlmostEqual(tc_no, expAccs, actAccs, 0.1)
 
@@ -85,6 +88,11 @@ class Test(unittest.TestCase):
     per20_UserPosition = round((8 * llm + 2 * hlm) / 10)
     msta = int(axisCom.get(".MSTA"))
     hasFieldACCS = axisMr.hasFieldACCS
+    hasFieldACCSwithVBASfix = axisMr.hasFieldACCSwithVBASfix
+
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} hasFieldACCS={hasFieldACCS} hasFieldACCSwithVBASfix={hasFieldACCSwithVBASfix}"
+    )
 
     # Make sure that motor is homed
     def test_TC_9311(self):
@@ -105,42 +113,45 @@ class Test(unittest.TestCase):
         tc_no = "9313"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasFieldACCS:
-            #                                            vbas, velo. accl, accs, expAccEGU
-            check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0, 6.0, 0.2, -1, 30)
+            #                                            vbas velo accl accs expAccEGU
+            check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 6.0, 0.2, -1, 30)
 
     def test_TC_9314(self):
         tc_no = "9314"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasFieldACCS:
-            #                                           vbas, velo. accl, accs, expAccEGU
-            check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.2, -1, 5)
+            #                                            vbas velo accl accs expAccEGU
+            check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1.0, 2.0, 0.2, -1, 5)
 
     def test_TC_9315(self):
         tc_no = "9315"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-        if self.hasFieldACCS:
-            #                                             vbas, velo. accl, accs, expAccEGU
-            check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1, 2.0, 0.4, -1, 2.5)
+        if self.hasFieldACCSwithVBASfix:
+            #                                            vbas velo accl accs expAccEGU
+            check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1.0, 2.0, 0.2, -1, 5.0)
+        elif self.hasFieldACCS:
+            #                                            vbas velo accl accs expAccEGU
+            check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 1.0, 2.0, 0.4, -1, 2.5)
 
     def test_TC_9316(self):
         tc_no = "9316"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasFieldACCS:
-            #                                             vbas, velo. accl, accs, expAccEGU
+            #                                            vbas velo accl accs expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 4.0, 4.0, 0.5, -1, 8.0)
 
     def test_TC_9317(self):
         tc_no = "9317"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasFieldACCS:
-            #                                             vbas, velo. accl, accs, expAccEGU
+            #                                            vbas velo accl accs expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, 0.5, -1, 16.0)
 
     def test_TC_9318(self):
         tc_no = "9318"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasFieldACCS:
-            #                                             vbas, velo. accl, accs, expAccEGU
+            #                                            vbas velo accl accs expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 8.0, -1.0, 16.0, 16.0)
 
     # Keep ACCS and expAccEGU if velocity is changed
@@ -148,7 +159,7 @@ class Test(unittest.TestCase):
         tc_no = "9319"
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
         if self.hasFieldACCS:
-            #                                             vbas, velo. accl, accs, expAccEGU
+            #                                            vbas velo accl accs expAccEGU
             check_VBAS_VELO_ACCL_ACCS_accEGU(self, tc_no, 0.0, 4.0, -1.0, -1.0, 16.0)
 
     def teardown_class(self):
