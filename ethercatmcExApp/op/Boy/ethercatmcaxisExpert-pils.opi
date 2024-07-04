@@ -719,7 +719,7 @@ $(pv_value)</tooltip>
     <widget_type>Text Input</widget_type>
     <width>71</width>
     <wuid>-68918818:158524ceeb4:-75c2</wuid>
-    <x>16</x>
+    <x>21</x>
     <y>114</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
@@ -1158,7 +1158,7 @@ $(pv_value)</tooltip>
     <widget_type>Text Input</widget_type>
     <width>67</width>
     <wuid>-68918818:158524ceeb4:-75bc</wuid>
-    <x>226</x>
+    <x>213</x>
     <y>114</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
@@ -4349,6 +4349,121 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
     <x>218</x>
     <gradient>false</gradient>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(M)-CfgDLLM-En-RB</pv_name>
+    <pv_value />
+    <rules>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>CfgDLLM-En-RB</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>12</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>11</x>
+    <y>121</y>
+  </widget>
+
+  <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color name="IO Background" red="235" green="235" blue="235" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color name="IO Border" red="0" green="0" blue="0" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>2</border_width>
+    <bulb_border>3</bulb_border>
+    <bulb_border_color>
+      <color red="150" green="150" blue="150" />
+    </bulb_border_color>
+    <data_type>0</data_type>
+    <effect_3d>true</effect_3d>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="DejaVu Sans Mono" height="12" style="0" pixels="false">IO Normal</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color name="IO InputPV Fg" red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>24</height>
+    <name>LED Template_51</name>
+    <off_color>
+      <color name="IO PV OFF" red="149" green="125" blue="71" />
+    </off_color>
+    <off_label>pw</off_label>
+    <on_color>
+      <color red="0" green="255" blue="0" />
+    </on_color>
+    <on_label></on_label>
+    <pv_name>$(P)$(M)-CfgDLLM-En-RB</pv_name>
+    <pv_value />
+    <rules>
+    </rules>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_boolean_label>true</show_boolean_label>
+    <square_led>false</square_led>
+    <tooltip>CfgDHLM-En-RB</tooltip>
+    <visible>true</visible>
+    <widget_type>LED</widget_type>
+    <width>12</width>
+    <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
+    <x>279</x>
+    <y>121</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
     <actions hook="false" hook_all="false">

@@ -182,6 +182,7 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <foff-vis.mid >>/tmp/$$
     eval $cmd <homf-homr-vis.mid >>/tmp/$$
     eval $cmd <inhibitf-inhibitr.mid >>/tmp/$$
+    eval $cmd <pils-cfgdxlm-en.mid >>/tmp/$$
     eval $cmd <pils-errtxt.mid >>/tmp/$$
     eval $cmd <pils-status-bit24-25.mid >>/tmp/$$
     eval $cmd <pils-statuscode.mid >>/tmp/$$
