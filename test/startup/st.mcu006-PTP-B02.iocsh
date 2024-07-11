@@ -57,6 +57,30 @@ epicsEnvSet("CHNO",     "2")
 < ethercatmcEL6688-PTP.iocsh
 
 
+
+
+
+
+#####################################################
+# Time Compensation Mode Encoder, Axis 1
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
+epicsEnvSet("R", "CfgTimeCompensationModeEncoder")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "CfgTimeCompensationModeEncoder")
+epicsEnvSet("PREC", 0)
+< ethercatmcAnalogOutput.iocsh
+
+#####################################################
+# Additional Encoder Delay, Axis 1
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
+epicsEnvSet("R", "CfgAdditionalEncoderDelay")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "CfgAdditionalEncoderDelay")
+epicsEnvSet("PREC", 0)
+epicsEnvSet("EGU", "ns")
+< ethercatmcAnalogOutput.iocsh
+
+
 #
 # Start polling, values are in millisconds
 #

@@ -1,0 +1,22 @@
+record(ao, "$(P)$(R)")
+{
+    field(DTYP, "asynFloat64")
+    field(DESC, "$(DESC=DESC)")
+    field(PREC, "$(PREC=PREC)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(stringin, "$(P)$(R)-DESC") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)_DESC")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)-DESC_") {
+    field(DOL, "$(P)$(R)-DESC CP")
+    field(OUT, "$(P)$(R).DESC")
+    field(OMSL, "closed_loop")
+}
+
