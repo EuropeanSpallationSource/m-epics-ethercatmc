@@ -1133,7 +1133,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
                                    drvlocal.clean.old_idxAuxBitsPrinted);
       asynPrint(
           pC_->pasynUserController_, traceMask,
-          "%spoll(%d) auxBitsOld=0x%06X new=0x%06X "
+          "%spoll(%d) auxBitsOld=0x%07X new=0x%07X "
           "(%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) "
           "actPos=%f\n",
           modNamEMC, axisNo_, drvlocal.clean.old_idxAuxBitsPrinted, idxAuxBits,
