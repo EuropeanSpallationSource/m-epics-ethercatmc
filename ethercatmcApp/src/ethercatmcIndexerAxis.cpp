@@ -1026,8 +1026,9 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
         setIntegerParam(pC_->motorStatusDirection_, 0);
       }
     }
-    setDoubleParam(pC_->motorPosition_, actPosition);
-    setDoubleParam(pC_->motorEncoderPosition_, actPosition);
+    // Do that on the base class to avoid searching for paramIndex
+    asynMotorAxis::setDoubleParam(pC_->motorPosition_, actPosition);
+    asynMotorAxis::setDoubleParam(pC_->motorEncoderPosition_, actPosition);
   }
   if (auxbitsValid || nowMoving) {
     /* These 2 bits are important to inform the motorRecord
@@ -1087,7 +1088,9 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     /* direction == 1 means "negative" */
     int motorRecDirectionFactor = motorRecDirection ? -1 : 1;
     ethercatmcRBV_TSE = actPosition * motorRecDirectionFactor + motorRecOffset;
-    setDoubleParam(pC_->defAsynPara.ethercatmcRBV_TSE_, ethercatmcRBV_TSE);
+    // Do this on the base class
+    asynMotorAxis::setDoubleParam(pC_->defAsynPara.ethercatmcRBV_TSE_,
+                                  ethercatmcRBV_TSE);
     pC_->setAlarmStatusSeverityWrapper(
         axisNo_, pC_->defAsynPara.ethercatmcRBV_TSE_, RBV_TSEstatus);
   }
@@ -1680,6 +1683,28 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
               "%ssetDoubleParam(%d motorPowerOffDelay_=%g\n", modNamEMC,
               axisNo_, value);
 #endif
+    /* catch those to avoid an expensive lookup below */
+#ifdef motorHighLimitROString
+  } else if (function == pC_->motorHighLimitRO_) {
+    ;
+#endif
+#ifdef motorLowLimitROString
+  } else if (function == pC_->motorLowLimitRO_) {
+    ;
+#endif
+  } else {
+    unsigned paramIndex = pC_->paramIndexFromFunction(function);
+    if (paramIndex) {
+      double valueRB = -1;
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%ssetDoubleParam(%d function=%d paramIndex=%u =%g\n",
+                modNamEMC, axisNo_, function, paramIndex, value);
+      status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
+      if (status == asynSuccess) {
+        status = asynMotorAxis::setDoubleParam(function, value);
+      }
+      return status;
+    }
   }
 
   // Call the base class method

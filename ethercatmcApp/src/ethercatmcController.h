@@ -434,6 +434,7 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                        unsigned devNum);
   asynStatus indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
                                          unsigned devNum);
+  unsigned paramIndexFromFunction(int function);
   asynStatus poll(void);
   asynStatus newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
                                      unsigned axisNo, unsigned devNum,

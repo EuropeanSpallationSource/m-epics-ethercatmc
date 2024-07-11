@@ -558,3 +558,16 @@ asynStatus ethercatmcController::indexerReadAxisParametersV2(
   }
   return asynSuccess;
 }
+
+unsigned ethercatmcController::paramIndexFromFunction(int function) {
+  unsigned paramIndex;
+  for (paramIndex = 0;
+       paramIndex < (sizeof(ctrlLocal.functionFromParamIndex) /
+                     sizeof(ctrlLocal.functionFromParamIndex[0]));
+       paramIndex++) {
+    if (function == ctrlLocal.functionFromParamIndex[paramIndex]) {
+      return paramIndex;
+    }
+  }
+  return 0;
+}
