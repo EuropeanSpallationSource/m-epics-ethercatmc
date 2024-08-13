@@ -52,6 +52,7 @@ DEPENDENCIES_FOR_CONFIG_OPI = \
 DEPENDENCIES_FOR_CONFIG_PILS_OPI = \
         ethercatmcaxisConfig.start \
         ethercatmcaxisConfig-pils.mid \
+        ethercatmcaxisConfigCustomPara.mid \
         ethercatmcaxisConfig.end
 
 
@@ -203,8 +204,8 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
 	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
 
-../ethercatmcaxisConfig-pils.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile
-	cat $(DEPENDENCIES_FOR_CONFIG_PILS_OPI)  >$@
+../ethercatmcaxisConfig-pils.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
+	./genAxisConfigCutomPara.sh $@
 
 ../ethercatmcaxisConfig-pils-TimeEncoder.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
 	./genAxisConfigCutomPara.sh $@ CfgTimeCompensationModeEncoder CfgAdditionalEncoderDelay
