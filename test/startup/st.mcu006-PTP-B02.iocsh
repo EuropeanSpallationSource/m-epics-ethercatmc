@@ -64,18 +64,18 @@ epicsEnvSet("CHNO",     "2")
 #####################################################
 # Time Compensation Mode Encoder, Axis 1
 epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "CfgTimeCompensationModeEncoder")
+epicsEnvSet("R", "CfgTimCompModEncoder")
 epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "CfgTimeCompensationModeEncoder")
+epicsEnvSet("ASYNPARAMNAME", "$(R)")
 epicsEnvSet("PREC", 0)
 < ethercatmcAnalogOutput.iocsh
 
 #####################################################
 # Additional Encoder Delay, Axis 1
 epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "CfgAdditionalEncoderDelay")
+epicsEnvSet("R", "CfgAddEncoderDelay")
 epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "CfgAdditionalEncoderDelay")
+epicsEnvSet("ASYNPARAMNAME", "$(R)")
 epicsEnvSet("PREC", 0)
 epicsEnvSet("EGU", "ns")
 < ethercatmcAnalogOutput.iocsh

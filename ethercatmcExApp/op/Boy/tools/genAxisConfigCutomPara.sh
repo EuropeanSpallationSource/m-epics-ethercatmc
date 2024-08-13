@@ -15,7 +15,7 @@ while test "$PARAM" != ""; do
       sed -e "s!CfgXXYYZZ!$PARAM!" >>/tmp/$$
     shift
     PARAM="$1"
-    y=$(($y + 36))
+    y=$(($y + 20))
 done
 
 
