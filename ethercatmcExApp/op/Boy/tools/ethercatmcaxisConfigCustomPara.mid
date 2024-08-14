@@ -54,46 +54,62 @@ $(pv_value)</tooltip>
     <width>127</width>
     <wuid>-68918818:158524ceeb4:-75bd</wuid>
     <x>12</x>
-    <y>0</y>
+    <y>1</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <actions hook="false" hook_all="false" />
-    <auto_size>true</auto_size>
+    <alarm_pulsing>false</alarm_pulsing>
+    <auto_size>false</auto_size>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
-      <color name="IO Background" red="255" green="255" blue="205" />
+      <color red="255" green="255" blue="255" />
     </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
       <color name="IO Border" red="215" green="215" blue="215" />
     </border_color>
-    <border_style>0</border_style>
+    <border_style>6</border_style>
     <border_width>2</border_width>
-    <enabled>false</enabled>
+    <confirm_message></confirm_message>
+    <enabled>true</enabled>
     <font>
-      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
+      <opifont.name fontName="arial" height="10" style="1" pixels="false">IO Output 1</opifont.name>
     </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color name="IO Text Fg" red="0" green="32" blue="92" />
+      <color red="26" green="26" blue="26" />
     </foreground_color>
-    <height>15</height>
+    <format_type>1</format_type>
+    <height>25</height>
     <horizontal_alignment>0</horizontal_alignment>
-    <name>Label Template_18</name>
-    <rules />
+    <limits_from_pv>true</limits_from_pv>
+    <multiline_input>false</multiline_input>
+    <name>Text Input Template_29</name>
+    <next_focus>0</next_focus>
+    <password_input>false</password_input>
+    <precision>0</precision>
+    <precision_from_pv>true</precision_from_pv>
+    <pv_name>$(P)$(M)-CfgXXYYZZ.DESC</pv_name>
+    <pv_value />
+    <read_only>false</read_only>
+    <rules>
+    </rules>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_scrollbar>false</show_scrollbar>
-    <text>CfgXXYYZZ</text>
-    <tooltip></tooltip>
-    <transparent>true</transparent>
-    <vertical_alignment>1</vertical_alignment>
+    <show_native_border>true</show_native_border>
+    <show_units>false</show_units>
+    <style>1</style>
+    <text>#####</text>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
     <visible>true</visible>
-    <widget_type>Label</widget_type>
-    <width>126</width>
-    <wrap_words>true</wrap_words>
-    <wuid>-113cd5ae:15c1f7dc4a5:-7bc4</wuid>
-    <x>150</x>
-    <y>7</y>
+    <widget_type>Text Input</widget_type>
+    <width>200</width>
+    <wuid>1d681a25:1522fd92503:-6475</wuid>
+    <x>140</x>
+    <y>0</y>
   </widget>

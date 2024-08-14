@@ -17,7 +17,7 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 DB += ethercatmc.template
 DB += ethercatmcAnalogInput.template
-DB += ethercatmcAnalogOutput.template
+DB += ethercatmcAnalogOutputReadback.template
 DB += ethercatmcAuxBitAsBiRecord.template
 DB += ethercatmcAuxBitAsMbbiRecord.template
 DB += ethercatmcAuxBitsStatus.template

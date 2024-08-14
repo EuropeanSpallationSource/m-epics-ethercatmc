@@ -1,0 +1,10 @@
+record(ao, "$(P)$(R)")
+{
+    field(DTYP, "asynFloat64")
+    field(DESC, "$(DESC=DESC)")
+    field(PREC, "$(PREC=PREC)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
