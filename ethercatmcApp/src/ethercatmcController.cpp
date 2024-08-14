@@ -1270,6 +1270,16 @@ void ethercatmcController::setAlarmStatusSeverityAllReadbacks(
       setAlarmStatusSeverityAllAxes(function, status);
     }
   }
+  for (unsigned paramIndex = 0;
+       paramIndex < (sizeof(ctrlLocal.functionFromParamIndex) /
+                     sizeof(ctrlLocal.functionFromParamIndex[0]));
+       paramIndex++) {
+    int function = ctrlLocal.functionFromParamIndex[paramIndex];
+    if (function) {
+      setAlarmStatusSeverityAllAxes(function, status);
+    }
+  }
+
 #ifdef motorMessageTextString
   setAlarmStatusSeverityAllAxes(motorMessageText_, status);
 #endif
