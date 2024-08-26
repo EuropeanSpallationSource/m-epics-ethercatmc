@@ -667,6 +667,14 @@ int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
           int initial = 1;
           pC_->parameterFloatReadBack(axisNo_, initial, paramIndex,
                                       paramfValue);
+        } else {
+          asynPrint(
+              pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%s readEnumsAndValueAndCallbackIntoMbbi(%d) paramIdx=%s (%u)"
+              " status=%s (%d)\n",
+              modNamEMC, axisNo_,
+              pC_->plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+              ethercatmcstrStatus(status), (int)status);
         }
       }
       if (status) {
@@ -684,8 +692,9 @@ int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
 void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
                                                    unsigned paramCtrl,
                                                    double paramfValue) {
-  if ((paramCtrl & PARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
-    unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+  unsigned paramIndex = paramCtrl & PARAM_IF_IDX_MASK;
+  unsigned paramIfCmd = paramCtrl & PARAM_IF_CMD_MASK;
+  if (paramIfCmd == PARAM_IF_CMD_DONE) {
     drvlocal.clean.param_read_ok_once[paramIndex] = 1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
               "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n", modNamEMC,
@@ -703,6 +712,11 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
       drvlocal.clean.old_paramCtrl = paramCtrl;
       drvlocal.clean.old_paramValue = paramfValue;
     }
+  } else if (paramIfCmd == PARAM_IF_CMD_ERR_NO_IDX) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%spoll(%d) paramIndex=%u paramCtrl=%s (0x%x)\n", modNamEMC,
+              axisNo_, paramIndex,
+              pC_->plcParamIndexTxtFromParamIndex(paramIndex), paramCtrl);
   }
 
   /* Read back the parameters one by one */

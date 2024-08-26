@@ -527,22 +527,22 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   }
   if (!pAxis || !paramIfOffset || (paramIndex > 0xFF) ||
       lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
-    status = asynDisabled;
-  } else if (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] ==
-             PILSparamPermRead) {
-    status = asynParamWrongType;
-  } else if (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] ==
-             PILSparamPermNone) {
-    status = asynParamBadIndex;
-  }
-  if (status != asynSuccess) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
               "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u "
-              "perm=%d status=%s (%d)\n",
+              "pAxis=%p paramIfOffset=%u paramIndex=%u\n",
+              modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset, pAxis,
+              paramIfOffset, paramIndex);
+    return asynError;
+  } else if ((pAxis->drvlocal.clean.PILSparamPerm[paramIndex] ==
+              PILSparamPermRead) ||
+             (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] ==
+              PILSparamPermNone)) {
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
+              "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u "
+              "perm=%d\n",
               modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
-              (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex],
-              ethercatmcstrStatus(status), (int)status);
-    return status;
+              (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex]);
+    return asynError;
   }
   size_t lenInPLCparamIf = sizeof(paramIf_to_MCU.paramCtrl) + lenInPlcPara;
 
