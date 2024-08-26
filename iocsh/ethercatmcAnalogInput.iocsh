@@ -1,4 +1,3 @@
 ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME)      Float64
-ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME)_DESC Octet
 
-dbLoadRecords("ethercatmcAnalogInput.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO), ASYNPARAMNAME=$(ASYNPARAMNAME), PREC=$(PREC), EGU=$(EGU)")
+dbLoadRecords("ethercatmcAnalogInput.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO), ASYNPARAMNAME=$(ASYNPARAMNAME), PREC=$(PREC), DESC=$(DESC), EGU=$(EGU)")
