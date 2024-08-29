@@ -89,6 +89,8 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcVelActString "VelAct"
 #define ethercatmcVel_RBString "Vel-RB"
 #define ethercatmcAcc_RBString "Acc-RB"
+#define ethercatmcCfgIdleCurrent_String "CfgIdleCurrent"
+#define ethercatmcCfgMoveCurrent_String "CfgMoveCurrent"
 #define ethercatmcPTPdiffTimeIOC_MCUString "PTPdiffTimeIOC_MCU"
 #define ethercatmcPTPdiffXYtime_MCUString "PTPdiffXYtime_MCU"
 #define ethercatmcPTPallGoodString "PTPallGood"
@@ -611,6 +613,8 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                               with Jitter */
     int ethercatmcVel_RB_; /* Velocity used in MCU */
     int ethercatmcAcc_RB_; /* Acceleration used in MCU */
+    int ethercatmcCfgIdleCurrent_;
+    int ethercatmcCfgMoveCurrent_;
     int ethercatmcPTPdiffTimeIOC_MCU_;
     int ethercatmcPTPdiffXYtime_MCU_;
     int ethercatmcPTPallGood_;

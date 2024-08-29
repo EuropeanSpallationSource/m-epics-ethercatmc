@@ -208,7 +208,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	./genAxisConfigCutomPara.sh $@
 
 ../ethercatmcaxisConfig-pils-Max-Red-Current-TimeEncoder.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
-	./genAxisConfigCutomPara.sh $@ CfgMaximalCurrent CfgReducedCurrent CfgTimCompModEncoder CfgAddEncoderDelay
+	./genAxisConfigCutomPara.sh $@ CfgMoveCurrent CfgIdleCurrent CfgTimCompModEncoder CfgAddEncoderDelay
 
 #../ethercatmcaxisConfig-ecmc.opi \
 

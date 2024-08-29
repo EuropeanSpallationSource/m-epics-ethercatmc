@@ -187,6 +187,8 @@ int paramIndexIsReadLaterInBackground(unsigned paramIndex) {
     case PARAM_IDX_UNITS_PER_REV_FLOAT:
     case PARAM_IDX_STEPS_PER_REV_FLOAT:
     case PARAM_IDX_FOLLOWING_ERR_WIN_FLOAT:
+    case PARAM_IDX_IDLE_CURRENT_FLOAT:
+    case PARAM_IDX_MOVE_CURRENT_FLOAT:
       return 1;
     default:
       if ((paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
@@ -771,8 +773,10 @@ int ethercatmcController::paramIndexToFunction(unsigned paramIndex) {
       return defAsynPara.ethercatmcVel_RB_;
     case PARAM_IDX_ACCEL_FLOAT:
       return defAsynPara.ethercatmcAcc_RB_;
-      // case PARAM_IDX_IDLE_CURRENT_FLOAT:
-      // case PARAM_IDX_MOVE_CURRENT_FLOAT:
+    case PARAM_IDX_IDLE_CURRENT_FLOAT:
+      return defAsynPara.ethercatmcCfgIdleCurrent_;
+    case PARAM_IDX_MOVE_CURRENT_FLOAT:
+      return defAsynPara.ethercatmcCfgMoveCurrent_;
       // case PARAM_IDX_MICROSTEPS_UINT:
       // case PARAM_IDX_STEPS_PER_UNIT_FLOAT:
       return defAsynPara.ethercatmcCfgUREV_RB_;
@@ -874,8 +878,12 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo, int initial,
       updateCfgValue(axisNo, defAsynPara.ethercatmcAcc_RB_, fValue, "accsRB");
       break;
     case PARAM_IDX_IDLE_CURRENT_FLOAT:
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgIdleCurrent_, fValue,
+                     "idleCurrent");
       break;
     case PARAM_IDX_MOVE_CURRENT_FLOAT:
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgMoveCurrent_, fValue,
+                     "moveCurrent");
       break;
     case PARAM_IDX_MICROSTEPS_UINT:
       break;

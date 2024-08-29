@@ -1681,6 +1681,34 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
       return asynSuccess;
     }
     return asynError;
+  } else if (function == pC_->defAsynPara.ethercatmcCfgIdleCurrent_) {
+    double valueRB = -1;
+    static const unsigned paramIndex = PARAM_IDX_IDLE_CURRENT_FLOAT;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetDoubleParam(%d defAsynPara.ethercatmcCfgIdleCurrent_)=%g\n",
+              modNamEMC, axisNo_, value);
+    status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
+    if (status == asynSuccess) {
+      int initial = 0;
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
+      // Call the base class method
+      (void)asynMotorAxis::setDoubleParam(function, value);
+    }
+    return status;
+  } else if (function == pC_->defAsynPara.ethercatmcCfgMoveCurrent_) {
+    double valueRB = -1;
+    static const unsigned paramIndex = PARAM_IDX_MOVE_CURRENT_FLOAT;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetDoubleParam(%d defAsynPara.ethercatmcCfgMoveCurrent_)=%g\n",
+              modNamEMC, axisNo_, value);
+    status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
+    if (status == asynSuccess) {
+      int initial = 0;
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
+      // Call the base class method
+      (void)asynMotorAxis::setDoubleParam(function, value);
+    }
+    return status;
 #ifdef motorPowerOnDelayString
   } else if (function == pC_->motorPowerOnDelay_) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,

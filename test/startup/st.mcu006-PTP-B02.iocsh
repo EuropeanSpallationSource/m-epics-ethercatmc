@@ -57,8 +57,27 @@ epicsEnvSet("CHNO",     "2")
 < ethercatmcEL6688-PTP.iocsh
 
 
+#####################################################
+# IndexPulsePositionXFC_K
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
+epicsEnvSet("R", "IndexPulsePositionK")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "IndexPulsePositionK")
+epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC", 3)
+epicsEnvSet("EGU", "mm")
+< ethercatmcAnalogInput.iocsh
 
-
+#####################################################
+# IndexPulsePositionXFC_N
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
+epicsEnvSet("R", "IndexPulsePositionN")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "IndexPulsePositionXFC_N")
+epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC", 3)
+epicsEnvSet("EGU", "mm")
+< ethercatmcAnalogInput.iocsh
 
 
 #####################################################
@@ -69,6 +88,7 @@ epicsEnvSet("CHNO", "1")
 epicsEnvSet("ASYNPARAMNAME", "CfgTimeCompensationModeEncoder")
 epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
 epicsEnvSet("PREC", 0)
+epicsEnvSet("EGU", "0=OFF 1=Vel 2=Vel/Acc")
 < ethercatmcAnalogOutputReadback.iocsh
 
 #####################################################
@@ -82,10 +102,32 @@ epicsEnvSet("PREC", 0)
 epicsEnvSet("EGU", "ns")
 < ethercatmcAnalogOutputReadback.iocsh
 
+#####################################################
+# Maximal Current Axis 1
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
+epicsEnvSet("R", "CfgMoveCurrent")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "$(R)")
+epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC", 0)
+epicsEnvSet("EGU", "mA")
+< ethercatmcAnalogOutputReadback.iocsh
+
+#####################################################
+# Reduced Current Axis 1
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
+epicsEnvSet("R", "CfgIdleCurrent")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "$(R)")
+epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC", 0)
+epicsEnvSet("EGU", "mA")
+< ethercatmcAnalogOutputReadback.iocsh
+
 
 #
 # Start polling, values are in millisconds
 #
 epicsEnvSet("MOVINGPOLLPERIOD", "9")
-epicsEnvSet("IDLEPOLLPERIOD",   "100")
+epicsEnvSet("IDLEPOLLPERIOD",   "200")
 ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

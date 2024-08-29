@@ -260,6 +260,10 @@ ethercatmcController::ethercatmcController(const char *portName,
               &defAsynPara.ethercatmcVel_RB_);
   createParam(ethercatmcAcc_RBString, asynParamFloat64,
               &defAsynPara.ethercatmcAcc_RB_);
+  createParam(ethercatmcCfgIdleCurrent_String, asynParamFloat64,
+              &defAsynPara.ethercatmcCfgIdleCurrent_);
+  createParam(ethercatmcCfgMoveCurrent_String, asynParamFloat64,
+              &defAsynPara.ethercatmcCfgMoveCurrent_);
   createParam(ethercatmcPTPdiffTimeIOC_MCUString, asynParamFloat64,
               &defAsynPara.ethercatmcPTPdiffTimeIOC_MCU_);
   createParam(ethercatmcPTPdiffXYtime_MCUString, asynParamFloat64,
