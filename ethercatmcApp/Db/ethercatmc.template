@@ -271,14 +271,14 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgDLLM-RB") {
 record(longin,"$(SYSPFX)$(AXIS_NAME)-CfgDHLM-En-RB") {
     field(DESC, "EC High Soft Limit enabled RB")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM-En-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM-En")
     field(SCAN, "I/O Intr")
 }
 
 record(longin,"$(SYSPFX)$(AXIS_NAME)-CfgDLLM-En-RB") {
     field(DESC, "EC Low Soft Limit enabled RB")
     field(DTYP, "asynInt32")
-    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM-En-RB")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM-En")
     field(SCAN, "I/O Intr")
 }
 

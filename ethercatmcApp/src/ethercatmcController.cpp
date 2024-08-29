@@ -346,10 +346,6 @@ ethercatmcController::ethercatmcController(const char *portName,
               &defAsynPara.ethercatmcCfgDHLM_RB_);
   createParam(ethercatmcCfgDLLMRBString, asynParamFloat64,
               &defAsynPara.ethercatmcCfgDLLM_RB_);
-  createParam(ethercatmcCfgDHLM_EnRBString, asynParamInt32,
-              &defAsynPara.ethercatmcCfgDHLM_En_RB_);
-  createParam(ethercatmcCfgDLLM_EnRBString, asynParamInt32,
-              &defAsynPara.ethercatmcCfgDLLM_En_RB_);
   createParam(ethercatmcCfgDHLMString, asynParamFloat64,
               &defAsynPara.ethercatmcCfgDHLM_);
   createParam(ethercatmcCfgDLLMString, asynParamFloat64,
@@ -822,8 +818,8 @@ void ethercatmcController::udateMotorLimitsRO(int axisNo) {
 
   /* When the integer parameter is undefined, 0 is returned,
      same as not enabled */
-  getIntegerParam(axisNo, defAsynPara.ethercatmcCfgDHLM_En_RB_, &enabledHigh);
-  getIntegerParam(axisNo, defAsynPara.ethercatmcCfgDLLM_En_RB_, &enabledLow);
+  getIntegerParam(axisNo, defAsynPara.ethercatmcCfgDHLM_En_, &enabledHigh);
+  getIntegerParam(axisNo, defAsynPara.ethercatmcCfgDLLM_En_, &enabledLow);
 
   if (enabledHigh && enabledLow) {
     asynStatus status1, status2;

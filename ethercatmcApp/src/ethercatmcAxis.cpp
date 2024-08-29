@@ -243,11 +243,11 @@ asynStatus ethercatmcAxis::readBackSoftLimits(int initial) {
             enabledLow, fValueLow);
   /* ethercatmcCHLMXX are info(asyn:READBACK,"1"),
      so we must use pC_->setXXX(axisNo_..)  here */
-  pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgDHLM_En_RB_,
+  pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgDHLM_En_,
                       enabledHigh, "dhlm_en");
   pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgDHLM_RB_,
                       fValueHigh, "dhlm");
-  pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgDLLM_En_RB_,
+  pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgDLLM_En_,
                       enabledLow, "dllm_en");
   pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgDLLM_RB_,
                       fValueLow, "dllm");

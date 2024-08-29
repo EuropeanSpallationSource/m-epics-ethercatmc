@@ -105,8 +105,6 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcCfgACCS_RBString "CfgACCS-RB"
 #define ethercatmcCfgDHLMRBString "CfgDHLM-RB"
 #define ethercatmcCfgDLLMRBString "CfgDLLM-RB"
-#define ethercatmcCfgDHLM_EnRBString "CfgDHLM-En-RB"
-#define ethercatmcCfgDLLM_EnRBString "CfgDLLM-En-RB"
 #define ethercatmcCfgDHLMString "CfgDHLM"
 #define ethercatmcCfgDLLMString "CfgDLLM"
 #define ethercatmcCfgDHLM_EnString "CfgDHLM-En"
@@ -641,8 +639,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     int ethercatmcCfgPOSLAG_En_RB_;
     int ethercatmcCfgDHLM_RB_;
     int ethercatmcCfgDLLM_RB_;
-    int ethercatmcCfgDHLM_En_RB_;
-    int ethercatmcCfgDLLM_En_RB_;
     int ethercatmcCfgDHLM_;
     int ethercatmcCfgDLLM_;
     int ethercatmcCfgDHLM_En_;

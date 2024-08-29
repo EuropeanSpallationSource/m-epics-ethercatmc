@@ -783,9 +783,9 @@ int ethercatmcController::paramIndexToFunction(unsigned paramIndex) {
     case PARAM_IDX_FUN_MOVE_VELOCITY:
       return defAsynPara.ethercatmcCfgJVEL_RB_;
     case PARAM_IDX_USR_MIN_EN_FLOAT:
-      return defAsynPara.ethercatmcCfgDLLM_En_RB_;
+      return defAsynPara.ethercatmcCfgDLLM_En_;
     case PARAM_IDX_USR_MAX_EN_FLOAT:
-      return defAsynPara.ethercatmcCfgDHLM_En_RB_;
+      return defAsynPara.ethercatmcCfgDHLM_En_;
     case PARAM_IDX_HOMPROC_FLOAT:
       return defAsynPara.ethercatmcHomProc_RB_;
     case PARAM_IDX_UNITS_PER_REV_FLOAT:
@@ -893,12 +893,12 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo, int initial,
                        "jvel");
       break;
     case PARAM_IDX_USR_MIN_EN_FLOAT:
-      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDLLM_En_RB_, (int)fValue,
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDLLM_En_, (int)fValue,
                      "dllm_en");
       udateMotorLimitsRO(axisNo);
       break;
     case PARAM_IDX_USR_MAX_EN_FLOAT:
-      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDHLM_En_RB_, (int)fValue,
+      updateCfgValue(axisNo, defAsynPara.ethercatmcCfgDHLM_En_, (int)fValue,
                      "dhlm_en");
       udateMotorLimitsRO(axisNo);
       break;
