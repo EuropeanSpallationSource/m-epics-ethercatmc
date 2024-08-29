@@ -202,11 +202,6 @@ typedef enum { permPNone, permPRead, permPRDWR } permPTyp;
 #define PARAM_IDX_FUN_REFERENCE 133
 #define PARAM_IDX_FUN_SET_POSITION 137
 #define PARAM_IDX_FUN_MOVE_VELOCITY 142
-/* Implementation defined, integer */
-/* The following 3 are obsolete */
-#define PARAM_IDX_USR_MIN_EN_UINT32 192
-#define PARAM_IDX_USR_MAX_EN_UINT32 193
-#define PARAM_IDX_HOME_PROC_UINT32 194
 /* Implementation defined, floating point */
 #define PARAM_IDX_USR_MIN_EN_FLOAT32 218
 #define PARAM_IDX_USR_MAX_EN_FLOAT32 219
@@ -2102,15 +2097,12 @@ static unsigned indexerMotorParamRead(unsigned motor_axis_no,
       /* Use half of the velocity as "JVEL" */
       *fRet = getNxtMoveVelocity(motor_axis_no) / 2.0;
       return ret;
-    case PARAM_IDX_USR_MIN_EN_UINT32:
     case PARAM_IDX_USR_MIN_EN_FLOAT32:
       *fRet = getEnableLowSoftLimit(motor_axis_no);
       return ret;
-    case PARAM_IDX_USR_MAX_EN_UINT32:
     case PARAM_IDX_USR_MAX_EN_FLOAT32:
       *fRet = getEnableHighSoftLimit(motor_axis_no);
       return ret;
-    case PARAM_IDX_HOME_PROC_UINT32:
     case PARAM_IDX_HOME_PROC_FLOAT32:
       *fRet = cmd_Motor_cmd[motor_axis_no].nHomProc;
       return ret;
@@ -2292,18 +2284,6 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
       }
         ret = PARAM_IF_CMD_DONE | paramIndex;
         break;
-      case PARAM_IDX_USR_MIN_EN_UINT32:
-        setEnableLowSoftLimit(motor_axis_no, iValue);
-        ret = PARAM_IF_CMD_DONE | paramIndex;
-        break;
-      case PARAM_IDX_USR_MAX_EN_UINT32:
-        setEnableHighSoftLimit(motor_axis_no, iValue);
-        ret = PARAM_IF_CMD_DONE | paramIndex;
-        break;
-      case PARAM_IDX_HOME_PROC_UINT32:
-        cmd_Motor_cmd[motor_axis_no].nHomProc = iValue;
-        ret = PARAM_IF_CMD_DONE | paramIndex;
-        break;
     }
     /* put DONE (or ERROR) into the process image */
     uintToNet(ret, &netData.memoryBytes[offset], 2);
@@ -2317,9 +2297,6 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
     if ((ret & PARAM_IF_CMD_MASKPARAM_IF_CMD_MASK) == PARAM_IF_CMD_DONE) {
       switch (paramIndex) {
         case PARAM_IDX_OPMODE_AUTO_UINT32:
-        case PARAM_IDX_USR_MIN_EN_UINT32:
-        case PARAM_IDX_USR_MAX_EN_UINT32:
-        case PARAM_IDX_HOME_PROC_UINT32:
           uintToNet((unsigned)fRet, &netData.memoryBytes[offset + 2],
                     lenInPlcPara);
           break;

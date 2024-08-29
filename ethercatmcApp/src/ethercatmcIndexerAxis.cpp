@@ -1562,33 +1562,29 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value) {
     /* If someone writes 0 to the field, just ignore it */
     return asynSuccess;
   } else if (function == pC_->defAsynPara.ethercatmcCfgDHLM_En_) {
-    unsigned paramIndex = PARAM_IDX_USR_MAX_EN_UINT;
     double valueRB = -1;
-    if (drvlocal.clean.PILSparamPerm[paramIndex] != PILSparamPermWrite) {
-      paramIndex = PARAM_IDX_USR_MAX_EN_FLOAT;
-    }
+    unsigned paramIndex = PARAM_IDX_USR_MAX_EN_FLOAT;
     status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetIntegerParam(%d defAsynPara.ethercatmcCfgDHLM_En)=%d  "
+              "%ssetIntegerParam(%d defAsynPara.ethercatmcCfgDHLM_En)=%d "
+              "paramIndex=%u "
               "status=%s(%d)\n",
-              modNamEMC, axisNo_, value, ethercatmcstrStatus(status),
-              (int)status);
+              modNamEMC, axisNo_, value, paramIndex,
+              ethercatmcstrStatus(status), (int)status);
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
     }
   } else if (function == pC_->defAsynPara.ethercatmcCfgDLLM_En_) {
-    unsigned paramIndex = PARAM_IDX_USR_MIN_EN_UINT;
     double valueRB = -1;
-    if (drvlocal.clean.PILSparamPerm[paramIndex] != PILSparamPermWrite) {
-      paramIndex = PARAM_IDX_USR_MIN_EN_FLOAT;
-    }
+    unsigned paramIndex = PARAM_IDX_USR_MIN_EN_FLOAT;
     status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetIntegerParam(%d defAsynPara.ethercatmcCfgDLLM_En)=%d "
+              "paramIndex=%u "
               "status=%s(%d)\n",
-              modNamEMC, axisNo_, value, ethercatmcstrStatus(status),
-              (int)status);
+              modNamEMC, axisNo_, value, paramIndex,
+              ethercatmcstrStatus(status), (int)status);
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);

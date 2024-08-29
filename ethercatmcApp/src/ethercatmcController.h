@@ -282,10 +282,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
 #define PARAM_IF_IDX_FIRST_CUSTOM_PARA 192
 #define PARAM_IF_IDX_LAST_CUSTOM_PARA 223
 
-/* Implementation defined, integer. Legacy, no longer used */
-#define PARAM_IDX_USR_MIN_EN_UINT 192
-#define PARAM_IDX_USR_MAX_EN_UINT 193
-#define PARAM_IDX_HOMPROC_UINT 194
 /* Implementation defined, floating point */
 #define PARAM_IDX_USR_MIN_EN_FLOAT 218
 #define PARAM_IDX_USR_MAX_EN_FLOAT 219
