@@ -2223,9 +2223,7 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
   }
   if (paramCommand == PARAM_IF_CMD_DOWRITE) {
     double fValue;
-    int iValue;
     fValue = netToDouble(&netData.memoryBytes[offset + 2], lenInPlcPara);
-    iValue = netToUint(&netData.memoryBytes[offset + 2], lenInPlcPara);
     ret = PARAM_IF_CMD_ERR_NO_IDX;
     switch (paramIndex) {
       case PARAM_IDX_OPMODE_AUTO_UINT32:
