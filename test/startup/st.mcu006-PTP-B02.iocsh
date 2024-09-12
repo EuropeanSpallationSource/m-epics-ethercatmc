@@ -57,6 +57,21 @@ epicsEnvSet("CHNO",     "2")
 < ethercatmcEL6688-PTP.iocsh
 
 
+
+#####################################################
+# PosXFC-TSE
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
+epicsEnvSet("R", "PosXFC-TSE")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "PosXFC")
+epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC", 3)
+epicsEnvSet("EGU", "mm")
+epicsEnvSet("TSE", "-2")
+< ethercatmcAnalogInput-TSE.iocsh
+
+
+
 #####################################################
 # IndexPulsePositionXFC_K
 epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
