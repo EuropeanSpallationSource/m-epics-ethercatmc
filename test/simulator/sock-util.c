@@ -694,7 +694,7 @@ void socket_loop(void) {
   {
     unsigned short port = 5000;
     listen_socket =
-        epicsSocketCreateBind(AF_INET6, SOCK_STREAM, IPPROTO_TCP, port,
+        epicsSocketCreateBind(AF_INET, SOCK_STREAM, IPPROTO_TCP, port,
                               EPICSSOCKETENABLEADDRESSREUSE_FLAG);
     if (listen_socket >= 0) {
       LOGINFO("listening2 on port %d\n", port);
@@ -717,7 +717,7 @@ void socket_loop(void) {
   {
     unsigned short port = 48898;
     listen_socket =
-        epicsSocketCreateBind(AF_INET6, SOCK_STREAM, IPPROTO_TCP, port,
+        epicsSocketCreateBind(AF_INET, SOCK_STREAM, IPPROTO_TCP, port,
                               EPICSSOCKETENABLEADDRESSREUSE_FLAG);
     if (listen(listen_socket, 1) < 0) {
       LOGERR_ERRNO("listen() failed\n");
