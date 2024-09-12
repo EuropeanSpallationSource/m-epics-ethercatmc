@@ -157,22 +157,22 @@ postprocess_stcmddst() {
     sed <$stcmddst \
       -e "s/172\.[0-9]*\.[0-9]*.[0-9]*/$MOTORIP/" \
       -e "s/127.0.0.1/$MOTORIP/" >/tmp/$$ &&
-      mv -f /tmp/$$ $stcmddst
+      cp /tmp/$$ $stcmddst
   fi
   if test -n "$MOTORPORT"; then
     sed <$stcmddst -e "s/5000/$MOTORPORT/" >/tmp/$$ &&
-      mv -f /tmp/$$ $stcmddst
+      cp /tmp/$$ $stcmddst
   fi
   if test -n "$REMOTEAMSNETID"; then
     sed <$stcmddst \
       -e "s/REMOTEAMSNETIDXX/$REMOTEAMSNETID/" \
       -e "s/amsNetIdRemote=[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/amsNetIdRemote=$REMOTEAMSNETID/" >/tmp/$$ &&
-      mv -f /tmp/$$ $stcmddst
+      cp /tmp/$$ $stcmddst
   fi
   if test -n "$LOCALAMSNETID"; then
     sed <$stcmddst \
       -e "s/LOCALAMSNETIDXX/$LOCALAMSNETID/" >/tmp/$$ &&
-      mv -f /tmp/$$ $stcmddst
+      cp /tmp/$$ $stcmddst
   fi
   chmod +x $stcmddst
 }
