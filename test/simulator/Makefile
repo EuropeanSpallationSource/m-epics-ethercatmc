@@ -18,7 +18,7 @@ CFLAGS         += -O0 -g
 endif
 
 ifeq ($(uname_S),FreeBSD)
-CC             = gcc
+CC             = cc
 CFLAGS         += -Wall -Werror
 CFLAGS         += -O0 -g
 endif
