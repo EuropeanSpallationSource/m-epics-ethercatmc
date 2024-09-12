@@ -6,5 +6,4 @@ record(ai, "$(P)$(R)")
     field(PREC, "$(PREC=PREC)")
     field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
     field(SCAN, "I/O Intr")
-    field(TSE,  "$(TSE=0)")
 }
