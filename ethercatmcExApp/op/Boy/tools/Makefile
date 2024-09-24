@@ -4,7 +4,7 @@ GNERATEDOPIS = \
   ../motor-1.opi \
   ../motor-1-pils.opi \
   ../motor-1-ptp.opi \
-  ../motor-1-ptp-Max-Red-Current-TimeEncoder.opi \
+  ../motor-1-pils-ptp-Max-Red-Current-TimeEncoder.opi \
   ../motor-2.opi \
   ../motor-2-pils.opi \
   ../motor-3-pils.opi \
@@ -22,7 +22,7 @@ GNERATEDOPIS = \
   ../motor-ymir-mcs2-pils.opi \
   ../ethercatmcaxisConfig.opi \
   ../ethercatmcaxisConfig-pils.opi \
-  ../ethercatmcaxisConfig-pils-Max-Red-Current-TimeEncoder.opi \
+  ../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi \
   ../ethercatmcaxisExpert.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
   ../ethercatmcaxisExpert-pils.opi \
@@ -153,7 +153,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils ptp 1 x 1
 
-../motor-1-ptp-Max-Red-Current-TimeEncoder.opi: ../motor-1-ptp.opi
+../motor-1-pils-ptp-Max-Red-Current-TimeEncoder.opi: ../motor-1-ptp.opi
 	sed -e 's/ethercatmcaxisExpert-pils-ptp/ethercatmcaxisExpert-pils-ptp-Max-Red-Current-TimeEncoder/' < ../motor-1-ptp.opi >$@
 
 ../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
@@ -207,11 +207,11 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../ethercatmcaxisConfig-pils.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
 	./genAxisConfigCutomPara.sh $@
 
-../ethercatmcaxisConfig-pils-Max-Red-Current-TimeEncoder.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
+../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
 	./genAxisConfigCutomPara.sh $@ CfgMoveCurrent CfgIdleCurrent CfgTimCompModEncoder CfgAddEncoderDelay
 
 #ethercatmcaxisConfig-pils.opi
-#ethercatmcaxisConfig-pils-Max-Red-Current-TimeEncoder.opi
+#ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi
 
 #../ethercatmcaxisConfig-ecmc.opi \
 
@@ -231,7 +231,7 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert pils ptp $(AUXBITS_EXPERT)
 
 ../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-TimeEncoder.opi: ../ethercatmcaxisExpert-pils-ptp.opi
-	sed -e 's/ethercatmcaxisConfig-pils.opi/ethercatmcaxisConfig-pils-Max-Red-Current-TimeEncoder.opi/' < ../ethercatmcaxisExpert-pils-ptp.opi >$@
+	sed -e 's/ethercatmcaxisConfig-pils.opi/ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi/' < ../ethercatmcaxisExpert-pils-ptp.opi >$@
 
 # Generate ethercatmcShutter*.opi out of
 #   ethercatmcShutter.mid and ethercatmcShutter.end

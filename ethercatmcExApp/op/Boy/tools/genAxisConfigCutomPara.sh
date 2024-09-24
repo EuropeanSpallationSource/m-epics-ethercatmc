@@ -21,6 +21,6 @@ done
 touch "$FILE" &&
   chmod +w "$FILE" &&
   cat ethercatmcaxisConfig.end >>/tmp/$$ &&
-  sed -e "s!ethercatmcaxisConfig-pils.opi!$FILE!" </tmp/$$ >"$FILE" &&
+  sed -e "s!ethercatmcaxisExpert-pils.opi!$FILE!" -e "s!<path>../!<path>!" -e "s!<path>ethercatmcaxisConfig!<path>ethercatmcaxisExpert!" </tmp/$$ >"$FILE" &&
   chmod -w "$FILE" &&
   rm /tmp/$$
