@@ -232,7 +232,11 @@ fi
 black *.py
 
 #Check ruff, the fast Python linter and code formatter
+# Note: The version without 'v'. 'v' is used when installing
 RUFF_VERSION=0.1.7
+if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
+  pip install git+https://github.com/charliermarsh/ruff-pre-commit@v$RUFF_VERSION
+fi
 if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
   echo >&2 ruff not found or wrong version
   exit 1
