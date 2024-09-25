@@ -69,7 +69,22 @@ checkAndInstallPythonPackage() {
 }
 ########################################
 
-if which virtualenv-3.9 >/dev/null 2>&1; then
+#
+# Some systems are known to have virtualenv
+#
+UNAME_A=$(uname -a)
+case $UNAME_A in
+  *ubuntu*)
+    if ! which virtualenv >/dev/null 2>&1; then
+      checkAndInstallSystemPackage virtualenv
+    fi
+    ;;
+  *) ;;
+esac
+
+if which virtualenv-3.10 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.10
+elif which virtualenv-3.9 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.9
 elif which virtualenv-3.8 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.8
@@ -136,7 +151,9 @@ fi
 
 ##############################################################################
 if test -n "$MYVIRTUALENV" && type $MYVIRTUALENV >/dev/null 2>&1; then
-  if which python3.9 >/dev/null 2>&1; then
+  if which python3.10 >/dev/null 2>&1; then
+    PYTHON=python3.10
+  elif which python3.9 >/dev/null 2>&1; then
     PYTHON=python3.9
   elif which python3.8 >/dev/null 2>&1; then
     PYTHON=python3.8
