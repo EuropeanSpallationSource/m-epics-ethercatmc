@@ -35,7 +35,7 @@ fi
 #
 #
 checkAndInstallSystemPackage() {
-  while test $# -gt 1; do
+  while test $# -gt 0; do
     PACKAGENAME=$1
     shift
     if which yum >/dev/null 2>&1; then
@@ -186,6 +186,11 @@ else
     checkAndInstallPythonPackage epics "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
   fi
 fi
+
+if ! which pip >/dev/null; then
+  checkAndInstallSystemPackage pip
+fi
+
 checkAndInstallPythonPackage epics "pip3 install pyepics" "pip install pyepics" &&
   checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
 checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST" || {
