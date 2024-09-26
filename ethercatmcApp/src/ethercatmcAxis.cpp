@@ -882,10 +882,6 @@ void ethercatmcAxis::callParamCallbacksUpdateError() {
   } else if (drvlocal.cmdErrorMessage[0]) {
     drvlocal.eeAxisError = eeAxisErrorCmdError;
     msgTxtFromDriver = &drvlocal.cmdErrorMessage[0];
-#ifndef motorNotHomedProblemString
-  } else if (!drvlocal.homed && (drvlocal.nCommandActive != NCOMMANDHOME)) {
-    drvlocal.eeAxisError = eeAxisErrorNotHomed;
-#endif
   } else if (drvlocal.illegalInTargetWindow) {
     drvlocal.eeAxisError = eeAxisIllegalInTargetWindow;
     msgTxtFromDriver = "E: InTargetPosWin";

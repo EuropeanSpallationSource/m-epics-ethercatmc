@@ -87,7 +87,6 @@ class epicsShareClass ethercatmcAxis : public asynMotorAxis {
     eeAxisErrorMCUError,
     eeAxisErrorCmdError,
     eeAxisErrorNotFound,
-    eeAxisErrorNotHomed,
     eeAxisIllegalInTargetWindow
   } eeAxisErrorType;
 
