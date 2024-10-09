@@ -2,10 +2,12 @@
 GNERATEDOPIS = \
   ../motor-0-ptp.opi \
   ../motor-1.opi \
+  ../motor-1-piezo.opi \
   ../motor-1-pils.opi \
   ../motor-1-ptp.opi \
   ../motor-1-pils-ptp-Max-Red-Current-TimeEncoder.opi \
   ../motor-2.opi \
+  ../motor-2-piezo.opi \
   ../motor-2-pils.opi \
   ../motor-3-pils.opi \
   ../motor-3-ptp.opi \
@@ -147,6 +149,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 1 x 1
 
+../motor-1-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) ./motorx-piezo.mid
+	./genMotorShutter.sh $@ piezo 1 x 1
+
 ../motor-1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 1 x 1
 
@@ -161,6 +166,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-2-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 2 x 1
+
+../motor-2-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) ./motorx-piezo.mid
+	./genMotorShutter.sh $@ piezo 2 x 1
 
 ../motor-3-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 3 x 1
