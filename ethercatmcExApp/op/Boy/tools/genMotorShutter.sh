@@ -13,15 +13,16 @@ TEMPSENSORHIGHT=36
 EXT=opi
 
 HAS_ECMC=""
+HAS_PIEZO=""
 HAS_PILS=""
 HAS_PTP=""
+OPIMID=motorx.mid
 OPIMID_EGU_TEMP=motorx-egu-rbv.mid
 y0=16
 export y0 WIDTH MOTORHIGHT TEMPSENSORHIGHT
 
 genMatrix() {
   echo genMatrix "$@"
-  OPIMID=motorx.mid
   numparameaten=0
   cntx=0
   cnty=0
@@ -140,6 +141,11 @@ if test "$1" = "pils"; then
   shift
   HAS_PILS=y
   export HAS_PILS
+elif test "$1" = "piezo"; then
+  shift
+  OPIMID=motorx-piezo.mid
+  HAS_PIEZO=y
+  export HAS_PIEZO
 elif test "$1" = "ecmc"; then
   shift
   HAS_ECMC=y
@@ -180,6 +186,12 @@ fi &&
     touch $FILE &&
       chmod +w $FILE &&
       sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-pils-ptp.opi!" </tmp/$$ >$FILE &&
+      rm /tmp/$$ &&
+      chmod -w $FILE
+  elif test "$HAS_PIEZO" != ""; then
+    touch $FILE &&
+      chmod +w $FILE &&
+      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-piezo.opi!" </tmp/$$ >$FILE &&
       rm /tmp/$$ &&
       chmod -w $FILE
   elif test "$HAS_PILS" = ""; then
