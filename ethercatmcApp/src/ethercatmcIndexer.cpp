@@ -576,20 +576,18 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
     }
     unsigned cmdSubParamIndexRB = NETTOUINT(paramIf_from_MCU.paramCtrl);
     unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
-
-    if (counter >= 1) {
-      asynPrint(
-          pasynUserController_, traceMask,
-          "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-          "counter=%u RB=%s (0x%04X)\n",
-          modNamEMC, axisNo, plcParamIndexTxtFromParamIndex(paramIndex),
-          paramIndex, paramIndex, value, counter,
-          paramIfCmdToString(cmdSubParamIndexRB),
-          // Print the even the sub-index as HEX, in case the PLC "hides" some
-          // info here
-          cmdSubParamIndexRB & (PARAM_IF_SUBIDX_MASK | PARAM_IF_IDX_MASK));
-    }
     unsigned paramIfCmd = cmdSubParamIndexRB & PARAM_IF_CMD_MASK;
+
+    if ((counter >= 1) || (paramIfCmd == PARAM_IF_CMD_BUSY) ||
+        (paramIfCmd == PARAM_IF_CMD_DOREAD)) {
+      asynPrint(pasynUserController_, traceMask,
+                "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
+                "counter=%u RB=%s,%s (0x%04X)\n",
+                modNamEMC, axisNo, plcParamIndexTxtFromParamIndex(paramIndex),
+                paramIndex, paramIndex, value, counter,
+                plcParamIndexTxtFromParamIndex(paramIndexRB),
+                paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
+    }
     switch (paramIfCmd) {
       case PARAM_IF_CMD_DONE: {
         if (paramIndexRB == paramIndex) {
@@ -669,11 +667,12 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
         if (paramIndexIsMovingFunction(paramIndex)) {
           asynPrint(pasynUserController_, traceMask,
                     "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-                    "movingFun RB=%s (0x%04X)\n",
+                    "movingFun RB=%s,%s (0x%04X)\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                    paramIndex, value, paramIfCmdToString(cmdSubParamIndexRB),
-                    cmdSubParamIndexRB);
+                    paramIndex, value,
+                    plcParamIndexTxtFromParamIndex(paramIndexRB),
+                    paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
           if (paramIndexRB == paramIndex) {
             /* "our" function: return */
             if (pValueRB) *pValueRB = valueRB;
