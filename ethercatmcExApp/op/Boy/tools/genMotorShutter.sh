@@ -17,7 +17,7 @@ HAS_PIEZO=""
 HAS_PILS=""
 HAS_PTP=""
 OPIMID=motorx.mid
-OPIMID_EGU_TEMP=motorx-egu-rbv.mid
+OPIMID_EGU_OR_TEMP_AND_RBV=motorx-egu-rbv.mid
 y0=16
 export y0 WIDTH MOTORHIGHT TEMPSENSORHIGHT
 
@@ -45,15 +45,15 @@ genMatrix() {
           echo genMatrix YCNTMAX=$YCNTMAX
           # loop x times y
           cntx=0
-          echo genMatrix y=$y cnty=$cnty YCNTMAX=$YCNTMAX cntx=$cntx XCNTMAX=$XCNTMAX OPIMID_EGU_TEMP=$OPIMID_EGU_TEMP
+          echo genMatrix y=$y cnty=$cnty YCNTMAX=$YCNTMAX cntx=$cntx XCNTMAX=$XCNTMAX OPIMID_EGU_OR_TEMP_AND_RBV=$OPIMID_EGU_OR_TEMP_AND_RBV
           while test $cnty -lt $YCNTMAX; do
             while test $cntx -lt $XCNTMAX; do
               x=$(($cntx * $WIDTH))
               cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
               echo xcmd=$cmd "<$OPIMID"
               eval $cmd <$OPIMID >>/tmp/$$
-              if test "$OPIMID_EGU_TEMP"; then
-                eval $cmd <$OPIMID_EGU_TEMP >>/tmp/$$
+              if test "$OPIMID_EGU_OR_TEMP_AND_RBV"; then
+                eval $cmd <$OPIMID_EGU_OR_TEMP_AND_RBV >>/tmp/$$
               fi
               im=$(($im + 1))
               cntx=$(($cntx + 1))
@@ -77,8 +77,8 @@ genMatrix() {
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
         echo xcmd=$cmd "<$OPIMID"
         eval $cmd <$OPIMID >>/tmp/$$
-        if test "$OPIMID_EGU_TEMP"; then
-          eval $cmd <$OPIMID_EGU_TEMP >>/tmp/$$
+        if test "$OPIMID_EGU_OR_TEMP_AND_RBV"; then
+          eval $cmd <$OPIMID_EGU_OR_TEMP_AND_RBV >>/tmp/$$
         fi
         im=$(($im + 1))
         cntx=$(($cntx + 1))
@@ -105,7 +105,7 @@ genMatrix() {
         cntx=$(($cntx + 1))
         ;;
       temp)
-        OPIMID_EGU_TEMP=motorx-temp-rbv.mid
+        OPIMID_EGU_OR_TEMP_AND_RBV=motorx-temp-rbv.mid
         ;;
       t)
         OPIMID=tempsensor.mid
