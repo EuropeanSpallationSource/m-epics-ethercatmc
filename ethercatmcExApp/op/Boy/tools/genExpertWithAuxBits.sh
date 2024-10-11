@@ -46,6 +46,7 @@ HAS_PTPdiffNTTime_MCU=""
 HAS_PTPdiffTcNTPExttime_mcu=""
 HAS_PTP=""
 HAS_PTP_TS_NS_POS_NEG=""
+HAS_PIEZO=""
 HAS_PILS=""
 PTPOPENERRBITS=0
 PARAM="$1"
@@ -85,6 +86,11 @@ while test "$PARAM" != ""; do
       shift
       PARAM="$1"
       ;;
+    piezo)
+      HAS_PIEZO="y"
+      shift
+      PARAM="$1"
+      ;;
     pils)
       HAS_PILS="y"
       shift
@@ -106,6 +112,7 @@ export HAS_PTPdiffTimeIOC_MCU
 export HAS_PTPdiffNTTime_MCU
 export HAS_PTPdiffTcNTPExttime_mcu
 export HAS_PTPTCdiffTime_MCU
+export HAS_PIEZO
 export HAS_PILS
 export PTPOPENERRBITS
 
@@ -175,29 +182,37 @@ ETHERCATMCAXISCONFIG_OPI=ethercatmcaxisConfig-pils.opi
 cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
   echo $0: $BASENAME cmd=$cmd &&
   eval $cmd <$BASENAME.mid >>/tmp/$$ &&
-  if test "$HAS_PILS" = "y"; then
+  if test "$HAS_PIEZO" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_PILS cmd=$cmd
-    eval $cmd <cnen-vis.mid >>/tmp/$$
-    eval $cmd <foff-vis.mid >>/tmp/$$
-    eval $cmd <homf-homr-vis.mid >>/tmp/$$
-    eval $cmd <inhibitf-inhibitr.mid >>/tmp/$$
-    eval $cmd <pils-cfgdxlm-en.mid >>/tmp/$$
-    eval $cmd <pils-errtxt.mid >>/tmp/$$
-    eval $cmd <pils-status-bit24-25.mid >>/tmp/$$
-    eval $cmd <pils-statuscode.mid >>/tmp/$$
+    eval $cmd <e-cnen-vis.mid >>/tmp/$$
+    eval $cmd <e-foff-vis.mid >>/tmp/$$
+    eval $cmd <e-homf-homr-vis.mid >>/tmp/$$
+    eval $cmd <e-pils-errtxt.mid >>/tmp/$$
+    eval $cmd <e-pils-statuscode.mid >>/tmp/$$
+  elif test "$HAS_PILS" = "y"; then
+    cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+    echo $0: HAS_PILS cmd=$cmd
+    eval $cmd <e-cnen-vis.mid >>/tmp/$$
+    eval $cmd <e-foff-vis.mid >>/tmp/$$
+    eval $cmd <e-homf-homr-vis.mid >>/tmp/$$
+    eval $cmd <e-inhibitf-inhibitr.mid >>/tmp/$$
+    eval $cmd <e-pils-cfgdxlm-en.mid >>/tmp/$$
+    eval $cmd <e-pils-errtxt.mid >>/tmp/$$
+    eval $cmd <e-pils-status-bit24-25.mid >>/tmp/$$
+    eval $cmd <e-pils-statuscode.mid >>/tmp/$$
   elif test "$HAS_ECMC" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_ECMC cmd=$cmd
-    eval $cmd <ecmc.mid >>/tmp/$$
+    eval $cmd <e-ecmc.mid >>/tmp/$$
   elif test "$BASENAME" = "ethercatmcaxisExpert"; then
     # The old etthercatmc (no pils)
     ETHERCATMCAXISCONFIG_OPI=ethercatmcaxisConfig.opi
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: Neither_PILS_NOR_ECMC cmd=$cmd
-    eval $cmd <cnen-vis.mid >>/tmp/$$
-    eval $cmd <foff-vis.mid >>/tmp/$$
-    eval $cmd <homf-homr-vis.mid >>/tmp/$$
+    eval $cmd <e-cnen-vis.mid >>/tmp/$$
+    eval $cmd <e-foff-vis.mid >>/tmp/$$
+    eval $cmd <e-homf-homr-vis.mid >>/tmp/$$
   fi &&
   for n in $@; do
     yaux=$(($yaux + 20))
