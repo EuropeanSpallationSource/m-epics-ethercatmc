@@ -200,10 +200,16 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <e-pils-errtxt.mid >>/tmp/$$
     eval $cmd <e-pils-status-bit24-25.mid >>/tmp/$$
     eval $cmd <e-pils-statuscode.mid >>/tmp/$$
+    eval $cmd <e-errrst.mid >>/tmp/$$
+    eval $cmd <e-homproc-rb.mid >>/tmp/$$
+    eval $cmd <e-vel-acc-RB-act.mid >>/tmp/$$
   elif test "$HAS_ECMC" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_ECMC cmd=$cmd
     eval $cmd <e-ecmc.mid >>/tmp/$$
+    eval $cmd <e-errrst.mid >>/tmp/$$
+    eval $cmd <e-homproc-rb.mid >>/tmp/$$
+    eval $cmd <e-vel-acc-RB-act.mid >>/tmp/$$
   elif test "$BASENAME" = "ethercatmcaxisExpert"; then
     # The old etthercatmc (no pils)
     ETHERCATMCAXISCONFIG_OPI=ethercatmcaxisConfig.opi
