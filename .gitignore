@@ -14,6 +14,7 @@ builddir/
 configure/*local*
 dbd/
 ethercatmc.Makefile
+ethercatmcExApp/op/Boy/tools/motorx-piezo.mid
 ethercatmcExApp/op/Boy/tools/motorx-pils.mid
 html/
 include/
