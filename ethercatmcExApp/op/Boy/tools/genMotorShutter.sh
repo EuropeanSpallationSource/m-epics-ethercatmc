@@ -17,7 +17,7 @@ HAS_PIEZO=""
 HAS_PILS=""
 HAS_PTP=""
 OPIMID=motorx.mid
-OPIMID_EGU_OR_TEMP_AND_RBV=motorx-egu-rbv.mid
+OPIMID_EGU_OR_TEMP_AND_RBV=m-egu-rbv.mid
 y0=16
 export y0 WIDTH MOTORHIGHT TEMPSENSORHIGHT
 
@@ -105,7 +105,7 @@ genMatrix() {
         cntx=$(($cntx + 1))
         ;;
       temp)
-        OPIMID_EGU_OR_TEMP_AND_RBV=motorx-temp-rbv.mid
+        OPIMID_EGU_OR_TEMP_AND_RBV=m-temp-rbv.mid
         ;;
       t)
         OPIMID=tempsensor.mid
