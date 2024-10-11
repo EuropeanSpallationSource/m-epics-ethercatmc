@@ -1,5 +1,8 @@
 
 GNERATEDOPIS = \
+  ./e-cnen.mid \
+  ./e-foff.mid \
+  ./e-homf-homr.mid \
   ./motorx-pils.mid \
   ../motor-0-ptp.opi \
   ../motor-1.opi \
@@ -124,19 +127,22 @@ DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += PTPdiffTimeIOC_MCU-HIGH-LOW.mid
 
 # expert screens. e- stands for expert
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI = Makefile
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-cnen.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-cnen-vis.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-ecmc.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.start
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.end
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-foff.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-foff-vis.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homf-homr.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homf-homr-vis.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-inhibitf-inhibitr.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-cfgdxlm-en.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-errtxt.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-status-bit24-25.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-statuscode.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.start
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.end
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.sh
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.py
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ptp.mid
@@ -157,6 +163,15 @@ AUXBITS_EXPERT="20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 AUXBITS_SHUTTER="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
 AUXBITS_STATUSWORD="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23"
 AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
+
+./e-cnen.mid: e-cnen-vis.mid Makefile
+	sed -e '/<rules>/,/<\/rules>/d'<e-cnen-vis.mid >$@
+
+./e-foff.mid: e-foff-vis.mid Makefile
+	sed -e '/<rules>/,/<\/rules>/d'<e-foff-vis.mid >$@
+
+./e-homf-homr.mid: e-homf-homr-vis.mid Makefile
+	sed -e '/<rules>/,/<\/rules>/d'<e-homf-homr-vis.mid >$@
 
 ./motorx-piezo.mid: $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) Makefile
 	echo $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) '>$@'

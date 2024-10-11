@@ -14,6 +14,9 @@ builddir/
 configure/*local*
 dbd/
 ethercatmc.Makefile
+ethercatmcExApp/op/Boy/tools/e-cnen.mid
+ethercatmcExApp/op/Boy/tools/e-foff.mid
+ethercatmcExApp/op/Boy/tools/e-homf-homr.mid
 ethercatmcExApp/op/Boy/tools/motorx-piezo.mid
 ethercatmcExApp/op/Boy/tools/motorx-pils.mid
 html/

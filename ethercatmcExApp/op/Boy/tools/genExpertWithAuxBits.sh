@@ -185,11 +185,10 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
   if test "$HAS_PIEZO" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_PILS cmd=$cmd
-    eval $cmd <e-cnen-vis.mid >>/tmp/$$
-    eval $cmd <e-foff-vis.mid >>/tmp/$$
-    eval $cmd <e-homf-homr-vis.mid >>/tmp/$$
+    eval $cmd <e-cnen.mid >>/tmp/$$
+    eval $cmd <e-foff.mid >>/tmp/$$
+    eval $cmd <e-homf-homr.mid >>/tmp/$$
     eval $cmd <e-pils-errtxt.mid >>/tmp/$$
-    eval $cmd <e-pils-statuscode.mid >>/tmp/$$
   elif test "$HAS_PILS" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_PILS cmd=$cmd
