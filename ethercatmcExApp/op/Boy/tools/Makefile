@@ -28,6 +28,7 @@ GNERATEDOPIS = \
   ../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi \
   ../ethercatmcaxisExpert.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
+  ../ethercatmcaxisExpert-piezo.opi \
   ../ethercatmcaxisExpert-pils.opi \
   ../ethercatmcaxisExpert-pils-ptp.opi \
   ../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-TimeEncoder.opi \
@@ -121,22 +122,23 @@ DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += PTPdiffTimeIOC_MCU-HIGH-LOW.mid
 
 
 
+# expert screens. e- stands for expert
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI = Makefile
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += cnen-vis.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ecmc.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-cnen-vis.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-ecmc.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.start
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.end
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += foff-vis.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-foff-vis.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homf-homr-vis.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-inhibitf-inhibitr.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-cfgdxlm-en.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-errtxt.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-status-bit24-25.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-statuscode.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.sh
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.py
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += homf-homr-vis.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += inhibitf-inhibitr.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils-cfgdxlm-en.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils-errtxt.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils-status-bit24-25.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils-statuscode.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ptp.mid
 
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI = Makefile
@@ -249,6 +251,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
 ../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert
+
+../ethercatmcaxisExpert-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
+	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert piezo $(AUXBITS_EXPERT)
 
 ../ethercatmcaxisExpert-pils.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert pils $(AUXBITS_EXPERT)
