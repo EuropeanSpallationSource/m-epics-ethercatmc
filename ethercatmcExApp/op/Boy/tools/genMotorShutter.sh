@@ -16,7 +16,7 @@ HAS_ECMC=""
 HAS_PIEZO=""
 HAS_PILS=""
 HAS_PTP=""
-OPIMID=motorx.mid
+OPIMID_MOT_SHT=motorx-pils.mid
 OPIMID_EGU_OR_TEMP_AND_RBV=m-egu-rbv.mid
 y0=16
 export y0 WIDTH MOTORHIGHT TEMPSENSORHIGHT
@@ -50,8 +50,8 @@ genMatrix() {
             while test $cntx -lt $XCNTMAX; do
               x=$(($cntx * $WIDTH))
               cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-              echo xcmd=$cmd "<$OPIMID"
-              eval $cmd <$OPIMID >>/tmp/$$
+              echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+              eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
               if test "$OPIMID_EGU_OR_TEMP_AND_RBV"; then
                 eval $cmd <$OPIMID_EGU_OR_TEMP_AND_RBV >>/tmp/$$
               fi
@@ -69,14 +69,14 @@ genMatrix() {
         fi
         ;;
       motor)
-        OPIMID=motorx.mid
+        OPIMID_MOT_SHT=motorx-pils.mid
         ;;
       m)
         HIGHT=$MOTORHIGHT
         x=$(($cntx * $WIDTH))
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-        echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>/tmp/$$
+        echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+        eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
         if test "$OPIMID_EGU_OR_TEMP_AND_RBV"; then
           eval $cmd <$OPIMID_EGU_OR_TEMP_AND_RBV >>/tmp/$$
         fi
@@ -92,15 +92,15 @@ genMatrix() {
         y=$(($y + 16))
         ;;
       shutter)
-        OPIMID=shutterx.mid
+        OPIMID_MOT_SHT=shutterx.mid
         ;;
       s)
-        OPIMID=shutterx.mid
+        OPIMID_MOT_SHT=shutterx.mid
         HIGHT=$MOTORHIGHT
         x=$(($cntx * $WIDTH))
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-        echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>/tmp/$$
+        echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+        eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
         im=$(($im + 1))
         cntx=$(($cntx + 1))
         ;;
@@ -108,12 +108,12 @@ genMatrix() {
         OPIMID_EGU_OR_TEMP_AND_RBV=m-temp-rbv.mid
         ;;
       t)
-        OPIMID=tempsensor.mid
+        OPIMID_MOT_SHT=tempsensor.mid
         HIGHT=$TEMPSENSORHIGHT
         x=$(($cntx * $WIDTH))
-        cmd=$(echo OPIMID=$OPIMID ./shiftopi.py --shiftx $x --shifty $y --shiftt $it)
-        echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>/tmp/$$
+        cmd=$(echo OPIMID_MOT_SHT=$OPIMID_MOT_SHT ./shiftopi.py --shiftx $x --shifty $y --shiftt $it)
+        echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+        eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
         it=$(($it + 1))
         cntx=$(($cntx + 1))
         ;;
@@ -143,7 +143,7 @@ if test "$1" = "pils"; then
   export HAS_PILS
 elif test "$1" = "piezo"; then
   shift
-  OPIMID=motorx-piezo.mid
+  OPIMID_MOT_SHT=motorx-piezo.mid
   HAS_PIEZO=y
   export HAS_PIEZO
 elif test "$1" = "ecmc"; then
