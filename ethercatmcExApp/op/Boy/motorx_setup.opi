@@ -3868,7 +3868,7 @@ $(pv_value)</tooltip>
     <font>
       <fontdata fontName="Sans" height="15" style="0" />
     </font>
-    <width>200</width>
+    <width>320</width>
     <border_style>3</border_style>
     <pv_value />
     <border_width>1</border_width>
