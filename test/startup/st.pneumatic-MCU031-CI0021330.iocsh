@@ -4,7 +4,7 @@ epicsEnvSet("IPADDR",        "$(SM_IPADDR=CI0021330.esss.lu.se)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("AMSNETIDIOC",   "172.30.38.12.1.1")
-epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=Labs-MCAG:MC-MCU-031:)")
+epicsEnvSet("SYSPFX",        "Labs-MCAG:MC-MCU-031:")
 epicsEnvSet("MCUPFX",        "")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "3")
@@ -25,6 +25,21 @@ epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 epicsEnvSet("R",             "Shutter-")
 < ethercatmcShutter.iocsh
+
+# Pressure
+epicsEnvSet("P", "$(SYSPFX)Shutter-")
+epicsEnvSet("R", "Pressure")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "Pressure")
+epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC", 2)
+epicsEnvSet("EGU", "bar")
+epicsEnvSet("SMOO", 0.5)
+epicsEnvSet("ADEL", 0.05)
+epicsEnvSet("MDEL", 0.05)
+< ethercatmcAnalogInputSmooAdelMdel.iocsh
+#< ethercatmcAnalogInput.iocsh
+
 
 
 # Start polling, values are in millisconds
