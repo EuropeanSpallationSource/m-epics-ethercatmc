@@ -3,6 +3,7 @@ GNERATEDOPIS = \
   ./e-cnen.mid \
   ./e-foff.mid \
   ./e-homf-homr.mid \
+  ./e-retry.mid \
   ./motorx-pils.mid \
   ../motor-0-ptp.opi \
   ../motor-1.opi \
@@ -137,6 +138,7 @@ DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homf-homr.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homf-homr-vis.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homproc-rb.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-inhibitf-inhibitr.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-retry.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-urip.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-cfgdxlm-en.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-errtxt.mid
