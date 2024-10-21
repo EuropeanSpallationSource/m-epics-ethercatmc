@@ -184,13 +184,24 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
   eval $cmd <$BASENAME.mid >>/tmp/$$ &&
   if test "$HAS_PIEZO" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-    echo $0: HAS_PILS cmd=$cmd
+    echo $0: HAS_PIEZO cmd=$cmd
     eval $cmd <e-cnen.mid >>/tmp/$$
     eval $cmd <e-foff.mid >>/tmp/$$
     eval $cmd <e-homf-homr.mid >>/tmp/$$
     eval $cmd <e-pils-errtxt.mid >>/tmp/$$
     eval $cmd <e-retry.mid >>/tmp/$$
     eval $cmd <e-URIP.mid >>/tmp/$$
+    # Create the status bits
+    n=0
+    for NAMEPSTATBIT in $@; do
+      echo NAMEPSTATBIT=$NAMEPSTATBIT
+      yaux=$(($yaux + 20))
+      cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
+      echo cmd=$cmd
+      eval $cmd <ethercatmcaxisPiezoPSTAT.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamPstatBitXXX/$NAMEPSTATBIT/g" >>/tmp/$$
+      shift
+      n=$(($n + 1))
+    done
   elif test "$HAS_PILS" = "y"; then
     cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
     echo $0: HAS_PILS cmd=$cmd
