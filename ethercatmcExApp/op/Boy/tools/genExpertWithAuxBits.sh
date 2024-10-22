@@ -22,7 +22,7 @@ case $BASENAME in
     yaux=298
     ;;
   ethercatmcaxisExpert)
-    yaux=436
+    yaux=396
     ;;
   ethercatmcPTPErrBits)
     yaux=18
@@ -212,6 +212,7 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <e-pils-cfgdxlm-en.mid >>/tmp/$$
     eval $cmd <e-pils-errtxt.mid >>/tmp/$$
     eval $cmd <e-pils-status-bit24-25.mid >>/tmp/$$
+    yaux=$((yaux + 40))
     eval $cmd <e-pils-statuscode.mid >>/tmp/$$
     eval $cmd <e-errrst.mid >>/tmp/$$
     eval $cmd <e-homproc-rb.mid >>/tmp/$$
