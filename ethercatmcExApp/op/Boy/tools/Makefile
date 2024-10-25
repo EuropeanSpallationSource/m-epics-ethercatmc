@@ -1,11 +1,17 @@
 
 GNERATEDOPIS = \
+  ./e-cnen.mid \
+  ./e-foff.mid \
+  ./e-homf-homr.mid \
+  ./motorx-pils.mid \
   ../motor-0-ptp.opi \
   ../motor-1.opi \
+  ../motor-1-piezo.opi \
   ../motor-1-pils.opi \
   ../motor-1-ptp.opi \
   ../motor-1-pils-ptp-Max-Red-Current-TimeEncoder.opi \
   ../motor-2.opi \
+  ../motor-2-piezo.opi \
   ../motor-2-pils.opi \
   ../motor-3-pils.opi \
   ../motor-3-ptp.opi \
@@ -25,6 +31,7 @@ GNERATEDOPIS = \
   ../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi \
   ../ethercatmcaxisExpert.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
+  ../ethercatmcaxisExpert-piezo.opi \
   ../ethercatmcaxisExpert-pils.opi \
   ../ethercatmcaxisExpert-pils-ptp.opi \
   ../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-TimeEncoder.opi \
@@ -42,6 +49,17 @@ all: checkwhitespace $(GNERATEDOPIS)
 
 clean:
 	rm -f $(GNERATEDOPIS)
+
+DEPENDENCIES_FOR_MOTORX_PIEZO_OPI = \
+	m-motor.mid \
+	m-msgtxt.mid \
+
+
+DEPENDENCIES_FOR_MOTORX_PILS_OPI = \
+	m-motor.mid \
+	m-errrst.mid \
+	m-inhibit.mid \
+	m-msgtxt.mid \
 
 
 DEPENDENCIES_FOR_CONFIG_OPI = \
@@ -61,8 +79,9 @@ DEPENDENCIES_FOR_MOTOR_OPI = Makefile
 DEPENDENCIES_FOR_MOTOR_OPI += genMotorShutter.sh
 DEPENDENCIES_FOR_MOTOR_OPI += shiftopi.py
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.start
-DEPENDENCIES_FOR_MOTOR_OPI += motorx.mid
-DEPENDENCIES_FOR_MOTOR_OPI += motorx-egu-rbv.mid
+DEPENDENCIES_FOR_MOTOR_OPI += motorx-pils.mid
+DEPENDENCIES_FOR_MOTOR_OPI += m-egu-rbv.mid
+DEPENDENCIES_FOR_MOTOR_OPI += m-temp-rbv.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcHealthStatus.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcIPADDR_PORT.mid
 DEPENDENCIES_FOR_MOTOR_OPI += plcName.mid
@@ -106,22 +125,30 @@ DEPENDENCIES_FOR_PTPERRORSTATUS_OPI += PTPdiffTimeIOC_MCU-HIGH-LOW.mid
 
 
 
+# expert screens. e- stands for expert
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI = Makefile
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += cnen-vis.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ecmc.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-cnen.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-cnen-vis.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-ecmc.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-errrst.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-foff.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-foff-vis.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homf-homr.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homf-homr-vis.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-homproc-rb.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-inhibitf-inhibitr.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-urip.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-cfgdxlm-en.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-errtxt.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-status-bit24-25.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-pils-statuscode.mid
+DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-vel-acc-RB-act.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.start
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.end
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += foff-vis.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.sh
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.py
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += homf-homr-vis.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += inhibitf-inhibitr.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils-cfgdxlm-en.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils-errtxt.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils-status-bit24-25.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += pils-statuscode.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ptp.mid
 
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI = Makefile
@@ -141,11 +168,31 @@ AUXBITS_SHUTTER="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
 AUXBITS_STATUSWORD="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23"
 AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
+./e-cnen.mid: e-cnen-vis.mid Makefile
+	sed -e '/<rules>/,/<\/rules>/d'<e-cnen-vis.mid >$@
+
+./e-foff.mid: e-foff-vis.mid Makefile
+	sed -e '/<rules>/,/<\/rules>/d'<e-foff-vis.mid >$@
+
+./e-homf-homr.mid: e-homf-homr-vis.mid Makefile
+	sed -e '/<rules>/,/<\/rules>/d'<e-homf-homr-vis.mid >$@
+
+./motorx-piezo.mid: $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) Makefile
+	echo $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) '>$@'
+	cat $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) >$@
+
+./motorx-pils.mid: $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) Makefile
+	echo $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) '>$@'
+	cat $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) >$@
+
 ../motor-0-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils ptp
 
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 1 x 1
+
+../motor-1-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) ./motorx-piezo.mid
+	./genMotorShutter.sh $@ piezo 1 x 1
 
 ../motor-1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 1 x 1
@@ -161,6 +208,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-2-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 2 x 1
+
+../motor-2-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) ./motorx-piezo.mid
+	./genMotorShutter.sh $@ piezo 2 x 1
 
 ../motor-3-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 3 x 1
@@ -186,13 +236,13 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-4x4.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 4 x 4
 
-../motor-4x4-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid
+../motor-4x4-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils temp m m m m n m m m m n m m m m n m m m m
 
-../motor-estiaSel1-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid tempsensor.mid
+../motor-estiaSel1-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) tempsensor.mid
 	./genMotorShutter.sh $@ pils temp m m m m m n m m m m m n m m m n t t t t t n t t t t t n t t
 
-../motor-estiaSel2-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-temp-rbv.mid tempsensor.mid
+../motor-estiaSel2-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) tempsensor.mid
 	./genMotorShutter.sh $@ pils temp m m m m m n m m m m m n m m m m n t t t t t n t t t t t n t t
 
 ../motor-ymir-mcs1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
@@ -220,6 +270,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
 ../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert
+
+../ethercatmcaxisExpert-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
+	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert piezo $(AUXBITS_EXPERT)
 
 ../ethercatmcaxisExpert-pils.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert pils $(AUXBITS_EXPERT)

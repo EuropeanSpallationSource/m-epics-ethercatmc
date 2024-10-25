@@ -13,15 +13,16 @@ TEMPSENSORHIGHT=36
 EXT=opi
 
 HAS_ECMC=""
+HAS_PIEZO=""
 HAS_PILS=""
 HAS_PTP=""
-OPIMID_EGU_TEMP=motorx-egu-rbv.mid
+OPIMID_MOT_SHT=motorx-pils.mid
+OPIMID_EGU_OR_TEMP_AND_RBV=m-egu-rbv.mid
 y0=16
 export y0 WIDTH MOTORHIGHT TEMPSENSORHIGHT
 
 genMatrix() {
   echo genMatrix "$@"
-  OPIMID=motorx.mid
   numparameaten=0
   cntx=0
   cnty=0
@@ -44,15 +45,15 @@ genMatrix() {
           echo genMatrix YCNTMAX=$YCNTMAX
           # loop x times y
           cntx=0
-          echo genMatrix y=$y cnty=$cnty YCNTMAX=$YCNTMAX cntx=$cntx XCNTMAX=$XCNTMAX OPIMID_EGU_TEMP=$OPIMID_EGU_TEMP
+          echo genMatrix y=$y cnty=$cnty YCNTMAX=$YCNTMAX cntx=$cntx XCNTMAX=$XCNTMAX OPIMID_EGU_OR_TEMP_AND_RBV=$OPIMID_EGU_OR_TEMP_AND_RBV
           while test $cnty -lt $YCNTMAX; do
             while test $cntx -lt $XCNTMAX; do
               x=$(($cntx * $WIDTH))
               cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-              echo xcmd=$cmd "<$OPIMID"
-              eval $cmd <$OPIMID >>/tmp/$$
-              if test "$OPIMID_EGU_TEMP"; then
-                eval $cmd <$OPIMID_EGU_TEMP >>/tmp/$$
+              echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+              eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
+              if test "$OPIMID_EGU_OR_TEMP_AND_RBV"; then
+                eval $cmd <$OPIMID_EGU_OR_TEMP_AND_RBV >>/tmp/$$
               fi
               im=$(($im + 1))
               cntx=$(($cntx + 1))
@@ -68,16 +69,16 @@ genMatrix() {
         fi
         ;;
       motor)
-        OPIMID=motorx.mid
+        OPIMID_MOT_SHT=motorx-pils.mid
         ;;
       m)
         HIGHT=$MOTORHIGHT
         x=$(($cntx * $WIDTH))
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-        echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>/tmp/$$
-        if test "$OPIMID_EGU_TEMP"; then
-          eval $cmd <$OPIMID_EGU_TEMP >>/tmp/$$
+        echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+        eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
+        if test "$OPIMID_EGU_OR_TEMP_AND_RBV"; then
+          eval $cmd <$OPIMID_EGU_OR_TEMP_AND_RBV >>/tmp/$$
         fi
         im=$(($im + 1))
         cntx=$(($cntx + 1))
@@ -91,28 +92,28 @@ genMatrix() {
         y=$(($y + 16))
         ;;
       shutter)
-        OPIMID=shutterx.mid
+        OPIMID_MOT_SHT=shutterx.mid
         ;;
       s)
-        OPIMID=shutterx.mid
+        OPIMID_MOT_SHT=shutterx.mid
         HIGHT=$MOTORHIGHT
         x=$(($cntx * $WIDTH))
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
-        echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>/tmp/$$
+        echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+        eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
         im=$(($im + 1))
         cntx=$(($cntx + 1))
         ;;
       temp)
-        OPIMID_EGU_TEMP=motorx-temp-rbv.mid
+        OPIMID_EGU_OR_TEMP_AND_RBV=m-temp-rbv.mid
         ;;
       t)
-        OPIMID=tempsensor.mid
+        OPIMID_MOT_SHT=tempsensor.mid
         HIGHT=$TEMPSENSORHIGHT
         x=$(($cntx * $WIDTH))
-        cmd=$(echo OPIMID=$OPIMID ./shiftopi.py --shiftx $x --shifty $y --shiftt $it)
-        echo xcmd=$cmd "<$OPIMID"
-        eval $cmd <$OPIMID >>/tmp/$$
+        cmd=$(echo OPIMID_MOT_SHT=$OPIMID_MOT_SHT ./shiftopi.py --shiftx $x --shifty $y --shiftt $it)
+        echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+        eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
         it=$(($it + 1))
         cntx=$(($cntx + 1))
         ;;
@@ -140,6 +141,11 @@ if test "$1" = "pils"; then
   shift
   HAS_PILS=y
   export HAS_PILS
+elif test "$1" = "piezo"; then
+  shift
+  OPIMID_MOT_SHT=motorx-piezo.mid
+  HAS_PIEZO=y
+  export HAS_PIEZO
 elif test "$1" = "ecmc"; then
   shift
   HAS_ECMC=y
@@ -180,6 +186,12 @@ fi &&
     touch $FILE &&
       chmod +w $FILE &&
       sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-pils-ptp.opi!" </tmp/$$ >$FILE &&
+      rm /tmp/$$ &&
+      chmod -w $FILE
+  elif test "$HAS_PIEZO" != ""; then
+    touch $FILE &&
+      chmod +w $FILE &&
+      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-piezo.opi!" </tmp/$$ >$FILE &&
       rm /tmp/$$ &&
       chmod -w $FILE
   elif test "$HAS_PILS" = ""; then
