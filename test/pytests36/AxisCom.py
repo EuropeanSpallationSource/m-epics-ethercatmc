@@ -4,7 +4,6 @@
 # The "axis" has a "connecton", that can communicate either
 # - via EPICS channel access using pyepics
 # - via pvacces access using p4p
-# - via ADS using pyads
 #
 
 import datetime
@@ -23,10 +22,17 @@ def help_and_exit(self, url_string, problem_string):
 
 
 class AxisCom:
-    def __init__(self, url_string, axisNum=1, log_debug=True):
+    def __init__(self, url_string, axisNum=1, log_debug=True, monitor_list=None):
+        self.log_debug = log_debug
+        self.monitor_list = monitor_list
         self.pvpfx = None  # PV prefix, like IOC:m1
         self.ctxt = None  # P4P context, if any
-        self.log_debug = log_debug
+        self.pv_dmov_ca = None  # needed for monitor in ca/pyepics
+        self.sub = None  # needed for monitor in pva/p4p
+
+        self.change_cnts = {}  # count number of callbacks
+        self.init_change_cnts()
+
         if url_string.startswith("pva://"):
             self.url_scheme = "pva://"
             self.pvpfx = url_string[6:]
@@ -42,11 +48,29 @@ class AxisCom:
             self.epics = epics
         else:
             help_and_exit(self, url_string, "invalid scheme")
+        # set up monitor, if needed
+        if self.monitor_list is not None:
+            if monitor_list.count(".DMOV"):
+                if self.ctxt is not None:
+                    # pva/p4p
+                    self.sub = self.ctxt.monitor(
+                        self.pvpfx + ".DMOV", self.onChangesDmovPVA
+                    )
+                else:
+                    # ca/pyepics
+                    from epics import PV
+
+                    self.pv_dmov_ca = PV(self.pvpfx + ".DMOV")
+                    self.pv_dmov_ca.add_callback(callback=self.onChangesCA)
 
     def close(self):
         if self.ctxt is not None:
-            self.ctxt.close
+            if self.sub is not None:
+                self.sub.close()
+            self.ctxt.close()
             self.ctxt = None
+        if self.pv_dmov_ca is not None:
+            self.pv_dmov_ca.clear_callbacks()
 
     def get(
         self,
@@ -80,8 +104,43 @@ class AxisCom:
             raise Exception("get None")
         return ret
 
+    def get_change_cnts(self, counterName):
+        return self.change_cnts[counterName]
+
     def getMotorPvName(self):
         return self.pvpfx
+
+    def init_change_cnts(self):
+        self.change_cnts["dmov_value"] = 1  # the .DMOV field is true
+        self.change_cnts["dmov_false"] = 0  # the .DMOV field went false
+        self.change_cnts["dmov_true"] = 0  # the .DMOV field went true
+
+    def onChangesCA(self, pvname=None, value=None, char_value=None, **kwx):
+        old_val = int(self.change_cnts["dmov_value"])
+        if value != old_val:
+            if int(value) == 0:
+                self.change_cnts["dmov_false"] += 1
+            elif int(value) == 1:
+                self.change_cnts["dmov_true"] += 1
+            self.change_cnts["dmov_value"] = int(value)
+        if self.log_debug:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} onChangesCA: pvname={pvname} value={value} old_val={old_val} dmov_false={self.change_cnts['dmov_false']} dmov_true={self.change_cnts['dmov_true']}"
+            )
+
+    def onChangesDmovPVA(self, value):
+        old_val = int(self.change_cnts["dmov_value"])
+        if value != old_val:
+            if int(value) == 0:
+                self.change_cnts["dmov_false"] += 1
+            elif int(value) == 1:
+                self.change_cnts["dmov_true"] += 1
+            self.change_cnts["dmov_value"] = int(value)
+
+        if self.log_debug:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} onChangesPVA: value={int(value)} old_val={old_val} dmov_false={self.change_cnts['dmov_false']} dmov_true={self.change_cnts['dmov_true']}"
+            )
 
     def put(
         self,
