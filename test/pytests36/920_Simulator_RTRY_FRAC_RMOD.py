@@ -52,17 +52,19 @@ def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEnd
 
     motorInitTC(self, tc_no, rmod, encRel)
     self.axisMr.setFieldSPAM(tc_no, -1)
-    testPassed = self.axisMr.setMotorStartPos(tc_no, motorStartPos)
+    passed = self.axisMr.setMotorStartPos(tc_no, motorStartPos)
 
-    if not testPassed:
+    if not passed:
         self.axisCom.putDbgStrToLOG("FailedX " + str(tc_no), wait=True)
-    assert testPassed
+    assert passed
 
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
-    # time.sleep(2)
     self.axisMr.setValueOnSimulator(tc_no, "log", actFileName)
-    # time.sleep(2)
-    #
+    start_change_cnt_dmov_true = self.axisCom.get_change_cnts("dmov_true")
+    start_change_cnt_dmov_false = self.axisCom.get_change_cnts("dmov_false")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} start_change_cnt_dmov_true={start_change_cnt_dmov_true} start_change_cnt_dmov_false={start_change_cnt_dmov_false}"
+    )
     self.axisCom.put(".VAL", motorEndPos, wait=True)
 
     # Create a "expected" file
@@ -92,14 +94,20 @@ def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEnd
     self.axisMr.setValueOnSimulator(tc_no, "dbgCloseLogFile", "1")
     # time.sleep(2)
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
-    testPassed = self.axisMr.cmpUnlinkExpectedActualFile(
-        tc_no, expFileName, actFileName
+    passed = self.axisMr.cmpUnlinkExpectedActualFile(tc_no, expFileName, actFileName)
+    end_change_cnt_dmov_true = self.axisCom.get_change_cnts("dmov_true")
+    end_change_cnt_dmov_false = self.axisCom.get_change_cnts("dmov_false")
+    num_change_cnt_dmov_true = end_change_cnt_dmov_true - start_change_cnt_dmov_true
+    num_change_cnt_dmov_false = end_change_cnt_dmov_false - start_change_cnt_dmov_false
+    passed = passed and num_change_cnt_dmov_true == 1 and num_change_cnt_dmov_false == 1
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} end_change_cnt_dmov_true={end_change_cnt_dmov_true} end_change_cnt_dmov_false={end_change_cnt_dmov_false}"
     )
-    if testPassed:
+    if passed:
         self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
         self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
-    assert testPassed
+    assert passed
 
 
 class Test(unittest.TestCase):
@@ -108,7 +116,7 @@ class Test(unittest.TestCase):
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
     )
 
-    axisCom = AxisCom(url_string, log_debug=False)
+    axisCom = AxisCom(url_string, log_debug=False, monitor_list=[".DMOV"])
     axisMr = AxisMr(axisCom)
     msta = int(axisCom.get(".MSTA"))
 
