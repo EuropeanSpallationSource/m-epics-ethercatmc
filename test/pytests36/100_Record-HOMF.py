@@ -26,8 +26,7 @@ class Test(unittest.TestCase):
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
     )
-    monitor_list = [".DMOV"]
-    axisCom = AxisCom(url_string, log_debug=True, monitor_list=monitor_list)
+    axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
 
     # Home the motor

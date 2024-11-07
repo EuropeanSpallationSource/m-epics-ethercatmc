@@ -417,8 +417,7 @@ class Test(unittest.TestCase):
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
     )
-    monitor_list = [".DMOV"]
-    axisCom = AxisCom(url_string, log_debug=False, monitor_list=monitor_list)
+    axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 
     def test_TC_921010000(self):

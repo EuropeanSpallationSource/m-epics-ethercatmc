@@ -116,7 +116,7 @@ class Test(unittest.TestCase):
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
     )
 
-    axisCom = AxisCom(url_string, log_debug=False, monitor_list=[".DMOV"])
+    axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
     msta = int(axisCom.get(".MSTA"))
 

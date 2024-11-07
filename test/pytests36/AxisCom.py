@@ -22,7 +22,7 @@ def help_and_exit(self, url_string, problem_string):
 
 
 class AxisCom:
-    def __init__(self, url_string, axisNum=1, log_debug=True, monitor_list=None):
+    def __init__(self, url_string, axisNum=1, log_debug=True, monitor_list=[".DMOV"]):
         self.log_debug = log_debug
         self.monitor_list = monitor_list
         self.pvpfx = None  # PV prefix, like IOC:m1
