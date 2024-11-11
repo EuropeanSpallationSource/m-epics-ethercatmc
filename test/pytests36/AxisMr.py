@@ -422,7 +422,7 @@ class AxisMr:
 
     def jogDirection(self, tc_no, direction):
         time_to_wait = self.jogCalcTimeout(tc_no, direction)
-        self.jogDirectionTimeout(tc_no, direction, time_to_wait)
+        return self.jogDirectionTimeout(tc_no, direction, time_to_wait)
 
     #    def movePosition(self, tc_no, destination, velocity, acceleration):
     #        time_to_wait = 30
@@ -433,18 +433,36 @@ class AxisMr:
     #        done = self.waitForStartAndDone(str(tc_no) + " movePosition", time_to_wait)
 
     def jogDirectionTimeout(self, tc_no, direction, time_to_wait):
+        start_change_cnt_dmov_true = self.axisCom.get_change_cnts("dmov_true")
+        start_change_cnt_dmov_false = self.axisCom.get_change_cnts("dmov_false")
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogDirectionTimeout direction={direction} time_to_wait={time_to_wait}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogDirectionTimeout direction={direction} time_to_wait={time_to_wait:.2f} start_change_cnt_dmov_true={start_change_cnt_dmov_true} start_change_cnt_dmov_false={start_change_cnt_dmov_false}"
         )
         if direction > 0:
             self.axisCom.put(".JOGF", 1)
         else:
             self.axisCom.put(".JOGR", 1)
         self.waitForStartAndDone(str(tc_no) + " jogDirection", 30 + time_to_wait + 3.0)
-        if direction > 0:
-            self.axisCom.put(".JOGF", 0)
-        else:
-            self.axisCom.put(".JOGR", 0)
+        mov1_change_cnt_dmov_true = self.axisCom.get_change_cnts("dmov_true")
+        mov1_change_cnt_dmov_false = self.axisCom.get_change_cnts("dmov_false")
+        num_change_cnt_dmov_true = (
+            mov1_change_cnt_dmov_true - start_change_cnt_dmov_true
+        )
+        num_change_cnt_dmov_false = (
+            mov1_change_cnt_dmov_false - start_change_cnt_dmov_false
+        )
+
+        jogf = int(self.axisCom.get(".JOGF"))
+        jogr = int(self.axisCom.get(".JOGR"))
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: jogr={jogr} jogf={jogf } num_change_cnt_dmov_true={num_change_cnt_dmov_true} num_change_cnt_dmov_false={num_change_cnt_dmov_false}"
+        )
+        return (
+            jogf == 0
+            and jogr == 0
+            and num_change_cnt_dmov_true == 1
+            and num_change_cnt_dmov_false == 1
+        )
 
     def motorInitAllForBDST(self, tc_no):
         startPos = 0.0
@@ -682,7 +700,7 @@ class AxisMr:
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: moveWait destination={destination:.2f} rbv={rbv:.2f}"
             )
-            return
+            return True
         timeout = 30
         acceleration = self.axisCom.get(".ACCL")
         velocity = self.axisCom.get(".VELO")
@@ -692,7 +710,7 @@ class AxisMr:
             timeout += distance / velocity
 
         self.axisCom.put(field, destination)
-        self.waitForStartAndDone(str(tc_no) + " moveWait", timeout)
+        return self.waitForStartAndDone(str(tc_no) + " moveWait", timeout, throw=False)
 
     def postMoveCheck(self, tc_no):
         # Check the motor for the correct state at the end of move.
@@ -955,7 +973,7 @@ class AxisMr:
             wait_for_start -= polltime
         raise Exception(debug_text)
 
-    def waitForStartAndDone(self, tc_no, wait_for_done):
+    def waitForStartAndDone(self, tc_no, wait_for_done, throw=True):
         val = self.axisCom.get(".VAL", use_monitor=False)
         wait_for_start = 2
         while wait_for_start > 0:
@@ -983,13 +1001,15 @@ class AxisMr:
                 print(
                     f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start_and_done_done: return OK"
                 )
-                return
+                return True
             time.sleep(polltime)
             wait_for_done = wait_for_done - polltime
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start_and_done_done: raise Exception"
         )
-        raise Exception(debug_text)
+        if throw:
+            raise Exception(debug_text)
+        return False
 
     def waitForStop(self, tc_no, wait_for_stop):
         while wait_for_stop > 0:

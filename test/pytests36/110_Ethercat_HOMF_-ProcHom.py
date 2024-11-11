@@ -33,6 +33,7 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
     old_low_limit = self.axisCom.get(".LLM")
     old_HomProc = 0  # default
     old_HomPos = 0.0  # default
+    passed = True
 
     if jogToLSBefore != 0:
         msta = int(self.axisCom.get(".MSTA"))
@@ -51,7 +52,9 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
         accl = self.axisCom.get(".ACCL")
         time_to_wait = 1.5 * (old_high_limit - old_low_limit) / jvel + 2 * accl
 
-        self.axisMr.jogDirectionTimeout(tc_no, jogToLSBefore, time_to_wait)
+        passed = passed and self.axisMr.jogDirectionTimeout(
+            tc_no, jogToLSBefore, time_to_wait
+        )
         self.axisCom.put(".LLM", old_low_limit)
         self.axisCom.put(".HLM", old_high_limit)
     else:
@@ -127,8 +130,6 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
     )
     if msta2 & self.axisMr.MSTA_BIT_SLIP_STALL:
         passed = False
-    else:
-        passed = True
     if not msta2 & self.axisMr.MSTA_BIT_HOMED:
         passed = False
     if msta2 & self.axisMr.MSTA_BIT_PROBLEM:
