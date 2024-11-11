@@ -142,13 +142,7 @@ class AxisCom:
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} onChangesPVA: value={int(value)} old_val={old_val} dmov_false={self.change_cnts['dmov_false']} dmov_true={self.change_cnts['dmov_true']}"
             )
 
-    def put(
-        self,
-        pvsuf,
-        value,
-        wait=False,
-        timeout=5.0,
-    ):
+    def put(self, pvsuf, value, wait=False, timeout=5.0, throw=True):
         pvname = self.pvpfx + pvsuf
         fullname = self.url_scheme + pvname
         ret = None
@@ -161,7 +155,8 @@ class AxisCom:
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value}"
             )
         if self.ctxt is not None:
-            ret = self.ctxt.put(pvname, value, timeout=timeout, wait=wait)
+            # p4p
+            ret = self.ctxt.put(pvname, value, timeout=timeout, wait=wait, throw=throw)
             if self.log_debug:
                 if ret is None:
                     print(
@@ -171,7 +166,12 @@ class AxisCom:
                     print(
                         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} ret={ret}"
                     )
+            if ret is None:
+                return True
+            return False
+
         else:
+            # pyepics
             caput_ret = self.epics.caput(pvname, value, timeout=timeout, wait=wait)
             # This function returns 1 on success,
             # and a negative number if the timeout has been exceeded
@@ -180,7 +180,13 @@ class AxisCom:
                     f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} caput_ret={ret}"
                 )
             if caput_ret != 1:
-                raise Exception(f"caput({pvname},{value}) returned error {caput_ret}")
+                if throw:
+                    raise Exception(
+                        f"caput({pvname},{value}) returned error {caput_ret}"
+                    )
+                else:
+                    return False
+            return True
 
     def putDbgStrToLOG(self, value, wait=True, timeout=5.0):
         pvsuf = "-DbgStrToLOG"

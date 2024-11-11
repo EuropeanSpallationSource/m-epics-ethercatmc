@@ -691,16 +691,7 @@ class AxisMr:
 
         return passed
 
-    def moveWait(self, tc_no, destination, field=".VAL"):
-        rbv = self.axisCom.get(".RBV", use_monitor=False)
-        rdbd = self.axisCom.get(".RDBD")
-
-        inrange = self.calcAlmostEqual(tc_no, destination, rbv, rdbd, doPrint=False)
-        if inrange:
-            print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: moveWait destination={destination:.2f} rbv={rbv:.2f}"
-            )
-            return True
+    def moveWait(self, tc_no, destination, field=".VAL", throw=True):
         timeout = 30
         acceleration = self.axisCom.get(".ACCL")
         velocity = self.axisCom.get(".VELO")
@@ -709,8 +700,7 @@ class AxisMr:
             distance = math.fabs(self.axisCom.get(".RBV") - destination)
             timeout += distance / velocity
 
-        self.axisCom.put(field, destination)
-        return self.waitForStartAndDone(str(tc_no) + " moveWait", timeout, throw=False)
+        return self.axisCom.put(field, destination, wait=True, timeout=timeout)
 
     def postMoveCheck(self, tc_no):
         # Check the motor for the correct state at the end of move.
