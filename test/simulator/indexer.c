@@ -1797,15 +1797,15 @@ static void init_axis(int axis_no) {
               unsigned param_idx = PARAM_IDX_USR_MIN_FLOAT32;
               hasUserMin = indexerDeviceAbsStraction[devNum].permP[param_idx] !=
                            permPNone;
-              setHighHardLimitPos(axis_no, absMax);
-              setLowHardLimitPos(axis_no, absMin);
+              setHighHardLimitPos(axis_no, absMax + 1.0);
+              setLowHardLimitPos(axis_no, absMin - 1.0);
               LOGINFO3("%s/%s:%d axis_no=%d tmp_axis_no=%d USR_MIN_BIT=%u\n",
                        __FILE__, __FUNCTION__, __LINE__, axis_no, tmp_axis_no,
                        hasUserMin);
 
               if (hasUserMin) {
-                setHighSoftLimitPos(tmp_axis_no, absMax - 1.0);
-                setLowSoftLimitPos(tmp_axis_no, absMin + 1.0);
+                setHighSoftLimitPos(tmp_axis_no, absMax);
+                setLowSoftLimitPos(tmp_axis_no, absMin);
                 setEnableHighSoftLimit(tmp_axis_no, 1);
                 setEnableLowSoftLimit(tmp_axis_no, 1);
               }
