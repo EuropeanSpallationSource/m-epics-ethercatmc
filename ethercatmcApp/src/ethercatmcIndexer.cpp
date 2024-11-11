@@ -624,12 +624,10 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
           /* Send the write request, unless we already done it */
           asynPrint(pasynUserController_, traceMask,
                     "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-                    "valueRB=%02g 0x%04x "
                     "lenInPlcPara=%u has_written=%d\n",
                     modNamEMC, axisNo,
                     plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                    paramIndex, value, valueRB, (int)valueRB, lenInPlcPara,
-                    has_written);
+                    paramIndex, value, lenInPlcPara, has_written);
           status = setPlcMemoryOnErrorStateChange(
               paramIfOffset, &paramIf_to_MCU, (unsigned)sizeof(paramIf_to_MCU));
           if (status) return status;
