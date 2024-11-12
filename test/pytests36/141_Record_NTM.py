@@ -54,7 +54,10 @@ def moveVALnewRBVnewValNtmRtryDly(
     velo = oldVELO
     if vmax > 0.0:
         self.axisCom.put(".VELO", vmax)
-    self.axisMr.moveWait(tc_no, startpos)
+    testPassed = self.axisMr.moveWait(tc_no, startpos, throw=False)
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} testPassed={testPassed}"
+    )
 
     # Max velo: Move the whole range not faster than 4 seconds
     hlm = self.axisCom.get(".HLM")
@@ -100,7 +103,7 @@ def moveVALnewRBVnewValNtmRtryDly(
     )
     self.axisMr.waitForStop(tc_no, timeout + dly + 1.0)
     postMoveCheckOK = self.axisMr.postMoveCheck(tc_no)
-    testPassed = valueChangedOK and postMoveCheckOK
+    testPassed = testPassed and valueChangedOK and postMoveCheckOK
     print(
         f"{tc_no} moveVALnewRBVnewValNtmRtryDly valueChangedOK={valueChangedOK} postMoveCheckOK={postMoveCheckOK}"
     )

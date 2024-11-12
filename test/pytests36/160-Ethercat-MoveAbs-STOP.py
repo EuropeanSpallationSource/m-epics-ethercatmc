@@ -28,10 +28,9 @@ class Test(unittest.TestCase):
     hlm = axisCom.get(".HLM")
     llm = axisCom.get(".LLM")
     per10_UserPosition = round((9 * llm + 1 * hlm) / 10)
-
-    msta = int(axisCom.get(".MSTA"))
-
-    print(f"llm={llm:f} hlm={hlm:f}")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} llm={llm:.2f} hlm={hlm:.2f}"
+    )
 
     # Make sure that motor is homed
     def test_TC_1601(self):
@@ -40,19 +39,30 @@ class Test(unittest.TestCase):
 
     # per10 UserPosition
     def test_TC_1602(self):
-        if self.msta & self.axisMr.MSTA_BIT_HOMED:
-            tc_no = "1602"
-            print(f"{tc_no}")
-            self.axisMr.moveWait(tc_no, self.per10_UserPosition)
-            UserPosition = self.axisCom.get(".RBV", use_monitor=False)
+        tc_no = 1602
+        self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
+        testPassed = False
+        msta = int(self.axisCom.get(".MSTA"))
+        if msta & self.axisMr.MSTA_BIT_HOMED:
             print(
-                "%s postion=%f jog_start_pos=%f"
-                % (tc_no, UserPosition, self.per10_UserPosition)
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} jog_start_pos={self.per10_UserPosition:.2f}"
             )
+            testPassed = self.axisMr.moveWait(
+                tc_no, self.per10_UserPosition, throw=False
+            )
+            rbv = self.axisCom.get(".RBV", use_monitor=False)
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} rbv={rbv:.2f} testPassed={testPassed}"
+            )
+        if testPassed:
+            self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
+        else:
+            self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+        assert testPassed
 
     # stress test; start and stop the  quickly..
     def test_TC_1603(self):
-        tc_no = "1603"
+        tc_no = 1603
 
         msta = int(self.axisCom.get(".MSTA"))
         nErrorId = self.axisCom.get("-ErrId")

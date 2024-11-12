@@ -156,15 +156,21 @@ class AxisCom:
             )
         if self.ctxt is not None:
             # p4p
-            ret = self.ctxt.put(pvname, value, timeout=timeout, wait=wait, throw=throw)
+            if throw:
+                # When p4p should throw an exception, do that
+                return self.ctxt.put(
+                    pvname, value, timeout=timeout, wait=wait, throw=True
+                )
+            # else
+            ex = self.ctxt.put(pvname, value, timeout=timeout, wait=wait, throw=False)
             if self.log_debug:
-                if ret is None:
+                if ex is None:
                     print(
                         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value}"
                     )
                 else:
                     print(
-                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} ret={ret}"
+                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} put {fullname} value={value} ex={ex}"
                     )
             if ret is None:
                 return True
