@@ -157,11 +157,10 @@ class AxisCom:
         if self.ctxt is not None:
             # p4p
             if throw:
-                # When p4p should throw an exception, do that
-                return self.ctxt.put(
-                    pvname, value, timeout=timeout, wait=wait, throw=True
-                )
-            # else
+                # When p4p should throw an exception, do that. Otherwise: Return True
+                self.ctxt.put(pvname, value, timeout=timeout, wait=wait, throw=True)
+                return True
+            # else do not throw
             ex = self.ctxt.put(pvname, value, timeout=timeout, wait=wait, throw=False)
             if self.log_debug:
                 if ex is None:
@@ -174,8 +173,8 @@ class AxisCom:
                     )
             if ret is None:
                 return True
-            return False
-
+            else:
+                return False
         else:
             # pyepics
             caput_ret = self.epics.caput(pvname, value, timeout=timeout, wait=wait)
