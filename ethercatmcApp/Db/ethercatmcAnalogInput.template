@@ -7,7 +7,4 @@ record(ai, "$(P)$(R)")
     field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
     field(SCAN, "I/O Intr")
     field(TSE,  "$(TSE=0)")
-    field(SMOO, "$(SMOO=SMOO)")
-    field(ADEL, "$(ADEL=ADEL)")
-    field(MDEL, "$(MDEL=MDEL)")
 }
