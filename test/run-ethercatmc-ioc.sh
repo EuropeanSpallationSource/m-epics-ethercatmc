@@ -255,10 +255,16 @@ while test "$PARAM" != ""; do
   esac
 done
 
+MOTORCFG="$1"
+case $MOTORCFG in
+  *-ads)
+    ASYNPORTCONFIGUREUSE=adsAsynPortDriverConfigure
+    ASYNPORTCONFIGUREDONTUSE=drvAsynIPPortConfigure
+    ;;
+  *) ;;
+esac
 export NOMAKE
 export NORUN
-
-MOTORCFG="$1"
 export MOTORCFG
 echo MOTORCFG=$MOTORCFG
 if ! test -f startup/st.${MOTORCFG}.iocsh; then
