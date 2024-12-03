@@ -1,14 +1,14 @@
 epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
-
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.41.16)")
+#
+epicsEnvSet("IPADDR",        "$(SM_IPADDR=CI0021330.esss.lu.se)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-
-epicsEnvSet("SYSPFX",       "$(SM_SYSPFX=Labs-MCAG:MC-MCU-032:)")
-epicsEnvSet("MCUPFX",      "")
+epicsEnvSet("AMSNETIDIOC",   "172.30.38.12.1.1")
+epicsEnvSet("SYSPFX",        "Labs-MCAG:MC-MCU-031:")
+epicsEnvSet("MCUPFX",        "")
 epicsEnvSet("PREC",          "$(SM_PREC=3)")
 epicsEnvSet("SM_NOAXES",     "3")
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=10.0.7.5.1.1:852;amsNetIdLocal=172.30.38.12.1.1"
+epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=10.0.7.5.1.1:852;amsNetIdLocal=$(AMSNETIDIOC)"
 
 # No poller yet, see ethercatmcStartPoller at the end of the script
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
@@ -19,12 +19,27 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 # Axis 1, Shutter
 #
 epicsEnvSet("AXISCONFIG",    "")
-#epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Shutter)")
+epicsEnvSet("AXIS_NAME",    "Shutter")
 epicsEnvSet("AXIS_NO",       "1")
 epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
 epicsEnvSet("R",             "Shutter-")
 < ethercatmcShutter.iocsh
+
+# Pressure
+epicsEnvSet("P", "$(SYSPFX)Shutter-")
+epicsEnvSet("R", "Pressure")
+epicsEnvSet("CHNO", "1")
+epicsEnvSet("ASYNPARAMNAME", "Pressure")
+epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC", 2)
+epicsEnvSet("EGU", "bar")
+epicsEnvSet("SMOO", 0.5)
+epicsEnvSet("ADEL", 0.05)
+epicsEnvSet("MDEL", 0.05)
+< ethercatmcAnalogInputSmooAdelMdel.iocsh
+#< ethercatmcAnalogInput.iocsh
+
 
 
 # Start polling, values are in millisconds
