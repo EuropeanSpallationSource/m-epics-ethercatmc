@@ -1,3 +1,3 @@
 ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME)      Float64
 
-dbLoadRecords("ethercatmcAnalogInput.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO), ASYNPARAMNAME=$(ASYNPARAMNAME), PREC=$(PREC), DESC=$(DESC), EGU=$(EGU), SMOO=$(SMOO), ADEL=$(ADEL), MDEL=$(MDEL)")
+dbLoadRecords("ethercatmcAnalogInputSmooAdelMdel.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO), ASYNPARAMNAME=$(ASYNPARAMNAME), PREC=$(PREC), DESC=$(DESC), EGU=$(EGU), SMOO=$(SMOO), ADEL=$(ADEL), MDEL=$(MDEL)")
