@@ -26,7 +26,6 @@ class Test(unittest.TestCase):
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
     )
-
     axisCom = AxisCom(url_string, log_debug=True)
     axisMr = AxisMr(axisCom)
 
@@ -34,7 +33,7 @@ class Test(unittest.TestCase):
     def test_TC_100(self):
         axisCom = self.axisCom
         axisMr = self.axisMr
-        tc_no = "100"
+        tc_no = 100
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} Home the motor"
         )
@@ -71,6 +70,13 @@ class Test(unittest.TestCase):
             if msta & axisMr.MSTA_BIT_HOMED:
                 time_to_wait = 0
         testPassed = msta & axisMr.MSTA_BIT_HOMED
+        num_change_cnt_dmov_true = self.axisCom.get_change_cnts("dmov_true")
+        num_change_cnt_dmov_false = self.axisCom.get_change_cnts("dmov_false")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} num_change_cnt_dmov_true={num_change_cnt_dmov_true} num_change_cnt_dmov_false={num_change_cnt_dmov_false}"
+        )
+        if num_change_cnt_dmov_true != 1 or num_change_cnt_dmov_false != 1:
+            testPassed = False
         if testPassed:
             self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
         else:

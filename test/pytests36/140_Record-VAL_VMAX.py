@@ -23,13 +23,13 @@ def motorPositionTC(self, tc_no, destination, velocity):
         if velocity != self.velo:
             self.axisCom.put(".VELO", velocity)
 
-        self.axisMr.moveWait(tc_no, destination)
+        testPassed = self.axisMr.moveWait(tc_no, destination, throw=False)
         if velocity != self.velo:
             self.axisCom.put(".VELO", self.velo)
 
         UserPosition = self.axisCom.get(".RBV", use_monitor=False)
         print(f"{tc_no} postion={UserPosition:f} destination={destination:f}")
-        testPassed = self.axisMr.postMoveCheck(tc_no)
+        testPassed = testPassed and self.axisMr.postMoveCheck(tc_no)
         if testPassed:
             self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
         else:

@@ -28,11 +28,15 @@ def lineno():
 
 
 def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} homProc={homProc} jogToLSBefore={jogToLSBefore} homeViaDriver={homeViaDriver}"
+    )
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     old_high_limit = self.axisCom.get(".HLM")
     old_low_limit = self.axisCom.get(".LLM")
     old_HomProc = 0  # default
     old_HomPos = 0.0  # default
+    testPassed = True
 
     if jogToLSBefore != 0:
         msta = int(self.axisCom.get(".MSTA"))
@@ -40,10 +44,16 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
             # if we are homed, move absolute to the soft limit
             # This is faster than jogging
             if jogToLSBefore > 0:
-                self.axisMr.moveWait(tc_no, old_high_limit)
+                testPassed = testPassed and self.axisMr.moveWait(
+                    tc_no, old_high_limit, throw=False
+                )
             else:
-                self.axisMr.moveWait(tc_no, old_low_limit)
-
+                testPassed = testPassed and self.axisMr.moveWait(
+                    tc_no, old_low_limit, throw=False
+                )
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} testPassed={testPassed}"
+            )
         self.axisMr.setSoftLimitsOff(tc_no)
         # soft limit range assumed to be = hard range /1.5 or so
         # It is only needed to calculate a good timeout
@@ -51,11 +61,21 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
         accl = self.axisCom.get(".ACCL")
         time_to_wait = 1.5 * (old_high_limit - old_low_limit) / jvel + 2 * accl
 
-        self.axisMr.jogDirectionTimeout(tc_no, jogToLSBefore, time_to_wait)
+        testPassed = testPassed and self.axisMr.jogDirectionTimeout(
+            tc_no, jogToLSBefore, time_to_wait
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} testPassed={testPassed}"
+        )
         self.axisCom.put(".LLM", old_low_limit)
         self.axisCom.put(".HLM", old_high_limit)
     else:
-        self.axisMr.moveWait(tc_no, (old_high_limit + old_low_limit) / 2.0)
+        testPassed = testPassed and self.axisMr.moveWait(
+            tc_no, (old_high_limit + old_low_limit) / 2.0, throw=False
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} testPassed={testPassed}"
+        )
 
     if homProc != 0:
         old_HomProc = self.axisCom.get("-HomProc")
@@ -126,22 +146,20 @@ def homeTheMotor(self, tc_no, homProc, jogToLSBefore, homeViaDriver):
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} msta2=={self.axisMr.getMSTAtext(msta2)}"
     )
     if msta2 & self.axisMr.MSTA_BIT_SLIP_STALL:
-        passed = False
-    else:
-        passed = True
+        testPassed = False
     if not msta2 & self.axisMr.MSTA_BIT_HOMED:
-        passed = False
+        testPassed = False
     if msta2 & self.axisMr.MSTA_BIT_PROBLEM:
-        passed = False
+        testPassed = False
         errId = int(self.axisCom.get("-ErrId", use_monitor=False))
         print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no} errId={errId:x}")
         self.axisMr.resetAxis(tc_no)
 
-    if passed:
+    if testPassed:
         self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
     else:
         self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
-    assert passed
+    assert testPassed
 
 
 class Test(unittest.TestCase):

@@ -229,7 +229,7 @@ if ! black --version | grep -q "[^0-9]${BLACK_VERSION}[^0-9]"; then
   exit 1
 fi
 # shellcheck disable=SC2035
-black *.py
+TERM=dumb black *.py || exit
 
 #Check ruff, the fast Python linter and code formatter
 # Note: The version without 'v'. 'v' is used when installing
@@ -242,7 +242,16 @@ if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
   exit 1
 fi
 # shellcheck disable=SC2035
-ruff *.py
+NO_COLOR=1 ruff *.py || exit
+
+if ! type pre-commit >/dev/null 2>&1; then
+  pip install pre-commit
+fi
+pre-commit run --all-files || exit
+
+if type shfmt >/dev/null 2>&1; then
+  shfmt -i 2 -ci -d -w .
+fi
 
 # See if we have a local EPICS installation
 uname_s=$(uname -s 2>/dev/null || echo unknown)

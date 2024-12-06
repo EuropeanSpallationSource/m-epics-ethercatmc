@@ -278,6 +278,11 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} field={field} value={value}"
     )
+    start_change_cnt_dmov_true = self.axisCom.get_change_cnts("dmov_true")
+    start_change_cnt_dmov_false = self.axisCom.get_change_cnts("dmov_false")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} field={field} start_change_cnt_dmov_true={start_change_cnt_dmov_true} start_change_cnt_dmov_false={start_change_cnt_dmov_false}"
+    )
     had_ex = False
     try:
         # first movement: This should be suppressed, since limit switch actived
@@ -292,6 +297,12 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} illegal field={field}"
             )
             assert False
+        mov1_change_cnt_dmov_true = self.axisCom.get_change_cnts("dmov_true")
+        mov1_change_cnt_dmov_false = self.axisCom.get_change_cnts("dmov_false")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} field={field} mov1_change_cnt_dmov_true={mov1_change_cnt_dmov_true} mov1_change_cnt_dmov_false={mov1_change_cnt_dmov_false}"
+        )
+
         # second movement: Move away from limit switch
         # only this movement should be found in the log
         self.axisMr.moveWait(tc_no, soflimitNotActivatedVAL)
@@ -300,7 +311,17 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
         had_ex = True
     self.axisMr.setValueOnSimulator(tc_no, "dbgCloseLogFile", "1")
     fileCmpOk = self.axisMr.cmpUnlinkExpectedActualFile(tc_no, expFileName, actFileName)
+    mov2_change_cnt_dmov_true = self.axisCom.get_change_cnts("dmov_true")
+    mov2_change_cnt_dmov_false = self.axisCom.get_change_cnts("dmov_false")
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} mov2_change_cnt_dmov_true={mov2_change_cnt_dmov_true} mov2_change_cnt_dmov_false={mov2_change_cnt_dmov_false}"
+    )
     passed = not had_ex and fileCmpOk and lsActive == 1
+
+    num_change_cnt_dmov_true = mov2_change_cnt_dmov_true - start_change_cnt_dmov_true
+    num_change_cnt_dmov_false = mov2_change_cnt_dmov_false - start_change_cnt_dmov_false
+    passed = passed and num_change_cnt_dmov_true == 2 and num_change_cnt_dmov_false == 2
+
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} had_ex={had_ex} lsActive={lsActive} fileCmpOk={fileCmpOk}"
     )
@@ -396,7 +417,6 @@ class Test(unittest.TestCase):
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
     )
-
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
 

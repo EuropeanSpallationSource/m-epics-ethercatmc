@@ -30,7 +30,7 @@ if test -n "$1"; then
   shift 1
 else
   echo >&2 "$0 <PV> [numruns] [testfile.py]"
-  echo >&2 "example: $0 pva://IOC:m1 [testfile.py] [-k pattern] [numruns]"
+  echo >&2 "example: $0 pva://IOC:m1 [-s] [testfile.py] [-s] [-k pattern] [numruns]"
   echo >&2 "example: $0 pva://IOC:m1 testfile.py"
   echo >&2 "example: $0 pva://IOC:m1 testfile.py -k 91011"
   echo >&2 "example: PVXS_LOG=*=DEBUG $0 pva://IOC:m1 testfile.py -k 91011"
@@ -40,14 +40,18 @@ fi
 
 files=""
 numruns=1
+MOREARGS=""
+if test "$1" = "-s"; then
+  MOREARGS="$MOREARGS -s"
+  shift 1
+fi
 while test -n "$1" && test -f "$1"; do
   files="$files $1"
   shift 1
 done
-MOREARGS=""
 if test "$1" = "-s"; then
   MOREARGS="$MOREARGS -s"
-  shift 2
+  shift 1
 fi
 
 if test "$1" = "-k" && test "$2" != ""; then

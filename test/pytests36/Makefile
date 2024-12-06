@@ -104,8 +104,12 @@ all-ca: \
   $(SIMULATOR-ONE-CA) \
   $(SIMULATOR-TWO-CA) \
 
+monitor-ca-pva: \
+  100_Record-HOMF.log-ca-m1\
+  100_Record-HOMF.log-pva-m1\
 
-record-ca:  $(RECORD-CA) 
+
+record-ca:  $(RECORD-CA)
 
 
 ethercatmc-ca: $(ETHERCATMC-CA)
@@ -123,7 +127,7 @@ simulator-two-ca: $(SIMULATOR-TWO-CA)
 
 
 ###################################################
-record-pva:  $(RECORD-PVA) 
+record-pva:  $(RECORD-PVA)
 
 
 ethercatmc-pva: $(ETHERCATMC-PVA)

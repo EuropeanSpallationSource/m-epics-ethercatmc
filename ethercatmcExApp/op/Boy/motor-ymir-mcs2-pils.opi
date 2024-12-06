@@ -26650,6 +26650,69 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>360</x>
   </widget>
+
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>2</vertical_alignment>
+    <show_units>true</show_units>
+    <wuid>39872d87:13e14015f61:d26</wuid>
+    <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
+    <scripts />
+    <height>17</height>
+    <name>Text Update</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <pv_name>$(P)$(M19)-Pressure</pv_name>
+    <background_color>
+      <color name="Gray_3" red="200" green="200" blue="200" />
+    </background_color>
+    <foreground_color>
+      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+    </foreground_color>
+    <widget_type>Text Update</widget_type>
+    <enabled>true</enabled>
+    <text>######</text>
+    <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <fontdata fontName="Sans" height="13" style="0" />
+    </font>
+    <width>70</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M19)-Pressure.SEVR</pv>
+      </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>2</horizontal_alignment>
+    <actions hook="false" hook_all="false" />
+    <y>662</y>
+    <wrap_words>false</wrap_words>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>385</x>
+  </widget>
+
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -26711,7 +26774,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>673</y>
+    <y>678</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>360</x>
@@ -26765,7 +26828,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <y>673</y>
+    <y>678</y>
     <x>371</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -26829,7 +26892,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>673</y>
+    <y>678</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>470</x>
@@ -27588,6 +27651,69 @@ $(pv_value)</tooltip>
     <tooltip></tooltip>
     <x>480</x>
   </widget>
+
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>2</vertical_alignment>
+    <show_units>true</show_units>
+    <wuid>39872d87:13e14015f61:d26</wuid>
+    <auto_size>false</auto_size>
+    <rotation_angle>0.0</rotation_angle>
+    <scripts />
+    <height>17</height>
+    <name>Text Update</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <pv_name>$(P)$(M20)-Pressure</pv_name>
+    <background_color>
+      <color name="Gray_3" red="200" green="200" blue="200" />
+    </background_color>
+    <foreground_color>
+      <color name="ioc_read_fg" red="10" green="0" blue="184" />
+    </foreground_color>
+    <widget_type>Text Update</widget_type>
+    <enabled>true</enabled>
+    <text>######</text>
+    <backcolor_alarm_sensitive>true</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <fontdata fontName="Sans" height="13" style="0" />
+    </font>
+    <width>70</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Temp-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 3">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 3">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M20)-Pressure.SEVR</pv>
+      </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>2</horizontal_alignment>
+    <actions hook="false" hook_all="false" />
+    <y>662</y>
+    <wrap_words>false</wrap_words>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>505</x>
+  </widget>
+
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -27649,7 +27775,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>673</y>
+    <y>678</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>480</x>
@@ -27703,7 +27829,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <y>673</y>
+    <y>678</y>
     <x>491</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -27767,7 +27893,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>673</y>
+    <y>678</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>590</x>

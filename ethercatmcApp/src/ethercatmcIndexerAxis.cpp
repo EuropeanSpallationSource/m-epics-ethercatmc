@@ -1108,8 +1108,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     pC_->setAlarmStatusSeverityWrapper(
         axisNo_, pC_->defAsynPara.ethercatmcRBV_TSE_, RBV_TSEstatus);
   }
-  /* Read back parameters */
-  if (drvlocal.clean.iTypCode == 0x5010) {
+  /* Read back parameters. Do not do it in localMode */
+  if (!localMode && drvlocal.clean.iTypCode == 0x5010) {
     pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
   }
   if (drvlocal.clean.iTypCode == 0x5010 || drvlocal.clean.iTypCode == 0x1E04) {

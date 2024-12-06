@@ -68,26 +68,32 @@ class Test(unittest.TestCase):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 1.0)
-            self.axisMr.jogDirection(tc_no, 1)
+            testPassed = self.axisMr.jogDirection(tc_no, 1)
             lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
             miss = int(self.axisCom.get(".MISS"))
 
             self.axisCom.put(".DLY", self.saved_DLY)
             self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
-            self.assertEqual(
-                0,
-                msta & self.axisMr.MSTA_BIT_PROBLEM,
-                "DLY JOGF should not give MSTA.Problem",
+
+            if msta & self.axisMr.MSTA_BIT_PROBLEM:
+                testPassed = False
+            if msta & self.axisMr.MSTA_BIT_MINUS_LS:
+                testPassed = False
+            if msta & self.axisMr.MSTA_BIT_PLUS_LS:
+                testPassed = False
+            if miss != 0:
+                testPassed = False
+            if lvio != 1:
+                testPassed = False
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} testPassed={testPassed} lvio={lvio} miss={miss} msta={self.axisMr.getMSTAtext(msta)}"
             )
-            self.assertEqual(
-                0, msta & self.axisMr.MSTA_BIT_MINUS_LS, "DLY JOGF should not reach LLS"
-            )
-            self.assertEqual(
-                0, msta & self.axisMr.MSTA_BIT_PLUS_LS, "DLY JOGF should not reach HLS"
-            )
-            self.assertEqual(0, miss, "DLY JOGF should not have MISS set")
-            self.assertEqual(1, lvio, "DLY JOGF should have LVIO set")
+            if testPassed:
+                self.axisCom.putDbgStrToLOG("passed " + str(tc_no), wait=True)
+            else:
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+            assert testPassed
 
     # close-toHLM
     def test_TC_1214(self):
@@ -96,11 +102,16 @@ class Test(unittest.TestCase):
 
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-            self.axisMr.moveWait(tc_no, self.jog_start_pos)
+            testPassed = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                f"{tc_no} postion={UserPosition:f} jog_start_pos={self.jog_start_pos:f}"
+                f"{tc_no} testPassed={testPassed} postion={UserPosition:.2f} jog_start_pos={self.jog_start_pos:.2f}"
             )
+            if testPassed:
+                self.axisCom.putDbgStrToLOG("passed " + str(tc_no), wait=True)
+            else:
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+            assert testPassed
 
     def test_TC_1215(self):
         tc_no = "1215"
@@ -108,7 +119,7 @@ class Test(unittest.TestCase):
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 0.0)
-            self.axisMr.jogDirection(tc_no, 1)
+            testPassed = self.axisMr.jogDirection(tc_no, 1)
             lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
             miss = int(self.axisCom.get(".MISS"))
@@ -116,21 +127,24 @@ class Test(unittest.TestCase):
             self.axisCom.put(".DLY", self.saved_DLY)
             self.axisCom.put(".JOGF", 0)
             self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
-            self.assertEqual(
-                0,
-                msta & self.axisMr.MSTA_BIT_PROBLEM,
-                "ndly JOGF should not give MSTA.Problem",
+            if msta & self.axisMr.MSTA_BIT_PROBLEM:
+                testPassed = False
+            if msta & self.axisMr.MSTA_BIT_MINUS_LS:
+                testPassed = False
+            if msta & self.axisMr.MSTA_BIT_PLUS_LS:
+                testPassed = False
+            if miss != 0:
+                testPassed = False
+            if lvio != 1:
+                testPassed = False
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} testPassed={testPassed} lvio={lvio} miss={miss} msta={self.axisMr.getMSTAtext(msta)}"
             )
-            self.assertEqual(
-                0,
-                msta & self.axisMr.MSTA_BIT_MINUS_LS,
-                "ndly JOGF should not reach LLS",
-            )
-            self.assertEqual(
-                0, msta & self.axisMr.MSTA_BIT_PLUS_LS, "ndly JOGF should not reach HLS"
-            )
-            self.assertEqual(0, miss, "ndly JOGF should not have MISS set")
-            self.assertEqual(1, lvio, "ndly JOGF should have LVIO set")
+            if testPassed:
+                self.axisCom.putDbgStrToLOG("passed " + str(tc_no), wait=True)
+            else:
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+            assert testPassed
 
     # High soft limt JOGF
     def test_TC_1216(self):
@@ -140,40 +154,37 @@ class Test(unittest.TestCase):
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             self.axisCom.put(".DLY", 0.0)
             mip1 = int(self.axisCom.get(".MIP"))
-            self.axisMr.jogDirection(tc_no, 1)
+            testPassed = self.axisMr.jogDirection(tc_no, 1)
 
             lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
             miss = int(self.axisCom.get(".MISS"))
             self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
             mip2 = int(self.axisCom.get(".MIP"))
-            jogf = int(self.axisCom.get(".JOGF"))
-
             self.axisCom.put(".DLY", self.saved_DLY)
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} mip1={mip1:x} mip2={mip2:x}"
             )
-
-            self.assertEqual(
-                0, msta & self.axisMr.MSTA_BIT_PROBLEM, "ndly2 No MSTA.Problem JOGF"
+            if msta & self.axisMr.MSTA_BIT_PROBLEM:
+                testPassed = False
+            if msta & self.axisMr.MSTA_BIT_MINUS_LS:
+                testPassed = False
+            if msta & self.axisMr.MSTA_BIT_PLUS_LS:
+                testPassed = False
+            if miss != 0:
+                testPassed = False
+            if mip2 != 0:
+                testPassed = False
+            if lvio != 1:
+                testPassed = False
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} testPassed={testPassed} lvio={lvio} miss={miss} msta={self.axisMr.getMSTAtext(msta)}"
             )
-            self.assertEqual(
-                0,
-                msta & self.axisMr.MSTA_BIT_MINUS_LS,
-                "ndly2 Minus hard limit not reached JOGF",
-            )
-            self.assertEqual(
-                0,
-                msta & self.axisMr.MSTA_BIT_PLUS_LS,
-                "ndly2 Plus hard limit not reached JOGF",
-            )
-            self.assertEqual(0, miss, "ndly2 MISS not set JOGF")
-            self.assertEqual(0, mip1, "ndly2 MIP1 not set JOGF")
-            self.assertEqual(
-                0, mip2 & self.axisMr.MIP_BIT_JOGF, "ndly2 MIP2.JOGF not set JOGF"
-            )
-            self.assertEqual(0, jogf, "ndly2 MIP1 not set JOGF")
-            self.assertEqual(1, lvio, "ndly2 should have LVIO set")
+            if testPassed:
+                self.axisCom.putDbgStrToLOG("passed " + str(tc_no), wait=True)
+            else:
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+            assert testPassed
 
     # close-toHLM UserPosition
     def test_TC_1217(self):
@@ -193,31 +204,39 @@ class Test(unittest.TestCase):
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-            saved_DIR = self.axisCom.get(".DIR")
-            saved_FOFF = self.axisCom.get(".FOFF")
             self.axisCom.put(".FOFF", 1)
             self.axisCom.put(".DIR", 1)
-            self.axisMr.jogDirection(tc_no, 0)
+            testPassed = self.axisMr.jogDirection(tc_no, 0)
 
+            lvio = int(self.axisCom.get(".LVIO"))
             msta = int(self.axisCom.get(".MSTA"))
-
-            self.axisCom.put(".JOGF", 0)
-            self.axisCom.put(".DIR", saved_DIR)
-            self.axisCom.put(".FOFF", saved_FOFF)
-
-            self.assertEqual(
-                0, msta & self.axisMr.MSTA_BIT_PROBLEM, "No Error MSTA.Problem JOGF DIR"
+            miss = int(self.axisCom.get(".MISS"))
+            self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
+            mip2 = int(self.axisCom.get(".MIP"))
+            self.axisCom.put(".DLY", self.saved_DLY)
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} mip2={mip2:x}"
             )
-            self.assertEqual(
-                0,
-                msta & self.axisMr.MSTA_BIT_MINUS_LS,
-                "Minus hard limit not reached JOGF DIR",
+            if msta & self.axisMr.MSTA_BIT_PROBLEM:
+                testPassed = False
+            if msta & self.axisMr.MSTA_BIT_MINUS_LS:
+                testPassed = False
+            if msta & self.axisMr.MSTA_BIT_PLUS_LS:
+                testPassed = False
+            if miss != 0:
+                testPassed = False
+            if mip2 != 0:
+                testPassed = False
+            if lvio != 1:
+                testPassed = False
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} testPassed={testPassed} lvio={lvio} miss={miss} msta={self.axisMr.getMSTAtext(msta)}"
             )
-            self.assertEqual(
-                0,
-                msta & self.axisMr.MSTA_BIT_PLUS_LS,
-                "Plus hard limit not reached JOGF DIR",
-            )
+            if testPassed:
+                self.axisCom.putDbgStrToLOG("passed " + str(tc_no), wait=True)
+            else:
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+            assert testPassed
 
     def teardown_class(self):
         tc_no = int(filnam) * 10000 + 9999
