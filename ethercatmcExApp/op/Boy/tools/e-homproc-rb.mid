@@ -29,7 +29,7 @@
     <name>Text Input Template_48</name>
     <next_focus>0</next_focus>
     <password_input>false</password_input>
-    <precision>2</precision>
+    <precision>0</precision>
     <precision_from_pv>false</precision_from_pv>
     <pv_name>$(P)$(M)-HomProc-RB.RVAL</pv_name>
     <pv_value />
