@@ -216,3 +216,59 @@ record(ao,"$(SYSPFX)$(AXIS_NAME)-M3RLLMo_") {
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_LOW_LIMIT")
     info(asyn:READBACK,"1")
 }
+
+#
+# HomProc as an output record. keep in sync with
+# field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc-RB")
+#
+record(mbbo,"$(SYSPFX)$(AXIS_NAME)-HomProc") {
+    field(DESC,"Homing procedure")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc-RB")
+    field(ZRVL,  "0")
+    field(ONVL,  "1")
+    field(TWVL,  "2")
+    field(THVL,  "3")
+    field(FRVL,  "4")
+    field(FVVL,  "5")
+    field(SXVL,  "6")
+    field(SVVL, "11")
+    field(EIVL, "12")
+    field(NIVL, "21")
+    field(TEVL, "22")
+    field(ELVL, "23")
+    field(TVVL, "24")
+    field(TTVL, "13")
+    field(FTVL, "14")
+    field(FFVL, "15")
+
+    field(ZRST, "NotHomable")
+    field(ONST, "LimBwd")
+    field(TWST, "LimFwd")
+    field(THST, "HSfwdfromLimBwd")
+    field(FRST, "HSbwdfromLimFwd")
+    field(FVST, "HomeProc5")
+    field(SXST, "HomeProc6")
+    field(SVST, "HSbwd")
+    field(EIST, "HSfwd")
+    field(NIST, "IndexNBwd")
+    field(TEST, "IndexNFwd")
+    field(ELST, "IndexNfromLimBwd")
+    field(TVST, "IndexNfromLimFwd")
+    field(TTST, "HomProc13")
+    field(FTST, "HomProc14")
+    field(FFST, "ManSetPos")
+
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(ao,"$(SYSPFX)$(AXIS_NAME)-HomPos") {
+    field(DESC, "Home Position")
+    field(DTYP, "asynFloat64")
+    field(PREC, "$(PREC)")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomPos-RB")
+
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}

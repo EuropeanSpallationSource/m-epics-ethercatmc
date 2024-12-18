@@ -1642,6 +1642,13 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value) {
               "%ssetIntegerParam(%d PollScaling_)=%d\n", modNamEMC, axisNo_,
               value);
     drvlocal.pollScaling = value;
+  } else if (function == pC_->defAsynPara.ethercatmcHomProc_RB_) {
+    static const unsigned paramIndex = PARAM_IDX_HOMPROC_FLOAT;
+    double valueRB = -1;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetIntegerParam(%d ethercatmcHomProc_)=%d\n", modNamEMC,
+              axisNo_, value);
+    status = pC_->indexerParamWrite(this, paramIndex, (double)value, &valueRB);
   } else {
     status = setGenericIntegerParam(function, value);
   }
@@ -1700,6 +1707,20 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
     static const unsigned paramIndex = PARAM_IDX_MOVE_CURRENT_FLOAT;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetDoubleParam(%d defAsynPara.ethercatmcCfgMoveCurrent_)=%g\n",
+              modNamEMC, axisNo_, value);
+    status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
+    if (status == asynSuccess) {
+      int initial = 0;
+      pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
+      // Call the base class method
+      (void)asynMotorAxis::setDoubleParam(function, value);
+    }
+    return status;
+  } else if (function == pC_->defAsynPara.ethercatmcHomPos_RB_) {
+    double valueRB = -1;
+    static const unsigned paramIndex = PARAM_IDX_HOME_POSITION_FLOAT;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetDoubleParam(%d defAsynPara.ethercatmcHomPos_)=%g\n",
               modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
     if (status == asynSuccess) {
