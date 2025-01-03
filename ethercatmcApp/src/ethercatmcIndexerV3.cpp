@@ -649,7 +649,7 @@ asynStatus ethercatmcController::indexerV3readParameterDescriptors(
             setParamMeta(pAxis->axisNo_, defAsynPara.ethercatmcCfgRDBD_RB_,
                          "EGU", unitCodeTxt);
           } else if (unitCodeTxt[0]) {
-            int function = paramIndexToFunction(parameterIndex);
+            int function = paramIndexToFunction(parameterIndex, axisNo);
             if (function) {
               setParamMeta(pAxis->axisNo_, defAsynPara.ethercatmcCfgSPDB_RB_,
                            "EGU", unitCodeTxt);

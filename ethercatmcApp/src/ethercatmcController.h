@@ -422,15 +422,14 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                 unsigned type_code, unsigned device_offset,
                                 unsigned device_flags, const char *device_name);
 
-  int paramIndexToFunction(unsigned paramIndex);
-  const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex);
+  int paramIndexToFunction(unsigned paramIndex, int axisNo);
+  const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex, int AxisNo);
   void parameterFloatReadBack(unsigned axisNo, int initial, unsigned paramIndex,
                               double fValue);
   asynStatus indexerReadAxisParameters(ethercatmcIndexerAxis *pAxis,
                                        unsigned devNum);
   asynStatus indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
                                          unsigned devNum);
-  unsigned paramIndexFromFunction(int function);
   asynStatus poll(void);
   asynStatus newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
                                      unsigned axisNo, unsigned devNum,
@@ -542,9 +541,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     int lockADSlineno;
     uint32_t callBackNeeded;
     char changedAuxBits[MAX_REASON_AUX_BIT_SHOW][36];
-    char customParaName[PARAM_IF_IDX_LAST_CUSTOM_PARA -
-                        PARAM_IF_IDX_FIRST_CUSTOM_PARA][34];
-    int functionFromParamIndex[256];
 #ifdef ETHERCATMC_TCBSD
     int32_t tcbsdLocalPort;
 #endif

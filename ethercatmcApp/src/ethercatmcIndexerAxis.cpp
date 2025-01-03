@@ -321,8 +321,9 @@ void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex) {
       asynPrint(
           pC_->pasynUserController_, ASYN_TRACE_INFO,
           "%saddPollNowParam(%d) paramIndex=%s (%d) already at pollNowIdx=%u\n",
-          modNamEMC, axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex),
-          paramIndex, (unsigned)pollNowIdx);
+          modNamEMC, axisNo_,
+          pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_), paramIndex,
+          (unsigned)pollNowIdx);
       return;
     }
     if (!drvlocal.clean.pollNowParams[pollNowIdx]) {
@@ -330,8 +331,9 @@ void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex) {
       asynPrint(
           pC_->pasynUserController_, ASYN_TRACE_INFO,
           "%saddPollNowParam(%d) paramIndex=%s (%d) new at pollNowIdx=%u\n",
-          modNamEMC, axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex),
-          paramIndex, (unsigned)pollNowIdx);
+          modNamEMC, axisNo_,
+          pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_), paramIndex,
+          (unsigned)pollNowIdx);
       return;
     }
   }
@@ -673,8 +675,8 @@ int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
               "%s readEnumsAndValueAndCallbackIntoMbbi(%d) paramIdx=%s (%u)"
               " status=%s (%d)\n",
               modNamEMC, axisNo_,
-              pC_->plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-              ethercatmcstrStatus(status), (int)status);
+              pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_),
+              paramIndex, ethercatmcstrStatus(status), (int)status);
         }
       }
       if (status) {
@@ -698,7 +700,7 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
     drvlocal.clean.param_read_ok_once[paramIndex] = 1;
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
               "%spoll(%d) paramCtrl=%s (0x%x) paramValue=%f\n", modNamEMC,
-              axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex),
+              axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_),
               paramCtrl, paramfValue);
     if ((paramCtrl != drvlocal.clean.old_paramCtrl) ||
         (paramfValue != drvlocal.clean.old_paramValue)) {
@@ -716,7 +718,8 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) paramIndex=%u paramCtrl=%s (0x%x)\n", modNamEMC,
               axisNo_, paramIndex,
-              pC_->plcParamIndexTxtFromParamIndex(paramIndex), paramCtrl);
+              pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_),
+              paramCtrl);
   }
 
   /* Read back the parameters one by one */
@@ -784,7 +787,8 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
       uint16_t newParamCtrl = PARAM_IF_CMD_DOREAD + paramIndex;
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
                 "%spollNext(%d) paramCtrl=%s (0x%x) paramValue=%f\n", modNamEMC,
-                axisNo_, pC_->plcParamIndexTxtFromParamIndex(paramIndex),
+                axisNo_,
+                pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_),
                 paramCtrl, paramfValue);
       pC_->setPlcMemoryInteger(drvlocal.clean.paramIfOffset, newParamCtrl,
                                sizeof(newParamCtrl));
@@ -1524,23 +1528,34 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value) {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
               "%ssetIntegerParam(%d pC_->motorStatusCommsError_)=%d\n",
               modNamEMC, axisNo_, value);
-    if (value && !drvlocal.dirty.initialPollNeeded) {
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
-                "%s Communication error(%d)\n", modNamEMC, axisNo_);
-      for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD;
-           auxBitIdx++) {
-        int function = drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx];
-        asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                  "%smotorStatusCommsError_(%d) auxBitIdx=%u function=%d\n",
-                  modNamEMC, axisNo_, auxBitIdx, function);
+
+    if (value) {
+      for (unsigned paramIndex = 0;
+           paramIndex < (sizeof(drvlocal.clean.functionFromParamIndex) /
+                         sizeof(drvlocal.clean.functionFromParamIndex[0]));
+           paramIndex++) {
+        int function = drvlocal.clean.functionFromParamIndex[paramIndex];
         if (function) {
           pC_->setAlarmStatusSeverityWrapper(axisNo_, function,
                                              asynDisconnected);
         }
       }
+      if (!drvlocal.dirty.initialPollNeeded) {
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_ERROR,
+                  "%s Communication error(%d)\n", modNamEMC, axisNo_);
+        for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD;
+             auxBitIdx++) {
+          int function = drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx];
+          asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                    "%smotorStatusCommsError_(%d) auxBitIdx=%u function=%d\n",
+                    modNamEMC, axisNo_, auxBitIdx, function);
+          if (function) {
+            pC_->setAlarmStatusSeverityWrapper(axisNo_, function,
+                                               asynDisconnected);
+          }
+        }
+      }
       updateMsgTxtFromDriver(NULL);
-    }
-    if (value) {
       memset(&drvlocal.clean, 0, sizeof(drvlocal.clean));
       memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
     }
@@ -1660,6 +1675,19 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value) {
   return status;
 }
 
+unsigned ethercatmcIndexerAxis::paramIndexFromFunction(int function) {
+  unsigned paramIndex;
+  for (paramIndex = 0;
+       paramIndex < (sizeof(drvlocal.clean.functionFromParamIndex) /
+                     sizeof(drvlocal.clean.functionFromParamIndex[0]));
+       paramIndex++) {
+    if (function == drvlocal.clean.functionFromParamIndex[paramIndex]) {
+      return paramIndex;
+    }
+  }
+  return 0;
+}
+
 asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
   asynStatus status;
   if (function == pC_->defAsynPara.ethercatmcCfgDHLM_) {
@@ -1752,7 +1780,7 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
     ;
 #endif
   } else {
-    unsigned paramIndex = pC_->paramIndexFromFunction(function);
+    unsigned paramIndex = paramIndexFromFunction(function);
     if (paramIndex) {
       double valueRB = -1;
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,

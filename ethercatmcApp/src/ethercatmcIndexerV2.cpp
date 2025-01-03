@@ -498,7 +498,7 @@ asynStatus ethercatmcController::indexerReadAxisParametersV2(
         asynPrint(pasynUserController_, traceMask,
                   "%s%s paramIndex=%u dataIdx=%u bitIdx=%u (%s)\n", modNamEMC,
                   functionName, paramIndex, dataIdx, bitIdx,
-                  plcParamIndexTxtFromParamIndex(paramIndex));
+                  plcParamIndexTxtFromParamIndex(paramIndex, axisNo));
         pAxis->drvlocal.clean.PILSparamPerm[paramIndex] = PILSparamPermWrite;
         if (paramIndexIsIntegerV2(paramIndex)) {
           pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex] =
@@ -546,10 +546,14 @@ asynStatus ethercatmcController::indexerReadAxisParametersV2(
                   paramIndex - PARAM_IF_IDX_FIRST_CUSTOM_PARA;
               /* Set the length, possibly overwriting the default from above */
               pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex] = 8;
-              ctrlLocal.functionFromParamIndex[paramIndex] = function;
-              memcpy(&ctrlLocal.customParaName[paramIndexCustom],
-                     customParaName,
-                     sizeof(ctrlLocal.customParaName[paramIndexCustom]) - 1);
+              pAxis->drvlocal.clean.functionFromParamIndex[paramIndex] =
+                  function;
+              memcpy(
+                  &pAxis->drvlocal.clean.customParaName[paramIndexCustom],
+                  customParaName,
+                  sizeof(
+                      pAxis->drvlocal.clean.customParaName[paramIndexCustom]) -
+                      1);
             }
           }
         }
@@ -557,17 +561,4 @@ asynStatus ethercatmcController::indexerReadAxisParametersV2(
     }
   }
   return asynSuccess;
-}
-
-unsigned ethercatmcController::paramIndexFromFunction(int function) {
-  unsigned paramIndex;
-  for (paramIndex = 0;
-       paramIndex < (sizeof(ctrlLocal.functionFromParamIndex) /
-                     sizeof(ctrlLocal.functionFromParamIndex[0]));
-       paramIndex++) {
-    if (function == ctrlLocal.functionFromParamIndex[paramIndex]) {
-      return paramIndex;
-    }
-  }
-  return 0;
 }

@@ -90,6 +90,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
   asynStatus setClosedLoop(bool closedLoop);
   asynStatus setGenericIntegerParam(int function, int value);
   asynStatus setIntegerParam(int function, int value);
+  unsigned paramIndexFromFunction(int function);
   asynStatus setDoubleParam(int function, double value);
   asynStatus setStringParamDbgStrToMcu(const char *value);
   asynStatus setStringParam(int function, const char *value);
@@ -143,6 +144,9 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       uint8_t lenInPlcParaInteger[256]; /* 0 : not an integer; 2: uint16 4:
                                            uint_32 */
       uint8_t param_read_ok_once[256];
+      int functionFromParamIndex[256];
+      char customParaName[PARAM_IF_IDX_LAST_CUSTOM_PARA -
+                          PARAM_IF_IDX_FIRST_CUSTOM_PARA][34];
       int asynFunctionAuxBitAsBiRecord[MAX_AUX_BIT_AS_BI_RECORD];
     } clean;
     int pollScaling;

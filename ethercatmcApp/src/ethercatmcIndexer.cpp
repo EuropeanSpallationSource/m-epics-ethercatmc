@@ -62,7 +62,7 @@ const char *paramIfCmdToString(unsigned cmdSubParamIndex) {
 }
 
 const char *ethercatmcController::plcParamIndexTxtFromParamIndex(
-    unsigned cmdSubParamIndex) {
+    unsigned cmdSubParamIndex, int axisNo) {
   unsigned paramIndex = cmdSubParamIndex & PARAM_IF_IDX_MASK;
   switch (paramIndex) {
     case 0:
@@ -123,18 +123,25 @@ const char *ethercatmcController::plcParamIndexTxtFromParamIndex(
       return "STEPS_PER_REV";
     case PARAM_IDX_MAX_VELO_FLOAT:
       return "MAX_VELO";
-    default:
-      if ((paramIndex < (sizeof(ctrlLocal.functionFromParamIndex) /
-                         sizeof(ctrlLocal.functionFromParamIndex[0]))) &&
-          ctrlLocal.functionFromParamIndex[paramIndex]) {
-        if (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
-            paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA) {
-          unsigned paramIndexCustom =
-              paramIndex - PARAM_IF_IDX_FIRST_CUSTOM_PARA;
-          return (const char *)&ctrlLocal.customParaName[paramIndexCustom];
+    default: {
+      ethercatmcIndexerAxis *pAxis = static_cast<ethercatmcIndexerAxis *>(
+          asynMotorController::getAxis(axisNo));
+      if (pAxis) {
+        if (paramIndex <
+                (sizeof(pAxis->drvlocal.clean.functionFromParamIndex) /
+                 sizeof(pAxis->drvlocal.clean.functionFromParamIndex[0])) &&
+            pAxis->drvlocal.clean.functionFromParamIndex[paramIndex]) {
+          if (paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
+              paramIndex <= PARAM_IF_IDX_LAST_CUSTOM_PARA) {
+            unsigned paramIndexCustom =
+                paramIndex - PARAM_IF_IDX_FIRST_CUSTOM_PARA;
+            return (const char *)&pAxis->drvlocal.clean
+                .customParaName[paramIndexCustom];
+          }
         }
       }
       return "PX";
+    }
   }
 };
 
@@ -425,7 +432,7 @@ asynStatus ethercatmcController::indexerParamReadFL(
                 "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
                 "counter=%u cmdSubParamIndexRB=%s (0x%04X)\n",
                 fileName, lineNo, "indexerParamRead", axisNo, paramIfOffset,
-                plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+                plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
                 paramIndex, counter, paramIfCmdToString(cmdSubParamIndexRB),
                 cmdSubParamIndexRB);
     }
@@ -446,7 +453,7 @@ asynStatus ethercatmcController::indexerParamReadFL(
               "lenInPlcParaFloat=%u lenInPlcParaInteger=%u lenInPlcPara=%u "
               "value=%f\n",
               fileName, lineNo, "indexerParamRead", pAxis->axisNo_,
-              paramIfOffset, plcParamIndexTxtFromParamIndex(paramIndex),
+              paramIfOffset, plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
               paramIndex, paramIndex,
               pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex],
               pAxis->drvlocal.clean.lenInPlcParaInteger[paramIndex],
@@ -473,7 +480,7 @@ asynStatus ethercatmcController::indexerParamReadFL(
               "%s:%d %s(%d) paramIfOffset=%u paramIdxFunction=%s (%u 0x%02X) "
               "cmdSubParamIndexRB=%s (0x%04X) status=%s (%d)\n",
               fileName, lineNo, "indexerParamRead", axisNo, paramIfOffset,
-              plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
+              plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
               paramIndex, paramIfCmdToString(cmdSubParamIndexRB),
               cmdSubParamIndexRB, ethercatmcstrStatus(status), (int)status);
           return status;
@@ -583,9 +590,10 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
       asynPrint(pasynUserController_, traceMask,
                 "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
                 "counter=%u RB=%s,%s (0x%04X)\n",
-                modNamEMC, axisNo, plcParamIndexTxtFromParamIndex(paramIndex),
-                paramIndex, paramIndex, value, counter,
-                plcParamIndexTxtFromParamIndex(paramIndexRB),
+                modNamEMC, axisNo,
+                plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
+                paramIndex, value, counter,
+                plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
                 paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
     }
     switch (paramIfCmd) {
@@ -595,8 +603,8 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                     "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
                     "valueRB=%02g has_written=%d\n",
                     modNamEMC, axisNo,
-                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                    paramIndex, value, valueRB, has_written);
+                    plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+                    paramIndex, paramIndex, value, valueRB, has_written);
           if (paramIndexIsMovingFunction(paramIndex)) {
             /* New param interface handling:
                PLC goes to DONE, the interface is released
@@ -626,8 +634,8 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                     "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
                     "lenInPlcPara=%u has_written=%d\n",
                     modNamEMC, axisNo,
-                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                    paramIndex, value, lenInPlcPara, has_written);
+                    plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+                    paramIndex, paramIndex, value, lenInPlcPara, has_written);
           status = setPlcMemoryOnErrorStateChange(
               paramIfOffset, &paramIf_to_MCU, (unsigned)sizeof(paramIf_to_MCU));
           if (status) return status;
@@ -667,9 +675,9 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                     "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
                     "movingFun RB=%s,%s (0x%04X)\n",
                     modNamEMC, axisNo,
-                    plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                    paramIndex, value,
-                    plcParamIndexTxtFromParamIndex(paramIndexRB),
+                    plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+                    paramIndex, paramIndex, value,
+                    plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
                     paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
           if (paramIndexRB == paramIndex) {
             /* "our" function: return */
@@ -744,7 +752,8 @@ asynStatus ethercatmcController::getPlcMemoryFromProcessImage(
   return asynDisabled;
 }
 
-int ethercatmcController::paramIndexToFunction(unsigned paramIndex) {
+int ethercatmcController::paramIndexToFunction(unsigned paramIndex,
+                                               int axisNo) {
   switch (paramIndex) {
     case PARAM_IDX_OPMODE_AUTO_UINT:
       /* CNEN for EPICS */
@@ -797,11 +806,17 @@ int ethercatmcController::paramIndexToFunction(unsigned paramIndex) {
       return defAsynPara.ethercatmcCfgSREV_RB_;
     case PARAM_IDX_MAX_VELO_FLOAT:
       return defAsynPara.ethercatmcCfgVMAX_RB_;
-    default:
-      if (paramIndex < (sizeof(ctrlLocal.functionFromParamIndex) /
-                        sizeof(ctrlLocal.functionFromParamIndex[0]))) {
-        return ctrlLocal.functionFromParamIndex[paramIndex];
+    default: {
+      ethercatmcIndexerAxis *pAxis = static_cast<ethercatmcIndexerAxis *>(
+          asynMotorController::getAxis(axisNo));
+      if (pAxis) {
+        if (paramIndex <
+            (sizeof(pAxis->drvlocal.clean.functionFromParamIndex) /
+             sizeof(pAxis->drvlocal.clean.functionFromParamIndex[0]))) {
+          return pAxis->drvlocal.clean.functionFromParamIndex[paramIndex];
+        }
       }
+    }
       return 0;
   }
 }
@@ -932,10 +947,10 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo, int initial,
       }
       break;
     default:
-      int function = paramIndexToFunction(paramIndex);
+      int function = paramIndexToFunction(paramIndex, (int)axisNo);
       if (function) {
         updateCfgValue(axisNo, function, fValue,
-                       plcParamIndexTxtFromParamIndex(paramIndex));
+                       plcParamIndexTxtFromParamIndex(paramIndex, axisNo));
       }
   }
 }
@@ -964,8 +979,9 @@ asynStatus ethercatmcController::indexerReadAxisParameters(
        paramIndex++) {
     asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
               "%sindexerReadAxisParameters(%d) paramIdx=%s (%u) perm=%d\n",
-              modNamEMC, axisNo, plcParamIndexTxtFromParamIndex(paramIndex),
-              paramIndex, (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex]);
+              modNamEMC, axisNo,
+              plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
+              (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex]);
     if (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] != PILSparamPermNone) {
       // parameter is read or write
       double fValue = 0.0;
@@ -998,14 +1014,14 @@ asynStatus ethercatmcController::indexerReadAxisParameters(
         if (pAxis->drvlocal.clean.enumparam_read_id[paramIndex]) {
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sparameters(%d) paramIdx=%s (%u) has enums\n", modNamEMC,
-                    axisNo, plcParamIndexTxtFromParamIndex(paramIndex),
+                    axisNo, plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
                     paramIndex);
         } else if (paramIndexIsReadLaterInBackground(paramIndex)) {
           asynPrint(
               pasynUserController_, ASYN_TRACE_INFO,
               "%sparameters(%d) paramIdx=%s (%u) only polled in background\n",
-              modNamEMC, axisNo, plcParamIndexTxtFromParamIndex(paramIndex),
-              paramIndex);
+              modNamEMC, axisNo,
+              plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex);
         } else {
           status = indexerParamRead(pAxis, paramIfOffset, paramIndex, &fValue);
           if (status) {
@@ -1013,14 +1029,14 @@ asynStatus ethercatmcController::indexerReadAxisParameters(
                       "%sindexerReadAxisParameters(%d) paramIdx=%s (%u)"
                       " status=%s (%d)\n",
                       modNamEMC, axisNo,
-                      plcParamIndexTxtFromParamIndex(paramIndex), paramIndex,
-                      ethercatmcstrStatus(status), (int)status);
+                      plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+                      paramIndex, ethercatmcstrStatus(status), (int)status);
             return status;
           }
           parameterFloatReadBack(axisNo, initial, paramIndex, fValue);
           asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                     "%sparameters(%d) paramIdx=%s (%u) value=%f\n", modNamEMC,
-                    axisNo, plcParamIndexTxtFromParamIndex(paramIndex),
+                    axisNo, plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
                     paramIndex, fValue);
         }
       }
@@ -1599,7 +1615,8 @@ asynStatus ethercatmcController::indexerPoll(void) {
                 asynPrint(
                     pasynUserController_, traceMask | ASYN_TRACE_INFO,
                     "%spoll(%d) %sOld=0x%04X new=0x%04X "
-                    "(%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s)"
+                    "(%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%"
+                    "s)"
                     "\n",
                     modNamEMC, axisNo, paramName, oldStatusReasonAux,
                     statusReasonAux, ctrlLocal.changedAuxBits[27],
@@ -1714,10 +1731,11 @@ asynStatus ethercatmcController::indexerPoll(void) {
                   }
                 }
               }
-              asynPrint(
-                  pasynUserController_, tracelevel,
-                  "%sindexerPoll(%d) function=%s(%d) oldValue=%f newValue=%f\n",
-                  modNamEMC, axisNo, paramName, function, oldValue, newValue);
+              asynPrint(pasynUserController_, tracelevel,
+                        "%sindexerPoll(%d) function=%s(%d) oldValue=%f "
+                        "newValue=%f\n",
+                        modNamEMC, axisNo, paramName, function, oldValue,
+                        newValue);
             }
             break;
 #ifdef ETHERCATMC_ASYN_ASYNPARAMINT64
@@ -1933,11 +1951,11 @@ void ethercatmcController::indexerCalcPTPdiffXYtime_MCU(
 #endif
   double msecPTPdiffXYtime_MCU =
       1000.0 * epicsTimeDiffInSeconds(pNTtime_MCU, pTimePTP_MCU);
-  asynPrint(
-      pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
-      "%sindexerPoll NTtime_MCU sec:nSec=%010u.%09u msecPTPdiffXYtime_MCU=%f\n",
-      modNamEMC, pNTtime_MCU->secPastEpoch, pNTtime_MCU->nsec,
-      msecPTPdiffXYtime_MCU);
+  asynPrint(pasynUserController_, ASYN_TRACE_FLOW /* | ASYN_TRACE_INFO */,
+            "%sindexerPoll NTtime_MCU sec:nSec=%010u.%09u "
+            "msecPTPdiffXYtime_MCU=%f\n",
+            modNamEMC, pNTtime_MCU->secPastEpoch, pNTtime_MCU->nsec,
+            msecPTPdiffXYtime_MCU);
   (void)setDoubleParam(indexRd, function, msecPTPdiffXYtime_MCU);
 }
 
@@ -1978,9 +1996,6 @@ void ethercatmcController::indexerDisconnected(void) {
       }
     }
     memset(&ctrlLocal.pilsAsynDevInfo, 0, sizeof(ctrlLocal.pilsAsynDevInfo));
-    memset(&ctrlLocal.customParaName, 0, sizeof(ctrlLocal.customParaName));
-    memset(&ctrlLocal.functionFromParamIndex, 0,
-           sizeof(ctrlLocal.functionFromParamIndex));
     ctrlLocal.numPilsAsynDevInfo = 0;
   }
   free(ctrlLocal.pIndexerProcessImage);
