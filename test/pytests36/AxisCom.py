@@ -104,11 +104,11 @@ class AxisCom:
             raise Exception("get None")
         return ret
 
-    def get_change_cnts(self, counterName):
-        return self.change_cnts[counterName]
-
     def getMotorPvName(self):
         return self.pvpfx
+
+    def get_change_cnts(self, counterName):
+        return self.change_cnts[counterName]
 
     def init_change_cnts(self):
         self.change_cnts["dmov_value"] = 1  # the .DMOV field is true
