@@ -365,8 +365,8 @@ record(mbbi,"$(SYSPFX)$(AXIS_NAME)-HomProc-RB") {
     field(ZRST, "NotHomable")
     field(ONST, "LimBwd")
     field(TWST, "LimFwd")
-    field(THST, "HSfwdfromLimBwd")
-    field(FRST, "HSbwdfromLimFwd")
+    field(THST, "HSbwdfromLimBwd")
+    field(FRST, "HSfwdfromLimFwd")
     field(FVST, "HomeProc5")
     field(SXST, "HomeProc6")
     field(SVST, "HSbwd")
@@ -376,7 +376,7 @@ record(mbbi,"$(SYSPFX)$(AXIS_NAME)-HomProc-RB") {
     field(ELST, "IndexNfromLimBwd")
     field(TVST, "IndexNfromLimFwd")
     field(TTST, "HomProc13")
-    field(FTST, "HomProc14")
+    field(FTST, "Special")
     field(FFST, "ManSetPos")
 }
 
