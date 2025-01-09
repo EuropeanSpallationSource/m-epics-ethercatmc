@@ -917,6 +917,9 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo, int initial,
       break;
     case PARAM_IDX_SETPOINT_FLOAT:
       // Do nothing here
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%sreadParam(%d) %s=%f\n", modNamEMC, axisNo, "setpoint",
+                fValue);
       break;
     case PARAM_IDX_FUN_MOVE_VELOCITY:
       if (initial)
@@ -1000,6 +1003,23 @@ asynStatus ethercatmcController::indexerReadAxisParameters(
           /* CNEN for EPICS */
           pAxis->setIntegerParam(motorStatusGainSupport_, 1);
           break;
+        case PARAM_IDX_SETPOINT_FLOAT: {
+          asynStatus tmpstatus =
+              indexerParamRead(pAxis, paramIfOffset, paramIndex, &fValue);
+          if (tmpstatus == asynSuccess) {
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%sparameters(%d) paramIdx=%s (%u) value=%f\n", modNamEMC,
+                      axisNo,
+                      plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+                      paramIndex, fValue);
+          } else {
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%sparameters(%d) paramIdx=%s (%u) status=%d\n",
+                      modNamEMC, axisNo,
+                      plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+                      paramIndex, (int)tmpstatus);
+          }
+        } break;
         case PARAM_IDX_FUN_REFERENCE:
 #ifdef motorNotHomedProblemString
           pAxis->setIntegerParam(motorNotHomedProblem_,
