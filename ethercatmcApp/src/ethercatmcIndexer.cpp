@@ -105,6 +105,8 @@ const char *ethercatmcController::plcParamIndexTxtFromParamIndex(
       return "STEPS_PER_UNIT";
     case PARAM_IDX_HOME_POSITION_FLOAT:
       return "HOME_POSITION";
+    case PARAM_IDX_SETPOINT_FLOAT:
+      return "SETPOINT";
     case PARAM_IDX_FUN_REFERENCE:
       return "REFERENCE";
     case PARAM_IDX_FUN_SET_POSITION:
@@ -174,6 +176,8 @@ int paramIndexIsMovingFunction(unsigned paramIndex) {
 int paramIndexIsParameterToPoll(unsigned paramIndex) {
   if (paramIndex == PARAM_IDX_OPMODE_AUTO_UINT) {
     return 0; /* parameter 0 is power on only for the moment. Don't poll it */
+  } else if (paramIndex == PARAM_IDX_SETPOINT_FLOAT) {
+    return 0; /* parameter 70 is not polled either */
   } else if (paramIndex < PARAM_IF_IDX_FIRST_FUNCTION) {
     return 1;
   } else if ((paramIndex >= PARAM_IF_IDX_FIRST_CUSTOM_PARA &&
@@ -790,6 +794,8 @@ int ethercatmcController::paramIndexToFunction(unsigned paramIndex,
       return defAsynPara.ethercatmcCfgUREV_RB_;
     case PARAM_IDX_HOME_POSITION_FLOAT:
       return defAsynPara.ethercatmcHomPos_RB_;
+    case PARAM_IDX_SETPOINT_FLOAT:
+      return 0;
     // case PARAM_IDX_FUN_REFERENCE:
     // case PARAM_IDX_FUN_SET_POSITION:
     case PARAM_IDX_FUN_MOVE_VELOCITY:
@@ -908,6 +914,9 @@ void ethercatmcController::parameterFloatReadBack(unsigned axisNo, int initial,
     case PARAM_IDX_HOME_POSITION_FLOAT:
       updateCfgValue(axisNo, defAsynPara.ethercatmcHomPos_RB_, fValue,
                      "homPosRB");
+      break;
+    case PARAM_IDX_SETPOINT_FLOAT:
+      // Do nothing here
       break;
     case PARAM_IDX_FUN_MOVE_VELOCITY:
       if (initial)

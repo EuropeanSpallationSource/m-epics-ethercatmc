@@ -272,6 +272,7 @@ class epicsShareClass ethercatmcController : public asynMotorController {
 #define PARAM_IDX_MICROSTEPS_FLOAT 67
 #define PARAM_IDX_STEPS_PER_UNIT_FLOAT 68
 #define PARAM_IDX_HOME_POSITION_FLOAT 69
+#define PARAM_IDX_SETPOINT_FLOAT 70
 
 #define PARAM_IDX_FUN_REFERENCE 133
 #define PARAM_IDX_FUN_SET_POSITION 137
