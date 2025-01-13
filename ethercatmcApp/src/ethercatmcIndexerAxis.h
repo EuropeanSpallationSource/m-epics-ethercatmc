@@ -79,6 +79,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
   void addPollNowParam(uint8_t paramIndex);
   asynStatus setIntegerParamLog(int function, int newValue, const char *name);
   int readEnumsAndValueAndCallbackIntoMbbi(void);
+  void newMotorPosition(double actPosition);
   void pollReadBackParameters(unsigned idxAuxBits, unsigned paramCtrl,
                               double paramfValue);
   asynStatus poll(bool *moving);
@@ -134,6 +135,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       unsigned old_idxAuxBitsWritten;
       unsigned int hasProblem : 1;
       unsigned int hasPolledAllEnums : 1;
+      unsigned int hasPARAM_IDX_SETPOINT_FLOAT : 1;
       uint8_t
           pollNowParams[128]; /* 0 terminated list of parameters to be polled */
       PILSparamPermType PILSparamPerm[256];

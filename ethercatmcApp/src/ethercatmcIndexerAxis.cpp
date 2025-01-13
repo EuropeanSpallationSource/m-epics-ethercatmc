@@ -691,6 +691,28 @@ int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
   return 1;
 }
 
+void ethercatmcIndexerAxis::newMotorPosition(double actPosition) {
+  double oldPositionValue;
+  asynStatus oldPositionStatus;
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+            "%snewMotorPosition(%d) actPosition=%f\n", modNamEMC, axisNo_,
+            actPosition);
+
+  oldPositionStatus =
+      pC_->getDoubleParam(axisNo_, pC_->motorPosition_, &oldPositionValue);
+  if (oldPositionStatus == asynSuccess) {
+    /* Use previous fActPosition and
+       current fActPosition to calculate direction.*/
+    if (actPosition > oldPositionValue) {
+      setIntegerParam(pC_->motorStatusDirection_, 1);
+    } else if (actPosition < oldPositionValue) {
+      setIntegerParam(pC_->motorStatusDirection_, 0);
+    }
+  }
+  // Do that on the base class to avoid searching for paramIndex
+  asynMotorAxis::setDoubleParam(pC_->motorPosition_, actPosition);
+}
+
 void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
                                                    unsigned paramCtrl,
                                                    double paramfValue) {
@@ -1031,21 +1053,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   }
   *moving = nowMoving;
   if (positionValid) {
-    double oldPositionValue;
-    asynStatus oldPositionStatus;
-    oldPositionStatus =
-        pC_->getDoubleParam(axisNo_, pC_->motorPosition_, &oldPositionValue);
-    if (oldPositionStatus == asynSuccess) {
-      /* Use previous fActPosition and
-         current fActPosition to calculate direction.*/
-      if (actPosition > oldPositionValue) {
-        setIntegerParam(pC_->motorStatusDirection_, 1);
-      } else if (actPosition < oldPositionValue) {
-        setIntegerParam(pC_->motorStatusDirection_, 0);
-      }
+    if (!drvlocal.clean.hasPARAM_IDX_SETPOINT_FLOAT) {
+      newMotorPosition(actPosition);
     }
     // Do that on the base class to avoid searching for paramIndex
-    asynMotorAxis::setDoubleParam(pC_->motorPosition_, actPosition);
     asynMotorAxis::setDoubleParam(pC_->motorEncoderPosition_, actPosition);
   }
   if (auxbitsValid || nowMoving) {
