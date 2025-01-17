@@ -371,6 +371,22 @@ class Test(unittest.TestCase):
             self, 920124, -myBDST, motorRMOD_G, use_rel, self.myPOShig, self.myPOSlow
         )
 
+    # motorRMOD_D = 0 # "Default"
+    # position forward BDST == 0 RTRY == 0
+    # Checks for a regression in motorRecord.cc@ess-master
+    # Which may cause a never ending loop
+    def test_TC_920201(self):
+        positionAndBacklash(
+            self,
+            920201,
+            0.0,  # myBDST,
+            motorRMOD_D,
+            use_abs,
+            self.myPOSlow,
+            self.myPOShig,
+            rtry=0,
+        )
+
     def teardown_class(self):
         tc_no = int(filnam) * 10000 + 9999
         print(
