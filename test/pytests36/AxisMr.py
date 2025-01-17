@@ -1187,24 +1187,23 @@ class AxisMr:
         encRel,
         motorStartPos,
         motorEndPos,
+        need_007_017_tweak=False,
     ):
         if motorEndPos - motorStartPos > 0:
             directionOfMove = 1
         else:
             directionOfMove = -1
         bdst = self.axisCom.get(".BDST", timeout=2.0, use_monitor=False)
-        if bdst > 0:
+        if bdst > 0.0:
             directionOfBL = 1
-        else:
+        elif bdst < 0.0:
             directionOfBL = -1
+        else:
+            directionOfBL = 0
 
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: writeExpFileRMOD_X encRel={encRel} motorStartPos={motorStartPos} motorEndPos={motorEndPos} directionOfMove{directionOfMove} directionOfBL={directionOfBL}"
         )
-        need_007_017_tweak = False
-        if 92007 == tc_no or 92017 == tc_no:
-            need_007_017_tweak = True
-
         if rmod == motorRMOD_I:
             maxcnt = 1  # motorRMOD_I means effecttivly "no retry"
             encRel = 0
@@ -1351,7 +1350,9 @@ class AxisMr:
                         "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
                         % (destPos2, self.myBVEL, self.myBAR, motorStartPos)
                     )
-                if need_007_017_tweak and cnt == 0:
+                if directionOfBL == 0:
+                    expFile.write(f"{line1}")
+                elif need_007_017_tweak and cnt == 0:
                     # No retry yet
                     expFile.write(f"{line2}")
                 else:

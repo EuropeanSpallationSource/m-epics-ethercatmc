@@ -33,15 +33,24 @@ def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 
-def motorInitTC(self, tc_no, rmod, encRel):
-    self.axisCom.put(".RMOD", rmod)
-    self.axisCom.put(".UEIP", encRel)
-
-
-def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEndPos):
+def positionAndBacklash(
+    self,
+    tc_no,
+    bdst,
+    rmod,
+    encRel,
+    motorStartPos,
+    motorEndPos,
+    rtry=None,
+    need_007_017_tweak=False,
+):
     ###########
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     self.axisMr.motorInitAllForBDSTIfNeeded(tc_no)
+    self.axisCom.put(".RMOD", rmod)
+    self.axisCom.put(".UEIP", encRel)
+    if rtry is not None:
+        self.axisCom.put(".RTRY", rtry)
     self.axisCom.put(".FRAC", myFRAC)
     self.axisCom.put(".BDST", bdst)
 
@@ -50,7 +59,6 @@ def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEnd
     expFileName = fileName + ".exp"
     actFileName = fileName + ".act"
 
-    motorInitTC(self, tc_no, rmod, encRel)
     self.axisMr.setFieldSPAM(tc_no, -1)
     passed = self.axisMr.setMotorStartPos(tc_no, motorStartPos)
 
@@ -84,6 +92,7 @@ def positionAndBacklash(self, tc_no, bdst, rmod, encRel, motorStartPos, motorEnd
         encRel,
         motorStartPos,
         motorEndPos,
+        need_007_017_tweak=need_007_017_tweak,
     )
 
     expFile.close()
@@ -126,226 +135,240 @@ class Test(unittest.TestCase):
     myPOShig = axisMr.myPOShig
 
     def test_TC_92000(self):
-        self.axisMr.motorInitAllForBDST(92000)
+        self.axisMr.motorInitAllForBDST(920000)
         self.axisCom.put(".FRAC", myFRAC)
 
     # motorRMOD_D = 0 # "Default"
     # position forward & backlash compensation, absolute
-    def test_TC_92001(self):
+    def test_TC_920001(self):
         positionAndBacklash(
-            self, 92001, myBDST, motorRMOD_D, use_abs, self.myPOSlow, self.myPOShig
+            self, 920001, myBDST, motorRMOD_D, use_abs, self.myPOSlow, self.myPOShig
         )
 
     # position forward & backlash compensation, relative
-    def test_TC_92002(self):
+    def test_TC_920002(self):
         positionAndBacklash(
-            self, 92002, myBDST, motorRMOD_D, use_rel, self.myPOSlow, self.myPOShig
+            self, 920002, myBDST, motorRMOD_D, use_rel, self.myPOSlow, self.myPOShig
         )
 
     # position backward & backlash compensation, absolute
-    def test_TC_92003(self):
+    def test_TC_920003(self):
         positionAndBacklash(
-            self, 92003, myBDST, motorRMOD_D, use_abs, self.myPOShig, self.myPOSlow
+            self, 920003, myBDST, motorRMOD_D, use_abs, self.myPOShig, self.myPOSlow
         )
 
     # position backward & backlash compensation, relative
-    def test_TC_92004(self):
+    def test_TC_920004(self):
         positionAndBacklash(
-            self, 92004, myBDST, motorRMOD_D, use_rel, self.myPOShig, self.myPOSlow
+            self, 920004, myBDST, motorRMOD_D, use_rel, self.myPOShig, self.myPOSlow
         )
 
     # position forward inside backlash range, absolute
-    def test_TC_92005(self):
+    def test_TC_920005(self):
         positionAndBacklash(
-            self, 92005, myBDST, motorRMOD_D, use_abs, self.myPOSmid, self.myPOSlow
+            self, 920005, myBDST, motorRMOD_D, use_abs, self.myPOSmid, self.myPOSlow
         )
 
     # position forward inside backlash range, relative
-    def test_TC_92006(self):
+    def test_TC_920006(self):
         positionAndBacklash(
-            self, 92006, myBDST, motorRMOD_D, use_rel, self.myPOSmid, self.myPOSlow
+            self, 920006, myBDST, motorRMOD_D, use_rel, self.myPOSmid, self.myPOSlow
         )
 
     # position forward inside backlash range, absolute
-    def test_TC_92007(self):
+    def test_TC_920007(self):
         positionAndBacklash(
-            self, 92007, myBDST, motorRMOD_D, use_abs, self.myPOSlow, self.myPOSmid
+            self,
+            920007,
+            myBDST,
+            motorRMOD_D,
+            use_abs,
+            self.myPOSlow,
+            self.myPOSmid,
+            need_007_017_tweak=True,
         )
 
     # position forward inside backlash range, relative
-    def test_TC_92008(self):
+    def test_TC_920008(self):
         positionAndBacklash(
-            self, 92008, myBDST, motorRMOD_D, use_rel, self.myPOSlow, self.myPOSmid
+            self, 920008, myBDST, motorRMOD_D, use_rel, self.myPOSlow, self.myPOSmid
         )
 
     ###############################################################################
     # motorRMOD_A
     # position forward & backlash compensation, absolute
-    def test_TC_92011(self):
+    def test_TC_920011(self):
         positionAndBacklash(
-            self, 92011, myBDST, motorRMOD_A, use_abs, self.myPOSlow, self.myPOShig
+            self, 920011, myBDST, motorRMOD_A, use_abs, self.myPOSlow, self.myPOShig
         )
 
     # position forward & backlash compensation, relative
-    def test_TC_92012(self):
+    def test_TC_920012(self):
         positionAndBacklash(
-            self, 92012, myBDST, motorRMOD_A, use_rel, self.myPOSlow, self.myPOShig
+            self, 920012, myBDST, motorRMOD_A, use_rel, self.myPOSlow, self.myPOShig
         )
 
     # position backward & backlash compensation, absolute
-    def test_TC_92013(self):
+    def test_TC_920013(self):
         positionAndBacklash(
-            self, 92013, myBDST, motorRMOD_A, use_abs, self.myPOShig, self.myPOSlow
+            self, 920013, myBDST, motorRMOD_A, use_abs, self.myPOShig, self.myPOSlow
         )
 
     # position backward & backlash compensation, relative
-    def test_TC_92014(self):
+    def test_TC_920014(self):
         positionAndBacklash(
-            self, 92014, myBDST, motorRMOD_A, use_rel, self.myPOShig, self.myPOSlow
+            self, 920014, myBDST, motorRMOD_A, use_rel, self.myPOShig, self.myPOSlow
         )
 
     # position forward inside backlash range, absolute
-    def test_TC_92015(self):
+    def test_TC_920015(self):
         positionAndBacklash(
-            self, 92015, myBDST, motorRMOD_A, use_abs, self.myPOSmid, self.myPOSlow
+            self, 920015, myBDST, motorRMOD_A, use_abs, self.myPOSmid, self.myPOSlow
         )
 
     # position forward inside backlash range, relative
-    def test_TC_92016(self):
+    def test_TC_920016(self):
         positionAndBacklash(
-            self, 92016, myBDST, motorRMOD_A, use_rel, self.myPOSmid, self.myPOSlow
+            self, 920016, myBDST, motorRMOD_A, use_rel, self.myPOSmid, self.myPOSlow
         )
 
     # position forward inside backlash range, absolute
-    def test_TC_92017(self):
+    def test_TC_920017(self):
         positionAndBacklash(
-            self, 92017, myBDST, motorRMOD_A, use_abs, self.myPOSlow, self.myPOSmid
+            self, 920017, myBDST, motorRMOD_A, use_abs, self.myPOSlow, self.myPOSmid
         )
 
     # position forward inside backlash range, relative
-    def test_TC_92018(self):
+    def test_TC_920018(self):
         positionAndBacklash(
-            self, 92018, myBDST, motorRMOD_A, use_rel, self.myPOSlow, self.myPOSmid
+            self,
+            920018,
+            myBDST,
+            motorRMOD_A,
+            use_rel,
+            self.myPOSlow,
+            self.myPOSmid,
+            need_007_017_tweak=True,
         )
 
     ###############################################################################
     # motorRMOD_G
     # position forward & backlash compensation, absolute
-    def test_TC_92021(self):
+    def test_TC_920021(self):
         positionAndBacklash(
-            self, 92021, myBDST, motorRMOD_G, use_abs, self.myPOSlow, self.myPOShig
+            self, 920021, myBDST, motorRMOD_G, use_abs, self.myPOSlow, self.myPOShig
         )
 
     # position forward & backlash compensation, relative
-    def test_TC_92022(self):
+    def test_TC_920022(self):
         positionAndBacklash(
-            self, 92022, myBDST, motorRMOD_G, use_rel, self.myPOSlow, self.myPOShig
+            self, 920022, myBDST, motorRMOD_G, use_rel, self.myPOSlow, self.myPOShig
         )
 
     # position backward & backlash compensation, absolute
-    def test_TC_92023(self):
+    def test_TC_920023(self):
         positionAndBacklash(
-            self, 92023, myBDST, motorRMOD_G, use_abs, self.myPOShig, self.myPOSlow
+            self, 920023, myBDST, motorRMOD_G, use_abs, self.myPOShig, self.myPOSlow
         )
 
     # position backward & backlash compensation, relative
-    def test_TC_92024(self):
+    def test_TC_920024(self):
         positionAndBacklash(
-            self, 92024, myBDST, motorRMOD_G, use_rel, self.myPOShig, self.myPOSlow
+            self, 920024, myBDST, motorRMOD_G, use_rel, self.myPOShig, self.myPOSlow
         )
 
     # position forward inside backlash range, absolute
-    def test_TC_92025(self):
+    def test_TC_920025(self):
         positionAndBacklash(
-            self, 92025, myBDST, motorRMOD_G, use_abs, self.myPOSmid, self.myPOSlow
+            self, 920025, myBDST, motorRMOD_G, use_abs, self.myPOSmid, self.myPOSlow
         )
 
     # position forward inside backlash range, relative
-    def test_TC_92026(self):
+    def test_TC_920026(self):
         positionAndBacklash(
-            self, 92026, myBDST, motorRMOD_G, use_rel, self.myPOSmid, self.myPOSlow
+            self, 920026, myBDST, motorRMOD_G, use_rel, self.myPOSmid, self.myPOSlow
         )
 
     # position forward inside backlash range, absolute
-    def test_TC_92027(self):
+    def test_TC_920027(self):
         positionAndBacklash(
-            self, 92027, myBDST, motorRMOD_G, use_abs, self.myPOSlow, self.myPOSmid
+            self, 920027, myBDST, motorRMOD_G, use_abs, self.myPOSlow, self.myPOSmid
         )
 
     # position forward inside backlash range, relative
-    def test_TC_92028(self):
+    def test_TC_920028(self):
         positionAndBacklash(
-            self, 92028, myBDST, motorRMOD_G, use_rel, self.myPOSlow, self.myPOSmid
+            self, 920028, myBDST, motorRMOD_G, use_rel, self.myPOSlow, self.myPOSmid
         )
 
     ###############################################################################
     # motorRMOD_I
     # position forward & backlash compensation, absolute
-    def test_TC_92031(self):
+    def test_TC_920031(self):
         positionAndBacklash(
-            self, 92031, myBDST, motorRMOD_I, use_abs, self.myPOSlow, self.myPOShig
+            self, 920031, myBDST, motorRMOD_I, use_abs, self.myPOSlow, self.myPOShig
         )
 
     # position forward & backlash compensation, relative
-    def test_TC_92032(self):
+    def test_TC_920032(self):
         positionAndBacklash(
-            self, 92032, myBDST, motorRMOD_I, use_rel, self.myPOSlow, self.myPOShig
+            self, 920032, myBDST, motorRMOD_I, use_rel, self.myPOSlow, self.myPOShig
         )
 
     # position backward & backlash compensation, absolute
-    def test_TC_92033(self):
+    def test_TC_920033(self):
         positionAndBacklash(
-            self, 92033, myBDST, motorRMOD_I, use_abs, self.myPOShig, self.myPOSlow
+            self, 920033, myBDST, motorRMOD_I, use_abs, self.myPOShig, self.myPOSlow
         )
 
     # position backward & backlash compensation, relative
-    def test_TC_92034(self):
+    def test_TC_920034(self):
         positionAndBacklash(
-            self, 92034, myBDST, motorRMOD_I, use_rel, self.myPOShig, self.myPOSlow
+            self, 920034, myBDST, motorRMOD_I, use_rel, self.myPOShig, self.myPOSlow
         )
 
     # position forward inside backlash range, absolute
-    def test_TC_92035(self):
+    def test_TC_920035(self):
         positionAndBacklash(
-            self, 92035, myBDST, motorRMOD_I, use_abs, self.myPOSmid, self.myPOSlow
+            self, 920035, myBDST, motorRMOD_I, use_abs, self.myPOSmid, self.myPOSlow
         )
 
     # position forward inside backlash range, relative
-    def test_TC_92036(self):
+    def test_TC_920036(self):
         positionAndBacklash(
-            self, 92036, myBDST, motorRMOD_I, use_rel, self.myPOSmid, self.myPOSlow
+            self, 920036, myBDST, motorRMOD_I, use_rel, self.myPOSmid, self.myPOSlow
         )
 
     # position forward inside backlash range, absolute
-    def test_TC_92037(self):
+    def test_TC_920037(self):
         positionAndBacklash(
-            self, 92037, myBDST, motorRMOD_I, use_abs, self.myPOSlow, self.myPOSmid
+            self, 920037, myBDST, motorRMOD_I, use_abs, self.myPOSlow, self.myPOSmid
         )
 
     # position forward inside backlash range, relative
-    def test_TC_92038(self):
+    def test_TC_920038(self):
         positionAndBacklash(
-            self, 92038, myBDST, motorRMOD_I, use_rel, self.myPOSlow, self.myPOSmid
+            self, 920038, myBDST, motorRMOD_I, use_rel, self.myPOSlow, self.myPOSmid
         )
 
     ##############################################################################
     # Test with "negative backlash destination", relative movements
     # position backward & backlash compensation, relative
-    def test_TC_92104(self):
+    def test_TC_920104(self):
         positionAndBacklash(
-            self, 92104, -myBDST, motorRMOD_D, use_rel, self.myPOShig, self.myPOSlow
+            self, 920104, -myBDST, motorRMOD_D, use_rel, self.myPOShig, self.myPOSlow
         )
 
     # position backward & backlash compensation, relative
-    def test_TC_92114(self):
+    def test_TC_920114(self):
         positionAndBacklash(
-            self, 92114, -myBDST, motorRMOD_A, use_rel, self.myPOShig, self.myPOSlow
+            self, 920114, -myBDST, motorRMOD_A, use_rel, self.myPOShig, self.myPOSlow
         )
 
     # position backward & backlash compensation, relative
-    def test_TC_92124(self):
+    def test_TC_920124(self):
         positionAndBacklash(
-            self, 92124, -myBDST, motorRMOD_G, use_rel, self.myPOShig, self.myPOSlow
+            self, 920124, -myBDST, motorRMOD_G, use_rel, self.myPOShig, self.myPOSlow
         )
 
     def teardown_class(self):
