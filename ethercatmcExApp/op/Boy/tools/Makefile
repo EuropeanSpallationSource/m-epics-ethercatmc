@@ -19,6 +19,7 @@ GNERATEDOPIS = \
   ../motor-4-ptp.opi \
   ../motor-4-ecmc.opi \
   ../motor-5-pils.opi \
+  ../motor-6-hxpd.opi \
   ../motor-6-pils.opi  \
   ../motor-4x4.opi \
   ../motor-4x4-temp.opi \
@@ -243,6 +244,9 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 
 ../motor-5-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 5 x 1
+
+../motor-6-hxpd.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	./genMotorShutter.sh $@ hxpd 6 x 1
 
 ../motor-6-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 6 x 1

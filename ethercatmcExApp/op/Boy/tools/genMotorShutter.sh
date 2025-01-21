@@ -13,6 +13,7 @@ TEMPSENSORHIGHT=36
 EXT=opi
 
 HAS_ECMC=""
+HAS_HXPD=""
 HAS_PIEZO=""
 HAS_PILS=""
 HAS_PTP=""
@@ -22,7 +23,7 @@ y0=16
 export y0 WIDTH MOTORHIGHT TEMPSENSORHIGHT
 
 genMatrix() {
-  echo genMatrix "$@"
+  echo $0::genMatrix "$@"
   numparameaten=0
   cntx=0
   cnty=0
@@ -150,6 +151,11 @@ elif test "$1" = "ecmc"; then
   shift
   HAS_ECMC=y
   export HAS_ECMC
+elif test "$1" = "hxpd"; then
+  shift
+  OPIMID_MOT_SHT=motorx-hxpd.mid
+  HAS_HXPD=y
+  export HAS_HXPD
 fi &&
   if test "$1" = "ptp"; then
     #shift keep it for genMatrix below
@@ -162,6 +168,9 @@ fi &&
     cat plcName.mid >>/tmp/$$ &&
       cat plcHealthStatus.mid >>/tmp/$$ &&
       cat plcIPADDR_PORT.mid >>/tmp/$$
+  fi &&
+  if test "$HAS_HXPD" = "y"; then
+    cat hxpd_status_err_desc.mid >>/tmp/$$
   fi &&
   if test "$HAS_PTP" != ""; then
     cmd=$(echo ./shiftopi.py --shiftx 0 --shifty 16 --shiftm 0)
@@ -192,6 +201,12 @@ fi &&
     touch $FILE &&
       chmod +w $FILE &&
       sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-piezo.opi!" </tmp/$$ >$FILE &&
+      rm /tmp/$$ &&
+      chmod -w $FILE
+  elif test "$HAS_HXPD" != ""; then
+    touch $FILE &&
+      chmod +w $FILE &&
+      sed -e "s!ethercatmcaxisExpert-hxpd.opi!ethercatmcaxisExpert.opi!" </tmp/$$ >$FILE &&
       rm /tmp/$$ &&
       chmod -w $FILE
   elif test "$HAS_PILS" = ""; then
