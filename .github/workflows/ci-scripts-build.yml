@@ -29,6 +29,7 @@ jobs:
       SET:  ${{ matrix.set }}
       EXTRA: ${{ matrix.extra }}
       TEST: ${{ matrix.test }}
+      APT:  libtirpc-dev
     strategy:
       fail-fast: false
       matrix:
@@ -43,7 +44,7 @@ jobs:
             checkws: true
             name: "3.15 oldest static"
 
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             cmp: gcc
             configuration: default
             base: "7.0"
@@ -51,17 +52,25 @@ jobs:
             runpytests: true
             name: "7.0 latest pytest"
 
+          - os: ubuntu-24.04
+            cmp: gcc
+            configuration: static
+            base: "3.15"
+            set: latestset
+            checkws: true
+            name: "3.15 u2404 static"
+
     steps:
     - name: Get Date
       id: get-week
       run: |
         echo "::set-output name=week::$(/bin/date -u "+%U")"
       shell: bash
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
     - name: Cache Dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.cache
         key: ${{ matrix.base }}/${{ matrix.set }}/${{ matrix.os }}/${{ matrix.cmp }}/${{ matrix.configuration }}/${{ matrix.extra }}/-${{ steps.get-week.outputs.week }}

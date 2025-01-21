@@ -111,7 +111,7 @@ export MYVIRTUALENV
 
 # There must be a better way to do this
 # shellcheck disable=SC2154
-if test "$ImageOS" = ubuntu20; then
+if test "$ImageOS" = ubuntu20 || test "$ImageOS" = ubuntu22; then
   ./doRunTests.sh "$@"
   exit
 fi
