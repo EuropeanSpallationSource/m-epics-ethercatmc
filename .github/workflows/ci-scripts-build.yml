@@ -11,7 +11,9 @@ name: ethercatmc
 on:
   push:
     paths-ignore:
-      - .appveyor.yml
+      - '.appveyor.yml'
+      - 'test/pythonscripts/**'
+      - 'ethercatmcExApp/op/**'
   pull_request:
 
 env:
