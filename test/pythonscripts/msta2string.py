@@ -172,6 +172,7 @@ def handle_ioclog_mr_line(match_msta_ioclog_mr):
     else:
         print(f"{pfx}{loginfo1}{pvname}{loginfo2}{loginfo3}")
     last_msta_per_pv[pvname] = msta_val_int
+    sys.stdout.flush()
 
 
 def handle_ioclog_msta_line(match_msta_ioclog_msta):
@@ -186,6 +187,7 @@ def handle_ioclog_msta_line(match_msta_ioclog_msta):
     msta_val_int = int(msta_val_hex, 16)
     msta_val_str = get_msta_text_actual(msta_val_int)
     print(f"I:{loginfo1}{msta_equals}{msta_val_hex} ({msta_val_str}) {loginfo2}")
+    sys.stdout.flush()
 
 
 def handle_camonitor_line(match_msta_camonitor):
@@ -206,6 +208,7 @@ def handle_camonitor_line(match_msta_camonitor):
         msta_delta = get_msta_text_delta(last_msta_int, msta_val_int)
         print(f"O:{pvname:30s} {time_date} 0x{msta_val_int:04x} ({msta_delta}){rest}")
     last_msta_per_pv[pvname] = msta_val_int
+    sys.stdout.flush()
 
 
 def main(argv=None):
