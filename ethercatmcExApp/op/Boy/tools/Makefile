@@ -59,13 +59,13 @@ DEPENDENCIES_FOR_MOTORX_PIEZO_OPI = \
 
 DEPENDENCIES_FOR_MOTORX_HXPD_OPI = \
 	m-motor.mid \
-	m-problembar.mid \
+	m-alarm-sevr.mid \
 	m-homf.mid \
 
 
 DEPENDENCIES_FOR_MOTORX_PILS_OPI = \
 	m-motor.mid \
-	m-problembar.mid \
+	m-alarm-sevr.mid \
 	m-errrst.mid \
 	m-inhibit.mid \
 	m-msgtxt.mid \
