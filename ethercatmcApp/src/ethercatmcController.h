@@ -282,6 +282,8 @@ class epicsShareClass ethercatmcController : public asynMotorController {
 #define PARAM_IF_IDX_FIRST_FUNCTION 128
 #define PARAM_IF_IDX_FIRST_CUSTOM_PARA 192
 #define PARAM_IF_IDX_LAST_CUSTOM_PARA 223
+#define PARAM_IF_NUM_CUSTOM_PARAS \
+  (1 + PARAM_IF_IDX_LAST_CUSTOM_PARA - PARAM_IF_IDX_FIRST_CUSTOM_PARA)
 
 /* Implementation defined, floating point */
 #define PARAM_IDX_USR_MIN_EN_FLOAT 218

@@ -548,12 +548,13 @@ asynStatus ethercatmcController::indexerReadAxisParametersV2(
               pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex] = 8;
               pAxis->drvlocal.clean.functionFromParamIndex[paramIndex] =
                   function;
-              memcpy(
-                  &pAxis->drvlocal.clean.customParaName[paramIndexCustom],
-                  customParaName,
-                  sizeof(
-                      pAxis->drvlocal.clean.customParaName[paramIndexCustom]) -
-                      1);
+              if (paramIndexCustom < PARAM_IF_NUM_CUSTOM_PARAS) {
+                char *pDst = &(
+                    pAxis->drvlocal.clean.customParaNames[paramIndexCustom][0]);
+                size_t dstLen =
+                    sizeof(pAxis->drvlocal.clean.customParaNames[0]) - 1;
+                strncpy(pDst, customParaName, dstLen);
+              }
             }
           }
         }
