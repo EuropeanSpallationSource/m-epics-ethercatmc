@@ -10,9 +10,21 @@ cat ethercatmcaxisConfig.start ethercatmcaxisConfig-pils.mid >/tmp/$$ &&
 PARAM="$1"
 while test "$PARAM" != ""; do
   cmd=$(echo ./shiftopi.py --shifty $y)
-  echo $0: cmd=$cmd
-  eval $cmd <ethercatmcaxisConfigCustomPara.mid |
-    sed -e "s!CfgXXYYZZ!$PARAM!" >>/tmp/$$
+  echo $0: PARAM=$PARAM cmd=$cmd
+  case $PARAM in
+    CfgMoveCurrent | CfgIdleCurrent)
+      eval $cmd <ethercatmcaxisConfigCustomPara.mid |
+        sed -e "s!CfgXXYYZZ!$PARAM!" >>/tmp/$$
+      ;;
+    para[12]*)
+      eval $cmd <ethercatmcaxisConfigParaDesc.mid |
+        sed -e "s!PARAXXYYZZ!$PARAM!" >>/tmp/$$
+      ;;
+    *)
+      echo >&2 "Not supported: $PARAM"
+      exit 1
+      ;;
+  esac
   shift
   PARAM="$1"
   y=$(($y + 20))

@@ -555,6 +555,35 @@ asynStatus ethercatmcController::indexerReadAxisParametersV2(
                     sizeof(pAxis->drvlocal.clean.customParaNames[0]) - 1;
                 strncpy(pDst, customParaName, dstLen);
               }
+              if (paramIndex <= 210) {
+                /* real custom parameter
+                   TODO: check for known names instead */
+                char asynParaName[34];
+                memset(asynParaName, 0, sizeof(asynParaName));
+                snprintf(&asynParaName[0], sizeof(asynParaName) - 1,
+                         "para%d-val", paramIndex);
+                status = ethercatmcCreateParam(asynParaName, asynParamFloat64,
+                                               &function);
+                if (status == asynSuccess) {
+                  pAxis->drvlocal.clean.functionFromParamIndex[paramIndex] =
+                      function;
+                }
+                memset(asynParaName, 0, sizeof(asynParaName));
+                snprintf(&asynParaName[0], sizeof(asynParaName) - 1,
+                         "para%d-name", paramIndex);
+                status = ethercatmcCreateParam(asynParaName, asynParamOctet,
+                                               &function);
+                asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                          "%s%s(%u) created function=%d "
+                          "paramIndex=%d asynParaName='%s' "
+                          "asynParaNamestatus=%s (%d)\n",
+                          modNamEMC, functionName, axisNo, function, paramIndex,
+                          asynParaName, ethercatmcstrStatus(status),
+                          (int)status);
+                if (status == asynSuccess) {
+                  setStringParam(axisNo, function, customParaName);
+                }
+              }
             }
           }
         }
