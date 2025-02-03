@@ -138,7 +138,7 @@ const char *ethercatmcController::plcParamIndexTxtFromParamIndex(
             unsigned paramIndexCustom =
                 paramIndex - PARAM_IF_IDX_FIRST_CUSTOM_PARA;
             return (const char *)&pAxis->drvlocal.clean
-                .customParaName[paramIndexCustom];
+                .customParaNames[paramIndexCustom];
           }
         }
       }
@@ -157,7 +157,7 @@ int paramIndexIsIntegerV2(unsigned paramIndex) {
     /*
        Parameters 192 .. 194 had been defined as integers
        some time ago. Keep this as legacy.
-       See customParaName in ethercatmcIndexerV2.cpp
+       See customParaNames in ethercatmcIndexerV2.cpp
     */
     return 1;
   } else {
