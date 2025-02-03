@@ -104,7 +104,7 @@ epicsEnvSet("ASYNPARAMNAME", "CfgTimeCompensationModeEncoder")
 epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
 epicsEnvSet("PREC", 0)
 epicsEnvSet("EGU", "0=OFF 1=Vel 2=Vel/Acc")
-< ethercatmcAnalogOutputReadback.iocsh
+#####< ethercatmcAnalogOutputReadback.iocsh
 
 #####################################################
 # Additional Encoder Delay, Axis 1
@@ -115,7 +115,7 @@ epicsEnvSet("ASYNPARAMNAME", "CfgAdditionalEncoderDelay")
 epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
 epicsEnvSet("PREC", 0)
 epicsEnvSet("EGU", "ns")
-< ethercatmcAnalogOutputReadback.iocsh
+#####< ethercatmcAnalogOutputReadback.iocsh
 
 #####################################################
 # Maximal Current Axis 1
@@ -138,6 +138,29 @@ epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
 epicsEnvSet("PREC", 0)
 epicsEnvSet("EGU", "mA")
 < ethercatmcAnalogOutputReadback.iocsh
+
+#####################################################
+# Custom parameter 195  Axis 1
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1")
+epicsEnvSet("R", "-")
+epicsEnvSet("AXIS_NO", "1")
+epicsEnvSet("PANO", "195")
+< ethercatmcConfigParaDesc.iocsh
+
+# Custom parameter 196  Axis 1
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1")
+epicsEnvSet("R", "-")
+epicsEnvSet("AXIS_NO", "1")
+epicsEnvSet("PANO", "196")
+< ethercatmcConfigParaDesc.iocsh
+
+# Custom parameter 197  Axis 1
+epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1")
+epicsEnvSet("R", "-")
+epicsEnvSet("AXIS_NO", "1")
+epicsEnvSet("PANO", "197")
+< ethercatmcConfigParaDesc.iocsh
+
 
 
 #

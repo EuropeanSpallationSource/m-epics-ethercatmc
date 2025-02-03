@@ -82,6 +82,7 @@ DEPENDENCIES_FOR_CONFIG_PILS_OPI = \
         ethercatmcaxisConfig.start \
         ethercatmcaxisConfig-pils.mid \
         ethercatmcaxisConfigCustomPara.mid \
+        ethercatmcaxisConfigParaDesc.mid \
         ethercatmcaxisConfig.end
 
 
@@ -291,7 +292,7 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 	./genAxisConfigCutomPara.sh $@
 
 ../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
-	./genAxisConfigCutomPara.sh $@ CfgMoveCurrent CfgIdleCurrent CfgTimCompModEncoder CfgAddEncoderDelay
+	./genAxisConfigCutomPara.sh $@ CfgMoveCurrent CfgIdleCurrent para195 para196 para197
 
 #ethercatmcaxisConfig-pils.opi
 #ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi
