@@ -3,6 +3,7 @@ GNERATEDOPIS = \
   ./e-cnen.mid \
   ./e-foff.mid \
   ./e-homf-homr.mid \
+  ./motorx-hxpd.mid \
   ./motorx-pils.mid \
   ../motor-0-ptp.opi \
   ../motor-1.opi \
@@ -56,8 +57,17 @@ DEPENDENCIES_FOR_MOTORX_PIEZO_OPI = \
 	m-msgtxt.mid \
 
 
+DEPENDENCIES_FOR_MOTORX_HXPD_OPI = \
+	m-motor.mid \
+	m-alarm-sevr.mid \
+        m-slip-problem-not-homed-poweroff.mid \
+	m-homf.mid \
+
+
 DEPENDENCIES_FOR_MOTORX_PILS_OPI = \
 	m-motor.mid \
+	m-alarm-sevr.mid \
+        m-slip-problem-not-homed-poweroff.mid \
 	m-errrst.mid \
 	m-inhibit.mid \
 	m-msgtxt.mid \
@@ -80,6 +90,7 @@ DEPENDENCIES_FOR_MOTOR_OPI = Makefile
 DEPENDENCIES_FOR_MOTOR_OPI += genMotorShutter.sh
 DEPENDENCIES_FOR_MOTOR_OPI += shiftopi.py
 DEPENDENCIES_FOR_MOTOR_OPI += motorx.start
+DEPENDENCIES_FOR_MOTOR_OPI += motorx-hxpd.mid
 DEPENDENCIES_FOR_MOTOR_OPI += motorx-pils.mid
 DEPENDENCIES_FOR_MOTOR_OPI += m-egu-rbv.mid
 DEPENDENCIES_FOR_MOTOR_OPI += m-temp-rbv.mid
@@ -195,6 +206,10 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 ./motorx-piezo.mid: $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) Makefile
 	echo $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) '>$@'
 	cat $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) >$@
+
+./motorx-hxpd.mid: $(DEPENDENCIES_FOR_MOTORX_HXPD_OPI) Makefile
+	echo $(DEPENDENCIES_FOR_MOTORX_HXPD_OPI) '>$@'
+	cat $(DEPENDENCIES_FOR_MOTORX_HXPD_OPI) >$@
 
 ./motorx-pils.mid: $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) Makefile
 	echo $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) '>$@'
