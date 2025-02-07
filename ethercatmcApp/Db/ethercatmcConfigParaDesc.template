@@ -1,0 +1,22 @@
+#
+# Custom parameters.
+# The MCU gives us a record to work with
+# and another record for the name/description of the parameter
+#
+
+record(stringin, "$(P)$(R)para$(PANO)-name") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))para$(PANO)-name")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)para$(PANO)-val")
+{
+    field(DTYP, "asynFloat64")
+    field(DESC, "Custom para $(PANO)")
+    field(PREC,"$(PREC=3)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))para$(PANO)-val")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+

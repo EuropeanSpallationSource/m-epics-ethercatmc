@@ -1,0 +1,4 @@
+ethercatmcCreateAsynParam $(MOTOR_PORT) para$(PANO)-val      Float64
+ethercatmcCreateAsynParam $(MOTOR_PORT) para$(PANO)-name     Octet
+
+dbLoadRecords("ethercatmcConfigParaDesc.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO), PANO=$(PANO)")
