@@ -1,7 +1,7 @@
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>motor-1-pils-ptp-Max-Red-Current-TimeEncoder.opi</path>
+        <path>motor-1-pils-ptp-Max-Red-Current-para195-197.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <PREFIX>LabS-MCAG:MC-MCU-06:</PREFIX>

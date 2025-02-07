@@ -10,7 +10,7 @@ GNERATEDOPIS = \
   ../motor-1-piezo.opi \
   ../motor-1-pils.opi \
   ../motor-1-ptp.opi \
-  ../motor-1-pils-ptp-Max-Red-Current-TimeEncoder.opi \
+  ../motor-1-pils-ptp-Max-Red-Current-para195-197.opi \
   ../motor-2.opi \
   ../motor-2-piezo.opi \
   ../motor-2-pils.opi \
@@ -30,13 +30,13 @@ GNERATEDOPIS = \
   ../motor-ymir-mcs2-pils.opi \
   ../ethercatmcaxisConfig.opi \
   ../ethercatmcaxisConfig-pils.opi \
-  ../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi \
+  ../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-para195-197.opi \
   ../ethercatmcaxisExpert.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
   ../ethercatmcaxisExpert-piezo.opi \
   ../ethercatmcaxisExpert-pils.opi \
   ../ethercatmcaxisExpert-pils-ptp.opi \
-  ../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-TimeEncoder.opi \
+  ../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-para195-197.opi \
   ../ethercatmcPTPErrBits.opi \
   ../ethercatmcShutter.opi \
   ../ethercatmcStatusWord1802.opi \
@@ -231,8 +231,8 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 ../motor-1-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils ptp 1 x 1
 
-../motor-1-pils-ptp-Max-Red-Current-TimeEncoder.opi: ../motor-1-ptp.opi
-	sed -e 's/ethercatmcaxisExpert-pils-ptp/ethercatmcaxisExpert-pils-ptp-Max-Red-Current-TimeEncoder/' < ../motor-1-ptp.opi >$@
+../motor-1-pils-ptp-Max-Red-Current-para195-197.opi: ../motor-1-ptp.opi
+	sed -e 's/ethercatmcaxisExpert-pils-ptp/ethercatmcaxisExpert-pils-ptp-Max-Red-Current-para195-197/' < ../motor-1-ptp.opi >$@
 
 ../motor-2.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 2 x 1
@@ -291,14 +291,8 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 ../ethercatmcaxisConfig-pils.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
 	./genAxisConfigCutomPara.sh $@
 
-../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
+../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-para195-197.opi: $(DEPENDENCIES_FOR_CONFIG_PILS_OPI) Makefile genAxisConfigCutomPara.sh
 	./genAxisConfigCutomPara.sh $@ CfgMoveCurrent CfgIdleCurrent para195 para196 para197
-
-#ethercatmcaxisConfig-pils.opi
-#ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi
-
-#../ethercatmcaxisConfig-ecmc.opi \
-
 
 # Generate ethercatmcaxisExpert*.opi out of
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
@@ -317,8 +311,8 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 ../ethercatmcaxisExpert-pils-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert pils ptp $(AUXBITS_EXPERT)
 
-../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-TimeEncoder.opi: ../ethercatmcaxisExpert-pils-ptp.opi
-	sed -e 's/ethercatmcaxisConfig-pils.opi/ethercatmcaxisConfig-pils-ptp-Max-Red-Current-TimeEncoder.opi/' < ../ethercatmcaxisExpert-pils-ptp.opi >$@
+../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-para195-197.opi: ../ethercatmcaxisExpert-pils-ptp.opi
+	sed -e 's/ethercatmcaxisConfig-pils.opi/ethercatmcaxisConfig-pils-ptp-Max-Red-Current-para195-197.opi/' < ../ethercatmcaxisExpert-pils-ptp.opi >$@
 
 # Generate ethercatmcShutter*.opi out of
 #   ethercatmcShutter.mid and ethercatmcShutter.end
