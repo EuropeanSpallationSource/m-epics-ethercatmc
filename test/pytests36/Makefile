@@ -28,6 +28,7 @@ SIMULATOR-TWO-CA = \
 
 RECORD-CA = \
   100_Record-HOMF.log-ca-m1\
+  101_Record-VAL-HOMF-VAL.log-ca-m1\
   121_Record-JOGF_DIR_DLY_HLM.log-ca-m1\
   131_Record-JOGR_DIR_DLY_LLM.log-ca-m1\
   140_Record-VAL_VMAX.log-ca-m1\
@@ -69,6 +70,7 @@ SIMULATOR-TWO-PVA = \
 
 RECORD-PVA = \
   100_Record-HOMF.log-pva-m1\
+  101_Record-VAL-HOMF-VAL.log-pva-m1\
   121_Record-JOGF_DIR_DLY_HLM.log-pva-m1\
   131_Record-JOGR_DIR_DLY_LLM.log-pva-m1\
   140_Record-VAL_VMAX.log-pva-m1\
