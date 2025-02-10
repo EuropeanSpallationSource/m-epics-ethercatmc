@@ -190,6 +190,20 @@ class AxisMr:
         rval = dval / mres
         return rval
 
+    def calcHomeTimeOut(self, tc_no):
+        range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
+        hvel = float(self.axisCom.get(".HVEL"))
+        accl = self.axisCom.get(".ACCL")
+        # Calculate the timeout, based on the driving range
+        if range_postion > 0 and hvel > 0:
+            timeout = 1 + 2 * range_postion / hvel + 2 * accl
+        else:
+            timeout = 180
+        print(
+            f"tc_no={tc_no} calcHomeTimeOut range_postion={range_postion} hvel={hvel} timeout={timeout:.2f}"
+        )
+        return timeout
+
     def calcTimeOut(self, destination, velocity):
         rbv = self.axisCom.get(".RBV", use_monitor=False)
         accl = self.axisCom.get(".ACCL", use_monitor=False)
