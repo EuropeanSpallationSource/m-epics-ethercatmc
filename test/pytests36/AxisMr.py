@@ -295,6 +295,8 @@ class AxisMr:
             ret = ret + "LOAD_P "
         if mip & self.MIP_BIT_MOVE_BL:
             ret = ret + "MOVE_BL "
+        if mip & self.MIP_BIT_STOP:
+            ret = ret + "STOP "
         if mip & self.MIP_BIT_DELAY_REQ:
             ret = ret + "DELAY_REQ "
         if mip & self.MIP_BIT_DELAY_ACK:
@@ -307,7 +309,7 @@ class AxisMr:
             ret = ret + "JOG_BL2 "
         if mip & self.MIP_BIT_EXTERNAL:
             ret = ret + "EXTERNAL "
-        return ret
+        return ret.rstrip()
 
     def getMSTAtext(self, msta):
         ret = ""
@@ -359,7 +361,7 @@ class AxisMr:
             ret = ret + "Don"
         else:
             ret = ret + "..."
-        return ret
+        return ret.rstrip()
 
     def initializeMotorRecordOneField(self, tc_no, field_name, value):
         oldVal = self.axisCom.get(field_name)
