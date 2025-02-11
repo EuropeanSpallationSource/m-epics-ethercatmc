@@ -210,6 +210,11 @@ def get_msta_text_delta(old_msta, new_msta):
     return ret
 
 
+# Upstream motor
+# ../motorRecord.cc:1354 motor has stopped pp=1 mip=0x8
+RE_MATCH_MIP_GENERIC_MR = re.compile(r"(.*)(\s+mip=)(0[xX][0-9a-fA-F]*)(.*)$")
+
+
 # 2024/09/24 17:16:30.491 [motorRecord.cc:1787 LabS-MCAG:MC-MCU-10:m1 01] motor is stopped dval=0.000000 drbv=0.330000 pp=1 udf=0 stat=7 stop=0 pmr->spmg=GO mip=0x8(HOMF(Hf)) msta=0xb05
 RE_MATCH_MSTA_IOCLOG_MR = re.compile(
     r"(.*motorRecord.cc:\d+\s+)(\S+)(.*)(msta=0x)([0-9a-fA-F]*)(.*)$"
@@ -304,6 +309,20 @@ def handle_camonitor_msta_line(match_msta_camonitor):
     sys.stdout.flush()
 
 
+def handle_mip_generic_line(match_mip_generic):
+    gidx = 1
+    start = match_mip_generic.group(gidx)
+    gidx = gidx + 1
+    ws_mip_equals = match_mip_generic.group(gidx)
+    gidx = gidx + 1
+    mip_val_int = int(match_mip_generic.group(gidx), 16)
+    gidx = gidx + 1
+    rest = match_mip_generic.group(gidx)
+    mip_str = get_mip_text_actual(mip_val_int)
+    print(f"m:{start}{ws_mip_equals} 0x{mip_val_int:04x} ({mip_str}){rest}")
+    sys.stdout.flush()
+
+
 def handle_camonitor_mip_line(match_mip_camonitor):
     gidx = 1
     pvname = match_mip_camonitor.group(gidx)
@@ -343,6 +362,11 @@ def main(argv=None):
         match_mip_camonitor = RE_MATCH_MIP_CAMONITOR_DATE.match(line)
         if match_mip_camonitor is not None:
             handle_camonitor_mip_line(match_mip_camonitor)
+            continue
+        # Something with mip=0x. Should be a last catch
+        match_mip_generic = RE_MATCH_MIP_GENERIC_MR.match(line)
+        if match_mip_generic is not None:
+            handle_mip_generic_line(match_mip_generic)
             continue
         print(f"L:{line}")
         sys.stdout.flush()
