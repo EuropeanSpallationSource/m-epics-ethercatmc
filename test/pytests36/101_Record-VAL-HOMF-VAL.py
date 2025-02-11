@@ -79,12 +79,30 @@ class Test(unittest.TestCase):
         rbv = float(axisCom.get(".RBV"))
         hlm = float(axisCom.get(".HLM"))
         llm = float(axisCom.get(".LLM"))
-        old_velo = float(axisCom.get(".VELO"))
-        if old_velo <= 0.0:
-            testPassed = False
+        if llm >= hlm:
+            off = float(axisCom.get(".OFF"))
+            dir = float(axisCom.get(".DIR"))
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} old_velo={old_velo:.2f} testPassed={testPassed}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} off={off:.2f} dir={dir}"
             )
+            if off == 0.0 and dir == 0:
+                try:
+                    lll = float(axisCom.get("-CfgDLLM-RB"))
+                    hhh = float(axisCom.get("-CfgDHLM-RB"))
+                    llm = lll
+                    hlm = hhh
+                except:  # noqa: E722
+                    print(
+                        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} can not get soft limits"
+                    )
+                    testPassed = False
+        if testPassed:
+            old_velo = float(axisCom.get(".VELO"))
+            if old_velo <= 0.0:
+                testPassed = False
+                print(
+                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} old_velo={old_velo:.2f} testPassed={testPassed}"
+                )
         if testPassed:
             # Figure out the soft limit position far away
             # We will never go there
