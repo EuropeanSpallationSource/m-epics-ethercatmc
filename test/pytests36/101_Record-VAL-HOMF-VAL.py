@@ -66,8 +66,8 @@ class Test(unittest.TestCase):
             self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
         assert testPassed
 
-    # Move the  motor by wrting to the .VAL field,
-    # home while moving, change .VAL field again
+    # Move the motor by writing to the .VAL field,
+    # Home while moving, change .VAL field again
     def test_TC_10101(self):
         axisCom = self.axisCom
         axisMr = self.axisMr
@@ -124,7 +124,7 @@ class Test(unittest.TestCase):
                 velo = old_velo
 
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} hlm={hlm:.2f}llm={llm:.2f} rbv={rbv:.2f} pos_far_away={pos_far_away:.2f}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} {tc_no} hlm={hlm:.2f} llm={llm:.2f} rbv={rbv:.2f} pos_far_away={pos_far_away:.2f}"
             )
             if llm >= hlm:
                 testPassed = False
