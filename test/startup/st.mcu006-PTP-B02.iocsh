@@ -94,29 +94,6 @@ epicsEnvSet("PREC", 3)
 epicsEnvSet("EGU", "mm")
 < ethercatmcAnalogInput.iocsh
 
-
-#####################################################
-# Time Compensation Mode Encoder, Axis 1
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "CfgTimCompModEncoder")
-epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "CfgTimeCompensationModeEncoder")
-epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC", 0)
-epicsEnvSet("EGU", "0=OFF 1=Vel 2=Vel/Acc")
-#####< ethercatmcAnalogOutputReadback.iocsh
-
-#####################################################
-# Additional Encoder Delay, Axis 1
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "CfgAddEncoderDelay")
-epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "CfgAdditionalEncoderDelay")
-epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC", 0)
-epicsEnvSet("EGU", "ns")
-#####< ethercatmcAnalogOutputReadback.iocsh
-
 #####################################################
 # Maximal Current Axis 1
 epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
