@@ -1377,6 +1377,73 @@ $(pv_value)</tooltip>
     <x>74</x>
     <gradient>false</gradient>
   </widget>
+<widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="0" green="0" blue="0" />
+    </line_color>
+    <wuid>39872d87:13e14015f61:d0e</wuid>
+    <bg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </bg_gradient_color>
+    <scripts />
+    <height>3</height>
+    <anti_alias>true</anti_alias>
+    <name>Rectangle</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color red="0" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color  red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Rectangle</widget_type>
+    <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </fg_gradient_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>25</width>
+    <line_style>0</line_style>
+    <border_style>0</border_style>
+    <rules>
+     <rule name="VisibilityProblem" prop_id="visible" out_exp="false">
+       <exp bool_exp="(pv0 &amp; 64) != 0">
+         <value>true</value>
+       </exp>
+       <exp bool_exp="(pv0 &amp; 64) == 0">
+         <value>false</value>
+       </exp>
+       <pv trig="true">$(P)$(M1).MSTA</pv>
+     </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
+    <border_color>
+      <color red="0" green="0" blue="0" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>112</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>6</x>
+    <gradient>false</gradient>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -1416,7 +1483,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -1441,7 +1508,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>6</x>
+    <x>31</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -1483,7 +1550,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -1508,7 +1575,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>40</x>
+    <x>56</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -1550,7 +1617,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -1575,7 +1642,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>74</x>
+    <x>81</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -2976,6 +3043,73 @@ $(pv_value)</tooltip>
     <x>194</x>
     <gradient>false</gradient>
   </widget>
+<widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="0" green="0" blue="0" />
+    </line_color>
+    <wuid>39872d87:13e14015f61:d0e</wuid>
+    <bg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </bg_gradient_color>
+    <scripts />
+    <height>3</height>
+    <anti_alias>true</anti_alias>
+    <name>Rectangle</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color red="0" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color  red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Rectangle</widget_type>
+    <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </fg_gradient_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>25</width>
+    <line_style>0</line_style>
+    <border_style>0</border_style>
+    <rules>
+     <rule name="VisibilityProblem" prop_id="visible" out_exp="false">
+       <exp bool_exp="(pv0 &amp; 64) != 0">
+         <value>true</value>
+       </exp>
+       <exp bool_exp="(pv0 &amp; 64) == 0">
+         <value>false</value>
+       </exp>
+       <pv trig="true">$(P)$(M2).MSTA</pv>
+     </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
+    <border_color>
+      <color red="0" green="0" blue="0" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>112</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>126</x>
+    <gradient>false</gradient>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -3015,7 +3149,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -3040,7 +3174,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>126</x>
+    <x>151</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -3082,7 +3216,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -3107,7 +3241,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>160</x>
+    <x>176</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -3149,7 +3283,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -3174,7 +3308,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>194</x>
+    <x>201</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -4575,6 +4709,73 @@ $(pv_value)</tooltip>
     <x>314</x>
     <gradient>false</gradient>
   </widget>
+<widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="0" green="0" blue="0" />
+    </line_color>
+    <wuid>39872d87:13e14015f61:d0e</wuid>
+    <bg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </bg_gradient_color>
+    <scripts />
+    <height>3</height>
+    <anti_alias>true</anti_alias>
+    <name>Rectangle</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color red="0" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color  red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Rectangle</widget_type>
+    <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </fg_gradient_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>25</width>
+    <line_style>0</line_style>
+    <border_style>0</border_style>
+    <rules>
+     <rule name="VisibilityProblem" prop_id="visible" out_exp="false">
+       <exp bool_exp="(pv0 &amp; 64) != 0">
+         <value>true</value>
+       </exp>
+       <exp bool_exp="(pv0 &amp; 64) == 0">
+         <value>false</value>
+       </exp>
+       <pv trig="true">$(P)$(M3).MSTA</pv>
+     </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
+    <border_color>
+      <color red="0" green="0" blue="0" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>112</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>246</x>
+    <gradient>false</gradient>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -4614,7 +4815,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -4639,7 +4840,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>246</x>
+    <x>271</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -4681,7 +4882,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -4706,7 +4907,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>280</x>
+    <x>296</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -4748,7 +4949,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -4773,7 +4974,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>314</x>
+    <x>321</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -6174,6 +6375,73 @@ $(pv_value)</tooltip>
     <x>434</x>
     <gradient>false</gradient>
   </widget>
+<widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="0" green="0" blue="0" />
+    </line_color>
+    <wuid>39872d87:13e14015f61:d0e</wuid>
+    <bg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </bg_gradient_color>
+    <scripts />
+    <height>3</height>
+    <anti_alias>true</anti_alias>
+    <name>Rectangle</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color red="0" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color  red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Rectangle</widget_type>
+    <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </fg_gradient_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>25</width>
+    <line_style>0</line_style>
+    <border_style>0</border_style>
+    <rules>
+     <rule name="VisibilityProblem" prop_id="visible" out_exp="false">
+       <exp bool_exp="(pv0 &amp; 64) != 0">
+         <value>true</value>
+       </exp>
+       <exp bool_exp="(pv0 &amp; 64) == 0">
+         <value>false</value>
+       </exp>
+       <pv trig="true">$(P)$(M4).MSTA</pv>
+     </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
+    <border_color>
+      <color red="0" green="0" blue="0" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>112</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>366</x>
+    <gradient>false</gradient>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -6213,7 +6481,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -6238,7 +6506,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>366</x>
+    <x>391</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -6280,7 +6548,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -6305,7 +6573,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>400</x>
+    <x>416</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -6347,7 +6615,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -6372,7 +6640,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>434</x>
+    <x>441</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -7773,6 +8041,73 @@ $(pv_value)</tooltip>
     <x>554</x>
     <gradient>false</gradient>
   </widget>
+<widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="0" green="0" blue="0" />
+    </line_color>
+    <wuid>39872d87:13e14015f61:d0e</wuid>
+    <bg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </bg_gradient_color>
+    <scripts />
+    <height>3</height>
+    <anti_alias>true</anti_alias>
+    <name>Rectangle</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color red="0" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color  red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Rectangle</widget_type>
+    <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </fg_gradient_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>25</width>
+    <line_style>0</line_style>
+    <border_style>0</border_style>
+    <rules>
+     <rule name="VisibilityProblem" prop_id="visible" out_exp="false">
+       <exp bool_exp="(pv0 &amp; 64) != 0">
+         <value>true</value>
+       </exp>
+       <exp bool_exp="(pv0 &amp; 64) == 0">
+         <value>false</value>
+       </exp>
+       <pv trig="true">$(P)$(M5).MSTA</pv>
+     </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
+    <border_color>
+      <color red="0" green="0" blue="0" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>112</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>486</x>
+    <gradient>false</gradient>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -7812,7 +8147,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -7837,7 +8172,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>486</x>
+    <x>511</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -7879,7 +8214,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -7904,7 +8239,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>520</x>
+    <x>536</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -7946,7 +8281,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -7971,7 +8306,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>554</x>
+    <x>561</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -9372,6 +9707,73 @@ $(pv_value)</tooltip>
     <x>674</x>
     <gradient>false</gradient>
   </widget>
+<widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <fill_level>100.0</fill_level>
+    <line_color>
+      <color red="0" green="0" blue="0" />
+    </line_color>
+    <wuid>39872d87:13e14015f61:d0e</wuid>
+    <bg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </bg_gradient_color>
+    <scripts />
+    <height>3</height>
+    <anti_alias>true</anti_alias>
+    <name>Rectangle</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <transparent>false</transparent>
+    <pv_name></pv_name>
+    <background_color>
+      <color red="0" green="0" blue="0" />
+    </background_color>
+    <foreground_color>
+      <color  red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Rectangle</widget_type>
+    <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="0" green="0" blue="0" />
+    </fg_gradient_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>25</width>
+    <line_style>0</line_style>
+    <border_style>0</border_style>
+    <rules>
+     <rule name="VisibilityProblem" prop_id="visible" out_exp="false">
+       <exp bool_exp="(pv0 &amp; 64) != 0">
+         <value>true</value>
+       </exp>
+       <exp bool_exp="(pv0 &amp; 64) == 0">
+         <value>false</value>
+       </exp>
+       <pv trig="true">$(P)$(M6).MSTA</pv>
+     </rule>
+    </rules>
+    <pv_value />
+    <border_width>1</border_width>
+    <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
+    <border_color>
+      <color red="0" green="0" blue="0" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>112</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>606</x>
+    <gradient>false</gradient>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
@@ -9411,7 +9813,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -9436,7 +9838,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>606</x>
+    <x>631</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -9478,7 +9880,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -9503,7 +9905,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>640</x>
+    <x>656</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -9545,7 +9947,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>34</width>
+    <width>25</width>
     <line_style>0</line_style>
     <border_style>0</border_style>
     <rules>
@@ -9570,7 +9972,7 @@ $(pv_value)</tooltip>
     <y>112</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>674</x>
+    <x>681</x>
     <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">

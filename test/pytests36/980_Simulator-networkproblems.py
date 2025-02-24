@@ -25,7 +25,7 @@ filnam = os.path.basename(__file__)[0:3]
 ###
 
 maxDelta = 0.5
-timeout = 3.0
+timeout = 5.0
 
 
 def lineno():

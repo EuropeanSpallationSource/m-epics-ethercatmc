@@ -190,6 +190,36 @@ class AxisMr:
         rval = dval / mres
         return rval
 
+    def calcHomeTimeOut(self, tc_no):
+        axisCom = self.axisCom
+        hlm = float(axisCom.get(".HLM"))
+        llm = float(axisCom.get(".LLM"))
+        if llm >= hlm:
+            # This code is specific to ethercatmc.
+            # However, this file is part of ethercatmc
+            try:
+                lll = float(axisCom.get("-CfgDLLM-RB"))
+                hhh = float(axisCom.get("-CfgDHLM-RB"))
+                llm = lll
+                hlm = hhh
+            except:  # noqa: E722
+                print(
+                    f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} calcHomeTimeOut {tc_no} can not get soft limits"
+                )
+
+        range_postion = hlm - llm
+        hvel = float(axisCom.get(".HVEL"))
+        accl = axisCom.get(".ACCL")
+        # Calculate the timeout, based on the driving range
+        if range_postion > 0 and hvel > 0:
+            timeout = 1 + 2 * range_postion / hvel + 2 * accl
+        else:
+            timeout = 180
+        print(
+            f"tc_no={tc_no} calcHomeTimeOut range_postion={range_postion} hvel={hvel} timeout={timeout:.2f}"
+        )
+        return timeout
+
     def calcTimeOut(self, destination, velocity):
         rbv = self.axisCom.get(".RBV", use_monitor=False)
         accl = self.axisCom.get(".ACCL", use_monitor=False)
@@ -295,6 +325,8 @@ class AxisMr:
             ret = ret + "LOAD_P "
         if mip & self.MIP_BIT_MOVE_BL:
             ret = ret + "MOVE_BL "
+        if mip & self.MIP_BIT_STOP:
+            ret = ret + "STOP "
         if mip & self.MIP_BIT_DELAY_REQ:
             ret = ret + "DELAY_REQ "
         if mip & self.MIP_BIT_DELAY_ACK:
@@ -307,7 +339,7 @@ class AxisMr:
             ret = ret + "JOG_BL2 "
         if mip & self.MIP_BIT_EXTERNAL:
             ret = ret + "EXTERNAL "
-        return ret
+        return ret.rstrip()
 
     def getMSTAtext(self, msta):
         ret = ""
@@ -359,7 +391,7 @@ class AxisMr:
             ret = ret + "Don"
         else:
             ret = ret + "..."
-        return ret
+        return ret.rstrip()
 
     def initializeMotorRecordOneField(self, tc_no, field_name, value):
         oldVal = self.axisCom.get(field_name)
@@ -767,18 +799,8 @@ class AxisMr:
         self.setCNENandWait(tc_no, 1)
         msta = int(self.axisCom.get(".MSTA"))
         if not (msta & self.MSTA_BIT_HOMED):
-            # Get values to be able calculate a timeout
-            range_postion = self.axisCom.get(".HLM") - self.axisCom.get(".LLM")
-            hvel = self.axisCom.get(".HVEL")
-            accl = self.axisCom.get(".ACCL")
+            time_to_wait = self.calcHomeTimeOut(tc_no)
             msta = int(self.axisCom.get(".MSTA"))
-
-            # Calculate the timeout, based on the driving range
-            if range_postion > 0 and hvel > 0:
-                time_to_wait = 1 + 2 * range_postion / hvel + 2 * accl
-            else:
-                time_to_wait = 180
-
             # If we are sitting on the High limit switch, use HOMR
             if msta & self.MSTA_BIT_PLUS_LS:
                 self.axisCom.put(".HOMR", 1)
