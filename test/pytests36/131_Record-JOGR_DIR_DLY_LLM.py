@@ -190,7 +190,7 @@ class Test(unittest.TestCase):
                 self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
             assert testPassed
 
-    # per10 UserPosition
+    # close-toLLM UserPosition
     def test_TC_1317(self):
         tc_no = "1317"
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
@@ -226,6 +226,7 @@ class Test(unittest.TestCase):
             mip2 = int(self.axisCom.get(".MIP"))
             self.axisCom.put(".DIR", saved_DIR)
             self.axisCom.put(".FOFF", saved_FOFF)
+            self.axisCom.put(".DLY", self.saved_DLY)
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} mip2={mip2:x}"
             )

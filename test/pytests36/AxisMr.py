@@ -608,8 +608,8 @@ class AxisMr:
             nearly_infinite = 999999.0
             soft_limit_pos = old_DHLM
             jog_start_pos = soft_limit_pos - jvel - margin
-            ls_to_be_activated = self.MSTA_BIT_PLUS_LS
-            ls_not_to_be_activated = self.MSTA_BIT_MINUS_LS
+            lsActivetedFieldName = ".HLS"
+            lsNotActiveFieldName = ".LLS"
             if movingMethod == "JOG":
                 movingFieldName = ".JOGF"
                 movingFieldValue = 1
@@ -620,8 +620,8 @@ class AxisMr:
             nearly_infinite = -999999.0
             soft_limit_pos = old_DLLM
             jog_start_pos = soft_limit_pos + jvel + margin
-            ls_to_be_activated = self.MSTA_BIT_MINUS_LS
-            ls_not_to_be_activated = self.MSTA_BIT_PLUS_LS
+            lsActivetedFieldName = ".LLS"
+            lsNotActiveFieldName = ".HLS"
             if movingMethod == "JOG":
                 movingFieldName = ".JOGR"
                 movingFieldValue = 1
@@ -686,6 +686,8 @@ class AxisMr:
         # Get values, check them later
         lvio = int(self.axisCom.get(".LVIO"))
         mstaE = int(self.axisCom.get(".MSTA"))
+        lsActivetedVal = int(self.axisCom.get(lsActivetedFieldName))
+        lsNotActiveVal = int(self.axisCom.get(lsNotActiveFieldName))
         # Go away from limit switch
         self.moveWait(tc_no, jog_start_pos)
         self.axisCom.put(".VELO", old_VELO)
@@ -709,13 +711,13 @@ class AxisMr:
             else:
                 passed = False
 
-        if (mstaE & ls_not_to_be_activated) != 0:
+        if (lsNotActiveVal) != 0:
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} wrong LS activated"
             )
             passed = False
 
-        if (mstaE & ls_to_be_activated) == 0:
+        if (lsActivetedVal) == 0:
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} LS was not activated"
             )

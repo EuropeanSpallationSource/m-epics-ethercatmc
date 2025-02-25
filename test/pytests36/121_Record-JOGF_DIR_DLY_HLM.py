@@ -31,14 +31,14 @@ class Test(unittest.TestCase):
     llm = axisCom.get(".LLM")
     jvel = axisCom.get(".JVEL")
 
-    margin = 1.1
+    margin = 2.1
     # motorRecord stops jogging 1 second before reaching HLM
     jog_start_pos = hlm - jvel - margin
 
     msta = int(axisCom.get(".MSTA"))
 
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm:f} hlm={hlm:f} jog_start_pos={jog_start_pos:f}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} llm={llm:.2f} hlm={hlm:.2f} jog_start_pos={jog_start_pos:.2f}"
     )
 
     # Make sure that motor is homed
@@ -55,11 +55,16 @@ class Test(unittest.TestCase):
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-            self.axisMr.moveWait(tc_no, self.jog_start_pos)
+            testPassed = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                f"{tc_no} postion={UserPosition:f} jog_start_pos={self.jog_start_pos:f}"
+                f"{tc_no} postion={UserPosition:.2f} jog_start_pos={self.jog_start_pos:.2f}"
             )
+            if testPassed:
+                self.axisCom.putDbgStrToLOG("passed " + str(tc_no), wait=True)
+            else:
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+            assert testPassed
 
     # High soft limit JOGF
     def test_TC_1213(self):
@@ -99,7 +104,6 @@ class Test(unittest.TestCase):
     def test_TC_1214(self):
         tc_no = "1214"
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
-
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
             testPassed = self.axisMr.moveWait(tc_no, self.jog_start_pos)
@@ -192,11 +196,16 @@ class Test(unittest.TestCase):
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
-            self.axisMr.moveWait(tc_no, self.jog_start_pos)
+            testPassed = self.axisMr.moveWait(tc_no, self.jog_start_pos)
             UserPosition = self.axisCom.get(".RBV", use_monitor=False)
             print(
-                f"{tc_no} postion={UserPosition:f} jog_start_pos={self.jog_start_pos:f}"
+                f"{tc_no} postion={UserPosition:.2f} jog_start_pos={self.jog_start_pos:.2f}"
             )
+            if testPassed:
+                self.axisCom.putDbgStrToLOG("passed " + str(tc_no), wait=True)
+            else:
+                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+            assert testPassed
 
     # High soft limit JOGR + DIR
     def test_TC_1218(self):
@@ -204,6 +213,8 @@ class Test(unittest.TestCase):
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         if self.msta & self.axisMr.MSTA_BIT_HOMED:
             print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}")
+            saved_DIR = self.axisCom.get(".DIR")
+            saved_FOFF = self.axisCom.get(".FOFF")
             self.axisCom.put(".FOFF", 1)
             self.axisCom.put(".DIR", 1)
             testPassed = self.axisMr.jogDirection(tc_no, 0)
@@ -213,6 +224,8 @@ class Test(unittest.TestCase):
             miss = int(self.axisCom.get(".MISS"))
             self.axisMr.waitForMipZero(tc_no, self.saved_DLY)
             mip2 = int(self.axisCom.get(".MIP"))
+            self.axisCom.put(".DIR", saved_DIR)
+            self.axisCom.put(".FOFF", saved_FOFF)
             self.axisCom.put(".DLY", self.saved_DLY)
             print(
                 f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} mip2={mip2:x}"
