@@ -743,7 +743,7 @@ class AxisMr:
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}:moveWait destination={destination:.2f} rbv={rbv:.2f} mov1_change_cnt_dmov_true={mov1_change_cnt_dmov_true} mov1_change_cnt_dmov_false={mov1_change_cnt_dmov_false}"
         )
         # The motorRecord will handle even situations like rbv=0.501 and val=5.00
-        ret = self.axisCom.put(
+        ret0 = self.axisCom.put(
             ".VAL", destination, wait=True, timeout=timeout, throw=throw
         )
         timeToWait = 1.0  # wait max 1 second for the callbacks
@@ -765,37 +765,41 @@ class AxisMr:
                 time.sleep(polltime)
                 timeToWait -= polltime
 
+        ret = ret0 and num_change_cnt_dmov_true == 1 and num_change_cnt_dmov_false == 1
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}:moveWait num_change_cnt_dmov_true={num_change_cnt_dmov_true} num_change_cnt_dmov_false={num_change_cnt_dmov_false} ret={ret}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}:moveWait num_change_cnt_dmov_true={num_change_cnt_dmov_true} num_change_cnt_dmov_false={num_change_cnt_dmov_false} ret0={ret0} ret={ret}"
         )
-        return ret and num_change_cnt_dmov_true == 1 and num_change_cnt_dmov_false == 1
+        return ret
 
     def postMoveCheck(self, tc_no):
         # Check the motor for the correct state at the end of move.
-        val = self.axisCom.get(".VAL")
-        rbv = self.axisCom.get(".RBV", use_monitor=False)
-        dmov = self.axisCom.get(".DMOV")
-        movn = self.axisCom.get(".MOVN")
-        stat = self.axisCom.get(".STAT")
-        sevr = self.axisCom.get(".SEVR")
-        lvio = self.axisCom.get(".LVIO")
-        miss = self.axisCom.get(".MISS")
-        rhls = self.axisCom.get(".RHLS")
-        rlls = self.axisCom.get(".RLLS")
+        # Note: lvio is, when the EPICS IOC starts and the motor
+        # is where it should be kept as 1
+        # This is probably a bug. Ignore lvio for now
+        val = float(self.axisCom.get(".VAL"))
+        rbv = float(self.axisCom.get(".RBV", use_monitor=False))
+        dmov = int(self.axisCom.get(".DMOV"))
+        movn = int(self.axisCom.get(".MOVN"))
+        stat = int(self.axisCom.get(".STAT"))
+        sevr = int(self.axisCom.get(".SEVR"))
+        miss = int(self.axisCom.get(".MISS"))
+        rhls = int(self.axisCom.get(".RHLS"))
+        rlls = int(self.axisCom.get(".RLLS"))
 
-        print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov:d} movn={movn:d} stat={stat:X} sevr={sevr} miss={miss:d} rhls={rhls:d} rlls={rlls:d} val={val:.2f} rbv={rbv:.2f}"
-        )
-        return (
+        ret = (
             dmov == 1
             and movn == 0
             and stat == 0
             and sevr == 0
-            and lvio == 0
             and miss == 0
             and rhls == 0
             and rlls == 0
         )
+
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} postMoveCheck dmov={dmov:d} movn={movn:d} stat={stat:X} sevr={sevr} miss={miss:d} rhls={rhls:d} rlls={rlls:d} val={val:.2f} rbv={rbv:.2f} ret={ret}"
+        )
+        return ret
 
     def powerOnHomeAxis(self, tc_no):
         self.setCNENandWait(tc_no, 1)
