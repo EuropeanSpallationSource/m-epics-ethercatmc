@@ -1,0 +1,28 @@
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)          UInt32Digital
+
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit0   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit1   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit2   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit3   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit4   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit5   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit6   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit7   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit8   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit9   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit10  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit11  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit12  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit13  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit14  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit15  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit16  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit17  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit18  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit19  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit20  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit21  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit22  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit23  Octet
+
+dbLoadRecords("ethercatmcCabinet.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")

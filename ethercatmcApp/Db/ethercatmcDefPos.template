@@ -6,19 +6,19 @@
 
 # This record contains an index to the list of positions for motor.
 # The multipositioner writes to the VAL field to select one.
-record(longout, "$(SYSPFX)$(AXIS_NAME)-DefPosSEL") {
+record(longout, "$(P)$(R)-DefPosSEL") {
   field(DESC, "Select defined motor position")
-  field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosSELCALC1")
+  field(FLNK, "$(P)$(R)-DefPosSELCALC1")
 }
 
 #
 # Range check of the index - must be 0..11
 #
-record(calcout, "$(SYSPFX)$(AXIS_NAME)-DefPosSELCALC1") {
-  field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosSELCALC2")
+record(calcout, "$(P)$(R)-DefPosSELCALC1") {
+  field(FLNK, "$(P)$(R)-DefPosSELCALC2")
   field(CALC, "(A>=0 && A<12)?1:0")
-  field(INPA, "$(SYSPFX)$(AXIS_NAME)-DefPosSEL.VAL")
-  field(OUT, "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.SELN PP")
+  field(INPA, "$(P)$(R)-DefPosSEL.VAL")
+  field(OUT, "$(P)$(R)-DefPosSEL1.SELN PP")
   field(OOPT, "When Non-zero")
   field(DOPT, "Use OCAL")
   field(OCAL, "A")
@@ -27,27 +27,27 @@ record(calcout, "$(SYSPFX)$(AXIS_NAME)-DefPosSELCALC1") {
 #
 # Set up .OMSL field
 #
-record(calcout, "$(SYSPFX)$(AXIS_NAME)-DefPosSELCALC2") {
-  field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosSetDOL_")
+record(calcout, "$(P)$(R)-DefPosSELCALC2") {
+  field(FLNK, "$(P)$(R)-DefPosSetDOL_")
   field(CALC, "(A>=0 && A<12)?1:0")
-  field(INPA, "$(SYSPFX)$(AXIS_NAME)-DefPosSEL")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME).OMSL")
+  field(INPA, "$(P)$(R)-DefPosSEL")
+  field(OUT,  "$(P)$(R).OMSL")
 }
 
 #
 # Set up .DOL field
 #
-record(stringout, "$(SYSPFX)$(AXIS_NAME)-DefPosSetDOL_") {
-  field(VAL, "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1")
-  field(OUT, "$(SYSPFX)$(AXIS_NAME).DOL CP")
+record(stringout, "$(P)$(R)-DefPosSetDOL_") {
+  field(VAL, "$(P)$(R)-DefPosSEL1")
+  field(OUT, "$(P)$(R).DOL CP")
 }
 
 #
 # The sel record itself, the heart of our business.
 #
-record(sel,     "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1") {
+record(sel,     "$(P)$(R)-DefPosSEL1") {
     field(DESC, "Predefined Positions")
-    field(FLNK, "$(SYSPFX)$(AXIS_NAME)")
+    field(FLNK, "$(P)$(R)")
     field(EGU,  "$(EGU)")
     field(PREC, "$(PREC)")
     field(SELM, "$(SELM=0)")
@@ -59,146 +59,146 @@ record(sel,     "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1") {
 #
 # Records to hold the value for the 12 positions
 #
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALA") {
+record(ao, "$(P)$(R)-DefPosVALA") {
   field(DESC, "First position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALA=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.A")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.A")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALB") {
+record(ao, "$(P)$(R)-DefPosVALB") {
   field(DESC, "Second position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALB=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.B")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.B")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALC") {
+record(ao, "$(P)$(R)-DefPosVALC") {
   field(DESC, "Third position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALC=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.C")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.C")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALD") {
+record(ao, "$(P)$(R)-DefPosVALD") {
   field(DESC, "Fourth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALD=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.D")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.D")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALE") {
+record(ao, "$(P)$(R)-DefPosVALE") {
   field(DESC, "Fifth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALE=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.E")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.E")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALF") {
+record(ao, "$(P)$(R)-DefPosVALF") {
   field(DESC, "Sixth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALF=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.F")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.F")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALG") {
+record(ao, "$(P)$(R)-DefPosVALG") {
   field(DESC, "Seventh position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALG=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.G")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.G")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALH") {
+record(ao, "$(P)$(R)-DefPosVALH") {
   field(DESC, "Eigth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALH=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.H")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.H")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALI") {
+record(ao, "$(P)$(R)-DefPosVALI") {
   field(DESC, "Ninth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALI=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.I")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.I")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALJ") {
+record(ao, "$(P)$(R)-DefPosVALJ") {
   field(DESC, "Tenth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALJ=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.J")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.J")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALK") {
+record(ao, "$(P)$(R)-DefPosVALK") {
   field(DESC, "Eleventh position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALK=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.K")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.K")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 
 
-record(ao, "$(SYSPFX)$(AXIS_NAME)-DefPosVALL") {
+record(ao, "$(P)$(R)-DefPosVALL") {
   field(DESC, "Twelth position")
   field(DTYP, "Soft Channel")
   field(VAL,  "$(VALL=0)")
-  field(OUT,  "$(SYSPFX)$(AXIS_NAME)-DefPosSEL1.L")
+  field(OUT,  "$(P)$(R)-DefPosSEL1.L")
   field(PINI, "YES")
   field(PREC, "$(PREC)")
   field(EGU,  "$(EGU)")
-  #field(FLNK, "$(SYSPFX)$(AXIS_NAME)-DefPosCALCSEL")
+  #field(FLNK, "$(P)$(R)-DefPosCALCSEL")
 }
 

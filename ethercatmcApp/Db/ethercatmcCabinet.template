@@ -1,0 +1,134 @@
+record(longin, "$(P)$(R)")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "Cabinet")
+    field(EGU,  "ErrorStatusBits")
+    field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)BitNam0") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit0")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam1") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit1")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam2") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit2")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam3") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit3")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam4") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit4")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam5") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit5")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam6") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit6")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam7") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit7")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam8") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit8")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam9") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit9")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam10") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit10")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam10") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit10")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam11") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit11")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam12") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit12")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam13") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit13")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam14") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit14")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam15") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit15")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam16") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit16")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam17") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit17")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam18") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit18")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam19") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit19")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam20") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit20")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam21") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit21")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam22") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit22")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)BitNam23") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit23")
+    field(SCAN, "I/O Intr")
+}

@@ -263,7 +263,7 @@ if test -r $INSTALLED_EPICS; then
 fi
 
 export VIRTUALENVDIR
-export CONDA_SYSPFX
+export CONDA_P
 
 if test -z "$PYEPICS_LIBCA"; then
   MYLIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH/libca.so

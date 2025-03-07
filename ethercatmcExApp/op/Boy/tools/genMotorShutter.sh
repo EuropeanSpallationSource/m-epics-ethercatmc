@@ -166,7 +166,7 @@ fi &&
   echo "Creating $FILE" &&
   if test "$HAS_PILS" = "y"; then
     cat plcName.mid >>/tmp/$$ &&
-      cat plcHealthStatus.mid >>/tmp/$$ &&
+      cat Cabinet.mid >>/tmp/$$ &&
       cat plcIPADDR_PORT.mid >>/tmp/$$
   fi &&
   if test "$HAS_HXPD" = "y"; then

@@ -4,9 +4,9 @@ epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
 epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
 epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
 epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=IOC:)")
-epicsEnvSet("MCUPFX",      "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m10)")
+epicsEnvSet("P",        "$(SM_P=IOC:)")
+epicsEnvSet("R",      "")
+epicsEnvSet("R",    "$(SM_R=m10)")
 epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=10)")
 epicsEnvSet("DESC",          "$(SM_DESC=motor10)")
 epicsEnvSet("EGU",           "$(SM_EGU=mm)")
@@ -22,8 +22,8 @@ epicsEnvSet("ECAXISFIELDINIT", ",DVAL=11")
 < ethercatmcController.iocsh
 ##< ethercatmcAxis.iocsh
 ethercatmcCreateAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
-dbLoadRecords("ethercatmc.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), R=$(AXIS_NAME)-, MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) $(ECAXISFIELDINIT)")
-dbLoadRecords("ethercatmcreadback.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), R=$(AXIS_NAME)-, MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) ")
+dbLoadRecords("ethercatmc.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) $(ECAXISFIELDINIT)")
+dbLoadRecords("ethercatmcreadback.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) ")
 
 
 

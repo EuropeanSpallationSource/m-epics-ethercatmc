@@ -1165,7 +1165,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam15.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit15.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1219,7 +1219,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam15</pv_name>
+    <pv_name>$(P)PTPErrNamBit15</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1230,7 +1230,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam15.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit15.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1301,7 +1301,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam14.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit14.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1355,7 +1355,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam14</pv_name>
+    <pv_name>$(P)PTPErrNamBit14</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1366,7 +1366,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam14.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit14.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1437,7 +1437,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam13.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit13.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1491,7 +1491,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam13</pv_name>
+    <pv_name>$(P)PTPErrNamBit13</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1502,7 +1502,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam13.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit13.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1573,7 +1573,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam12.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit12.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1627,7 +1627,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam12</pv_name>
+    <pv_name>$(P)PTPErrNamBit12</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1638,7 +1638,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam12.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit12.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1709,7 +1709,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam11.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit11.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1763,7 +1763,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam11</pv_name>
+    <pv_name>$(P)PTPErrNamBit11</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1774,7 +1774,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam11.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit11.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1845,7 +1845,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam10.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit10.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1899,7 +1899,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam10</pv_name>
+    <pv_name>$(P)PTPErrNamBit10</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1910,7 +1910,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam10.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit10.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1981,7 +1981,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam9.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit9.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2035,7 +2035,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam9</pv_name>
+    <pv_name>$(P)PTPErrNamBit9</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2046,7 +2046,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam9.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit9.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2117,7 +2117,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam8.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit8.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2171,7 +2171,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam8</pv_name>
+    <pv_name>$(P)PTPErrNamBit8</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2182,7 +2182,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam8.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit8.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2253,7 +2253,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam7.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit7.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2307,7 +2307,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam7</pv_name>
+    <pv_name>$(P)PTPErrNamBit7</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2318,7 +2318,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam7.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit7.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2389,7 +2389,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam6.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit6.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2443,7 +2443,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam6</pv_name>
+    <pv_name>$(P)PTPErrNamBit6</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2454,7 +2454,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam6.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit6.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2525,7 +2525,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam5.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2579,7 +2579,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam5</pv_name>
+    <pv_name>$(P)PTPErrNamBit5</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2590,7 +2590,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam5.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2661,7 +2661,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam4.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2715,7 +2715,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam4</pv_name>
+    <pv_name>$(P)PTPErrNamBit4</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2726,7 +2726,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam4.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2797,7 +2797,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam3.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2851,7 +2851,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam3</pv_name>
+    <pv_name>$(P)PTPErrNamBit3</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2862,7 +2862,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam3.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2933,7 +2933,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam2.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2987,7 +2987,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam2</pv_name>
+    <pv_name>$(P)PTPErrNamBit2</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2998,7 +2998,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam2.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3069,7 +3069,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam1.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3123,7 +3123,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam1</pv_name>
+    <pv_name>$(P)PTPErrNamBit1</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3134,7 +3134,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam1.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3205,7 +3205,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam0.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3259,7 +3259,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)PTPErrBitNam0</pv_name>
+    <pv_name>$(P)PTPErrNamBit0</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3270,7 +3270,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)PTPErrBitNam0.SEVR</pv>
+        <pv trig="true">$(P)PTPErrNamBit0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>

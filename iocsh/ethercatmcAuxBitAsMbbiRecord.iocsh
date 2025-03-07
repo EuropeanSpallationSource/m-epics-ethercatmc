@@ -1,1 +1,1 @@
-dbLoadRecords("ethercatmcAuxBitAsMbbiRecord.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO), AUXBITS07=$(AUXBITS07)")
+dbLoadRecords("ethercatmcAuxBitAsMbbiRecord.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO), AUXBITS07=$(AUXBITS07)")

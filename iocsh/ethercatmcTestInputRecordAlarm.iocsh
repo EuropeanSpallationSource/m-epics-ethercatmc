@@ -1,5 +1,5 @@
-ethercatmcCreateAsynParam $(MOTOR_PORT) DISCRETEINPUT Int32
+ethercatmcCreateAsynParam $(MOTOR_PORT) DISCRETEINPUT            Int32
 ethercatmcCreateAsynParam $(MOTOR_PORT) DISCRETEINPUT_StatusBits UInt32Digital
-ethercatmcCreateAsynParam $(MOTOR_PORT) DISCRETEOUTPUT Int32
+ethercatmcCreateAsynParam $(MOTOR_PORT) DISCRETEOUTPUT           Int32
 
-dbLoadRecords("ethercatmcTestInputRecordAlarm.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
+dbLoadRecords("ethercatmcTestInputRecordAlarm.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")

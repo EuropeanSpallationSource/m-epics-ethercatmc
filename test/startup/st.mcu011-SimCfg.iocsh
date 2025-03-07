@@ -1,53 +1,53 @@
-epicsEnvSet("ECM_NUMAXES",   "4")
-epicsEnvSet("MOTOR_PORT",    "MCU1")
+epicsEnvSet("ECM_NUMAXES",     "4")
+epicsEnvSet("MOTOR_PORT",      "MCU1")
 
-epicsEnvSet("IPADDR",        "127.0.0.1")
+epicsEnvSet("IPADDR",          "127.0.0.1")
 #epicsEnvSet("IPADDR",       "192.168.88.61")
-epicsEnvSet("IPPORT",        "5000")
-epicsEnvSet("ASYN_PORT",     "MC_CPU1")
-epicsEnvSet("SYSPFX",        "IOC:")
-epicsEnvSet("MCUPFX",      "")
-epicsEnvSet("EGU",           "mm")
-epicsEnvSet("PREC",          "3")
+epicsEnvSet("IPPORT",          "5000")
+epicsEnvSet("ASYN_PORT",       "MC_CPU1")
+epicsEnvSet("P",               "IOC:")
+epicsEnvSet("R",               "")
+epicsEnvSet("EGU",             "mm")
+epicsEnvSet("PREC",            "3")
 < ethercatmcController.iocsh
 
-epicsEnvSet("SLIT",          "MC-SltH-01:")
+epicsEnvSet("SLIT",            "MC-SltH-01:")
 
-epicsEnvSet("AXISCONFIG",    "HomProc=0;cfgFile=./mcu011-sim-1.cfg")
-epicsEnvSet("AXIS_NAME",    "$(SLIT)xn")
+epicsEnvSet("AXISCONFIG",      "HomProc=0;cfgFile=./mcu011-sim-1.cfg")
+epicsEnvSet("R",               "$(SLIT)xn")
 #epicsEnvSet("M",             "$(SLIT)m1")
 #epicsEnvSet("R",             "$(SLIT)m1-")
-epicsEnvSet("AXIS_NO",       "1")
-epicsEnvSet("DESC",          "H_NEG")
+epicsEnvSet("AXIS_NO",         "1")
+epicsEnvSet("DESC",            "H_NEG")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "HomProc=0;cfgFile=./mcu011-sim-2.cfg")
-epicsEnvSet("AXIS_NAME",    "$(SLIT)xp")
+epicsEnvSet("AXISCONFIG",      "HomProc=0;cfgFile=./mcu011-sim-2.cfg")
+epicsEnvSet("R",               "$(SLIT)xp")
 #epicsEnvSet("M",             "$(SLIT)m2")
 #epicsEnvSet("R",             "$(SLIT)m2-")
-epicsEnvSet("AXIS_NO",       "2")
-epicsEnvSet("DESC",          "H_POS")
+epicsEnvSet("AXIS_NO",         "2")
+epicsEnvSet("DESC",            "H_POS")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "HomProc=0")
-epicsEnvSet("AXIS_NAME",    "$(SLIT)Center")
+epicsEnvSet("AXISCONFIG",      "HomProc=0")
+epicsEnvSet("R",               "$(SLIT)Center")
 #epicsEnvSet("M",             "$(SLIT)m3")
 #epicsEnvSet("R",             "$(SLIT)m3-")
-epicsEnvSet("AXIS_NO",       "3")
-epicsEnvSet("DESC",          "H_CENTER")
+epicsEnvSet("AXIS_NO",         "3")
+epicsEnvSet("DESC",            "H_CENTER")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "HomProc=0")
-epicsEnvSet("AXIS_NAME",    "$(SLIT)Gap")
+epicsEnvSet("AXISCONFIG",      "HomProc=0")
+epicsEnvSet("R",               "$(SLIT)Gap")
 #epicsEnvSet("M",             "$(SLIT)m4")
 #epicsEnvSet("R",             "$(SLIT)m4-")
-epicsEnvSet("AXIS_NO",       "4")
-epicsEnvSet("DESC",          "H_GAP")
+epicsEnvSet("AXIS_NO",         "4")
+epicsEnvSet("DESC",            "H_GAP")
 < ethercatmcAxis.iocsh
 
 ## Logical axes and slit
-epicsEnvSet("mXp",           "$(SLIT)xp")
-epicsEnvSet("mXn",           "$(SLIT)xn")
+epicsEnvSet("mXp",             "$(SLIT)xp")
+epicsEnvSet("mXn",             "$(SLIT)xn")
 ## Soft limits for the Slit
 < ethercatmcslitAvoidCollSoftlimits.iocsh
 #########################

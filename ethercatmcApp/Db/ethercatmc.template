@@ -1,6 +1,6 @@
-record(motor,"$(SYSPFX)$(AXIS_NAME)")
+record(motor,"$(P)$(R)")
 {
-	field(DESC,"$(DESC=AXIS_NAME)")
+	field(DESC,"$(DESC=R)")
 	field(CARD,"$(AXIS_NO=0)")
 	field(DTYP,"asynMotor")
 	field(DVAL,"$(DVAL=0)")
@@ -31,21 +31,21 @@ record(motor,"$(SYSPFX)$(AXIS_NAME)")
 }
 
 # The error text
-record(stringin, "$(SYSPFX)$(AXIS_NAME)-ErrTxt") {
+record(stringin, "$(P)$(R)-ErrTxt") {
     field(DTYP, "asynOctetRead")
     field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrTxt")
     field(SCAN, "I/O Intr")
 }
 
 # The message text
-record(stringin, "$(SYSPFX)$(AXIS_NAME)-MsgTxt") {
+record(stringin, "$(P)$(R)-MsgTxt") {
     field(DTYP, "asynOctetRead")
     field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MESSAGE_TEXT")
     field(SCAN, "I/O Intr")
 }
 
 # Debug message in IOC log
-record(stringout, "$(SYSPFX)$(AXIS_NAME)-DbgStrToLOG") {
+record(stringout, "$(P)$(R)-DbgStrToLOG") {
     field(DESC, "Log String in IOC log")
     field(VAL, "")
     field(DTYP, "asynOctetWrite")
@@ -56,17 +56,17 @@ record(stringout, "$(SYSPFX)$(AXIS_NAME)-DbgStrToLOG") {
 # which is needed for profile moves and other applications
 
 # Motor direction for this axis
-record(longout,"$(SYSPFX)$(AXIS_NAME)-DIR_") {
-    field(DESC, "$(AXIS_NAME) direction")
-    field(DOL,  "$(SYSPFX)$(AXIS_NAME).DIR CP MS")
+record(longout,"$(P)$(R)-DIR_") {
+    field(DESC, "$(R) direction")
+    field(DOL,  "$(P)$(R).DIR CP MS")
     field(OMSL, "closed_loop")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_DIRECTION")
 }
 
-record(bi, "$(SYSPFX)$(AXIS_NAME)-Err")
+record(bi, "$(P)$(R)-Err")
 {
-    field(DESC, "$(AXIS_NAME) Error from TwinCAT")
+    field(DESC, "$(R) Error from TwinCAT")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MCUErr")
     field(SCAN, "I/O Intr")
@@ -76,7 +76,7 @@ record(bi, "$(SYSPFX)$(AXIS_NAME)-Err")
     field(OSV,  "MINOR")
 }
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-VelAct")
+record(ai, "$(P)$(R)-VelAct")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -84,7 +84,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-VelAct")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-PosAct")
+record(ai, "$(P)$(R)-PosAct")
 {
     field(DESC, "actual Pos")
     field(DTYP, "asynFloat64")
@@ -93,7 +93,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-PosAct")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-PosAct-TSE")
+record(ai, "$(P)$(R)-PosAct-TSE")
 {
     field(DESC, "actual Pos MCU timestamped")
     field(DTYP, "asynFloat64")
@@ -103,7 +103,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-PosAct-TSE")
     field(TSE, -2)
 }
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-Vel-RB")
+record(ai, "$(P)$(R)-Vel-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -111,7 +111,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-Vel-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-Acc-RB")
+record(ai, "$(P)$(R)-Acc-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -119,7 +119,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-Acc-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(SYSPFX)$(AXIS_NAME)-RawEncStep")
+record(longin, "$(P)$(R)-RawEncStep")
 {
     field(DTYP, "asynInt32")
     field(DESC, "RawEncStep")
@@ -130,15 +130,15 @@ record(longin, "$(SYSPFX)$(AXIS_NAME)-RawEncStep")
     field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(SYSPFX)$(AXIS_NAME)-ErrId")
+record(longin, "$(P)$(R)-ErrId")
 {
-    field(DESC, "$(AXIS_NAME) Error ID TwinCAT")
+    field(DESC, "$(R) Error ID TwinCAT")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrorId")
     field(SCAN, "I/O Intr")
 }
 
-record(longout,"$(SYSPFX)$(AXIS_NAME)-ErrRst") {
+record(longout,"$(P)$(R)-ErrRst") {
     field(DESC, "Error Reset")
     field(VAL,  0)
     field(DTYP, "asynInt32")
@@ -147,9 +147,9 @@ record(longout,"$(SYSPFX)$(AXIS_NAME)-ErrRst") {
 }
 
 # Motor offset for this axis
-record(ao,"$(SYSPFX)$(AXIS_NAME)-OFF_") {
-    field(DESC, "$(AXIS_NAME) offset")
-    field(DOL,  "$(SYSPFX)$(AXIS_NAME).OFF CP MS")
+record(ao,"$(P)$(R)-OFF_") {
+    field(DESC, "$(R) offset")
+    field(DOL,  "$(P)$(R).OFF CP MS")
     field(OMSL, "closed_loop")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -158,16 +158,16 @@ record(ao,"$(SYSPFX)$(AXIS_NAME)-OFF_") {
 
 
 # Motor resolution for this axis
-record(ao,"$(SYSPFX)$(AXIS_NAME)-MRES_") {
-    field(DESC, "$(AXIS_NAME) resolution")
-    field(DOL,  "$(SYSPFX)$(AXIS_NAME).MRES CP MS")
+record(ao,"$(P)$(R)-MRES_") {
+    field(DESC, "$(R) resolution")
+    field(DOL,  "$(P)$(R).MRES CP MS")
     field(OMSL, "closed_loop")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
     field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_REC_RESOLUTION")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgSREV-RB") {
+record(ai,"$(P)$(R)-CfgSREV-RB") {
     field(DESC, "Micro Steps / Revolution")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -175,7 +175,7 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgSREV-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgUREV-RB") {
+record(ai,"$(P)$(R)-CfgUREV-RB") {
     field(DESC, "EGU / Revolution")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -183,14 +183,14 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgUREV-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgPMIN-RB") {
+record(ai,"$(P)$(R)-CfgPMIN-RB") {
     field(DESC, "Absolute Minimum")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgPMIN-RB")
     field(SCAN, "I/O Intr")
 }
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgPMAX-RB") {
+record(ai,"$(P)$(R)-CfgPMAX-RB") {
     field(DESC, "Absolute Maximum")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -198,7 +198,7 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgPMAX-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgSPDB-RB") {
+record(ai,"$(P)$(R)-CfgSPDB-RB") {
     field(DESC, "Set point dead band window")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -206,7 +206,7 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgSPDB-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgRDBD-RB") {
+record(ai,"$(P)$(R)-CfgRDBD-RB") {
     field(DESC, "In target position window")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -214,7 +214,7 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgRDBD-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgRDBD-Tim-RB") {
+record(ai,"$(P)$(R)-CfgRDBD-Tim-RB") {
     field(DESC, "In target position time")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -222,14 +222,14 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgRDBD-Tim-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(SYSPFX)$(AXIS_NAME)-CfgRDBD-En-RB") {
+record(longin,"$(P)$(R)-CfgRDBD-En-RB") {
     field(DESC, "In target position enabled")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgRDBD-En-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgPOSLAG-RB") {
+record(ai,"$(P)$(R)-CfgPOSLAG-RB") {
     field(DESC, "In target position window")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -237,7 +237,7 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgPOSLAG-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgPOSLAG-Tim-RB") {
+record(ai,"$(P)$(R)-CfgPOSLAG-Tim-RB") {
     field(DESC, "In target position time")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -245,14 +245,14 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgPOSLAG-Tim-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(SYSPFX)$(AXIS_NAME)-CfgPOSLAG-En-RB") {
+record(longin,"$(P)$(R)-CfgPOSLAG-En-RB") {
     field(DESC, "In target position enabled")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgPOSLAG-En-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgDHLM-RB") {
+record(ai,"$(P)$(R)-CfgDHLM-RB") {
     field(DESC, "EC High Soft Limit RB")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -260,7 +260,7 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgDHLM-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgDLLM-RB") {
+record(ai,"$(P)$(R)-CfgDLLM-RB") {
     field(DESC, "EC Low Soft Limit RB")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -268,14 +268,14 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-CfgDLLM-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(SYSPFX)$(AXIS_NAME)-CfgDHLM-En-RB") {
+record(longin,"$(P)$(R)-CfgDHLM-En-RB") {
     field(DESC, "EC High Soft Limit enabled RB")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDHLM-En")
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(SYSPFX)$(AXIS_NAME)-CfgDLLM-En-RB") {
+record(longin,"$(P)$(R)-CfgDLLM-En-RB") {
     field(DESC, "EC Low Soft Limit enabled RB")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDLLM-En")
@@ -284,7 +284,7 @@ record(longin,"$(SYSPFX)$(AXIS_NAME)-CfgDLLM-En-RB") {
 
 # Config records, the values will be pushed into the motor record fields
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgVELO-RB")
+record(ai, "$(P)$(R)-CfgVELO-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -292,7 +292,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgVELO-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgVMAX-RB")
+record(ai, "$(P)$(R)-CfgVMAX-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -301,7 +301,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgVMAX-RB")
 }
 
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgJVEL-RB")
+record(ai, "$(P)$(R)-CfgJVEL-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -309,7 +309,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgJVEL-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgHVEL-RB")
+record(ai, "$(P)$(R)-CfgHVEL-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -318,7 +318,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgHVEL-RB")
 }
 
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgACCS-RB")
+record(ai, "$(P)$(R)-CfgACCS-RB")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -326,21 +326,21 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-CfgACCS-RB")
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(SYSPFX)$(AXIS_NAME)-FoffVis") {
+record(longin,"$(P)$(R)-FoffVis") {
     field(DESC, "FOFF-Visible")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))FoffVis")
     field(SCAN, "I/O Intr")
 }
 
-record(longin,"$(SYSPFX)$(AXIS_NAME)-HomeVis") {
+record(longin,"$(P)$(R)-HomeVis") {
     field(DESC, "HOME-Visible")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomeVis")
     field(SCAN, "I/O Intr")
 }
 
-record(mbbi,"$(SYSPFX)$(AXIS_NAME)-HomProc-RB") {
+record(mbbi,"$(P)$(R)-HomProc-RB") {
     field(DESC,"Homing procedure")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))HomProc-RB")
@@ -380,7 +380,7 @@ record(mbbi,"$(SYSPFX)$(AXIS_NAME)-HomProc-RB") {
     field(FFST, "ManSetPos")
 }
 
-record(ai,"$(SYSPFX)$(AXIS_NAME)-HomPos-RB") {
+record(ai,"$(P)$(R)-HomPos-RB") {
     field(DESC, "Home Position")
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -388,7 +388,7 @@ record(ai,"$(SYSPFX)$(AXIS_NAME)-HomPos-RB") {
     field(SCAN, "I/O Intr")
 }
 
-record(mbbi,"$(SYSPFX)$(AXIS_NAME)-StatusCode") {
+record(mbbi,"$(P)$(R)-StatusCode") {
     field(DESC,"StatusCode")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))StatusCode")
@@ -428,7 +428,7 @@ record(mbbi,"$(SYSPFX)$(AXIS_NAME)-StatusCode") {
     field(FFST, "ERR-F")
 }
 
-record(longin,"$(SYSPFX)$(AXIS_NAME)-CnenVis") {
+record(longin,"$(P)$(R)-CnenVis") {
     field(DESC, "CNEN-Visible")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STATUS_GAIN_SUPPORT")

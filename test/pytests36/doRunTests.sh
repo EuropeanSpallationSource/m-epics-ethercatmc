@@ -5,10 +5,10 @@
 set -x
 
 run_pytest() {
-  echo CONDA_SYSPFX="$CONDA_SYSPFX"
+  echo CONDA_P="$CONDA_P"
   if type pytest; then
     pytest "$@" || exit 1
-  elif test "$CONDA_SYSPFX"; then
+  elif test "$CONDA_P"; then
     echo pytest "$@"
     pytest "$@"
   else
@@ -21,9 +21,9 @@ echo "$0" "$@"
 
 if test -n "$1"; then
   TESTEDMOTORAXIS=$1
-  SYSPFX=${1%:*}
+  P=${1%:*}
   TESTEDMOTORADDR=${1##*:m}
-  TESTEDMCUASYN=$SYSPFX:MCU1:asyn
+  TESTEDMCUASYN=$P:MCU1:asyn
   echo TESTEDMOTORAXIS=$TESTEDMOTORAXIS
   echo TESTEDMOTORADDR=$TESTEDMOTORADDR
   echo TESTEDMCUASYN=$TESTEDMCUASYN

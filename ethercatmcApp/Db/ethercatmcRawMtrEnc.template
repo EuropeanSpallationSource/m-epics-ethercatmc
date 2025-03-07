@@ -1,4 +1,4 @@
-record(longin, "$(SYSPFX)$(AXIS_NAME)-RawMtrStep")
+record(longin, "$(P)$(R)-RawMtrStep")
 {
     field(DTYP, "asynInt32")
     field(DESC, "RawMtrStep")
@@ -7,7 +7,7 @@ record(longin, "$(SYSPFX)$(AXIS_NAME)-RawMtrStep")
     field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(SYSPFX)$(AXIS_NAME)-RawMtrVelo")
+record(longin, "$(P)$(R)-RawMtrVelo")
 {
     field(DTYP, "asynInt32")
     field(DESC, "MtrStepSTM_Velocity")
@@ -17,7 +17,7 @@ record(longin, "$(SYSPFX)$(AXIS_NAME)-RawMtrVelo")
 }
 
 
-record(longin, "$(SYSPFX)$(AXIS_NAME)-RawEncStep-TSE")
+record(longin, "$(P)$(R)-RawEncStep-TSE")
 {
     field(DTYP, "asynInt32")
     field(DESC, "RawEncStep-TSE")
@@ -28,7 +28,7 @@ record(longin, "$(SYSPFX)$(AXIS_NAME)-RawEncStep-TSE")
 }
 
 
-record(longin, "$(SYSPFX)$(AXIS_NAME)-RawMtrStep-TSE")
+record(longin, "$(P)$(R)-RawMtrStep-TSE")
 {
     field(DTYP, "asynInt32")
     field(DESC, "RawMtrStep-TSE")
@@ -39,7 +39,7 @@ record(longin, "$(SYSPFX)$(AXIS_NAME)-RawMtrStep-TSE")
 }
 
 
-record(longin, "$(SYSPFX)$(AXIS_NAME)-RawMtrVelo-TSE")
+record(longin, "$(P)$(R)-RawMtrVelo-TSE")
 {
     field(DTYP, "asynInt32")
     field(DESC, "MtrStepSTM_Velocity-TSE")
@@ -49,7 +49,7 @@ record(longin, "$(SYSPFX)$(AXIS_NAME)-RawMtrVelo-TSE")
     field(TSE,  -2)
 }
 
-record(ai, "$(SYSPFX)$(AXIS_NAME)-VelAct-TSE")
+record(ai, "$(P)$(R)-VelAct-TSE")
 {
     field(DTYP, "asynFloat64")
     field(PREC, "$(PREC)")
@@ -58,7 +58,7 @@ record(ai, "$(SYSPFX)$(AXIS_NAME)-VelAct-TSE")
     field(TSE,  -2)
 }
 
-record(mbbiDirect, "$(SYSPFX)$(AXIS_NAME)-StatusBits-TSE")
+record(mbbiDirect, "$(P)$(R)-StatusBits-TSE")
 {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "StatusBits")
@@ -67,7 +67,7 @@ record(mbbiDirect, "$(SYSPFX)$(AXIS_NAME)-StatusBits-TSE")
     field(TSE,  -2)
 }
 
-record(mbbi,"$(SYSPFX)$(AXIS_NAME)-StatusCode-TSE") {
+record(mbbi,"$(P)$(R)-StatusCode-TSE") {
     field(DESC,"StatusCode")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))StatusCode")

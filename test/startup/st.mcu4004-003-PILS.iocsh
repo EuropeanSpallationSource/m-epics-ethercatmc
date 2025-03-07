@@ -1,36 +1,27 @@
-epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+epicsEnvSet("MOTOR_PORT",      "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.41.148)")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
-epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=LabS-MCAG:MC-MCU-003:)")
-epicsEnvSet("MCUPFX",      "")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
-epicsEnvSet("SM_NOAXES",     "4")
-epicsEnvSet("ADSPORT",       "$(ECM_ADSPORT=852)")
+epicsEnvSet("IPADDR",          "$(SM_IPADDR=172.30.41.148)")
+epicsEnvSet("IPPORT",          "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("P",               "$(SM_P=LabS-MCAG:MC-MCU-003:)")
+epicsEnvSet("R",               "")
+epicsEnvSet("PREC",            "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",       "4")
+epicsEnvSet("ADSPORT",         "$(ECM_ADSPORT=852)")
 #epicsEnvSet("ECM_OPTIONS",   "adsPort=$(ADSPORT);amsNetIdRemote=REMOTEAMSNETIDXX;amsNetIdLocal=LOCALAMSNETIDXX"
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=169.254.255.255.1.1:852;amsNetIdLocal=172.30.38.12.1.1"
+epicsEnvSet("ECM_OPTIONS",     "adsPort=852;amsNetIdRemote=169.254.255.255.1.1:852;amsNetIdLocal=172.30.38.12.1.1"
 
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "100")
 < ethercatmcController.iocsh
 
 #
-# Health status
-#
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=PlcHealth)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=0)")
-epicsEnvSet("DESC",          "PlcHealth")
-epicsEnvSet("EGU",           "PlcHealth")
-< ethercatmcAuxBitsStatus.iocsh
-
-#
 # Axis 1
 #
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m1)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
-epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m1)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -42,9 +33,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 # Axis 2
 #
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m2)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m2)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -53,11 +44,11 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 # Axis 3
 #
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m3)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
-epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m3)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=3)")
+epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -66,9 +57,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 #
 # Axis 4
 #
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m4)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m4)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=4)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh

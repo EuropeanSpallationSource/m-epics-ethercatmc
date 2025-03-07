@@ -1,12 +1,12 @@
-epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+epicsEnvSet("MOTOR_PORT",      "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=10.102.16.13)")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
-epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=ESTIA-Sel1:MC-MCU-01:)")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
-epicsEnvSet("ECM_NUMAXES",   "18")
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.82.112.102.1.1;amsNetIdLocal=10.102.16.12.1.1")
+epicsEnvSet("IPADDR",          "$(SM_IPADDR=10.102.16.13)")
+epicsEnvSet("IPPORT",          "$(SM_IPPORT=48898)")
+epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("P",               "$(SM_P=ESTIA-Sel1:MC-MCU-01:)")
+epicsEnvSet("PREC",            "$(SM_PREC=3)")
+epicsEnvSet("ECM_NUMAXES",     "18")
+epicsEnvSet("ECM_OPTIONS",     "adsPort=852;amsNetIdRemote=5.82.112.102.1.1;amsNetIdLocal=10.102.16.12.1.1")
 
 # No poller yet, see ethercatmcStartPoller at the end of the script
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
@@ -16,17 +16,17 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 
 
 # Common to all axes
-epicsEnvSet("EGU",           "$(SM_EGU=mm)")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
-epicsEnvSet("DESC",          "motor")
+epicsEnvSet("EGU",             "$(SM_EGU=mm)")
+epicsEnvSet("PREC",            "$(SM_PREC=3)")
+epicsEnvSet("DESC",            "motor")
 
 #
 # Axis 1
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr1)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr1)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -37,9 +37,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 2
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr2)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr2)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -50,9 +50,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 3
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr3)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=3)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr3)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=3)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -63,9 +63,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 4
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr4)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=4)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr4)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=4)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -76,9 +76,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 5
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr5)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=5)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr5)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=5)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -89,9 +89,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 6
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr6)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=6)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr6)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=6)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -103,9 +103,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 7
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr7)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=7)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr7)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=7)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -116,40 +116,40 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 8
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr8)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=8)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr8)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=8)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
 
-epicsEnvSet("AUXBITS07",     "HexScrew")
+epicsEnvSet("AUXBITS07",       "HexScrew")
 < ethercatmcAuxBitAsMbbiRecord.iocsh
 
 #
 # Axis 9
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr9)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=9)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr9)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=9)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 < ethercatmcMotorTemp.iocsh
-epicsEnvSet("AUXBITS07",     "HexScrew")
+epicsEnvSet("AUXBITS07",       "HexScrew")
 < ethercatmcAuxBitAsMbbiRecord.iocsh
 
 #
 # Axis 10
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr10)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=10)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr10)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=10)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -160,9 +160,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 11
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr11)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=11)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr11)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=11)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -173,9 +173,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 12
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr12)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=12)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr12)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=12)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -187,9 +187,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 13
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr13)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=13)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr13)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=13)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -200,9 +200,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 14
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr14)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=14)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr14)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=14)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -213,9 +213,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 15
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr15)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=15)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr15)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=15)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -226,9 +226,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 16
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr16)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=16)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr16)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=16)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -239,9 +239,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 17
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr17)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=17)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr17)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=17)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -252,9 +252,9 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 18
 #
 ###############################################
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=Mtr18)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=18)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=Mtr18)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=18)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -263,57 +263,57 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 
 
 # Temperature Sensors, common
-epicsEnvSet("P", "$(SM_SYSPFX=ESTIA-Sel1:MC-MCU-01:)")
+epicsEnvSet("P",               "$(SM_P=ESTIA-Sel1:MC-MCU-01:)")
 epicsEnvSet("ASYNPARAMNAME" "Temp")
-epicsEnvSet("PREC",         "1")
-epicsEnvSet("EGU",          "°C")
+epicsEnvSet("PREC",            "1")
+epicsEnvSet("EGU",             "°C")
 
-epicsEnvSet("R",        "Temp1")
-epicsEnvSet("CHNO",     "1")
+epicsEnvSet("R",               "Temp1")
+epicsEnvSet("CHNO",            "1")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp2")
-epicsEnvSet("CHNO",     "2")
+epicsEnvSet("R",               "Temp2")
+epicsEnvSet("CHNO",            "2")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp3")
-epicsEnvSet("CHNO",     "3")
+epicsEnvSet("R",               "Temp3")
+epicsEnvSet("CHNO",            "3")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp4")
-epicsEnvSet("CHNO",     "4")
+epicsEnvSet("R",               "Temp4")
+epicsEnvSet("CHNO",            "4")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp5")
-epicsEnvSet("CHNO",     "5")
+epicsEnvSet("R",               "Temp5")
+epicsEnvSet("CHNO",            "5")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp6")
-epicsEnvSet("CHNO",     "6")
+epicsEnvSet("R",               "Temp6")
+epicsEnvSet("CHNO",            "6")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp7")
-epicsEnvSet("CHNO",     "7")
+epicsEnvSet("R",               "Temp7")
+epicsEnvSet("CHNO",            "7")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp8")
-epicsEnvSet("CHNO",     "8")
+epicsEnvSet("R",               "Temp8")
+epicsEnvSet("CHNO",            "8")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp9")
-epicsEnvSet("CHNO",     "9")
+epicsEnvSet("R",               "Temp9")
+epicsEnvSet("CHNO",            "9")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp10")
-epicsEnvSet("CHNO",     "10")
+epicsEnvSet("R",               "Temp10")
+epicsEnvSet("CHNO",            "10")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp11")
-epicsEnvSet("CHNO",     "11")
+epicsEnvSet("R",               "Temp11")
+epicsEnvSet("CHNO",            "11")
 < ethercatmcTempSensor.iocsh
 
-epicsEnvSet("R",        "Temp12")
-epicsEnvSet("CHNO",     "12")
+epicsEnvSet("R",               "Temp12")
+epicsEnvSet("CHNO",            "12")
 < ethercatmcTempSensor.iocsh
 
 
@@ -323,5 +323,5 @@ epicsEnvSet("CHNO",     "12")
 # Start polling, values are in millisconds
 #
 epicsEnvSet("MOVINGPOLLPERIOD", "500")
-epicsEnvSet("IDLEPOLLPERIOD",   "500")
+epicsEnvSet("IDLEPOLLPERIOD",  "500")
 ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

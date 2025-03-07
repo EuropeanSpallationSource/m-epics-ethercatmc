@@ -1,4 +1,4 @@
-record(ai, "$(SYSPFX)$(AXIS_NAME)-Temp")
+record(ai, "$(P)$(R)-Temp")
 {
     field(DTYP, "asynFloat64")
     field(DESC, "$(DESC=MotorTemperature)")

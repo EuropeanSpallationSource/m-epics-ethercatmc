@@ -46,7 +46,7 @@
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)NamAuxBitNNN.SEVR</pv>
+        <pv trig="true">$(P)NamBitNNN.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -100,7 +100,7 @@
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)NamAuxBitNNN</pv_name>
+    <pv_name>$(P)NamBitNNN</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -111,7 +111,7 @@
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)NamAuxBitNNN.SEVR</pv>
+        <pv trig="true">$(P)NamBitNNN.SEVR</pv>
       </rule>
     </rules>
     <scale_options>

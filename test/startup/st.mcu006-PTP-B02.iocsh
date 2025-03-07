@@ -1,19 +1,17 @@
-epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.38.66)")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
-epicsEnvSet("AMSNETIDIOC",   "$(SM_AMSNETID=172.30.38.12.1.1)")
-epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=LabS-MCAG:MC-MCU-06:)")
-epicsEnvSet("MCUPFX",      "")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
-epicsEnvSet("SM_NOAXES",     "1")
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=5.81.143.110.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
+epicsEnvSet("MOTOR_PORT",      "$(SM_MOTOR_PORT=MCU1)")
+epicsEnvSet("IPADDR",          "$(SM_IPADDR=172.30.38.66)")
+epicsEnvSet("IPPORT",          "$(SM_IPPORT=48898)")
+epicsEnvSet("AMSNETIDIOC",     "$(SM_AMSNETID=172.30.38.12.1.1)")
+epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("P",               "$(SM_SYSPFX=LabS-MCAG:MC-MCU-06:)")
+epicsEnvSet("R",               "")
+epicsEnvSet("PREC",            "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",       "1")
+epicsEnvSet("ECM_OPTIONS",     "adsPort=852;amsNetIdRemote=5.81.143.110.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
 
 
-# Do not start the poller yet
-epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
-epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
-
+epicsEnvSet("MOVINGPOLLPERIOD", "9")
+epicsEnvSet("IDLEPOLLPERIOD",  "200")
 < ethercatmcController.iocsh
 < ethercatmcEL6688-PTP.iocsh
 < ethercatmcEL6688-EL1252-PTP.iocsh
@@ -22,11 +20,11 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 #
 # Axis 1
 #
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m1)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
-epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_AXIS_NAME=m1)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -39,15 +37,15 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcPLCopenStateMachine.iocsh
 
 # Predefined Positions
-epicsEnvSet("NVL",           "")
-epicsEnvSet("EGU",           "")
+epicsEnvSet("NVL",             "")
+epicsEnvSet("EGU",             "")
 < ethercatmcDefPos.iocsh
 < ethercatmcRawMtrEnc.iocsh
 
 
 #####################################################
 # EL1252, second channel, CHNO == 2 ; conunting from 1
-epicsEnvSet("CHNO",     "2")
+epicsEnvSet("CHNO",            "2")
 < ethercatmcEL1252-OneChannel.iocsh
 
 
@@ -60,90 +58,73 @@ epicsEnvSet("CHNO",     "2")
 
 #####################################################
 # PosXFC-TSE
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "PosXFC-TSE")
-epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "PosXFC")
-epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC", 3)
-epicsEnvSet("EGU", "mm")
-epicsEnvSet("TSE", "-2")
+epicsEnvSet("R",               "PosXFC-TSE")
+epicsEnvSet("CHNO",            "1")
+epicsEnvSet("ASYNPARAMNAME",   "PosXFC")
+epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC",            3)
+epicsEnvSet("EGU",             "mm")
+epicsEnvSet("TSE",             "-2")
 < ethercatmcAnalogInput-TSE.iocsh
 
 
 
 #####################################################
 # IndexPulsePositionXFC_K
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "IndexPulsePositionK")
-epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "IndexPulsePositionK")
-epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC", 3)
-epicsEnvSet("EGU", "mm")
+epicsEnvSet("R",               "IndexPulsePositionK")
+epicsEnvSet("CHNO",            "1")
+epicsEnvSet("ASYNPARAMNAME",   "IndexPulsePositionK")
+epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC",            3)
+epicsEnvSet("EGU",             "mm")
 < ethercatmcAnalogInput.iocsh
 
 #####################################################
 # IndexPulsePositionXFC_N
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "IndexPulsePositionN")
-epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "IndexPulsePositionXFC_N")
-epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC", 3)
-epicsEnvSet("EGU", "mm")
+epicsEnvSet("R",               "IndexPulsePositionN")
+epicsEnvSet("CHNO",            "1")
+epicsEnvSet("ASYNPARAMNAME",   "IndexPulsePositionXFC_N")
+epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC",            3)
+epicsEnvSet("EGU",             "mm")
 < ethercatmcAnalogInput.iocsh
 
 
 #####################################################
 # Maximal Current Axis 1
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "CfgMoveCurrent")
-epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "$(R)")
-epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC", 0)
-epicsEnvSet("EGU", "mA")
+epicsEnvSet("CHNO",            "1")
+epicsEnvSet("ASYNPARAMNAME",   "CfgMoveCurrent")
+epicsEnvSet("R",               "m1-$(ASYNPARAMNAME)")
+epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC",            0)
+epicsEnvSet("EGU",             "mA")
 < ethercatmcAnalogOutputReadback.iocsh
 
 #####################################################
 # Reduced Current Axis 1
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1-")
-epicsEnvSet("R", "CfgIdleCurrent")
-epicsEnvSet("CHNO", "1")
-epicsEnvSet("ASYNPARAMNAME", "$(R)")
-epicsEnvSet("DESC", "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC", 0)
-epicsEnvSet("EGU", "mA")
+epicsEnvSet("CHNO",            "1")
+epicsEnvSet("ASYNPARAMNAME",   "CfgIdleCurrent")
+epicsEnvSet("R",               "m1-$(ASYNPARAMNAME)")
+epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
+epicsEnvSet("PREC",            0)
+epicsEnvSet("EGU",             "mA")
 < ethercatmcAnalogOutputReadback.iocsh
 
 #####################################################
 # Custom parameter 195  Axis 1
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1")
-epicsEnvSet("R", "-")
-epicsEnvSet("AXIS_NO", "1")
-epicsEnvSet("PANO", "195")
+epicsEnvSet("AXIS_NO",         "1")
+epicsEnvSet("R",               "m1-")
+epicsEnvSet("PANO",            "195")
 < ethercatmcConfigParaDesc.iocsh
 
 # Custom parameter 196  Axis 1
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1")
-epicsEnvSet("R", "-")
-epicsEnvSet("AXIS_NO", "1")
-epicsEnvSet("PANO", "196")
+epicsEnvSet("AXIS_NO",         "1")
+epicsEnvSet("R",               "m1-")
+epicsEnvSet("PANO",            "196")
 < ethercatmcConfigParaDesc.iocsh
 
 # Custom parameter 197  Axis 1
-epicsEnvSet("P", "LabS-MCAG:MC-MCU-06:m1")
-epicsEnvSet("R", "-")
-epicsEnvSet("AXIS_NO", "1")
-epicsEnvSet("PANO", "197")
+epicsEnvSet("AXIS_NO",         "1")
+epicsEnvSet("R",               "m1-")
+epicsEnvSet("PANO",            "197")
 < ethercatmcConfigParaDesc.iocsh
-
-
-
-#
-# Start polling, values are in millisconds
-#
-epicsEnvSet("MOVINGPOLLPERIOD", "9")
-epicsEnvSet("IDLEPOLLPERIOD",   "200")
-ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

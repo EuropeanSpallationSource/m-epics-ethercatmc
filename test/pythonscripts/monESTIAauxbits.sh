@@ -63,30 +63,30 @@ done
 TSE=""
 export TSE
 pvmonitor \
-  ${P}${M}-NamAuxBit0 \
-  ${P}${M}-NamAuxBit1 \
-  ${P}${M}-NamAuxBit2 \
-  ${P}${M}-NamAuxBit3 \
-  ${P}${M}-NamAuxBit4 \
-  ${P}${M}-NamAuxBit5 \
-  ${P}${M}-NamAuxBit6 \
-  ${P}${M}-NamAuxBit7 \
-  ${P}${M}-NamAuxBit8 \
-  ${P}${M}-NamAuxBit9 \
-  ${P}${M}-NamAuxBit10 \
-  ${P}${M}-NamAuxBit11 \
-  ${P}${M}-NamAuxBit12 \
-  ${P}${M}-NamAuxBit13 \
-  ${P}${M}-NamAuxBit14 \
-  ${P}${M}-NamAuxBit15 \
-  ${P}${M}-NamAuxBit16 \
-  ${P}${M}-NamAuxBit17 \
-  ${P}${M}-NamAuxBit18 \
-  ${P}${M}-NamAuxBit19 \
-  ${P}${M}-NamAuxBit20 \
-  ${P}${M}-NamAuxBit21 \
-  ${P}${M}-NamAuxBit22 \
-  ${P}${M}-NamAuxBit23 \
+  ${P}${M}-NamBit0 \
+  ${P}${M}-NamBit1 \
+  ${P}${M}-NamBit2 \
+  ${P}${M}-NamBit3 \
+  ${P}${M}-NamBit4 \
+  ${P}${M}-NamBit5 \
+  ${P}${M}-NamBit6 \
+  ${P}${M}-NamBit7 \
+  ${P}${M}-NamBit8 \
+  ${P}${M}-NamBit9 \
+  ${P}${M}-NamBit10 \
+  ${P}${M}-NamBit11 \
+  ${P}${M}-NamBit12 \
+  ${P}${M}-NamBit13 \
+  ${P}${M}-NamBit14 \
+  ${P}${M}-NamBit15 \
+  ${P}${M}-NamBit16 \
+  ${P}${M}-NamBit17 \
+  ${P}${M}-NamBit18 \
+  ${P}${M}-NamBit19 \
+  ${P}${M}-NamBit20 \
+  ${P}${M}-NamBit21 \
+  ${P}${M}-NamBit22 \
+  ${P}${M}-NamBit23 \
   ${P}${M}.VAL \
   ${P}${M}.RBV \
   ${P}${M}.MISS \

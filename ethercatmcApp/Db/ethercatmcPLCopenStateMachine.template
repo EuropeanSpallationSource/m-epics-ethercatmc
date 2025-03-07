@@ -1,7 +1,7 @@
 #
 # Record to show the status of the PLCopenStateMachine
 
-record(mbbi,"$(SYSPFX)$(AXIS_NAME)-$(FB_NAME)") {
+record(mbbi,"$(P)$(R)-$(FB_NAME)") {
     field(DESC,"$(FB_NAME)")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))$(FB_NAME)")
@@ -41,7 +41,7 @@ record(mbbi,"$(SYSPFX)$(AXIS_NAME)-$(FB_NAME)") {
     field(FFST, "1015")
 }
 
-record(mbbi,"$(SYSPFX)$(AXIS_NAME)-$(FB_NAME)-TSE") {
+record(mbbi,"$(P)$(R)-$(FB_NAME)-TSE") {
     field(DESC,"$(FB_NAME)")
     field(DTYP, "asynInt32")
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))$(FB_NAME)")

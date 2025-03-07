@@ -22,6 +22,7 @@ DB += ethercatmcAnalogOutputReadback.template
 DB += ethercatmcAuxBitAsBiRecord.template
 DB += ethercatmcAuxBitAsMbbiRecord.template
 DB += ethercatmcAuxBitsStatus.template
+DB += ethercatmcCabinet.template
 DB += ethercatmcClutch.template
 DB += ethercatmcConfigParaDesc.template
 DB += ethercatmcEL1252-OneChannel.template

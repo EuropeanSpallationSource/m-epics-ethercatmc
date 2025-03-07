@@ -112,7 +112,7 @@ $(pv_value)</tooltip>
   </font>
   <width>120</width>
   <border_style>6</border_style>
-  <label>HealthStatus</label>
+  <label>Cabinet</label>
   <rules />
   <pv_value />
   <border_width>1</border_width>
@@ -122,14 +122,14 @@ $(pv_value)</tooltip>
   <y>174</y>
   <actions hook="false" hook_all="false">
     <action type="OPEN_DISPLAY">
-      <path>ethercatmcStatusWord1802.opi</path>
+      <path>ethercatmcCabinet.opi</path>
       <macros>
         <include_parent_macros>true</include_parent_macros>
         <P>$(P)</P>
-        <R>PlcHealth-</R>
+        <R>Cabinet-</R>
       </macros>
       <replace>0</replace>
-      <description>$(P) (HealthStatus)</description>
+      <description>$(P) (Cabinet)</description>
     </action>
   </actions>
   <y>0</y>

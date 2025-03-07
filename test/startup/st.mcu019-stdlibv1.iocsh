@@ -1,45 +1,45 @@
-epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+epicsEnvSet("MOTOR_PORT",      "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.41.78)")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
-epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=LabS-MCAG:)")
-epicsEnvSet("P",             "$(SM_SYSPFX=LabS-MCAG:)")
-epicsEnvSet("MCUPFX",        "MC-MCU-19:")
-epicsEnvSet("EGU",           "$(SM_EGU=mm)")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
-epicsEnvSet("SM_NOAXES",     "2")
-epicsEnvSet("AMSNETIDIOC",   "172.30.38.12.1.1")
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=192.168.88.57.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
+epicsEnvSet("IPADDR",          "$(SM_IPADDR=172.30.41.78)")
+epicsEnvSet("IPPORT",          "$(SM_IPPORT=5000)")
+epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("P",               "$(SM_P=LabS-MCAG:)")
+epicsEnvSet("P",               "$(SM_P=LabS-MCAG:)")
+epicsEnvSet("R",               "MC-MCU-19:")
+epicsEnvSet("EGU",             "$(SM_EGU=mm)")
+epicsEnvSet("PREC",            "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",       "2")
+epicsEnvSet("AMSNETIDIOC",     "172.30.38.12.1.1")
+epicsEnvSet("ECM_OPTIONS",     "adsPort=852;amsNetIdRemote=192.168.88.57.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
 
-epicsEnvSet("ECM_OPTIONS",          "")
+epicsEnvSet("ECM_OPTIONS",     "")
 # Controller
 < ethercatmcController.iocsh
 
 
 # Axis 1
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=MC-MCU-19:Mtr1)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
-epicsEnvSet("DESC",          "$(SM_DESC=Lower=Right)")
-epicsEnvSet("AXISCONFIG",    "HomProc=1;HomPos=-63;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
+epicsEnvSet("R",               "$(SM_R=MC-MCU-19:Mtr1)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",            "$(SM_DESC=Lower=Right)")
+epicsEnvSet("AXISCONFIG",      "HomProc=1;HomPos=-63;encoder=ADSPORT=501/.ADR.16#3040010,16#80000049,2,2")
 
 
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug-twincat-ads.iocsh
 
 
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=MC-MCU-19:Mtr2)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=2)")
-epicsEnvSet("DESC",          "$(SM_DESC=Upper=Left)")
-epicsEnvSet("AXISCONFIG",    "HomProc=2;HomPos=64;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2")
+epicsEnvSet("R",               "$(SM_R=MC-MCU-19:Mtr2)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
+epicsEnvSet("DESC",            "$(SM_DESC=Upper=Left)")
+epicsEnvSet("AXISCONFIG",      "HomProc=2;HomPos=64;encoder=ADSPORT=501/.ADR.16#3040010,16#8000004F,2,2")
 
 < ethercatmcAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 
 ## Logical axes and slit
-epicsEnvSet("SLIT",          "$(SM_SLIT=MC-SLT-01:SltH-)")
-epicsEnvSet("mXp",           "$(SM_mXp=MC-MCU-02:m2)")
-epicsEnvSet("mXn",           "$(SM_mXp=MC-MCU-02:m1)")
+epicsEnvSet("SLIT",            "$(SM_SLIT=MC-SLT-01:SltH-)")
+epicsEnvSet("mXp",             "$(SM_mXp=MC-MCU-02:m2)")
+epicsEnvSet("mXn",             "$(SM_mXp=MC-MCU-02:m1)")
 
 ## Slit
 < ethercatmc2slit.iocsh

@@ -1,17 +1,17 @@
-epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=172.30.38.37)")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=48898)")
-epicsEnvSet("AMSNETIDIOC",   "172.30.38.12.1.1")
-epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=LabS-MCAG:MC-MCU-07:)")
-epicsEnvSet("MCUPFX",        "")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
-epicsEnvSet("SM_NOAXES",     "1")
-epicsEnvSet("ECM_OPTIONS",   "adsPort=852;amsNetIdRemote=192.168.88.57.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
+epicsEnvSet("MOTOR_PORT",      "$(SM_MOTOR_PORT=MCU1)")
+epicsEnvSet("IPADDR",          "$(SM_IPADDR=172.30.38.37)")
+epicsEnvSet("IPPORT",          "$(SM_IPPORT=48898)")
+epicsEnvSet("AMSNETIDIOC",     "172.30.38.12.1.1")
+epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("P",               "$(SM_P=LabS-MCAG:MC-MCU-07:)")
+epicsEnvSet("R",               "")
+epicsEnvSet("PREC",            "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",       "1")
+epicsEnvSet("ECM_OPTIONS",     "adsPort=852;amsNetIdRemote=192.168.88.57.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
 
 # Do not start the poller yet
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
-epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 
 < ethercatmcController.iocsh
 < ethercatmcEL6688-PTP.iocsh
@@ -21,11 +21,11 @@ epicsEnvSet("ECM_IDLEPOLLPERIOD",   "0")
 #
 # Axis 1
 #
-epicsEnvSet("AXISCONFIG",    "")
-epicsEnvSet("AXIS_NAME",    "$(SM_AXIS_NAME=m1)")
-epicsEnvSet("AXIS_NO",       "$(SM_AXIS_NO=1)")
-epicsEnvSet("DESC",          "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",           "$(SM_EGU=EGU)")
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m1)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
+epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
 epicsEnvSet("RAWENCSTEP_ADEL", 0)
 epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
@@ -38,15 +38,15 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcPLCopenStateMachine.iocsh
 
 # Predefined Positions
-epicsEnvSet("NVL",           "")
-epicsEnvSet("EGU",           "")
+epicsEnvSet("NVL",             "")
+epicsEnvSet("EGU",             "")
 < ethercatmcDefPos.iocsh
 < ethercatmcRawMtrEnc.iocsh
 
 
 #####################################################
 # EL1252, second channel, CHNO == 2
-epicsEnvSet("CHNO",     "2")
+epicsEnvSet("CHNO",            "2")
 < ethercatmcEL1252-OneChannel.iocsh
 
 
@@ -59,5 +59,5 @@ epicsEnvSet("CHNO",     "2")
 # Start polling, values are in millisconds
 #
 epicsEnvSet("MOVINGPOLLPERIOD", "9")
-epicsEnvSet("IDLEPOLLPERIOD",   "100")
+epicsEnvSet("IDLEPOLLPERIOD",  "100")
 ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")

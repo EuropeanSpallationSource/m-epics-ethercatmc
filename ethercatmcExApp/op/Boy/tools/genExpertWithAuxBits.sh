@@ -1,7 +1,7 @@
 #!/bin/sh
 
 STATUSBITS=StatusBits
-NAMAUXBIT=NamAuxBit
+NAMAUXBIT=NamBit
 # Name of the destination file
 FILE=$1
 shift
@@ -15,10 +15,14 @@ STATUSCODE='$(M)-StatusCode'
 STATUSBITS='$(M)-StatusBits'
 NAMAUXBIT='$(M)-NamAuxBit'
 case $BASENAME in
+  ethercatmcCabinet)
+    NAMAUXBIT='$(M)-CabinetNamBit'
+    yaux=18
+    ;;
   ethercatmcShutter)
     STATUSCODE='$(M)StatusCode'
     STATUSBITS='$(M)StatusBits'
-    NAMAUXBIT='$(M)NamAuxBit'
+    NAMAUXBIT='$(M)NamBit'
     yaux=298
     ;;
   ethercatmcaxisExpert)
@@ -28,7 +32,7 @@ case $BASENAME in
     yaux=18
     STATUSCODE=StatusCode
     STATUSBITS=PTPErrorStatus
-    NAMAUXBIT=PTPErrBitNam
+    NAMAUXBIT=PTPErrNamBit
     ;;
   ethercatmcStatusWord1802)
     yaux=18
@@ -238,7 +242,7 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     yaux=$(($yaux + 20))
     cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
     echo cmd=$cmd
-    eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamAuxBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>/tmp/$$
+    eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>/tmp/$$
   done
 touch "$FILE" &&
   chmod +w "$FILE" &&

@@ -1,8 +1,8 @@
 # Aux bit as binary record
-record(bi, "$(SYSPFX)$(AXIS_NAME)-AUXBIT$(AUX_BIT_NAME_R)") {
+record(bi, "$(P)$(R)-AUXBIT$(AUX_BIT_NAME_R)") {
     field(DESC, "AUXBIT$(AUX_BIT_NAME_R)")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBIT$(AUX_BIT_NAME_P)")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(AUX_BIT_NAME_P)")
     field(SCAN, "I/O Intr")
     field(ZNAM, "0")
     field(ONAM, "1")

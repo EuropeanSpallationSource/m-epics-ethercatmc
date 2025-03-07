@@ -65,8 +65,8 @@ RE_MATCH_DIGIT_IN_PARANTHES = re.compile(r"\(([0-9-]+)\)")
 # StatusCode 2021-12-14 16:47:39.780947 IDLE
 RE_MATCH_ALPHA = re.compile(r"([A-Z]+)")
 
-# LabS-MCAG:MC-MCU-07:m1-NamAuxBit0
-RE_MATCH_NAMAUXBIT = re.compile(r"(.*)(NamAuxBit)([0-9]+)$")
+# LabS-MCAG:MC-MCU-07:m1-NamBit0
+RE_MATCH_NAMAUXBIT = re.compile(r"(.*)(NamBit)([0-9]+)$")
 
 # 2021-12-16 15:08:01.163781 LabS-MCAG:MC-MCU-07:m1-StatusBits         9437185
 RE_MATCH_STATUSBITS = re.compile(r".*-StatusBits(-TSE)?$")

@@ -2,10 +2,10 @@
 # @type  STRING
 # File name for axis configuration, leave empty
 
-# @field SYSPFX
+# @field P
 # @type  STRING
 
-# @field AXIS_NAME
+# @field R
 # @type  STRING
 # m1, m2, m3, X, Y, Z
 
@@ -32,6 +32,6 @@
 
 ethercatmcCreateAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
 
-dbLoadRecords("ethercatmc.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), AXIS_NO=$(AXIS_NO), R=$(AXIS_NAME)-, MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) $(ECAXISFIELDINIT)")
+dbLoadRecords("ethercatmc.template", "P=$(P), R=$(R), AXIS_NO=$(AXIS_NO), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) $(ECAXISFIELDINIT)")
 
-dbLoadRecords("ethercatmcreadback.template", "SYSPFX=$(SYSPFX), AXIS_NAME=$(AXIS_NAME), R=$(AXIS_NAME)-, MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) ")
+dbLoadRecords("ethercatmcreadback.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYN_PORT=$(ASYN_PORT), AXIS_NO=$(AXIS_NO), DESC=$(DESC), PREC=$(PREC) ")

@@ -1,4 +1,4 @@
-record(int64in, "$(SYSPFX)$(MCUPFX)UTCEL1252P$(CHNO)")
+record(int64in, "$(P)$(R)UTCEL1252P$(CHNO)")
 {
     field(DTYP, "asynInt64")
     field(DESC, "UTC of raising edge")
@@ -8,7 +8,7 @@ record(int64in, "$(SYSPFX)$(MCUPFX)UTCEL1252P$(CHNO)")
     #field(TSE, -2)
 }
 
-record(int64in, "$(SYSPFX)$(MCUPFX)UTCEL1252N$(CHNO)")
+record(int64in, "$(P)$(R)UTCEL1252N$(CHNO)")
 {
     field(DTYP, "asynInt64")
     field(DESC, "UTC of falling edge")
@@ -18,9 +18,9 @@ record(int64in, "$(SYSPFX)$(MCUPFX)UTCEL1252N$(CHNO)")
     #field(TSE, -2)
 }
 
-#record(stringin, "$(SYSPFX)$(MCUPFX)DClockEL1252ASC") {
+#record(stringin, "$(P)$(R)DClockEL1252ASC") {
 #  field(DTYP, "Soft Timestamp")
-#  field(TSEL, "$(SYSPFX)$(MCUPFX)DClockEL1252 CP")
+#  field(TSEL, "$(P)$(R)DClockEL1252 CP")
 #  field(INP, "@%Y/%m/%d %H:%M:%S.%06f")
 #}
 

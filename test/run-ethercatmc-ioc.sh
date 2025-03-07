@@ -359,8 +359,8 @@ while test "$PARAM" != ""; do
 done
 
 # move old log file into logs
-if test -n "$SM_SYSPFX"; then
-  LOG_TXT=log-$(echo $SM_SYSPFX | sed -e "s/:$//g" | tr ":" "-").txt
+if test -n "$SM_P"; then
+  LOG_TXT=log-$(echo $SM_P | sed -e "s/:$//g" | tr ":" "-").txt
 else
   LOG_TXT=log-$MOTORCFG.txt
 fi

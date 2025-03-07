@@ -1440,7 +1440,7 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
       int function;
       asynStatus status;
       char auxBitname[64];
-      snprintf(auxBitname, sizeof(auxBitname), "%s_NamAuxBit%u", paramName, i);
+      snprintf(auxBitname, sizeof(auxBitname), "%s_NamBit%i", paramName, i);
       status = findParam(auxBitname, &function);
       if (status == asynSuccess) {
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,

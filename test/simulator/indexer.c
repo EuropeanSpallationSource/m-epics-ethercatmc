@@ -330,9 +330,31 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
      UNITCODE_NONE,
      AXISNO_NONE,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-     "SystemHealth#0",
-     {"Fuse", "Heater", "", "", "", "", "", "", "", "", "", "",
-      "",     "",       "", "", "", "", "", "", "", "", "", ""},
+     "Cabinet#0",
+     {"24VPSFailed",
+      "48VPSFailed",
+      "MCBError",
+      "SPDError",
+      "DoorOpen",
+      "FuseTripped",
+      "EStop",
+      "TempHigh",
+      "ECMasterErr",
+      "SlaveNotOP",
+      "SlaveMissing",
+      "CPULoadHigh",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""},
      0.0,
      0.0},
     /* device for discrete input with status word */
@@ -2645,8 +2667,7 @@ void indexerHandlePLCcycle(void) {
         }
       } break;
       case TYPECODE_STATUSWORD_1802: {
-        if (!strcmp("SystemHealth#0",
-                    indexerDeviceAbsStraction[devNum].devName)) {
+        if (!strcmp("Cabinet#0", indexerDeviceAbsStraction[devNum].devName)) {
           ; /* Nothing yet */
         } else {
           LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,

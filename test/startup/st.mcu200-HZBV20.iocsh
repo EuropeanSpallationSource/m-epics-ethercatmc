@@ -1,51 +1,51 @@
-epicsEnvSet("ECM_NUMAXES",   "12")
-epicsEnvSet("MOTOR_PORT",    "$(SM_MOTOR_PORT=MCU1)")
+epicsEnvSet("ECM_NUMAXES",     "12")
+epicsEnvSet("MOTOR_PORT",      "$(SM_MOTOR_PORT=MCU1)")
 
-epicsEnvSet("IPADDR",        "$(SM_IPADDR=127.0.0.1)")
-epicsEnvSet("IPPORT",        "$(SM_IPPORT=5000)")
-epicsEnvSet("ASYN_PORT",     "$(SM_ASYN_PORT=MC_CPU1)")
-epicsEnvSet("SYSPFX",        "$(SM_SYSPFX=HZB-V20:)")
-epicsEnvSet("P",             "$(SM_SYSPFX=HZB-V20:)")
-epicsEnvSet("MCUPFX",      "")
+epicsEnvSet("IPADDR",          "$(SM_IPADDR=127.0.0.1)")
+epicsEnvSet("IPPORT",          "$(SM_IPPORT=5000)")
+epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("P",               "$(SM_P=HZB-V20:)")
+epicsEnvSet("P",               "$(SM_P=HZB-V20:)")
+epicsEnvSet("R",               "")
 < ethercatmcController.iocsh
 
 # Common to all axes
-epicsEnvSet("EGU",           "$(SM_EGU=mm)")
-epicsEnvSet("PREC",          "$(SM_PREC=3)")
+epicsEnvSet("EGU",             "$(SM_EGU=mm)")
+epicsEnvSet("PREC",            "$(SM_PREC=3)")
 
 # Real motors and slit systems
 #########################
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
-epicsEnvSet("AXIS_NAME",    "MC-SLT-01:SltH-Center")
-epicsEnvSet("AXIS_NO",       "1")
-epicsEnvSet("DESC",          "H Center")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=0")
+epicsEnvSet("R",               "MC-SLT-01:SltH-Center")
+epicsEnvSet("AXIS_NO",         "1")
+epicsEnvSet("DESC",            "H Center")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
-epicsEnvSet("AXIS_NAME",    "MC-SLT-01:SltH-Gap")
-epicsEnvSet("AXIS_NO",       "2")
-epicsEnvSet("DESC",          "H Gap")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=0")
+epicsEnvSet("R",               "MC-SLT-01:SltH-Gap")
+epicsEnvSet("AXIS_NO",         "2")
+epicsEnvSet("DESC",            "H Gap")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
-epicsEnvSet("AXIS_NAME",    "MC-SLT-01:SltH-xp")
-epicsEnvSet("AXIS_NO",       "3")
-epicsEnvSet("DESC",          "H Pos Blade")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=0")
+epicsEnvSet("R",               "MC-SLT-01:SltH-xp")
+epicsEnvSet("AXIS_NO",         "3")
+epicsEnvSet("DESC",            "H Pos Blade")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
-epicsEnvSet("AXIS_NAME",    "MC-SLT-01:SltH-xn")
-epicsEnvSet("AXIS_NO",       "4")
-epicsEnvSet("DESC",          "H Neg Blade")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=0")
+epicsEnvSet("R",               "MC-SLT-01:SltH-xn")
+epicsEnvSet("AXIS_NO",         "4")
+epicsEnvSet("DESC",            "H Neg Blade")
 < ethercatmcAxis.iocsh
 
 #########################
 ## Logical axes and slit
-epicsEnvSet("SLIT",          "MC-SLT-01:SltH-")
-epicsEnvSet("mXc",           "Center")
-epicsEnvSet("mXg",           "Gap")
-epicsEnvSet("mXp",           "MC-SLT-01:SltH-xp")
-epicsEnvSet("mXn",           "MC-SLT-01:SltH-xn")
+epicsEnvSet("SLIT",            "MC-SLT-01:SltH-")
+epicsEnvSet("mXc",             "Center")
+epicsEnvSet("mXg",             "Gap")
+epicsEnvSet("mXp",             "MC-SLT-01:SltH-xp")
+epicsEnvSet("mXn",             "MC-SLT-01:SltH-xn")
 
 ## Slit
 < ethercatmcslitAvoidCollSoftlimits.iocsh
@@ -53,63 +53,63 @@ epicsEnvSet("mXn",           "MC-SLT-01:SltH-xn")
 
 # Real motors and slit systems
 #########################
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
-epicsEnvSet("AXIS_NAME",    "MC-SLT-01:SltV-Center")
-epicsEnvSet("AXIS_NO",       "5")
-epicsEnvSet("DESC",          "V Center")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=0")
+epicsEnvSet("R",               "MC-SLT-01:SltV-Center")
+epicsEnvSet("AXIS_NO",         "5")
+epicsEnvSet("DESC",            "V Center")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
-epicsEnvSet("AXIS_NAME",    "MC-SLT-01:SltV-Gap")
-epicsEnvSet("AXIS_NO",       "6")
-epicsEnvSet("DESC",          "V Gap")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=0")
+epicsEnvSet("R",               "MC-SLT-01:SltV-Gap")
+epicsEnvSet("AXIS_NO",         "6")
+epicsEnvSet("DESC",            "V Gap")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
-epicsEnvSet("AXIS_NAME",    "MC-SLT-01:SltV-xp")
-epicsEnvSet("AXIS_NO",       "7")
-epicsEnvSet("DESC",          "V Pos Blade")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=0")
+epicsEnvSet("R",               "MC-SLT-01:SltV-xp")
+epicsEnvSet("AXIS_NO",         "7")
+epicsEnvSet("DESC",            "V Pos Blade")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=0")
-epicsEnvSet("AXIS_NAME",    "MC-SLT-01:SltV-xn")
-epicsEnvSet("AXIS_NO",       "8")
-epicsEnvSet("DESC",          "V Neg Blade")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=0")
+epicsEnvSet("R",               "MC-SLT-01:SltV-xn")
+epicsEnvSet("AXIS_NO",         "8")
+epicsEnvSet("DESC",            "V Neg Blade")
 < ethercatmcAxis.iocsh
 
 #########################
 ## Logical axes and slit
-epicsEnvSet("SLIT",          "MC-SLT-01:SltV-")
-epicsEnvSet("mXc",           "Center")
-epicsEnvSet("mXg",           "Gap")
-epicsEnvSet("mXp",           "MC-SLT-01:SltV-xp")
-epicsEnvSet("mXn",           "MC-SLT-01:SltV-xn")
+epicsEnvSet("SLIT",            "MC-SLT-01:SltV-")
+epicsEnvSet("mXc",             "Center")
+epicsEnvSet("mXg",             "Gap")
+epicsEnvSet("mXp",             "MC-SLT-01:SltV-xp")
+epicsEnvSet("mXn",             "MC-SLT-01:SltV-xn")
 
 ## Slit
 < ethercatmcslitAvoidCollSoftlimits.iocsh
 #########################
 
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1")
-epicsEnvSet("AXIS_NAME",    "MC-MCU-01:m9")
-epicsEnvSet("AXIS_NO",       "9")
-epicsEnvSet("DESC",          "Height 1")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=1")
+epicsEnvSet("R",               "MC-MCU-01:m9")
+epicsEnvSet("AXIS_NO",         "9")
+epicsEnvSet("DESC",            "Height 1")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=15")
-epicsEnvSet("AXIS_NAME",    "MC-MCU-01:m10")
-epicsEnvSet("AXIS_NO",       "10")
-epicsEnvSet("DESC",          "Omega 2")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=15")
+epicsEnvSet("R",               "MC-MCU-01:m10")
+epicsEnvSet("AXIS_NO",         "10")
+epicsEnvSet("DESC",            "Omega 2")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=15")
-epicsEnvSet("AXIS_NAME",    "MC-MCU-01:m11")
-epicsEnvSet("AXIS_NO",       "11")
-epicsEnvSet("DESC",          "Kappa")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=15")
+epicsEnvSet("R",               "MC-MCU-01:m11")
+epicsEnvSet("AXIS_NO",         "11")
+epicsEnvSet("DESC",            "Kappa")
 < ethercatmcAxis.iocsh
 
-epicsEnvSet("AXISCONFIG",    "stepSize=1.0;HomProc=1;HomPos=-1.4")
-epicsEnvSet("AXIS_NAME",    "MC-MCU-01:m12")
-epicsEnvSet("AXIS_NO",       "12")
-epicsEnvSet("DESC",          "Lin3")
+epicsEnvSet("AXISCONFIG",      "stepSize=1.0;HomProc=1;HomPos=-1.4")
+epicsEnvSet("R",               "MC-MCU-01:m12")
+epicsEnvSet("AXIS_NO",         "12")
+epicsEnvSet("DESC",            "Lin3")
 < ethercatmcAxis.iocsh

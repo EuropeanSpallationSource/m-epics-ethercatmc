@@ -4,7 +4,7 @@
   <actions_from_pv>false</actions_from_pv>
   <wuid>39872d87:13e14015f61:d1a</wuid>
   <scripts />
-  <height>18</height>
+  <height>20</height>
   <name>Menu Button</name>
   <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
   <scale_options>
@@ -15,7 +15,7 @@
   <transparent>false</transparent>
   <pv_name></pv_name>
   <background_color>
-    <color red="0" green="0" blue="128" />
+    <color red="51" green="153" blue="0" />
   </background_color>
   <foreground_color>
     <color name="Gray_0" red="255" green="255" blue="255" />
@@ -26,9 +26,9 @@
   <font>
     <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
   </font>
-  <width>80</width>
+  <width>120</width>
   <border_style>6</border_style>
-  <label>PTPStatus</label>
+  <label>Cabinet</label>
   <rules />
   <pv_value />
   <border_width>1</border_width>
@@ -38,18 +38,18 @@
   <y>174</y>
   <actions hook="false" hook_all="false">
     <action type="OPEN_DISPLAY">
-      <path>ethercatmcPTPErrBits.opi</path>
+      <path>ethercatmcCabinet.opi</path>
       <macros>
         <include_parent_macros>true</include_parent_macros>
         <P>$(P)</P>
-        <R></R>
+        <R>Cabinet-</R>
       </macros>
       <replace>0</replace>
-      <description>$(P) (PTPErrorStatus)</description>
+      <description>$(P) (Cabinet)</description>
     </action>
   </actions>
   <y>0</y>
   <tooltip>$(pv_name)
     $(pv_value)</tooltip>
-  <x>0</x>
+  <x>360</x>
 </widget>
