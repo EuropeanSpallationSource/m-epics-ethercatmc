@@ -8,6 +8,7 @@ FILENAME... ethercatmcController.cpp
 #include <epicsExit.h>
 #include <epicsExport.h>
 #include <epicsThread.h>
+#include <epicsVersion.h>
 #include <iocsh.h>
 #include <math.h>
 #include <stdio.h>
@@ -25,6 +26,19 @@ FILENAME... ethercatmcController.cpp
 
 #ifndef ASYN_TRACE_INFO
 #define ASYN_TRACE_INFO 0x0040
+#endif
+
+#ifndef EPICS_VERSION_INT
+#define EPICS_VERSION_INT                                        \
+  VERSION_INT(EPICS_VERSION, EPICS_REVISION, EPICS_MODIFICATION, \
+              EPICS_PATCH_LEVEL)
+#endif
+
+#if EPICS_VERSION_INT < VERSION_INT(7, 0, 0, 0)
+epicsShareExtern volatile int interruptAccept;
+#else
+#include <dbCoreAPI.h>
+DBCORE_API extern volatile int interruptAccept;
 #endif
 
 const char *modNamEMC = "ethercatmc:: ";
@@ -949,9 +963,13 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
 asynStatus ethercatmcController::poll(void) {
   asynStatus status = asynSuccess;
 
-  asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
-            "%spoll ctrlLocal.initialPollDone=%d features_=0x%x\n", modNamEMC,
-            ctrlLocal.initialPollDone, features_);
+  asynPrint(
+      pasynUserController_, ASYN_TRACE_FLOW,
+      "%spoll interruptAccept=%d ctrlLocal.initialPollDone=%d features_=0x%x\n",
+      modNamEMC, interruptAccept, ctrlLocal.initialPollDone, features_);
+  if (!interruptAccept) {
+    return asynSuccess;
+  }
 
   ctrlLocal.callBackNeeded = 0;
   if (ctrlLocal.useADSbinary) {

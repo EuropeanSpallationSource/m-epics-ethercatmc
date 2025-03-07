@@ -4,20 +4,6 @@
 
 #include "ethercatmcIndexerAxis.h"
 
-#include <epicsVersion.h>
-#ifndef EPICS_VERSION_INT
-#define EPICS_VERSION_INT                                        \
-  VERSION_INT(EPICS_VERSION, EPICS_REVISION, EPICS_MODIFICATION, \
-              EPICS_PATCH_LEVEL)
-#endif
-
-#if EPICS_VERSION_INT < VERSION_INT(7, 0, 0, 0)
-epicsShareExtern volatile int interruptAccept;
-#else
-#include <dbCoreAPI.h>
-DBCORE_API extern volatile int interruptAccept;
-#endif
-
 #include <epicsThread.h>
 #include <errno.h>
 #include <math.h>
@@ -1128,7 +1114,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
   }
   if (drvlocal.clean.iTypCode == 0x5010 || drvlocal.clean.iTypCode == 0x1E04) {
-    if (!drvlocal.clean.hasPolledAllEnums && interruptAccept) {
+    if (!drvlocal.clean.hasPolledAllEnums) {
       drvlocal.clean.hasPolledAllEnums = readEnumsAndValueAndCallbackIntoMbbi();
     }
   }
