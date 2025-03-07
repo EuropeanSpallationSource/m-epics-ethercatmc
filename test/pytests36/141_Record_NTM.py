@@ -68,6 +68,10 @@ def moveVALnewRBVnewValNtmRtryDly(
         if velo > oldVELO:
             velo = oldVELO
         self.axisCom.put(".VELO", velo)
+    else:
+        testPassed = False
+        self.axisCom.putDbgStrToLOG("Failed lm" + str(tc_no), wait=True)
+        assert testPassed
 
     # Start a movement
     self.axisCom.put(".VAL", firstVal)
