@@ -289,15 +289,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
 #define PARAM_IDX_STEPS_PER_REV_FLOAT 222
 #define PARAM_IDX_MAX_VELO_FLOAT 223
 
-#define FEATURE_BITS_V1 (1)
-#define FEATURE_BITS_V2 (1 << 1)
-  //#define FEATURE_BITS_V3 (1 << 2)
-#define FEATURE_BITS_V4 (1 << 3)
-
-#define FEATURE_BITS_ADS (1 << 4)
-#define FEATURE_BITS_ECMC (1 << 5)
-#define FEATURE_BITS_SIM (1 << 6)
-
   ethercatmcController(const char *portName, const char *ethercatmcPortName,
                        int numAxes, double movingPollPeriod,
                        double idlePollPeriod, const char *optionStr);
@@ -321,7 +312,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                      asynStatus status);
   void setAlarmStatusSeverityFromStatusBits(int axisNo, int function,
                                             epicsUInt32 statusReasonAux);
-  int features_;
 
  protected:
   void udateMotorLimitsRO(int axisNo);
@@ -413,7 +403,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                             const char *name);
   asynStatus updateCfgValue(int axisNo_, int function, int newValue,
                             const char *name);
-  asynStatus getFeatures(int *pRet);
   asynStatus indexerInitialPoll(void);
   asynStatus indexerInitialPollv2(void);
   asynStatus indexerPoll(void);
@@ -494,13 +483,7 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     AmsNetidAndPortType remote;
     AmsNetidAndPortType local;
     unsigned adsport;
-    int useADSbinary;
     struct {
-      unsigned int stAxisStatus_V1 : 1;
-      unsigned int stAxisStatus_V2 : 1;
-      unsigned int bSIM : 1;
-      unsigned int bECMC : 1;
-      unsigned int bADS : 1;
       unsigned int bPILSv2 : 1;
     } supported;
     pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
