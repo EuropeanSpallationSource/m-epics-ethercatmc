@@ -16,8 +16,6 @@ DBD += ethercatmcSupport.dbd
 
 ethercatmcSupport_SRCS += ethercatmcADS.cpp
 ethercatmcSupport_SRCS += ethercatmcController.cpp
-ethercatmcSupport_SRCS += ethercatmcAxis.cpp
-ethercatmcSupport_SRCS += ethercatmcHelper.cpp
 ethercatmcSupport_SRCS += ethercatmcIndexer.cpp
 ethercatmcSupport_SRCS += ethercatmcIndexerV2.cpp
 ethercatmcSupport_SRCS += ethercatmcIndexerAxis.cpp

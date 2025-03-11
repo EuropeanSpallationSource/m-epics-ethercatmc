@@ -12,7 +12,6 @@ FILENAME...   ethercatmcController.h
 #include "asynMotorAxis.h"
 #include "asynMotorController.h"
 #include "ethercatmcADSdefs.h"
-#include "ethercatmcAxis.h"
 
 #define MAXCNTADSSTATUS 10
 
@@ -222,9 +221,6 @@ uint64_t netToUint64(const void *data, size_t lenInPlc);
 int64_t netToSint64(const void *data, size_t lenInPlc);
 void doubleToNet(const double value, void *data, size_t lenInPlc);
 void uintToNet(const unsigned value, void *data, size_t lenInPlc);
-int ethercatmcCreateAxis(const char *ethercatmcName, int axisNo, int axisFlags,
-                         const char *axisOptionsStr);
-
 asynStatus ethercatmcADSgetPlcMemoryUintFL(asynUser *pasynUser,
                                            unsigned indexOffset,
                                            unsigned *value, size_t lenInPlc,
@@ -325,8 +321,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                      asynStatus status);
   void setAlarmStatusSeverityFromStatusBits(int axisNo, int function,
                                             epicsUInt32 statusReasonAux);
-  ethercatmcAxis *getAxis(asynUser *pasynUser);
-  ethercatmcAxis *getAxis(int axisNo);
   int features_;
 
  protected:
@@ -641,7 +635,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     ctrlLocal.lockADSlineno = 0;                                   \
   } while (0)
 
-  friend class ethercatmcAxis;
   friend class ethercatmcIndexerAxis;
 };
 

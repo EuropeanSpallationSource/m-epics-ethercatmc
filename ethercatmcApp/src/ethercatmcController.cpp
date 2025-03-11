@@ -14,7 +14,6 @@ FILENAME... ethercatmcController.cpp
 #include <stdlib.h>
 #include <string.h>
 
-#include "ethercatmcAxis.h"
 #include "ethercatmcIndexerAxis.h"
 
 #ifdef ETHERCATMC_TCBSD
@@ -31,14 +30,13 @@ const char *modNamEMC = "ethercatmc:: ";
 
 const static char *const strethercatmcCreateController =
     "ethercatmcCreateController";
-const static char *const strethercatmcCreateAxisDef = "ethercatmcCreateAxis";
 const static char *const strethercatmcCreateIndexerAxisDef =
     "ethercatmcCreateIndexerAxis";
 const static char *const strethercatmcCreateAsynParamDef =
     "ethercatmcCreateAsynParam";
 const static char *const strethercatmcStartPollerDef = "ethercatmcStartPoller";
 
-const static char *const modulName = "ethercatmcAxis::";
+const static char *const modulName = "ethercatmc::";
 
 const static unsigned reportedFeatureBits =
     FEATURE_BITS_SIM | FEATURE_BITS_ECMC | FEATURE_BITS_V1 | FEATURE_BITS_V2 |
@@ -1139,21 +1137,6 @@ void ethercatmcController::report(FILE *fp, int level) {
   asynMotorController::report(fp, level);
 }
 
-/** Returns a pointer to an ethercatmcAxis object.
- * Returns NULL if the axis number encoded in pasynUser is invalid.
- * \param[in] pasynUser asynUser structure that encodes the axis index number.
- */
-ethercatmcAxis *ethercatmcController::getAxis(asynUser *pasynUser) {
-  return static_cast<ethercatmcAxis *>(asynMotorController::getAxis(pasynUser));
-}
-
-/** Returns a pointer to an ethercatmcAxis object.
- * Returns NULL if the axis number encoded in pasynUser is invalid.
- * \param[in] axisNo Axis index number. */
-ethercatmcAxis *ethercatmcController::getAxis(int axisNo) {
-  return static_cast<ethercatmcAxis *>(asynMotorController::getAxis(axisNo));
-}
-
 /** Code for iocsh registration */
 static const iocshArg ethercatmcCreateControllerArg0 = {"Port name",
                                                         iocshArgString};
@@ -1178,22 +1161,18 @@ static void ethercatmcCreateContollerCallFunc(const iocshArgBuf *args) {
                              args[3].ival, args[4].ival, args[5].sval);
 }
 
-/* ethercatmcCreateAxis */
-static const iocshArg ethercatmcCreateAxisArg0 = {"Controller port name",
-                                                  iocshArgString};
-static const iocshArg ethercatmcCreateAxisArg1 = {"Axis number", iocshArgInt};
-static const iocshArg ethercatmcCreateAxisArg2 = {"axisFlags", iocshArgInt};
-static const iocshArg ethercatmcCreateAxisArg3 = {"axisOptionsStr",
-                                                  iocshArgString};
-static const iocshArg *const ethercatmcCreateAxisArgs[] = {
-    &ethercatmcCreateAxisArg0, &ethercatmcCreateAxisArg1,
-    &ethercatmcCreateAxisArg2, &ethercatmcCreateAxisArg3};
+/* iocsh commands */
+static const iocshArg ethercatmcCreateIndexerAxisArg0 = {"Controller port name",
+                                                         iocshArgString};
+static const iocshArg ethercatmcCreateIndexerAxisArg1 = {"Axis number",
+                                                         iocshArgInt};
+static const iocshArg ethercatmcCreateIndexerAxisArg2 = {"axisFlags",
+                                                         iocshArgInt};
+static const iocshArg ethercatmcCreateIndexerAxisArg3 = {"axisOptionsStr",
+                                                         iocshArgString};
 static const iocshArg *const ethercatmcCreateIndexerAxisArgs[] = {
-    &ethercatmcCreateAxisArg0, &ethercatmcCreateAxisArg1,
-    &ethercatmcCreateAxisArg2, &ethercatmcCreateAxisArg3};
-
-static const iocshFuncDef ethercatmcCreateAxisDef = {
-    strethercatmcCreateAxisDef, 4, ethercatmcCreateAxisArgs};
+    &ethercatmcCreateIndexerAxisArg0, &ethercatmcCreateIndexerAxisArg1,
+    &ethercatmcCreateIndexerAxisArg2, &ethercatmcCreateIndexerAxisArg3};
 
 static const iocshFuncDef ethercatmcCreateIndexerAxisDef = {
     strethercatmcCreateIndexerAxisDef, 4, ethercatmcCreateIndexerAxisArgs};
@@ -1221,11 +1200,9 @@ static const iocshArg *const ethercatmcStartPollerArgs[] = {
 
 static const iocshFuncDef ethercatmcCreateAsynParamDef = {
     strethercatmcCreateAsynParamDef, 3, ethercatmcCreateAsynParamArgs};
+
 static const iocshFuncDef ethercatmcStartPollerDef = {
     strethercatmcStartPollerDef, 3, ethercatmcStartPollerArgs};
-static void ethercatmcCreateAxisCallFunc(const iocshArgBuf *args) {
-  ethercatmcCreateAxis(args[0].sval, args[1].ival, args[2].ival, args[3].sval);
-}
 
 static void ethercatmcCreateIndexerAxisCallFunc(const iocshArgBuf *args) {
   ethercatmcCreateIndexerAxis(args[0].sval, args[1].ival, args[2].ival,
@@ -1243,7 +1220,6 @@ static void ethercatmcStartPollerCallFunc(const iocshArgBuf *args) {
 static void ethercatmcControllerRegister(void) {
   iocshRegister(&ethercatmcCreateControllerDef,
                 ethercatmcCreateContollerCallFunc);
-  iocshRegister(&ethercatmcCreateAxisDef, ethercatmcCreateAxisCallFunc);
   iocshRegister(&ethercatmcCreateIndexerAxisDef,
                 ethercatmcCreateIndexerAxisCallFunc);
   iocshRegister(&ethercatmcCreateAsynParamDef,

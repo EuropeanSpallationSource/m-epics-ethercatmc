@@ -4,6 +4,10 @@
 #include <ethercatmcController.h>
 #include <stdint.h>
 
+#define AMPLIFIER_ON_FLAG_CREATE_AXIS (1)
+#define AMPLIFIER_ON_FLAG_AUTO_ON (1 << 1)
+#define AMPLIFIER_ON_FLAG_USING_CNEN (1 << 2)
+
 /* Parameter interface */
 /* The highest 3 bits are used for the command itself */
 #define PARAM_IF_CMD_MASK 0xE000
