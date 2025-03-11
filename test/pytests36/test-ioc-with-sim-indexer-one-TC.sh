@@ -71,7 +71,7 @@ echo =====
 # compile simulator
 (cd ../simulator && make) &&
   # start simulator
-  (cd .. && ./run-ethercatmc-simulator.sh) &
+  (cd .. && ./run-ethercatmc-simulator.sh | sed -e 's/^/SIM:/g') &
 SIMULATOR_PID=$!
 
 XXPVNAME=$(echo $1 | sed -e 's!.*://\(.*\)!\1!')
@@ -96,13 +96,14 @@ date
     # -l only, MacOs
     IOC_NC_PARAM="-l"
   fi
-  nc ${IOC_NC_PARAM} ${IOC_NC_PORT} | /bin/sh -e -x ./run-ethercatmc-ioc.sh --no-make sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1
+  nc ${IOC_NC_PARAM} ${IOC_NC_PORT} |
+    /bin/sh -e -x ./run-ethercatmc-ioc.sh --no-make sim-indexer 127.0.0.1:48898 127.0.0.1.1.1 128.0.0.1.1.1
 ) &
 IOC_PID=$!
 sleep 10
 date
 
-./runTests.sh "$@"
+./runTests.sh "$@" | sed -e 's/^/PYT:/g'
 exitCode=$?
 
 kill -9 $IOC_PID || :
