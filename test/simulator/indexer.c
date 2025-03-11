@@ -1739,6 +1739,7 @@ static void init(void) {
 
   LOGINFO3("%s/%s:%d offsetIndexer=%u\n", __FILE__, __FUNCTION__, __LINE__,
            offsetIndexer);
+  setCabinetStatus(idxStatusCodeIDLE << 28);
   initDone = 1;
 }
 
@@ -2668,7 +2669,9 @@ void indexerHandlePLCcycle(void) {
       } break;
       case TYPECODE_STATUSWORD_1802: {
         if (!strcmp("Cabinet#0", indexerDeviceAbsStraction[devNum].devName)) {
-          ; /* Nothing yet */
+          unsigned value = getCabinetStatus();
+          UINTTONET(value,
+                    netData.memoryStruct.statusWord1802[0].statusReasonAux32);
         } else {
           LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,

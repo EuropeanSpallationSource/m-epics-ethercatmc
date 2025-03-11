@@ -70,7 +70,7 @@
     <height_scalable>true</height_scalable>
     <keep_wh_ratio>false</keep_wh_ratio>
   </scale_options>
-  <format_type>1</format_type>
+  <format_type>3</format_type>
   <precision_from_pv>true</precision_from_pv>
   <transparent>false</transparent>
   <pv_name>$(P)Cabinet</pv_name>
@@ -88,7 +88,7 @@
   <font>
     <fontdata fontName="Sans" height="11" style="0" />
   </font>
-  <width>116</width>
+  <width>80</width>
   <border_style>0</border_style>
   <rules />
   <pv_value />

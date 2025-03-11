@@ -116,6 +116,7 @@ static const char *const ADSPORT_equals_str = "ADSPORT=";
 static const char *const Main_dot_str = "Main.";
 static const char *const MAIN_dot_str = "MAIN.";
 static const char *const getAxisDebugInfoData_str = "getAxisDebugInfoData";
+static const char *const nCabinet_str = "nCabinet";
 
 static const char *seperator_seperator = ";";
 
@@ -877,6 +878,17 @@ static void motorHandleOneArg(const char *myarg_1) {
     }
   }
 
+  if (!strncmp(myarg_1, nCabinet_str, strlen(nCabinet_str))) {
+    /* nCabinet=0x5 */
+    nvals = sscanf(myarg_1, "nCabinet=0x%x", &iValue);
+    if (nvals == 1) {
+      setCabinetStatus(iValue);
+      cmd_buf_printf("OK");
+    } else {
+      cmd_buf_printf("Error: nCabinet=0x%%d");
+    }
+    return;
+  }
   /* Main.*/
   if (!strncmp(myarg_1, Main_dot_str, strlen(Main_dot_str))) {
     myarg_1 += strlen(Main_dot_str);

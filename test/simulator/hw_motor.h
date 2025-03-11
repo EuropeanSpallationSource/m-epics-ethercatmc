@@ -52,6 +52,9 @@ void hw_motor_init_fl(const char *file, int line_no, int axis_no,
                       size_t motor_init_len);
 #define hw_motor_init(a, b, c) hw_motor_init_fl(__FILE__, __LINE__, a, b, c)
 
+unsigned getCabinetStatus(void);
+void setCabinetStatus(unsigned);
+
 double getMaxVelocity(int axis_no);
 void setMaxVelocity(int axis_no, double value);
 double getMaxAcceleration(int axis_no);

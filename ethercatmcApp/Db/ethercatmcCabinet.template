@@ -1,9 +1,9 @@
 record(longin, "$(P)$(R)")
 {
-    field(DTYP, "asynInt32")
+    field(DTYP, "asynUInt32Digital")
     field(DESC, "Cabinet")
-    field(EGU,  "ErrorStatusBits")
-    field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet")
+    field(EGU,  "CabinetBits")
+    field(INP,  "@asynMask($(MOTOR_PORT),0 0x3FFFFFF)Cabinet")
     field(SCAN, "I/O Intr")
 }
 

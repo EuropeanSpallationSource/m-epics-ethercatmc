@@ -1496,7 +1496,12 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
                 modNamEMC, statusBitsName, axisNo, numPilsAsynDevInfo, function,
                 statusBitsName, ethercatmcstrStatus(status), (int)status);
     }
-    if (status == asynSuccess) functionStatusBits = function;
+    if (status == asynSuccess) {
+      functionStatusBits = function;
+      // Needed to set the alarm state in poll (and trigger an alarm handling ?)
+      setAlarmStatusSeverityWrapper(axisNo, functionStatusBits,
+                                    asynDisconnected);
+    }
   }
 
   if (!lenInPLC && !statusOffset) {
@@ -1667,9 +1672,15 @@ asynStatus ethercatmcController::indexerPoll(void) {
             }
             setUIntDigitalParam(axisNo, functionStatusBits,
                                 (epicsUInt32)statusReasonAux, 0xFFFFFFFF);
+            if (functionStatusBits) {
+              setAlarmStatusSeverityFromStatusBits(axisNo, functionStatusBits,
+                                                   statusReasonAux);
+            }
           }
-          setAlarmStatusSeverityFromStatusBits(axisNo, function,
-                                               statusReasonAux);
+          if (function) {
+            setAlarmStatusSeverityFromStatusBits(axisNo, function,
+                                                 statusReasonAux);
+          }
         }
         if (!inputOffset) continue;
 
@@ -2007,6 +2018,11 @@ void ethercatmcController::indexerDisconnected(void) {
       setAlarmStatusSeverityWrapper(pPilsAsynDevInfo->axisNo,
                                     pPilsAsynDevInfo->function,
                                     asynDisconnected);
+      if (pPilsAsynDevInfo->functionStatusBits) {
+        setAlarmStatusSeverityWrapper(pPilsAsynDevInfo->axisNo,
+                                      pPilsAsynDevInfo->functionStatusBits,
+                                      asynDisconnected);
+      }
 
       {
         int axisNo = pPilsAsynDevInfo->axisNo;

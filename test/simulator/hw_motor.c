@@ -97,6 +97,7 @@ typedef struct {
   double nxtMoveVelocity;
 } motor_axis_type;
 
+static unsigned cabinetStatus;
 static char init_done[MAX_AXES];
 static motor_axis_type motor_axis[MAX_AXES];
 static motor_axis_type motor_axis_last[MAX_AXES];
@@ -214,6 +215,12 @@ static void init_axis(int axis_no) {
     hw_motor_init(axis_no, &motor_init_values, sizeof(motor_init_values));
     init_done[axis_no] = 1;
   }
+}
+
+unsigned getCabinetStatus(void) { return cabinetStatus; }
+void setCabinetStatus(unsigned value) {
+  LOGTIME3("%s old=0x%08x value=0x%08x\n", __FUNCTION__, cabinetStatus, value);
+  cabinetStatus = value;
 }
 
 double getMaxVelocity(int axis_no) {
