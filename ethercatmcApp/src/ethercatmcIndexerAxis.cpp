@@ -657,27 +657,20 @@ int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
                                      sizeof(drvlocal.clean.PILSparamPerm[0]));
        paramIndex++) {
     if (drvlocal.clean.enumparam_read_id[paramIndex]) {
-      unsigned enumparam_read_id = drvlocal.clean.enumparam_read_id[paramIndex];
-      status = pC_->indexerV3readParameterEnums(
-          this, paramIndex, enumparam_read_id, drvlocal.clean.lenInPlcPara);
       /* We must read the enums before reading the value
          If reading ths enum fails, do not read the value */
+      status = pC_->indexerParamRead(this, drvlocal.clean.paramIfOffset,
+                                     paramIndex, &paramfValue);
       if (!status) {
-        status = pC_->indexerParamRead(this, drvlocal.clean.paramIfOffset,
-                                       paramIndex, &paramfValue);
-        if (!status) {
-          int initial = 1;
-          pC_->parameterFloatReadBack(axisNo_, initial, paramIndex,
-                                      paramfValue);
-        } else {
-          asynPrint(
-              pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s readEnumsAndValueAndCallbackIntoMbbi(%d) paramIdx=%s (%u)"
-              " status=%s (%d)\n",
-              modNamEMC, axisNo_,
-              pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_),
-              paramIndex, ethercatmcstrStatus(status), (int)status);
-        }
+        int initial = 1;
+        pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, paramfValue);
+      } else {
+        asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                  "%s readEnumsAndValueAndCallbackIntoMbbi(%d) paramIdx=%s (%u)"
+                  " status=%s (%d)\n",
+                  modNamEMC, axisNo_,
+                  pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_),
+                  paramIndex, ethercatmcstrStatus(status), (int)status);
       }
       if (status) {
         /* reading failed, try again later */

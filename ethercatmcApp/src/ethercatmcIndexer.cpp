@@ -977,8 +977,6 @@ asynStatus ethercatmcController::indexerReadAxisParameters(
   unsigned paramIfOffset = pAxis->drvlocal.clean.paramIfOffset;
   if (ctrlLocal.supported.bPILSv2) {
     status = indexerReadAxisParametersV2(pAxis, devNum);
-  } else if (ctrlLocal.supported.bPILSv3) {
-    status = asynSuccess; /* see indexerV3readParameterDescriptors() */
   }
   if (status) return status;
   /* loop through all parameters.
@@ -1155,10 +1153,6 @@ asynStatus ethercatmcController::indexerInitialPoll(void) {
       ctrlLocal.supported.bPILSv2 = 1;
       version = "2015.02";
       status = indexerInitialPollv2();
-    } else if (iTmpVer == 0x44fca2e1) {
-      ctrlLocal.supported.bPILSv3 = 1;
-      version = "2021.09";
-      status = indexerInitialPollv3();
     } else {
       status = asynDisabled;
     }

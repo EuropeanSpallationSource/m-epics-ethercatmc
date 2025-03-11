@@ -295,7 +295,7 @@ class epicsShareClass ethercatmcController : public asynMotorController {
 
 #define FEATURE_BITS_V1 (1)
 #define FEATURE_BITS_V2 (1 << 1)
-#define FEATURE_BITS_V3 (1 << 2)
+  //#define FEATURE_BITS_V3 (1 << 2)
 #define FEATURE_BITS_V4 (1 << 3)
 
 #define FEATURE_BITS_ADS (1 << 4)
@@ -401,30 +401,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
 #define readDeviceIndexerV2(a, b, c, d) \
   readDeviceIndexerV2FL(a, b, c, d, __FILE__, __LINE__)
 
-  asynStatus readMailboxV3FL(unsigned mbxNum, void *bufptr, size_t buflen,
-                             const char *fileName, int lineNo);
-#define readMailboxV3(a, b, c) readMailboxV3FL(a, b, c, __FILE__, __LINE__)
-
-  asynStatus indexerV3readParameterEnums(ethercatmcIndexerAxis *pAxis,
-                                         unsigned parameterIndex,
-                                         unsigned enumparam_read_id,
-                                         unsigned defaultLenInPlcPara);
-
-  asynStatus indexerV3readParameterDescriptors(
-      ethercatmcIndexerAxis *pAxis, unsigned descID,
-      unsigned target_param_descriptor_id, unsigned defaultLenInPlcPara);
-  asynStatus indexerV3readAuxbits(ethercatmcIndexerAxis *pAxis,
-                                  unsigned descID);
-  asynStatus indexerV3addDevice(unsigned devNum, int axisNo,
-                                unsigned iOffsBytes,
-                                unsigned string_description_id,
-                                unsigned target_param_descriptor_id,
-                                unsigned auxbits_bitfield_flag_descriptor_id,
-                                unsigned parameters_descriptor_id,
-                                unsigned enum_errorId_descriptor_id,
-                                unsigned type_code, unsigned device_offset,
-                                unsigned device_flags, const char *device_name);
-
   int paramIndexToFunction(unsigned paramIndex, int axisNo);
   const char *plcParamIndexTxtFromParamIndex(unsigned paramIndex, int AxisNo);
   void parameterFloatReadBack(unsigned axisNo, int initial, unsigned paramIndex,
@@ -439,10 +415,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                      unsigned iAllFlags, int functionNamAux0,
                                      double fAbsMin, double fAbsMax,
                                      unsigned iOffset);
-  asynStatus newIndexerAxisV3(ethercatmcIndexerAxis *pAxis,
-                              unsigned target_param_descriptor_id,
-                              unsigned auxbits_bitfield_flag_descriptor_id,
-                              unsigned parameters_descriptor_id);
   asynStatus updateCfgValue(int axisNo_, int function, double newValue,
                             const char *name);
   asynStatus updateCfgValue(int axisNo_, int function, int newValue,
@@ -450,7 +422,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
   asynStatus getFeatures(int *pRet);
   asynStatus indexerInitialPoll(void);
   asynStatus indexerInitialPollv2(void);
-  asynStatus indexerInitialPollv3(void);
   asynStatus indexerPoll(void);
   void indexerSystemUTCtime(int function, epicsTimeStamp *pTimePTP_MCU);
   void indexerPTPdiffXYtime(int functionRd, int indexRd, int indexWr,
@@ -537,7 +508,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
       unsigned int bECMC : 1;
       unsigned int bADS : 1;
       unsigned int bPILSv2 : 1;
-      unsigned int bPILSv3 : 1;
     } supported;
     pilsAsynDevInfo_type pilsAsynDevInfo[50]; /* TODO: dynamic allocation */
     unsigned numPilsAsynDevInfo;
