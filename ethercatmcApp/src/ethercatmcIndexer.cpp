@@ -1038,12 +1038,7 @@ asynStatus ethercatmcController::indexerReadAxisParameters(
         /* Some parameters are functions: Don't read them.
            tell driver that the function exist
            But read 142, which becomes JVEL */
-        if (pAxis->drvlocal.clean.enumparam_read_id[paramIndex]) {
-          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%sparameters(%d) paramIdx=%s (%u) has enums\n", modNamEMC,
-                    axisNo, plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
-                    paramIndex);
-        } else if (paramIndexIsReadLaterInBackground(paramIndex)) {
+        if (paramIndexIsReadLaterInBackground(paramIndex)) {
           asynPrint(
               pasynUserController_, ASYN_TRACE_INFO,
               "%sparameters(%d) paramIdx=%s (%u) only polled in background\n",
