@@ -4,17 +4,28 @@ require ethercatmc
 #iocshLoad("$(essioc_DIR)/common_config.iocsh")
 epicsEnvSet("MOTOR_PORT",      "MCU1")
 epicsEnvSet("IPADDR",          "10.102.10.22")
+#epicsEnvSet("IPADDR",          "127.0.0.1")
 epicsEnvSet("IPPORT",          "48898")
 epicsEnvSet("AMSNETIDIOC",     "10.102.10.45.1.1")
+#epicsEnvSet("AMSNETIDIOC",     "127.0.0.1.1.1")
 epicsEnvSet("ASYN_PORT",       "MC_CPU1")
 epicsEnvSet("P",               "YMIR-")
-epicsEnvSet("REG_NAME",        "MCS2:MC-MCU-02:")
+epicsEnvSet("R",               "MCS2:MC-MCU-02:")
 epicsEnvSet("PREC",            "3")
 epicsEnvSet("ECM_NUMAXES",     "20")
 epicsEnvSet("ECM_OPTIONS",     "adsPort=852;amsNetIdRemote=10.102.10.22.1.1;amsNetIdLocal=$(AMSNETIDIOC)")
 epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
 epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
 < ethercatmcController.iocsh
+
+# Cabinet status
+#
+epicsEnvSet("AXIS_NO",         "0")
+epicsEnvSet("R",               "Cabinet")
+epicsEnvSet("DESC",            "Cabinet")
+epicsEnvSet("EGU",             "Cabinet")
+< ethercatmcCabinet.iocsh
+
 #
 # AXIS 1
 #
