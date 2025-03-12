@@ -226,10 +226,6 @@ asynStatus ethercatmcADSgetPlcMemoryUintFL(asynUser *pasynUser,
                                            unsigned *value, size_t lenInPlc,
                                            const char *fileName, int lineNo);
 asynStatus disconnect_C(asynUser *pasynUser);
-asynStatus writeReadOnErrorDisconnect_C(asynUser *pasynUser,
-                                        const char *outdata, size_t outlen,
-                                        char *indata, size_t inlen);
-asynStatus checkACK(const char *outdata, size_t outlen, const char *indata);
 const char *plcUnitTxtFromUnitCode(unsigned unitCode);
 int paramIndexIsIntegerV2(unsigned paramIndex);
 int paramIndexIsMovingFunction(unsigned paramIndex);
@@ -303,7 +299,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                    int *function);
   asynStatus ethercatmcStartPoller(double movingPollPeriod,
                                    double idlePollPeriod);
-  asynStatus writeReadOnErrorDisconnect(void);
   void setAlarmStatusSeverityAllReadbacks(asynStatus status);
   void setAlarmStatusSeverityAllAxes(int function, asynStatus status);
   void setAlarmStatusSeverityUpdate(int axisNo, int function, int newStat,
@@ -415,8 +410,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                     const epicsTimeStamp *pNTtime_MCU,
                                     const epicsTimeStamp *pTimePTP);
   void indexerDisconnected(void);
-  asynStatus writeReadControllerPrint(int traceMask);
-  asynStatus writeReadACK(int traceMask);
   asynStatus getPlcMemoryUintFL(unsigned indexOffset, unsigned *value,
                                 size_t lenInPlc, const char *fileName,
                                 int lineNo);
