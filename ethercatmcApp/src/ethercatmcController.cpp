@@ -407,8 +407,6 @@ ethercatmcController::ethercatmcController(const char *portName,
     char *pOptions = strdup(optionStr);
     char *pThisOption = pOptions;
     char *pNextOption = pOptions;
-    int hasRemoteAmsNetId = 0;
-    int hasLocalAmsNetId = 0;
     while (pNextOption && pNextOption[0]) {
       pNextOption = strchr(pNextOption, ';');
       if (pNextOption) {
@@ -438,7 +436,6 @@ ethercatmcController::ethercatmcController(const char *portName,
           ctrlLocal.adsport = amsRemotePort;
         }
         if (nvals >= 6) {
-          hasRemoteAmsNetId = 1;
           ams_netid_port.port_low = (uint8_t)ctrlLocal.adsport;
           ams_netid_port.port_high = (uint8_t)(ctrlLocal.adsport >> 8);
           memcpy(&ctrlLocal.remote, &ams_netid_port, sizeof(ctrlLocal.remote));
@@ -464,7 +461,6 @@ ethercatmcController::ethercatmcController(const char *portName,
                ams_netid_port.netID[3], ams_netid_port.netID[4],
                ams_netid_port.netID[5], ctrlLocal.adsport);
         if (nvals == 6) {
-          hasLocalAmsNetId = 1;
           ams_netid_port.port_low = (uint8_t)ctrlLocal.adsport;
           ams_netid_port.port_high = (uint8_t)(ctrlLocal.adsport >> 8);
           memcpy(&ctrlLocal.local, &ams_netid_port, sizeof(ctrlLocal.local));
