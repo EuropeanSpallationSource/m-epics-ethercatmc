@@ -87,5 +87,5 @@ jobs:
     - name: run python based tests
       run: |
           test/install-pytest-pyepics-p4p.sh
-          make -k -C test all-ca
+          make -k -C test all
       if: matrix.runpytests

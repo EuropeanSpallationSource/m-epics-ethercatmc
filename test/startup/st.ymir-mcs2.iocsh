@@ -44,7 +44,7 @@ epicsEnvSet("R",               "mcs2:MC-Spare-02:Mtr")
 epicsEnvSet("AXIS_NO",         "2")
 epicsEnvSet("RAWENCSTEP_ADEL", "0")
 epicsEnvSet("RAWENCSTEP_MDEL", "0")
-< ethercatmcIndexerAxis.iocsh
+g                              < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
 #
 # AXIS 3
@@ -240,7 +240,7 @@ epicsEnvSet("AXIS_NO",         "20")
 < ethercatmcShutter.iocsh
 
 epicsEnvSet("MOVINGPOLLPERIOD", "9")
-epicsEnvSet("IDLEPOLLPERIOD",  "100")
+epicsEnvSet("IDLEPOLLPERIOD",  "500")
 ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
 
 iocinit()

@@ -8,49 +8,6 @@
 #                     Only here we can simulate e.g. a motor that has "stuck" in a certain position
 #                     and triggers the retry-login in the motorRecord
 
-
-SIMULATOR-ONE-CA = \
-  900_Simulator-MRES_HLM_LLM_DHLM_DLLM.log-ca-m1\
-  901-Simulator-SPMG.log-ca-m1\
-  910_Simulator_JOG_BDST_RTRY_FRAC.log-ca-m1\
-  920_Simulator_RTRY_FRAC_RMOD.log-ca-m1\
-  921_Simulator_HLS_LLS_do-not_move-further.log-ca-m1\
-  930_Simulator_Vel-RB_Acc-RB.log-ca-m1\
-  931_Simulator-ACCL_ACCS_VELO_TWF.log-ca-m1\
-
-SIMULATOR-TWO-CA = \
-  940_Simulator-InputRecordAlarm.log-ca-m1\
-  941_Simulator-MsgTxt-ErrTxt.log-ca-m1\
-  942_Simulator_Cabinet.log-ca-m1\
-  950_Simulator-JOGF-JOGR-JVEL-MRES.log-ca-m1\
-  960_Simulator-motorFlags.log-ca-m1\
-  980_Simulator-networkproblems.log-ca-m1\
-
-
-RECORD-CA = \
-  100_Record-HOMF.log-ca-m1\
-  101_Record-VAL-HOMF-VAL.log-ca-m1\
-  121_Record-JOGF_DIR_DLY_HLM.log-ca-m1\
-  131_Record-JOGR_DIR_DLY_LLM.log-ca-m1\
-  140_Record-VAL_VMAX.log-ca-m1\
-  141_Record_NTM.log-ca-m1\
-  220_Ethercat-auto-power.log-ca-m1\
-  500_Record-DLY-STOP.log-ca-m1\
-
-
-ETHERCATMC-CA = \
-  010_Basic_Communication.log-ca-m1\
-  090_Ethercat-SmokeTest-TWF_CNEN.log-ca-m1\
-  110_Ethercat_HOMF_-ProcHom.log-ca-m1\
-  122_Ethercat-JOGF_HLS.log-ca-m1\
-  123_Ethercat-MoveVel_MCU_Hsoftlimit.log-ca-m1\
-  132_Ethercat-JOGR_LLS.log-ca-m1\
-  133_Ethercat_MoveVel_MCU_Lsoftlimit.log-ca-m1\
-  160-Ethercat-MoveAbs-STOP.log-ca-m1\
-  201_Ethercat-JOG-VAL-HOM-CNEN-No-Error.log-ca-m1\
-  240_Ethercat-JOGF_stopped.log-ca-m1\
-  400_Ethercat-JAR-ACCL-VAL-JOGF-HOMF.log-ca-m1\
-
 ##################################
 SIMULATOR-ONE-PVA = \
   900_Simulator-MRES_HLM_LLM_DHLM_DLLM.log-pva-m1\
@@ -94,61 +51,36 @@ ETHERCATMC-PVA = \
   240_Ethercat-JOGF_stopped.log-pva-m1\
   400_Ethercat-JAR-ACCL-VAL-JOGF-HOMF.log-pva-m1\
 
-
-all-pva: \
+#################################
+# The main target
+all: \
   $(RECORD-PVA) \
   $(ETHERCATMC-PVA) \
   $(SIMULATOR-ONE-PVA) \
   $(SIMULATOR-TWO-PVA) \
 
+# clean
+clean:
+	rm -f *.log* *.log*.failed [1-9]*.txt
 
-all-ca: \
-  $(RECORD-CA) \
-  $(ETHERCATMC-CA) \
-  $(SIMULATOR-ONE-CA) \
-  $(SIMULATOR-TWO-CA) \
+# targets called from ../Makefile
+record-pva:  $(RECORD-PVA)
+
+ethercatmc-pva: $(ETHERCATMC-PVA)
+
+simulator-one-pva: $(SIMULATOR-ONE-PVA)
+
+simulator-two-pva: $(SIMULATOR-TWO-PVA)
 
 monitor-ca-pva: \
   100_Record-HOMF.log-ca-m1\
   100_Record-HOMF.log-pva-m1\
 
-
-record-ca:  $(RECORD-CA)
-
-
-ethercatmc-ca: $(ETHERCATMC-CA)
-
-
-simulator-one-ca: $(SIMULATOR-ONE-CA)
-
-
-simulator-two-ca: $(SIMULATOR-TWO-CA)
-
-
+# rules for ca and pva
 %.log-ca-m1 : %.py
 	./test-ioc-with-sim-indexer-one-TC-wrapper.sh ca://IOC:m1 $< $@
-
-
-
-###################################################
-record-pva:  $(RECORD-PVA)
-
-
-ethercatmc-pva: $(ETHERCATMC-PVA)
-
-
-simulator-one-pva: $(SIMULATOR-ONE-PVA)
-
-
-simulator-two-pva: $(SIMULATOR-TWO-PVA)
-
 
 %.log-pva-m1 : %.py
 	./test-ioc-with-sim-indexer-one-TC-wrapper.sh pva://IOC:m1 $< $@
 
 
-
-
-
-clean:
-	rm -f *.log* *.log*.failed [1-9]*.txt
