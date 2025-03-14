@@ -21,6 +21,7 @@ SIMULATOR-ONE-CA = \
 SIMULATOR-TWO-CA = \
   940_Simulator-InputRecordAlarm.log-ca-m1\
   941_Simulator-MsgTxt-ErrTxt.log-ca-m1\
+  942_Simulator_Cabinet.log-ca-m1\
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-ca-m1\
   960_Simulator-motorFlags.log-ca-m1\
   980_Simulator-networkproblems.log-ca-m1\
@@ -63,6 +64,7 @@ SIMULATOR-ONE-PVA = \
 SIMULATOR-TWO-PVA = \
   940_Simulator-InputRecordAlarm.log-pva-m1\
   941_Simulator-MsgTxt-ErrTxt.log-pva-m1\
+  942_Simulator_Cabinet.log-pva-m1\
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-pva-m1\
   960_Simulator-motorFlags.log-pva-m1\
   980_Simulator-networkproblems.log-pva-m1\
