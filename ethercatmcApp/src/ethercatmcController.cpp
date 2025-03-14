@@ -15,7 +15,6 @@ FILENAME... ethercatmcController.cpp
 #include <stdlib.h>
 #include <string.h>
 
-#include "ethercatmcAxis.h"
 #include "ethercatmcIndexerAxis.h"
 
 #ifdef ETHERCATMC_TCBSD
@@ -45,18 +44,13 @@ const char *modNamEMC = "ethercatmc:: ";
 
 const static char *const strethercatmcCreateController =
     "ethercatmcCreateController";
-const static char *const strethercatmcCreateAxisDef = "ethercatmcCreateAxis";
 const static char *const strethercatmcCreateIndexerAxisDef =
     "ethercatmcCreateIndexerAxis";
 const static char *const strethercatmcCreateAsynParamDef =
     "ethercatmcCreateAsynParam";
 const static char *const strethercatmcStartPollerDef = "ethercatmcStartPoller";
 
-const static char *const modulName = "ethercatmcAxis::";
-
-const static unsigned reportedFeatureBits =
-    FEATURE_BITS_SIM | FEATURE_BITS_ECMC | FEATURE_BITS_V1 | FEATURE_BITS_V2 |
-    FEATURE_BITS_ADS;
+const static char *const modulName = "ethercatmc::";
 
 extern "C" double ethercatmcgetNowTimeSecs(void) {
   epicsTimeStamp nowTime;
@@ -229,7 +223,6 @@ ethercatmcController::ethercatmcController(const char *portName,
   memset(&defAsynPara, 0, sizeof(defAsynPara));
   ctrlLocal.oldStatus = asynError;  // asynDisconnected;
   ctrlLocal.cntADSstatus = 0;
-  features_ = 0;
   /* Outputs */
   createParam(ethercatmcDbgStrToMcuString, asynParamOctet,
               &defAsynPara.ethercatmcDbgStrToMcu_);
@@ -428,8 +421,6 @@ ethercatmcController::ethercatmcController(const char *portName,
     char *pOptions = strdup(optionStr);
     char *pThisOption = pOptions;
     char *pNextOption = pOptions;
-    int hasRemoteAmsNetId = 0;
-    int hasLocalAmsNetId = 0;
     while (pNextOption && pNextOption[0]) {
       pNextOption = strchr(pNextOption, ';');
       if (pNextOption) {
@@ -459,7 +450,6 @@ ethercatmcController::ethercatmcController(const char *portName,
           ctrlLocal.adsport = amsRemotePort;
         }
         if (nvals >= 6) {
-          hasRemoteAmsNetId = 1;
           ams_netid_port.port_low = (uint8_t)ctrlLocal.adsport;
           ams_netid_port.port_high = (uint8_t)(ctrlLocal.adsport >> 8);
           memcpy(&ctrlLocal.remote, &ams_netid_port, sizeof(ctrlLocal.remote));
@@ -485,7 +475,6 @@ ethercatmcController::ethercatmcController(const char *portName,
                ams_netid_port.netID[3], ams_netid_port.netID[4],
                ams_netid_port.netID[5], ctrlLocal.adsport);
         if (nvals == 6) {
-          hasLocalAmsNetId = 1;
           ams_netid_port.port_low = (uint8_t)ctrlLocal.adsport;
           ams_netid_port.port_high = (uint8_t)(ctrlLocal.adsport >> 8);
           memcpy(&ctrlLocal.local, &ams_netid_port, sizeof(ctrlLocal.local));
@@ -501,35 +490,14 @@ ethercatmcController::ethercatmcController(const char *portName,
       pThisOption = pNextOption;
     }
     free(pOptions);
-    if (hasRemoteAmsNetId && hasLocalAmsNetId) {
-      ctrlLocal.useADSbinary = 1;
-    }
   }
   asynPrint(this->pasynUserSelf, ASYN_TRACE_INFO, "%s optionStr=\"%s\"\n",
             modulName, optionStr ? optionStr : "NULL");
 
-  if (!(ctrlLocal.useADSbinary)) {
-    /* Set the EOS */
-    asynUser *pasynUser = pasynUserController_;
-    const char *pMyEos = ";\n";
-    status = pasynOctetSyncIO->setInputEos(pasynUser, pMyEos, strlen(pMyEos));
-    if (status) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%sstatus=%s (%d)\n", modNamEMC, ethercatmcstrStatus(status),
-                (int)status);
-    }
-    status = pasynOctetSyncIO->setOutputEos(pasynUser, pMyEos, strlen(pMyEos));
-    if (status) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%sstatus=%s (%d)\n", modNamEMC, ethercatmcstrStatus(status),
-                (int)status);
-    }
-  } else {
-    setAlarmStatusSeverityAllReadbacks(asynDisconnected);
-    if (movingPollPeriod && idlePollPeriod) {
-      /*  Find additional devices/asynParams */
-      poll();
-    }
+  setAlarmStatusSeverityAllReadbacks(asynDisconnected);
+  if (movingPollPeriod && idlePollPeriod) {
+    /*  Find additional devices/asynParams */
+    poll();
   }
   if (movingPollPeriod && idlePollPeriod) {
     startPoller(movingPollPeriod, idlePollPeriod, 2);
@@ -672,164 +640,6 @@ extern "C" asynStatus disconnect_C(asynUser *pasynUser) {
   return status;
 }
 
-extern "C" asynStatus writeReadOnErrorDisconnect_C(asynUser *pasynUser,
-                                                   const char *outdata,
-                                                   size_t outlen, char *indata,
-                                                   size_t inlen) {
-  size_t nwrite;
-  asynStatus status = asynError;
-  int eomReason = 0;
-  size_t nread;
-  status = pasynOctetSyncIO->writeRead(pasynUser, outdata, outlen, indata,
-                                       inlen, DEFAULT_CONTROLLER_TIMEOUT,
-                                       &nwrite, &nread, &eomReason);
-  if ((status == asynTimeout) || (!nread && (eomReason & ASYN_EOM_END))) {
-    asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-              "%s out=%s nread=%lu eomReason=%x (%s%s%s) status=%s (%d)\n",
-              modulName, outdata, (unsigned long)nread, eomReason,
-              eomReason & ASYN_EOM_CNT ? "CNT" : "",
-              eomReason & ASYN_EOM_EOS ? "EOS" : "",
-              eomReason & ASYN_EOM_END ? "END" : "",
-              ethercatmcstrStatus(status), status);
-    disconnect_C(pasynUser);
-    return asynError; /* TimeOut -> Error */
-  }
-  return status;
-}
-
-/** Writes a string to the controller and reads a response.
- * Disconnects in case of error
- */
-asynStatus ethercatmcController::writeReadOnErrorDisconnect(void) {
-  asynStatus status = asynError;
-  size_t outlen = strlen(outString_);
-  double timeBefore = ethercatmcgetNowTimeSecs();
-  inString_[0] = '\0';
-  status = writeReadOnErrorDisconnect_C(pasynUserController_, outString_,
-                                        outlen, inString_, sizeof(inString_));
-  if (!status) {
-    if (strstr(inString_, "State timout") ||
-        strstr(inString_, "To long time in one state")) {
-      double timeDelta = ethercatmcgetNowTimeSecs() - timeBefore;
-
-      asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%sout=%s in=%s timeDelta=%f\n", modNamEMC, outString_,
-                inString_, timeDelta);
-      /* Try again */
-      timeBefore = ethercatmcgetNowTimeSecs();
-      status =
-          writeReadOnErrorDisconnect_C(pasynUserController_, outString_, outlen,
-                                       inString_, sizeof(inString_));
-      timeDelta = ethercatmcgetNowTimeSecs() - timeBefore;
-      asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%sout=%s in=%s timeDelta=%f status=%s (%d)\n", modNamEMC,
-                outString_, inString_, timeDelta, ethercatmcstrStatus(status),
-                (int)status);
-    }
-  }
-  handleStatusChange(status);
-  if (status) {
-    return asynError;
-  }
-  return status;
-}
-
-extern "C" asynStatus checkACK(const char *outdata, size_t outlen,
-                               const char *indata) {
-  size_t i;
-  unsigned int numOK = 1;
-  int res = 1;
-  for (i = 0; i < outlen; i++) {
-    if (outdata[i] == ';') numOK++;
-  }
-  switch (numOK) {
-    case 1:
-      res = strcmp(indata, "OK");
-      break;
-    case 2:
-      res = strcmp(indata, "OK;OK");
-      break;
-    case 3:
-      res = strcmp(indata, "OK:OK;OK");
-      break;
-    case 4:
-      res = strcmp(indata, "OK;OK;OK;OK");
-      break;
-    default:;
-  }
-  return res ? asynError : asynSuccess;
-}
-
-asynStatus ethercatmcController::writeReadControllerPrint(int traceMask) {
-  asynStatus status = writeReadOnErrorDisconnect();
-  if (status && !ctrlLocal.oldStatus)
-    traceMask |= ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER;
-  asynPrint(pasynUserController_, traceMask, "%sout=%s in=%s status=%s (%d)\n",
-            modNamEMC, outString_, inString_, ethercatmcstrStatus(status),
-            (int)status);
-  return status;
-}
-
-asynStatus ethercatmcController::writeReadACK(int traceMask) {
-  asynStatus status = writeReadOnErrorDisconnect();
-  switch (status) {
-    case asynError:
-      return status;
-    case asynSuccess: {
-      const char *semicolon = &outString_[0];
-      unsigned int numOK = 1;
-      int res = 1;
-      while (semicolon && semicolon[0]) {
-        semicolon = strchr(semicolon, ';');
-        if (semicolon) {
-          numOK++;
-          semicolon++;
-        }
-      }
-      switch (numOK) {
-        case 1:
-          res = strcmp(inString_, "OK");
-          break;
-        case 2:
-          res = strcmp(inString_, "OK;OK");
-          break;
-        case 3:
-          res = strcmp(inString_, "OK:OK;OK");
-          break;
-        case 4:
-          res = strcmp(inString_, "OK;OK;OK;OK");
-          break;
-        case 5:
-          res = strcmp(inString_, "OK;OK;OK;OK;OK");
-          break;
-        case 6:
-          res = strcmp(inString_, "OK;OK;OK;OK;OK;OK");
-          break;
-        case 7:
-          res = strcmp(inString_, "OK;OK;OK;OK;OK;OK;OK");
-          break;
-        case 8:
-          res = strcmp(inString_, "OK;OK;OK;OK;OK;OK;OK;OK");
-          break;
-        default:;
-      }
-      if (res) {
-        status = asynError;
-        asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                  "%sout=%s in=%s return=%s (%d)\n", modNamEMC, outString_,
-                  inString_, ethercatmcstrStatus(status), (int)status);
-        return status;
-      }
-    }
-    default:
-      break;
-  }
-  asynPrint(pasynUserController_, traceMask, "%sout=%s in=%s status=%s (%d)\n",
-            modNamEMC, outString_, inString_, ethercatmcstrStatus(status),
-            (int)status);
-  return status;
-}
-
 void ethercatmcController::udateMotorLimitsRO(int axisNo) {
   double fValueHigh = 0.0, fValueLow = 0.0;
   int enabledHigh = 0, enabledLow = 0;
@@ -911,13 +721,10 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
       int axisNo;
       ctrlLocal.initialPollDone = 0;
       setAlarmStatusSeverityAllReadbacks(asynDisconnected);
-      if (ctrlLocal.useADSbinary) {
-        indexerDisconnected();
-      }
+      indexerDisconnected();
 
       /* Keep bits that are specified via options,
          clear bits that are fetched from the controller */
-      features_ &= ~reportedFeatureBits;
 #ifdef motorMessageTextString
       const char *pErrorMessage = "MCU Disconnected";
       if (pasynUserController_ && pasynUserController_->errorMessage[0]) {
@@ -963,43 +770,24 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
 asynStatus ethercatmcController::poll(void) {
   asynStatus status = asynSuccess;
 
-  asynPrint(
-      pasynUserController_, ASYN_TRACE_FLOW,
-      "%spoll interruptAccept=%d ctrlLocal.initialPollDone=%d features_=0x%x\n",
-      modNamEMC, interruptAccept, ctrlLocal.initialPollDone, features_);
-  if (!interruptAccept) {
-    return asynSuccess;
-  }
-
   ctrlLocal.callBackNeeded = 0;
-  if (ctrlLocal.useADSbinary) {
-    if (!ctrlLocal.initialPollDone) {
-      status = indexerInitialPoll();
-      if (!status) {
-        handleStatusChange(status);
-        ctrlLocal.initialPollDone = 1;
-      } else {
-        int i = 1;
-        while (i < numAxes_) {
-          setIntegerParam(i, motorStatusCommsError_, 1);
-          callParamCallbacks(i);
-          i++;
-        }
-      }
+  if (!ctrlLocal.initialPollDone) {
+    status = indexerInitialPoll();
+    if (!status) {
+      handleStatusChange(status);
+      ctrlLocal.initialPollDone = 1;
     } else {
-      status = indexerPoll();
-      if (status) {
-        handleStatusChange(status);
+      int i = 1;
+      while (i < numAxes_) {
+        setIntegerParam(i, motorStatusCommsError_, 1);
+        callParamCallbacks(i);
+        i++;
       }
     }
   } else {
-    if (!(features_ & reportedFeatureBits)) {
-      int reportedFeatures;
-      status = getFeatures(&reportedFeatures);
-      if (!status) {
-        features_ |= reportedFeatures;
-        ctrlLocal.initialPollDone = 1;
-      }
+    status = indexerPoll();
+    if (status) {
+      handleStatusChange(status);
     }
   }
   for (int axisNo = 0; axisNo < numAxes_; axisNo++) {
@@ -1020,11 +808,9 @@ asynStatus ethercatmcController::updateCfgValue(int axisNo_, int function,
     /* First time that we write the value after IOC restart
        ECMC configures everything from the iocshell, no need to
        do a print here */
-    if (!(features_ & FEATURE_BITS_ECMC)) {
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%supdateCfgValue(%d) %s=%f\n", modNamEMC, axisNo_, name,
-                newValue);
-    }
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%supdateCfgValue(%d) %s=%f\n", modNamEMC, axisNo_, name,
+              newValue);
   } else if (newValue != oldValue) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%supdateCfgValue(%d) old%s=%f new%s=%f\n", modNamEMC, axisNo_,
@@ -1040,14 +826,9 @@ asynStatus ethercatmcController::updateCfgValue(int axisNo_, int function,
   int oldValue;
   asynStatus status = getIntegerParam(axisNo_, function, &oldValue);
   if (status) {
-    /* First time that we write the value after IOC restart
-       ECMC configures everything from the iocshell, no need to
-       do a print here */
-    if (!((features_ & FEATURE_BITS_ECMC))) {
-      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%supdateCfgValue(%d) %s=%d\n", modNamEMC, axisNo_, name,
-                newValue);
-    }
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%supdateCfgValue(%d) %s=%d\n", modNamEMC, axisNo_, name,
+              newValue);
   } else if (newValue != oldValue) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%supdateCfgValue(%d) old%s=%d new%s=%d\n", modNamEMC, axisNo_,
@@ -1055,68 +836,6 @@ asynStatus ethercatmcController::updateCfgValue(int axisNo_, int function,
   }
   setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
   return setIntegerParam(axisNo_, function, newValue);
-}
-
-asynStatus ethercatmcController::getFeatures(int *pRet) {
-  /* The features we know about */
-  const char *const sim_str = "sim";
-  const char *const stECMC_str = "ecmc";
-  const char *const stV1_str = "stv1";
-  const char *const stV2_str = "stv2";
-  const char *const ads_str = "ads";
-  static const unsigned adsports[] = {851, 852, 853};
-  unsigned adsport_idx;
-  *pRet = 0;
-  int ret = 0;
-  for (adsport_idx = 0; adsport_idx < sizeof(adsports) / sizeof(adsports[0]);
-       adsport_idx++) {
-    unsigned adsport = adsports[adsport_idx];
-
-    asynStatus status = asynSuccess;
-    snprintf(outString_, sizeof(outString_), "ADSPORT=%u/.THIS.sFeatures?",
-             adsport);
-    inString_[0] = 0;
-    status = writeReadOnErrorDisconnect();
-    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%sout=%s in=%s status=%s (%d)\n", modNamEMC, outString_,
-              inString_, ethercatmcstrStatus(status), (int)status);
-    if (!status) {
-      /* loop through the features */
-      char *pAllFeatures = strdup(inString_);
-      char *pThisFeature = pAllFeatures;
-      char *pNextFeature = pAllFeatures;
-
-      while (pNextFeature && pNextFeature[0]) {
-        pNextFeature = strchr(pNextFeature, ';');
-        if (pNextFeature) {
-          *pNextFeature = '\0'; /* Terminate */
-          pNextFeature++;       /* Jump to (possible) next */
-        }
-        if (!strcmp(pThisFeature, sim_str)) {
-          ret |= FEATURE_BITS_SIM;
-        } else if (!strcmp(pThisFeature, stECMC_str)) {
-          ret |= FEATURE_BITS_ECMC;
-        } else if (!strcmp(pThisFeature, stV1_str)) {
-          ret |= FEATURE_BITS_V1;
-        } else if (!strcmp(pThisFeature, stV2_str)) {
-          ret |= FEATURE_BITS_V2;
-        } else if (!strcmp(pThisFeature, ads_str)) {
-          ret |= FEATURE_BITS_ADS;
-        }
-        pThisFeature = pNextFeature;
-      }
-      free(pAllFeatures);
-      if (ret) {
-        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%sout=%s in=%s ret=0x%x\n", modNamEMC, outString_, inString_,
-                  ret);
-        /* Found something useful on this adsport */
-        *pRet = ret;
-        return asynSuccess;
-      }
-    }
-  }
-  return asynError;
 }
 
 /** Called when asyn clients call pasynOctetSyncIO->write().
@@ -1157,21 +876,6 @@ void ethercatmcController::report(FILE *fp, int level) {
   asynMotorController::report(fp, level);
 }
 
-/** Returns a pointer to an ethercatmcAxis object.
- * Returns NULL if the axis number encoded in pasynUser is invalid.
- * \param[in] pasynUser asynUser structure that encodes the axis index number.
- */
-ethercatmcAxis *ethercatmcController::getAxis(asynUser *pasynUser) {
-  return static_cast<ethercatmcAxis *>(asynMotorController::getAxis(pasynUser));
-}
-
-/** Returns a pointer to an ethercatmcAxis object.
- * Returns NULL if the axis number encoded in pasynUser is invalid.
- * \param[in] axisNo Axis index number. */
-ethercatmcAxis *ethercatmcController::getAxis(int axisNo) {
-  return static_cast<ethercatmcAxis *>(asynMotorController::getAxis(axisNo));
-}
-
 /** Code for iocsh registration */
 static const iocshArg ethercatmcCreateControllerArg0 = {"Port name",
                                                         iocshArgString};
@@ -1196,22 +900,18 @@ static void ethercatmcCreateContollerCallFunc(const iocshArgBuf *args) {
                              args[3].ival, args[4].ival, args[5].sval);
 }
 
-/* ethercatmcCreateAxis */
-static const iocshArg ethercatmcCreateAxisArg0 = {"Controller port name",
-                                                  iocshArgString};
-static const iocshArg ethercatmcCreateAxisArg1 = {"Axis number", iocshArgInt};
-static const iocshArg ethercatmcCreateAxisArg2 = {"axisFlags", iocshArgInt};
-static const iocshArg ethercatmcCreateAxisArg3 = {"axisOptionsStr",
-                                                  iocshArgString};
-static const iocshArg *const ethercatmcCreateAxisArgs[] = {
-    &ethercatmcCreateAxisArg0, &ethercatmcCreateAxisArg1,
-    &ethercatmcCreateAxisArg2, &ethercatmcCreateAxisArg3};
+/* iocsh commands */
+static const iocshArg ethercatmcCreateIndexerAxisArg0 = {"Controller port name",
+                                                         iocshArgString};
+static const iocshArg ethercatmcCreateIndexerAxisArg1 = {"Axis number",
+                                                         iocshArgInt};
+static const iocshArg ethercatmcCreateIndexerAxisArg2 = {"axisFlags",
+                                                         iocshArgInt};
+static const iocshArg ethercatmcCreateIndexerAxisArg3 = {"axisOptionsStr",
+                                                         iocshArgString};
 static const iocshArg *const ethercatmcCreateIndexerAxisArgs[] = {
-    &ethercatmcCreateAxisArg0, &ethercatmcCreateAxisArg1,
-    &ethercatmcCreateAxisArg2, &ethercatmcCreateAxisArg3};
-
-static const iocshFuncDef ethercatmcCreateAxisDef = {
-    strethercatmcCreateAxisDef, 4, ethercatmcCreateAxisArgs};
+    &ethercatmcCreateIndexerAxisArg0, &ethercatmcCreateIndexerAxisArg1,
+    &ethercatmcCreateIndexerAxisArg2, &ethercatmcCreateIndexerAxisArg3};
 
 static const iocshFuncDef ethercatmcCreateIndexerAxisDef = {
     strethercatmcCreateIndexerAxisDef, 4, ethercatmcCreateIndexerAxisArgs};
@@ -1239,11 +939,9 @@ static const iocshArg *const ethercatmcStartPollerArgs[] = {
 
 static const iocshFuncDef ethercatmcCreateAsynParamDef = {
     strethercatmcCreateAsynParamDef, 3, ethercatmcCreateAsynParamArgs};
+
 static const iocshFuncDef ethercatmcStartPollerDef = {
     strethercatmcStartPollerDef, 3, ethercatmcStartPollerArgs};
-static void ethercatmcCreateAxisCallFunc(const iocshArgBuf *args) {
-  ethercatmcCreateAxis(args[0].sval, args[1].ival, args[2].ival, args[3].sval);
-}
 
 static void ethercatmcCreateIndexerAxisCallFunc(const iocshArgBuf *args) {
   ethercatmcCreateIndexerAxis(args[0].sval, args[1].ival, args[2].ival,
@@ -1261,7 +959,6 @@ static void ethercatmcStartPollerCallFunc(const iocshArgBuf *args) {
 static void ethercatmcControllerRegister(void) {
   iocshRegister(&ethercatmcCreateControllerDef,
                 ethercatmcCreateContollerCallFunc);
-  iocshRegister(&ethercatmcCreateAxisDef, ethercatmcCreateAxisCallFunc);
   iocshRegister(&ethercatmcCreateIndexerAxisDef,
                 ethercatmcCreateIndexerAxisCallFunc);
   iocshRegister(&ethercatmcCreateAsynParamDef,

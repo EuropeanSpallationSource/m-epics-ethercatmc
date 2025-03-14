@@ -600,10 +600,6 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function, int newValue,
 }
 
 int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
-  asynStatus status = asynSuccess;
-  unsigned paramIndex;
-  double paramfValue = 0.0;
-
   /* Our internal maximumum for AUX bits resulting in an mbbi */
 #define MAX_AUX_BIT_FOR_ENUM 8
 
@@ -638,42 +634,6 @@ int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
                        auxBitEnumsForAsyn.enumValues,
                        auxBitEnumsForAsyn.enumSeverities, numsAuxBitsForEnum,
                        pC_->defAsynPara.ethercatmcAuxBits07_, axisNo_);
-
-  for (paramIndex = 0; paramIndex < (sizeof(drvlocal.clean.PILSparamPerm) /
-                                     sizeof(drvlocal.clean.PILSparamPerm[0]));
-       paramIndex++) {
-    if (drvlocal.clean.enumparam_read_id[paramIndex]) {
-      unsigned enumparam_read_id = drvlocal.clean.enumparam_read_id[paramIndex];
-      status = pC_->indexerV3readParameterEnums(
-          this, paramIndex, enumparam_read_id, drvlocal.clean.lenInPlcPara);
-      /* We must read the enums before reading the value
-         If reading ths enum fails, do not read the value */
-      if (!status) {
-        status = pC_->indexerParamRead(this, drvlocal.clean.paramIfOffset,
-                                       paramIndex, &paramfValue);
-        if (!status) {
-          int initial = 1;
-          pC_->parameterFloatReadBack(axisNo_, initial, paramIndex,
-                                      paramfValue);
-        } else {
-          asynPrint(
-              pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%s readEnumsAndValueAndCallbackIntoMbbi(%d) paramIdx=%s (%u)"
-              " status=%s (%d)\n",
-              modNamEMC, axisNo_,
-              pC_->plcParamIndexTxtFromParamIndex(paramIndex, axisNo_),
-              paramIndex, ethercatmcstrStatus(status), (int)status);
-        }
-      }
-      if (status) {
-        /* reading failed, try again later */
-        return 0;
-      } else {
-        /* Once read succesfully, do not read again */
-        drvlocal.clean.enumparam_read_id[paramIndex] = 0;
-      }
-    }
-  }
   return 1;
 }
 
@@ -714,8 +674,7 @@ void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
         (paramfValue != drvlocal.clean.old_paramValue)) {
       /* The enums must have been read.
          Only read real parameters, not functions */
-      if (!drvlocal.clean.enumparam_read_id[paramIndex] &&
-          paramIndexIsParameterToPoll(paramIndex)) {
+      if (paramIndexIsParameterToPoll(paramIndex)) {
         int initial = 0;
         pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, paramfValue);
       }

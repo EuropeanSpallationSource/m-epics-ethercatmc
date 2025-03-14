@@ -4,6 +4,10 @@
 #include <ethercatmcController.h>
 #include <stdint.h>
 
+#define AMPLIFIER_ON_FLAG_CREATE_AXIS (1)
+#define AMPLIFIER_ON_FLAG_AUTO_ON (1 << 1)
+#define AMPLIFIER_ON_FLAG_USING_CNEN (1 << 2)
+
 /* Parameter interface */
 /* The highest 3 bits are used for the command itself */
 #define PARAM_IF_CMD_MASK 0xE000
@@ -139,8 +143,6 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       uint8_t
           pollNowParams[128]; /* 0 terminated list of parameters to be polled */
       PILSparamPermType PILSparamPerm[256];
-      uint16_t
-          enumparam_read_id[256]; /* parameter has enum defines in PILSv3 */
       uint8_t
           lenInPlcParaFloat[256]; /* 0 : not a float; 4: float; 8 : double */
       uint8_t lenInPlcParaInteger[256]; /* 0 : not an integer; 2: uint16 4:
