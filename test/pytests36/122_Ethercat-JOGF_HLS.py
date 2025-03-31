@@ -19,32 +19,6 @@ def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 
-def moveIntoLimitSwitch(
-    self,
-    tc_no,
-    movingMethod="",
-    paramWhileMove=False,
-    doDisableSoftLimit=True,
-    setInfiniteSoftLimit=False,
-):
-    msta = int(self.axisCom.get(".MSTA"))
-    if msta & self.axisMr.MSTA_BIT_HOMED:
-        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
-        passed = self.axisMr.moveIntoLS(
-            tc_no=tc_no,
-            direction=direction,
-            movingMethod=movingMethod,
-            paramWhileMove=paramWhileMove,
-            doDisableSoftLimit=doDisableSoftLimit,
-            setInfiniteSoftLimit=setInfiniteSoftLimit,
-        )
-        if passed:
-            self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
-        else:
-            self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
-        assert passed
-
-
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
     print(
@@ -67,25 +41,29 @@ class Test(unittest.TestCase):
     # high limit switch
     def test_TC_1222(self):
         tc_no = tc_no_base + 2
-        moveIntoLimitSwitch(self, tc_no, movingMethod="JOG")
+        self.axisMr.moveIntoLimitSwitchFromTestCase(
+            tc_no, direction=direction, movingMethod="JOG"
+        )
 
-    # high limit switch, disabling softlimts after the JOG
-    # had been started. This is not supported by our MCU SW
-    # def test_TC_1223(self):
-    #    tc_no = tc_no_base + 3
-    #    moveIntoLimitSwitch(self, tc_no, movingMethod="JOG", paramWhileMove=True)
+    # high limit switch via DVAL
+    def test_TC_1223(self):
+        tc_no = tc_no_base + 3
+        self.axisMr.moveIntoLimitSwitchFromTestCase(
+            tc_no, movingMethod="DVAL", setDLYfield=1.0
+        )
 
     # high limit switch via moveVel
     # had been started
     def test_TC_1224(self):
         tc_no = tc_no_base + 4
-        moveIntoLimitSwitch(self, tc_no, movingMethod="MoveVel")
+        self.axisMr.moveIntoLimitSwitchFromTestCase(
+            tc_no, direction=direction, movingMethod="MoveVel"
+        )
 
     # low limit switch via moveVel and "infinite" Soft limit
     def test_TC_1225(self):
         tc_no = tc_no_base + 5
-        moveIntoLimitSwitch(
-            self,
+        self.axisMr.moveIntoLimitSwitchFromTestCase(
             tc_no,
             movingMethod="MoveVel",
             doDisableSoftLimit=False,
