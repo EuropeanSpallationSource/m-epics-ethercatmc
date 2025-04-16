@@ -611,8 +611,11 @@ class AxisMr:
         setInfiniteSoftLimit=False,
         movingMethod="JOG",
     ):
-        assert tc_no != 0
-        assert direction != 0
+        if tc_no < 0:
+            raise ValueError(f"Expected tc_no to be greater than 0, but got {tc_no}")
+        if not direction in {-1, 1}:
+            raise ValueError(f"Expected 1 or -1, but got {direction}")
+
         old_VELO = self.axisCom.get(".VELO")
         vmax = self.axisCom.get(".VMAX")
         if vmax == 0.0:
