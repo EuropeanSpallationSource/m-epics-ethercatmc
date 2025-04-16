@@ -573,8 +573,7 @@ class AxisMr:
         movingMethod="",
         doDisableSoftLimit=True,
         setInfiniteSoftLimit=False,
-        setDLYfield=None,
-        throw=True,
+        setDLYfield=None
     ):
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         self.powerOnHomeAxis(tc_no)
@@ -592,14 +591,9 @@ class AxisMr:
         if setDLYfield is not None:
             self.axisCom.put(".DLY", saved_DLY)
 
-        if throw:
-            if passed:
-                self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
-            else:
-                self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
-            assert passed
-        else:
-            return passed
+        passed_str = "Passed " if passed is True else "Failed "
+        self.axisCom.putDbgStrToLOG(passed_str + str(tc_no), wait=True)
+        return passed
 
     # move into limit switch
     # We need different combinations (WIP)
