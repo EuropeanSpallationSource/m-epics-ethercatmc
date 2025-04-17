@@ -566,6 +566,35 @@ class AxisMr:
         self.axisCom.putDbgStrToLOG(debug_text, wait=True)
         self.motorInitAllForBDST(tc_no)
 
+    def moveIntoLimitSwitchFromTestCase(
+        self,
+        tc_no,
+        direction=0,
+        movingMethod="",
+        doDisableSoftLimit=True,
+        setInfiniteSoftLimit=False,
+        setDLYfield=None
+    ):
+        self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
+        self.powerOnHomeAxis(tc_no)
+        self.setSoftLimitsOn(tc_no, initAbsMinMax=True)
+        if setDLYfield is not None:
+            saved_DLY = self.axisCom.get(".DLY")
+            self.axisCom.put(".DLY", setDLYfield)
+        passed = self.moveIntoLS(
+            tc_no=tc_no,
+            direction=direction,
+            movingMethod=movingMethod,
+            doDisableSoftLimit=doDisableSoftLimit,
+            setInfiniteSoftLimit=setInfiniteSoftLimit,
+        )
+        if setDLYfield is not None:
+            self.axisCom.put(".DLY", saved_DLY)
+
+        passed_str = "Passed " if passed is True else "Failed "
+        self.axisCom.putDbgStrToLOG(passed_str + str(tc_no), wait=True)
+        return passed
+
     # move into limit switch
     # We need different combinations (WIP)
     # - The direction (hit HLS or LLS)
@@ -577,14 +606,16 @@ class AxisMr:
     def moveIntoLS(
         self,
         tc_no=0,
-        direction=-1,
+        direction=0,
         doDisableSoftLimit=True,
         setInfiniteSoftLimit=False,
         movingMethod="JOG",
-        paramWhileMove=False,
     ):
-        assert tc_no != 0
-        assert direction >= 0
+        if tc_no < 0:
+            raise ValueError(f"Expected tc_no to be greater than 0, but got {tc_no}")
+        if not direction in {-1, 1}:
+            raise ValueError(f"Expected 1 or -1, but got {direction}")
+
         old_VELO = self.axisCom.get(".VELO")
         vmax = self.axisCom.get(".VMAX")
         if vmax == 0.0:
@@ -599,11 +630,9 @@ class AxisMr:
         old_DHLM = self.axisCom.get("-CfgDHLM")
         old_DLLM = self.axisCom.get("-CfgDLLM")
         margin = 1.1
-        if paramWhileMove:
-            margin = margin + 2
         if movingMethod == "MoveVel":
             movingFieldName = "-MoveVel"
-        if direction > 0:
+        if direction == 1:
             softlimitFieldName = "-CfgDHLM"
             nearly_infinite = 999999.0
             soft_limit_pos = old_DHLM
@@ -615,7 +644,10 @@ class AxisMr:
                 movingFieldValue = 1
             elif movingMethod == "MoveVel":
                 movingFieldValue = jvel
-        else:
+            elif movingMethod == "DVAL":
+                movingFieldName = ".DVAL"
+                movingFieldValue = nearly_infinite
+        elif direction == -1:
             softlimitFieldName = "-CfgDLLM"
             nearly_infinite = -999999.0
             soft_limit_pos = old_DLLM
@@ -629,9 +661,17 @@ class AxisMr:
                 movingFieldValue = 0 - jvel
             elif movingMethod == "MoveAbs":
                 movingFieldValue = 0 - jvel
+            elif movingMethod == "DVAL":
+                movingFieldName = ".DVAL"
+                movingFieldValue = nearly_infinite
+        else:
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} illegal direction={direction}"
+            )
+            return False
 
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} paramWhileMove={paramWhileMove} margin={margin}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} margin={margin}"
         )
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} direction={direction } jog_start_pos={jog_start_pos:f}"
@@ -647,33 +687,10 @@ class AxisMr:
             movingFieldValue = nearly_infinite
 
         if doDisableSoftLimit:
-            if paramWhileMove:
-                # Start jogging, switch soft limit off while jogging
-                #
-                wait_for_stop = self.jogCalcTimeout(tc_no, direction)
-                self.axisCom.put(movingFieldName, movingFieldValue)
-                wait_for_start = 2
-                self.waitForStart(tc_no, wait_for_start)
-                self.setSoftLimitsOff(tc_no, direction=direction)
-                try:
-                    self.waitForStop(tc_no, wait_for_stop)
-                except Exception:
-                    self.axisCom.put(".STOP", 1)
-                    try:
-                        self.waitForStop(tc_no, 2.0)
-                    except Exception as ex:
-                        print(
-                            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no} ex={ex}"
-                        )
-                if direction > 0:
-                    self.axisCom.put(".JOGF", 0)
-                else:
-                    self.axisCom.put(".JOGR", 0)
-            else:
-                self.setSoftLimitsOff(tc_no, direction=direction)
-                time_to_wait = self.jogCalcTimeout(tc_no, direction)
-                self.axisCom.put(movingFieldName, movingFieldValue)
-                self.waitForStartAndDone(str(tc_no), 30 + time_to_wait + 3.0)
+            self.setSoftLimitsOff(tc_no, direction=direction)
+            time_to_wait = self.jogCalcTimeout(tc_no, direction)
+            self.axisCom.put(movingFieldName, movingFieldValue)
+            self.waitForStartAndDone(str(tc_no), 30 + time_to_wait + 3.0)
         else:
             if setInfiniteSoftLimit:
                 oldSoftLimitValue = self.axisCom.get(softlimitFieldName)
@@ -838,7 +855,7 @@ class AxisMr:
 
     def setCNENandWait(self, tc_no, cnen):
         wait_for_power_changed = 6.0
-        # capv_self.axisMr.capvput(
+        # capv_self.capvput(
         #     + "-DbgStrToLOG", "CNEN=" + str(cnen) + " " + tc_no[0:20], wait=True
         # )
         self.axisCom.put(".CNEN", cnen)
