@@ -573,7 +573,7 @@ class AxisMr:
         movingMethod="",
         doDisableSoftLimit=True,
         setInfiniteSoftLimit=False,
-        setDLYfield=None
+        setDLYfield=None,
     ):
         self.axisCom.putDbgStrToLOG("Start " + str(int(tc_no)), wait=True)
         self.powerOnHomeAxis(tc_no)
@@ -613,7 +613,7 @@ class AxisMr:
     ):
         if tc_no < 0:
             raise ValueError(f"Expected tc_no to be greater than 0, but got {tc_no}")
-        if not direction in {-1, 1}:
+        if direction not in {-1, 1}:
             raise ValueError(f"Expected 1 or -1, but got {direction}")
 
         old_VELO = self.axisCom.get(".VELO")

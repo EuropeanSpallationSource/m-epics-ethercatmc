@@ -41,33 +41,45 @@ class Test(unittest.TestCase):
     # low limit switch
     def test_TC_1322(self):
         tc_no = tc_no_base + 2
-        assert self.axisMr.moveIntoLimitSwitchFromTestCase(
-            tc_no, direction=direction, movingMethod="JOG"
-        ) is True
+        assert (
+            self.axisMr.moveIntoLimitSwitchFromTestCase(
+                tc_no, direction=direction, movingMethod="JOG"
+            )
+            is True
+        )
 
     # low limit switch via DVAL
     def test_TC_1323(self):
         tc_no = tc_no_base + 3
-        assert self.axisMr.moveIntoLimitSwitchFromTestCase(
-            tc_no, movingMethod="DVAL", setDLYfield=1.0
-        ) is True
+        assert (
+            self.axisMr.moveIntoLimitSwitchFromTestCase(
+                tc_no, movingMethod="DVAL", setDLYfield=1.0
+            )
+            is True
+        )
 
     # low limit switch via moveVel
     def test_TC_1324(self):
         tc_no = tc_no_base + 4
-        assert self.axisMr.moveIntoLimitSwitchFromTestCase(
-            tc_no, direction=direction, movingMethod="MoveVel"
-        ) is True
+        assert (
+            self.axisMr.moveIntoLimitSwitchFromTestCase(
+                tc_no, direction=direction, movingMethod="MoveVel"
+            )
+            is True
+        )
 
     # low limit switch via moveVel and "infinite" Soft limit
     def test_TC_1325(self):
         tc_no = tc_no_base + 5
-        assert self.axisMr.moveIntoLimitSwitchFromTestCase(
-            tc_no,
-            movingMethod="MoveVel",
-            doDisableSoftLimit=False,
-            setInfiniteSoftLimit=True,
-        ) is True
+        assert (
+            self.axisMr.moveIntoLimitSwitchFromTestCase(
+                tc_no,
+                movingMethod="MoveVel",
+                doDisableSoftLimit=False,
+                setInfiniteSoftLimit=True,
+            )
+            is True
+        )
 
     def teardown_class(self):
         tc_no = int(filnam) * 10000 + 9999
