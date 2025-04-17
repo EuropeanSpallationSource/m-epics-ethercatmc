@@ -41,34 +41,34 @@ class Test(unittest.TestCase):
     # high limit switch
     def test_TC_1222(self):
         tc_no = tc_no_base + 2
-        self.axisMr.moveIntoLimitSwitchFromTestCase(
+        assert self.axisMr.moveIntoLimitSwitchFromTestCase(
             tc_no, direction=direction, movingMethod="JOG"
-        )
+        ) is True
 
     # high limit switch via DVAL
     def test_TC_1223(self):
         tc_no = tc_no_base + 3
-        self.axisMr.moveIntoLimitSwitchFromTestCase(
+        assert self.axisMr.moveIntoLimitSwitchFromTestCase(
             tc_no, movingMethod="DVAL", setDLYfield=1.0
-        )
+        ) is True
 
     # high limit switch via moveVel
     # had been started
     def test_TC_1224(self):
         tc_no = tc_no_base + 4
-        self.axisMr.moveIntoLimitSwitchFromTestCase(
+        assert self.axisMr.moveIntoLimitSwitchFromTestCase(
             tc_no, direction=direction, movingMethod="MoveVel"
-        )
+        ) is True
 
     # low limit switch via moveVel and "infinite" Soft limit
     def test_TC_1225(self):
         tc_no = tc_no_base + 5
-        self.axisMr.moveIntoLimitSwitchFromTestCase(
+        assert self.axisMr.moveIntoLimitSwitchFromTestCase(
             tc_no,
             movingMethod="MoveVel",
             doDisableSoftLimit=False,
             setInfiniteSoftLimit=True,
-        )
+        ) is True
 
     def teardown_class(self):
         tc_no = int(filnam) * 10000 + 9999

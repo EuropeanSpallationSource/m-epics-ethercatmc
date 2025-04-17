@@ -38,14 +38,6 @@ jobs:
         # Job names also name artifacts, character limitations apply
         include:
 
-          - os: ubuntu-20.04
-            cmp: gcc
-            configuration: static
-            base: "3.15"
-            set: oldestset
-            checkws: true
-            name: "3.15 oldest static"
-
           - os: ubuntu-22.04
             cmp: gcc
             configuration: default
