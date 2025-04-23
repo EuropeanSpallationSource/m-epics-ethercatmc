@@ -1,7 +1,29 @@
 #!/usr/bin/env python3
 
 
-# script to translate msta=0xb05 into a readable format
+'''
+If you ever wondered, what this (shortened) line means
+... [motorRecord.cc:1815 Mtr 00] motor is stopped ... msta=0x6966
+                                                      ^^^^^^^^^^^
+this script is for you:
+... motor is stopped msta=0x6966(LLS SlipStall HLS)
+
+You can either run
+a) camonitor/pvmonitor IOC:m1.MSTA | python msta2string.py
+b) python msta2string.py <ioclog.txt
+c) tail -f ioclog.txt | python msta2string.py
+
+Depending on your OS version, python must be written as python3
+on modern systems the word python may be ommited
+
+
+
+The prefix in front of the line helps to debug if
+the regular expressions bite:
+"o:" means old, "m:" means motor, "s:" means stop
+"L:" is a "normal" line
+'''
+
 import re
 import sys
 
@@ -207,6 +229,9 @@ def get_msta_text_delta(old_msta, new_msta):
         else:
             ret = ret + "-Direction"
 
+    if old_msta == 0:
+        ret = ret.replace("+", " ")
+        ret = ret.strip()
     return ret
 
 
@@ -214,6 +239,8 @@ def get_msta_text_delta(old_msta, new_msta):
 RE_MATCH_MSTA_IOCLOG_MR = re.compile(
     r"(.*motorRecord.cc:\d+\s+)(\S+)(.*)(msta=0x)([0-9a-fA-F]*)(.*)$"
 )
+
+RE_MATCH_MOTOR_IS_STOPPED = re.compile(r".*motor is stopped")
 
 RE_MATCH_MSTA_IOCLOG_MSTA = re.compile(r"(.*\s)(msta=0x)([0-9a-fA-F]*)(.*)$")
 
@@ -252,18 +279,19 @@ def handle_ioclog_mr_line(match_msta_ioclog_mr):
     loginfo3 = match_msta_ioclog_mr.group(gidx)
     msta_val_int = int(msta_val_hex, 16)
     last_msta_int = last_msta_per_pv.get(pvname)
-    if last_msta_int is None:
+    match_motor_is_stopped = RE_MATCH_MOTOR_IS_STOPPED.match(loginfo2)
+    if match_motor_is_stopped is not None:
+        last_msta_int = int(0)
+        pfx = "s:"
+    elif last_msta_int is None:
         last_msta_int = int(0)
         pfx = "o:"
     else:
         pfx = "m:"
-    if last_msta_int != msta_val_int:
-        msta_delta = get_msta_text_delta(last_msta_int, msta_val_int)
-        print(
-            f"{pfx}{loginfo1}{pvname}{loginfo2}{msta_equals}{msta_val_hex}({msta_delta}){loginfo3}"
-        )
-    else:
-        print(f"{pfx}{loginfo1}{pvname}{loginfo2}{loginfo3}")
+    msta_delta = get_msta_text_delta(last_msta_int, msta_val_int)
+    print(
+        f"{pfx}{loginfo1}{pvname}{loginfo2}{msta_equals}{msta_val_hex}({msta_delta}){loginfo3}"
+    )
     last_msta_per_pv[pvname] = msta_val_int
     sys.stdout.flush()
 
