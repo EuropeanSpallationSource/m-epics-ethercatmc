@@ -70,7 +70,7 @@
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED0-Visible" prop_id="visible" out_exp="false">
@@ -80,7 +80,7 @@
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam0.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -134,7 +134,7 @@
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam0</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam0</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -145,7 +145,7 @@
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam0.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -206,7 +206,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED1-Visible" prop_id="visible" out_exp="false">
@@ -216,7 +216,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam1.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -270,7 +270,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam1</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam1</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -281,7 +281,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam1.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -342,7 +342,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED2-Visible" prop_id="visible" out_exp="false">
@@ -352,7 +352,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam2.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -406,7 +406,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam2</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam2</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -417,7 +417,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam2.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -478,7 +478,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED3-Visible" prop_id="visible" out_exp="false">
@@ -488,7 +488,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam3.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -542,7 +542,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam3</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam3</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -553,7 +553,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam3.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -614,7 +614,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED4-Visible" prop_id="visible" out_exp="false">
@@ -624,7 +624,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam4.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -678,7 +678,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam4</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam4</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -689,7 +689,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam4.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -750,7 +750,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED5-Visible" prop_id="visible" out_exp="false">
@@ -760,7 +760,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam5.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -814,7 +814,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam5</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam5</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -825,7 +825,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam5.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -886,7 +886,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED6-Visible" prop_id="visible" out_exp="false">
@@ -896,7 +896,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam6.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam6.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -950,7 +950,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam6</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam6</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -961,7 +961,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam6.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam6.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1022,7 +1022,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED7-Visible" prop_id="visible" out_exp="false">
@@ -1032,7 +1032,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam7.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam7.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1086,7 +1086,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam7</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam7</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1097,7 +1097,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam7.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam7.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1158,7 +1158,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED8-Visible" prop_id="visible" out_exp="false">
@@ -1168,7 +1168,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam8.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam8.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1222,7 +1222,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam8</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam8</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1233,7 +1233,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam8.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam8.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1294,7 +1294,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED9-Visible" prop_id="visible" out_exp="false">
@@ -1304,7 +1304,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam9.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam9.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1358,7 +1358,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam9</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam9</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1369,7 +1369,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam9.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam9.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1430,7 +1430,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED10-Visible" prop_id="visible" out_exp="false">
@@ -1440,7 +1440,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam10.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam10.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1494,7 +1494,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam10</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam10</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1505,7 +1505,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam10.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam10.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1566,7 +1566,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED11-Visible" prop_id="visible" out_exp="false">
@@ -1576,7 +1576,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam11.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam11.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1630,7 +1630,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam11</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam11</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1641,7 +1641,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam11.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam11.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1702,7 +1702,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED12-Visible" prop_id="visible" out_exp="false">
@@ -1712,7 +1712,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam12.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam12.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1766,7 +1766,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam12</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam12</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1777,7 +1777,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam12.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam12.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1838,7 +1838,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED13-Visible" prop_id="visible" out_exp="false">
@@ -1848,7 +1848,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam13.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam13.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1902,7 +1902,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam13</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam13</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1913,7 +1913,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam13.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam13.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1974,7 +1974,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED14-Visible" prop_id="visible" out_exp="false">
@@ -1984,7 +1984,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam14.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam14.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2038,7 +2038,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam14</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam14</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2049,7 +2049,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam14.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam14.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2110,7 +2110,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED15-Visible" prop_id="visible" out_exp="false">
@@ -2120,7 +2120,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam15.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam15.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2174,7 +2174,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam15</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam15</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2185,7 +2185,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam15.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam15.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2246,7 +2246,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED16-Visible" prop_id="visible" out_exp="false">
@@ -2256,7 +2256,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam16.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam16.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2310,7 +2310,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam16</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam16</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2321,7 +2321,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam16.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam16.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2382,7 +2382,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED17-Visible" prop_id="visible" out_exp="false">
@@ -2392,7 +2392,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam17.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam17.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2446,7 +2446,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam17</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam17</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2457,7 +2457,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam17.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam17.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2518,7 +2518,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED18-Visible" prop_id="visible" out_exp="false">
@@ -2528,7 +2528,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam18.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam18.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2582,7 +2582,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam18</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam18</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2593,7 +2593,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam18.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam18.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2654,7 +2654,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED19-Visible" prop_id="visible" out_exp="false">
@@ -2664,7 +2664,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam19.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam19.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2718,7 +2718,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam19</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam19</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2729,7 +2729,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam19.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam19.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2790,7 +2790,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED20-Visible" prop_id="visible" out_exp="false">
@@ -2800,7 +2800,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam20.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam20.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2854,7 +2854,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam20</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam20</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2865,7 +2865,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam20.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam20.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2926,7 +2926,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED21-Visible" prop_id="visible" out_exp="false">
@@ -2936,7 +2936,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam21.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam21.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2990,7 +2990,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam21</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam21</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3001,7 +3001,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam21.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam21.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3062,7 +3062,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED22-Visible" prop_id="visible" out_exp="false">
@@ -3072,7 +3072,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam22.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam22.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3126,7 +3126,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam22</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam22</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3137,7 +3137,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam22.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam22.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3198,7 +3198,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)Cabinet</pv_name>
+    <pv_name>$(PREFIX)Cabinet</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLED23-Visible" prop_id="visible" out_exp="false">
@@ -3208,7 +3208,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam23.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam23.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3262,7 +3262,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)CabinetBitNam23</pv_name>
+    <pv_name>$(PREFIX)CabinetBitNam23</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3273,7 +3273,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)CabinetBitNam23.SEVR</pv>
+        <pv trig="true">$(PREFIX)CabinetBitNam23.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
