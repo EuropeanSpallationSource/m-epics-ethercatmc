@@ -1027,7 +1027,7 @@ class AxisMr:
             wait_for_powerOn -= polltime
         raise Exception(debug_text)
 
-    def waitForStart(self, tc_no, wait_for_start):
+    def waitForStart(self, tc_no, wait_for_start, throw=True):
         while wait_for_start > 0:
             wait_for_start -= polltime
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
@@ -1037,10 +1037,13 @@ class AxisMr:
             debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} val={val:.2f} rbv={rbv:.2f}"
             print(debug_text)
             if movn and not dmov:
-                return
+                return True
             time.sleep(polltime)
             wait_for_start -= polltime
-        raise Exception(debug_text)
+        if throw:
+            raise Exception(debug_text)
+        else:
+            return False
 
     def waitForStartAndDone(self, tc_no, wait_for_done, throw=True):
         val = self.axisCom.get(".VAL", use_monitor=False)
@@ -1080,7 +1083,7 @@ class AxisMr:
             raise Exception(debug_text)
         return False
 
-    def waitForStop(self, tc_no, wait_for_stop):
+    def waitForStop(self, tc_no, wait_for_stop, throw=True):
         while wait_for_stop > 0:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
@@ -1088,10 +1091,13 @@ class AxisMr:
             debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_stop={wait_for_stop:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
             print(debug_text)
             if not movn and dmov:
-                return
+                return True
             time.sleep(polltime)
             wait_for_stop -= polltime
-        raise Exception(debug_text)
+        if throw:
+            raise Exception(debug_text)
+        else:
+            return False
 
     def waitForValueChanged(
         self, tc_no, field_name, expVal, maxDelta, time_to_wait, debugPrint=True
