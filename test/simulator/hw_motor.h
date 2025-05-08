@@ -112,6 +112,8 @@ int get_bError(int axis_no);
 int set_bError(int axis_no, int value);
 int get_nErrorId(int axis_no);
 int set_nErrorId(int axis_no, int value);
+unsigned get_nStatReasAUX(int axis_no);
+int set_nStatReasAUX(int axis_no, unsigned value);
 
 /*
  * Movements

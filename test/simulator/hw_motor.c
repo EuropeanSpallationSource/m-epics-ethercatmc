@@ -86,6 +86,7 @@ typedef struct {
   int homed;
   int bError;
   int nErrorId;
+  unsigned nStatReasAUX;
   FILE *logFile;
   int bManualSimulatorMode;
   int bLocalMode;
@@ -804,7 +805,9 @@ void setMotorPos_fl(int axis_no, double value, int flags, const char *file,
            line_no, value, flags);
   AXIS_CHECK_RETURN(axis_no);
   int stillMoving = isMotorMoving(axis_no);
-  StopInternal(axis_no);
+  if (stillMoving) {
+    StopInternal(axis_no);
+  }
   motor_axis[axis_no].homed = 1;
   if (flags & SET_MOTOR_POS_FLAGS_KEEP_MOVING) {
     motor_axis[axis_no].moving.velo.stillMoving = stillMoving;
@@ -818,7 +821,11 @@ void setMotorPos_fl(int axis_no, double value, int flags, const char *file,
     motor_axis[axis_no].MotorPosSetPosOffset = 0;
   } else {
     /* The new position is pushed into the axis.
-       However, save the offset (negative) so that
+       This corresponds to setPosition() in EPICS model 3,
+       used to home the motor to a certain position.
+       If the motor is at 30.0 and pushed into 50.0 (which is wrong)
+       we may run into soft- or hard limits at unexpected positions.
+       For that: save the offset so that
        the hardware (limit switches, encoder) stay where they are
     */
     /* Save the old MotorPosSetPosOffset for printing below */
@@ -1156,6 +1163,18 @@ int get_nErrorId(int axis_no) {
 int set_nErrorId(int axis_no, int value) {
   AXIS_CHECK_RETURN_ZERO(axis_no);
   motor_axis[axis_no].nErrorId = value;
+  return 0;
+}
+
+unsigned get_nStatReasAUX(int axis_no) {
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].nStatReasAUX;
+}
+
+int set_nStatReasAUX(int axis_no, unsigned value) {
+  LOGTIME3("%s(%d) value=0x%08x\n", __FUNCTION__, axis_no, value);
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  motor_axis[axis_no].nStatReasAUX = value;
   return 0;
 }
 
