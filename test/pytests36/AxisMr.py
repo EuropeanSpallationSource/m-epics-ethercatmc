@@ -1240,6 +1240,9 @@ class AxisMr:
         motorEndPos,
         need_007_017_tweak=False,
     ):
+        velo = self.axisCom.get(".VELO")
+        accl = self.axisCom.get(".ACCL")
+        accs = velo / accl  # acceleration, mm/sec^2
         if motorEndPos - motorStartPos > 0:
             directionOfMove = 1
         else:
@@ -1332,7 +1335,7 @@ class AxisMr:
                     if self.isMotorMasterAxis and (cnt < maxcnt - 1):
                         line2 = (
                             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-                            % (motorStartPos, self.myVELO, self.myAR, motorStartPos)
+                            % (motorStartPos, velo, accs, motorStartPos)
                         )
 
                 expFile.write(f"{line1}{line2}")
@@ -1352,7 +1355,7 @@ class AxisMr:
                     if deltaToMov1 != 0:
                         line1 = (
                             "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-                            % (deltaToMov1, self.myVELO, self.myAR, motorStartPos)
+                            % (deltaToMov1, velo, accs, motorStartPos)
                         )
                     # Move forward with backlash parameters
                     # Note: This should be bdst, but since we don't move the motor AND
@@ -1372,8 +1375,8 @@ class AxisMr:
                             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
                             % (
                                 motorStartPos + deltaToMov1,
-                                self.myVELO,
-                                self.myAR,
+                                velo,
+                                accs,
                                 motorStartPos,
                             )
                         )
