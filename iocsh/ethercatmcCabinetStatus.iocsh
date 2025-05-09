@@ -1,0 +1,29 @@
+# Cabinet status as PILS 1802 device
+
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus UInt32Digital
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit0   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit1   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit2   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit3   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit4   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit5   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit6   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit7   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit8   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit9   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit10  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit11  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit12  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit13  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit14  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit15  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit16  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit17  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit18  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit19  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit20  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit21  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit22  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) CabinetStatus_NamAuxBit23  Octet
+
+dbLoadRecords("ethercatmcCabinetStatus.template", "SYSPFX=$(SYSPFX), MCUPFX=$(MCUPFX), MOTOR_PORT=$(MOTOR_PORT)")

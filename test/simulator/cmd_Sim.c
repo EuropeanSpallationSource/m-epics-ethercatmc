@@ -238,6 +238,17 @@ static int motorHandleOneArg(const char *myarg_1) {
     cmd_buf_printf("OK");
     return 0;
   }
+
+  /* nStatReasAUX=0x10400000 (idle) 0x1F400000 LLS HLS SLIP */
+  nvals = sscanf(myarg_1, "nStatReasAUX=%x", &iValue);
+  if (nvals == 1) {
+    LOGINFO("%s/%s:%d myarg_1=\"%s\" iValue=0x%x %d\n", __FILE__, __FUNCTION__,
+            __LINE__, myarg_1, iValue, iValue);
+    set_nStatReasAUX(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return 0;
+  }
+
   /* nAmplifierPercent=1 */
   nvals = sscanf(myarg_1, "nAmplifierPercent=%d", &iValue);
   if (nvals == 1) {
