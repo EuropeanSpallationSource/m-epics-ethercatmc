@@ -41,11 +41,9 @@
       <path>ethercatmcCabinet.opi</path>
       <macros>
         <include_parent_macros>true</include_parent_macros>
-        <P>$(P)</P>
-        <R>Cabinet-</R>
       </macros>
       <replace>0</replace>
-      <description>$(P) (Cabinet)</description>
+      <description>$(PREFIX)Cabinet</description>
     </action>
   </actions>
   <y>0</y>
