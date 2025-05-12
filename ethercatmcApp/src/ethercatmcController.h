@@ -592,23 +592,36 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     int ethercatmcErrTxt_;
   } defAsynPara;
 
-#define EMC_ENTER_ADS_CHECK_LOCK(LINENO)                  \
-  do {                                                    \
-    if (ctrlLocal.lockADSlineno) {                        \
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,    \
-                "%s lockADSlineno=%d\n", "ethercatmcADS", \
-                ctrlLocal.lockADSlineno);                 \
-    }                                                     \
-    ctrlLocal.lockADSlineno = LINENO;                     \
+#define EMC_ENTER_ADS_CHECK_LOCK(LINENO)                                     \
+  do {                                                                       \
+    asynStatus lockStatus;                                                   \
+    lockStatus = pasynManager->queueLockPort(pasynUser);                     \
+    if (lockStatus != asynSuccess) {                                         \
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s lockStatus=%d\n", \
+                "ethercatmcADS", (int)lockStatus);                           \
+      return lockStatus;                                                     \
+    }                                                                        \
+    if (ctrlLocal.lockADSlineno) {                                           \
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,                       \
+                "%s lockADSlineno=%d\n", "ethercatmcADS",                    \
+                ctrlLocal.lockADSlineno);                                    \
+    }                                                                        \
+    ctrlLocal.lockADSlineno = LINENO;                                        \
   } while (0)
 
-#define EMC_LEAVE_ADS_CHECK_LOCK(LINENO)                           \
-  do {                                                             \
-    if (!ctrlLocal.lockADSlineno) {                                \
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,             \
-                "%s lockADSlineno=%d\n", "ethercatmcADS", LINENO); \
-    }                                                              \
-    ctrlLocal.lockADSlineno = 0;                                   \
+#define EMC_LEAVE_ADS_CHECK_LOCK(LINENO)                                       \
+  do {                                                                         \
+    asynStatus unlockStatus;                                                   \
+    unlockStatus = pasynManager->queueUnlockPort(pasynUser);                   \
+    if (unlockStatus != asynSuccess) {                                         \
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s unlockStatus=%d\n", \
+                "ethercatmcADS", (int)unlockStatus);                           \
+    }                                                                          \
+    if (!ctrlLocal.lockADSlineno) {                                            \
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,                         \
+                "%s lockADSlineno=%d\n", "ethercatmcADS", LINENO);             \
+    }                                                                          \
+    ctrlLocal.lockADSlineno = 0;                                               \
   } while (0)
 
   friend class ethercatmcIndexerAxis;
