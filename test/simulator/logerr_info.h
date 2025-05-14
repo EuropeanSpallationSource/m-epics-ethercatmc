@@ -30,6 +30,26 @@ const char *epicsBaseDebugStripPath(const char *file);
 #define LOGINFO(fmt, ...) \
   { (void)fprintf(stdlog, fmt, ##__VA_ARGS__); }
 
+#define LOGTIME(fmt, ...)                                                     \
+  do {                                                                        \
+    struct timespec ts;                                                       \
+    char nowSecondsText[25];                                                  \
+    char nowNanoSecText[5];                                                   \
+    nowSecondsText[0] = 0;                                                    \
+    nowNanoSecText[0] = 0;                                                    \
+    if (!clock_gettime(CLOCK_REALTIME, &ts)) {                                \
+      struct tm now;                                                          \
+      if (localtime_r(&ts.tv_sec, &now)) {                                    \
+        strftime(nowSecondsText, sizeof(nowSecondsText), "%Y/%m/%d %H:%M:%S", \
+                 &now);                                                       \
+        snprintf(nowNanoSecText, sizeof(nowNanoSecText), ".03%d",             \
+                 (int)ts.tv_nsec / 1000000);                                  \
+      }                                                                       \
+    }                                                                         \
+    fprintf(stdlog, "%s%s %s:%-4d " fmt, nowSecondsText, nowNanoSecText,      \
+            epicsBaseDebugStripPath(__FILE__), __LINE__, __VA_ARGS__);        \
+  } while (0)
+
 #define LOGINFO3(fmt, ...)                                              \
   do {                                                                  \
     if (PRINT_STDOUT_BIT3()) (void)fprintf(stdlog, fmt, ##__VA_ARGS__); \
@@ -70,6 +90,28 @@ const char *epicsBaseDebugStripPath(const char *file);
 #define LOGINFO6(fmt, ...)                                              \
   do {                                                                  \
     if (PRINT_STDOUT_BIT6()) (void)fprintf(stdlog, fmt, ##__VA_ARGS__); \
+  } while (0)
+
+#define LOGTIME6(fmt, ...)                                                 \
+  do {                                                                     \
+    if (PRINT_STDOUT_BIT6()) {                                             \
+      struct timespec ts;                                                  \
+      char nowSecondsText[25];                                             \
+      char nowNanoSecText[5];                                              \
+      nowSecondsText[0] = 0;                                               \
+      nowNanoSecText[0] = 0;                                               \
+      if (!clock_gettime(CLOCK_REALTIME, &ts)) {                           \
+        struct tm now;                                                     \
+        if (localtime_r(&ts.tv_sec, &now)) {                               \
+          strftime(nowSecondsText, sizeof(nowSecondsText),                 \
+                   "%Y/%m/%d %H:%M:%S", &now);                             \
+          snprintf(nowNanoSecText, sizeof(nowNanoSecText), ".03%d",        \
+                   (int)ts.tv_nsec / 1000000);                             \
+        }                                                                  \
+      }                                                                    \
+      fprintf(stdlog, "%s%s %s:%-4d " fmt, nowSecondsText, nowNanoSecText, \
+              epicsBaseDebugStripPath(__FILE__), __LINE__, __VA_ARGS__);   \
+    }                                                                      \
   } while (0)
 
 #define LOGINFO7(fmt, ...)                                              \

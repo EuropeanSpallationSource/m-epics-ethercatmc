@@ -1737,7 +1737,7 @@ static void init(void) {
       (unsigned)((void *)&netData.memoryStruct.indexer_ack - (void *)&netData);
   UINTTONET(offsetIndexer, netData.memoryStruct.offset);
 
-  LOGINFO3("%s/%s:%d offsetIndexer=%u\n", __FILE__, __FUNCTION__, __LINE__,
+  LOGTIME3("%s/%s:%d offsetIndexer=%u\n", __FILE__, __FUNCTION__, __LINE__,
            offsetIndexer);
   setCabinetStatus(idxStatusCodeIDLE << 28);
   initDone = 1;
@@ -1786,7 +1786,7 @@ static void init_axis(int axis_no) {
       int tmp_axis_no = 1;
       unsigned devNum; /* 0 is the indexer */
       for (devNum = 1; devNum < NUM_DEVICES; devNum++) {
-        LOGINFO3("%s/%s:%d axis_no=%d tmp_axis_no=%d devNum=%u typeCode=0x%x\n",
+        LOGTIME3("%s/%s:%d axis_no=%d tmp_axis_no=%d devNum=%u typeCode=0x%x\n",
                  __FILE__, __FUNCTION__, __LINE__, axis_no, tmp_axis_no, devNum,
                  indexerDeviceAbsStraction[devNum].typeCode);
         switch (indexerDeviceAbsStraction[devNum].typeCode) {
@@ -1805,7 +1805,7 @@ static void init_axis(int axis_no) {
                          0.0); /* avoid rounding to a step in hw_motor.c */
               setMRES_24(tmp_axis_no, 0.0);
 
-              LOGINFO3(
+              LOGTIME3(
                   "%s/%s:%d init1E04 tmp_axis_no=%d axis_no=%d absMax=%f "
                   "absMin=%f\n",
                   __FILE__, __FUNCTION__, __LINE__, tmp_axis_no, axis_no,
@@ -1822,7 +1822,7 @@ static void init_axis(int axis_no) {
                            permPNone;
               setHighHardLimitPos(axis_no, absMax + 1.0);
               setLowHardLimitPos(axis_no, absMin - 1.0);
-              LOGINFO3("%s/%s:%d axis_no=%d tmp_axis_no=%d USR_MIN_BIT=%u\n",
+              LOGTIME3("%s/%s:%d axis_no=%d tmp_axis_no=%d USR_MIN_BIT=%u\n",
                        __FILE__, __FUNCTION__, __LINE__, axis_no, tmp_axis_no,
                        hasUserMin);
 
@@ -1868,7 +1868,7 @@ static void indexerMotorStatusRead1E04(
                    0,    /* int relative, */
                    1.0,  // getNxtMoveVelocity(motor_axis_no),
                    getNxtMoveAcceleration(motor_axis_no));
-      LOGINFO3(
+      LOGTIME3(
           "%s/%s:%d motor_axis_no=%u idxStatusCodeSTART isMotorMoving=%d\n",
           __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
           isMotorMoving(motor_axis_no));
@@ -1903,13 +1903,13 @@ static void indexerMotorStatusRead1E04(
     for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
       const char *auxBitName =
           (const char *)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
-      LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
+      LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
                __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
                auxBitName);
 
       if (!strcmp("enabled", auxBitName)) {
         int bValue = getAmplifierOn(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+        LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
                  __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
                  bValue);
         if (bValue) {
@@ -1931,7 +1931,9 @@ static void indexerMotorStatusRead1E04(
   }
 
   /* the status bits */
-  if (get_bError(motor_axis_no)) {
+  if (idxStatusCode == idxStatusCodeSTART) {
+    idxStatusCode = idxStatusCodeBUSY;
+  } else if (get_bError(motor_axis_no)) {
     idxStatusCode = idxStatusCodeERROR;
   }
 #ifdef USE_IDXSTATUSCODEPOWEROFF
@@ -1945,7 +1947,8 @@ static void indexerMotorStatusRead1E04(
   else
     idxStatusCode = idxStatusCodeIDLE;
 
-  statusReasonAux32 |= (idxStatusCode << 28);
+  statusReasonAux32 &= 0x0FFFFFFF;
+  statusReasonAux32 |= ((unsigned)idxStatusCode << 28);
   UINTTONET(statusReasonAux32, pIndexerDevice1E04interface->statusReasonAux32);
   UINTTONET((int)getMotorPos(motor_axis_no),
             pIndexerDevice1E04interface->actualValue);
@@ -1974,7 +1977,7 @@ static void indexerMotorStatusRead5010(
                    0, /* int relative, */
                    getNxtMoveVelocity(motor_axis_no),
                    getNxtMoveAcceleration(motor_axis_no));
-      LOGINFO3(
+      LOGTIME3(
           "%s/%s:%d motor_axis_no=%u idxStatusCodeSTART isMotorMoving=%d\n",
           __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
           isMotorMoving(motor_axis_no));
@@ -1986,89 +1989,109 @@ static void indexerMotorStatusRead5010(
   }
   /* Build a new status word, start with 0 and fill in
      the bits */
-  statusReasonAux32 = 0;
-  /* reason bits */
-  if (getPosLimitSwitch(motor_axis_no)) statusReasonAux32 |= 0x08000000;
-  if (getNegLimitSwitch(motor_axis_no)) statusReasonAux32 |= 0x04000000;
-  {
-    unsigned auxBitIdx = 0;
-    for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
-      const char *auxBitName =
-          (const char *)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
-      LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
-               __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
-               auxBitName);
-
-      if (!strcmp("homing", auxBitName)) {
-        if (isMotorHoming(motor_axis_no)) {
-          statusReasonAux32 |= 1 << auxBitIdx;
-        }
-      } else if (!strcmp("homed", auxBitName)) {
-        int bValue = getAxisHomed(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u homed=%d\n", __FILE__,
-                 __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx, bValue);
-        if (bValue) {
-          statusReasonAux32 |= 1 << auxBitIdx;
-        }
-      } else if (!strcmp("notHomed", auxBitName)) {
-        int bValue = getAxisHomed(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u homed=%d\n", __FILE__,
-                 __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx, bValue);
-        if (!bValue) {
-          statusReasonAux32 |= 1 << auxBitIdx;
-        }
-      } else if (!strcmp("enabled", auxBitName)) {
-        int bValue = getAmplifierOn(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+  if (getManualSimulatorMode(motor_axis_no)) {
+    /* The simulator may overwrite the whole statusReasonAux32 */
+    statusReasonAux32 = get_nStatReasAUX(motor_axis_no);
+    LOGTIME3("%s/%s:%d motor_axis_no=%u simulated statusReasonAux32=0x%08x\n",
+             __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
+             statusReasonAux32);
+  } else {
+    statusReasonAux32 &= 0x00FFFFFF;  // Reset aux bits
+    /* reason bits */
+    if (getPosLimitSwitch(motor_axis_no)) statusReasonAux32 |= 0x08000000;
+    if (getNegLimitSwitch(motor_axis_no)) statusReasonAux32 |= 0x04000000;
+    {
+      unsigned auxBitIdx = 0;
+      for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
+        const char *auxBitName =
+            (const char *)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
+        LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
                  __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
-                 bValue);
-        if (bValue) {
-          statusReasonAux32 |= 1 << auxBitIdx;
-        }
-      } else if (!strcmp("localMode", auxBitName)) {
-        int bValue = getLocalmode(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u localMode=%d\n",
-                 __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
-                 bValue);
-        if (bValue) {
-          statusReasonAux32 |= 1 << auxBitIdx;
-        }
-      } else if (!strcmp("InterlockBwd", auxBitName)) {
-        int bValue = getInterlockBwd(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockBwd=%d\n",
-                 __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
-                 bValue);
-        if (bValue) {
-          statusReasonAux32 |= 1 << auxBitIdx;
-        }
-      } else if (!strcmp("InterlockFwd", auxBitName)) {
-        int bValue = getInterlockFwd(motor_axis_no);
-        LOGINFO6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockFwd=%d\n",
-                 __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
-                 bValue);
-        if (bValue) {
-          statusReasonAux32 |= 1 << auxBitIdx;
+                 auxBitName);
+        if (!strcmp("homing", auxBitName)) {
+          if (isMotorHoming(motor_axis_no)) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
+        } else if (!strcmp("homed", auxBitName)) {
+          int bValue = getAxisHomed(motor_axis_no);
+          LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u homed=%d\n",
+                   __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+                   bValue);
+          if (bValue) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
+        } else if (!strcmp("notHomed", auxBitName)) {
+          int bValue = getAxisHomed(motor_axis_no);
+          LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u homed=%d\n",
+                   __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+                   bValue);
+          if (!bValue) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
+        } else if (!strcmp("enabled", auxBitName)) {
+          int bValue = getAmplifierOn(motor_axis_no);
+          LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+                   __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+                   bValue);
+          if (bValue) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
+        } else if (!strcmp("localMode", auxBitName)) {
+          int bValue = getLocalmode(motor_axis_no);
+          LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u localMode=%d\n",
+                   __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+                   bValue);
+          if (bValue) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
+        } else if (!strcmp("InterlockBwd", auxBitName)) {
+          int bValue = getInterlockBwd(motor_axis_no);
+          LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockBwd=%d\n",
+                   __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+                   bValue);
+          if (bValue) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
+        } else if (!strcmp("InterlockFwd", auxBitName)) {
+          int bValue = getInterlockFwd(motor_axis_no);
+          LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockFwd=%d\n",
+                   __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+                   bValue);
+          if (bValue) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
         }
       }
     }
-  }
-
-  /* the status bits */
-  if (get_bError(motor_axis_no)) {
-    idxStatusCode = idxStatusCodeERROR;
-  }
+    /* the status bits */
+    if (idxStatusCode == idxStatusCodeSTART) {
+      idxStatusCode = idxStatusCodeBUSY;
+    } else if (get_bError(motor_axis_no)) {
+      idxStatusCode = idxStatusCodeERROR;
+    }
 #ifdef USE_IDXSTATUSCODEPOWEROFF
-  else if (!getAmplifierOn(motor_axis_no))
-    idxStatusCode = idxStatusCodePOWEROFF;
+    else if (!getAmplifierOn(motor_axis_no))
+      idxStatusCode = idxStatusCodePOWEROFF;
 #endif
-  else if (isMotorMoving(motor_axis_no))
-    idxStatusCode = idxStatusCodeBUSY;
-  else if (statusReasonAux32 & 0x0C000000)
-    idxStatusCode = idxStatusCodeWARN;
-  else
-    idxStatusCode = idxStatusCodeIDLE;
+    else if (isMotorMoving(motor_axis_no))
+      idxStatusCode = idxStatusCodeBUSY;
+    // else if (statusReasonAux32 & 0x02000000)
+    // idxStatusCode = idxStatusCodeERROR;
+    else if (statusReasonAux32 & 0x0C000000)
+      idxStatusCode = idxStatusCodeWARN;
+    else
+      idxStatusCode = idxStatusCodeIDLE;
 
-  statusReasonAux32 |= (idxStatusCode << 28);
+    statusReasonAux32 &= 0x0FFFFFFF;
+    statusReasonAux32 |= ((unsigned)idxStatusCode << 28);
+    LOGTIME3(
+        "%s/%s:%d motor_axis_no=%u "
+        "statusReasonAux32=0x%08x "
+        "idxStatusCode=0x%x\n",
+        __FILE__, __FUNCTION__, __LINE__, motor_axis_no, statusReasonAux32,
+        idxStatusCode);
+  };
+
   UINTTONET(statusReasonAux32, pIndexerDevice5010interface->statusReasonAux32);
   UINTTONET(get_nErrorId(motor_axis_no), pIndexerDevice5010interface->errorID);
 }
@@ -2159,7 +2182,7 @@ static unsigned indexerMotorParamWrite(unsigned motor_axis_no,
   }
 
   init_axis((int)motor_axis_no);
-  LOGINFO3("%s/%s:%d motor_axis_no=%u paramIndex=%u, fValue=%f\n", __FILE__,
+  LOGTIME3("%s/%s:%d motor_axis_no=%u paramIndex=%u, fValue=%f\n", __FILE__,
            __FUNCTION__, __LINE__, motor_axis_no, paramIndex, fValue);
 
   switch (paramIndex) {
@@ -2233,12 +2256,12 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
     ret = (uint16_t)uValue;
     /* PILS specification say that the PLC set it to done
        after initialization */
-    LOGINFO6("%s/%s:%d motor_axis_no=%u setting to PARAM_IF_CMD_DONE\n",
+    LOGTIME6("%s/%s:%d motor_axis_no=%u setting to PARAM_IF_CMD_DONE\n",
              __FILE__, __FUNCTION__, __LINE__, motor_axis_no);
     uintToNet(uValue, &netData.memoryBytes[offset], 2);
   }
   if (!(paramCommand & PARAM_IF_CMD_MASKPARAM_DONE)) {
-    LOGINFO6(
+    LOGTIME6(
         "%s/%s:%d NOT done motor_axis_no=%u paramIndex=%u offset=%u "
         "paramCommand=0x%4x uValue=0x%x lenInPlcPara=%u\n",
         __FILE__, __FUNCTION__, __LINE__, motor_axis_no, paramIndex, offset,
@@ -2327,7 +2350,7 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
       }
     }
   }
-  LOGINFO6(
+  LOGTIME6(
       "%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x "
       "ret=%x\n",
       __FILE__, __FUNCTION__, __LINE__, motor_axis_no, paramIndex, uValue, ret);
@@ -2339,7 +2362,7 @@ static int indexerHandleIndexerCmd(unsigned offset, unsigned lenInPlc,
   unsigned infoType = (uValue >> 8) & 0x7F;
   unsigned maxDevNum = NUM_DEVICES - 1;
   unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
-  LOGINFO6(
+  LOGTIME6(
       "%s/%s:%d offset=%u lenInPlc=%u uValue=0x%x devNum=%u maxDevNum=%u "
       "infoType=%u\n",
       __FILE__, __FUNCTION__, __LINE__, offset, lenInPlc, uValue, devNum,
@@ -2390,7 +2413,7 @@ static int indexerHandleIndexerCmd(unsigned offset, unsigned lenInPlc,
           if (strlen(indexerDeviceAbsStraction[devNum].auxName[auxIdx])) {
             flags |= (1 << auxIdx);
           }
-          LOGINFO6("%s/%s:%d devNum=%u auxIdx=%u flagsLow=0x%x\n", __FILE__,
+          LOGTIME6("%s/%s:%d devNum=%u auxIdx=%u flagsLow=0x%x\n", __FILE__,
                    __FUNCTION__, __LINE__, devNum, auxIdx, flags);
         }
         UINTTONET(flags, netData.memoryStruct.indexer_info.infoType0.flags);
@@ -2401,10 +2424,10 @@ static int indexerHandleIndexerCmd(unsigned offset, unsigned lenInPlc,
               (unsigned)((void *)&netData.memoryStruct.indexer_info -
                          (void *)&netData);
           unsigned tmpDevNum = 0;
-          LOGINFO6("%s/%s:%d devNum=%u offset=%u\n", __FILE__, __FUNCTION__,
+          LOGTIME6("%s/%s:%d devNum=%u offset=%u\n", __FILE__, __FUNCTION__,
                    __LINE__, devNum, offset);
           while (tmpDevNum < devNum) {
-            LOGINFO6("%s/%s:%d devNum=%u tmpDevNum=%u (%s) offsetW=%u (0x%x)\n",
+            LOGTIME6("%s/%s:%d devNum=%u tmpDevNum=%u (%s) offsetW=%u (0x%x)\n",
                      __FILE__, __FUNCTION__, __LINE__, devNum, tmpDevNum,
                      indexerDeviceAbsStraction[tmpDevNum].devName, offset,
                      offset);
@@ -2414,7 +2437,7 @@ static int indexerHandleIndexerCmd(unsigned offset, unsigned lenInPlc,
           UINTTONET(offset, netData.memoryStruct.indexer_info.infoType0.offset);
         }
       }
-      LOGINFO6(
+      LOGTIME6(
           "%s/%s:%d devNum=%u axisNo=%u netData=%p indexer=%p delta=%u "
           "typeCode=%x sizeW=%u offsetW=%u flagsLow=0x%x ack=0x%x\n",
           __FILE__, __FUNCTION__, __LINE__, devNum, axisNo, &netData,
@@ -2446,7 +2469,7 @@ static int indexerHandleIndexerCmd(unsigned offset, unsigned lenInPlc,
       strncpy(&netData.memoryStruct.indexer_info.infoType4.name[0],
               indexerDeviceAbsStraction[devNum].devName,
               sizeof(netData.memoryStruct.indexer_info.infoType4.name));
-      LOGINFO3("%s/%s:%d devName=%s idxName=%s\n", __FILE__, __FUNCTION__,
+      LOGTIME3("%s/%s:%d devName=%s idxName=%s\n", __FILE__, __FUNCTION__,
                __LINE__, indexerDeviceAbsStraction[devNum].devName,
                &netData.memoryStruct.indexer_info.infoType4.name[0]);
       netData.memoryStruct.indexer_ack[1] |= 0x80; /* ACK in high byte */
@@ -2474,14 +2497,14 @@ static int indexerHandleIndexerCmd(unsigned offset, unsigned lenInPlc,
           permPTyp permP;
           unsigned param_idx = byteIdx * size_of_param + bitIdx;
           permP = indexerDeviceAbsStraction[devNum].permP[param_idx];
-          LOGINFO6(
+          LOGTIME6(
               "%s/%s:%d devNum=%u param_idx=%u byteIdx=%02u bitIdx=%u "
               "permP=%d\n",
               __FILE__, __FUNCTION__, __LINE__, devNum, param_idx, byteIdx,
               bitIdx, (int)permP);
           if (permP != permPNone) parameter |= (1 << bitIdx);
         }
-        LOGINFO6("%s/%s:%d devNum=%u byteIdx=%02u parameter=0x%02X\n", __FILE__,
+        LOGTIME6("%s/%s:%d devNum=%u byteIdx=%02u parameter=0x%02X\n", __FILE__,
                  __FUNCTION__, __LINE__, devNum, byteIdx, parameter);
         netData.memoryStruct.indexer_info.infoType15.parameters[byteIdx] =
             parameter;
@@ -2522,7 +2545,7 @@ int indexerHandleADS_ADR_getUInt(unsigned adsport, unsigned offset,
   ret = netToUint(&netData.memoryBytes[offset], lenInPlc);
   *uValue = ret;
   /*
-    LOGINFO3("%s/%s:%d adsport=%u offset=%u lenInPlc=%u mot1=%u ret=%u
+    LOGTIME3("%s/%s:%d adsport=%u offset=%u lenInPlc=%u mot1=%u ret=%u
     (0x%x)\n",
     __FILE__, __FUNCTION__, __LINE__,
     adsport,
@@ -2537,7 +2560,7 @@ int indexerHandleADS_ADR_getUInt(unsigned adsport, unsigned offset,
 int indexerHandleADS_ADR_putUInt(unsigned adsport, unsigned offset,
                                  unsigned lenInPlc, unsigned uValue) {
   init();
-  LOGINFO6("%s/%s:%d adsport=%u offset=%u lenInPlc=%u uValue=%u (%x)\n",
+  LOGTIME6("%s/%s:%d adsport=%u offset=%u lenInPlc=%u uValue=%u (%x)\n",
            __FILE__, __FUNCTION__, __LINE__, adsport, offset, lenInPlc, uValue,
            uValue);
   if (offset == offsetIndexer) {
@@ -2569,7 +2592,7 @@ int indexerHandleADS_ADR_getFloat(unsigned adsport, unsigned offset,
 int indexerHandleADS_ADR_putFloat(unsigned adsport, unsigned offset,
                                   unsigned lenInPlc, double fValue) {
   init();
-  LOGINFO3("%s/%s:%d adsport=%u offset=%u lenInPlc=%u fValue=%f\n", __FILE__,
+  LOGTIME3("%s/%s:%d adsport=%u offset=%u lenInPlc=%u fValue=%f\n", __FILE__,
            __FUNCTION__, __LINE__, adsport, offset, lenInPlc, fValue);
   if (offset + lenInPlc >= sizeof(netData)) return 1;
   if ((lenInPlc == 4) || (lenInPlc == 8)) {
@@ -2620,7 +2643,7 @@ void indexerHandlePLCcycle(void) {
   unsigned devNum = 0;
   init();
   while (devNum < NUM_DEVICES) {
-    LOGINFO6("%s/%s:%d devNum=%u typeCode=0x%x\n", __FILE__, __FUNCTION__,
+    LOGTIME6("%s/%s:%d devNum=%u typeCode=0x%x\n", __FILE__, __FUNCTION__,
              __LINE__, devNum, indexerDeviceAbsStraction[devNum].typeCode);
 
     switch (indexerDeviceAbsStraction[devNum].typeCode) {
@@ -2631,7 +2654,7 @@ void indexerHandlePLCcycle(void) {
           if (!(strcmp(indexerDeviceAbsStraction[devNum].devName,
                        "encoderRaw"))) {
             int encoderRaw = (int)getEncoderPos(axisNo);
-            LOGINFO6(
+            LOGTIME6(
                 "%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u encoderRaw=%u\n",
                 __FILE__, __FUNCTION__, __LINE__, devNum, axisNo, motor5010Num,
                 encoderRaw);
@@ -2662,7 +2685,7 @@ void indexerHandlePLCcycle(void) {
               value,
               netData.memoryStruct.discreteInput1A04[0].statusReasonAux32);
         } else {
-          LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
+          LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName);
         }
@@ -2673,7 +2696,7 @@ void indexerHandlePLCcycle(void) {
           UINTTONET(value,
                     netData.memoryStruct.statusWord1802[0].statusReasonAux32);
         } else {
-          LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
+          LOGTIME("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName,
                   indexerDeviceAbsStraction[devNum].typeCode);
@@ -2685,7 +2708,7 @@ void indexerHandlePLCcycle(void) {
                     indexerDeviceAbsStraction[devNum].devName)) {
           ; /* Done in DISCRETEOUTPUT#0 */
         } else {
-          LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
+          LOGTIME("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName,
                   indexerDeviceAbsStraction[devNum].typeCode);
@@ -2706,7 +2729,7 @@ void indexerHandlePLCcycle(void) {
           ;
 #endif
         } else {
-          LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
+          LOGTIME("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName,
                   indexerDeviceAbsStraction[devNum].typeCode);
@@ -2731,13 +2754,13 @@ void indexerHandlePLCcycle(void) {
               devNum, axisNo, numAuxBits,
               &netData.memoryStruct.motors1E04[motor1E04Num]);
 #else
-          LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
+          LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName);
 
 #endif
         } else {
-          LOGINFO("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
+          LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName);
         }
@@ -2755,12 +2778,12 @@ void indexerHandlePLCcycle(void) {
                             (void *)&netData);
 
         fRet = getMotorPos((int)axisNo);
-        LOGINFO6(
+        LOGTIME6(
             "%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u offset=%u fRet=%f\n",
             __FILE__, __FUNCTION__, __LINE__, devNum, axisNo, motor5010Num,
             offset, (double)fRet);
         if (sim_usleep[axisNo]) {
-          LOGINFO3("%s/%s:%d axis_no=%d usleep=%lu\n", __FILE__, __FUNCTION__,
+          LOGTIME3("%s/%s:%d axis_no=%d usleep=%lu\n", __FILE__, __FUNCTION__,
                    __LINE__, axisNo, (unsigned long)sim_usleep[axisNo]);
           (void)usleep(sim_usleep[axisNo]);
         }
@@ -2776,14 +2799,14 @@ void indexerHandlePLCcycle(void) {
                                 .motors5010_1202[motor5010Num]
                                 .dev5010.paramCtrl -
                             (void *)&netData);
-        LOGINFO6("%s/%s:%d devNum=%u motor5010Num=%u paramoffset=%u\n",
+        LOGTIME6("%s/%s:%d devNum=%u motor5010Num=%u paramoffset=%u\n",
                  __FILE__, __FUNCTION__, __LINE__, devNum, motor5010Num,
                  offset);
         indexerMotorParamInterface(axisNo, offset, lenInPlcPara);
       } break;
       case TYPECODE_INDEXER: {
         uint16_t indexer_ack = NETTOUINT(netData.memoryStruct.indexer_ack);
-        LOGINFO6("%s/%s:%d devNum=%u indexer_ack=0x%x\n", __FILE__,
+        LOGTIME6("%s/%s:%d devNum=%u indexer_ack=0x%x\n", __FILE__,
                  __FUNCTION__, __LINE__, devNum, indexer_ack);
 
         if (!(indexer_ack & 0x8000)) {
@@ -2798,7 +2821,7 @@ void indexerHandlePLCcycle(void) {
         unsigned plcNotHostHasWritten = (ctrl_word & 0x8000) ? 1 : 0;
         unsigned numBytes = ctrl_word & 0x02FF; /* Bit 9..0 */
         int retval = 0;
-        LOGINFO6(
+        LOGTIME6(
             "%s/%s:%d devNum=%u special0518 ctrl0=0x%x crtl1=0x%x "
             "plcNotHostHasWritten=%u numBytes=%u\n",
             __FILE__, __FUNCTION__, __LINE__,
@@ -2823,25 +2846,25 @@ void indexerHandlePLCcycle(void) {
               had_cr = 1;
               *pNewline = '\0';
             }
-            LOGINFO3("%s/%s:%d devNum=%u special0518 value=\"%s\"\n", __FILE__,
+            LOGTIME3("%s/%s:%d devNum=%u special0518 value=\"%s\"\n", __FILE__,
                      __FUNCTION__, __LINE__, devNum,
                      (const char *)netData.memoryStruct.special0518.value);
             retval = handle_input_line(
                 (const char *)&netData.memoryStruct.special0518.value, had_cr,
                 1);
-            LOGINFO6("%s/%s:%d devNum=%u special0518 value=\"%s\" retval=%d\n",
+            LOGTIME6("%s/%s:%d devNum=%u special0518 value=\"%s\" retval=%d\n",
                      __FILE__, __FUNCTION__, __LINE__, devNum,
                      (const char *)netData.memoryStruct.special0518.value,
                      retval);
           } else {
-            LOGINFO3("%s/%s:%d devNum=%u special0518=\"%s\"\n", __FILE__,
+            LOGTIME3("%s/%s:%d devNum=%u special0518=\"%s\"\n", __FILE__,
                      __FUNCTION__, __LINE__, devNum,
                      (const char *)netData.memoryStruct.special0518.value);
           }
           ctrl_word = snprintf(&netData.memoryStruct.special0518.value[0],
                                sizeof(netData.memoryStruct.special0518.value),
                                "%s", retval ? "Error" : "OK");
-          LOGINFO3(
+          LOGTIME3(
               "%s/%s:%d devNum=%u special0518=\"%s\" retval=%d "
               "ctrl_word_len=%u\n",
               __FILE__, __FUNCTION__, __LINE__, devNum,
@@ -2853,7 +2876,7 @@ void indexerHandlePLCcycle(void) {
       } break;
 #endif
       default:
-        LOGINFO("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
+        LOGTIME("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
                 __FUNCTION__, __LINE__, devNum,
                 indexerDeviceAbsStraction[devNum].devName,
                 indexerDeviceAbsStraction[devNum].typeCode);
