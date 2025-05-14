@@ -629,6 +629,7 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(
       status = asynError;
     }
   }
+  free(p_write_buf);
   return status;
 }
 #endif
