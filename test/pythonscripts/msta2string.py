@@ -1,26 +1,25 @@
 #!/usr/bin/env python3
-'''
-If you ever wondered, what this (shortened) line means
-... [motorRecord.cc:1815 Mtr 00] motor is stopped ... msta=0x6966
-                                                      ^^^^^^^^^^^
-this script is for you:
-... motor is stopped msta=0x6966(LLS SlipStall HLS)
 
-You can either run
-a) camonitor/pvmonitor IOC:m1.MSTA | python msta2string.py
-b) python msta2string.py <ioclog.txt
-c) tail -f ioclog.txt | python msta2string.py
+#If you ever wondered, what this (shortened) line means
+#... [motorRecord.cc:1815 Mtr 00] motor is stopped ... msta=0x6966
+#                                                      ^^^^^^^^^^^
+#this script is for you:
+#... motor is stopped msta=0x6966(LLS SlipStall HLS)
 
-Depending on your OS version, python must be written as python3
-on modern systems the word python may be ommited
+#You can either run
+#a) camonitor/pvmonitor IOC:m1.MSTA | python msta2string.py
+#b) python msta2string.py <ioclog.txt
+#c) tail -f ioclog.txt | python msta2string.py
+
+#Depending on your OS version, python must be written as python3
+#on modern systems the word python may be ommited
 
 
 
-The prefix in front of the line helps to debug if
-the regular expressions bite:
-"o:" means old, "m:" means motor, "s:" means stop
-"L:" is a "normal" line
-'''
+#The prefix in front of the line helps to debug if
+#the regular expressions bite:
+#"o:" means old, "m:" means motor, "s:" means stop
+#"L:" is a "normal" line
 
 import re
 import sys
