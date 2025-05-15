@@ -76,6 +76,9 @@ jobs:
       run: |
         ./checkws.sh
       if: matrix.checkws
+    - name: black
+      run: |
+        ./install-run-black.sh
     - name: run python based tests
       run: |
           test/install-pytest-pyepics-p4p.sh
