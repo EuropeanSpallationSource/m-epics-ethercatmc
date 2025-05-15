@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-
-
 '''
 If you ever wondered, what this (shortened) line means
 ... [motorRecord.cc:1815 Mtr 00] motor is stopped ... msta=0x6966
