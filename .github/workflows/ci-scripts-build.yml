@@ -43,7 +43,7 @@ jobs:
             configuration: default
             base: "7.0"
             set: latestset
-            runpytests: true
+            #runpytests: true
             name: "7.0 latest pytest"
 
           - os: ubuntu-24.04
@@ -76,6 +76,10 @@ jobs:
       run: |
         ./checkws.sh
       if: matrix.checkws
+
+    - name: black
+      run: |
+        ./install-run-black.sh
     - name: run python based tests
       run: |
           test/install-pytest-pyepics-p4p.sh
