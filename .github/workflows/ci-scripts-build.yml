@@ -80,6 +80,9 @@ jobs:
     - name: black
       run: |
         ./install-run-black.sh
+    - name: ruff
+      run: |
+        ./install-run-ruff.sh
     - name: run python based tests
       run: |
           test/install-pytest-pyepics-p4p.sh
