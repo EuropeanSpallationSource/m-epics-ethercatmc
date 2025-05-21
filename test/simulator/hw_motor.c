@@ -799,53 +799,57 @@ double getMotorPos(int axis_no) {
   return motor_axis[axis_no].MotorPosReported;
 }
 
-void setMotorPos_fl(int axis_no, double value, int flags, const char *file,
-                    int line_no) {
-  LOGTIME3("setMotorPos(%d) (%s:%d) value=%g flags=0x%x\n", axis_no, file,
-           line_no, value, flags);
+void setPosHome_fl(int axis_no, double value, const char *file, int line_no) {
+  LOGTIME3("setPosHome(%d) (%s:%d) value=%g n", axis_no, file, line_no, value);
   AXIS_CHECK_RETURN(axis_no);
   int stillMoving = isMotorMoving(axis_no);
   if (stillMoving) {
     StopInternal(axis_no);
   }
   motor_axis[axis_no].homed = 1;
-  if (flags & SET_MOTOR_POS_FLAGS_KEEP_MOVING) {
-    motor_axis[axis_no].moving.velo.stillMoving = stillMoving;
-  }
-
-  if (flags & SET_MOTOR_POS_FLAGS_KEEP_LIMITS_FORCE) {
-    /*
-      The new position is pushed into the axis.
-       This is a "fast move", the offset is set to 0
-    */
-    motor_axis[axis_no].MotorPosSetPosOffset = 0;
-  } else {
-    /* The new position is pushed into the axis.
-       This corresponds to setPosition() in EPICS model 3,
-       used to home the motor to a certain position.
-       If the motor is at 30.0 and pushed into 50.0 (which is wrong)
-       we may run into soft- or hard limits at unexpected positions.
-       For that: save the offset so that
-       the hardware (limit switches, encoder) stay where they are
-    */
-    /* Save the old MotorPosSetPosOffset for printing below */
-    double oldMotorPosSetPosOffset = motor_axis[axis_no].MotorPosSetPosOffset;
-    /* Calculate the new MotorPosSetPosOffset */
-    motor_axis[axis_no].MotorPosSetPosOffset = calcMotorPosHw(axis_no) - value;
-    LOGTIME3(
-        "setMotorPos(%d) value=%g oldMotorPosSetPosOffset=%g "
-        "newMotorPosSetPosOffset=%g\n",
-        axis_no, value, oldMotorPosSetPosOffset,
-        motor_axis[axis_no].MotorPosSetPosOffset);
-  }
-  /* simulate EncoderPos */
-  motor_axis[axis_no].moving.velo.HomeVelocity = 0;
+  /* The new position is pushed into the axis.
+     This corresponds to setPosition() in EPICS model 3,
+     used to home the motor to a certain position.
+     If the motor is at 30.0 and pushed into 50.0 (which is wrong)
+     we may run into soft- or hard limits at unexpected positions.
+     For that: save the offset so that
+     the hardware (limit switches, encoder) stay where they are
+  */
+  /* Save the old MotorPosSetPosOffset for printing below */
+  double oldMotorPosSetPosOffset = motor_axis[axis_no].MotorPosSetPosOffset;
+  /* Calculate the new MotorPosSetPosOffset */
+  motor_axis[axis_no].MotorPosSetPosOffset = calcMotorPosHw(axis_no) - value;
+  LOGTIME3(
+      "setMotorPos(%d) value=%g oldMotorPosSetPosOffset=%g "
+      "newMotorPosSetPosOffset=%g\n",
+      axis_no, value, oldMotorPosSetPosOffset,
+      motor_axis[axis_no].MotorPosSetPosOffset);
   motor_axis[axis_no].MotorPosNow = value;
   {
     double jitter = 0.0;
     motor_axis[axis_no].MotorPosReported =
         calcMotorPosReported(axis_no, jitter);
   }
+  /* simulate EncoderPos */
+  motor_axis[axis_no].EncoderPos =
+      getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
+}
+
+void simFastMove_fl(int axis_no, double value, const char *file, int line_no) {
+  LOGTIME3("setPosHome(%d) (%s:%d) value=%g n", axis_no, file, line_no, value);
+  AXIS_CHECK_RETURN(axis_no);
+  int stillMoving = isMotorMoving(axis_no);
+  if (stillMoving) {
+    StopInternal(axis_no);
+  }
+  /* The new position is pushed into the axis. */
+  motor_axis[axis_no].MotorPosNow = value;
+  {
+    double jitter = 0.0;
+    motor_axis[axis_no].MotorPosReported =
+        calcMotorPosReported(axis_no, jitter);
+  }
+  /* simulate EncoderPos */
   motor_axis[axis_no].EncoderPos =
       getEncoderPosFromMotorPos(axis_no, motor_axis[axis_no].MotorPosNow);
 }
@@ -975,8 +979,7 @@ int moveHomeProc(int axis_no, int direction, int nCmdData, double position,
       nCmdData, position, max_velocity, velocity, acceleration);
 
   if (nCmdData == 15) {
-    int flags = 0;
-    setMotorPos(axis_no, position, flags);
+    setPosHome(axis_no, position);
     return 0;
   }
   motor_axis[axis_no].HomePos = position;

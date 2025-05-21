@@ -53,7 +53,7 @@ def positionAndSomeProblemNoRetry(
     ###########
 
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
-    self.axisMr.setValueOnSimulator(tc_no, "fSimForcePos", motorStartPos)
+    self.axisMr.setValueOnSimulator(tc_no, "fFastMove", motorStartPos)
     self.axisCom.put(".STUP", 1)
     maxDelta = 0.1
     timeout = 4.0

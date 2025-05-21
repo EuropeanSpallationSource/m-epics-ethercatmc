@@ -2323,8 +2323,7 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
         ret = PARAM_IF_CMD_DONE | paramIndex;
       } break;
       case PARAM_IDX_FUN_SET_POSITION: {
-        int flags = 0;
-        setMotorPos(motor_axis_no, fValue, flags);
+        setPosHome(motor_axis_no, fValue);
       }
         ret = PARAM_IF_CMD_DONE | paramIndex;
         break;

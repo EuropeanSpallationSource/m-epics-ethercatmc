@@ -423,7 +423,7 @@ class AxisMr:
         cfgDHLM = 53.0
         cfgDLLM = -54.0
         self.setSoftLimitsOff(tc_no)
-        self.setValueOnSimulator(tc_no, "fSimForcePos", 0.0)
+        self.setValueOnSimulator(tc_no, "fFastMove", 0.0)
         self.setValueOnSimulator(tc_no, "fHighSoftLimitPos", cfgDHLM)
         self.setValueOnSimulator(tc_no, "fLowSoftLimitPos", cfgDLLM)
         self.initializeMotorRecordOneField(tc_no, "-CfgDHLM-En", 1)
@@ -505,7 +505,7 @@ class AxisMr:
         self.setValueOnSimulator(tc_no, "fHighHardLimitPos", 120)
         self.setValueOnSimulator(tc_no, "setMRES_23", 0)
         self.setValueOnSimulator(tc_no, "setMRES_24", 0)
-        self.setValueOnSimulator(tc_no, "fSimForcePos", startPos)
+        self.setValueOnSimulator(tc_no, "fFastMove", startPos)
         self.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
 
         self.axisCom.put("-ErrRst", 1)
@@ -876,7 +876,7 @@ class AxisMr:
             self.axisCom.put(".SPAM", value)
 
     def setMotorStartPos(self, tc_no, startpos):
-        self.setValueOnSimulator(tc_no, "fSimForcePos", startpos)
+        self.setValueOnSimulator(tc_no, "fFastMove", startpos)
         self.doSTUPandSYNC(tc_no)
         maxDelta = 0.1
         timeout = 3.0
