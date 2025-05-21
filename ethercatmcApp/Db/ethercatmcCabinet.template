@@ -72,12 +72,6 @@ record(stringin, "$(P)$(R)BitNam10") {
     field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit10")
     field(SCAN, "I/O Intr")
 }
-record(stringin, "$(P)$(R)BitNam10") {
-    field(DTYP, "asynOctetRead")
-    field(DESC, "Cabinet status bit 10 name")
-    field(INP,  "@asyn($(MOTOR_PORT),0)$(R)_NamBit10")
-    field(SCAN, "I/O Intr")
-}
 record(stringin, "$(P)$(R)BitNam11") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 11 name")
