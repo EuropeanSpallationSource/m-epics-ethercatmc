@@ -28,7 +28,7 @@ direction = 1
 # bit 31..28           1=Idle, 3=Warn, 8=Error
 # bit 27               High limit (switch)
 # bit 26               Low limit (switch)
-# bit 25               Dynamic problem (stall)
+# bit 25               Dynamic problem (stall, following error)
 # bit 24               Static problem (air pressure, not used here)
 # bit 23               not homed (simulator)
 # bit 22               enabled (simulator)
@@ -38,9 +38,9 @@ direction = 1
 # bit 18               InterlockBwd (simulator, not used)
 # bit 17..0            not used
 
-statusReasonAuxIdleEnabled = "0x10400000"
-statusReasonAuxIdleStallEnabled = "0x12400000"
-statusReasonAuxIdleSLlsHlsEnabled = "0x1C400000"
+statusReasonAuxIdlePowerOn = "0x10400000"
+statusReasonAuxIdleStallPowerOn = "0x12400000"
+statusReasonAuxIdleSLlsHlsPowerOn = "0x1C400000"
 
 
 def lineno():
@@ -184,9 +184,9 @@ class Test(unittest.TestCase):
             self,
             922001,
             dly,
-            self.myPOSlow,
             self.myPOShig,
-            statusReasonAuxIdleSLlsHlsEnabled,
+            self.myPOSlow,
+            statusReasonAuxIdleSLlsHlsPowerOn,
         )
 
     def test_TC_922002(self):
@@ -197,7 +197,7 @@ class Test(unittest.TestCase):
             dly,
             self.myPOSlow,
             self.myPOShig,
-            statusReasonAuxIdleSLlsHlsEnabled,
+            statusReasonAuxIdleSLlsHlsPowerOn,
         )
 
     def test_TC_922003(self):
@@ -206,9 +206,9 @@ class Test(unittest.TestCase):
             self,
             922003,
             dly,
-            self.myPOSlow,
             self.myPOShig,
-            statusReasonAuxIdleStallEnabled,
+            self.myPOSlow,
+            statusReasonAuxIdleStallPowerOn,
         )
 
     def test_TC_922004(self):
@@ -219,7 +219,7 @@ class Test(unittest.TestCase):
             dly,
             self.myPOSlow,
             self.myPOShig,
-            statusReasonAuxIdleStallEnabled,
+            statusReasonAuxIdleStallPowerOn,
         )
 
     def teardown_class(self):
