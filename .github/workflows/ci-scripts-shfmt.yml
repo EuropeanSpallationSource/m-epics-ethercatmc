@@ -1,0 +1,12 @@
+name: shfmt
+on:
+  push:
+jobs:
+    shfmt:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: mfinelli/setup-shfmt@v3
+          with:
+            shfmt-version: 3.3.1
+        - run: shfmt -i 2 -ci -d *.sh ethercatmcExApp/op/Boy/tools/*.sh test/*.sh test/pytests36/*.sh test/pythonscripts/*.sh
