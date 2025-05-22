@@ -1,4 +1,4 @@
-ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)          UInt32Digital
+ethercatmcCreateAsynParam $(MOTOR_PORT) Cabinet        UInt32Digital
 
 ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit0   Octet
 ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)_NamBit1   Octet

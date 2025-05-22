@@ -2,7 +2,7 @@ record(mbbiDirect, "$(P)$(R)")
 {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "Cabinet 32 bit status")
-    field(INP,  "@asynMask($(MOTOR_PORT),0 0x3FFFFFF)$(R)")
+    field(INP,  "@asynMask($(MOTOR_PORT),0 0x3FFFFFF)Cabinet")
     field(SCAN, "I/O Intr")
 }
 
