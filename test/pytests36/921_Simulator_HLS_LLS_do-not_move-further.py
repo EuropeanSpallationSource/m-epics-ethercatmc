@@ -71,7 +71,7 @@ def InitAllFor921(self, tc_no):
     self.axisCom.put(".SPDB", 0.1)
     self.axisCom.put(".RDBD", 0.1)
     self.axisCom.put(".BDST", 0.0)
-    self.axisMr.setValueOnSimulator(tc_no, "fSimForcePos", 0.0)
+    self.axisMr.setValueOnSimulator(tc_no, "fFastMove", 0.0)
     self.axisMr.setValueOnSimulator(tc_no, "bAxisHomed", 1)
     self.axisMr.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
     # self.axisMr.waitForStop(tc_no, 2.0)
@@ -196,7 +196,7 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
     )
     while dirOrMresChanged:
         # Need to go to 0.0, before DIR can be reverted
-        # self.axisMr.setValueOnSimulator(tc_no, "fSimForcePos", 0.0)
+        # self.axisMr.setValueOnSimulator(tc_no, "fFastMove", 0.0)
         self.axisCom.put(".OFF", 0.0)
         self.axisMr.moveWait(tc_no, 0.0)
         if oldDir != dir:
@@ -204,7 +204,7 @@ def moveIntoLimitSwitchCheckMoveOrNotOneField(
         if mres != oldMres:
             self.axisCom.put(".MRES", mres)
         self.axisCom.put(".OFF", 0.0)
-        self.axisMr.setValueOnSimulator(tc_no, "fSimForcePos", 0.0)
+        self.axisMr.setValueOnSimulator(tc_no, "fFastMove", 0.0)
         rbv = float(self.axisCom.get(".RBV"))
         drbv = float(self.axisCom.get(".DRBV"))
         mip = int(self.axisCom.get(".DRBV"))

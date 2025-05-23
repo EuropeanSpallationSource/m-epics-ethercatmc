@@ -25,8 +25,6 @@
     if (((_axis) <= 0) || ((_axis) >= MAX_AXES)) return (EINVAL); \
   }
 
-#define SET_MOTOR_POS_FLAGS_KEEP_MOVING (1 << 0)
-#define SET_MOTOR_POS_FLAGS_KEEP_LIMITS_FORCE (1 << 1)
 typedef struct motor_init_values {
   double ReverseERES;
   double ParkingPos;
@@ -98,9 +96,10 @@ double getMRES_24(int axis_no);
 int setMRES_24(int axis_no, double value);
 
 double getMotorPos(int axis_no);
-void setMotorPos_fl(int axis_no, double value, int flags, const char *file,
-                    int line_no);
-#define setMotorPos(a, b, c) setMotorPos_fl(a, b, c, __FILE__, __LINE__)
+void setPosHome_fl(int axis_no, double value, const char *file, int line_no);
+#define setPosHome(a, b) setPosHome_fl(a, b, __FILE__, __LINE__)
+void simFastMove_fl(int axis_no, double value, const char *file, int line_no);
+#define simFastMove(a, b) simFastMove_fl(a, b, __FILE__, __LINE__)
 
 void setPositionJitter(int axis_no, double value);
 
@@ -112,6 +111,8 @@ int get_bError(int axis_no);
 int set_bError(int axis_no, int value);
 int get_nErrorId(int axis_no);
 int set_nErrorId(int axis_no, int value);
+unsigned get_nStatReasAUX(int axis_no);
+int set_nStatReasAUX(int axis_no, unsigned value);
 
 /*
  * Movements

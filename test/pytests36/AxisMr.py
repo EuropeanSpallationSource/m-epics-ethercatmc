@@ -423,7 +423,7 @@ class AxisMr:
         cfgDHLM = 53.0
         cfgDLLM = -54.0
         self.setSoftLimitsOff(tc_no)
-        self.setValueOnSimulator(tc_no, "fActPosition", 0.0)
+        self.setValueOnSimulator(tc_no, "fFastMove", 0.0)
         self.setValueOnSimulator(tc_no, "fHighSoftLimitPos", cfgDHLM)
         self.setValueOnSimulator(tc_no, "fLowSoftLimitPos", cfgDLLM)
         self.initializeMotorRecordOneField(tc_no, "-CfgDHLM-En", 1)
@@ -505,7 +505,7 @@ class AxisMr:
         self.setValueOnSimulator(tc_no, "fHighHardLimitPos", 120)
         self.setValueOnSimulator(tc_no, "setMRES_23", 0)
         self.setValueOnSimulator(tc_no, "setMRES_24", 0)
-        self.setValueOnSimulator(tc_no, "fActPosition", startPos)
+        self.setValueOnSimulator(tc_no, "fFastMove", startPos)
         self.setValueOnSimulator(tc_no, "nAmplifierPercent", 100)
 
         self.axisCom.put("-ErrRst", 1)
@@ -876,7 +876,7 @@ class AxisMr:
             self.axisCom.put(".SPAM", value)
 
     def setMotorStartPos(self, tc_no, startpos):
-        self.setValueOnSimulator(tc_no, "fActPosition", startpos)
+        self.setValueOnSimulator(tc_no, "fFastMove", startpos)
         self.doSTUPandSYNC(tc_no)
         maxDelta = 0.1
         timeout = 3.0
@@ -1027,7 +1027,7 @@ class AxisMr:
             wait_for_powerOn -= polltime
         raise Exception(debug_text)
 
-    def waitForStart(self, tc_no, wait_for_start):
+    def waitForStart(self, tc_no, wait_for_start, throw=True):
         while wait_for_start > 0:
             wait_for_start -= polltime
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
@@ -1037,10 +1037,13 @@ class AxisMr:
             debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_start={wait_for_start:.2f} dmov={dmov} movn={movn} val={val:.2f} rbv={rbv:.2f}"
             print(debug_text)
             if movn and not dmov:
-                return
+                return True
             time.sleep(polltime)
             wait_for_start -= polltime
-        raise Exception(debug_text)
+        if throw:
+            raise Exception(debug_text)
+        else:
+            return False
 
     def waitForStartAndDone(self, tc_no, wait_for_done, throw=True):
         val = self.axisCom.get(".VAL", use_monitor=False)
@@ -1080,7 +1083,7 @@ class AxisMr:
             raise Exception(debug_text)
         return False
 
-    def waitForStop(self, tc_no, wait_for_stop):
+    def waitForStop(self, tc_no, wait_for_stop, throw=True):
         while wait_for_stop > 0:
             dmov = int(self.axisCom.get(".DMOV", use_monitor=False))
             movn = int(self.axisCom.get(".MOVN", use_monitor=False))
@@ -1088,10 +1091,13 @@ class AxisMr:
             debug_text = f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: wait_for_stop={wait_for_stop:.2f} dmov={dmov} movn={movn} rbv={rbv:.2f}"
             print(debug_text)
             if not movn and dmov:
-                return
+                return True
             time.sleep(polltime)
             wait_for_stop -= polltime
-        raise Exception(debug_text)
+        if throw:
+            raise Exception(debug_text)
+        else:
+            return False
 
     def waitForValueChanged(
         self, tc_no, field_name, expVal, maxDelta, time_to_wait, debugPrint=True
@@ -1234,6 +1240,9 @@ class AxisMr:
         motorEndPos,
         need_007_017_tweak=False,
     ):
+        velo = self.axisCom.get(".VELO")
+        accl = self.axisCom.get(".ACCL")
+        accs = velo / accl  # acceleration, mm/sec^2
         if motorEndPos - motorStartPos > 0:
             directionOfMove = 1
         else:
@@ -1326,7 +1335,7 @@ class AxisMr:
                     if self.isMotorMasterAxis and (cnt < maxcnt - 1):
                         line2 = (
                             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-                            % (motorStartPos, self.myVELO, self.myAR, motorStartPos)
+                            % (motorStartPos, velo, accs, motorStartPos)
                         )
 
                 expFile.write(f"{line1}{line2}")
@@ -1346,7 +1355,7 @@ class AxisMr:
                     if deltaToMov1 != 0:
                         line1 = (
                             "move relative delta=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
-                            % (deltaToMov1, self.myVELO, self.myAR, motorStartPos)
+                            % (deltaToMov1, velo, accs, motorStartPos)
                         )
                     # Move forward with backlash parameters
                     # Note: This should be bdst, but since we don't move the motor AND
@@ -1366,8 +1375,8 @@ class AxisMr:
                             "move absolute position=%g max_velocity=%g acceleration=%g motorPosNow=%g\n"
                             % (
                                 motorStartPos + deltaToMov1,
-                                self.myVELO,
-                                self.myAR,
+                                velo,
+                                accs,
                                 motorStartPos,
                             )
                         )

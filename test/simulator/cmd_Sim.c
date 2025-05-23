@@ -146,29 +146,20 @@ static int motorHandleOneArg(const char *myarg_1) {
     return 0;
   }
 
+  /* set motor position (wagon stays). Axis is then homed. */
   /* fActPosition=30 */
   nvals = sscanf(myarg_1, "fActPosition=%lf", &fValue);
   if (nvals == 1) {
-    int flags = 0;
-    setMotorPos(motor_axis_no, fValue, flags);
+    setPosHome(motor_axis_no, fValue);
     cmd_buf_printf("OK");
     return 0;
   }
 
-  /* fActPosMove=30 */
-  nvals = sscanf(myarg_1, "fActPosMove=%lf", &fValue);
+  /* move the motor (with infinite speed) */
+  /* fFastMove=30 */
+  nvals = sscanf(myarg_1, "fFastMove=%lf", &fValue);
   if (nvals == 1) {
-    int flags = SET_MOTOR_POS_FLAGS_KEEP_MOVING;
-    setMotorPos(motor_axis_no, fValue, flags);
-    cmd_buf_printf("OK");
-    return 0;
-  }
-
-  /* fSimForcePos=30 */
-  nvals = sscanf(myarg_1, "fSimForcePos=%lf", &fValue);
-  if (nvals == 1) {
-    int flags = SET_MOTOR_POS_FLAGS_KEEP_LIMITS_FORCE;
-    setMotorPos(motor_axis_no, fValue, flags);
+    simFastMove(motor_axis_no, fValue);
     cmd_buf_printf("OK");
     return 0;
   }
@@ -238,6 +229,17 @@ static int motorHandleOneArg(const char *myarg_1) {
     cmd_buf_printf("OK");
     return 0;
   }
+
+  /* nStatReasAUX=0x10400000 (idle) 0x1F400000 LLS HLS SLIP */
+  nvals = sscanf(myarg_1, "nStatReasAUX=%x", &iValue);
+  if (nvals == 1) {
+    LOGINFO("%s/%s:%d myarg_1=\"%s\" iValue=0x%x %d\n", __FILE__, __FUNCTION__,
+            __LINE__, myarg_1, iValue, iValue);
+    set_nStatReasAUX(motor_axis_no, iValue);
+    cmd_buf_printf("OK");
+    return 0;
+  }
+
   /* nAmplifierPercent=1 */
   nvals = sscanf(myarg_1, "nAmplifierPercent=%d", &iValue);
   if (nvals == 1) {
