@@ -82,7 +82,15 @@ case $UNAME_A in
   *) ;;
 esac
 
-if which virtualenv-3.10 >/dev/null 2>&1; then
+if which virtualenv-3.14 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.14
+elif which virtualenv-3.13 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.13
+elif which virtualenv-3.12 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.12
+elif which virtualenv-3.11>/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.11
+elif which virtualenv-3.10 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.10
 elif which virtualenv-3.9 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.9
@@ -151,7 +159,15 @@ fi
 
 ##############################################################################
 if test -n "$MYVIRTUALENV" && type $MYVIRTUALENV >/dev/null 2>&1; then
-  if which python3.10 >/dev/null 2>&1; then
+  if which python3.14 >/dev/null 2>&1; then
+    PYTHON=python3.14
+  elif which python3.13 >/dev/null 2>&1; then
+    PYTHON=python3.13
+  elif which python3.12 >/dev/null 2>&1; then
+    PYTHON=python3.12
+  elif which python3.11 >/dev/null 2>&1; then
+    PYTHON=python3.11
+  elif which python3.10 >/dev/null 2>&1; then
     PYTHON=python3.10
   elif which python3.9 >/dev/null 2>&1; then
     PYTHON=python3.9
