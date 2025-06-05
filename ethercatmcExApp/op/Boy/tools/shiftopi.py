@@ -74,10 +74,10 @@ def parse_command_line():
 
 
 def shiftXorY(options, line):
-    matchX = re.compile("^( *<x>)([0-9]+)(</x> *)$")
-    matchY = re.compile("^( *<y>)([0-9]+)(</y> *)$")
-    matchM = re.compile("(.*\([MR])([0-9]+)(\).*)")
-    matchT = re.compile("(.*Temp)(1)([^0-9].*)$")
+    matchX = re.compile(r"^( *<x>)([0-9]+)(</x> *)$")
+    matchY = re.compile(r"^( *<y>)([0-9]+)(</y> *)$")
+    matchM = re.compile(r"(.*\([MR])([0-9]+)(\).*)")
+    matchT = re.compile(r"(.*Temp)(1)([^0-9].*)$")
 
     isMatchX = matchX.match(line)
     isMatchM = matchM.match(line)

@@ -49,8 +49,8 @@ def parse_command_line():
 
 
 def shiftY_NNN(options, line):
-    matchY = re.compile("^( *<y>)([0-9]+)(</y> *)$")
-    matchN = re.compile("(.*)(NNN)(.*)")
+    matchY = re.compile(r"^( *<y>)([0-9]+)(</y> *)$")
+    matchN = re.compile(r"(.*)(NNN)(.*)")
 
     isMatchY = matchY.match(line)
     isMatchN = matchN.match(line)

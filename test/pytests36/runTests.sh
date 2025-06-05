@@ -88,7 +88,7 @@ elif which virtualenv-3.13 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.13
 elif which virtualenv-3.12 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.12
-elif which virtualenv-3.11>/dev/null 2>&1; then
+elif which virtualenv-3.11 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.11
 elif which virtualenv-3.10 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.10
