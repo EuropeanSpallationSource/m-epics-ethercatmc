@@ -2084,7 +2084,7 @@ static void indexerMotorStatusRead5010(
 
     statusReasonAux32 &= 0x0FFFFFFF;
     statusReasonAux32 |= ((unsigned)idxStatusCode << 28);
-    LOGTIME3(
+    LOGTIME6(
         "%s/%s:%d motor_axis_no=%u "
         "statusReasonAux32=0x%08x "
         "idxStatusCode=0x%x\n",
