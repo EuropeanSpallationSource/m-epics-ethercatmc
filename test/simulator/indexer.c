@@ -1996,7 +1996,7 @@ static void indexerMotorStatusRead5010(
              __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
              statusReasonAux32);
   } else {
-    statusReasonAux32 &= 0x00FFFFFF;  // Reset aux bits
+    statusReasonAux32 = 0;  // Reset bits
     /* reason bits */
     if (getPosLimitSwitch(motor_axis_no)) statusReasonAux32 |= 0x08000000;
     if (getNegLimitSwitch(motor_axis_no)) statusReasonAux32 |= 0x04000000;
@@ -2082,7 +2082,6 @@ static void indexerMotorStatusRead5010(
     else
       idxStatusCode = idxStatusCodeIDLE;
 
-    statusReasonAux32 &= 0x0FFFFFFF;
     statusReasonAux32 |= ((unsigned)idxStatusCode << 28);
     LOGTIME6(
         "%s/%s:%d motor_axis_no=%u "
