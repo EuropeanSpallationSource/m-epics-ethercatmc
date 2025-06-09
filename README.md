@@ -18,6 +18,23 @@ Why do we need a patched version?
    If configured, the controller has soft limits defined.
    The ESS version of the motorRecord push those into the DHLM/DLLM
    field and will not allow a user to loosen them.
+
+## Contributing
+Write commit messages, that tell people why things happen and what
+happens:
+  A useful head line, max 50 characters
+  An empty line
+  Motivate the change, describe why and what. If alternative solutions
+  may had been choosen, mention them shortly.
+  The commit message should be complete, so that the ready is not forced
+  to digg into the issue list to understand what is going on.
+
+  See even
+https://www.freecodecamp.org/news/how-to-write-better-git-commit-messages
+
+Make sure that the code passes the ci pipelines.
+
+
 ## Having the Simulation Up and Running
 
 Open a terminal window and execute the following commands:
