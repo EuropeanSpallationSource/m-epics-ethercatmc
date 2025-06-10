@@ -434,3 +434,12 @@ record(longin,"$(P)$(R)-CnenVis") {
     field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STATUS_GAIN_SUPPORT")
     field(SCAN, "I/O Intr")
 }
+
+#Power handling
+record(longout, "$(P)$(R)-PwrAuto")
+{
+    field(DESC, "power automatic on")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_AUTO_ONOFF")
+    info(asyn:READBACK,"1")
+}

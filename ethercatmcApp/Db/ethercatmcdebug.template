@@ -7,14 +7,6 @@ record(longout, "$(P)$(R)-PwrCNEN")
     info(asyn:READBACK,"1")
 }
 
-record(longout, "$(P)$(R)-PwrAuto")
-{
-    field(DESC, "power automatic on")
-    field(DTYP, "asynInt32")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_AUTO_ONOFF")
-    info(asyn:READBACK,"1")
-}
-
 record(ao, "$(P)$(R)-PwrOnDly")
 {
     field(DESC, "power on delay")
