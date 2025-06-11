@@ -1,0 +1,14 @@
+## Contributing
+Write commit messages that tell people why things happen and what
+happens:
+  A useful head line, max 50 characters
+  An empty line
+  Motivate the change, describe why and what. If alternative solutions
+  may had been choosen, mention them shortly.
+  The commit message should be complete, so that the reader is not forced
+  to dig into the issue list to understand what is going on.
+
+  See even
+https://www.freecodecamp.org/news/how-to-write-better-git-commit-messages
+
+Make sure that the code passes the ci pipelines.
