@@ -7,13 +7,9 @@ GNERATEDOPIS = \
   ./motorx-pils.mid \
   ../motor-0-ptp.opi \
   ../motor-1.opi \
-  ../motor-1-piezo.opi \
-  ../motor-1-pils.opi \
   ../motor-1-ptp.opi \
   ../motor-1-pils-ptp-Max-Red-Current-para195-197.opi \
   ../motor-2.opi \
-  ../motor-2-piezo.opi \
-  ../motor-2-pils.opi \
   ../motor-3-pils.opi \
   ../motor-3-ptp.opi \
   ../motor-4-pils.opi \
@@ -34,7 +30,6 @@ GNERATEDOPIS = \
   ../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-para195-197.opi \
   ../ethercatmcaxisExpert.opi \
   ../ethercatmcaxisExpert-ecmc.opi \
-  ../ethercatmcaxisExpert-piezo.opi \
   ../ethercatmcaxisExpert-pils.opi \
   ../ethercatmcaxisExpert-pils-ptp.opi \
   ../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-para195-197.opi \
@@ -52,11 +47,6 @@ all: checkwhitespace $(GNERATEDOPIS)
 
 clean:
 	rm -f $(GNERATEDOPIS)
-
-DEPENDENCIES_FOR_MOTORX_PIEZO_OPI = \
-	m-motor.mid \
-	m-msgtxt.mid \
-
 
 DEPENDENCIES_FOR_MOTORX_HXPD_OPI = \
 	m-motor.mid \
@@ -122,7 +112,6 @@ DEPENDENCIES_FOR_STATUSWORD_OPI += genExpertWithAuxBits.py
 DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcStatusWord1802.start
 DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcStatusWord1802.mid
 DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcaxisAuxBit.mid
-DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcaxisPiezoPSTAT.mid
 DEPENDENCIES_FOR_STATUSWORD_OPI += ethercatmcStatusWord1802.end
 DEPENDENCIES_FOR_STATUSWORD_OPI += openPTPErrBits.mid
 
@@ -162,7 +151,6 @@ DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += e-vel-acc-RB-act.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.start
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisAuxBit.mid
-DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisPiezoPSTAT.mid
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ethercatmcaxisExpert.end
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.sh
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.py
@@ -185,16 +173,6 @@ AUXBITS_SHUTTER="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
 AUXBITS_STATUSWORD="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23"
 AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
-# Names of the status bits in PSTAT for a piezo motor
-# Start with bit 0 going upward
-PIEZO_PSTAT_NAMES  = ""
-PIEZO_PSTAT_NAMES += "ACTIVELY_MOVING CLOSED_LOOP_ACTIVE CALIBRATING REFERENCING "
-PIEZO_PSTAT_NAMES += "MOVE_DELAYED SENSOR_PRESENT IS_CALIBRATED IS_REFERENCED "
-PIEZO_PSTAT_NAMES += "END_STOP_REACHED RANGE_LIMIT_REACHED FOLLOWING_LIMIT_REACHED MOVEMENT_FAILED "
-PIEZO_PSTAT_NAMES += "STREAMING POSITIONER_OVERLOAD OVERTEMP REFERENCE_MARK "
-PIEZO_PSTAT_NAMES += "IS_PHASED POSITIONER_FAULT AMPLIFIER_ENABLED IN_POSITION "
-PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
-
 
 ./e-cnen.mid: e-cnen-vis.mid Makefile
 	sed -e '/<rules>/,/<\/rules>/d'<e-cnen-vis.mid >$@
@@ -204,10 +182,6 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 
 ./e-homf-homr.mid: e-homf-homr-vis.mid Makefile
 	sed -e '/<rules>/,/<\/rules>/d'<e-homf-homr-vis.mid >$@
-
-./motorx-piezo.mid: $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) Makefile
-	echo $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) '>$@'
-	cat $(DEPENDENCIES_FOR_MOTORX_PIEZO_OPI) >$@
 
 ./motorx-hxpd.mid: $(DEPENDENCIES_FOR_MOTORX_HXPD_OPI) Makefile
 	echo $(DEPENDENCIES_FOR_MOTORX_HXPD_OPI) '>$@'
@@ -223,9 +197,6 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 ../motor-1.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ 1 x 1
 
-../motor-1-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) ./motorx-piezo.mid
-	./genMotorShutter.sh $@ piezo 1 x 1
-
 ../motor-1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 1 x 1
 
@@ -240,9 +211,6 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 
 ../motor-2-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 2 x 1
-
-../motor-2-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) ./motorx-piezo.mid
-	./genMotorShutter.sh $@ piezo 2 x 1
 
 ../motor-3-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 3 x 1
@@ -302,9 +270,6 @@ PIEZO_PSTAT_NAMES += "BRAKE_ENABLED"
 #   ethercatmcaxisExpert.mid and ethercatmcaxisExpert.end
 ../ethercatmcaxisExpert.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert
-
-../ethercatmcaxisExpert-piezo.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
-	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert piezo $(PIEZO_PSTAT_NAMES)
 
 ../ethercatmcaxisExpert-pils.opi: $(DEPENDENCIES_FOR_MOTOR_EXPERT_OPI)
 	./genExpertWithAuxBits.sh $@ ethercatmcaxisExpert pils $(AUXBITS_EXPERT)

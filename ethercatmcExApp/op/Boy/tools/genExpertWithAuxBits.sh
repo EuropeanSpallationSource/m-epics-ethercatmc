@@ -90,11 +90,6 @@ while test "$PARAM" != ""; do
       shift
       PARAM="$1"
       ;;
-    piezo)
-      HAS_PIEZO="y"
-      shift
-      PARAM="$1"
-      ;;
     pils)
       HAS_PILS="y"
       shift

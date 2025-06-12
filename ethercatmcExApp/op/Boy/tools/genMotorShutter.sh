@@ -142,11 +142,6 @@ if test "$1" = "pils"; then
   shift
   HAS_PILS=y
   export HAS_PILS
-elif test "$1" = "piezo"; then
-  shift
-  OPIMID_MOT_SHT=motorx-piezo.mid
-  HAS_PIEZO=y
-  export HAS_PIEZO
 elif test "$1" = "ecmc"; then
   shift
   HAS_ECMC=y
@@ -195,12 +190,6 @@ fi &&
     touch $FILE &&
       chmod +w $FILE &&
       sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-pils-ptp.opi!" </tmp/$$ >$FILE &&
-      rm /tmp/$$ &&
-      chmod -w $FILE
-  elif test "$HAS_PIEZO" != ""; then
-    touch $FILE &&
-      chmod +w $FILE &&
-      sed -e "s!ethercatmcaxisExpert-pils.opi!ethercatmcaxisExpert-piezo.opi!" </tmp/$$ >$FILE &&
       rm /tmp/$$ &&
       chmod -w $FILE
   elif test "$HAS_HXPD" != ""; then
