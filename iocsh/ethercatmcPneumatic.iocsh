@@ -1,0 +1,31 @@
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit0   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit1   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit2   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit3   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit4   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit5   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit6   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit7   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit8   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit9   Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit10  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit11  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit12  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit13  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit14  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit15  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit16  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit17  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit18  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit19  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit20  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit21  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit22  Octet
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(R)NamBit23  Octet
+
+ethercatmcCreateIndexerAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
+
+ethercatmcCreateAsynParam $(MOTOR_PORT) AUXBITActivated   Int32
+ethercatmcCreateAsynParam $(MOTOR_PORT) AUXBITDeactivated Int32
+
+dbLoadRecords("ethercatmcPneumatic.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
