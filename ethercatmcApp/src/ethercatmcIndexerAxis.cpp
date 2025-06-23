@@ -1068,20 +1068,16 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     pC_->setAlarmStatusSeverityWrapper(
         axisNo_, pC_->defAsynPara.ethercatmcRBV_TSE_, RBV_TSEstatus);
   }
-  if (idxStatusCode != idxStatusCodeRESET && !localMode) {
-    /* Read back parameters. Do not do it in localMode.
-       Do not do it when axis stays in  reset */
-    if (drvlocal.clean.iTypCode == 0x5010) {
-      pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
-      if (drvlocal.clean.iTypCode == 0x5010 ||
-          drvlocal.clean.iTypCode == 0x1E04) {
-        if (!drvlocal.clean.hasPolledAllEnums) {
-          drvlocal.clean.hasPolledAllEnums =
-              readEnumsAndValueAndCallbackIntoMbbi();
-        }
-      }
+  /* Read back parameters. Do not do it in localMode */
+  if (!localMode && drvlocal.clean.iTypCode == 0x5010) {
+    pollReadBackParameters(idxAuxBits, paramCtrl, paramfValue);
+  }
+  if (drvlocal.clean.iTypCode == 0x5010 || drvlocal.clean.iTypCode == 0x1E04) {
+    if (!drvlocal.clean.hasPolledAllEnums) {
+      drvlocal.clean.hasPolledAllEnums = readEnumsAndValueAndCallbackIntoMbbi();
     }
   }
+
   if ((idxStatusCode != drvlocal.dirty.idxStatusCodeLog) ||
       (errorID != drvlocal.dirty.old_ErrorIdLog)) {
     if (errorID) {
