@@ -115,12 +115,6 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #ifdef motorNotHomedProblemString
   setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-  setStringParam(pC_->defAsynPara.ethercatmcNamBit27_, "HiLimit");
-  setStringParam(pC_->defAsynPara.ethercatmcNamBit26_, "LoLimit");
-  setStringParam(pC_->defAsynPara.ethercatmcNamBit25_,
-                 "Dynamic_problem_timeout");
-  setStringParam(pC_->defAsynPara.ethercatmcNamBit24_,
-                 "Static_problem_inhibit");
 
   /* Set the module name to "" if we have FILE/LINE enabled by asyn */
   if (pasynTrace->getTraceInfoMask(pC_->pasynUserController_) &
@@ -1107,29 +1101,29 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     if (idxAuxBits != drvlocal.clean.old_idxAuxBitsPrinted) {
       /* This is for debugging only: The IOC log will show changed bits */
       /* Show even bit 27..24, which are reson bits, here */
-      pC_->changedAuxBits_to_ASCII(axisNo_, pC_->defAsynPara.ethercatmcNamAux0_,
-                                   idxAuxBits,
-                                   drvlocal.clean.old_idxAuxBitsPrinted);
+      pC_->changedReasAuxReasToASCII(
+          axisNo_, pC_->defAsynPara.ethercatmcNamAux0_, idxAuxBits,
+          drvlocal.clean.old_idxAuxBitsPrinted);
       asynPrint(
           pC_->pasynUserController_, traceMask,
           "%spoll(%d) auxBitsOld=0x%07X new=0x%07X "
           "(%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s) "
           "actPos=%f\n",
           modNamEMC, axisNo_, drvlocal.clean.old_idxAuxBitsPrinted, idxAuxBits,
-          pC_->ctrlLocal.changedAuxBits[27], pC_->ctrlLocal.changedAuxBits[26],
-          pC_->ctrlLocal.changedAuxBits[25], pC_->ctrlLocal.changedAuxBits[24],
-          pC_->ctrlLocal.changedAuxBits[0], pC_->ctrlLocal.changedAuxBits[1],
-          pC_->ctrlLocal.changedAuxBits[2], pC_->ctrlLocal.changedAuxBits[3],
-          pC_->ctrlLocal.changedAuxBits[4], pC_->ctrlLocal.changedAuxBits[5],
-          pC_->ctrlLocal.changedAuxBits[6], pC_->ctrlLocal.changedAuxBits[7],
-          pC_->ctrlLocal.changedAuxBits[8], pC_->ctrlLocal.changedAuxBits[9],
-          pC_->ctrlLocal.changedAuxBits[10], pC_->ctrlLocal.changedAuxBits[11],
-          pC_->ctrlLocal.changedAuxBits[12], pC_->ctrlLocal.changedAuxBits[13],
-          pC_->ctrlLocal.changedAuxBits[14], pC_->ctrlLocal.changedAuxBits[15],
-          pC_->ctrlLocal.changedAuxBits[16], pC_->ctrlLocal.changedAuxBits[17],
-          pC_->ctrlLocal.changedAuxBits[18], pC_->ctrlLocal.changedAuxBits[19],
-          pC_->ctrlLocal.changedAuxBits[20], pC_->ctrlLocal.changedAuxBits[21],
-          pC_->ctrlLocal.changedAuxBits[22], pC_->ctrlLocal.changedAuxBits[23],
+          pC_->ctrlLocal.changedReasAux[27], pC_->ctrlLocal.changedReasAux[26],
+          pC_->ctrlLocal.changedReasAux[25], pC_->ctrlLocal.changedReasAux[24],
+          pC_->ctrlLocal.changedReasAux[0], pC_->ctrlLocal.changedReasAux[1],
+          pC_->ctrlLocal.changedReasAux[2], pC_->ctrlLocal.changedReasAux[3],
+          pC_->ctrlLocal.changedReasAux[4], pC_->ctrlLocal.changedReasAux[5],
+          pC_->ctrlLocal.changedReasAux[6], pC_->ctrlLocal.changedReasAux[7],
+          pC_->ctrlLocal.changedReasAux[8], pC_->ctrlLocal.changedReasAux[9],
+          pC_->ctrlLocal.changedReasAux[10], pC_->ctrlLocal.changedReasAux[11],
+          pC_->ctrlLocal.changedReasAux[12], pC_->ctrlLocal.changedReasAux[13],
+          pC_->ctrlLocal.changedReasAux[14], pC_->ctrlLocal.changedReasAux[15],
+          pC_->ctrlLocal.changedReasAux[16], pC_->ctrlLocal.changedReasAux[17],
+          pC_->ctrlLocal.changedReasAux[18], pC_->ctrlLocal.changedReasAux[19],
+          pC_->ctrlLocal.changedReasAux[20], pC_->ctrlLocal.changedReasAux[21],
+          pC_->ctrlLocal.changedReasAux[22], pC_->ctrlLocal.changedReasAux[23],
           actPosition);
       drvlocal.clean.old_idxAuxBitsPrinted = idxAuxBits;
     }

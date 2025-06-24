@@ -322,3 +322,13 @@ record(stringin, "$(P)$(R)NamBit23") {
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit23")
     field(SCAN, "I/O Intr")
 }
+
+# bit 24 and 25: give reason bits a value
+record(stringout, "$(P)$(R)NamBit24") {
+    field(DESC, "Name of bit24: ReasonStatic")
+    field(VAL, "ReasonStatic")
+}
+record(stringout, "$(P)$(R)NamBit25") {
+    field(DESC, "Name of bit24: ReasonDynamic")
+    field(VAL, "ReasonDynamic")
+}

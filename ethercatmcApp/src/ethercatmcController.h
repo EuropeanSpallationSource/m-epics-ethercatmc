@@ -26,8 +26,8 @@ FILENAME...   ethercatmcController.h
 #define ETHERCATMC_ASYN_ASYNPARAMINT64
 #endif
 
-#define MAX_AUX_BIT_SHOWN 24
-#define MAX_REASON_AUX_BIT_SHOW (MAX_AUX_BIT_SHOWN + 4)
+#define NUM_AUX_BITS 24
+#define MAX_REASON_AUX_BIT_SHOW (NUM_AUX_BITS + 4)
 
 #ifdef asynParamMetaMask
 #define ETHERCATMC_ASYN_PARAMMETA
@@ -73,10 +73,6 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcNamAux21_String "NamAuxBit21"
 #define ethercatmcNamAux22_String "NamAuxBit22"
 #define ethercatmcNamAux23_String "NamAuxBit23"
-#define ethercatmcNamBit24_String "NamBit24"
-#define ethercatmcNamBit25_String "NamBit25"
-#define ethercatmcNamBit26_String "NamBit26"
-#define ethercatmcNamBit27_String "NamBit27"
 #define ethercatmcFoffVisString "FoffVis"
 #define ethercatmcHomeVisString "HomeVis"
 #define ethercatmcHomProc_RBString "HomProc-RB"
@@ -449,9 +445,9 @@ class epicsShareClass ethercatmcController : public asynMotorController {
   pilsAsynDevInfo_type *findIndexerOutputDevice(int axisNo, int function,
                                                 asynParamType myEPICSParamType);
 
-  void changedAuxBits_to_ASCII(int axisNo, int functionNamAux0,
-                               epicsUInt32 statusReasonAux,
-                               epicsUInt32 oldStatusReasonAux);
+  void changedReasAuxReasToASCII(int axisNo, int functionNamAux0,
+                                 epicsUInt32 statusReasonAux,
+                                 epicsUInt32 oldStatusReasonAux);
 
   struct {
     uint8_t *pIndexerProcessImage;
@@ -483,7 +479,8 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     unsigned numPilsAsynDevInfo;
     int lockADSlineno;
     uint32_t callBackNeeded;
-    char changedAuxBits[MAX_REASON_AUX_BIT_SHOW][36];
+
+    char changedReasAux[MAX_REASON_AUX_BIT_SHOW][36];
 #ifdef ETHERCATMC_TCBSD
     int32_t tcbsdLocalPort;
 #endif
@@ -527,10 +524,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     int ethercatmcNamAux21_;
     int ethercatmcNamAux22_;
     int ethercatmcNamAux23_;
-    int ethercatmcNamBit24_;
-    int ethercatmcNamBit25_;
-    int ethercatmcNamBit26_;
-    int ethercatmcNamBit27_;
     int ethercatmcFoffVis_; /* FOFF visible in GUI: motor can be calibrated with
                                setPosition() */
     int ethercatmcHomeVis_; /* HOMF/HOMR visible in GUI (motor can be calibrated
