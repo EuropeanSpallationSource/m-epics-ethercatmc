@@ -624,6 +624,13 @@ int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
         &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
     status = pC_->getStringParam(axisNo_, function, length,
                                  auxBitEnumsForAsyn.enumStrings[auxBitIdx]);
+
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%sreadEnumsAndValueAndCallbackIntoMbbi(%d) auxBitIdx=%u "
+              "name='%s' status=%d\n",
+              modNamEMC, axisNo_, auxBitIdx,
+              auxBitEnumsForAsyn.enumStrings[auxBitIdx], (int)status);
+
     if (status) {
       break;
     }

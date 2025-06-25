@@ -770,6 +770,13 @@ void ethercatmcController::handleStatusChangeFL(asynStatus status,
 asynStatus ethercatmcController::poll(void) {
   asynStatus status = asynSuccess;
 
+  asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+            "%spoll interruptAccept=%d ctrlLocal.initialPollDone=%d\n",
+            modNamEMC, interruptAccept, ctrlLocal.initialPollDone);
+  if (!interruptAccept) {
+    return asynSuccess;
+  }
+
   ctrlLocal.callBackNeeded = 0;
   if (!ctrlLocal.initialPollDone) {
     status = indexerInitialPoll();
