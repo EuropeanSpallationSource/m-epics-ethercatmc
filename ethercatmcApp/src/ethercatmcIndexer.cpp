@@ -716,9 +716,9 @@ indexerParamWritePrintAuxReturn:
     // unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     unsigned idxAuxBits = statusReasonAux & 0x03FFFFFF;
     if (idxAuxBits != pAxis->drvlocal.clean.old_idxAuxBitsPrinted) {
-      changedAuxBits_to_ASCII(pAxis->axisNo_, defAsynPara.ethercatmcNamAux0_,
-                              idxAuxBits,
-                              pAxis->drvlocal.clean.old_idxAuxBitsPrinted);
+      changedReasAuxReasToASCII(pAxis->axisNo_, defAsynPara.ethercatmcNamAux0_,
+                                idxAuxBits,
+                                pAxis->drvlocal.clean.old_idxAuxBitsPrinted);
       asynPrint(
           pasynUserController_, traceMask,
           "%sindexerParamWrite(%d) idxStatusCode=0x%02X auxBitsOld=0x%06X "
@@ -726,19 +726,19 @@ indexerParamWritePrintAuxReturn:
           "errorID=0x%04X \"%s\" \n",
           modNamEMC, pAxis->axisNo_, idxStatusCode,
           pAxis->drvlocal.clean.old_idxAuxBitsPrinted, idxAuxBits,
-          ctrlLocal.changedAuxBits[0], ctrlLocal.changedAuxBits[1],
-          ctrlLocal.changedAuxBits[2], ctrlLocal.changedAuxBits[3],
-          ctrlLocal.changedAuxBits[4], ctrlLocal.changedAuxBits[5],
-          ctrlLocal.changedAuxBits[6], ctrlLocal.changedAuxBits[7],
-          ctrlLocal.changedAuxBits[8], ctrlLocal.changedAuxBits[9],
-          ctrlLocal.changedAuxBits[10], ctrlLocal.changedAuxBits[11],
-          ctrlLocal.changedAuxBits[12], ctrlLocal.changedAuxBits[13],
-          ctrlLocal.changedAuxBits[14], ctrlLocal.changedAuxBits[15],
-          ctrlLocal.changedAuxBits[16], ctrlLocal.changedAuxBits[17],
-          ctrlLocal.changedAuxBits[18], ctrlLocal.changedAuxBits[19],
-          ctrlLocal.changedAuxBits[20], ctrlLocal.changedAuxBits[21],
-          ctrlLocal.changedAuxBits[22], ctrlLocal.changedAuxBits[23],
-          ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[25], errorID,
+          ctrlLocal.changedReasAux[0], ctrlLocal.changedReasAux[1],
+          ctrlLocal.changedReasAux[2], ctrlLocal.changedReasAux[3],
+          ctrlLocal.changedReasAux[4], ctrlLocal.changedReasAux[5],
+          ctrlLocal.changedReasAux[6], ctrlLocal.changedReasAux[7],
+          ctrlLocal.changedReasAux[8], ctrlLocal.changedReasAux[9],
+          ctrlLocal.changedReasAux[10], ctrlLocal.changedReasAux[11],
+          ctrlLocal.changedReasAux[12], ctrlLocal.changedReasAux[13],
+          ctrlLocal.changedReasAux[14], ctrlLocal.changedReasAux[15],
+          ctrlLocal.changedReasAux[16], ctrlLocal.changedReasAux[17],
+          ctrlLocal.changedReasAux[18], ctrlLocal.changedReasAux[19],
+          ctrlLocal.changedReasAux[20], ctrlLocal.changedReasAux[21],
+          ctrlLocal.changedReasAux[22], ctrlLocal.changedReasAux[23],
+          ctrlLocal.changedReasAux[24], ctrlLocal.changedReasAux[25], errorID,
           errStringFromErrId(errorID));
       pAxis->drvlocal.clean.old_idxAuxBitsPrinted = idxAuxBits;
     }
@@ -1422,10 +1422,11 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
       myAsynParamType = asynParamFloat64;
       break;
   }
-  /* Aux bits */
-  if (iAllFlags & 0x03FFFFFF) {
+  /* 24 Aux bits. Flags bit 0..23 indicate which aux bit is used and has a name
+   */
+  if (iAllFlags & 0x00FFFFFF) {
     unsigned i;
-    for (i = 0; i < MAX_REASON_AUX_BIT_SHOW; i++) {
+    for (i = 0; i < NUM_AUX_BITS; i++) {
       int function;
       asynStatus status;
       char auxBitname[64];
@@ -1546,32 +1547,78 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(
   return NULL;
 }
 
-void ethercatmcController::changedAuxBits_to_ASCII(
+void ethercatmcController::changedReasAuxReasToASCII(
     int axisNo, int functionNamAux0, epicsUInt32 statusReasonAux,
     epicsUInt32 oldStatusReasonAux) {
   /* Show even bit 27..24, which are reson bits, here */
   epicsUInt32 changed = statusReasonAux ^ oldStatusReasonAux;
   epicsUInt32 auxBitIdx;
-  memset(&ctrlLocal.changedAuxBits, 0, sizeof(ctrlLocal.changedAuxBits));
+  memset(&ctrlLocal.changedReasAux, 0, sizeof(ctrlLocal.changedReasAux));
+  size_t length = sizeof(ctrlLocal.changedReasAux[auxBitIdx]) - 2;
+  for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
+    if ((changed >> auxBitIdx) & 0x01) {
+      /* Prepare the reason bit names */
+      if (auxBitIdx < NUM_AUX_BITS) {
+        /* Prepare the aux bit names */
+        asynStatus status = asynError;
+        if (functionNamAux0) {
+          int function = (int)(functionNamAux0 + auxBitIdx);
+          /* Leave the first character for '+' or '-',
+             leave one byte for '\0' */
+          status = getStringParam(axisNo, function, (int)length,
+                                  &ctrlLocal.changedReasAux[auxBitIdx][1]);
+        }
+        if (status != asynSuccess) {
+          snprintf(&ctrlLocal.changedReasAux[auxBitIdx][1], length, "Bit%d",
+                   auxBitIdx);
+        }
+      } else {
+        switch (auxBitIdx) {
+          case 27:
+            strncpy(&ctrlLocal.changedReasAux[auxBitIdx][1], "ReasonHig",
+                    length);
+            break;
+          case 26:
+            strncpy(&ctrlLocal.changedReasAux[auxBitIdx][1], "ReasonLow",
+                    length);
+            break;
+          case 25:
+            strncpy(&ctrlLocal.changedReasAux[auxBitIdx][1], "ReasonDyn",
+                    length);
+            break;
+          case 24:
+            strncpy(&ctrlLocal.changedReasAux[auxBitIdx][1], "ReasonSta",
+                    length);
+            break;
+        }
+      }
+      if ((statusReasonAux >> auxBitIdx) & 0x01) {
+        ctrlLocal.changedReasAux[auxBitIdx][0] = '+';
+      } else {
+        ctrlLocal.changedReasAux[auxBitIdx][0] = '-';
+      }
+    }
+  }
+  /* Add a '+' when the bit becomes true, a '-' when it becomes false */
   for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
     if ((changed >> auxBitIdx) & 0x01) {
       asynStatus status = asynError;
-      size_t length = sizeof(ctrlLocal.changedAuxBits[auxBitIdx]) - 2;
+      size_t length = sizeof(ctrlLocal.changedReasAux[auxBitIdx]) - 2;
       if (functionNamAux0) {
         int function = (int)(functionNamAux0 + auxBitIdx);
         /* Leave the first character for '+' or '-',
            leave one byte for '\0' */
         status = getStringParam(axisNo, function, (int)length,
-                                &ctrlLocal.changedAuxBits[auxBitIdx][1]);
+                                &ctrlLocal.changedReasAux[auxBitIdx][1]);
       }
       if (status != asynSuccess) {
-        snprintf(&ctrlLocal.changedAuxBits[auxBitIdx][1], length, "Bit%d",
+        snprintf(&ctrlLocal.changedReasAux[auxBitIdx][1], length, "Bit%d",
                  auxBitIdx);
       }
       if ((statusReasonAux >> auxBitIdx) & 0x01) {
-        ctrlLocal.changedAuxBits[auxBitIdx][0] = '+';
+        ctrlLocal.changedReasAux[auxBitIdx][0] = '+';
       } else {
-        ctrlLocal.changedAuxBits[auxBitIdx][0] = '-';
+        ctrlLocal.changedReasAux[auxBitIdx][0] = '-';
       }
     }
   }
@@ -1633,8 +1680,8 @@ asynStatus ethercatmcController::indexerPoll(void) {
                                   &oldStatusReasonAux, 0xFFFFFFFF);
               if ((statusReasonAux ^ oldStatusReasonAux) &
                   maskStatusReasonAux) {
-                changedAuxBits_to_ASCII(axisNo, functionNamAux0,
-                                        statusReasonAux, oldStatusReasonAux);
+                changedReasAuxReasToASCII(axisNo, functionNamAux0,
+                                          statusReasonAux, oldStatusReasonAux);
                 asynPrint(
                     pasynUserController_, traceMask | ASYN_TRACE_INFO,
                     "%spoll(%d) %sOld=0x%04X new=0x%04X "
@@ -1642,21 +1689,21 @@ asynStatus ethercatmcController::indexerPoll(void) {
                     "s)"
                     "\n",
                     modNamEMC, axisNo, paramName, oldStatusReasonAux,
-                    statusReasonAux, ctrlLocal.changedAuxBits[27],
-                    ctrlLocal.changedAuxBits[26], ctrlLocal.changedAuxBits[25],
-                    ctrlLocal.changedAuxBits[24], ctrlLocal.changedAuxBits[0],
-                    ctrlLocal.changedAuxBits[1], ctrlLocal.changedAuxBits[2],
-                    ctrlLocal.changedAuxBits[3], ctrlLocal.changedAuxBits[4],
-                    ctrlLocal.changedAuxBits[5], ctrlLocal.changedAuxBits[6],
-                    ctrlLocal.changedAuxBits[7], ctrlLocal.changedAuxBits[8],
-                    ctrlLocal.changedAuxBits[9], ctrlLocal.changedAuxBits[10],
-                    ctrlLocal.changedAuxBits[11], ctrlLocal.changedAuxBits[12],
-                    ctrlLocal.changedAuxBits[13], ctrlLocal.changedAuxBits[14],
-                    ctrlLocal.changedAuxBits[15], ctrlLocal.changedAuxBits[16],
-                    ctrlLocal.changedAuxBits[17], ctrlLocal.changedAuxBits[18],
-                    ctrlLocal.changedAuxBits[19], ctrlLocal.changedAuxBits[20],
-                    ctrlLocal.changedAuxBits[21], ctrlLocal.changedAuxBits[22],
-                    ctrlLocal.changedAuxBits[23]);
+                    statusReasonAux, ctrlLocal.changedReasAux[27],
+                    ctrlLocal.changedReasAux[26], ctrlLocal.changedReasAux[25],
+                    ctrlLocal.changedReasAux[24], ctrlLocal.changedReasAux[0],
+                    ctrlLocal.changedReasAux[1], ctrlLocal.changedReasAux[2],
+                    ctrlLocal.changedReasAux[3], ctrlLocal.changedReasAux[4],
+                    ctrlLocal.changedReasAux[5], ctrlLocal.changedReasAux[6],
+                    ctrlLocal.changedReasAux[7], ctrlLocal.changedReasAux[8],
+                    ctrlLocal.changedReasAux[9], ctrlLocal.changedReasAux[10],
+                    ctrlLocal.changedReasAux[11], ctrlLocal.changedReasAux[12],
+                    ctrlLocal.changedReasAux[13], ctrlLocal.changedReasAux[14],
+                    ctrlLocal.changedReasAux[15], ctrlLocal.changedReasAux[16],
+                    ctrlLocal.changedReasAux[17], ctrlLocal.changedReasAux[18],
+                    ctrlLocal.changedReasAux[19], ctrlLocal.changedReasAux[20],
+                    ctrlLocal.changedReasAux[21], ctrlLocal.changedReasAux[22],
+                    ctrlLocal.changedReasAux[23]);
               }
             }
             setUIntDigitalParam(axisNo, functionStatusBits,

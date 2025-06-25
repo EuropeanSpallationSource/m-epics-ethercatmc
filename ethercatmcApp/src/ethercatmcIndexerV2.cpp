@@ -387,7 +387,7 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
   /* AUX bits */
   {
     unsigned auxBitIdx = 0;
-    for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_SHOWN; auxBitIdx++) {
+    for (auxBitIdx = 0; auxBitIdx < NUM_AUX_BITS; auxBitIdx++) {
       int function = functionNamAux0 + auxBitIdx;
       if ((iAllFlags >> auxBitIdx) & 1) {
         char auxBitName[34];
@@ -399,7 +399,7 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sauxBitName(%d) auxBitName@%03u[%02u]=%s\n", modNamEMC,
                   axisNo, functionNamAux0 + auxBitIdx, auxBitIdx, auxBitName);
-        if (function <= functionNamAux0 + MAX_AUX_BIT_SHOWN) {
+        if (function < functionNamAux0 + NUM_AUX_BITS) {
           setStringParam(axisNo, function, auxBitName);
           setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
         }
@@ -408,6 +408,7 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
         } else {
           if (auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD) {
             char paramName[64];
+
             int function;
             /* construct a parameter name, that is unique by starting
                with AUXBIT */
