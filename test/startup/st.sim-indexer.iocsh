@@ -88,10 +88,10 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 # Axis 5, shutter
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("R",               "Sht-")
+epicsEnvSet("R",               "Sht")
 epicsEnvSet("AXIS_NO",         "5")
 
-< ethercatmcShutter.iocsh
+< ethercatmcShutterV2.iocsh
 
 # Motorrecord to debug
 #epicsEnvSet("R",    "Shutter")
