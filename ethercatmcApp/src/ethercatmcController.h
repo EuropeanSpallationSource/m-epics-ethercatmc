@@ -445,9 +445,9 @@ class epicsShareClass ethercatmcController : public asynMotorController {
   pilsAsynDevInfo_type *findIndexerOutputDevice(int axisNo, int function,
                                                 asynParamType myEPICSParamType);
 
-  void changedReasAuxReasToASCII(int axisNo, int functionNamAux0,
-                                 epicsUInt32 statusReasonAux,
-                                 epicsUInt32 oldStatusReasonAux);
+  void changedReasAuxToASCII(int axisNo, int functionNamAux0,
+                             epicsUInt32 statusReasonAux,
+                             epicsUInt32 oldStatusReasonAux);
 
   struct {
     uint8_t *pIndexerProcessImage;
