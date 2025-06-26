@@ -716,9 +716,9 @@ indexerParamWritePrintAuxReturn:
     // unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     unsigned idxAuxBits = statusReasonAux & 0x03FFFFFF;
     if (idxAuxBits != pAxis->drvlocal.clean.old_idxAuxBitsPrinted) {
-      changedReasAuxReasToASCII(pAxis->axisNo_, defAsynPara.ethercatmcNamAux0_,
-                                idxAuxBits,
-                                pAxis->drvlocal.clean.old_idxAuxBitsPrinted);
+      changedReasAuxToASCII(pAxis->axisNo_, defAsynPara.ethercatmcNamAux0_,
+                            idxAuxBits,
+                            pAxis->drvlocal.clean.old_idxAuxBitsPrinted);
       asynPrint(
           pasynUserController_, traceMask,
           "%sindexerParamWrite(%d) idxStatusCode=0x%02X auxBitsOld=0x%06X "
@@ -1547,7 +1547,7 @@ pilsAsynDevInfo_type *ethercatmcController::findIndexerOutputDevice(
   return NULL;
 }
 
-void ethercatmcController::changedReasAuxReasToASCII(
+void ethercatmcController::changedReasAuxToASCII(
     int axisNo, int functionNamAux0, epicsUInt32 statusReasonAux,
     epicsUInt32 oldStatusReasonAux) {
   /* Show even bit 27..24, which are reson bits, here */
@@ -1591,29 +1591,6 @@ void ethercatmcController::changedReasAuxReasToASCII(
                     length);
             break;
         }
-      }
-      if ((statusReasonAux >> auxBitIdx) & 0x01) {
-        ctrlLocal.changedReasAux[auxBitIdx][0] = '+';
-      } else {
-        ctrlLocal.changedReasAux[auxBitIdx][0] = '-';
-      }
-    }
-  }
-  /* Add a '+' when the bit becomes true, a '-' when it becomes false */
-  for (auxBitIdx = 0; auxBitIdx < MAX_REASON_AUX_BIT_SHOW; auxBitIdx++) {
-    if ((changed >> auxBitIdx) & 0x01) {
-      asynStatus status = asynError;
-      size_t length = sizeof(ctrlLocal.changedReasAux[auxBitIdx]) - 2;
-      if (functionNamAux0) {
-        int function = (int)(functionNamAux0 + auxBitIdx);
-        /* Leave the first character for '+' or '-',
-           leave one byte for '\0' */
-        status = getStringParam(axisNo, function, (int)length,
-                                &ctrlLocal.changedReasAux[auxBitIdx][1]);
-      }
-      if (status != asynSuccess) {
-        snprintf(&ctrlLocal.changedReasAux[auxBitIdx][1], length, "Bit%d",
-                 auxBitIdx);
       }
       if ((statusReasonAux >> auxBitIdx) & 0x01) {
         ctrlLocal.changedReasAux[auxBitIdx][0] = '+';
@@ -1680,8 +1657,8 @@ asynStatus ethercatmcController::indexerPoll(void) {
                                   &oldStatusReasonAux, 0xFFFFFFFF);
               if ((statusReasonAux ^ oldStatusReasonAux) &
                   maskStatusReasonAux) {
-                changedReasAuxReasToASCII(axisNo, functionNamAux0,
-                                          statusReasonAux, oldStatusReasonAux);
+                changedReasAuxToASCII(axisNo, functionNamAux0, statusReasonAux,
+                                      oldStatusReasonAux);
                 asynPrint(
                     pasynUserController_, traceMask | ASYN_TRACE_INFO,
                     "%spoll(%d) %sOld=0x%04X new=0x%04X "

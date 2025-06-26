@@ -1108,9 +1108,9 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     if (idxAuxBits != drvlocal.clean.old_idxAuxBitsPrinted) {
       /* This is for debugging only: The IOC log will show changed bits */
       /* Show even bit 27..24, which are reson bits, here */
-      pC_->changedReasAuxReasToASCII(
-          axisNo_, pC_->defAsynPara.ethercatmcNamAux0_, idxAuxBits,
-          drvlocal.clean.old_idxAuxBitsPrinted);
+      pC_->changedReasAuxToASCII(axisNo_, pC_->defAsynPara.ethercatmcNamAux0_,
+                                 idxAuxBits,
+                                 drvlocal.clean.old_idxAuxBitsPrinted);
       asynPrint(
           pC_->pasynUserController_, traceMask,
           "%spoll(%d) auxBitsOld=0x%07X new=0x%07X "
