@@ -37,27 +37,6 @@ record(bi,  "$(P)$(R)Closed") {
 
 }
 
-# Move the shutter, "Set point", debug only
-record(longout,  "$(P)$(R)SP") {
-    field(DESC, "Open the shutter")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsLongoutRecord")
-    info(asyn:READBACK,"1")
-    info(asyn:INITIAL_READBACK,"1")
-}
-
-# Error
-record(bi, "$(P)$(R)Err")
-{
-    field(DESC, "Error from TwinCAT")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MCUErr")
-    field(SCAN, "I/O Intr")
-    field(ZNAM, "OK")
-    field(ONAM, "ERROR")
-    field(ZSV,  "NO_ALARM")
-    field(OSV,  "MINOR")
-}
 
 #Error reset
 record(longout,"$(P)$(R)ErrRst") {
@@ -66,15 +45,6 @@ record(longout,"$(P)$(R)ErrRst") {
     field(DTYP, "asynInt32")
     field(PINI, "YES")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ErrRst")
-}
-
-#Stop
-record(longout,"$(P)$(R)Stop") {
-    field(DESC, "Stop")
-    field(VAL,  0)
-    field(DTYP, "asynInt32")
-    field(PINI, "YES")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_STOP_AXIS")
 }
 
 # Status code (IDLE/BUSY/RESET)
@@ -122,23 +92,6 @@ record(mbbi,"$(P)$(R)StatusCode") {
 record(stringin, "$(P)$(R)MsgTxt") {
     field(DTYP, "asynOctetRead")
     field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MESSAGE_TEXT")
-    field(SCAN, "I/O Intr")
-}
-
-
-# Actual position of the shutter,in motor speach, 1..5
-record(longin,  "$(P)$(R)Actual") {
-    field(DESC, "Shutter position")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsLonginActual")
-    field(SCAN, "I/O Intr")
-}
-
-# Target position of the shutter, in motor speach, 1..5
-record(longin,  "$(P)$(R)Target") {
-    field(DESC, "Shutter position")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsLonginTarget")
     field(SCAN, "I/O Intr")
 }
 
