@@ -215,47 +215,6 @@ $(pv_value)</tooltip>
     <x>14</x>
     <y>40</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <auto_size>true</auto_size>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_color>
-      <color name="IO Border" red="215" green="215" blue="215" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <enabled>false</enabled>
-    <font>
-      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <foreground_color>
-      <color name="IO Text Fg" red="0" green="32" blue="92" />
-    </foreground_color>
-    <height>15</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Label Template</name>
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_scrollbar>false</show_scrollbar>
-    <text>User Pos (SP)</text>
-    <tooltip></tooltip>
-    <transparent>true</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Label</widget_type>
-    <width>90</width>
-    <wrap_words>true</wrap_words>
-    <wuid>-68918818:158524ceeb4:-75c5</wuid>
-    <x>39</x>
-    <y>62</y>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <alarm_pulsing>false</alarm_pulsing>
@@ -313,120 +272,6 @@ $(pv_value)</tooltip>
     <x>6</x>
     <y>116</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="215" green="215" blue="215" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <confirm_message></confirm_message>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="arial" height="10" style="1" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>1</format_type>
-    <height>25</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
-    <multiline_input>false</multiline_input>
-    <name>Text Input Template_7</name>
-    <next_focus>0</next_focus>
-    <password_input>false</password_input>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)Target</pv_name>
-    <pv_value />
-    <read_only>false</read_only>
-    <rules>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_native_border>true</show_native_border>
-    <show_units>false</show_units>
-    <style>1</style>
-    <text>######</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>50</width>
-    <wuid>-68918818:158524ceeb4:-75c4</wuid>
-    <x>29</x>
-    <y>114</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <border_color>
-      <color name="IO Border" red="215" green="215" blue="215" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>2</border_width>
-    <confirm_message></confirm_message>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="arial" height="10" style="1" pixels="false">IO Output 1</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="26" green="26" blue="26" />
-    </foreground_color>
-    <format_type>1</format_type>
-    <height>25</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>true</limits_from_pv>
-    <multiline_input>false</multiline_input>
-    <name>Text Input Template_7</name>
-    <next_focus>0</next_focus>
-    <password_input>false</password_input>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)Actual</pv_name>
-    <pv_value />
-    <read_only>false</read_only>
-    <rules>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_native_border>true</show_native_border>
-    <show_units>false</show_units>
-    <style>1</style>
-    <text>######</text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>50</width>
-    <wuid>-68918818:158524ceeb4:-75c4</wuid>
-    <x>92</x>
-    <y>114</y>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <alarm_pulsing>false</alarm_pulsing>
@@ -483,105 +328,6 @@ $(pv_value)</tooltip>
     <wuid>4e24840a:1610d0e2d18:-6f5a</wuid>
     <x>150</x>
     <y>116</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <auto_size>true</auto_size>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_color>
-      <color name="IO Border" red="215" green="215" blue="215" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>2</border_width>
-    <enabled>false</enabled>
-    <font>
-      <opifont.name fontName="arial" height="10" style="0" pixels="false">IO Normal</opifont.name>
-    </font>
-    <foreground_color>
-      <color name="IO Text Fg" red="0" green="32" blue="92" />
-    </foreground_color>
-    <height>15</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <name>Label Template_11</name>
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_scrollbar>false</show_scrollbar>
-    <text>Target (RB)    Actual Position</text>
-    <tooltip></tooltip>
-    <transparent>true</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Label</widget_type>
-    <width>97</width>
-    <wrap_words>true</wrap_words>
-    <wuid>-68918818:158524ceeb4:-75c3</wuid>
-    <x>29</x>
-    <y>100</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
-    <actions hook="false" hook_all="false" />
-    <alarm_pulsing>false</alarm_pulsing>
-    <auto_size>false</auto_size>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color name="ioc_write_bg" red="115" green="223" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>3</border_style>
-    <border_width>1</border_width>
-    <confirm_message></confirm_message>
-    <enabled>true</enabled>
-    <font>
-      <fontdata fontName="Sans" height="15" style="0" pixels="false" />
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color name="Gray_14" red="0" green="0" blue="0" />
-    </foreground_color>
-    <format_type>1</format_type>
-    <height>25</height>
-    <horizontal_alignment>0</horizontal_alignment>
-    <limits_from_pv>false</limits_from_pv>
-    <maximum>1.7976931348623157E308</maximum>
-    <minimum>-1.7976931348623157E308</minimum>
-    <multiline_input>false</multiline_input>
-    <name>Text Input</name>
-    <precision>0</precision>
-    <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)SP</pv_name>
-    <pv_value />
-    <rotation_angle>0.0</rotation_angle>
-     <rules>
-    </rules>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <selector_type>0</selector_type>
-    <show_units>false</show_units>
-    <style>0</style>
-    <text></text>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <visible>true</visible>
-    <widget_type>Text Input</widget_type>
-    <width>127</width>
-    <wuid>-68918818:158524ceeb4:-75bd</wuid>
-    <x>29</x>
-    <y>76</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="2.0.0">
     <actions hook="false" hook_all="false" />
@@ -1029,7 +775,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit23.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit23.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1083,7 +829,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit23</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit23</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1094,7 +840,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit23.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit23.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1165,7 +911,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit22.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit22.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1219,7 +965,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit22</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit22</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1230,7 +976,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit22.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit22.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1301,7 +1047,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit21.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit21.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1355,7 +1101,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit21</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit21</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1366,7 +1112,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit21.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit21.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1437,7 +1183,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit20.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit20.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1491,7 +1237,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit20</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit20</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1502,7 +1248,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit20.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit20.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1573,7 +1319,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit19.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit19.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1627,7 +1373,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit19</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit19</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1638,7 +1384,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit19.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit19.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1709,7 +1455,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit18.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit18.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1763,7 +1509,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit18</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit18</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1774,7 +1520,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit18.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit18.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1845,7 +1591,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit17.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit17.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1899,7 +1645,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit17</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit17</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -1910,7 +1656,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit17.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit17.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -1981,7 +1727,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit16.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit16.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2035,7 +1781,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit16</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit16</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2046,7 +1792,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit16.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit16.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2117,7 +1863,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit15.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit15.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2171,7 +1917,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit15</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit15</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2182,7 +1928,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit15.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit15.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2253,7 +1999,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit14.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit14.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2307,7 +2053,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit14</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit14</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2318,7 +2064,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit14.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit14.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2389,7 +2135,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit13.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit13.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2443,7 +2189,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit13</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit13</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2454,7 +2200,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit13.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit13.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2525,7 +2271,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit5.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2579,7 +2325,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit5</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit5</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2590,7 +2336,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit5.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit5.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2661,7 +2407,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit4.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2715,7 +2461,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit4</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit4</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2726,7 +2472,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit4.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit4.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2797,7 +2543,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit3.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2851,7 +2597,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit3</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit3</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2862,7 +2608,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit3.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit3.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2933,7 +2679,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit2.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -2987,7 +2733,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit2</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit2</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -2998,7 +2744,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit2.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit2.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3069,7 +2815,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit1.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3123,7 +2869,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit1</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit1</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3134,7 +2880,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit1.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit1.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3205,7 +2951,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit0.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -3259,7 +3005,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit0</pv_name>
+    <pv_name>$(P)$(M)NamAuxBit0</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -3270,7 +3016,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit0.SEVR</pv>
+        <pv trig="true">$(P)$(M)NamAuxBit0.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
