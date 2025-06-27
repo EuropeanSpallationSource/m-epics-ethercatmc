@@ -196,3 +196,139 @@ record(mbbiDirect, "$(P)$(R)StatusBits")
     field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO) 0x3FFFFFF)StatusBits")
     field(SCAN, "I/O Intr")
 }
+
+record(stringin, "$(P)$(R)NamAuxBit0") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit0")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit1") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit1")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit2") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit2")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit3") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit3")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit4") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit4")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit5") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit5")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit6") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit6")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit7") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit7")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit8") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit8")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit9") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit9")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit10") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit10")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit10") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit10")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit11") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit11")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit12") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit12")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit13") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit13")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit14") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit14")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit15") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit15")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit16") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit16")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit17") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit17")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit18") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit18")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit19") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit19")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit20") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit20")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit21") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit21")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit22") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit22")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamAuxBit23") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit23")
+    field(SCAN, "I/O Intr")
+}
+
+# bit 24 and 25: give reason bits a value
+record(stringout, "$(P)$(R)NamBit24") {
+    field(DESC, "Name of bit24: ReasonStatic")
+    field(VAL, "ReasonStatic")
+}
+record(stringout, "$(P)$(R)NamBit25") {
+    field(DESC, "Name of bit24: ReasonDynamic")
+    field(VAL, "ReasonDynamic")
+}
