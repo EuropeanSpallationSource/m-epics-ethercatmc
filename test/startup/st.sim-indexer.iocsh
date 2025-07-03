@@ -91,7 +91,7 @@ epicsEnvSet("AXISCONFIG",      "")
 epicsEnvSet("R",               "Sht")
 epicsEnvSet("AXIS_NO",         "5")
 
-< ethercatmcShutterV2.iocsh
+< ethercatmcShutter.iocsh
 
 # Motorrecord to debug
 #epicsEnvSet("R",    "Shutter")

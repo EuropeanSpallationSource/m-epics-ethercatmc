@@ -39,7 +39,6 @@ DB += ethercatmcOpenClutch.template
 DB += ethercatmcReleaseBrake.template
 DB += ethercatmcPlcName.template
 DB += ethercatmcShutter.template
-DB += ethercatmcShutterV2.template
 DB += ethercatmcTempSensor.template
 DB += ethercatmcdebug.template
 DB += ethercatmcdebug-twincat-ads.template

@@ -1,7 +1,0 @@
-ethercatmcCreateIndexerAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
-
-ethercatmcCreateAsynParam $(MOTOR_PORT) AUXBITOpened Int32
-ethercatmcCreateAsynParam $(MOTOR_PORT) AUXBITClosed Int32
-
-dbLoadRecords("ethercatmcShutterV2.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
-
