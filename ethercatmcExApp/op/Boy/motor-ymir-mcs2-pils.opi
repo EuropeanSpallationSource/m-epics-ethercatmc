@@ -34705,15 +34705,6 @@ $(pv_value)</tooltip>
     <width>30</width>
     <border_style>0</border_style>
     <rules>
-      <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="!(pv0==0)">
-          <value>true</value>
-        </exp>
-        <exp bool_exp="(pv0==0)">
-          <value>false</value>
-        </exp>
-        <pv trig="true">$(P)$(M19)Err</pv>
-      </rule>
     </rules>
     <push_action_index>0</push_action_index>
     <image></image>
@@ -35655,15 +35646,6 @@ $(pv_value)</tooltip>
     <width>30</width>
     <border_style>0</border_style>
     <rules>
-      <rule name="Visibility" prop_id="visible" out_exp="false">
-        <exp bool_exp="!(pv0==0)">
-          <value>true</value>
-        </exp>
-        <exp bool_exp="(pv0==0)">
-          <value>false</value>
-        </exp>
-        <pv trig="true">$(P)$(M20)Err</pv>
-      </rule>
     </rules>
     <push_action_index>0</push_action_index>
     <image></image>
