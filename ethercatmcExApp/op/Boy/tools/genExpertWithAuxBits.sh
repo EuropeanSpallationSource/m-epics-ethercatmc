@@ -22,7 +22,7 @@ case $BASENAME in
   ethercatmcShutter)
     STATUSCODE='$(M)StatusCode'
     STATUSBITS='$(M)StatusBits'
-    NAMAUXBIT='$(M)NamBit'
+    NAMAUXBIT='$(M)NamAuxBit'
     yaux=298
     ;;
   ethercatmcaxisExpert)
