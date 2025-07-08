@@ -81,7 +81,6 @@ FILENAME...   ethercatmcController.h
 #define ethercatmcRawMtrStepString "RawMtrStep"
 #define ethercatmcRawMtrVeloString "RawMtrVelo"
 #define ethercatmcErrRstString "ErrRst"
-#define ethercatmcVelActString "VelAct"
 #define ethercatmcVel_RBString "Vel-RB"
 #define ethercatmcAcc_RBString "Acc-RB"
 #define ethercatmcCfgIdleCurrent_String "CfgIdleCurrent"
@@ -541,8 +540,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                    reviewed */
     int ethercatmcDbgStrToLog_; /* Message to show up in the IOC log, test and
                                    debug only */
-    int ethercatmcVelAct_; /* Actual velocity. Measured in the MCU (typically
-                              with Jitter */
     int ethercatmcVel_RB_; /* Velocity used in MCU */
     int ethercatmcAcc_RB_; /* Acceleration used in MCU */
     int ethercatmcCfgIdleCurrent_;

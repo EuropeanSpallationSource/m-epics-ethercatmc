@@ -95,7 +95,6 @@ pvmonitor \
   ${P}${M}-CfgSREV-RB \
   ${P}${M}-CfgUREV-RB \
   ${P}${M}-PosAct${TSE} \
-  ${P}${M}-VelAct${TSE} \
   ${P}${M}-PLCopenStateMachine${TSE} \
   ${P}${M}-StatusCode${TSE} \
   ${P}${M}-StatusBits${TSE} \

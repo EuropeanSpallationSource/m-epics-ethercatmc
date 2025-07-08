@@ -76,14 +76,6 @@ record(bi, "$(P)$(R)-Err")
     field(OSV,  "MINOR")
 }
 
-record(ai, "$(P)$(R)-VelAct")
-{
-    field(DTYP, "asynFloat64")
-    field(PREC, "$(PREC)")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))VelAct")
-    field(SCAN, "I/O Intr")
-}
-
 record(ai, "$(P)$(R)-PosAct")
 {
     field(DESC, "actual Pos")

@@ -49,15 +49,6 @@ record(longin, "$(P)$(R)-RawMtrVelo-TSE")
     field(TSE,  -2)
 }
 
-record(ai, "$(P)$(R)-VelAct-TSE")
-{
-    field(DTYP, "asynFloat64")
-    field(PREC, "$(PREC)")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))VelAct")
-    field(SCAN, "I/O Intr")
-    field(TSE,  -2)
-}
-
 record(mbbiDirect, "$(P)$(R)-StatusBits-TSE")
 {
     field(DTYP, "asynUInt32Digital")
