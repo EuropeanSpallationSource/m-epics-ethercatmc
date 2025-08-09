@@ -142,8 +142,8 @@ record(longout,"$(P)$(R)-ErrRst") {
     field(DESC, "Error Reset")
     field(VAL,  0)
     field(DTYP, "asynInt32")
-    field(PINI, "YES")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ErrRst")
+    info(asyn:READBACK,"1")
 }
 
 # Motor offset for this axis
