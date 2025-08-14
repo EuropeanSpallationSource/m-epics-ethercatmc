@@ -157,8 +157,8 @@ def writeBitsReadMsgTxtErrTxt(
     errorId=-1,
     pwrAuto=-1,
     amplifierOn=-1,
-    msgTxt="undef",
-    errTxt="undef",
+    expMsgTxt="undef",
+    expErrTxt="undef",
 ):
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     assert tc_no != 0
@@ -167,8 +167,8 @@ def writeBitsReadMsgTxtErrTxt(
     assert errorId != -1
     assert pwrAuto != -1
     assert amplifierOn != -1
-    assert msgTxt != "undef"
-    assert errTxt != "undef"
+    assert expMsgTxt != "undef"
+    assert expErrTxt != "undef"
 
     if amplifierOn == 1:
         amplifierPercent = 100
@@ -189,7 +189,11 @@ def writeBitsReadMsgTxtErrTxt(
         if actMsgTxt == " ":
             actMsgTxt = ""
         actErrTxt = self.axisCom.get("-ErrTxt")
-        if actMsgTxt == msgTxt and actErrTxt == errTxt:
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} maxTime={maxTime:.2f} passed={passed} expMsgTxt='{expMsgTxt}' actMsgTxt={actMsgTxt!r} expErrTxt='{expErrTxt}' actErrTxt={actErrTxt!r}"
+        )
+
+        if actMsgTxt == expMsgTxt and actErrTxt == expErrTxt:
             passed = True
             maxTime = 0
         else:
@@ -197,7 +201,7 @@ def writeBitsReadMsgTxtErrTxt(
             maxTime = maxTime - polltime
 
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} tc_no={tc_no} passed={passed} axisHomed={axisHomed} err={err} errorId={errorId:x} pwrAuto={pwrAuto} amplifierOn={amplifierOn} msgTxtExp={msgTxt} actMsgTxt={actMsgTxt!r} errTxtExp={errTxt} actErrTxt={actErrTxt!r}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} passed={passed} axisHomed={axisHomed} err={err} errorId={errorId:x} pwrAuto={pwrAuto} amplifierOn={amplifierOn} expMsgTxt='{expMsgTxt}' actMsgTxt={actMsgTxt!r} expErrTxt='{expErrTxt}' actErrTxt={actErrTxt!r}"
     )
     self.axisCom.put("-PwrAuto", oldPwrAuto)
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
@@ -228,8 +232,8 @@ class Test(unittest.TestCase):
             axisHomed = tc[3]
             pwrAuto = tc[4]
             amplifierOn = tc[5]
-            msgTxt = tc[6]
-            errTxt = tc[7]
+            expMsgTxt = tc[6]
+            expErrTxt = tc[7]
             writeBitsReadMsgTxtErrTxt(
                 self,
                 tc_no=tc_no * 10,
@@ -238,8 +242,8 @@ class Test(unittest.TestCase):
                 errorId=0,
                 pwrAuto=1,
                 amplifierOn=1,
-                msgTxt="",
-                errTxt="",
+                expMsgTxt="",
+                expErrTxt="",
             )
             writeBitsReadMsgTxtErrTxt(
                 self,
@@ -249,8 +253,8 @@ class Test(unittest.TestCase):
                 errorId=errorId,
                 pwrAuto=pwrAuto,
                 amplifierOn=amplifierOn,
-                msgTxt=msgTxt,
-                errTxt=errTxt,
+                expMsgTxt=expMsgTxt,
+                expErrTxt=expErrTxt,
             )
 
     def test_TC_94199999(self):
@@ -263,6 +267,6 @@ class Test(unittest.TestCase):
             errorId=0,
             pwrAuto=2,
             amplifierOn=1,
-            msgTxt="",
-            errTxt="",
+            expMsgTxt="",
+            expErrTxt="",
         )
