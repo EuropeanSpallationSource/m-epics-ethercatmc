@@ -155,6 +155,15 @@ allTCs = [
     (9410025, "0x80400000", 0x4550, 0, "E: Follw errpos 4550", "E: Follw errpos 4550"),
     (9410026, "0x80000000", 0x4550, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
     (9410027, "0x80400000", 0x4550, 1, "E: Follw errpos 4550", "E: Follw errpos 4550"),
+    # Error state, no error Id, look at the reason bits. Only bit set, as it should be
+    (9410028, "0x81400000", 0x0, 0, "E: Inhibit", "E: Inhibit"),
+    (9410029, "0x82400000", 0x0, 0, "E: Timeout", "E: Timeout"),
+    (9410030, "0x84400000", 0x0, 0, "E: LowLimit", "E: LowLimit"),
+    (9410031, "0x88400000", 0x0, 0, "E: HighLimit", "E: HighLimit"),
+    # Error state, no error Id, 2 reason bits set. Hex code of reason bits
+    (9410032, "0x83400000", 0x0, 0, "E: Error (0x3)", "E: Error (0x3)"),
+    # Error state, no error Id, all reason bits set. Hex code of reason bits
+    (9410033, "0x8F400000", 0x0, 0, "E: Error (0xF)", "E: Error (0xF)"),
 ]
 
 
