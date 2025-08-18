@@ -365,11 +365,12 @@ def setLimitWrapper(
 
 
 class Test(unittest.TestCase):
-    tc_no = 900000
+    tc_no = 9000000
     hasROlimit = False
     hasRhlmRllm = False
     drvUseEGU_RB = None
     drvUseEGU = 0
+    hasRWlimit = True  # TODO
     url_string = os.getenv("TESTEDMOTORAXIS")
     print(
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
@@ -399,14 +400,14 @@ class Test(unittest.TestCase):
         f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} hasROlimit={hasROlimit} hasROlimit={int(hasROlimit)} hasRhlmRllm={hasRhlmRllm}"
     )
 
-    def test_TC_900010(self):
-        tc_no = 900010
+    def test_TC_9000010(self):
+        tc_no = 9000010
         self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         self.axisMr.motorInitAllForBDST(tc_no)
         self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
-    def test_TC_900100(self):
-        tc_no = 900100
+    def test_TC_9000100(self):
+        tc_no = 9000100
         encRel = 0
         self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         testPassed = readBackParamVerify(self, tc_no, "-DrvUseEGU-RB", 0)
@@ -423,30 +424,30 @@ class Test(unittest.TestCase):
             self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
         assert testPassed
 
-    def test_TC_900110(self):
-        tc_no = 900110
+    def test_TC_9000110(self):
+        tc_no = 9000110
         # setLimitWrapper(self,tc_no,field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "DHLM", 4.1, 4.1, -5.0, 4.6, -4.5, 41.0, -50.0)
 
-    def test_TC_900120(self):
-        tc_no = 900120
+    def test_TC_9000120(self):
+        tc_no = 9000120
         # setLimitWrapper(self,tc_no,field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "HLM", 4.7, 4.2, -5.0, 4.7, -4.5, 42.0, -50.0)
 
-    def test_TC_900130(self):
-        tc_no = 900130
+    def test_TC_9000130(self):
+        tc_no = 9000130
         # setLimitWrapper(self,tc_no,field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "DLLM", -5.3, 4.2, -5.3, 4.7, -4.8, 42.0, -53.0)
 
-    def test_TC_900140(self):
-        tc_no = 900140
+    def test_TC_9000140(self):
+        tc_no = 9000140
         # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "LLM", -5.4, 4.2, -5.9, 4.7, -5.4, 42.0, -59.0)
 
     ###################################################################################################################
     # Invert mres
-    def test_TC_900200(self):
-        tc_no = 900200
+    def test_TC_9000200(self):
+        tc_no = 9000200
         self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         encRel = 0
         InitVeloAcc(self, tc_no, encRel)
@@ -458,30 +459,30 @@ class Test(unittest.TestCase):
         readDebugPrintLimits(self, tc_no, lineno=lineno())
         self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
-    def test_TC_900210(self):
-        tc_no = 900210
+    def test_TC_9000210(self):
+        tc_no = 9000210
         # setLimitWrapper(self, tc_no, field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "DHLM", 4.1, 4.1, -5.0, 4.6, -4.5, 50.0, -41.0)
 
-    def test_TC_900220(self):
-        tc_no = 900220
+    def test_TC_9000220(self):
+        tc_no = 9000220
         # setLimitWrapper(self, tc_no, field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "HLM", 4.7, 4.2, -5.0, 4.7, -4.5, 50.0, -42.0)
 
-    def test_TC_900230(self):
-        tc_no = 900230
+    def test_TC_9000230(self):
+        tc_no = 9000230
         # setLimitWrapper(self, tc_no, field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "DLLM", -5.3, 4.2, -5.3, 4.7, -4.8, 53.0, -42.0)
 
-    def test_TC_900240(self):
-        tc_no = 900240
+    def test_TC_9000240(self):
+        tc_no = 9000240
         # setLimitWrapper(self, tc_no, field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "LLM", -5.4, 4.2, -5.9, 4.7, -5.4, 59.0, -42.0)
 
     ###################################################################################################################
     # Invert dir
-    def test_TC_900300(self):
-        tc_no = 900300
+    def test_TC_9000300(self):
+        tc_no = 9000300
         encRel = 0
         self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         InitVeloAcc(self, tc_no, encRel)
@@ -492,30 +493,30 @@ class Test(unittest.TestCase):
         InitLimitsNoROlimits(self, tc_no)
         self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
-    def test_TC_900310(self):
-        tc_no = 900310
+    def test_TC_9000310(self):
+        tc_no = 9000310
         # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "DHLM", 4.1, 4.1, -5.0, 5.5, -3.6, 41.0, -50.0)
 
-    def test_TC_900320(self):
-        tc_no = 900320
+    def test_TC_9000320(self):
+        tc_no = 9000320
         # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "HLM", 4.7, 4.1, -4.2, 4.7, -3.6, 41.0, -42.0)
 
-    def test_TC_900330(self):
-        tc_no = 900330
+    def test_TC_9000330(self):
+        tc_no = 9000330
         # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "DLLM", -5.3, 4.1, -5.3, 5.8, -3.6, 41.0, -53.0)
 
-    def test_TC_900340(self):
-        tc_no = 900340
+    def test_TC_9000340(self):
+        tc_no = 9000340
         # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "LLM", -5.4, 5.9, -5.3, 5.8, -5.4, 59.0, -53.0)
 
     ###################################################################################################################
     # Invert mres, invert dir
-    def test_TC_900400(self):
-        tc_no = 900400
+    def test_TC_9000400(self):
+        tc_no = 9000400
         encRel = 0
         self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
         #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
@@ -527,31 +528,31 @@ class Test(unittest.TestCase):
         InitLimitsNoROlimits(self, tc_no)
         self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
-    def test_TC_900410(self):
-        tc_no = 900410
+    def test_TC_9000410(self):
+        tc_no = 9000410
         # setLimitWrapper(self,tc_no,field,  val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "DHLM", 4.1, 4.1, -5.0, 5.5, -3.6, 50.0, -41.0)
 
-    def test_TC_900420(self):
-        tc_no = 900420
+    def test_TC_9000420(self):
+        tc_no = 9000420
         # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "HLM", 4.7, 4.1, -4.2, 4.7, -3.6, 42.0, -41.0)
 
-    def test_TC_900430(self):
-        tc_no = 900430
+    def test_TC_9000430(self):
+        tc_no = 9000430
         # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "DLLM", -5.3, 4.1, -5.3, 5.8, -3.6, 53.0, -41.0)
 
-    def test_TC_900440(self):
-        tc_no = 900440
+    def test_TC_9000440(self):
+        tc_no = 9000440
         # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
         setLimitWrapper(self, tc_no, "LLM", -5.4, 5.9, -5.3, 5.8, -5.4, 53.0, -59.0)
 
     #########################################################################################################
     # Test clipping
-    def test_TC_900500(self):
+    def test_TC_9000500(self):
         if self.hasROlimit:
-            tc_no = 900500
+            tc_no = 9000500
             encRel = 0
             self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
 
@@ -569,34 +570,34 @@ class Test(unittest.TestCase):
             InitLimitsWithROlimits(self, tc_no)
             self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
-    def test_TC_900510(self):
+    def test_TC_9000510(self):
         if self.hasROlimit:
-            tc_no = 900510
+            tc_no = 9000510
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "DHLM", 10, 0.6, -0.7, 1.1, -0.2, 6.0, -7.0)
 
-    def test_TC_900520(self):
+    def test_TC_9000520(self):
         if self.hasROlimit:
-            tc_no = 900520
+            tc_no = 9000520
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "HLM", 10, 0.6, -0.7, 1.1, -0.2, 6.0, -7.0)
 
-    def test_TC_900530(self):
+    def test_TC_9000530(self):
         if self.hasROlimit:
-            tc_no = 900530
+            tc_no = 9000530
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "DLLM", -10.0, 0.6, -0.7, 1.1, -0.2, 6.0, -7.0)
 
-    def test_TC_900540(self):
+    def test_TC_9000540(self):
         if self.hasROlimit:
-            tc_no = 900540
+            tc_no = 9000540
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "LLM", -10.0, 0.6, -0.7, 1.1, -0.2, 6.0, -7.0)
 
     # Invert mres
-    def test_TC_900600(self):
+    def test_TC_9000600(self):
         if self.hasROlimit:
-            tc_no = 900600
+            tc_no = 9000600
             self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
             encRel = 0
 
@@ -608,34 +609,34 @@ class Test(unittest.TestCase):
             InitLimitsWithROlimits(self, tc_no)
             self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
-    def test_TC_900610(self):
+    def test_TC_9000610(self):
         if self.hasROlimit:
-            tc_no = 900610
+            tc_no = 9000610
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "DHLM", 10, 0.7, -0.6, 1.2, -0.1, 6.0, -7.0)
 
-    def test_TC_900620(self):
+    def test_TC_9000620(self):
         if self.hasROlimit:
-            tc_no = 900620
+            tc_no = 9000620
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "HLM", 10, 0.7, -0.6, 1.2, -0.1, 6.0, -7.0)
 
-    def test_TC_900630(self):
+    def test_TC_9000630(self):
         if self.hasROlimit:
-            tc_no = 900630
+            tc_no = 9000630
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "DLLM", -10.0, 0.7, -0.6, 1.2, -0.1, 6.0, -7.0)
 
-    def test_TC_900640(self):
+    def test_TC_9000640(self):
         if self.hasROlimit:
-            tc_no = 900640
+            tc_no = 9000640
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "LLM", -10.0, 0.7, -0.6, 1.2, -0.1, 6.0, -7.0)
 
     # Invert dir
-    def test_TC_900700(self):
+    def test_TC_9000700(self):
         if self.hasROlimit:
-            tc_no = 900700
+            tc_no = 9000700
             encRel = 0
             self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
             #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
@@ -647,34 +648,34 @@ class Test(unittest.TestCase):
             InitLimitsWithROlimits(self, tc_no)
             self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
-    def test_TC_900710(self):
+    def test_TC_9000710(self):
         if self.hasROlimit:
-            tc_no = 900710
+            tc_no = 9000710
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "DHLM", 10, 0.6, -0.7, 1.2, -0.1, 6.0, -7.0)
 
-    def test_TC_900720(self):
+    def test_TC_9000720(self):
         if self.hasROlimit:
-            tc_no = 900720
+            tc_no = 9000720
             # setLimitWrapper(self,tc_no,field,val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "HLM", 10, 0.6, -0.7, 1.2, -0.1, 6.0, -7.0)
 
-    def test_TC_900730(self):
+    def test_TC_9000730(self):
         if self.hasROlimit:
-            tc_no = 900730
+            tc_no = 9000730
             # setLimitWrapper(self,tc_no,field,val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "DLLM", -10.0, 0.6, -0.7, 1.2, -0.1, 6.0, -7.0)
 
-    def test_TC_900740(self):
+    def test_TC_9000740(self):
         if self.hasROlimit:
-            tc_no = 900740
+            tc_no = 9000740
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "LLM", -10.0, 0.6, -0.7, 1.2, -0.1, 6.0, -7.0)
 
     # Invert MRES and dir
-    def test_TC_900800(self):
+    def test_TC_9000800(self):
         if self.hasROlimit:
-            tc_no = 900800
+            tc_no = 9000800
             self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
             encRel = 0
             #                                       mres, dir,off, hlm, expHLM, expM3rhlm, expLLM, expM3rllm)
@@ -686,32 +687,32 @@ class Test(unittest.TestCase):
             InitLimitsWithROlimits(self, tc_no)
             self.axisCom.putDbgStrToLOG("End " + str(tc_no), wait=True)
 
-    def test_TC_900810(self):
+    def test_TC_9000810(self):
         if self.hasROlimit:
-            tc_no = 900810
+            tc_no = 9000810
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "DHLM", 10, 0.7, -0.6, 1.1, -0.2, 6.0, -7.0)
 
-    def test_TC_900820(self):
+    def test_TC_9000820(self):
         if self.hasROlimit:
-            tc_no = 900820
+            tc_no = 9000820
             # setLimitWrapper(self,tc_no,field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "HLM", 10, 0.7, -0.6, 1.1, -0.2, 6.0, -7.0)
 
-    def test_TC_900830(self):
+    def test_TC_9000830(self):
         if self.hasROlimit:
-            tc_no = 900830
+            tc_no = 9000830
             # setLimitWrapper(self, tc_no, field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "DLLM", -10, 0.7, -0.6, 1.1, -0.2, 6.0, -7.0)
 
-    def test_TC_900840(self):
+    def test_TC_9000840(self):
         if self.hasROlimit:
-            tc_no = 900840
+            tc_no = 9000840
             # setLimitWrapper(self,tc_no, field, val, expDHLM, expDLLM, expHLM, expLLM, expM3rhlm, expM3rllm):
             setLimitWrapper(self, tc_no, "LLM", -10, 0.7, -0.6, 1.1, -0.2, 6.0, -7.0)
 
-    def test_TC_900999(self):
-        tc_no = 900999
+    def test_TC_9009999(self):
+        tc_no = 9009999
         self.axisMr.setFieldSPAM(tc_no, self.oldSPAM)
         if self.drvUseEGU_RB == 1:
             self.axisCom.put("-DrvUseEGU", 1)
