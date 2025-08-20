@@ -1337,13 +1337,39 @@ void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
     snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
              "PowerOff");
   } else if (hasError) {
-    const char *errIdString = errStringFromErrId(errorID);
-    if (errIdString[0]) {
-      snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X", charEorW,
-               errIdString, errorID);
+    if (errorID > 0) {
+      const char *errIdString = errStringFromErrId(errorID);
+      if (errIdString[0]) {
+        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X",
+                 charEorW, errIdString, errorID);
+      } else {
+        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: TwinCAT Err %X",
+                 charEorW, errorID);
+      }
     } else {
-      snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: TwinCAT Err %X",
-               charEorW, errorID);
+      unsigned idxReasonBits = (statusReasonAux >> 24) & 0x0F;
+      /* If one and only one reason bit is set, translate it */
+      switch (idxReasonBits) {
+        case 1:
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: Inhibit",
+                   charEorW);
+          break;
+        case 2:
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: Timeout",
+                   charEorW);
+          break;
+        case 4:
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: LowLimit",
+                   charEorW);
+          break;
+        case 8:
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: HighLimit",
+                   charEorW);
+          break;
+        default:
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: Error (0x%X)",
+                   charEorW, idxReasonBits);
+      }
     }
   } else if (!homed) {
     snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
