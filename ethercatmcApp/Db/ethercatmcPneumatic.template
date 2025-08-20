@@ -1,0 +1,266 @@
+# Description of the solenoid
+record(stringin, "$(P)$(R)DESC-RB") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDESC-RB")
+    field(SCAN, "I/O Intr")
+}
+
+# Activate the solenoid
+record(bo,  "$(P)$(R)Activate") {
+    field(DESC, "Activate the solenoid")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsBoMinMax")
+    field(ZNAM, "Deactivate")
+    field(ONAM, "Activate")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+# Error
+record(bi, "$(P)$(R)Err")
+{
+    field(DESC, "Error from TwinCAT")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))MCUErr")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "OK")
+    field(ONAM, "ERROR")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
+}
+
+#Error reset
+record(longout,"$(P)$(R)ErrRst") {
+    field(DESC, "Error Reset")
+    field(VAL,  0)
+    field(DTYP, "asynInt32")
+    field(PINI, "YES")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))ErrRst")
+}
+
+# Status code (IDLE/BUSY/RESET)
+record(mbbi,"$(P)$(R)StatusCode") {
+    field(DESC,"StatusCode")
+    field(DTYP, "asynInt32")
+    field(INP,"@asyn($(MOTOR_PORT),$(AXIS_NO))StatusCode")
+    field(SCAN, "I/O Intr")
+    field(ZRVL,  "0")
+    field(ZRST, "RESET")
+    field(ONVL,  "1")
+    field(ONST, "IDLE")
+    field(TWVL,  "2")
+    field(TWST, "DISABLED")
+    field(THVL,  "3")
+    field(THST, "WARN")
+    field(FRVL,  "4")
+    field(FRST, "ERR-4")
+    field(FVVL,  "5")
+    field(FVST, "START")
+    field(SXVL,  "6")
+    field(SXST, "BUSY")
+    field(SVVL,  "7")
+    field(SVST, "STOP")
+    field(EIVL,  "8")
+    field(EIST, "ERROR")
+    field(NIVL,  "9")
+    field(NIST, "ERR-9")
+    field(TEVL, "10")
+    field(TEST, "ERR-A")
+    field(ELVL, "11")
+    field(ELST, "ERR-B")
+    field(TVVL, "12")
+    field(TVST, "ERR-C")
+    field(TTVL, "13")
+    field(TTST, "ERR-D")
+    field(FTVL, "14")
+    field(FTST, "ERR-E")
+    field(FFVL, "15")
+    field(FFST, "ERR-F")
+}
+
+# The message text
+record(stringin, "$(P)$(R)MsgTxt") {
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_MESSAGE_TEXT")
+    field(SCAN, "I/O Intr")
+}
+
+## The low Aux bits, should give us a status
+# One bit should be active at a time
+# The values for the bits are defined in the PLC#
+# and are fiddled into the record using the "enum" interface in asyn
+record(mbbi,  "$(P)$(R)AuxBits07") {
+    field(DESC, "Solenoid State Aux Bits 0 to 7")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBits07")
+    field(SCAN, "I/O Intr")
+    field(ZRVL, "0")
+    field(ZRST, "StateBit-0")
+    field(ONVL, "1")
+    field(ONST, "StateBit-1")
+    field(TWVL, "2")
+    field(TWST, "StateBit-2")
+    field(THVL, "3")
+    field(THST, "StateBit-3")
+    field(FRVL, "4")
+    field(FRST, "StateBit-4")
+    field(FVVL, "5")
+    field(FVST, "StateBit-5")
+    field(SXVL, "6")
+    field(SXST, "StateBit-6")
+    field(SVVL, "7")
+    field(SVST, "StateBit-7")
+    field(EIVL, "8")
+    field(EIST, "StateBit-8")
+    field(NIVL, "9")
+    field(NIST, "StateBit-9")
+    field(TEVL, "10")
+    field(TEST, "StateBit-A")
+    field(ELVL, "11")
+    field(ELST, "StateBit-B")
+    field(TVVL, "12")
+    field(TVST, "StateBit-C")
+    field(TTVL, "13")
+    field(TTST, "StateBit-D")
+    field(FTVL, "14")
+    field(FTST, "StateBit-E")
+    field(FFVL, "15")
+    field(FFST, "StateBit-F")
+}
+
+###################################
+# The aux bits, collected in one word
+# Each bit has a name, defined in the PLC
+record(mbbiDirect, "$(P)$(R)StatusBits")
+{
+    field(DTYP, "asynUInt32Digital")
+    field(DESC, "StatusBits")
+    field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO) 0x3FFFFFF)StatusBits")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)NamBit0") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit0")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit1") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit1")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit2") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit2")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit3") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit3")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit4") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit4")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit5") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit5")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit6") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit6")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit7") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit7")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit8") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit8")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit9") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit9")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit10") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit10")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit10") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit10")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit11") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit11")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit12") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit12")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit13") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit13")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit14") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit14")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit15") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit15")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit16") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit16")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit17") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit17")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit18") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit18")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit19") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit19")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit20") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit20")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit21") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit21")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit22") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit22")
+    field(SCAN, "I/O Intr")
+}
+record(stringin, "$(P)$(R)NamBit23") {
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))$(R)NamBit23")
+    field(SCAN, "I/O Intr")
+}
