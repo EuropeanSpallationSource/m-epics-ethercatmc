@@ -839,6 +839,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
           axisNo_, pC_->defAsynPara.ethercatmcErrId_, asynSuccess);
       pC_->setAlarmStatusSeverityWrapper(
           axisNo_, pC_->defAsynPara.ethercatmcErrTxt_, asynSuccess);
+      pC_->setAlarmStatusSeverityWrapper(
+          axisNo_, pC_->defAsynPara.ethercatmcErrRst_, asynSuccess);
       updateMsgTxtFromDriver(NULL);
     }
   }
@@ -996,6 +998,9 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
       break;
     default:
       drvlocal.clean.hasProblem = 1;
+  }
+  if (idxStatusCode != idxStatusCodeRESET) {
+    setIntegerParam(pC_->defAsynPara.ethercatmcErrRst_, 0);
   }
   *moving = nowMoving;
   if (positionValid) {
@@ -1431,9 +1436,6 @@ void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
   updateMsgTxtFromDriver(msgTxtFromDriver);
 }
 
-asynStatus ethercatmcIndexerAxis::resetAxis(void) {
-  return writeCmdRegisster(idxStatusCodeRESET);
-}
 bool ethercatmcIndexerAxis::pollPowerIsOn(void) {
   bool cached = false;
   bool moving;
@@ -1530,14 +1532,13 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value) {
 #endif
   } else if (function == pC_->defAsynPara.ethercatmcErrRst_) {
     if (value) {
+      status = writeCmdRegisster(idxStatusCodeRESET);
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%ssetIntegerParam(%d ErrRst_)=%d\n", modNamEMC, axisNo_,
                 value);
-      /*  We do not want to call the base class */
-      return resetAxis();
+      if (status != asynSuccess)
+        return status; /*  We do not want to call the base class */
     }
-    /* If someone writes 0 to the field, just ignore it */
-    return asynSuccess;
   } else if (function == pC_->defAsynPara.ethercatmcCfgDHLM_En_) {
     double valueRB = -1;
     unsigned paramIndex = PARAM_IDX_USR_MAX_EN_FLOAT;
