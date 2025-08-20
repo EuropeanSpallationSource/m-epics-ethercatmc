@@ -10,6 +10,7 @@ GNERATEDOPIS = \
   ../motor-1-ptp.opi \
   ../motor-1-pils-ptp-Max-Red-Current-para195-197.opi \
   ../motor-2.opi \
+  ../motor-2-pils.opi \
   ../motor-3-pils.opi \
   ../motor-3-ptp.opi \
   ../motor-4-pils.opi \
