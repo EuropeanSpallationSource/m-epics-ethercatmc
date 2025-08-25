@@ -1,9 +1,23 @@
+record(calcout, "$(P)$(R)UpdtVeloWhenZero")
+{
+    field(PREC, "$(PREC)")
+    field(INPA, "$(P)$(R)-CfgVELO-RB CP")
+    field(INPB, "$(P)$(R).VELO")
+    field(CALC, "B==0?A:0")
+    field(OOPT, "Transition To Non-zero")
+    field(OUT,  "$(P)$(R).VELO")
+    field(DISV, "1")
+    field(DISA, "$(ALWAYS_GET_VELO=1)")
+}
+
 record(ao, "$(P)$(R)-CfgVELO-RB_")
 {
     field(PREC, "$(PREC)")
     field(DOL,  "$(P)$(R)-CfgVELO-RB CP")
     field(OUT,  "$(P)$(R).VELO")
     field(OMSL, "closed_loop")
+    field(DISV, "0")
+    field(DISA, "$(ALWAYS_GET_VELO=1)") #enabled by default
 }
 
 record(ao, "$(P)$(R)-CfgVMAX-RB_")
