@@ -1,40 +1,18 @@
-# Description of the pneumatic
+# Description of the actuator
 record(stringin, "$(P)$(R)DESC-RB") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDESC-RB")
     field(SCAN, "I/O Intr")
 }
 
-#Open the pneumatic
-record(bo,  "$(P)$(R)Open") {
-    field(DESC, "Open the pneumatic")
+# ErrorId. May be defined by TwinCAT (0x0000..0xFFFF)
+# or custom: 0x10000..0x1FFFF
+record(longin, "$(P)$(R)-ErrId")
+{
+    field(DESC, "$(R) Error ID from PLC")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsBoMinMax")
-    field(ZNAM, "Close")
-    field(ONAM, "Open")
-    info(asyn:READBACK,"1")
-    info(asyn:INITIAL_READBACK,"1")
-}
-
-# Shutter is fully opened
-record(bi,  "$(P)$(R)Opened") {
-    field(DESC, "Fully open")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBITOpened")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrorId")
     field(SCAN, "I/O Intr")
-    field(ZNAM, "")
-    field(ONAM, "Opened")
-}
-
-# Shutter is fully closed
-record(bi,  "$(P)$(R)Closed") {
-    field(DESC, "Shutter is fully open")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBITClosed")
-    field(SCAN, "I/O Intr")
-    field(ZNAM, "")
-    field(ONAM, "Closed")
-
 }
 
 #Error reset
@@ -94,12 +72,12 @@ record(stringin, "$(P)$(R)MsgTxt") {
     field(SCAN, "I/O Intr")
 }
 
-## The low Aux bits, should give us a status
+## The low Aux bits give us a status
 # One bit should be active at a time
 # The values for the bits are defined in the PLC#
 # and are fiddled into the record using the "enum" interface in asyn
 record(mbbi,  "$(P)$(R)AuxBits07") {
-    field(DESC, "Shutter State Aux0-7")
+    field(DESC, "Actuator State")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBits07")
     field(SCAN, "I/O Intr")
