@@ -981,8 +981,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
               drvlocal.clean.iOffset, statusReasonAux, actPosition);
   } else if (drvlocal.clean.iTypCode == 0x1E0C) {
     struct {
-      uint8_t actPos[8];
-      uint8_t targtPos[8];
+      uint8_t currentValue[8];
+      uint8_t targetValue[8];
       uint8_t statReasAux[4];
       uint8_t errorID[4];
     } readback;
@@ -996,16 +996,30 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     if (status) {
       return status;
     }
-    actPosition = NETTODOUBLE(readback.actPos);
-    // targetPosition = NETTODOUBLE(readback.targtPos);
-    statusReasonAux = NETTOUINT(readback.statReasAux);
     // Use bit 0 of reserved as errorID bit 16
     errorID = (int)NETTOUINT(readback.errorID) & 0x1FFFF;
     setIntegerParam(pC_->defAsynPara.ethercatmcErrId_, errorID);
+    homed = 1;
+    setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
+    actPosition = (double)NETTOUINT(readback.currentValue);
+    setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
+                    NETTOUINT(readback.currentValue));
+    pC_->setAlarmStatusSeverityWrapper(
+        axisNo_, pC_->defAsynPara.pilsLonginActual_, asynSuccess);
+    setIntegerParam(pC_->defAsynPara.pilsLonginTarget_,
+                    NETTOUINT(readback.targetValue));
+    pC_->setAlarmStatusSeverityWrapper(
+        axisNo_, pC_->defAsynPara.pilsLonginTarget_, asynSuccess);
 
+    statusReasonAux = NETTOUINT(readback.statReasAux);
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
     idxAuxBits = statusReasonAux & 0x0FFFFFFF;
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
+              "%spoll(%d) iTypCode=0x%X drvlocal.clean.iOffset=%u "
+              "statusReasonAux=%08x actPosition=%f\n",
+              modNamEMC, axisNo_, drvlocal.clean.iTypCode,
+              drvlocal.clean.iOffset, statusReasonAux, actPosition);
   } else {
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%spoll(%d) iTypCode=0x%X\n", modNamEMC, axisNo_,
