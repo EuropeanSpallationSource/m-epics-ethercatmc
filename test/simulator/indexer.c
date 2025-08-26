@@ -1823,82 +1823,55 @@ static void init_axis(int axis_no) {
     setMaxHomeVelocityAbs(axis_no, 10);
     /* Simulated limit switches, take from indexer table */
     {
-      int tmp_axis_no = 1;
       unsigned devNum; /* 0 is the indexer */
       for (devNum = 1; devNum < NUM_DEVICES; devNum++) {
+        int tmp_axis_no = indexerDeviceAbsStraction[devNum].axisNo;
         LOGTIME3("%s/%s:%d axis_no=%d tmp_axis_no=%d devNum=%u typeCode=0x%x\n",
                  __FILE__, __FUNCTION__, __LINE__, axis_no, tmp_axis_no, devNum,
                  indexerDeviceAbsStraction[devNum].typeCode);
-        switch (indexerDeviceAbsStraction[devNum].typeCode) {
-          case 0x1E04:
-            if (tmp_axis_no == axis_no) {
-              double absMax = indexerDeviceAbsStraction[devNum].absMax;
-              double absMin = indexerDeviceAbsStraction[devNum].absMin;
-              setMotorParkingPosition(tmp_axis_no, absMin);
-              setHighHardLimitPos(tmp_axis_no, absMax);
-              setLowHardLimitPos(tmp_axis_no, absMin);
-              setHighSoftLimitPos(tmp_axis_no, absMax);
-              setLowSoftLimitPos(tmp_axis_no, absMin);
-              setEnableHighSoftLimit(tmp_axis_no, 1);
-              setEnableLowSoftLimit(tmp_axis_no, 1);
-              setMRES_23(tmp_axis_no,
+        if (tmp_axis_no == axis_no) {
+          double absMax = indexerDeviceAbsStraction[devNum].absMax;
+          double absMin = indexerDeviceAbsStraction[devNum].absMin;
+          switch (indexerDeviceAbsStraction[devNum].typeCode) {
+            case 0x1E04:
+            case 0x1E0C: {
+              setMotorParkingPosition(axis_no, absMin);
+              setHighHardLimitPos(axis_no, absMax);
+              setLowHardLimitPos(axis_no, absMin);
+              setHighSoftLimitPos(axis_no, absMax);
+              setLowSoftLimitPos(axis_no, absMin);
+              setEnableHighSoftLimit(axis_no, 1);
+              setEnableLowSoftLimit(axis_no, 1);
+              setMRES_23(axis_no,
                          0.0); /* avoid rounding to a step in hw_motor.c */
-              setMRES_24(tmp_axis_no, 0.0);
+              setMRES_24(axis_no, 0.0);
 
               LOGTIME3(
-                  "%s/%s:%d init1E04 tmp_axis_no=%d axis_no=%d absMax=%f "
+                  "%s/%s:%d init1E0x axis_no=%d absMax=%f "
                   "absMin=%f\n",
-                  __FILE__, __FUNCTION__, __LINE__, tmp_axis_no, axis_no,
-                  absMax, absMin);
-            }
-            break;
-          case 0x1E0C:
-            if (tmp_axis_no == axis_no) {
-              double absMax = indexerDeviceAbsStraction[devNum].absMax;
-              double absMin = indexerDeviceAbsStraction[devNum].absMin;
-              setMotorParkingPosition(tmp_axis_no, absMin);
-              setHighHardLimitPos(tmp_axis_no, absMax);
-              setLowHardLimitPos(tmp_axis_no, absMin);
-              setHighSoftLimitPos(tmp_axis_no, absMax);
-              setLowSoftLimitPos(tmp_axis_no, absMin);
-              setEnableHighSoftLimit(tmp_axis_no, 1);
-              setEnableLowSoftLimit(tmp_axis_no, 1);
-              setMRES_23(tmp_axis_no,
-                         0.0); /* avoid rounding to a step in hw_motor.c */
-              setMRES_24(tmp_axis_no, 0.0);
-
-              LOGTIME3(
-                  "%s/%s:%d init1E0C tmp_axis_no=%d axis_no=%d absMax=%f "
-                  "absMin=%f\n",
-                  __FILE__, __FUNCTION__, __LINE__, tmp_axis_no, axis_no,
-                  absMax, absMin);
-            }
-            break;
-          case 0x5010: {
-            if (tmp_axis_no == axis_no) {
-              double absMax = indexerDeviceAbsStraction[devNum].absMax;
-              double absMin = indexerDeviceAbsStraction[devNum].absMin;
+                  __FILE__, __FUNCTION__, __LINE__, axis_no, absMax, absMin);
+            } break;
+            case 0x5010: {
               int hasUserMin = 0;
               unsigned param_idx = PARAM_IDX_USR_MIN_FLOAT32;
               hasUserMin = indexerDeviceAbsStraction[devNum].permP[param_idx] !=
                            permPNone;
               setHighHardLimitPos(axis_no, absMax + 1.0);
               setLowHardLimitPos(axis_no, absMin - 1.0);
-              LOGTIME3("%s/%s:%d axis_no=%d tmp_axis_no=%d USR_MIN_BIT=%u\n",
-                       __FILE__, __FUNCTION__, __LINE__, axis_no, tmp_axis_no,
+              LOGTIME3("%s/%s:%d axis_no=%d axis_no=%d USR_MIN_BIT=%u\n",
+                       __FILE__, __FUNCTION__, __LINE__, axis_no, axis_no,
                        hasUserMin);
 
               if (hasUserMin) {
-                setHighSoftLimitPos(tmp_axis_no, absMax);
-                setLowSoftLimitPos(tmp_axis_no, absMin);
-                setEnableHighSoftLimit(tmp_axis_no, 1);
-                setEnableLowSoftLimit(tmp_axis_no, 1);
+                setHighSoftLimitPos(axis_no, absMax);
+                setLowSoftLimitPos(axis_no, absMin);
+                setEnableHighSoftLimit(axis_no, 1);
+                setEnableLowSoftLimit(axis_no, 1);
               }
-            }
-            tmp_axis_no++;
-          } break;
-          default:
-            break;
+            } break;
+            default:
+              break;
+          }
         }
       }
     }
@@ -2027,6 +2000,9 @@ static void indexerMotorStatusRead1E0C(
 
   switch (idxStatusCode) {
     case idxStatusCodeRESET:
+      LOGTIME3("%s/%s:%d motor_axis_no=%u idxStatusCodeRESET\n", __FILE__,
+               __FUNCTION__, __LINE__, motor_axis_no);
+
       init_axis((int)motor_axis_no);
       motorStop(motor_axis_no);
       set_bError(motor_axis_no, 0);
@@ -2941,9 +2917,9 @@ void indexerHandlePLCcycle(void) {
           /*
            * motor1E0CNum starts at 0
            * all hw_motor axes start at 1, and we need to jump over
-           * the 5010 axes
+           * the 5010 and 1E04axes
            */
-          unsigned motor1E0CNum = axisNo - NUM_MOTORS5010 - 1;
+          unsigned motor1E0CNum = axisNo - NUM_MOTORS5010 - NUM_1E04 - 1;
           static const unsigned numAuxBits = 24;
           int iRet = (int)(0.5 + getMotorPos((int)axisNo)); /* NINT */
           UINTTONET(iRet,
