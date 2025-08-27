@@ -78,6 +78,9 @@ monitor-ca-pva: \
   100_Record-HOMF.log-ca-m1\
   100_Record-HOMF.log-pva-m1\
 
+943_Simulator_Pneumatics.log-pva-pneu : 943_Simulator_Pneumatics.py
+	./test-ioc-with-sim-indexer-one-TC-wrapper.sh pva://IOC:Pneu $< $@
+
 # rules for ca and pva
 %.log-ca-m1 : %.py
 	./test-ioc-with-sim-indexer-one-TC-wrapper.sh ca://IOC:m1 $< $@
@@ -85,5 +88,3 @@ monitor-ca-pva: \
 %.log-pva-m1 : %.py
 	./test-ioc-with-sim-indexer-one-TC-wrapper.sh pva://IOC:m1 $< $@
 
-%.log-pva-pneu : %.py
-	./test-ioc-with-sim-indexer-one-TC-wrapper.sh pva://IOC:Pneu $< $@
