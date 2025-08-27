@@ -2025,77 +2025,85 @@ static void indexerMotorStatusRead1E0C(
       break;
     default:;
   }
-  /* Build a new status word, start with 0 and fill in
-     the bits */
-  statusReasonAux32 = 0;
-  /*
-    if (getPosLimitSwitch(motor_axis_no))
+  if (getManualSimulatorMode(motor_axis_no)) {
+    /* The simulator may overwrite the whole statusReasonAux32 */
+    statusReasonAux32 = get_nStatReasAUX(motor_axis_no);
+    LOGTIME3("%s/%s:%d motor_axis_no=%u simulated statusReasonAux32=0x%08x\n",
+             __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
+             statusReasonAux32);
+  } else {
+    /* Build a new status word, start with 0 and fill in
+       the bits */
+    statusReasonAux32 = 0;
+    /*
+      if (getPosLimitSwitch(motor_axis_no))
       statusReasonAux32 |= 0x08000000;
-    if (getNegLimitSwitch(motor_axis_no))
+      if (getNegLimitSwitch(motor_axis_no))
       statusReasonAux32 |= 0x04000000;
-  */
+    */
 
-  /* reason bits */
-  {
-    double motorVelocity = getMotorVelocity(motor_axis_no);
-    int posLimitSwitch = getPosLimitSwitch(motor_axis_no);
-    int negLimitSwitch = getNegLimitSwitch(motor_axis_no);
+    /* reason bits */
+    {
+      double motorVelocity = getMotorVelocity(motor_axis_no);
+      int posLimitSwitch = getPosLimitSwitch(motor_axis_no);
+      int negLimitSwitch = getNegLimitSwitch(motor_axis_no);
 
-    unsigned auxBitIdx = 0;
-    if (motorVelocity) {
-      /* While moving: Ignore the limits */
-      posLimitSwitch = 0;
-      negLimitSwitch = 0;
-    }
-    for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
-      const char *auxBitName =
-          (const char *)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
-      LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
-               __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
-               auxBitName);
-
-      if (!strcmp("enabled", auxBitName)) {
-        int bValue = getAmplifierOn(motor_axis_no);
-        LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+      unsigned auxBitIdx = 0;
+      if (motorVelocity) {
+        /* While moving: Ignore the limits */
+        posLimitSwitch = 0;
+        negLimitSwitch = 0;
+      }
+      for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
+        const char *auxBitName =
+            (const char *)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
+        LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
                  __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
-                 bValue);
-        if (bValue) {
-          statusReasonAux32 |= 1 << auxBitIdx;
+                 auxBitName);
+
+        if (!strcmp("enabled", auxBitName)) {
+          int bValue = getAmplifierOn(motor_axis_no);
+          LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+                   __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+                   bValue);
+          if (bValue) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
+        } else if (!strcmp("Closed", auxBitName)) {
+          if (negLimitSwitch) statusReasonAux32 |= 1 << auxBitIdx;
+        } else if (!strcmp("Opened", auxBitName)) {
+          if (posLimitSwitch) statusReasonAux32 |= 1 << auxBitIdx;
+        } else if (!strcmp("Opening", auxBitName)) {
+          if (motorVelocity > 0.0) statusReasonAux32 |= 1 << auxBitIdx;
+        } else if (!strcmp("Closing", auxBitName)) {
+          if (motorVelocity < 0.0) statusReasonAux32 |= 1 << auxBitIdx;
+        } else if (!strcmp("InTheMiddle", auxBitName)) {
+          if (!motorVelocity && !posLimitSwitch && !negLimitSwitch)
+            statusReasonAux32 |= 1 << auxBitIdx;
         }
-      } else if (!strcmp("Closed", auxBitName)) {
-        if (negLimitSwitch) statusReasonAux32 |= 1 << auxBitIdx;
-      } else if (!strcmp("Opened", auxBitName)) {
-        if (posLimitSwitch) statusReasonAux32 |= 1 << auxBitIdx;
-      } else if (!strcmp("Opening", auxBitName)) {
-        if (motorVelocity > 0.0) statusReasonAux32 |= 1 << auxBitIdx;
-      } else if (!strcmp("Closing", auxBitName)) {
-        if (motorVelocity < 0.0) statusReasonAux32 |= 1 << auxBitIdx;
-      } else if (!strcmp("InTheMiddle", auxBitName)) {
-        if (!motorVelocity && !posLimitSwitch && !negLimitSwitch)
-          statusReasonAux32 |= 1 << auxBitIdx;
       }
     }
-  }
 
-  /* the status bits */
-  if (idxStatusCode == idxStatusCodeSTART) {
-    idxStatusCode = idxStatusCodeBUSY;
-  } else if (get_bError(motor_axis_no)) {
-    idxStatusCode = idxStatusCodeERROR;
-  }
+    /* the status bits */
+    if (idxStatusCode == idxStatusCodeSTART) {
+      idxStatusCode = idxStatusCodeBUSY;
+    } else if (get_bError(motor_axis_no)) {
+      idxStatusCode = idxStatusCodeERROR;
+    }
 #ifdef USE_IDXSTATUSCODEPOWEROFF
-  else if (!getAmplifierOn(motor_axis_no))
-    idxStatusCode = idxStatusCodePOWEROFF;
+    else if (!getAmplifierOn(motor_axis_no))
+      idxStatusCode = idxStatusCodePOWEROFF;
 #endif
-  else if (isMotorMoving(motor_axis_no))
-    idxStatusCode = idxStatusCodeBUSY;
-  else if (statusReasonAux32 & 0x0C000000)
-    idxStatusCode = idxStatusCodeWARN;
-  else
-    idxStatusCode = idxStatusCodeIDLE;
+    else if (isMotorMoving(motor_axis_no))
+      idxStatusCode = idxStatusCodeBUSY;
+    else if (statusReasonAux32 & 0x0C000000)
+      idxStatusCode = idxStatusCodeWARN;
+    else
+      idxStatusCode = idxStatusCodeIDLE;
 
-  statusReasonAux32 &= 0x0FFFFFFF;
-  statusReasonAux32 |= ((unsigned)idxStatusCode << 28);
+    statusReasonAux32 &= 0x0FFFFFFF;
+    statusReasonAux32 |= ((unsigned)idxStatusCode << 28);
+  }
   UINTTONET(statusReasonAux32, pIndexerDevice1E0Cinterface->statusReasonAux32);
   UINTTONET((int)getMotorPos(motor_axis_no),
             pIndexerDevice1E0Cinterface->actualValue);
