@@ -7,8 +7,8 @@ epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("P",               "$(SM_P=IOC:)")
 epicsEnvSet("R",               "")
 epicsEnvSet("PREC",            "$(SM_PREC=3)")
-# 5 axes: 4 motors, axis 5 is shutter
-epicsEnvSet("ECM_NUMAXES",     "5")
+# 6 axes: 4 motors, axis 5 is shutter, 6 is pneumatic
+epicsEnvSet("ECM_NUMAXES",     "6")
 epicsEnvSet("ADSPORT",         "$(ECM_ADSPORT=852)")
 epicsEnvSet("ECM_OPTIONS",     "adsPort=$(ADSPORT);amsNetIdRemote=127.0.0.1.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
 
@@ -90,12 +90,23 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 epicsEnvSet("AXISCONFIG",      "")
 epicsEnvSet("R",               "Sht")
 epicsEnvSet("AXIS_NO",         "5")
-
 < ethercatmcShutter.iocsh
 
 # Motorrecord to debug
 #epicsEnvSet("R",    "Shutter")
 #< ethercatmcIndexerAxis.iocsh
+
+#
+# Axis 6, pneumatic with ErrId
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "Pneu")
+epicsEnvSet("AXIS_NO",         "6")
+< ethercatmcShutter.iocsh
+# Motorrecord and debug needed for the automatic tests/943
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
 
 # Faster polling
 epicsEnvSet("MOVINGPOLLPERIOD",  "100")
