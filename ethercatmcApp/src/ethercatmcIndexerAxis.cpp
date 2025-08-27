@@ -1404,9 +1404,19 @@ void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
     if (errorID > 0) {
       const char *errIdString = errStringFromErrId(errorID);
       if (errIdString[0]) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X",
-                 charEorW, errIdString, errorID);
+        if (errorID <= 0xFFFF) {
+          /* Vendor defined and documented ID.
+             Often seen ID have a short desription.
+             The long descripion can be looked up on the internet */
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X",
+                   charEorW, errIdString, errorID);
+        } else {
+          /* ESS home made ID */
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
+                   errIdString);
+        }
       } else {
+        /* The hex code can be looked up on the internet */
         snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: TwinCAT Err %X",
                  charEorW, errorID);
       }
