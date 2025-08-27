@@ -2105,6 +2105,7 @@ static void indexerMotorStatusRead1E0C(
     statusReasonAux32 |= ((unsigned)idxStatusCode << 28);
   }
   UINTTONET(statusReasonAux32, pIndexerDevice1E0Cinterface->statusReasonAux32);
+  UINTTONET(get_nErrorId(motor_axis_no), pIndexerDevice1E0Cinterface->errorID);
   UINTTONET((int)getMotorPos(motor_axis_no),
             pIndexerDevice1E0Cinterface->actualValue);
 }
