@@ -1,40 +1,18 @@
-# Description of the shutter
+# Description of the actuator
 record(stringin, "$(P)$(R)DESC-RB") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))CfgDESC-RB")
     field(SCAN, "I/O Intr")
 }
 
-#Open the shutter
-record(bo,  "$(P)$(R)Open") {
-    field(DESC, "Open the shutter")
+# ErrorId. May be defined by TwinCAT (0x0000..0xFFFF)
+# or custom: 0x10000..0x1FFFF
+record(longin, "$(P)$(R)-ErrId")
+{
+    field(DESC, "$(R) Error ID from PLC")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsBoMinMax")
-    field(ZNAM, "Close")
-    field(ONAM, "Open")
-    info(asyn:READBACK,"1")
-    info(asyn:INITIAL_READBACK,"1")
-}
-
-# Shutter is fully opened
-record(bi,  "$(P)$(R)Opened") {
-    field(DESC, "Shutter is fully open")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBITOpened")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrorId")
     field(SCAN, "I/O Intr")
-    field(ZNAM, "")
-    field(ONAM, "Opened")
-}
-
-# Shutter is fully closed
-record(bi,  "$(P)$(R)Closed") {
-    field(DESC, "Shutter is fully open")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBITClosed")
-    field(SCAN, "I/O Intr")
-    field(ZNAM, "")
-    field(ONAM, "Closed")
-
 }
 
 #Error reset
@@ -94,12 +72,12 @@ record(stringin, "$(P)$(R)MsgTxt") {
     field(SCAN, "I/O Intr")
 }
 
-## The low Aux bits, should give us a status
+## The low Aux bits give us a status
 # One bit should be active at a time
 # The values for the bits are defined in the PLC#
 # and are fiddled into the record using the "enum" interface in asyn
 record(mbbi,  "$(P)$(R)AuxBits07") {
-    field(DESC, "Shutter State Aux0-7")
+    field(DESC, "Actuator State")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AuxBits07")
     field(SCAN, "I/O Intr")
@@ -148,147 +126,122 @@ record(mbbiDirect, "$(P)$(R)StatusBits")
     field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO) 0x3FFFFFF)StatusBits")
     field(SCAN, "I/O Intr")
 }
-# Aliases are added for retro-compatibility
 record(stringin, "$(P)$(R)NamAuxBit0") {
-    alias("$(P)$(R)NamBit0")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit0")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit1") {
-    alias("$(P)$(R)NamBit1")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit1")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit2") {
-    alias("$(P)$(R)NamBit2")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit2")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit3") {
-    alias("$(P)$(R)NamBit3")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit3")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit4") {
-    alias("$(P)$(R)NamBit4")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit4")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit5") {
-    alias("$(P)$(R)NamBit5")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit5")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit6") {
-    alias("$(P)$(R)NamBit6")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit6")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit7") {
-    alias("$(P)$(R)NamBit7")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit7")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit8") {
-    alias("$(P)$(R)NamBit8")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit8")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit9") {
-    alias("$(P)$(R)NamBit9")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit9")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit10") {
-    alias("$(P)$(R)NamBit10")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit10")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit11") {
-    alias("$(P)$(R)NamBit11")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit11")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit12") {
-    alias("$(P)$(R)NamBit12")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit12")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit13") {
-    alias("$(P)$(R)NamBit13")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit13")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit14") {
-    alias("$(P)$(R)NamBit14")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit14")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit15") {
-    alias("$(P)$(R)NamBit15")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit15")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit16") {
-    alias("$(P)$(R)NamBit16")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit16")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit17") {
-    alias("$(P)$(R)NamBit17")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit17")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit18") {
-    alias("$(P)$(R)NamBit18")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit18")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit19") {
-    alias("$(P)$(R)NamBit19")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit19")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit20") {
-    alias("$(P)$(R)NamBit20")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit20")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit21") {
-    alias("$(P)$(R)NamBit21")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit21")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit22") {
-    alias("$(P)$(R)NamBit22")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit22")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)NamAuxBit23") {
-    alias("$(P)$(R)NamBit23")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit23")
     field(SCAN, "I/O Intr")
