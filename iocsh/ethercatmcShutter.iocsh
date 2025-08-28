@@ -2,5 +2,9 @@ ethercatmcCreateIndexerAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
 
 ethercatmcCreateAsynParam $(MOTOR_PORT) AUXBITOpened Int32
 ethercatmcCreateAsynParam $(MOTOR_PORT) AUXBITClosed Int32
+dbLoadRecords("ethercatmcOpenedClosed.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
 
-dbLoadRecords("ethercatmcShutter.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
+dbLoadRecords("ethercatmcActuator.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
+
+dbLoadRecords("ethercatmcActuatorActivate.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO), ACTUC_NAME=Open, ACTUC_DESC=Open the shutter, ACTUC_ZNAM=Close, ACTUC_ONAM=Open")
+

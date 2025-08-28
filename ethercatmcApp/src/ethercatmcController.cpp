@@ -112,6 +112,28 @@ extern "C" const char *errStringFromErrId(int nErrorId) {
       return "Axis not rdy";
     case 0x4B0A:
       return "Homing faild";
+    case 0x10001:
+      return "Extract Timeout";
+    case 0x10002:
+      return "Retract Timeout";
+    case 0x10003:
+      return "Not Moving Extract";
+    case 0x10004:
+      return "Not Moving Retract";
+    case 0x10005:
+      return "No PSS Permit";
+    case 0x10006:
+      return "Retract Interlocked";
+    case 0x10007:
+      return "Extract Interlocked";
+    case 0x10008:
+      return "Air Pressure Low";
+    case 0x10009:
+      return "Air Pressure High";
+    case 0x1000A:
+      return "NoSignalEndSwitchBwd";
+    case 0x1000B:
+      return "NoSignalEndSwitchFwd";
     default:
       return "";
   }

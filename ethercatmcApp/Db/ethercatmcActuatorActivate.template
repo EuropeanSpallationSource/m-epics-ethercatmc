@@ -1,0 +1,20 @@
+# Activate an activator, for example:
+# Open the shutter
+# Activate a beamstop
+# Put a sample in a sample-changer into the beam
+# This is the command template (C=Command) fully macro-ized:
+
+#ACTUC_NAME
+#ACTUC_DESC
+#ACTUC_ZNAM
+#ACTUC_ONAM
+
+record(bo,  "$(P)$(R)$(ACTUC_NAME=Actu)") {
+    field(DESC, "$(ACTUC_DESC=Actu)")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(AXIS_NO))pilsBoMinMax")
+    field(ZNAM, "$(ACTUC_ZNAM=Activate)")
+    field(ONAM, "$(ACTUC_ONAM=Deactivate)")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}

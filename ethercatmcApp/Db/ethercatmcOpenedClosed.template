@@ -1,0 +1,19 @@
+# Shutter is fully opened
+record(bi,  "$(P)$(R)Opened") {
+    field(DESC, "Shutter is fully open")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBITOpened")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "")
+    field(ONAM, "Opened")
+}
+
+# Shutter is fully closed
+record(bi,  "$(P)$(R)Closed") {
+    field(DESC, "Shutter is fully open")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))AUXBITClosed")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "")
+    field(ONAM, "Closed")
+}
