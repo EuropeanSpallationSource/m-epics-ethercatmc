@@ -81,6 +81,15 @@ errTCs = [
     ),
 ]
 
+aux07TCs = [
+    #    (943020, "0x10000000", "E: Extract Timeout", "E: Extract Timeout"),
+    (943021, "0x10000001", "Closed"),
+    (943022, "0x10000002", "Closing"),
+    (943023, "0x10000004", "InTheMiddle"),
+    (943024, "0x10000008", "Opening"),
+    (943025, "0x10000010", "Opened"),
+]
+
 
 def lineno():
     return inspect.currentframe().f_back.f_lineno
@@ -135,6 +144,47 @@ def writeBitsReadMsgTxtErrTxt(
     assert passed
 
 
+def writeBitsRead07Txt(
+    self,
+    tc_no=0,
+    statusReasonAux=None,
+    exp07Txt="undef",
+):
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
+    assert tc_no != 0
+    assert statusReasonAux is not None
+    assert exp07Txt != "undef"
+
+    maxTime = 2  # 2 seconds maximum to let ripple through
+    passed = False
+    self.axisMr.setValueOnSimulator(tc_no, "nStatReasAUX", statusReasonAux)
+    self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
+
+    while maxTime > 0:
+        act07Num = int(self.axisCom.get("AuxBits07"))
+        act07Txt = str(self.axisCom.get("AuxBits07"))
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} maxTime={maxTime:.2f} exp07Txt='{exp07Txt}' act07Txt={act07Txt} act07Num={act07Num:d}"
+        )
+
+        if act07Txt == exp07Txt:
+            passed = True
+            maxTime = 0
+        else:
+            time.sleep(polltime)
+            maxTime = maxTime - polltime
+
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} passed={passed} statusReasonAux={statusReasonAux} exp07Txt='{exp07Txt}' act07Txt={act07Txt!r}"
+    )
+    self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
+    if passed:
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
+    else:
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+    assert passed
+
+
 class Test(unittest.TestCase):
     url_string = os.getenv("TESTEDMOTORAXIS")
     print(
@@ -166,6 +216,18 @@ class Test(unittest.TestCase):
                 errorId=errorId,
                 expMsgTxt=expMsgTxt,
                 expErrTxt=expErrTxt,
+            )
+
+    def test_TC_943020(self):
+        for tc in aux07TCs:
+            tc_no = tc[0]
+            statusReasonAux = tc[1]
+            exp07Txt = tc[2]
+            writeBitsRead07Txt(
+                self,
+                tc_no=tc_no * 10 + 1,
+                statusReasonAux=statusReasonAux,
+                exp07Txt=exp07Txt,
             )
 
     def xest_TC_94399999(self):
