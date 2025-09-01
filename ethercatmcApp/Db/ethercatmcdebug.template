@@ -150,6 +150,14 @@ record(bo,"$(P)$(R)-NoStopOnLs") {
     info(asyn:INITIAL_READBACK,"1")
 }
 
+record(longout,"$(P)$(R)-RwSoftlimits") {
+    field(DESC, "RW Soft Limits")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_RW_SOFT_LIMITS")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
 record(bo,"$(P)$(R)-DrvUseEGU") {
     field(DESC, "Record uses EGU")
     field(DTYP, "asynInt32")
