@@ -16,7 +16,6 @@ TOP=$(echo $PWD/.. | sed -e "s%/test/\.\.$%%")
 export APPXX
 DOLOG=
 EPICS_EEE_E3=classic
-EPICSTWINCATADS=""
 HOST=""
 LOCALAMSNETID=""
 MOTORPORT=""
@@ -26,7 +25,7 @@ REMOTEAMSNETID=""
 
 ## functions
 help_and_exit() {
-  echo >&2 $0 "[--no-make][--no-run][--epics-twincat-ads]"
+  echo >&2 $0 "[--no-make][--no-run]"
   cd startup || exit 1
   CMDS=$(echo st.*.iocsh | sed -e "s/st\.//g" -e "s/\.iocsh//g" | sort)
   #echo CMDS=$CMDS
@@ -36,9 +35,6 @@ help_and_exit() {
     case $cmd in
       *sim-indexer)
         echo >&2 $0 " $cmd"
-        ;;
-      *-ads)
-        echo >&2 $0 " $cmd" " <ip>:48898"
         ;;
       *-indexer)
         echo >&2 $0 " $cmd" " <ip>:48898"
@@ -82,9 +78,7 @@ generate_st_cmd_classic() {
     sed <"$src" >"$dst" \
       -e "s%dbLoadRecords(\"%dbLoadRecords(\"./db/%" \
       -e "s%< %< ${TOP}/iocBoot/ioc${APPXX}/%" \
-      -e "s!/c/Users/!c:/Users/!" \
-      -e "s%$ASYNPORTCONFIGUREDONTUSE%#$ASYNPORTCONFIGUREDONTUSE%" \
-      -e "s%# *$ASYNPORTCONFIGUREUSE%$ASYNPORTCONFIGUREUSE%"
+      -e "s!/c/Users/!c:/Users/!"
   done &&
     rm -f $stcmddst &&
     cat >$stcmddst <<-EOF &&
@@ -236,11 +230,6 @@ while test "$PARAM" != ""; do
       shift
       PARAM="$1"
       ;;
-    --epics-twincat-ads)
-      EPICSTWINCATADS=y
-      shift
-      PARAM="$1"
-      ;;
     -h | --help)
       help_and_exit "$@"
       ;;
@@ -256,13 +245,6 @@ while test "$PARAM" != ""; do
 done
 
 MOTORCFG="$1"
-case $MOTORCFG in
-  *-ads)
-    ASYNPORTCONFIGUREUSE=adsAsynPortDriverConfigure
-    ASYNPORTCONFIGUREDONTUSE=drvAsynIPPortConfigure
-    ;;
-  *) ;;
-esac
 export NOMAKE
 export NORUN
 export MOTORCFG
@@ -274,10 +256,6 @@ shift
 
 # motor port is different for indexer
 case $MOTORCFG in
-  *-ads)
-    MOTORPORT=48898
-    EPICSTWINCATADS=y
-    ;;
   *sim-indexer) ;;
   *-indexer)
     MOTORPORT=48898
@@ -286,18 +264,6 @@ case $MOTORCFG in
     MOTORPORT=5000
     ;;
 esac
-
-# Which of the 2 commands needs to be run ?
-# Only one of them: Either ADS or TCP
-if test "$EPICSTWINCATADS" = y; then
-  ASYNPORTCONFIGUREUSE="adsAsynPortDriverConfigure"
-  ASYNPORTCONFIGUREDONTUSE="drvAsynIPPortConfigure"
-else
-  ASYNPORTCONFIGUREUSE="drvAsynIPPortConfigure"
-  ASYNPORTCONFIGUREDONTUSE="adsAsynPortDriverConfigure"
-fi
-export ASYNPORTCONFIGUREUSE
-export ASYNPORTCONFIGUREDONTUSE
 
 PARAM="$1"
 while test "$PARAM" != ""; do
