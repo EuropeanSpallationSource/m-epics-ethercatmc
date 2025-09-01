@@ -316,52 +316,6 @@ asynStatus ethercatmcController::setPlcMemoryDouble(unsigned indexOffset,
   }
 }
 
-asynStatus ethercatmcController::setSAFIntegerOnAxisViaADSFL(
-    unsigned indexGroup, unsigned indexOffset, int value, size_t lenInPlc,
-    const char *fileName, int lineNo) {
-  const static unsigned targetAdsport = 501;
-  asynStatus status;
-  if (lenInPlc <= 8) {
-    uint8_t raw[8];
-    uintToNet(value, &raw, lenInPlc);
-
-    status = setMemIdxGrpIdxOffFL(indexGroup, indexOffset, targetAdsport, &raw,
-                                  lenInPlc, fileName, lineNo);
-    asynPrint(
-        pasynUserController_, ASYN_TRACE_INFO,
-        "%s%s:%d setSAFIntegerOnAxisViaADSFL indexGroup=0x%X indexOffset=0x%X"
-        " value=%d lenInPlc=%u status=%s (%d)\n",
-        modNamEMC, fileName, lineNo, indexGroup, indexOffset, value,
-        (unsigned)lenInPlc, ethercatmcstrStatus(status), (int)status);
-    return status;
-  } else {
-    return asynError;
-  }
-}
-
-asynStatus ethercatmcController::setSAFDoubleOnAxisViaADSFL(
-    unsigned indexGroup, unsigned indexOffset, double value, size_t lenInPlc,
-    const char *fileName, int lineNo) {
-  const static unsigned targetAdsport = 501;
-  asynStatus status;
-  if (lenInPlc == 8 || lenInPlc == 4) {
-    uint8_t raw[8];
-    doubleToNet(value, &raw, lenInPlc);
-
-    status = setMemIdxGrpIdxOffFL(indexGroup, indexOffset, targetAdsport, &raw,
-                                  lenInPlc, fileName, lineNo);
-    asynPrint(
-        pasynUserController_, ASYN_TRACE_INFO,
-        "%s%s:%d setSAFIntegerOnAxisViaADSFL indexGroup=0x%X indexOffset=0x%X"
-        " value=%f lenInPlc=%u status=%s (%d)\n",
-        modNamEMC, fileName, lineNo, indexGroup, indexOffset, value,
-        (unsigned)lenInPlc, ethercatmcstrStatus(status), (int)status);
-    return status;
-  } else {
-    return asynError;
-  }
-}
-
 asynStatus ethercatmcController::indexerWaitSpecialDeviceIdle(
     unsigned indexOffset) {
   unsigned traceMask = ASYN_TRACE_FLOW;
