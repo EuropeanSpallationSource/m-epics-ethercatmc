@@ -28,9 +28,6 @@ endif
 
 ethercatmcSupport_LIBS += asyn
 
-ifneq (,$(findstring /,$(ADS)))
-ethercatmcSupport_LIBS += ads
-endif
 ifneq (,$(findstring /,$(CALC)))
 ethercatmcSupport_LIBS += calc
 endif
