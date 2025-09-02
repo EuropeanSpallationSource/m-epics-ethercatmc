@@ -1,0 +1,2 @@
+ethercatmcCreateIndexerAxis("$(MOTOR_PORT)", "$(AXIS_NO)", "6", "$(AXISCONFIG)")
+dbLoadRecords("ethercatmcActuator.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), AXIS_NO=$(AXIS_NO)")
