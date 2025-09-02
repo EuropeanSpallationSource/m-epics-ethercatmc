@@ -16,6 +16,8 @@ include $(TOP)/configure/CONFIG
 # Create and install (or just install)
 # databases, templates, substitutions like this
 DB += ethercatmc.template
+DB += ethercatmcActuator.template
+DB += ethercatmcActuatorActivate.template
 DB += ethercatmcAnalogInput.template
 DB += ethercatmcAnalogInputSmooAdelMdel.template
 DB += ethercatmcAnalogOutputReadback.template
@@ -34,10 +36,10 @@ DB += ethercatmcEL6688-PTP.template
 DB += ethercatmcEL6688-EL1252-PTP.template
 DB += ethercatmcEL6688-EL1252-PTP-POS-NEG.template
 DB += ethercatmcMotorTemp.template
+DB += ethercatmcOpenedClosed.template
 DB += ethercatmcOpenClutch.template
 DB += ethercatmcReleaseBrake.template
 DB += ethercatmcPlcName.template
-DB += ethercatmcShutter.template
 DB += ethercatmcTempSensor.template
 DB += ethercatmcdebug.template
 DB += ethercatmcindexer.template
