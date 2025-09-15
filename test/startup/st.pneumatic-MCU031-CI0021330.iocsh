@@ -23,7 +23,6 @@ epicsEnvSet("R",               "Shutter")
 epicsEnvSet("AXIS_NO",         "1")
 epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
 epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
-epicsEnvSet("R",               "Shutter-")
 < ethercatmcShutter.iocsh
 
 # Pressure
