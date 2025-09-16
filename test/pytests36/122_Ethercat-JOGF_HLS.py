@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
         tc_no = tc_no_base + 3
         assert (
             self.axisMr.moveIntoLimitSwitchFromTestCase(
-                tc_no, movingMethod="DVAL", setDLYfield=1.0
+                tc_no, direction=direction, movingMethod="DVAL", setDLYfield=1.0
             )
             is True
         )
@@ -69,12 +69,13 @@ class Test(unittest.TestCase):
             is True
         )
 
-    # low limit switch via moveVel and "infinite" Soft limit
+    # high limit switch via moveVel and "infinite" Soft limit
     def test_TC_1225(self):
         tc_no = tc_no_base + 5
         assert (
             self.axisMr.moveIntoLimitSwitchFromTestCase(
                 tc_no,
+                direction=direction,
                 movingMethod="MoveVel",
                 doDisableSoftLimit=False,
                 setInfiniteSoftLimit=True,
