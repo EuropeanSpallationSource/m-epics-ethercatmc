@@ -187,7 +187,6 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <e-cnen.mid >>/tmp/$$
     eval $cmd <e-foff.mid >>/tmp/$$
     eval $cmd <e-homf-homr.mid >>/tmp/$$
-    eval $cmd <e-pils-errtxt.mid >>/tmp/$$
     eval $cmd <e-retry.mid >>/tmp/$$
     eval $cmd <e-URIP.mid >>/tmp/$$
     # Create the status bits
@@ -210,7 +209,6 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <e-homproc-rb.mid >>/tmp/$$
     eval $cmd <e-inhibitf-inhibitr.mid >>/tmp/$$
     eval $cmd <e-pils-cfgdxlm-en.mid >>/tmp/$$
-    eval $cmd <e-pils-errtxt.mid >>/tmp/$$
     eval $cmd <e-pils-status-bit24-25.mid >>/tmp/$$
     yaux=$((yaux + 40))
     eval $cmd <e-pils-statuscode.mid >>/tmp/$$

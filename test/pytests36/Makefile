@@ -21,7 +21,7 @@ SIMULATOR-ONE-PVA = \
 
 SIMULATOR-TWO-PVA = \
   940_Simulator-InputRecordAlarm.log-pva-m1\
-  941_Simulator-MsgTxt-ErrTxt.log-pva-m1\
+  941_Simulator-MsgTxt.log-pva-m1\
   942_Simulator_Cabinet.log-pva-m1\
   943_Simulator_Pneumatics.log-pva-pneu \
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-pva-m1\
