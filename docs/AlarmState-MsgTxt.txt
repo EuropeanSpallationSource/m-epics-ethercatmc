@@ -66,9 +66,11 @@ Motor status
       Labs-ESSIIP:MC-MCU-01:m1-MsgTxt will now contain an empty string
 
       Later versions of the TwinCAT SW will set the errorId to a value,
-      but leave the error bit false. This could happen e.g with the "errorId 4460"
+      but leave the error bit false.
+      This could happen e.g with the "errorId 4460"
       from above:
-      The command that was send to the system can not be executed and needs no reset.
+      The command that was send to the system can not be executed
+      and needs no reset.
       This is a warning, the test will be "W: Low soft lim 4460"
 
   2+3) model 3 (EPICS) driver
@@ -97,8 +99,8 @@ Motor status
                            Labs-ESSIIP:MC-MCU-01:m1.HLS
      Soft limit violation: Labs-ESSIIP:MC-MCU-01:m1.LVIO
      "Missed":             Labs-ESSIIP:MC-MCU-01:m1.MISS (target not reached)
-     Since these records have been existings since "day 1", they are present in most
-     EDM, MEDM or CSS screens.
+     Since these records have been existings since "day 1",
+     they are present in most EDM, MEDM or CSS screens.
 
 Overall status:
   The EPICS way:
@@ -112,8 +114,9 @@ Overall status:
     does do the communication with the controller, and results in the
     -MsgTxt being "E: Communication".
 
-    Other cases are known by the driver, like hitting the e.g. high limit switch,
-    but the motorRecord can be configured to raise a "low" alarm or a "high" alarm
+    Other cases are known by the driver, like hitting the e.g.
+    high limit switch.
+    The motorRecord can be configured to raise a "low" alarm or a "high" alarm
     (depending on the switch). It can be configured to not raise an alarm.
     This is depending on the use case: A well tuned, fixed installed axis should
     not run into a limit switch, so that an alarm state may be usefull for an
@@ -143,7 +146,7 @@ Overall status:
 
 See even StatusBits-alarms.txt
 
-=====================================================================================
+==============================================================================
 Message texts (-MsgTxt) used today
   This module (ethercatmc) supports 2 generations of TwinCAT SW:
   The older one: "FB_drive_virtual" (or so).
@@ -208,20 +211,7 @@ Message texts (-MsgTxt) used today
   state of the motor in a text field.
   Either to show the state of many motors at a glance in one CSS screen.
   Or to run a pvmonitor in a terminal window, when CSS is not available.
-  As a result of these conflicting requirements we decided to create a new
-  record dedicated to errors of different kind, which is used e.g. in NICOS
-
-  Having a dedicated test removes depencies: NICOS just shows what the
-  IOC (and TwinCAT) provides, without any "business logic".
-
-  The new PV is called "error text" like this:
-  Labs-ESSIIP:MC-MCU-01:m1-ErrTxt
-
-  The split into 2 text Records should make it easier to display "errors":
-  The errTxt record displays errors. If there is any, the msgTxt displays
-  the same text. If there is no error, msgTxt is used to display
-  information (or nothing)
-
-  How things like "interlock", "overheated" and "localmode" should make
-  their way into NICOS needs to be discussed.
-
+  As a long term goal, the messages shown in NICOS and CSS should
+  be the same.
+  An improvement is the alarm handling on MsgTxt:
+  EPICS MINOR and MAJOR would map to warning and error

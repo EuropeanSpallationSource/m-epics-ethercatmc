@@ -30,13 +30,6 @@ record(motor,"$(P)$(R)")
 	field(TWV,"$(TWV=1)")
 }
 
-# The error text
-record(stringin, "$(P)$(R)-ErrTxt") {
-    field(DTYP, "asynOctetRead")
-    field(INP, "@asyn($(MOTOR_PORT),$(AXIS_NO))ErrTxt")
-    field(SCAN, "I/O Intr")
-}
-
 # The message text
 record(stringin, "$(P)$(R)-MsgTxt") {
     field(DTYP, "asynOctetRead")

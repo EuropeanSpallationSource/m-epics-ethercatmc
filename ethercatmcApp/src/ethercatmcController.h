@@ -44,7 +44,6 @@ FILENAME...   ethercatmcController.h
 #endif
 
 #define ethercatmcMcuErrString "MCUErr"
-#define ethercatmcErrTxtString "ErrTxt"
 #define ethercatmcErrIdString "ErrorID"
 #define ethercatmcStatusCodeString "StatusCode"
 #define ethercatmcStatusBitsString "StatusBits"
@@ -567,7 +566,6 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     int ethercatmcCfgDESC_RB_;
     int ethercatmcCfgEGU_RB_;
     int ethercatmcErrId_;
-    int ethercatmcErrTxt_;
   } defAsynPara;
 
 #define EMC_ENTER_ADS_CHECK_LOCK(LINENO)                                     \

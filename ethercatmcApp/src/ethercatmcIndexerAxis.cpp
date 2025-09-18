@@ -103,7 +103,7 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
 #endif
 
 #ifdef motorShowPowerOffString
-  // setIntegerParam(pC_->motorShowPowerOff_, 1);
+  setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
 #ifdef motorFlagsHomeOnLsString
   setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
@@ -860,8 +860,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
       pC_->setAlarmStatusSeverityWrapper(
           axisNo_, pC_->defAsynPara.ethercatmcErrId_, asynSuccess);
       pC_->setAlarmStatusSeverityWrapper(
-          axisNo_, pC_->defAsynPara.ethercatmcErrTxt_, asynSuccess);
-      pC_->setAlarmStatusSeverityWrapper(
           axisNo_, pC_->defAsynPara.ethercatmcErrRst_, asynSuccess);
       updateMsgTxtFromDriver(NULL);
     }
@@ -1338,9 +1336,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
   } /* auxbitsValid */
   if (idxStatusCode == idxStatusCodeRESET) {
-    const static char *sErrorMessageReset = "AxisRESET";
-    setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, sErrorMessageReset);
+    const static char *sErrorMessageReset = "W: AxisRESET";
     updateMsgTxtFromDriver(sErrorMessageReset);
+    pC_->setAlarmStatusSeverityFromStatusBits(axisNo_, pC_->motorMessageText_,
+                                              statusReasonAux);
   } else if (auxbitsValid) {
     /* extra Error Text, only showing errors, no info
        Most important things, in the order that the operator
@@ -1355,8 +1354,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
         drvlocal.dirty.idxStatusCodeMsgTxt != idxStatusCode ||
         idxAuxBits != drvlocal.clean.old_idxAuxBitsWritten ||
         idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-      pollErrTxtMsgTxt(hasError, errorID, idxAuxBits, localMode,
-                       statusReasonAux);
+      pollMsgTxt(hasError, errorID, idxAuxBits, localMode, statusReasonAux);
       drvlocal.dirty.motorPowerAutoOnOff = 0;
       drvlocal.dirty.old_hasError = hasError;
       drvlocal.clean.statusReasonAux = statusReasonAux;
@@ -1375,12 +1373,12 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   return status;
 }
 
-void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
-                                             unsigned idxAuxBits, int localMode,
-                                             unsigned statusReasonAux) {
+void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
+                                       unsigned idxAuxBits, int localMode,
+                                       unsigned statusReasonAux) {
   const char *msgTxtFromDriver = NULL;
   char sErrorMessage[40];
-  char charEorW = 'E';
+  char charEorW = '\0';
   int showPowerOff = 0;
   int powerIsOn = 0;
   int homed = 0;
@@ -1397,10 +1395,8 @@ void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
       showPowerOff = 1;
     }
   }
-  if (showPowerOff) {
-    snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
-             "PowerOff");
-  } else if (hasError) {
+  if (hasError) {
+    charEorW = 'E';
     if (errorID > 0) {
       const char *errIdString = errStringFromErrId(errorID);
       if (errIdString[0]) {
@@ -1445,11 +1441,15 @@ void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
                    charEorW, idxReasonBits);
       }
     }
+  } else if (showPowerOff) {
+    charEorW = 'W';
+    snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
+             "PowerOff");
   } else if (!homed) {
+    charEorW = 'W';
     snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
              "Axis not homed");
   }
-  setStringParam(pC_->defAsynPara.ethercatmcErrTxt_, &sErrorMessage[0]);
   /* TODO:
   axis can not be moved at all: poweroff, localmode, interlock, axis in
   reset state axis can be partly moved: Limit switch, interlock Fwd/Bwd axis
@@ -1461,20 +1461,24 @@ void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
       msgTxtFromDriver =
           &sErrorMessage[0]; /* There is an important text already */
     } else if (localMode) {
-      msgTxtFromDriver = "localMode";
+      charEorW = 'W';
+      msgTxtFromDriver = "W: localMode";
     } else if (statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
                                   drvlocal.clean.auxBitsInterlockBwdMask)) {
       if (((statusReasonAux & (drvlocal.clean.auxBitsInterlockFwdMask |
                                drvlocal.clean.auxBitsInterlockBwdMask)) ==
            drvlocal.clean.auxBitsInterlockFwdMask)) {
-        msgTxtFromDriver = "InterlockFwd";
+        charEorW = 'W';
+        msgTxtFromDriver = "W: InterlockFwd";
       } else if (((statusReasonAux &
                    (drvlocal.clean.auxBitsInterlockFwdMask |
                     drvlocal.clean.auxBitsInterlockBwdMask)) ==
                   drvlocal.clean.auxBitsInterlockBwdMask)) {
-        msgTxtFromDriver = "InterlockBwd";
+        charEorW = 'W';
+        msgTxtFromDriver = "W: InterlockBwd";
       } else {
-        msgTxtFromDriver = "InterlockFwdBwd";
+        charEorW = 'W';
+        msgTxtFromDriver = "W: InterlockFwdBwd";
       }
     } else if (errorID) {
       charEorW = 'W';
@@ -1534,6 +1538,16 @@ void ethercatmcIndexerAxis::pollErrTxtMsgTxt(int hasError, int errorID,
     }
   }
   updateMsgTxtFromDriver(msgTxtFromDriver);
+  if (charEorW == 'E') {
+    pC_->setAlarmStatusSeverityFromStatusBits(axisNo_, pC_->motorMessageText_,
+                                              idxStatusCodeERROR << 28);
+  } else if (charEorW == 'W') {
+    pC_->setAlarmStatusSeverityFromStatusBits(axisNo_, pC_->motorMessageText_,
+                                              idxStatusCodeWARN << 28);
+  } else {
+    pC_->setAlarmStatusSeverityFromStatusBits(axisNo_, pC_->motorMessageText_,
+                                              idxStatusCodeIDLE << 28);
+  }
 }
 
 bool ethercatmcIndexerAxis::pollPowerIsOn(void) {

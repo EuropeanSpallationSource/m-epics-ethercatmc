@@ -53,30 +53,28 @@ idxReasonBitInhibit = "0x01000000"
 #    eNoSignalFromEndSwitchFwd := 11 //Lost signal from the EndSwitchFwd
 # ):= eNoError;
 
-#   Test case number, error, autoPower, ErrTxt
-#   tc_no     e            errId  au   MsgTxt         ErrTxt
+#   Test case number, error, autoPower
+#   tc_no     e            errId  au   MsgTxt
 errTCs = [
-    (943001, "0x80000000", 0x10001, "E: Extract Timeout", "E: Extract Timeout"),
-    (943002, "0x80000000", 0x10002, "E: Retract Timeout", "E: Retract Timeout"),
-    (943003, "0x80000000", 0x10003, "E: Not Moving Extract", "E: Not Moving Extract"),
-    (943004, "0x80000000", 0x10004, "E: Not Moving Retract", "E: Not Moving Retract"),
-    (943005, "0x80000000", 0x10005, "E: No PSS Permit", "E: No PSS Permit"),
-    (943006, "0x80000000", 0x10006, "E: Retract Interlocked", "E: Retract Interlocked"),
-    (943007, "0x80000000", 0x10007, "E: Extract Interlocked", "E: Extract Interlocked"),
-    (943008, "0x80000000", 0x10008, "E: Air Pressure Low", "E: Air Pressure Low"),
-    (943009, "0x80000000", 0x10009, "E: Air Pressure High", "E: Air Pressure High"),
+    (943001, "0x80000000", 0x10001, "E: Extract Timeout"),
+    (943002, "0x80000000", 0x10002, "E: Retract Timeout"),
+    (943003, "0x80000000", 0x10003, "E: Not Moving Extract"),
+    (943004, "0x80000000", 0x10004, "E: Not Moving Retract"),
+    (943005, "0x80000000", 0x10005, "E: No PSS Permit"),
+    (943006, "0x80000000", 0x10006, "E: Retract Interlocked"),
+    (943007, "0x80000000", 0x10007, "E: Extract Interlocked"),
+    (943008, "0x80000000", 0x10008, "E: Air Pressure Low"),
+    (943009, "0x80000000", 0x10009, "E: Air Pressure High"),
     (
         943010,
         "0x80000000",
         0x1000A,
-        "E: NoSignalEndSwitchBwd",
         "E: NoSignalEndSwitchBwd",
     ),
     (
         943011,
         "0x80000000",
         0x1000B,
-        "E: NoSignalEndSwitchFwd",
         "E: NoSignalEndSwitchFwd",
     ),
 ]
@@ -95,20 +93,18 @@ def lineno():
     return inspect.currentframe().f_back.f_lineno
 
 
-def writeBitsReadMsgTxtErrTxt(
+def writeBitsReadMsgTxt(
     self,
     tc_no=0,
     statusReasonAux=None,
     errorId=-1,
     expMsgTxt="undef",
-    expErrTxt="undef",
 ):
     self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
     assert tc_no != 0
     assert statusReasonAux is not None
     assert errorId != -1
     assert expMsgTxt != "undef"
-    assert expErrTxt != "undef"
 
     maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
     passed = False
@@ -121,12 +117,11 @@ def writeBitsReadMsgTxtErrTxt(
         actMsgTxt = self.axisCom.get("-MsgTxt")
         if actMsgTxt == " ":
             actMsgTxt = ""
-        actErrTxt = self.axisCom.get("-ErrTxt")
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} maxTime={maxTime:.2f} expMsgTxt='{expMsgTxt}' actMsgTxt={actMsgTxt!r} expErrTxt='{expErrTxt}' actErrTxt={actErrTxt!r}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} maxTime={maxTime:.2f} expMsgTxt='{expMsgTxt}' actMsgTxt={actMsgTxt!r} "
         )
 
-        if actMsgTxt == expMsgTxt and actErrTxt == expErrTxt:
+        if actMsgTxt == expMsgTxt:
             passed = True
             maxTime = 0
         else:
@@ -134,7 +129,7 @@ def writeBitsReadMsgTxtErrTxt(
             maxTime = maxTime - polltime
 
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} passed={passed} statusReasonAux={statusReasonAux} errorId={errorId:x} ampliexpMsgTxt='{expMsgTxt}' actMsgTxt={actMsgTxt!r} expErrTxt='{expErrTxt}' actErrTxt={actErrTxt!r}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} passed={passed} statusReasonAux={statusReasonAux} errorId={errorId:x} ampliexpMsgTxt='{expMsgTxt}' actMsgTxt={actMsgTxt!r}"
     )
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
     if passed:
@@ -200,22 +195,19 @@ class Test(unittest.TestCase):
             statusReasonAux = tc[1]
             errorId = tc[2]
             expMsgTxt = tc[3]
-            expErrTxt = tc[4]
-            writeBitsReadMsgTxtErrTxt(
+            writeBitsReadMsgTxt(
                 self,
                 tc_no=tc_no * 10,
                 statusReasonAux=idxStatusCodeIDLE,
                 errorId=0,
                 expMsgTxt="",
-                expErrTxt="",
             )
-            writeBitsReadMsgTxtErrTxt(
+            writeBitsReadMsgTxt(
                 self,
                 tc_no=tc_no * 10 + 1,
                 statusReasonAux=statusReasonAux,
                 errorId=errorId,
                 expMsgTxt=expMsgTxt,
-                expErrTxt=expErrTxt,
             )
 
     def test_TC_943020(self):
@@ -232,11 +224,10 @@ class Test(unittest.TestCase):
 
     def xest_TC_94399999(self):
         tc_no = 94399999
-        writeBitsReadMsgTxtErrTxt(
+        writeBitsReadMsgTxt(
             self,
             tc_no=tc_no,
             statusReasonAux=idxStatusCodeIDLE,
             errorId=0,
             expMsgTxt="",
-            expErrTxt="",
         )
