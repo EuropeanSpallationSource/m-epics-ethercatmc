@@ -597,7 +597,10 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
           status = setPlcMemoryOnErrorStateChange(
               paramIfOffset, &paramIf_to_MCU, (unsigned)sizeof(paramIf_to_MCU));
           if (status) return status;
-          has_written = 1;
+          if (!has_written) {
+            counter = 0;
+            has_written = 1;
+          }
         } else if (paramIndexRB == paramIndex) {
           status = asynDisabled;
           if (pAxis) {
@@ -628,7 +631,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
       case PARAM_IF_CMD_BUSY: {
         /* A "function" goes into busy - and stays there */
         /* No parameter settings during jogging/homing */
-        if (paramIndexIsMovingFunction(paramIndex)) {
+        if (paramIndexIsMovingFunction(paramIndexRB)) {
           asynPrint(pasynUserController_, traceMask,
                     "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
                     "movingFun RB=%s,%s (0x%04X)\n",
@@ -637,6 +640,12 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                     paramIndex, paramIndex, value,
                     plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
                     paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
+          if (paramIndex == PARAM_IDX_OPMODE_AUTO_UINT && !value) {
+            /* (auto) power on while moving: This may be caused by a change
+               of JVEL while jogging: Ignore it */
+            if (pValueRB) *pValueRB = valueRB;
+            return asynSuccess;
+          }
           if (paramIndexRB == paramIndex) {
             /* "our" function: return */
             if (pValueRB) *pValueRB = valueRB;
@@ -652,9 +661,7 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
         break;
     }
     epicsThreadSleep(calcSleep(counter));
-    if (has_written) {
-      counter++;
-    }
+    counter++;
   }
   status = asynDisabled;
   asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO, "%scounter=%u\n",
