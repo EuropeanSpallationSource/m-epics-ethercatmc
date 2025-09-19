@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
         tc_no = tc_no_base + 3
         assert (
             self.axisMr.moveIntoLimitSwitchFromTestCase(
-                tc_no, movingMethod="DVAL", setDLYfield=1.0
+                tc_no, direction=direction, movingMethod="DVAL", setDLYfield=1.0
             )
             is True
         )
@@ -74,6 +74,7 @@ class Test(unittest.TestCase):
         assert (
             self.axisMr.moveIntoLimitSwitchFromTestCase(
                 tc_no,
+                direction=direction,
                 movingMethod="MoveVel",
                 doDisableSoftLimit=False,
                 setInfiniteSoftLimit=True,
