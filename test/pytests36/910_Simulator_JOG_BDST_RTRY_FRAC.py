@@ -5,7 +5,6 @@ import datetime
 import inspect
 import unittest
 import os
-import time
 from AxisMr import AxisMr
 from AxisCom import AxisCom
 
@@ -19,6 +18,7 @@ use_rel = 1
 
 noFRAC = 1.0
 withFRAC = 1.5
+idxStatusCodeBusyPowerOn = "0x60400000"
 
 
 def lineno():
@@ -47,8 +47,10 @@ def jogAndBacklash(self, tc_no, frac, encRel, maxcnt, StartPos, EndPos, myJOGX):
     self.axisMr.setValueOnSimulator(tc_no, "log", actFileName)
     if myJOGX == "JOGF":
         myDirection = 1
+        expMip = self.axisMr.MIP_BIT_JOGF
     elif myJOGX == "JOGR":
         myDirection = 0
+        expMip = self.axisMr.MIP_BIT_JOGR
     else:
         assert 0
     self.axisMr.writeExpFileJOG_BDST(
@@ -69,9 +71,20 @@ def jogAndBacklash(self, tc_no, frac, encRel, maxcnt, StartPos, EndPos, myJOGX):
     field_name = "." + myJOGX
     # Add the dot between the motorRecord name and the field
     self.axisCom.put(field_name, 1)
-    time.sleep(1)
+    time_to_wait = 1.0
+    self.axisMr.waitForValueChanged(
+        tc_no, ".MIP", expMip, 0, time_to_wait, debugPrint=True
+    )
+    self.axisMr.setValueOnSimulator(tc_no, "nStatReasAUX", idxStatusCodeBusyPowerOn)
+    self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
     self.axisMr.setValueOnSimulator(tc_no, "fFastMove", EndPos)
-    self.axisCom.put(field_name, 0)
+    self.axisCom.put(field_name, 0)  # stop the jogging
+    # wait for MR to issue the STOP towards the MCU
+    self.axisMr.waitForValueChanged(
+        tc_no, ".MIP", self.axisMr.MIP_BIT_JOG_STOP, 0, time_to_wait, debugPrint=True
+    )
+    self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
+    # wait for backlash to be done
     time_to_wait = 500
     self.axisMr.waitForMipZero(tc_no, time_to_wait)
     self.axisMr.setValueOnSimulator(tc_no, "dbgCloseLogFile", "1")
