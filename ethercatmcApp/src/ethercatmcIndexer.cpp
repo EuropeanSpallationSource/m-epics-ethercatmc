@@ -1973,7 +1973,6 @@ void ethercatmcController::indexerDisconnected(void) {
   }
   for (int axisNo = 0; axisNo < numAxes_; axisNo++) {
     setIntegerParam(axisNo, motorStatusGainSupport_, 0);
-    setStringParam(axisNo, defAsynPara.ethercatmcErrTxt_, "E: Communication");
   }
 
   if (ctrlLocal.numPilsAsynDevInfo) {

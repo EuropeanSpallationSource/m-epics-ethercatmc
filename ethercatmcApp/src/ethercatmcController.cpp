@@ -262,8 +262,6 @@ ethercatmcController::ethercatmcController(const char *portName,
               &defAsynPara.ethercatmcMcuErr_);
   createParam(ethercatmcErrIdString, asynParamInt32,
               &defAsynPara.ethercatmcErrId_);
-  createParam(ethercatmcErrTxtString, asynParamOctet,
-              &defAsynPara.ethercatmcErrTxt_);
 
   createParam(ethercatmcRawEncStepString, asynParamInt32,
               &defAsynPara.ethercatmcRawEncStep_);
@@ -1161,6 +1159,9 @@ void ethercatmcController::setAlarmStatusSeverityFromStatusBits(
       /* temporary state, no action taken */
       return;
     case idxStatusCodeERROR:
+      newSevr = MAJOR_ALARM;
+      newStat = STATE_ALARM;
+      break;
     default:
       newSevr = INVALID_ALARM;
       newStat = STATE_ALARM; /* Assume the worst */
