@@ -103,8 +103,10 @@ IOC_PID=$!
 sleep 10
 date
 
-./runTests.sh "$@" | sed -e 's/^/PYT:/g'
+./runTests.sh "$@" >/tmp/$$.pyt 2>&1
 exitCode=$?
+sed -e 's/^/PYT:/g' </tmp/$$.pyt
+rm -f /tmp/$$.pyt
 
 kill -9 $IOC_PID || :
 kill -9 $SIMULATOR_PID || :
