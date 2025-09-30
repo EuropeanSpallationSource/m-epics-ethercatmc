@@ -505,17 +505,20 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
   asynStatus status;
   double veloRB = 0.0;
   int motorStatusDone = 0;
+  int motorLatestCommand = 0;
   (void)minVelocity;
   (void)acceleration;
 
   pC_->getIntegerParam(axisNo_, pC_->motorStatusDone_, &motorStatusDone);
+  pC_->getIntegerParam(axisNo_, pC_->motorLatestCommand_, &motorLatestCommand);
+
   asynPrint(pC_->pasynUserController_, traceMask,
             "%smoveVelocity (%d) minVelocity=%f maxVelocity=%f"
-            " acceleration=%f motorStatusDone=%d\n",
+            " acceleration=%f motorStatusDone=%d motorLatestCommand=%d\n",
             modNamEMC, axisNo_, minVelocity, maxVelocity, acceleration,
-            motorStatusDone);
+            motorStatusDone, motorLatestCommand);
 
-  if (!motorStatusDone) {
+  if ((motorLatestCommand != LATEST_COMMAND_MOVE_VEL) && (!motorStatusDone)) {
     stopAxisInternal("moveVelocity", acceleration);
   }
   if ((acceleration > 0.0) &&
