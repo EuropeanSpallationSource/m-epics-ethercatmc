@@ -647,9 +647,17 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
             return asynSuccess;
           }
           if (paramIndexRB == paramIndex) {
-            /* "our" function: return */
-            if (pValueRB) *pValueRB = valueRB;
-            return asynSuccess;
+            if (!has_written && (valueRB != value)) {
+              status = setPlcMemoryOnErrorStateChange(
+                  paramIfOffset, &paramIf_to_MCU,
+                  (unsigned)sizeof(paramIf_to_MCU));
+              if (status) return status;
+              has_written = 1;
+            } else {
+              /* "our" function: return */
+              if (pValueRB) *pValueRB = valueRB;
+              return asynSuccess;
+            }
           }
         }
       }
