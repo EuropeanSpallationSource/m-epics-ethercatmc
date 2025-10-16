@@ -504,7 +504,6 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   asynStatus status = asynSuccess;
   unsigned cmd = PARAM_IF_CMD_DOWRITE + paramIndex;
   unsigned counter = 0;
-  int has_written = 0;
   unsigned lenInPlcPara = 0;
   unsigned paramIfOffset = pAxis->drvlocal.clean.paramIfOffset;
 
@@ -568,10 +567,10 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
     /* Send the write request */
     asynPrint(pasynUserController_, traceMask,
               "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-              "lenInPlcPara=%u has_written=%d\n",
+              "lenInPlcPara=%u\n",
               modNamEMC, axisNo,
               plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
-              paramIndex, value, lenInPlcPara, has_written);
+              paramIndex, value, lenInPlcPara);
     status = setPlcMemoryOnErrorStateChange(paramIfOffset, &paramIf_to_MCU,
                                             (unsigned)sizeof(paramIf_to_MCU));
     if (status) return status;
@@ -666,12 +665,8 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                       plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
                       paramIfCmdToString(cmdSubParamIndexRB),
                       cmdSubParamIndexRB);
-            if (paramIndex == PARAM_IDX_OPMODE_AUTO_UINT && !value) {
-              /* (auto) power on while moving: This may be caused by a change
-                 of JVEL while jogging: Ignore it */
-              if (pValueRB) *pValueRB = valueRB;
-              return asynSuccess;
-            }
+            if (pValueRB) *pValueRB = valueRB;
+            return asynSuccess;
           }
         }
           /* fall through */
