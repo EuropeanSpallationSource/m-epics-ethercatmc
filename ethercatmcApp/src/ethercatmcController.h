@@ -146,6 +146,13 @@ typedef enum {
   idxStatusCodeERR15 = 15
 } idxStatusCodeType;
 
+extern "C" {
+typedef struct {
+  uint8_t paramCtrl[2];
+  uint8_t paramValueRaw[8]; /* May be 4 or 8 bytes */
+} paramIf_type;
+};
+
 /**********************************************************************/
 #define ethercatmchexdump(pasynUser, tracelevel, help_txt, bufptr, buflen,     \
                           fName, lNo)                                          \
@@ -403,6 +410,9 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                 size_t lenInPlc);
 
   asynStatus indexerWaitSpecialDeviceIdle(unsigned indexOffset);
+  asynStatus indexerParamIFIdle(unsigned paramIfOffset,
+                                unsigned lenInPLCparamIf,
+                                paramIf_type *pParamIf, int *pParmaIfReady);
   asynStatus indexerParamReadFL(ethercatmcIndexerAxis *pAxis,
                                 unsigned paramIfOffset, unsigned paramIndex,
                                 double *value, const char *fileName,

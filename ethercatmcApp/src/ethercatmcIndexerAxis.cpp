@@ -1833,6 +1833,7 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
               "%ssetDoubleParam(%d defAsynPara.ethercatmcHomPos_)=%g\n",
               modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
+
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
