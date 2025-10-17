@@ -216,6 +216,7 @@ typedef struct {
 } pilsAsynDevInfo_type;
 }
 extern "C" {
+double ethercatmcgetNowTimeSecs(void);
 unsigned netToUint(const void *data, size_t lenInPlc);
 int netToSint(const void *data, size_t lenInPlc);
 double netToDouble(const void *data, size_t lenInPlc);

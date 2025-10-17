@@ -147,6 +147,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       char customParaNames[PARAM_IF_NUM_CUSTOM_PARAS][34];
       int asynFunctionAuxBitAsBiRecord[MAX_AUX_BIT_AS_BI_RECORD];
     } clean;
+    double paramIFstartTime;
     int pollScaling;
   } drvlocal;
 

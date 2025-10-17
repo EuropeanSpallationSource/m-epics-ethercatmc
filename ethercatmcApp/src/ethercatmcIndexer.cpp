@@ -496,16 +496,22 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                                    double *pValueRB) {
   unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status;
-  double now = ethercatmcgetNowTimeSecs();
-  int axisNo = 0;
-  if (pAxis) {
-    axisNo = pAxis->axisNo_;
+  if (!pAxis || (paramIndex > 0xFF)) {
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
+              "%s pAxis=%p paramIndex=%u\n", modNamEMC, pAxis, paramIndex);
+    return asynError;
   }
+  int axisNo = pAxis->axisNo_;
+  pAxis->drvlocal.paramIFstartTime = ethercatmcgetNowTimeSecs();
 
   status = indexerParamWrInternal(pAxis, paramIndex, value, pValueRB);
-  asynPrint(pasynUserController_, traceMask,
-            "%sindexerParamWrite(%d) duration=%.3f\n", modNamEMC, axisNo,
-            ethercatmcgetNowTimeSecs() - now);
+  asynPrint(
+      pasynUserController_, traceMask,
+      "%sindexerParamWrite(%d) %s(%u 0x%02X) duration=%.3fsec status=%s (%d)\n",
+      modNamEMC, axisNo, plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+      paramIndex, paramIndex,
+      ethercatmcgetNowTimeSecs() - pAxis->drvlocal.paramIFstartTime,
+      ethercatmcstrStatus(status), (int)status);
   return status;
 }
 
@@ -536,13 +542,10 @@ asynStatus ethercatmcController::indexerParamWrInternal(
   } else if (pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex]) {
     lenInPlcPara = pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex];
   }
-  if (!pAxis || !paramIfOffset || (paramIndex > 0xFF) ||
-      lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
+  if (!paramIfOffset || lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
     asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-              "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u "
-              "pAxis=%p paramIfOffset=%u paramIndex=%u\n",
-              modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset, pAxis,
-              paramIfOffset, paramIndex);
+              "%s pAxis=%p lenInPlcPara=%u paramIfOffset=%u \n", modNamEMC,
+              pAxis, lenInPlcPara, paramIfOffset);
     return asynError;
   } else if ((pAxis->drvlocal.clean.PILSparamPerm[paramIndex] ==
               PILSparamPermRead) ||
@@ -567,9 +570,9 @@ asynStatus ethercatmcController::indexerParamWrInternal(
   UINTTONET(cmd, paramIf_to_MCU.paramCtrl);
 
   while (counter < MAX_COUNTER) {
-    /* wait for the param interface to become idle */
     int param_if_idle = 0;
     while (!param_if_idle && (counter < MAX_COUNTER)) {
+      /* wait for the param interface to become idle */
       status = indexerParamIFIdle(paramIfOffset, lenInPLCparamIf,
                                   &paramIf_from_MCU, &param_if_idle);
       if (status) return status;
