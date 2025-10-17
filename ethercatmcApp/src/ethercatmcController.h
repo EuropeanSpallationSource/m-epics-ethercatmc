@@ -419,6 +419,9 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                 int lineNo);
 #define indexerParamRead(a, b, c, d) \
   indexerParamReadFL(a, b, c, d, __FILE__, __LINE__)
+  asynStatus indexerParamWrInternal(ethercatmcIndexerAxis *pAxis,
+                                    unsigned paramIndex, double value,
+                                    double *pValueRB);
   asynStatus indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                unsigned paramIndex, double value,
                                double *pValueRB);

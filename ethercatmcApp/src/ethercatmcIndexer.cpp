@@ -25,6 +25,12 @@
 /* Sleep time and max counter for communication*/
 #define MAX_COUNTER 14
 
+extern "C" double ethercatmcgetNowTimeSecs(void) {
+  epicsTimeStamp nowTime;
+  epicsTimeGetCurrent(&nowTime);
+  return nowTime.secPastEpoch + (nowTime.nsec * 0.000000001);
+}
+
 /*
  * Calculation of sleep time when the PLC answers/answers with "interface busy"
  * or retry later
@@ -488,6 +494,24 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                                    unsigned paramIndex,
                                                    double value,
                                                    double *pValueRB) {
+  unsigned traceMask = ASYN_TRACE_INFO;
+  asynStatus status;
+  double now = ethercatmcgetNowTimeSecs();
+  int axisNo = 0;
+  if (pAxis) {
+    axisNo = pAxis->axisNo_;
+  }
+
+  status = indexerParamWrInternal(pAxis, paramIndex, value, pValueRB);
+  asynPrint(pasynUserController_, traceMask,
+            "%sindexerParamWrite(%d) duration=%.3f\n", modNamEMC, axisNo,
+            ethercatmcgetNowTimeSecs() - now);
+  return status;
+}
+
+asynStatus ethercatmcController::indexerParamWrInternal(
+    ethercatmcIndexerAxis *pAxis, unsigned paramIndex, double value,
+    double *pValueRB) {
   int axisNo = pAxis->axisNo_;
   paramIf_type paramIf_to_MCU;
   paramIf_type paramIf_from_MCU;
