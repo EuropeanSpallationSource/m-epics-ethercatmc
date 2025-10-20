@@ -569,25 +569,25 @@ asynStatus ethercatmcController::indexerParamWrInternal(
   }
   UINTTONET(cmd, paramIf_to_MCU.paramCtrl);
 
-  while ((counter < MAX_COUNTER) && (ethercatmcgetNowTimeSecs() < stopTime)) {
+  while (ethercatmcgetNowTimeSecs() < stopTime) {
     int param_if_idle = 0;
-    while (!param_if_idle && (counter < MAX_COUNTER)) {
+    while (!param_if_idle && (ethercatmcgetNowTimeSecs() < stopTime)) {
       /* wait for the param interface to become idle */
       status = indexerParamIFIdle(paramIfOffset, lenInPLCparamIf,
                                   &readback_5010.paramIf, &param_if_idle);
       if (status) return status;
-      unsigned cmdSubParamIndexRB =
-        NETTOUINT(readback_5010.paramIf.paramCtrl);
-      unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
-      asynPrint(pasynUserController_, traceMask,
-                "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-                "RB=%s,%s (0x%04X)\n",
-                modNamEMC, axisNo,
-                plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
-                paramIndex, paramIndexRB, value,
-                plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
-                paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
       if (!param_if_idle) {
+        unsigned cmdSubParamIndexRB =
+          NETTOUINT(readback_5010.paramIf.paramCtrl);
+        unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
+        asynPrint(pasynUserController_, traceMask,
+                  "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
+                  "RB=%s,%s (0x%04X)\n",
+                  modNamEMC, axisNo,
+                  plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+                  paramIndex, paramIndexRB, value,
+                  plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
+                  paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
         epicsThreadSleep(0.002);
         counter++;
       }
@@ -606,8 +606,8 @@ asynStatus ethercatmcController::indexerParamWrInternal(
     counter++;
 
     unsigned paramIndexRB = paramIndex;
-    while ((counter < MAX_COUNTER && (ethercatmcgetNowTimeSecs() < stopTime) &&
-            paramIndexRB == paramIndex)) {
+    while ((ethercatmcgetNowTimeSecs() < stopTime) &&
+           paramIndexRB == paramIndex) {
       /* get the paraminterface */
       status = getPlcMemoryOnErrorStateChange(
           pAxis->drvlocal.clean.iOffset, &readback_5010, sizeof(readback_5010));
@@ -703,7 +703,7 @@ asynStatus ethercatmcController::indexerParamWrInternal(
       }
       epicsThreadSleep(0.002);
       counter++;
-    } /*while ((counter < MAX_COUNTER && paramIndexRB == paramIndex) */
+    } /*while (paramIndexRB == paramIndex) */
     epicsThreadSleep(0.002);
     counter++;
   }
