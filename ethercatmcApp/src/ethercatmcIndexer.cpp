@@ -603,6 +603,7 @@ asynStatus ethercatmcController::indexerParamWrInternal(
                                             (unsigned)sizeof(paramIf_to_MCU));
     if (status) return status;
     epicsThreadSleep(0.003); /* 10 msec PLC cycle time: overcycle factor 3 */
+    counter++;
 
     unsigned paramIndexRB = paramIndex;
     while ((counter < MAX_COUNTER && paramIndexRB == paramIndex)) {
@@ -635,12 +636,13 @@ asynStatus ethercatmcController::indexerParamWrInternal(
       if (paramIndexRB == paramIndex) {
         switch (paramIfCmd) {
           case PARAM_IF_CMD_DONE: {
-            asynPrint(pasynUserController_, traceMask,
-                      "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-                      "valueRB=%02g\n",
-                      modNamEMC, axisNo,
-                      plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
-                      paramIndex, paramIndex, value, valueRB);
+            asynPrint(
+                pasynUserController_, traceMask,
+                "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g counter=%02u "
+                "valueRB=%02g\n",
+                modNamEMC, axisNo,
+                plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
+                paramIndex, value, counter, valueRB);
             if (pValueRB) *pValueRB = valueRB;
             return asynSuccess;
           }
