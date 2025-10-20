@@ -606,6 +606,7 @@ asynStatus ethercatmcController::indexerParamWrInternal(
     counter++;
 
     unsigned paramIndexRB = paramIndex;
+    unsigned oldCmdSubParamIndexRB = cmd;
     while ((ethercatmcgetNowTimeSecs() < stopTime) &&
            paramIndexRB == paramIndex) {
       /* get the paraminterface */
@@ -624,7 +625,7 @@ asynStatus ethercatmcController::indexerParamWrInternal(
       paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
       unsigned paramIfCmd = cmdSubParamIndexRB & PARAM_IF_CMD_MASK;
 
-      if (counter >= 1) {
+      if (cmdSubParamIndexRB != oldCmdSubParamIndexRB) {
         asynPrint(pasynUserController_, traceMask,
                   "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
                   "counter=%u RB=%s,%s (0x%04X)\n",
@@ -633,6 +634,7 @@ asynStatus ethercatmcController::indexerParamWrInternal(
                   paramIndex, paramIndex, value, counter,
                   plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
                   paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
+        oldCmdSubParamIndexRB = cmdSubParamIndexRB;
       }
       if (paramIndexRB == paramIndex) {
         switch (paramIfCmd) {
