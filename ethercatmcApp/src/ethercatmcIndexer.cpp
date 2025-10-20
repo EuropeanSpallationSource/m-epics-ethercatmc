@@ -510,10 +510,10 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   status = indexerParamWrInternal(pAxis, paramIndex, value, pValueRB);
   asynPrint(
       pasynUserController_, traceMask,
-      "%sindexerParamWrite(%d) %s(%u 0x%02X) duration=%.3fsec status=%s (%d)\n",
+      "%sindexerParamWrite(%d) %s(%u 0x%02X) duration=%.0f ms status=%s (%d)\n",
       modNamEMC, axisNo, plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
       paramIndex, paramIndex,
-      ethercatmcgetNowTimeSecs() - pAxis->drvlocal.paramIFstartTime,
+      1000 * (ethercatmcgetNowTimeSecs() - pAxis->drvlocal.paramIFstartTime),
       ethercatmcstrStatus(status), (int)status);
   return status;
 }
@@ -530,7 +530,7 @@ asynStatus ethercatmcController::indexerParamWrInternal(
     uint8_t errorID[2];
     paramIf_type paramIf;
   } readback_5010;
-
+  double stopTime = 0.2 + ethercatmcgetNowTimeSecs(); /* 200 msec */
   unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status = asynSuccess;
   unsigned cmd = PARAM_IF_CMD_DOWRITE + paramIndex;
@@ -569,26 +569,26 @@ asynStatus ethercatmcController::indexerParamWrInternal(
   }
   UINTTONET(cmd, paramIf_to_MCU.paramCtrl);
 
-  while (counter < MAX_COUNTER) {
+  while ((counter < MAX_COUNTER) && (ethercatmcgetNowTimeSecs() < stopTime)) {
     int param_if_idle = 0;
     while (!param_if_idle && (counter < MAX_COUNTER)) {
       /* wait for the param interface to become idle */
       status = indexerParamIFIdle(paramIfOffset, lenInPLCparamIf,
                                   &readback_5010.paramIf, &param_if_idle);
       if (status) return status;
+      unsigned cmdSubParamIndexRB =
+        NETTOUINT(readback_5010.paramIf.paramCtrl);
+      unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
+      asynPrint(pasynUserController_, traceMask,
+                "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
+                "RB=%s,%s (0x%04X)\n",
+                modNamEMC, axisNo,
+                plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
+                paramIndex, paramIndexRB, value,
+                plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
+                paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
       if (!param_if_idle) {
-        unsigned cmdSubParamIndexRB =
-            NETTOUINT(readback_5010.paramIf.paramCtrl);
-        unsigned paramIndexRB = cmdSubParamIndexRB & PARAM_IF_IDX_MASK;
-        asynPrint(pasynUserController_, traceMask,
-                  "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-                  "RB=%s,%s (0x%04X)\n",
-                  modNamEMC, axisNo,
-                  plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
-                  paramIndex, paramIndexRB, value,
-                  plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
-                  paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
-        epicsThreadSleep(0.003);
+        epicsThreadSleep(0.002);
         counter++;
       }
     } /* while !idle */
@@ -602,11 +602,12 @@ asynStatus ethercatmcController::indexerParamWrInternal(
     status = setPlcMemoryOnErrorStateChange(paramIfOffset, &paramIf_to_MCU,
                                             (unsigned)sizeof(paramIf_to_MCU));
     if (status) return status;
-    epicsThreadSleep(0.003); /* 10 msec PLC cycle time: overcycle factor 3 */
+    epicsThreadSleep(0.002); /* 10 msec PLC cycle time: overcycle factor 5 */
     counter++;
 
     unsigned paramIndexRB = paramIndex;
-    while ((counter < MAX_COUNTER && paramIndexRB == paramIndex)) {
+    while ((counter < MAX_COUNTER && (ethercatmcgetNowTimeSecs() < stopTime) &&
+            paramIndexRB == paramIndex)) {
       /* get the paraminterface */
       status = getPlcMemoryOnErrorStateChange(
           pAxis->drvlocal.clean.iOffset, &readback_5010, sizeof(readback_5010));
@@ -700,10 +701,10 @@ asynStatus ethercatmcController::indexerParamWrInternal(
             break;
         }
       }
-      epicsThreadSleep(0.003);
+      epicsThreadSleep(0.002);
       counter++;
     } /*while ((counter < MAX_COUNTER && paramIndexRB == paramIndex) */
-    epicsThreadSleep(0.003);
+    epicsThreadSleep(0.002);
     counter++;
   }
   status = asynDisabled;
