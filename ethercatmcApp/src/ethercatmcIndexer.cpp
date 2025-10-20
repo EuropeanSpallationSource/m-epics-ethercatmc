@@ -496,6 +496,9 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                                    double *pValueRB) {
   unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status;
+  double valueRBdummy = -1.0;
+  if (!pValueRB) pValueRB = &valueRBdummy;
+
 
   if (!pAxis || (paramIndex > 0xFF) ||
       (pAxis->drvlocal.clean.iTypCode != 0x5010)) {
@@ -510,10 +513,11 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
   status = indexerParamWrInternal(pAxis, paramIndex, value, pValueRB);
   asynPrint(
       pasynUserController_, traceMask,
-      "%sindexerParamWrite(%d) %s(%u 0x%02X) duration=%.0f ms status=%s (%d)\n",
+      "%sindexerParamWrite(%d) %s(%u 0x%02X) duration=%.0f ms valueRB=%02g status=%s (%d)\n",
       modNamEMC, axisNo, plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
       paramIndex, paramIndex,
       1000 * (ethercatmcgetNowTimeSecs() - pAxis->drvlocal.paramIFstartTime),
+      *pValueRB,
       ethercatmcstrStatus(status), (int)status);
   return status;
 }
@@ -530,11 +534,10 @@ asynStatus ethercatmcController::indexerParamWrInternal(
     uint8_t errorID[2];
     paramIf_type paramIf;
   } readback_5010;
-  double stopTime = 0.2 + ethercatmcgetNowTimeSecs(); /* 200 msec */
+  double stopTime = 0.3 + ethercatmcgetNowTimeSecs(); /* 300 msec */
   unsigned traceMask = ASYN_TRACE_INFO;
   asynStatus status = asynSuccess;
   unsigned cmd = PARAM_IF_CMD_DOWRITE + paramIndex;
-  unsigned counter = 0;
   unsigned lenInPlcPara = 0;
   unsigned paramIfOffset = pAxis->drvlocal.clean.paramIfOffset;
 
@@ -589,22 +592,21 @@ asynStatus ethercatmcController::indexerParamWrInternal(
                   plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
                   paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
         epicsThreadSleep(0.002);
-        counter++;
       }
     } /* while !idle */
-    /* Send the write request */
-    asynPrint(pasynUserController_, traceMask,
-              "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-              "lenInPlcPara=%u\n",
-              modNamEMC, axisNo,
-              plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
-              paramIndex, value, lenInPlcPara);
-    status = setPlcMemoryOnErrorStateChange(paramIfOffset, &paramIf_to_MCU,
-                                            (unsigned)sizeof(paramIf_to_MCU));
-    if (status) return status;
-    epicsThreadSleep(0.002); /* 10 msec PLC cycle time: overcycle factor 5 */
-    counter++;
-
+    if (ethercatmcgetNowTimeSecs() < stopTime) {
+      /* Send the write request */
+      asynPrint(pasynUserController_, traceMask,
+                "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
+                "lenInPlcPara=%u\n",
+                modNamEMC, axisNo,
+                plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
+                paramIndex, value, lenInPlcPara);
+      status = setPlcMemoryOnErrorStateChange(paramIfOffset, &paramIf_to_MCU,
+                                              (unsigned)sizeof(paramIf_to_MCU));
+      if (status) return status;
+      epicsThreadSleep(0.002); /* 10 msec PLC cycle time: overcycle factor 5 */
+    }
     unsigned paramIndexRB = paramIndex;
     unsigned oldCmdSubParamIndexRB = cmd;
     while ((ethercatmcgetNowTimeSecs() < stopTime) &&
@@ -627,11 +629,11 @@ asynStatus ethercatmcController::indexerParamWrInternal(
 
       if (cmdSubParamIndexRB != oldCmdSubParamIndexRB) {
         asynPrint(pasynUserController_, traceMask,
-                  "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g "
-                  "counter=%u RB=%s,%s (0x%04X)\n",
+                  "%sindexerParamWrite(%d) %s(%u 0x%02X)"
+                  "RB=%s,%s (0x%04X)\n",
                   modNamEMC, axisNo,
                   plcParamIndexTxtFromParamIndex(paramIndex, axisNo),
-                  paramIndex, paramIndex, value, counter,
+                  paramIndex, paramIndex,
                   plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
                   paramIfCmdToString(cmdSubParamIndexRB), cmdSubParamIndexRB);
         oldCmdSubParamIndexRB = cmdSubParamIndexRB;
@@ -639,14 +641,7 @@ asynStatus ethercatmcController::indexerParamWrInternal(
       if (paramIndexRB == paramIndex) {
         switch (paramIfCmd) {
           case PARAM_IF_CMD_DONE: {
-            asynPrint(
-                pasynUserController_, traceMask,
-                "%sindexerParamWrite(%d) %s(%u 0x%02X) value=%02g counter=%02u "
-                "valueRB=%02g\n",
-                modNamEMC, axisNo,
-                plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
-                paramIndex, value, counter, valueRB);
-            if (pValueRB) *pValueRB = valueRB;
+            *pValueRB = valueRB;
             return asynSuccess;
           }
             /* fall through */
@@ -691,7 +686,7 @@ asynStatus ethercatmcController::indexerParamWrInternal(
                         plcParamIndexTxtFromParamIndex(paramIndexRB, axisNo),
                         paramIfCmdToString(cmdSubParamIndexRB),
                         cmdSubParamIndexRB);
-              if (pValueRB) *pValueRB = valueRB;
+              *pValueRB = valueRB;
               return asynSuccess;
             }
           }
@@ -704,14 +699,10 @@ asynStatus ethercatmcController::indexerParamWrInternal(
         }
       }
       epicsThreadSleep(0.002);
-      counter++;
     } /*while (paramIndexRB == paramIndex) */
     epicsThreadSleep(0.002);
-    counter++;
   }
   status = asynDisabled;
-  asynPrint(pasynUserController_, traceMask | ASYN_TRACE_INFO, "%scounter=%u\n",
-            modNamEMC, counter);
 
 indexerParamWritePrintAuxReturn:
   if (pAxis && pAxis->drvlocal.clean.iTypCode == 0x5010 &&
