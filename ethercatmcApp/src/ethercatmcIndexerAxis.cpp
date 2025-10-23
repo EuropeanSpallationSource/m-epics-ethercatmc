@@ -509,15 +509,28 @@ asynStatus ethercatmcIndexerAxis::moveVelocity(double minVelocity,
   (void)acceleration;
 
   pC_->getIntegerParam(axisNo_, pC_->motorStatusDone_, &motorStatusDone);
+#ifdef motorLatestCommandString
+  int motorLatestCommand = 0;
+  pC_->getIntegerParam(axisNo_, pC_->motorLatestCommand_, &motorLatestCommand);
+  asynPrint(pC_->pasynUserController_, traceMask,
+            "%smoveVelocity (%d) minVelocity=%f maxVelocity=%f"
+            " acceleration=%f motorStatusDone=%d motorLatestCommand=%d\n",
+            modNamEMC, axisNo_, minVelocity, maxVelocity, acceleration,
+            motorStatusDone, motorLatestCommand);
+
+  if ((motorLatestCommand != LATEST_COMMAND_MOVE_VEL) && (!motorStatusDone)) {
+    stopAxisInternal("moveVelocity", acceleration);
+  }
+#else
   asynPrint(pC_->pasynUserController_, traceMask,
             "%smoveVelocity (%d) minVelocity=%f maxVelocity=%f"
             " acceleration=%f motorStatusDone=%d\n",
             modNamEMC, axisNo_, minVelocity, maxVelocity, acceleration,
             motorStatusDone);
-
   if (!motorStatusDone) {
     stopAxisInternal("moveVelocity", acceleration);
   }
+#endif
   if ((acceleration > 0.0) &&
       (drvlocal.clean.PILSparamPerm[PARAM_IDX_ACCEL_FLOAT] ==
        PILSparamPermWrite)) {
@@ -1830,6 +1843,7 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
               "%ssetDoubleParam(%d defAsynPara.ethercatmcHomPos_)=%g\n",
               modNamEMC, axisNo_, value);
     status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
+
     if (status == asynSuccess) {
       int initial = 0;
       pC_->parameterFloatReadBack(axisNo_, initial, paramIndex, valueRB);
