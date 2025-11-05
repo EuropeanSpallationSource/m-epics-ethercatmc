@@ -674,12 +674,12 @@ void ethercatmcIndexerAxis::newMotorPosition(double actPosition) {
        current fActPosition to calculate direction.*/
     if (actPosition > oldPositionValue) {
       setIntegerParam(pC_->motorStatusDirection_, 1);
+      setIntegerParam(pC_->motorStatusMoving_, 1);
     } else if (actPosition < oldPositionValue) {
       setIntegerParam(pC_->motorStatusDirection_, 0);
+      setIntegerParam(pC_->motorStatusMoving_, 1);
     }
   }
-  // Do that on the base class to avoid searching for paramIndex
-  asynMotorAxis::setDoubleParam(pC_->motorPosition_, actPosition);
 }
 
 void ethercatmcIndexerAxis::pollReadBackParameters(unsigned idxAuxBits,
@@ -818,7 +818,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   double paramfValue = 0.0;
   unsigned statusReasonAux, paramCtrl = 0;
   int errorID = -1;
-  bool nowMoving = false;
+  bool busyNotDone = false;
   int powerIsOn = 0;
   int auxbitsValid = 0;
   int positionValid = 1; /* all states except RESET */
@@ -1041,7 +1041,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     case idxStatusCodeBUSY:
       powerIsOn = 1;
       auxbitsValid = 1;
-      nowMoving = true;
+      busyNotDone = true;
       break;
     case idxStatusCodeERROR:
       hasError = 1;
@@ -1050,12 +1050,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
       break;
     case idxStatusCodeRESET:
       positionValid = 0;
-      setIntegerParam(pC_->motorStatusMoving_, 0);
-      setIntegerParam(pC_->motorStatusDone_, 1);
       break;
     case idxStatusCodeSTART:
     case idxStatusCodeSTOP:
-      nowMoving = true;
+      busyNotDone = true;
       break;
     default:
       drvlocal.clean.hasProblem = 1;
@@ -1063,21 +1061,20 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   if (idxStatusCode != idxStatusCodeRESET) {
     setIntegerParam(pC_->defAsynPara.ethercatmcErrRst_, 0);
   }
-  *moving = nowMoving;
+  *moving = busyNotDone;
+  /* These is important to inform the motorRecord
+     when a motion is completed */
+  setIntegerParam(pC_->motorStatusDone_, !busyNotDone);
   if (positionValid) {
-    if (!drvlocal.clean.hasPARAM_IDX_SETPOINT_FLOAT) {
+    if (busyNotDone) {
       newMotorPosition(actPosition);
+    } else {
+      asynMotorAxis::setIntegerParam(pC_->motorStatusMoving_, 0);
     }
     // Do that on the base class to avoid searching for paramIndex
+    asynMotorAxis::setDoubleParam(pC_->motorPosition_, actPosition);
     asynMotorAxis::setDoubleParam(pC_->motorEncoderPosition_, actPosition);
   }
-  if (auxbitsValid || nowMoving) {
-    /* These 2 bits are important to inform the motorRecord
-       when a motion is completed */
-    setIntegerParam(pC_->motorStatusMoving_, nowMoving);
-    setIntegerParam(pC_->motorStatusDone_, !nowMoving);
-  }
-
   if (positionValid) {
     double cfgPmax, cfgPmin;
     int pilsLonginTargetValue;

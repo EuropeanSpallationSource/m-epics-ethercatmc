@@ -138,7 +138,6 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       unsigned old_idxAuxBitsWritten;
       unsigned int hasProblem : 1;
       unsigned int hasPolledAllEnums : 1;
-      unsigned int hasPARAM_IDX_SETPOINT_FLOAT : 1;
       uint8_t
           pollNowParams[128]; /* 0 terminated list of parameters to be polled */
       PILSparamPermType PILSparamPerm[256];
