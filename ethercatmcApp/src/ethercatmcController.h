@@ -207,8 +207,13 @@ typedef struct {
   asynParamType myEPICSParamType; /* asynParamType.h */
   unsigned iTypCode;
 } pilsAsynDevInfo_type;
+typedef struct {
+  uint8_t paramCtrl[2];
+  uint8_t paramValueRaw[8]; /* May be 4 or 8 bytes */
+} paramIf_type;
 }
 extern "C" {
+double ethercatmcgetNowTimeSecs(void);
 unsigned netToUint(const void *data, size_t lenInPlc);
 int netToSint(const void *data, size_t lenInPlc);
 double netToDouble(const void *data, size_t lenInPlc);
@@ -403,12 +408,18 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                 size_t lenInPlc);
 
   asynStatus indexerWaitSpecialDeviceIdle(unsigned indexOffset);
+  asynStatus indexerParamIFIdle(unsigned paramIfOffset,
+                                unsigned lenInPLCparamIf,
+                                paramIf_type *pParamIf, int *pParmaIfReady);
   asynStatus indexerParamReadFL(ethercatmcIndexerAxis *pAxis,
                                 unsigned paramIfOffset, unsigned paramIndex,
                                 double *value, const char *fileName,
                                 int lineNo);
 #define indexerParamRead(a, b, c, d) \
   indexerParamReadFL(a, b, c, d, __FILE__, __LINE__)
+  asynStatus indexerParamIfInternal(ethercatmcIndexerAxis *pAxis,
+                                    unsigned paramIfCmd, unsigned paramIndex,
+                                    double value, double *pValueRB);
   asynStatus indexerParamWrite(ethercatmcIndexerAxis *pAxis,
                                unsigned paramIndex, double value,
                                double *pValueRB);
