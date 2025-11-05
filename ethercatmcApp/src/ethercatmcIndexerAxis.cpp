@@ -1338,8 +1338,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   if (idxStatusCode == idxStatusCodeRESET) {
     const static char *sErrorMessageReset = "W: AxisRESET";
     updateMsgTxtFromDriver(sErrorMessageReset);
+#ifdef motorMessageTextString
     pC_->setAlarmStatusSeverityFromStatusBits(axisNo_, pC_->motorMessageText_,
                                               statusReasonAux);
+#endif
   } else if (auxbitsValid) {
     /* extra Error Text, only showing errors, no info
        Most important things, in the order that the operator
@@ -1538,6 +1540,7 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
     }
   }
   updateMsgTxtFromDriver(msgTxtFromDriver);
+#ifdef motorMessageTextString
   if (charEorW == 'E') {
     pC_->setAlarmStatusSeverityFromStatusBits(axisNo_, pC_->motorMessageText_,
                                               idxStatusCodeERROR << 28);
@@ -1548,6 +1551,7 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
     pC_->setAlarmStatusSeverityFromStatusBits(axisNo_, pC_->motorMessageText_,
                                               idxStatusCodeIDLE << 28);
   }
+#endif
 }
 
 bool ethercatmcIndexerAxis::pollPowerIsOn(void) {
