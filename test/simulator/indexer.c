@@ -2422,6 +2422,20 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
         __FILE__, __FUNCTION__, __LINE__, motor_axis_no, paramIndex, offset,
         paramCommand, uValue, lenInPlcPara);
   }
+  if (paramCommand == PARAM_IF_CMD_BUSY) {
+    switch (paramIndex) {
+      case PARAM_IDX_FUN_MOVE_VELOCITY:
+      case PARAM_IDX_FUN_REFERENCE:
+        if (!isMotorMoving(motor_axis_no)) {
+          ret = PARAM_IF_CMD_DONE | paramIndex;
+        }
+        break;
+      default:
+        ret = PARAM_IF_CMD_DONE | paramIndex;
+    }
+    /* put DONE into the process image */
+    uintToNet(ret, &netData.memoryBytes[offset], 2);
+  }
   if (paramCommand == PARAM_IF_CMD_DOWRITE) {
     double fValue;
     fValue = netToDouble(&netData.memoryBytes[offset + 2], lenInPlcPara);
@@ -2456,7 +2470,7 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
         } else {
           set_nErrorId(motor_axis_no, 0x4260);
         }
-        ret = PARAM_IF_CMD_DONE | paramIndex;
+        ret = PARAM_IF_CMD_BUSY | paramIndex;
       } break;
       case PARAM_IDX_FUN_MOVE_VELOCITY: {
         int direction = fValue >= 0.0;
@@ -2475,7 +2489,7 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
         } else {
           set_nErrorId(motor_axis_no, 0x4260);
         }
-        ret = PARAM_IF_CMD_DONE | paramIndex;
+        ret = PARAM_IF_CMD_BUSY | paramIndex;
       } break;
       case PARAM_IDX_FUN_SET_POSITION: {
         setPosHome(motor_axis_no, fValue);
@@ -2505,7 +2519,8 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
     }
   }
   LOGTIME6(
-      "%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u uValue=%x "
+      "%s/%s:%d indexerMotorParamRead motor_axis_no=%u paramIndex=%u "
+      "uValue=%x "
       "ret=%x\n",
       __FILE__, __FUNCTION__, __LINE__, motor_axis_no, paramIndex, uValue, ret);
 }
@@ -2809,7 +2824,8 @@ void indexerHandlePLCcycle(void) {
                        "encoderRaw"))) {
             int encoderRaw = (int)getEncoderPos(axisNo);
             LOGTIME6(
-                "%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u encoderRaw=%u\n",
+                "%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u "
+                "encoderRaw=%u\n",
                 __FILE__, __FUNCTION__, __LINE__, devNum, axisNo, motor5010Num,
                 encoderRaw);
             UINTTONET(encoderRaw,
@@ -2963,7 +2979,8 @@ void indexerHandlePLCcycle(void) {
 
         fRet = getMotorPos((int)axisNo);
         LOGTIME6(
-            "%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u offset=%u fRet=%f\n",
+            "%s/%s:%d devNum=%u axisNo=%u motor5010Num=%u offset=%u "
+            "fRet=%f\n",
             __FILE__, __FUNCTION__, __LINE__, devNum, axisNo, motor5010Num,
             offset, (double)fRet);
         if (sim_usleep[axisNo]) {
