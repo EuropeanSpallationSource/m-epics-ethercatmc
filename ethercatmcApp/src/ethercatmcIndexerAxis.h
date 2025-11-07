@@ -47,10 +47,6 @@ extern "C" {
 int ethercatmcCreateIndexerAxis(const char *ethercatmcName, int axisNo,
                                 int axisFlags, const char *axisOptionsStr);
 const char *paramIfCmdToString(unsigned cmdSubParamIndex);
-typedef struct {
-  uint8_t paramCtrl[2];
-  uint8_t paramValueRaw[8]; /* May be 4 or 8 bytes */
-} paramIf_type;
 };
 
 class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
@@ -150,6 +146,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       char customParaNames[PARAM_IF_NUM_CUSTOM_PARAS][34];
       int asynFunctionAuxBitAsBiRecord[MAX_AUX_BIT_AS_BI_RECORD];
     } clean;
+    double paramIFstartTime;
     int pollScaling;
   } drvlocal;
 
