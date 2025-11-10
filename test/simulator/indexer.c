@@ -1638,6 +1638,19 @@ typedef struct {
   double fRefSpeed;
   int nHomProc;
   int nOldHomProc;
+  /*
+    TODO (about paramIfBusyMoveVelocity):
+    Add code in cmd_Sim.c to allo to change this variabe
+    Add code in ../pytests36/950... to add a new test case:
+       - change it to 1.
+       - move to a low position
+       - start a moveVel: self.axisCom.put("-MoveVel", jvel)
+       - wait for started
+       - change velocity: self.axisCom.put("-MoveVel", jvel), see below
+       - check that the previous put failed (!)
+       - check that the previos put did not spend more than 500msec
+  */
+  int paramIfBusyMoveVelocity;
 } cmd_Motor_cmd_type;
 
 static union {
@@ -2425,6 +2438,13 @@ static void indexerMotorParamInterface(unsigned motor_axis_no, unsigned offset,
   if (paramCommand == PARAM_IF_CMD_BUSY) {
     switch (paramIndex) {
       case PARAM_IDX_FUN_MOVE_VELOCITY:
+        if (!cmd_Motor_cmd[motor_axis_no].paramIfBusyMoveVelocity) {
+          ret = PARAM_IF_CMD_DONE | paramIndex;
+        }
+        if (!isMotorMoving(motor_axis_no)) {
+          ret = PARAM_IF_CMD_DONE | paramIndex;
+        }
+        break;
       case PARAM_IDX_FUN_REFERENCE:
         if (!isMotorMoving(motor_axis_no)) {
           ret = PARAM_IF_CMD_DONE | paramIndex;
