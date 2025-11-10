@@ -243,8 +243,8 @@ asynStatus ethercatmcController::writeReadControllerADS(
   if (nwrite != outlen) {
     if (ctrlLocal.cntADSstatus < MAXCNTADSSTATUS) {
       asynPrint(
-          pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-          "%s:%d outlen=%lu nwrite=%lu timeout=%f err=%s status=%s (%d)\n",
+          pasynUser, ASYN_TRACE_ERROR,
+          "%s:%d Err: outlen=%lu nwrite=%lu timeout=%f err=%s status=%s (%d)\n",
           fileName, lineNo, (unsigned long)outlen, (unsigned long)nwrite,
           DEFAULT_CONTROLLER_TIMEOUT, pasynUser->errorMessage,
           ethercatmcstrStatus(status), status);
@@ -323,9 +323,9 @@ asynStatus ethercatmcController::writeReadControllerADS(
                       "", 0);
   }
   if ((status == asynTimeout) || (errorProblem & 8)) {
-    asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-              "%s status=%s errorProblem=%d: calling disconnect_C\n", modNamEMC,
-              ethercatmcstrStatus(status), errorProblem);
+    asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "%s Err: status=%s errorProblem=%d: calling disconnect_C\n",
+              modNamEMC, ethercatmcstrStatus(status), errorProblem);
     status = asynError;
     disconnect_C(pasynUser);
   }
@@ -363,12 +363,13 @@ asynStatus ethercatmcController::writeReadAds(
     uint32_t amsTcpHdr_len_act = NETTOUINT(ams_rep_hdr_p->amsTcpHdr.net_len);
 
     if ((!status) && (amsTcpHdr_len_act != amsTcpHdr_len_exp)) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%s:%d nread=%u calling disconnect_C: amsTcpHdr_len_exp=%u "
-                "0x%08X amsTcpHdr_len_act=%u 0x%08X\n",
-                fileName, lineNo, (unsigned)nread, (unsigned)amsTcpHdr_len_exp,
-                (unsigned)amsTcpHdr_len_exp, (unsigned)amsTcpHdr_len_act,
-                (unsigned)amsTcpHdr_len_act);
+      asynPrint(
+          pasynUser, ASYN_TRACE_ERROR,
+          "%s:%d Err: nread=%u calling disconnect_C: amsTcpHdr_len_exp=%u "
+          "0x%08X amsTcpHdr_len_act=%u 0x%08X\n",
+          fileName, lineNo, (unsigned)nread, (unsigned)amsTcpHdr_len_exp,
+          (unsigned)amsTcpHdr_len_exp, (unsigned)amsTcpHdr_len_act,
+          (unsigned)amsTcpHdr_len_act);
       disconnect_C(pasynUser);
       status = asynError;
     }
@@ -376,12 +377,13 @@ asynStatus ethercatmcController::writeReadAds(
       uint32_t ads_rep_len_exp = nread - sizeof(AmsHdrType);
       uint32_t ads_rep_len_act = NETTOUINT(ams_rep_hdr_p->net_len);
       if (ads_rep_len_act != ads_rep_len_exp) {
-        asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                  "%s:%d nread=%u calling disconnect_C: ads_rep_len_exp=%u  "
-                  "0x%08X ads_rep_len_act=%u 0x%08X \n",
-                  fileName, lineNo, (unsigned)nread, (unsigned)ads_rep_len_exp,
-                  (unsigned)ads_rep_len_exp, (unsigned)ads_rep_len_act,
-                  (unsigned)ads_rep_len_act);
+        asynPrint(
+            pasynUser, ASYN_TRACE_ERROR,
+            "%s:%d Err: nread=%u calling disconnect_C: ads_rep_len_exp=%u  "
+            "0x%08X ads_rep_len_act=%u 0x%08X \n",
+            fileName, lineNo, (unsigned)nread, (unsigned)ads_rep_len_exp,
+            (unsigned)ads_rep_len_exp, (unsigned)ads_rep_len_act,
+            (unsigned)ads_rep_len_act);
         disconnect_C(pasynUser);
         status = asynError;
       }
@@ -421,8 +423,8 @@ asynStatus ethercatmcController::writeReadAds(
                           lineNo);
         ethercatmcamsdump(pasynUser, tracelevel, "IN ", indata, nread);
 
-        asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                  "%s nread=%u ams_errorCode=0x%x\n", modNamEMC,
+        asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                  "%s Err: nread=%u ams_errorCode=0x%x\n", modNamEMC,
                   (unsigned)nread, (unsigned)ams_errorCode);
         status = asynError;
       }
@@ -430,8 +432,8 @@ asynStatus ethercatmcController::writeReadAds(
     if (!status) {
       uint32_t rep_invokeID = NETTOUINT(ams_rep_hdr_p->net_invokeID);
       if (invokeID != rep_invokeID) {
-        asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                  "%s:%d calling disconnect_C: invokeID=%u 0x%08X "
+        asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                  "%s:%d Err: calling disconnect_C: invokeID=%u 0x%08X "
                   "rep_invokeID=%u 0x%08X\n",
                   fileName, lineNo, (unsigned)invokeID, (unsigned)invokeID,
                   (unsigned)rep_invokeID, (unsigned)rep_invokeID);
@@ -525,8 +527,8 @@ asynStatus ethercatmcController::getPlcMemoryViaADSFL(unsigned indexOffset,
                 (unsigned)ads_result);
       status = asynError;
     } else if (ads_length != lenInPlc) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%s:%d ERROR lenInPlc=%lu ads_length=%u\n", fileName, lineNo,
+      asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                "%s:%d Err: lenInPlc=%lu ads_length=%u\n", fileName, lineNo,
                 (unsigned long)lenInPlc, (unsigned)ads_length);
       status = asynError;
     }
@@ -623,9 +625,8 @@ asynStatus ethercatmcController::setMemIdxGrpIdxOffFL(
       ethercatmchexdump(pasynUser, tracelevel, "WRMEM", data, lenInPlc,
                         fileName, lineNo);
 
-      asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%s:%d ads_result=0x%x\n", fileName, lineNo,
-                (unsigned)ads_result);
+      asynPrint(pasynUser, ASYN_TRACE_ERROR, "%s:%d Err: ads_result=0x%x\n",
+                fileName, lineNo, (unsigned)ads_result);
       status = asynError;
     }
   }
@@ -679,8 +680,8 @@ asynStatus ethercatmcController::getSymbolInfoViaADS(const char *symbolName,
     uint32_t ads_result = NETTOUINT(adsReadWriteRep_p->response.net_res);
     uint32_t ads_length = NETTOUINT(adsReadWriteRep_p->response.net_len);
     if (ads_result) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%sERROR ads_result=0x%x\n", modNamEMC, (unsigned)ads_result);
+      asynPrint(pasynUser, ASYN_TRACE_ERROR, "%sErr: ads_result=0x%x\n",
+                modNamEMC, (unsigned)ads_result);
       status = asynError;
     }
     if (!status) {
@@ -748,8 +749,8 @@ asynStatus ethercatmcController::getSymbolHandleByNameViaADS(
     uint32_t ads_result = NETTOUINT(adsReadWriteRep_p->response.net_res);
     uint32_t ads_length = NETTOUINT(adsReadWriteRep_p->response.net_len);
     if (ads_result) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%sERROR ads_result=0x%x\n", modNamEMC, (unsigned)ads_result);
+      asynPrint(pasynUser, ASYN_TRACE_ERROR, "%sErr: ads_result=0x%x\n",
+                modNamEMC, (unsigned)ads_result);
       status = asynError;
     }
     if (!status) {

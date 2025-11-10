@@ -350,8 +350,8 @@ asynStatus ethercatmcController::indexerParamReadFL(
   asynStatus status;
   if (!pAxis || (paramIndex > 0xFF) ||
       (pAxis->drvlocal.clean.iTypCode != 0x5010)) {
-    asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-              "%s pAxis=%p paramIndex=%u typeCode=0x%x\n", modNamEMC, pAxis,
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%sErr: pAxis=%p paramIndex=%u typeCode=0x%x\n", modNamEMC, pAxis,
               paramIndex, pAxis->drvlocal.clean.iTypCode);
     return asynError;
   }
@@ -411,8 +411,8 @@ asynStatus ethercatmcController::indexerParamWrite(ethercatmcIndexerAxis *pAxis,
 
   if (!pAxis || (paramIndex > 0xFF) ||
       (pAxis->drvlocal.clean.iTypCode != 0x5010)) {
-    asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-              "%s pAxis=%p paramIndex=%u typeCode=0x%x\n", modNamEMC, pAxis,
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%sErr: pAxis=%p paramIndex=%u typeCode=0x%x\n", modNamEMC, pAxis,
               paramIndex, pAxis->drvlocal.clean.iTypCode);
     return asynError;
   }
@@ -457,8 +457,8 @@ asynStatus ethercatmcController::indexerParamIfInternal(
     lenInPlcPara = pAxis->drvlocal.clean.lenInPlcParaFloat[paramIndex];
   }
   if (!paramIfOffset || lenInPlcPara > sizeof(paramIf_to_MCU.paramValueRaw)) {
-    asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-              "%s pAxis=%p lenInPlcPara=%u paramIfOffset=%u \n", modNamEMC,
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%sErr: pAxis=%p lenInPlcPara=%u paramIfOffset=%u \n", modNamEMC,
               pAxis, lenInPlcPara, paramIfOffset);
     return asynError;
   }
@@ -467,8 +467,8 @@ asynStatus ethercatmcController::indexerParamIfInternal(
          PILSparamPermRead) ||
         (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] ==
          PILSparamPermNone)) {
-      asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u "
+      asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+                "%sErr pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u "
                 "perm=%d\n",
                 modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
                 (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex]);
@@ -476,16 +476,17 @@ asynStatus ethercatmcController::indexerParamIfInternal(
     }
   } else if (paramIfCmd == PARAM_IF_CMD_DOREAD) {
     if (pAxis->drvlocal.clean.PILSparamPerm[paramIndex] == PILSparamPermNone) {
-      asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%s pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u "
-                "perm=%d\n",
-                modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
-                (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex]);
+      asynPrint(
+          pasynUserController_, ASYN_TRACE_ERROR,
+          "%sErr: pAxis=%p paramIndex=%u lenInPlcPara=%u paramIfOffset=%u "
+          "perm=%d\n",
+          modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
+          (int)pAxis->drvlocal.clean.PILSparamPerm[paramIndex]);
       return asynError;
     }
   } else {
-    asynPrint(pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-              "%sindexerParamIfInternal(%d) %s(%u 0x%02X) %s(0x%02X)\n",
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%sErr: indexerParamIfInternal(%d) %s(%u 0x%02X) %s(0x%02X)\n",
               modNamEMC, axisNo,
               plcParamIndexTxtFromParamIndex(paramIndex, axisNo), paramIndex,
               paramIndex, paramIfCmdToString(paramIfCmd), paramIfCmd);
@@ -604,12 +605,12 @@ asynStatus ethercatmcController::indexerParamIfInternal(
               }
             }
             if (status != asynSuccess) {
-              asynPrint(
-                  pasynUserController_, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                  "%s pAxis=%p paramIndex=%u lenInPlcPara=%u "
-                  "paramIfOffset=%u status=%s (%d)\n",
-                  modNamEMC, pAxis, paramIndex, lenInPlcPara, paramIfOffset,
-                  ethercatmcstrStatus(status), (int)status);
+              asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+                        "%sErr: pAxis=%p paramIndex=%u lenInPlcPara=%u "
+                        "paramIfOffset=%u status=%s (%d)\n",
+                        modNamEMC, pAxis, paramIndex, lenInPlcPara,
+                        paramIfOffset, ethercatmcstrStatus(status),
+                        (int)status);
               goto indexerParamIfInternalPrintAuxReturn;
             }
           } break;
@@ -1129,19 +1130,21 @@ int ethercatmcController::addPilsAsynDevLst(
       &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
 
   if (numPilsAsynDevInfo >= maxNumPilsAsynDevInfo) {
-    asynPrint(pasynUserController_, ASYN_TRACE_ERROR, "%s%s(%u) out of range\n",
-              modNamEMC, functionName, numPilsAsynDevInfo);
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%s%s Err: (%u) out of range\n", modNamEMC, functionName,
+              numPilsAsynDevInfo);
     return -1;
   }
 
-  asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-            "%s%s axisNo=%i \"%s\" functionNamAux0=%d functionStatusBits=%d "
-            "lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
-            " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
-            modNamEMC, functionName, axisNo, paramName, functionNamAux0,
-            functionStatusBits, lenInPLC, inputOffset, outputOffset,
-            statusOffset, stringFromAsynParamType(myEPICSParamType),
-            (int)myEPICSParamType, iTypCode);
+  asynPrint(
+      pasynUserController_, ASYN_TRACE_ERROR,
+      "%s%s Err: axisNo=%i \"%s\" functionNamAux0=%d functionStatusBits=%d "
+      "lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
+      " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
+      modNamEMC, functionName, axisNo, paramName, functionNamAux0,
+      functionStatusBits, lenInPLC, inputOffset, outputOffset, statusOffset,
+      stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
+      iTypCode);
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
             "%s%s(%u) \"%s\" EPICSParamType=%s(%i)\n", modNamEMC, functionName,
             axisNo, paramName, stringFromAsynParamType(myEPICSParamType),
@@ -1652,7 +1655,7 @@ asynStatus ethercatmcController::indexerPoll(void) {
               status = setIntegerParam(axisNo, function, newValue);
               if (status == asynParamWrongType) {
                 asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-                          "%sindexerPoll(%d) ERROR: need to disable "
+                          "%sErr: indexerPoll(%d) need to disable "
                           "function=%s(%d) status=%s (%d)\n",
                           modNamEMC, axisNo, paramName, function,
                           ethercatmcstrStatus(status), (int)status);
@@ -1701,7 +1704,7 @@ asynStatus ethercatmcController::indexerPoll(void) {
                   break;
                 default:
                   asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-                            "%sindexerPoll(%d) ERROR: newValueValid = 0 "
+                            "%sErr: indexerPoll(%d) newValueValid = 0 "
                             "function=%s(%d)\n",
                             modNamEMC, axisNo, paramName, function);
                   newValueValid = 0;
@@ -1713,7 +1716,7 @@ asynStatus ethercatmcController::indexerPoll(void) {
                   status = setDoubleParam(axisNo, function, newValue);
                   if (status == asynParamWrongType) {
                     asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-                              "%sindexerPoll(%d) ERROR: need to disable "
+                              "%sErr: indexerPoll(%d) need to disable "
                               "function=%s(%d) status=%s (%d)\n",
                               modNamEMC, axisNo, paramName, function,
                               ethercatmcstrStatus(status), (int)status);
@@ -1744,7 +1747,7 @@ asynStatus ethercatmcController::indexerPoll(void) {
               status = setInteger64Param(axisNo, function, newValue);
               if (status == asynParamWrongType) {
                 asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
-                          "%sindexerPoll(%d) ERROR: need to disable "
+                          "%sErr:sindexerPoll(%d) need to disable "
                           "function=%s(%d) status=%s (%d)\n",
                           modNamEMC, axisNo, paramName, function,
                           ethercatmcstrStatus(status), (int)status);

@@ -420,7 +420,7 @@ ethercatmcController::ethercatmcController(const char *portName,
       pasynOctetSyncIO->connect(MotorPortName, 0, &pasynUserController_, NULL);
   if (status) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s cannot connect to motor controller\n", modulName);
+              "%s Err: cannot connect to motor controller\n", modulName);
   }
   printf("%s:%d %s optionStr=\"%s\"\n", __FILE__, __LINE__, modulName,
          optionStr ? optionStr : "NULL");
@@ -640,13 +640,12 @@ extern "C" asynStatus disconnect_C(asynUser *pasynUser) {
     pasynCommon = (asynCommon *)pasynInterface->pinterface;
     status = pasynCommon->disconnect(pasynInterface->drvPvt, pasynUser);
     if (status != asynSuccess) {
-      asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-                "%s status=%s (%d)\n", modulName, ethercatmcstrStatus(status),
-                (int)status);
+      asynPrint(pasynUser, ASYN_TRACE_ERROR, "%s Err: status=%s (%d)\n",
+                modulName, ethercatmcstrStatus(status), (int)status);
     }
   } else {
-    asynPrint(pasynUser, ASYN_TRACE_ERROR | ASYN_TRACEIO_DRIVER,
-              "%s pasynInterface=%p pasynCommon=%p\n", modulName,
+    asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "%s Err: pasynInterface=%p pasynCommon=%p\n", modulName,
               pasynInterface, pasynCommon);
   }
   return status;
