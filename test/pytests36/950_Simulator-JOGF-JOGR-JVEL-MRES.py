@@ -151,7 +151,7 @@ def jogTheMotorToLS(
     dirAct = self.axisCom.get(".DIR")
     if mresAct != mres:
         print(
-            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} mresAct={mresAct}"
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} mresAct={mresAct:.3f}"
         )
         # The motorRecord adjusts VELO, BVEL VBAS
         # and this is not a bug. but an old feature
@@ -271,10 +271,10 @@ def jogTheMotorChangeJVEL(
             time.sleep(polltime)
             maxTime = maxTime - polltime
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} expVelRB={velRB} expAccRB={accRB}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} expVelRB={velRB:.3f} expAccRB={accRB:.3f}"
     )
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} actVelRB={actVelRB} actAccRB={actAccRB}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} tc_no={tc_no} actVelRB={actVelRB:.3f} actAccRB={actAccRB:.3f}"
     )
     self.axisCom.put("." + jogX, 0)
     self.axisCom.put(".STOP", 1)
