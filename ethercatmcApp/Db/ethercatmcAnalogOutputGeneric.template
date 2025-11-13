@@ -1,0 +1,17 @@
+# Generic template for an anlog output
+# More fields may be added, but keep in mind
+# that they need to have backwards compatible
+# initial values.
+
+record(ao, "$(P)$(R)")
+{
+    field(DTYP, "asynFloat64")
+    field(DESC, "$(DESC=DESC)")
+    field(PREC, "$(PREC=PREC)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
+    field(AOFF, "$(AOFF=0.0)")
+    field(ASLO, "$(ASLO=0.0)")
+    info(asyn:READBACK,"$(READBACK=1)")
+    info(asyn:INITIAL_READBACK,"$(INITIAL_READBACK=1)")
+}
+
