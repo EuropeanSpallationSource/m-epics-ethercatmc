@@ -20,6 +20,7 @@ DB += ethercatmcActuator.template
 DB += ethercatmcActuatorActivate.template
 DB += ethercatmcAnalogInput.template
 DB += ethercatmcAnalogInputSmooAdelMdel.template
+DB += ethercatmcAnalogOutputGeneric.template
 DB += ethercatmcAnalogOutputReadback.template
 DB += ethercatmcAuxBitAsBiRecord.template
 DB += ethercatmcAuxBitAsMbbiRecord.template

@@ -98,7 +98,11 @@ epicsEnvSet("R",               "m1-$(ASYNPARAMNAME)")
 epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
 epicsEnvSet("PREC",            0)
 epicsEnvSet("EGU",             "mA")
-< ethercatmcAnalogOutputReadback.iocsh
+epicsEnvSet("ASLO",            "1000.0")
+epicsEnvSet("AOFF",            "0.0")
+epicsEnvSet("READBACK",        "1")
+epicsEnvSet("INITIAL_READBACK","1")
+< ethercatmcAnalogOutputGenericV1.iocsh
 
 #####################################################
 # Reduced Current Axis 1
@@ -108,7 +112,11 @@ epicsEnvSet("R",               "m1-$(ASYNPARAMNAME)")
 epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
 epicsEnvSet("PREC",            0)
 epicsEnvSet("EGU",             "mA")
-< ethercatmcAnalogOutputReadback.iocsh
+epicsEnvSet("ASLO",            "1000.0")
+epicsEnvSet("AOFF",            "0.0")
+epicsEnvSet("READBACK",        "1")
+epicsEnvSet("INITIAL_READBACK","1")
+< ethercatmcAnalogOutputGenericV1.iocsh
 
 #####################################################
 # Custom parameter 195  Axis 1
