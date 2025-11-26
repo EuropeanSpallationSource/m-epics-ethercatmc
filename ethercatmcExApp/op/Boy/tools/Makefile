@@ -15,6 +15,7 @@ GNERATEDOPIS = \
   ../motor-3-ptp.opi \
   ../motor-4-pils.opi \
   ../motor-4-ptp.opi \
+  ../motor-4-shutter-1-pils.opi \
   ../motor-4-ecmc.opi \
   ../motor-5-pils.opi \
   ../motor-6-hxpd.opi \
@@ -226,6 +227,10 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils ptp 4 x 1
+
+# 4 shutters, one motor
+../motor-4-shutter-1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	./genMotorShutter.sh $@ pils shutter s s s s motor m
 
 ../motor-5-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 5 x 1
