@@ -82,25 +82,17 @@ case $UNAME_A in
   *) ;;
 esac
 
-if which virtualenv-3.14 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.14
-elif which virtualenv-3.13 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.13
-elif which virtualenv-3.12 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.12
-elif which virtualenv-3.11 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.11
-elif which virtualenv-3.10 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.10
-elif which virtualenv-3.9 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.9
-elif which virtualenv-3.8 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.8
-elif which virtualenv-3.7 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.7
-elif which virtualenv-3.6 >/dev/null 2>&1; then
-  MYVIRTUALENV=virtualenv-3.6
-elif which pyenv-virtualenv >/dev/null 2>&1; then
+n=19
+# check from virtualenv-3.19 (not yet existent) to 3.6
+while test $n -ge 6; do
+  version=3.$n
+  if which virtualenv-$version >/dev/null 2>&1; then
+    MYVIRTUALENV=virtualenv-$version
+    break
+  fi
+  n=$($n-1)
+done
+
   # brew has pyenv-virtualenv
   # and a bug, "pyenv-root" should be written as "pyenv root"
   PYENV_ROOT="$(pyenv root)"
@@ -159,36 +151,18 @@ fi
 
 ##############################################################################
 if test -n "$MYVIRTUALENV" && type $MYVIRTUALENV >/dev/null 2>&1; then
-  if which python3.14 >/dev/null 2>&1; then
-    PYTHON=python3.14
-  elif which python3.13 >/dev/null 2>&1; then
-    PYTHON=python3.13
-  elif which python3.12 >/dev/null 2>&1; then
-    PYTHON=python3.12
-  elif which python3.11 >/dev/null 2>&1; then
-    PYTHON=python3.11
-  elif which python3.10 >/dev/null 2>&1; then
-    PYTHON=python3.10
-  elif which python3.9 >/dev/null 2>&1; then
-    PYTHON=python3.9
-  elif which python3.8 >/dev/null 2>&1; then
-    PYTHON=python3.8
-  elif which python3.7 >/dev/null 2>&1; then
-    PYTHON=python3.7
-  elif which python36 >/dev/null 2>&1; then
-    PYTHON=python36
-  elif which python3.6 >/dev/null 2>&1; then
-    PYTHON=python3.6
-  elif which python3.5 >/dev/null 2>&1; then
-    PYTHON=python3.5
-  elif which python36 >/dev/null 2>&1; then
-    PYTHON=python36
-  elif which python3.4 >/dev/null 2>&1; then
-    PYTHON=python3.4
-    # need $ pip install "pytest<5"
-    PYTEST="pytest<5"
-  else
-    echo >&2 "No pyton 3.7, 3.6, 36 or 3.4 found"
+  n=19
+  # check from python3.19 (not yet existent) to 3.6
+  while test $n -ge 6; do
+    version=3.$n
+    if which python$version >/dev/null 2>&1; then
+      PYTHON=python$version
+      break
+    fi
+    n=$($n-1)
+  done
+  if test -z "$PYTHON"; then
+    echo >&2 "No valid python version found [>=3.6]"
     exit 1
   fi
   VIRTUALENVDIR=venv$PYTHON
