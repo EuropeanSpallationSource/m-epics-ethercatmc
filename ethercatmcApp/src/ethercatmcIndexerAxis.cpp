@@ -858,6 +858,13 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
 
   if (drvlocal.dirty.initialPollNeeded) {
     switch (drvlocal.clean.iTypCode) {
+      case 0x1E04:
+      case 0x1E0C:
+        pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgSPDB_RB_,
+                            0.5, "spdb");
+        pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgRDBD_RB_,
+                            0.5, "rdbd");
+        break;
       case 0x5010:
         status = pC_->indexerReadAxisParameters(this, drvlocal.clean.devNum);
         break;
