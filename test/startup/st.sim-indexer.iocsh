@@ -7,8 +7,8 @@ epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("P",               "$(SM_P=IOC:)")
 epicsEnvSet("R",               "")
 epicsEnvSet("PREC",            "$(SM_PREC=3)")
-# 6 axes: 4 motors, axis 5 is shutter, 6 is pneumatic
-epicsEnvSet("ECM_NUMAXES",     "6")
+# 6 axes: 4 motors, axis 5 is shutter, 6 is pneumatic, 7 is carousel
+epicsEnvSet("ECM_NUMAXES",     "7")
 epicsEnvSet("ADSPORT",         "$(ECM_ADSPORT=852)")
 epicsEnvSet("ECM_OPTIONS",     "adsPort=$(ADSPORT);amsNetIdRemote=127.0.0.1.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
 
@@ -103,6 +103,16 @@ epicsEnvSet("AXISCONFIG",      "")
 epicsEnvSet("R",               "Pneu")
 epicsEnvSet("AXIS_NO",         "6")
 < ethercatmcShutter.iocsh
+# Motorrecord and debug needed for the automatic tests/943
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+#
+# Axis 7, carousel with ErrId
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "Carousel")
+epicsEnvSet("AXIS_NO",         "7")
 # Motorrecord and debug needed for the automatic tests/943
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh

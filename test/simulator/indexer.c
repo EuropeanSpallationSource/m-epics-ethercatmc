@@ -19,7 +19,7 @@
 
 #define HAS_1604_OPEN_CLUTCH
 #define HAS_1E04_SHUTTER
-#define HAS_1E0C_SHUTTER
+#define HAS_1E0C_SHUTTER_CAROUSEL
 
 /* type codes and sizes */
 #define TYPECODE_INDEXER 0
@@ -40,7 +40,7 @@
 #define TYPECODE_DISCRETEOTPUT_1E04 0x1E04
 #define WORDS_DISCRETEOTPUT_1E04 4
 #endif
-#ifdef HAS_1E0C_SHUTTER
+#ifdef HAS_1E0C_SHUTTER_CAROUSEL
 #define TYPECODE_DISCRETEOTPUT_1E0C 0x1E0C
 #define WORDS_DISCRETEOTPUT_1E0C 0xC
 #endif
@@ -98,8 +98,8 @@
 #else
 #define NUM_1E04 0
 #endif
-#ifdef HAS_1E0C_SHUTTER
-#define NUM_1E0C 1
+#ifdef HAS_1E0C_SHUTTER_CAROUSEL
+#define NUM_1E0C 2
 #else
 #define NUM_1E0C 0
 #endif
@@ -289,7 +289,7 @@ typedef struct {
   uint8_t statusReasonAux32[4];
 } netDevice1E04interface_type;
 #endif
-#ifdef HAS_1E0C_SHUTTER
+#ifdef HAS_1E0C_SHUTTER_CAROUSEL
 typedef struct {
   uint8_t actualValue[8];
   uint8_t targetValue[8];
@@ -1587,7 +1587,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
      1.0,
      5.0}
 #endif
-#ifdef HAS_1E0C_SHUTTER
+#ifdef HAS_1E0C_SHUTTER_CAROUSEL
     /* device for shutter, motor 6 */
     ,
     {TYPECODE_DISCRETEOTPUT_1E0C,
@@ -1606,6 +1606,42 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "",        "",        ""},
      1.0,
      5.0}
+#endif
+#ifdef HAS_1E0C_SHUTTER_CAROUSEL
+    /* device for carousel, motor 7 */
+    ,
+    {TYPECODE_DISCRETEOTPUT_1E0C,
+     2 * WORDS_DISCRETEOTPUT_1E0C,
+     UNITCODE_NONE,
+     7,
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+     "Carousel",
+     {"OutOffCarousel",
+      "Position1",
+      "Position2",
+      "Position3",
+      "Position4",
+      "Position5",
+      "Position6",
+      "Position7",
+      "Position8",
+      "Position9",
+      "Position10",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""},
+     0.0,
+     10.0}
 #endif
     /* device for analog input with status word */
     ,
@@ -2002,7 +2038,7 @@ static void indexerMotorStatusRead1E04(
             pIndexerDevice1E04interface->actualValue);
 }
 #endif
-#ifdef HAS_1E0C_SHUTTER
+#ifdef HAS_1E0C_SHUTTER_CAROUSEL
 static void indexerMotorStatusRead1E0C(
     unsigned devNum, unsigned motor_axis_no, unsigned numAuxBits,
     netDevice1E0Cinterface_type *pIndexerDevice1E0Cinterface) {
@@ -2013,8 +2049,8 @@ static void indexerMotorStatusRead1E0C(
 
   switch (idxStatusCode) {
     case idxStatusCodeRESET:
-      LOGTIME3("%s/%s:%d motor_axis_no=%u idxStatusCodeRESET\n", __FILE__,
-               __FUNCTION__, __LINE__, motor_axis_no);
+      LOGTIME("%s/%s:%d motor_axis_no=%u idxStatusCodeRESET\n", __FILE__,
+              __FUNCTION__, __LINE__, motor_axis_no);
 
       init_axis((int)motor_axis_no);
       motorStop(motor_axis_no);
@@ -2958,7 +2994,7 @@ void indexerHandlePLCcycle(void) {
       case TYPECODE_DISCRETEOTPUT_1E0C: {
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
-#ifdef HAS_1E0C_SHUTTER
+#ifdef HAS_1E0C_SHUTTER_CAROUSEL
           /*
            * motor1E0CNum starts at 0
            * all hw_motor axes start at 1, and we need to jump over
