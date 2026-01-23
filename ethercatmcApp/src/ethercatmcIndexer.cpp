@@ -1229,6 +1229,57 @@ int ethercatmcController::addPilsAsynDevLst(
   ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
   return function;
 }
+int ethercatmcController::indexerParseAwayDollarInDesc(
+    int axisNo, char *pDesc, unsigned *pAuxBits07mask) {
+  const static char *functionName = "indexerParseAwayDollarInDesc";
+  size_t len = strlen(pDesc);
+  if (!len) return 0;
+  char *pDollar = strrchr(pDesc, '$');
+  if (!pDollar) return 0;
+  *pDollar = '\0'; /* remove $xxx from Description */
+  pDollar++;
+  int first = -1, last = 0;
+  char chr = 0;
+  int nvals = sscanf(pDollar, "inbits=%d..%d%c", &first, &last, &chr);
+  /* The string ends here.
+     Future extensions may use a ';' for more options:
+     be prepared */
+  if (chr != ';' && chr != '\0') {
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%s%s(%d) pDollar='%s' chr=%d\n", modNamEMC, functionName, axisNo,
+              pDollar, (int)chr);
+    return 0;
+  }
+  /* first and last must exist. The ';' is optional. nvals 2 or 3 is good */
+  if ((nvals < 2) || (first < 0) || (first > last) || (last > 23)) {
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%s%s(%d) pDollar='%s' nvals=%d first=%d last=%d\n", modNamEMC,
+              functionName, axisNo, pDollar, nvals, first, last);
+    return 0;
+  }
+  if ((nvals >= 2) && (first >= 0) && (last >= first)) {
+    unsigned bit_tmp = 1;
+    int cntdown = first;
+    while (cntdown > 0) {
+      bit_tmp = bit_tmp << 1; /* shift the low bit */
+      cntdown--;
+    }
+    unsigned auxBits07mask = 0;
+    while (last > first) {
+      asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+                "%s%s(%d) last=%d first=%d bit_tmp=0x%x auxBits07mask=0x%x\n",
+                modNamEMC, functionName, axisNo, last, first, bit_tmp,
+                auxBits07mask);
+      auxBits07mask = auxBits07mask << 1;
+      auxBits07mask |= bit_tmp;
+      last--;
+    }
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s(%d) pDollar='%s' auxBits07mask=0x%x\n", modNamEMC,
+              functionName, axisNo, pDollar, auxBits07mask);
+  }
+  return 1;
+}
 
 int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
                                             unsigned indexOffset,
