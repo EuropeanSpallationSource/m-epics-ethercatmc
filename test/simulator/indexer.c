@@ -1615,7 +1615,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
      UNITCODE_NONE,
      7,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-     "Carousel",
+     "Carousel$statebits=0..10;",
      {"OutOffCarousel",
       "Position1",
       "Position2",
