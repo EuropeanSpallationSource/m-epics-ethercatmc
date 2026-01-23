@@ -310,12 +310,15 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
       case 0x1E04:
       case 0x1E0C:
       case 0x5010: {
+        unsigned iAuxBits07mask = 0xFF;
         char unitCodeTxt[40];
         pAxis = static_cast<ethercatmcIndexerAxis *>(
             asynMotorController::getAxis(axisNo));
         if (!pAxis) {
           pAxis = new ethercatmcIndexerAxis(this, axisNo, 0, NULL);
         }
+        (void)indexerParseAwayDollarInDesc(axisNo, &descVersAuthors.desc[0],
+                                           &iAuxBits07mask);
         /* Now we have an axis */
         int functionNamAux0 =
             defAsynPara.ethercatmcNamAux0_; /* Default for an Axis */
@@ -328,7 +331,8 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
                   ethercatmcstrStatus(status), (int)status);
         if (status) goto endPollIndexer;
 
-        pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffsBytes, iTypCode);
+        pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffsBytes, iTypCode,
+                                              iAuxBits07mask);
         setStringParam(axisNo, defAsynPara.ethercatmcCfgDESC_RB_,
                        descVersAuthors.desc);
         snprintf(unitCodeTxt, sizeof(unitCodeTxt), "%s%s",
