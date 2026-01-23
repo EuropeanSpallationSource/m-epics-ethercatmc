@@ -866,6 +866,14 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
                             0.5, "spdb");
         pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgRDBD_RB_,
                             0.5, "rdbd");
+        if (!drvlocal.clean.auxBitsEnabledMask) {
+          /* no "enabled" aux bit: assume enabled */
+          setIntegerParamLog(pC_->motorStatusPowerOn_, 1, "powerOn");
+        }
+        if (!drvlocal.clean.auxBitsNotHomedMask) {
+          /* No "notHomed" aux bit: Assume that the device is homed */
+          setIntegerParamLog(pC_->motorStatusHomed_, 1, "homed");
+        }
         break;
       case 0x5010:
         status = pC_->indexerReadAxisParameters(this, drvlocal.clean.devNum);
@@ -983,7 +991,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     }
     errorID = 0;
     homed = 1;
-    setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
     actPosition = (double)NETTOUINT(readback.currentValue);
     setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
                     NETTOUINT(readback.currentValue));
@@ -1024,7 +1031,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     errorID = (int)NETTOUINT(readback.errorID) & 0x1FFFF;
     setIntegerParam(pC_->defAsynPara.ethercatmcErrId_, errorID);
     homed = 1;
-    setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
     actPosition = (double)NETTOUINT(readback.currentValue);
     setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
                     NETTOUINT(readback.currentValue));
