@@ -866,6 +866,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
                             0.5, "spdb");
         pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgRDBD_RB_,
                             0.5, "rdbd");
+        setIntegerParamLog(pC_->motorStatusPowerOn_, 1, "powerOn");
         break;
       case 0x5010:
         status = pC_->indexerReadAxisParameters(this, drvlocal.clean.devNum);
