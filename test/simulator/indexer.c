@@ -1615,7 +1615,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
      UNITCODE_NONE,
      7,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-     "Carousel",
+     "Carousel$inbits=0..10",
      {"OutOffCarousel",
       "Position1",
       "Position2",
@@ -2041,7 +2041,8 @@ static void indexerMotorStatusRead1E04(
 #ifdef HAS_1E0C_SHUTTER_CAROUSEL
 static void indexerMotorStatusRead1E0C(
     unsigned devNum, unsigned motor_axis_no, unsigned numAuxBits,
-    netDevice1E0Cinterface_type *pIndexerDevice1E0Cinterface) {
+    netDevice1E0Cinterface_type *pIndexerDevice1E0Cinterface,
+    const char *pDevName) {
   unsigned statusReasonAux32;
   idxStatusCodeType idxStatusCode;
   statusReasonAux32 = NETTOUINT(pIndexerDevice1E0Cinterface->statusReasonAux32);
@@ -2084,6 +2085,10 @@ static void indexerMotorStatusRead1E0C(
     /* Build a new status word, start with 0 and fill in
        the bits */
     statusReasonAux32 = 0;
+    if (!strcmp("Carousel$inbits=0..10", pDevName)) {
+      int iRet = (int)(0.5 + getMotorPos((int)motor_axis_no)); /* NINT */
+      statusReasonAux32 = 1 << iRet;
+    }
     /*
       if (getPosLimitSwitch(motor_axis_no))
       statusReasonAux32 |= 0x08000000;
@@ -3008,7 +3013,8 @@ void indexerHandlePLCcycle(void) {
           /* status */
           indexerMotorStatusRead1E0C(
               devNum, axisNo, numAuxBits,
-              &netData.memoryStruct.motors1E0C[motor1E0CNum]);
+              &netData.memoryStruct.motors1E0C[motor1E0CNum],
+              indexerDeviceAbsStraction[devNum].devName);
 #else
           LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
