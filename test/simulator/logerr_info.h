@@ -33,8 +33,8 @@ const char *epicsBaseDebugStripPath(const char *file);
 #define LOGTIME(fmt, ...)                                                     \
   do {                                                                        \
     struct timespec ts;                                                       \
-    char nowSecondsText[25];                                                  \
-    char nowNanoSecText[5];                                                   \
+    char nowSecondsText[32];                                                  \
+    char nowNanoSecText[16];                                                  \
     nowSecondsText[0] = 0;                                                    \
     nowNanoSecText[0] = 0;                                                    \
     if (!clock_gettime(CLOCK_REALTIME, &ts)) {                                \
@@ -59,8 +59,8 @@ const char *epicsBaseDebugStripPath(const char *file);
   do {                                                                     \
     if (PRINT_STDOUT_BIT3()) {                                             \
       struct timespec ts;                                                  \
-      char nowSecondsText[25];                                             \
-      char nowNanoSecText[5];                                              \
+      char nowSecondsText[32];                                             \
+      char nowNanoSecText[16];                                             \
       nowSecondsText[0] = 0;                                               \
       nowNanoSecText[0] = 0;                                               \
       if (!clock_gettime(CLOCK_REALTIME, &ts)) {                           \
@@ -96,8 +96,8 @@ const char *epicsBaseDebugStripPath(const char *file);
   do {                                                                     \
     if (PRINT_STDOUT_BIT6()) {                                             \
       struct timespec ts;                                                  \
-      char nowSecondsText[25];                                             \
-      char nowNanoSecText[5];                                              \
+      char nowSecondsText[32];                                             \
+      char nowNanoSecText[16];                                             \
       nowSecondsText[0] = 0;                                               \
       nowNanoSecText[0] = 0;                                               \
       if (!clock_gettime(CLOCK_REALTIME, &ts)) {                           \

@@ -74,7 +74,7 @@ checkAndInstallPythonPackage() {
 #
 UNAME_A=$(uname -a)
 case $UNAME_A in
-  *ubuntu*)
+  *ubuntu* | *Debian*)
     if ! which virtualenv >/dev/null 2>&1; then
       checkAndInstallSystemPackage virtualenv
     fi

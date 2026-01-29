@@ -1229,6 +1229,51 @@ int ethercatmcController::addPilsAsynDevLst(
   ctrlLocal.numPilsAsynDevInfo = 1 + numPilsAsynDevInfo;
   return function;
 }
+void ethercatmcController::indexerParseAwayDollarInDesc(
+    int axisNo, char *pDesc, unsigned *pAuxBits07mask) {
+  const static char *functionName = __FUNCTION__;
+  size_t len = strlen(pDesc);
+  if (!len) return;
+  char *pDollar = strrchr(pDesc, '$');
+  if (!pDollar) return;
+
+  *pDollar = '\0'; /* remove $xxx from Description */
+  pDollar++;
+  int first = -1, last = 0;
+  char chr = 0;
+  int nvals = sscanf(pDollar, "statebits=%d..%d%c", &first, &last, &chr);
+  /* first and last must exist. The ';' is the terminator.
+     More options may be added later, after the ';'.
+     This code will ignore the new stuff since it doesn't know what
+     to do with it and still handle the options introduced here */
+  if ((nvals < 3) || (chr != ';') || (first < 0) || (first > last) ||
+      (last > 23)) {
+    asynPrint(pasynUserController_, ASYN_TRACE_ERROR,
+              "%sErr: %s(%d) pDollar='%s' nvals=%d first=%d last=%d chr=%d\n",
+              modNamEMC, functionName, axisNo, pDollar, nvals, first, last,
+              chr);
+  } else {
+    unsigned bit_tmp = 1;
+    int cntdown = first;
+    while (cntdown > 0) {
+      bit_tmp = bit_tmp << 1; /* shift the low bit */
+      cntdown--;
+    }
+    unsigned auxBits07mask = 0;
+    while (last > first) {
+      asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+                "%s%s(%d) last=%d first=%d bit_tmp=0x%x auxBits07mask=0x%x\n",
+                modNamEMC, functionName, axisNo, last, first, bit_tmp,
+                auxBits07mask);
+      auxBits07mask = auxBits07mask << 1;
+      auxBits07mask |= bit_tmp;
+      last--;
+    }
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s(%d) pDollar='%s' auxBits07mask=0x%x\n", modNamEMC,
+              functionName, axisNo, pDollar, auxBits07mask);
+  }
+}
 
 int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
                                             unsigned indexOffset,

@@ -193,15 +193,17 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
   return asynSuccess;
 }
 
-void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(unsigned devNum,
-                                                           unsigned iOffset,
-                                                           unsigned iTypCode) {
+void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(
+    unsigned devNum, unsigned iOffset, unsigned iTypCode,
+    unsigned iAuxBits07mask) {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%sOffsetTypeCode(%d) devNum=%u iTypCode=0x%X, iOffset=%u\n",
-            modNamEMC, axisNo_, devNum, iTypCode, iOffset);
+            "%sOffsetTypeCode(%d) devNum=%u iTypCode=0x%X, iOffset=%u "
+            "iAuxBits07mask=0x%x\n",
+            modNamEMC, axisNo_, devNum, iTypCode, iOffset, iAuxBits07mask);
   drvlocal.clean.devNum = devNum;
   drvlocal.clean.iTypCode = iTypCode;
   drvlocal.clean.iOffset = iOffset;
+  drvlocal.clean.auxBits07mask = iAuxBits07mask;
   if (drvlocal.clean.iTypCode == 0x5010) {
     drvlocal.clean.lenInPlcPara = 8;
     drvlocal.clean.paramIfOffset = drvlocal.clean.iOffset + 22;
@@ -858,6 +860,21 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
 
   if (drvlocal.dirty.initialPollNeeded) {
     switch (drvlocal.clean.iTypCode) {
+      case 0x1E04:
+      case 0x1E0C:
+        pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgSPDB_RB_,
+                            0.5, "spdb");
+        pC_->updateCfgValue(axisNo_, pC_->defAsynPara.ethercatmcCfgRDBD_RB_,
+                            0.5, "rdbd");
+        if (!drvlocal.clean.auxBitsEnabledMask) {
+          /* no "enabled" aux bit: assume enabled */
+          setIntegerParamLog(pC_->motorStatusPowerOn_, 1, "powerOn");
+        }
+        if (!drvlocal.clean.auxBitsNotHomedMask) {
+          /* No "notHomed" aux bit: Assume that the device is homed */
+          setIntegerParamLog(pC_->motorStatusHomed_, 1, "homed");
+        }
+        break;
       case 0x5010:
         status = pC_->indexerReadAxisParameters(this, drvlocal.clean.devNum);
         break;
@@ -974,7 +991,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     }
     errorID = 0;
     homed = 1;
-    setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
     actPosition = (double)NETTOUINT(readback.currentValue);
     setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
                     NETTOUINT(readback.currentValue));
@@ -1015,7 +1031,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     errorID = (int)NETTOUINT(readback.errorID) & 0x1FFFF;
     setIntegerParam(pC_->defAsynPara.ethercatmcErrId_, errorID);
     homed = 1;
-    setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
     actPosition = (double)NETTOUINT(readback.currentValue);
     setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
                     NETTOUINT(readback.currentValue));
@@ -1222,7 +1237,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
           idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
         {
           int function = pC_->defAsynPara.ethercatmcAuxBits07_;
-          setIntegerParam(function, idxAuxBits & 0xFF);
+          setIntegerParam(function, idxAuxBits & drvlocal.clean.auxBits07mask);
           pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
         }
         for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD;
@@ -1514,30 +1529,85 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
       ;  // nothing. keep the message */
     } else {
       int function = 0;
-      switch (statusReasonAux & 0xFF) {
+      const char *functionName = "pollMsgTxt";
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+                "%s%s axisNo=%d statusReasonAux=0x%x "
+                "drvlocal.clean.auxBits07mask=0x%x\n",
+                modNamEMC, functionName, axisNo_, statusReasonAux,
+                drvlocal.clean.auxBits07mask);
+
+      switch (statusReasonAux & drvlocal.clean.auxBits07mask) {
         case 1:
           function = pC_->defAsynPara.ethercatmcNamAux0_;
           break;
-        case 2:
+        case (1 << 1):
           function = pC_->defAsynPara.ethercatmcNamAux1_;
           break;
-        case 4:
+        case (1 << 2):
           function = pC_->defAsynPara.ethercatmcNamAux2_;
           break;
-        case 8:
+        case (1 << 3):
           function = pC_->defAsynPara.ethercatmcNamAux3_;
           break;
-        case 16:
+        case (1 << 4):
           function = pC_->defAsynPara.ethercatmcNamAux4_;
           break;
-        case 32:
+        case (1 << 5):
           function = pC_->defAsynPara.ethercatmcNamAux5_;
           break;
-        case 64:
+        case (1 << 6):
           function = pC_->defAsynPara.ethercatmcNamAux6_;
           break;
-        case 128:
+        case (1 << 7):
           function = pC_->defAsynPara.ethercatmcNamAux7_;
+          break;
+        case (1 << 8):
+          function = pC_->defAsynPara.ethercatmcNamAux8_;
+          break;
+        case (1 << 9):
+          function = pC_->defAsynPara.ethercatmcNamAux9_;
+          break;
+        case (1 << 10):
+          function = pC_->defAsynPara.ethercatmcNamAux10_;
+          break;
+        case (1 << 11):
+          function = pC_->defAsynPara.ethercatmcNamAux11_;
+          break;
+        case (1 << 12):
+          function = pC_->defAsynPara.ethercatmcNamAux12_;
+          break;
+        case (1 << 13):
+          function = pC_->defAsynPara.ethercatmcNamAux13_;
+          break;
+        case (1 << 14):
+          function = pC_->defAsynPara.ethercatmcNamAux14_;
+          break;
+        case (1 << 15):
+          function = pC_->defAsynPara.ethercatmcNamAux15_;
+          break;
+        case (1 << 16):
+          function = pC_->defAsynPara.ethercatmcNamAux16_;
+          break;
+        case (1 << 17):
+          function = pC_->defAsynPara.ethercatmcNamAux17_;
+          break;
+        case (1 << 18):
+          function = pC_->defAsynPara.ethercatmcNamAux18_;
+          break;
+        case (1 << 19):
+          function = pC_->defAsynPara.ethercatmcNamAux19_;
+          break;
+        case (1 << 20):
+          function = pC_->defAsynPara.ethercatmcNamAux20_;
+          break;
+        case (1 << 21):
+          function = pC_->defAsynPara.ethercatmcNamAux21_;
+          break;
+        case (1 << 22):
+          function = pC_->defAsynPara.ethercatmcNamAux22_;
+          break;
+        case (1 << 23):
+          function = pC_->defAsynPara.ethercatmcNamAux23_;
           break;
         default:
           break;

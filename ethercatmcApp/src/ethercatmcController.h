@@ -374,6 +374,8 @@ class epicsShareClass ethercatmcController : public asynMotorController {
   asynStatus indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
                                          unsigned devNum);
   asynStatus poll(void);
+  void indexerParseAwayDollarInDesc(int axisNo, char *pDesc,
+                                    unsigned *pAuxBits07mask);
   asynStatus newIndexerAxisAuxBitsV2(ethercatmcIndexerAxis *pAxis,
                                      unsigned axisNo, unsigned devNum,
                                      unsigned iAllFlags, int functionNamAux0,

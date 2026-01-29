@@ -67,7 +67,8 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
   asynStatus stopAxisInternal(const char *function_name, double acceleration);
   asynStatus stop(double acceleration);
   void setIndexerDevNumOffsetTypeCode(unsigned devNum, unsigned iOffset,
-                                      unsigned iTypCode);
+                                      unsigned iTypCode,
+                                      unsigned iAuxBits07mask);
   void setAuxBitsNotHomedMask(unsigned auxBitsNotHomedMask);
   void setAuxBitsInterlockFwdMask(unsigned auxBitsInterlockFwdMask);
   void setAuxBitsInterlockBwdMask(unsigned auxBitsInterlockBwdMask);
@@ -121,6 +122,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       unsigned lenInPlcPara;
       unsigned paramIfOffset;
       unsigned statusReasonAux;
+      unsigned auxBits07mask;
       unsigned auxBitsNotHomedMask;
       unsigned auxBitsEnabledMask;
       unsigned auxBitsLocalModeMask;
