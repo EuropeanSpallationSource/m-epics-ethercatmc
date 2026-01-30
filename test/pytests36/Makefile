@@ -24,6 +24,7 @@ SIMULATOR-TWO-PVA = \
   941_Simulator-MsgTxt.log-pva-m1\
   942_Simulator_Cabinet.log-pva-m1\
   943_Simulator_Pneumatics.log-pva-pneu \
+  944_Simulator_Carousel.log-pva-carousel \
   950_Simulator-JOGF-JOGR-JVEL-MRES.log-pva-m1\
   960_Simulator-motorFlags.log-pva-m1\
   980_Simulator-networkproblems.log-pva-m1\
@@ -80,6 +81,9 @@ monitor-ca-pva: \
 
 943_Simulator_Pneumatics.log-pva-pneu : 943_Simulator_Pneumatics.py
 	./test-ioc-with-sim-indexer-one-TC-wrapper.sh pva://IOC:Pneu $< $@
+
+944_Simulator_Carousel.log-pva-carousel : 944_Simulator_Carousel.py
+	./test-ioc-with-sim-indexer-one-TC-wrapper.sh pva://IOC:Carousel $< $@
 
 # rules for ca and pva
 %.log-ca-m1 : %.py

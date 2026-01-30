@@ -1616,7 +1616,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
      7,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
      "Carousel$statebits=0..10;",
-     {"OutOffCarousel",
+     {"OutOfCarousel",
       "Position1",
       "Position2",
       "Position3",
@@ -2041,7 +2041,8 @@ static void indexerMotorStatusRead1E04(
 #ifdef HAS_1E0C_SHUTTER_CAROUSEL
 static void indexerMotorStatusRead1E0C(
     unsigned devNum, unsigned motor_axis_no, unsigned numAuxBits,
-    netDevice1E0Cinterface_type *pIndexerDevice1E0Cinterface) {
+    netDevice1E0Cinterface_type *pIndexerDevice1E0Cinterface,
+    const char *pDevName) {
   unsigned statusReasonAux32;
   idxStatusCodeType idxStatusCode;
   statusReasonAux32 = NETTOUINT(pIndexerDevice1E0Cinterface->statusReasonAux32);
@@ -2077,13 +2078,17 @@ static void indexerMotorStatusRead1E0C(
   if (getManualSimulatorMode(motor_axis_no)) {
     /* The simulator may overwrite the whole statusReasonAux32 */
     statusReasonAux32 = get_nStatReasAUX(motor_axis_no);
-    LOGTIME3("%s/%s:%d motor_axis_no=%u simulated statusReasonAux32=0x%08x\n",
+    LOGTIME6("%s/%s:%d motor_axis_no=%u simulated statusReasonAux32=0x%08x\n",
              __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
              statusReasonAux32);
   } else {
     /* Build a new status word, start with 0 and fill in
        the bits */
     statusReasonAux32 = 0;
+    if (!strcmp("Carousel$statebits=0..10;", pDevName)) {
+      int iRet = (int)(0.5 + getMotorPos((int)motor_axis_no)); /* NINT */
+      statusReasonAux32 = 1 << iRet;
+    }
     /*
       if (getPosLimitSwitch(motor_axis_no))
       statusReasonAux32 |= 0x08000000;
@@ -3008,7 +3013,8 @@ void indexerHandlePLCcycle(void) {
           /* status */
           indexerMotorStatusRead1E0C(
               devNum, axisNo, numAuxBits,
-              &netData.memoryStruct.motors1E0C[motor1E0CNum]);
+              &netData.memoryStruct.motors1E0C[motor1E0CNum],
+              indexerDeviceAbsStraction[devNum].devName);
 #else
           LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
