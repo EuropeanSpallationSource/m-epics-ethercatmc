@@ -1020,12 +1020,9 @@ void ethercatmcController::setAlarmStatusSeverityAllAxes(int function,
 #include <alarm.h>
 /* Code inspired by .../asyn/devEpics/asynEpicsUtils.c */
 
-void ethercatmcController::setAlarmStatusSeverityUpdate(int axisNo,
-                                                        int function,
-                                                        int newStat,
-                                                        int newSevr) {
-  /* shorter version of __FUNCTION__  to save space in the IOC log*/
-  const static char *const functionName = "AlarmStatSevr";
+void ethercatmcController::AlarmStatSevr(int axisNo, int function, int newStat,
+                                         int newSevr) {
+  const static char *const functionName = __FUNCTION__;
   /* alarm.h from EPICS base define these enums:
      epicsAlarmCondition epicsAlarmSeverity
   but we use "int" here */
@@ -1081,7 +1078,7 @@ void ethercatmcController::setAlarmStatusSeverityWrapper(int axisNo,
       newStat = COMM_ALARM;
       break;
   }
-  setAlarmStatusSeverityUpdate(axisNo, function, newStat, newSevr);
+  AlarmStatSevr(axisNo, function, newStat, newSevr);
 }
 
 void ethercatmcController::setAlarmStatusSeverityFromStatusBits(
@@ -1166,5 +1163,5 @@ void ethercatmcController::setAlarmStatusSeverityFromStatusBits(
       newSevr = INVALID_ALARM;
       newStat = STATE_ALARM; /* Assume the worst */
   }
-  setAlarmStatusSeverityUpdate(axisNo, function, newStat, newSevr);
+  AlarmStatSevr(axisNo, function, newStat, newSevr);
 }

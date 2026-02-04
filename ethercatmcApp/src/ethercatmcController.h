@@ -301,8 +301,7 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                    double idlePollPeriod);
   void setAlarmStatusSeverityAllReadbacks(asynStatus status);
   void setAlarmStatusSeverityAllAxes(int function, asynStatus status);
-  void setAlarmStatusSeverityUpdate(int axisNo, int function, int newStat,
-                                    int newSevr);
+  void AlarmStatSevr(int axisNo, int function, int newStat, int newSevr);
   void setAlarmStatusSeverityWrapper(int axisNo, int function,
                                      asynStatus status);
   void setAlarmStatusSeverityFromStatusBits(int axisNo, int function,
