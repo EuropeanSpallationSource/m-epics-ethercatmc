@@ -1117,7 +1117,7 @@ int ethercatmcController::addPilsAsynDevLst(
     int functionNamAux0, int functionStatusBits, unsigned lenInPLC,
     unsigned inputOffset, unsigned outputOffset, unsigned statusOffset,
     asynParamType myEPICSParamType, unsigned iTypCode) {
-  const static char *const functionName = "addPilsAsynDevLst";
+  const static char *const functionName = __FUNCTION__;
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
   static size_t maxNumPilsAsynDevInfo = (sizeof(ctrlLocal.pilsAsynDevInfo) /
                                          sizeof(ctrlLocal.pilsAsynDevInfo[0])) -
@@ -1136,20 +1136,14 @@ int ethercatmcController::addPilsAsynDevLst(
     return -1;
   }
 
-  asynPrint(
-      pasynUserController_, ASYN_TRACE_ERROR,
-      "%s%s Err: axisNo=%i \"%s\" functionNamAux0=%d functionStatusBits=%d "
-      "lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
-      " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
-      modNamEMC, functionName, axisNo, paramName, functionNamAux0,
-      functionStatusBits, lenInPLC, inputOffset, outputOffset, statusOffset,
-      stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
-      iTypCode);
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s%s(%u) \"%s\" EPICSParamType=%s(%i)\n", modNamEMC, functionName,
-            axisNo, paramName, stringFromAsynParamType(myEPICSParamType),
-            (int)myEPICSParamType);
-
+            "%s%s axisNo=%i \"%s\" functionNamAux0=%d functionStatusBits=%d "
+            "lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
+            " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
+            modNamEMC, functionName, axisNo, paramName, functionNamAux0,
+            functionStatusBits, lenInPLC, inputOffset, outputOffset,
+            statusOffset, stringFromAsynParamType(myEPICSParamType),
+            (int)myEPICSParamType, iTypCode);
   if (myEPICSParamType != asynParamNotDefined) {
     /* Some parameters are alread pre-created by the Controller.cpp,
        e.g.errorId. Use those, otherwise create a parameter */
@@ -1280,7 +1274,7 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
                                             unsigned iTypCode,
                                             unsigned iAllFlags,
                                             const char *paramName) {
-  const static char *const functionName = "newPilsAsynDevice";
+  const static char *const functionName = __FUNCTION__;
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
   unsigned lenInPLC = 0;
   unsigned inputOffset = 0;
