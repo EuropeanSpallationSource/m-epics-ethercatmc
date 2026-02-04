@@ -1529,7 +1529,7 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
       ;  // nothing. keep the message */
     } else {
       int function = 0;
-      const char *functionName = "pollMsgTxt";
+      const char *functionName = __FUNCTION__;
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
                 "%s%s axisNo=%d statusReasonAux=0x%x "
                 "drvlocal.clean.auxBits07mask=0x%x\n",

@@ -105,7 +105,7 @@ const char *plcUnitPrefixTxtV2(int prefixCode) {
 asynStatus ethercatmcController::readDeviceIndexerV2FL(
     unsigned devNum, unsigned infoType, void *bufptr, size_t buflen,
     const char *fileName, int lineNo) {
-  const static char *const functionName = "readDeviceIndexerV2";
+  const static char *const functionName = __FUNCTION__;
   asynStatus status;
   unsigned value = (devNum + (infoType << 8));
   unsigned valueAcked = 0x8000 + value;
@@ -470,7 +470,7 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
 
 asynStatus ethercatmcController::indexerReadAxisParametersV2(
     ethercatmcIndexerAxis *pAxis, unsigned devNum) {
-  const static char *const functionName = "indexerReadAxisParametersV2";
+  const static char *const functionName = __FUNCTION__;
   unsigned axisNo = pAxis->axisNo_;
   unsigned infoType15 = 15;
   asynStatus status;

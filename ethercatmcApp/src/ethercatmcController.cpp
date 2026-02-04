@@ -1024,6 +1024,7 @@ void ethercatmcController::setAlarmStatusSeverityUpdate(int axisNo,
                                                         int function,
                                                         int newStat,
                                                         int newSevr) {
+  /* shorter version of __FUNCTION__  to save space in the IOC log*/
   const static char *const functionName = "AlarmStatSevr";
   /* alarm.h from EPICS base define these enums:
      epicsAlarmCondition epicsAlarmSeverity

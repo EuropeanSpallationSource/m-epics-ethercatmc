@@ -1117,7 +1117,7 @@ int ethercatmcController::addPilsAsynDevLst(
     int functionNamAux0, int functionStatusBits, unsigned lenInPLC,
     unsigned inputOffset, unsigned outputOffset, unsigned statusOffset,
     asynParamType myEPICSParamType, unsigned iTypCode) {
-  const static char *const functionName = "addPilsAsynDevLst";
+  const static char *const functionName = __FUNCTION__;
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
   static size_t maxNumPilsAsynDevInfo = (sizeof(ctrlLocal.pilsAsynDevInfo) /
                                          sizeof(ctrlLocal.pilsAsynDevInfo[0])) -
@@ -1274,7 +1274,7 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
                                             unsigned iTypCode,
                                             unsigned iAllFlags,
                                             const char *paramName) {
-  const static char *const functionName = "newPilsAsynDevice";
+  const static char *const functionName = __FUNCTION__;
   unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
   unsigned lenInPLC = 0;
   unsigned inputOffset = 0;
