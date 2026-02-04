@@ -1136,20 +1136,14 @@ int ethercatmcController::addPilsAsynDevLst(
     return -1;
   }
 
-  asynPrint(
-      pasynUserController_, ASYN_TRACE_ERROR,
-      "%s%s Err: axisNo=%i \"%s\" functionNamAux0=%d functionStatusBits=%d "
-      "lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
-      " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
-      modNamEMC, functionName, axisNo, paramName, functionNamAux0,
-      functionStatusBits, lenInPLC, inputOffset, outputOffset, statusOffset,
-      stringFromAsynParamType(myEPICSParamType), (int)myEPICSParamType,
-      iTypCode);
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s%s(%u) \"%s\" EPICSParamType=%s(%i)\n", modNamEMC, functionName,
-            axisNo, paramName, stringFromAsynParamType(myEPICSParamType),
-            (int)myEPICSParamType);
-
+            "%s%s axisNo=%i \"%s\" functionNamAux0=%d functionStatusBits=%d "
+            "lenInPLC=%u inputOffset=%u outputOffset=%u statusOffset=%u"
+            " EPICSParamType=%s(%i) iTypeCode=0x%04X\n",
+            modNamEMC, functionName, axisNo, paramName, functionNamAux0,
+            functionStatusBits, lenInPLC, inputOffset, outputOffset,
+            statusOffset, stringFromAsynParamType(myEPICSParamType),
+            (int)myEPICSParamType, iTypCode);
   if (myEPICSParamType != asynParamNotDefined) {
     /* Some parameters are alread pre-created by the Controller.cpp,
        e.g.errorId. Use those, otherwise create a parameter */
