@@ -96,8 +96,8 @@ epicsEnvSet("CHNO",            "1")
 epicsEnvSet("ASYNPARAMNAME",   "CfgMoveCurrent")
 epicsEnvSet("R",               "m1-$(ASYNPARAMNAME)")
 epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC",            0)
-epicsEnvSet("EGU",             "mA")
+epicsEnvSet("PREC",            3)
+epicsEnvSet("EGU",             "A")
 < ethercatmcAnalogOutputReadback.iocsh
 
 #####################################################
@@ -106,8 +106,8 @@ epicsEnvSet("CHNO",            "1")
 epicsEnvSet("ASYNPARAMNAME",   "CfgIdleCurrent")
 epicsEnvSet("R",               "m1-$(ASYNPARAMNAME)")
 epicsEnvSet("DESC",            "$(ASYNPARAMNAME)")
-epicsEnvSet("PREC",            0)
-epicsEnvSet("EGU",             "mA")
+epicsEnvSet("PREC",            3)
+epicsEnvSet("EGU",             "A")
 < ethercatmcAnalogOutputReadback.iocsh
 
 #####################################################
