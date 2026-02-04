@@ -243,16 +243,16 @@ RE_MATCH_MSTA_IOCLOG_MSTA = re.compile(r"(.*\s)(msta=0x)([0-9a-fA-F]*)(.*)$")
 # xxx:hxp:c0:m3.MSTA             2025-01-20 17:57:02.486434 18722
 # xxx:hxp:c0:m3.MSTA             2025-01-20 18:06:46.609890 2818 STATE MAJOR
 RE_MATCH_MSTA_CAMONITOR_DATE = re.compile(
-    "(\S+\.MSTA)\s+([-0-9]+\s+[0-9.:]+)\s+([0-9]+)\s*(.*)$"
+    "(\\S+\\.MSTA)\\s+([-0-9]+\\s+[0-9.:]+)\\s+([0-9]+)\\s*(.*)$"
 )
 # xxx:hxp:c0:m3.MSTA             <undefined> 0 UDF INVALID
 RE_MATCH_MSTA_CAMONITOR_UNDEFINED = re.compile(
-    "(\S+\.MSTA)\s+([^0-9:. ]+)\s+([0-9]+)\s*(.*)$"
+    "(\\S+\\.MSTA)\\s+([^0-9:. ]+)\\s+([0-9]+)\\s*(.*)$"
 )
 
 # SQ:SINQTEST:mmacs1:lin1.MIP    2025-02-04 18:18:19.694284 0
 RE_MATCH_MIP_CAMONITOR_DATE = re.compile(
-    "(\S+\.MIP)\s+([-0-9]+\s+[0-9.:]+)\s+([0-9]+)\s*(.*)$"
+    "(\\S+\\.MIP)\\s+([-0-9]+\\s+[0-9.:]+)\\s+([0-9]+)\\s*(.*)$"
 )
 
 
