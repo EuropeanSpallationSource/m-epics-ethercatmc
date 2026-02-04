@@ -1254,7 +1254,7 @@ void ethercatmcController::indexerParseAwayDollarInDesc(
       cntdown--;
     }
     unsigned auxBits07mask = 0;
-    while (last > first) {
+    while (last >= first) {
       asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
                 "%s%s(%d) last=%d first=%d bit_tmp=0x%x auxBits07mask=0x%x\n",
                 modNamEMC, functionName, axisNo, last, first, bit_tmp,
@@ -1263,6 +1263,7 @@ void ethercatmcController::indexerParseAwayDollarInDesc(
       auxBits07mask |= bit_tmp;
       last--;
     }
+    *pAuxBits07mask = auxBits07mask;
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s(%d) pDollar='%s' auxBits07mask=0x%x\n", modNamEMC,
               functionName, axisNo, pDollar, auxBits07mask);
