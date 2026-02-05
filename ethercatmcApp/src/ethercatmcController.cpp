@@ -134,6 +134,22 @@ extern "C" const char *errStringFromErrId(int nErrorId) {
       return "NoSignalEndSwitchBwd";
     case 0x1000B:
       return "NoSignalEndSwitchFwd";
+    case 0x10101:
+      return "MotorNotHomed";
+    case 0x10102:
+      return "NoPinholeInCarousel";
+    case 0x10103:
+      return "NotTakenFromCarrousel";
+    case 0x10104:
+      return "NotInsertInToCarrousel";
+    case 0x10105:
+      return "LiftCylinderError";
+    case 0x10106:
+      return "ArmCylinderError";
+    case 0x10107:
+      return "CarouselMotorError";
+    case 0x10108:
+      return "ElectromagnetError";
     default:
       return "";
   }

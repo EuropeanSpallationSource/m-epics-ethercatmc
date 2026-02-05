@@ -69,10 +69,21 @@ genMatrix() {
           exit 1
         fi
         ;;
+      mbbo_1e0c)
+        OPIMID_MOT_SHT=ethercatmcMBBO_1E0C.mid
+        HIGHT=$MOTORHIGHT
+        x=$(($cntx * $WIDTH))
+        cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
+        echo xcmd=$cmd "<$OPIMID_MOT_SHT"
+        eval $cmd <$OPIMID_MOT_SHT >>/tmp/$$
+        im=$(($im + 1))
+        cntx=$(($cntx + 1))
+        ;;
       motor)
         OPIMID_MOT_SHT=motorx-pils.mid
         ;;
       m)
+        OPIMID_MOT_SHT=motorx-pils.mid
         HIGHT=$MOTORHIGHT
         x=$(($cntx * $WIDTH))
         cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im)
