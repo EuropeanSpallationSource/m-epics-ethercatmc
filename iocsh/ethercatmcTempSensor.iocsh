@@ -1,4 +1,4 @@
 ethercatmcCreateAsynParam $(MOTOR_PORT) Temp      Float64
 ethercatmcCreateAsynParam $(MOTOR_PORT) Temp_DESC Octet
-
-dbLoadRecords("ethercatmcTempSensor.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO)")
+# NOTE: $(DESC) might be overwritten by Temp_DESC if Temp_DESC is defined. See ethercatmcTempSensor.template
+dbLoadRecords("ethercatmcTempSensor.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO), DESC=$(DESC=Temp)")
