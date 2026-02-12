@@ -74,6 +74,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
   void setAuxBitsInterlockBwdMask(unsigned auxBitsInterlockBwdMask);
   void setAuxBitsLimitSwFwdMask(unsigned auxBitsLimitSwFwdMask);
   void setAuxBitsLimitSwBwdMask(unsigned auxBitsLimitSwBwdMask);
+  void setAuxBitsCustomErrIdMask(unsigned auxBitsCustomErrIdMask);
   void setAuxBitsEnabledMask(unsigned auxBitsEnabledMask);
   void setAuxBitsLocalModeMask(unsigned auxBitsLocalModeMask);
   void setAuxBitsHomeSwitchMask(unsigned auxBitsHomeSwitchMask);
@@ -131,6 +132,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       unsigned auxBitsInterlockBwdMask;
       unsigned auxBitsLimitSwFwdMask;
       unsigned auxBitsLimitSwBwdMask;
+      unsigned auxBitsCustomErrIdMask;
       unsigned old_paramCtrl;
       unsigned old_idxAuxBitsPrinted;
       unsigned old_idxAuxBitsWritten;
