@@ -296,6 +296,14 @@ void ethercatmcIndexerAxis::setAuxBitsLimitSwBwdMask(
   drvlocal.clean.auxBitsLimitSwBwdMask = auxBitsLimitSwBwdMask;
 }
 
+void ethercatmcIndexerAxis::setAuxBitsCustomErrIdMask(
+    unsigned auxBitsCustomErrIdMask) {
+  asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+            "%s(%d) auxBitsCustomErrIdMask=0x%X\n", modNamEMC, axisNo_,
+            auxBitsCustomErrIdMask);
+  drvlocal.clean.auxBitsCustomErrIdMask = auxBitsCustomErrIdMask;
+}
+
 void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex) {
   size_t pollNowIdx;
   const size_t pollNowIdxMax = sizeof(drvlocal.clean.pollNowParams) /
@@ -937,6 +945,9 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
 
     /* Specific for 5010 */
     errorID = (int)NETTOUINT(readback.errorID);
+    if (statusReasonAux & drvlocal.clean.auxBitsCustomErrIdMask) {
+      errorID += 0x10000; /* custom error id is 0x10000..0x1FFFF */
+    }
     setIntegerParam(pC_->defAsynPara.ethercatmcErrId_, errorID);
 
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
@@ -1515,8 +1526,17 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
       charEorW = 'W';
       const char *errIdString = errStringFromErrId(errorID);
       if (errIdString[0]) {
-        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X",
-                 charEorW, errIdString, errorID);
+        if (errorID <= 0xFFFF) {
+          /* Vendor defined and documented ID.
+             Often seen ID have a short desription.
+             The long descripion can be looked up on the internet */
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s %X",
+                   charEorW, errIdString, errorID);
+        } else {
+          /* ESS home made ID */
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
+                   errIdString);
+        }
       } else {
         snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: TwinCAT Err %X",
                  charEorW, errorID);
