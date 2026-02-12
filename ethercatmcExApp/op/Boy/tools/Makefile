@@ -15,6 +15,7 @@ GNERATEDOPIS = \
   ../motor-3-ptp.opi \
   ../motor-4-pils.opi \
   ../motor-4-ptp.opi \
+  ../motor-4-shutter-1-pils.opi \
   ../motor-4-ecmc.opi \
   ../motor-5-pils.opi \
   ../motor-6-hxpd.opi \
@@ -26,6 +27,7 @@ GNERATEDOPIS = \
   ../motor-estiaSel2-temp.opi \
   ../motor-ymir-mcs1-pils.opi \
   ../motor-ymir-mcs2-pils.opi \
+  ../pinhole-nmx.opi \
   ../ethercatmcaxisConfig.opi \
   ../ethercatmcaxisConfig-pils.opi \
   ../ethercatmcaxisConfig-pils-ptp-Max-Red-Current-para195-197.opi \
@@ -35,6 +37,7 @@ GNERATEDOPIS = \
   ../ethercatmcaxisExpert-pils-ptp.opi \
   ../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-para195-197.opi \
   ../ethercatmcPTPErrBits.opi \
+  ../ethercatmcMBBO_1E0C.opi \
   ../ethercatmcShutter.opi \
   ../ethercatmcStatusWord1802.opi \
   ../shutter-1.opi \
@@ -156,6 +159,16 @@ DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.sh
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += genExpertWithAuxBits.py
 DEPENDENCIES_FOR_MOTOR_EXPERT_OPI += ptp.mid
 
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI = Makefile
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI += genExpertWithAuxBits.sh
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI += genExpertWithAuxBits.py
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI += ethercatmcMBBO_1E0C.start
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI += ethercatmcMBBO_1E0C.mid
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI += ethercatmcMBBO_1E0C.end
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI += Cabinet.mid
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI += plcName.mid
+DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI += ethercatmcaxisAuxBit.mid
+
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI = Makefile
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += genExpertWithAuxBits.sh
 DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += genExpertWithAuxBits.py
@@ -169,6 +182,7 @@ DEPENDENCIES_FOR_SHUTTER_EXPERT_OPI += ethercatmcShutter.end
 
 
 AUXBITS_EXPERT="20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
+AUXBITS_MBBO_1E0C="23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 AUXBITS_SHUTTER="23 22 21 20 19 18 17 16 15 14 13 5 4 3 2 1 0"
 AUXBITS_STATUSWORD="0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23"
 AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
@@ -227,6 +241,10 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-4-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils ptp 4 x 1
 
+# 4 shutters, one motor
+../motor-4-shutter-1-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	./genMotorShutter.sh $@ pils shutter s s s s motor m
+
 ../motor-5-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 5 x 1
 
@@ -245,6 +263,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 ../motor-4x4-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils temp m m m m n m m m m n m m m m n m m m m
 
+../MBBO_1E0C.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
+	./genMotorShutter.sh $@ pils shutter s s s s motor m
+
 ../motor-estiaSel1-temp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) tempsensor.mid
 	./genMotorShutter.sh $@ pils temp m m m m m n m m m m m n m m m n t t t t t n t t t t t n t t
 
@@ -256,6 +277,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-ymir-mcs2-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils  m m m m m n m m m m m n m m m m m n m m m shutter s s
+
+../pinhole-nmx.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) ethercatmcMBBO_1E0C.mid
+	./genMotorShutter.sh $@ pils mbbo_1e0c mbbo_1e0c m mbbo_1e0c m
 
 ../ethercatmcaxisConfig.opi: $(DEPENDENCIES_FOR_CONFIG_OPI) Makefile
 	cat $(DEPENDENCIES_FOR_CONFIG_OPI)  >$@
@@ -282,6 +306,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../ethercatmcaxisExpert-pils-ptp-Max-Red-Current-para195-197.opi: ../ethercatmcaxisExpert-pils-ptp.opi
 	sed -e 's/ethercatmcaxisConfig-pils.opi/ethercatmcaxisConfig-pils-ptp-Max-Red-Current-para195-197.opi/' < ../ethercatmcaxisExpert-pils-ptp.opi >$@
+
+../ethercatmcMBBO_1E0C.opi: $(DEPENDENCIES_FOR_MBBO_1E0C_EXPERT_OPI)
+	./genExpertWithAuxBits.sh $@ ethercatmcMBBO_1E0C $(AUXBITS_MBBO_1E0C)
 
 # Generate ethercatmcShutter*.opi out of
 #   ethercatmcShutter.mid and ethercatmcShutter.end

@@ -19,6 +19,12 @@ case $BASENAME in
     NAMAUXBIT='$(M)-CabinetNamBit'
     yaux=18
     ;;
+  ethercatmcMBBO_1E0C)
+    STATUSCODE='$(M)StatusCode'
+    STATUSBITS='$(M)StatusBits'
+    NAMAUXBIT='$(M)NamAuxBit'
+    yaux=298
+    ;;
   ethercatmcShutter)
     STATUSCODE='$(M)StatusCode'
     STATUSBITS='$(M)StatusBits'
