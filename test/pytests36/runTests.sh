@@ -35,7 +35,7 @@ fi
 #
 #
 checkAndInstallSystemPackage() {
-  while test $# -gt 1; do
+  while test $# -gt 0; do
     PACKAGENAME=$1
     shift
     if which yum >/dev/null 2>&1; then
@@ -69,7 +69,30 @@ checkAndInstallPythonPackage() {
 }
 ########################################
 
-if which virtualenv-3.9 >/dev/null 2>&1; then
+#
+# Some systems are known to have virtualenv
+#
+UNAME_A=$(uname -a)
+case $UNAME_A in
+  *ubuntu* | *Debian*)
+    if ! which virtualenv >/dev/null 2>&1; then
+      checkAndInstallSystemPackage virtualenv
+    fi
+    ;;
+  *) ;;
+esac
+
+if which virtualenv-3.14 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.14
+elif which virtualenv-3.13 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.13
+elif which virtualenv-3.12 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.12
+elif which virtualenv-3.11 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.11
+elif which virtualenv-3.10 >/dev/null 2>&1; then
+  MYVIRTUALENV=virtualenv-3.10
+elif which virtualenv-3.9 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.9
 elif which virtualenv-3.8 >/dev/null 2>&1; then
   MYVIRTUALENV=virtualenv-3.8
@@ -96,7 +119,7 @@ export MYVIRTUALENV
 
 # There must be a better way to do this
 # shellcheck disable=SC2154
-if test "$ImageOS" = ubuntu20; then
+if test "$ImageOS" = ubuntu20 || test "$ImageOS" = ubuntu22; then
   ./doRunTests.sh "$@"
   exit
 fi
@@ -136,7 +159,17 @@ fi
 
 ##############################################################################
 if test -n "$MYVIRTUALENV" && type $MYVIRTUALENV >/dev/null 2>&1; then
-  if which python3.9 >/dev/null 2>&1; then
+  if which python3.14 >/dev/null 2>&1; then
+    PYTHON=python3.14
+  elif which python3.13 >/dev/null 2>&1; then
+    PYTHON=python3.13
+  elif which python3.12 >/dev/null 2>&1; then
+    PYTHON=python3.12
+  elif which python3.11 >/dev/null 2>&1; then
+    PYTHON=python3.11
+  elif which python3.10 >/dev/null 2>&1; then
+    PYTHON=python3.10
+  elif which python3.9 >/dev/null 2>&1; then
     PYTHON=python3.9
   elif which python3.8 >/dev/null 2>&1; then
     PYTHON=python3.8
@@ -186,6 +219,11 @@ else
     checkAndInstallPythonPackage epics "conda install -c https://conda.anaconda.org/GSECARS pyepics" "conda install pyepics"
   fi
 fi
+
+if ! which pip >/dev/null; then
+  checkAndInstallSystemPackage pip
+fi
+
 checkAndInstallPythonPackage epics "pip3 install pyepics" "pip install pyepics" &&
   checkAndInstallPythonPackage p4p "pip3 install p4p" "pip install p4p"
 checkAndInstallPythonPackage pytest "pip3 install $PYTEST" "pip install $PYTEST" || {
@@ -207,16 +245,29 @@ if ! black --version | grep -q "[^0-9]${BLACK_VERSION}[^0-9]"; then
   exit 1
 fi
 # shellcheck disable=SC2035
-black *.py
+TERM=dumb black *.py || exit
 
 #Check ruff, the fast Python linter and code formatter
+# Note: The version without 'v'. 'v' is used when installing
 RUFF_VERSION=0.1.7
+if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
+  pip install git+https://github.com/charliermarsh/ruff-pre-commit@v$RUFF_VERSION
+fi
 if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
   echo >&2 ruff not found or wrong version
   exit 1
 fi
 # shellcheck disable=SC2035
-ruff *.py
+NO_COLOR=1 ruff *.py || exit
+
+if ! type pre-commit >/dev/null 2>&1; then
+  pip install pre-commit
+fi
+pre-commit run --all-files || exit
+
+if type shfmt >/dev/null 2>&1; then
+  shfmt -i 2 -ci -d -w .
+fi
 
 # See if we have a local EPICS installation
 uname_s=$(uname -s 2>/dev/null || echo unknown)
@@ -228,7 +279,7 @@ if test -r $INSTALLED_EPICS; then
 fi
 
 export VIRTUALENVDIR
-export CONDA_SYSPFX
+export CONDA_P
 
 if test -z "$PYEPICS_LIBCA"; then
   MYLIB=$EPICS_BASE/lib/$EPICS_HOST_ARCH/libca.so
