@@ -447,6 +447,8 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
             pAxis->setAuxBitsLimitSwFwdMask(1 << auxBitIdx);
           } else if (!strcmp("LimitSwBwd", auxBitName)) {
             pAxis->setAuxBitsLimitSwBwdMask(1 << auxBitIdx);
+          } else if (!strcmp("customErrId", auxBitName)) {
+            pAxis->setAuxBitsCustomErrIdMask(1 << auxBitIdx);
           }
         }
       } else {

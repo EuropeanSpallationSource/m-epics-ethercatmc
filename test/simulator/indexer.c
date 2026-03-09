@@ -678,7 +678,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "",
       "",
       "",
-      "",
+      "customErrId",
       "InterlockFwd",
       "InterlockBwd",
       "localMode",
@@ -2202,7 +2202,7 @@ static void indexerMotorStatusRead5010(
   if (getManualSimulatorMode(motor_axis_no)) {
     /* The simulator may overwrite the whole statusReasonAux32 */
     statusReasonAux32 = get_nStatReasAUX(motor_axis_no);
-    LOGTIME3("%s/%s:%d motor_axis_no=%u simulated statusReasonAux32=0x%08x\n",
+    LOGTIME6("%s/%s:%d motor_axis_no=%u simulated statusReasonAux32=0x%08x\n",
              __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
              statusReasonAux32);
   } else {
@@ -2267,6 +2267,18 @@ static void indexerMotorStatusRead5010(
           LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u interlockFwd=%d\n",
                    __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
                    bValue);
+          if (bValue) {
+            statusReasonAux32 |= 1 << auxBitIdx;
+          }
+        } else if (!strcmp("customErrId", auxBitName)) {
+          /* double negation !! will normalize to 0 or 1 */
+          int errorId = get_nErrorId(motor_axis_no);
+          int bValue = !!(errorId & 0x10000);
+          LOGTIME6(
+              "%s/%s:%d motor_axis_no=%u errorId=%d auxBitIdx=%u "
+              "customErrId=%d\n",
+              __FILE__, __FUNCTION__, __LINE__, motor_axis_no, errorId,
+              auxBitIdx, bValue);
           if (bValue) {
             statusReasonAux32 |= 1 << auxBitIdx;
           }

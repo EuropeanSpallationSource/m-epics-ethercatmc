@@ -107,6 +107,8 @@ idleWarnTCs = [
     # homed, enabled, InterlockBwd, InterlockFwd
     (19, "0x104C0000", 0x4460, 0, "W: InterlockFwdBwd"),
     (20, "0x104C0000", 0x0, 0, "W: InterlockFwdBwd"),
+    # homed (bit set), enabled, custom error id
+    (21, "0x10420000", 0x10101, 0, "W: MotorNotHomed"),
 ]
 
 errorTCs = [
@@ -127,6 +129,8 @@ errorTCs = [
     (11, "0x83400000", 0x0, 0, "E: Error (0x3)"),
     # Error state, no error Id, all reason bits set. Hex code of reason bits
     (12, "0x8F400000", 0x0, 0, "E: Error (0xF)"),
+    # Error, homed (bit set), enabled, custom error id
+    (13, "0x80420000", 0x10101, 0, "E: MotorNotHomed"),
 ]
 
 resetTCs = [
