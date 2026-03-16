@@ -44,7 +44,11 @@ class AxisMr:
             try:
                 vers = float(self.axisCom.get(".VERS"))
                 # 7.09 is rounded to 7.0900001xxx; use 7.091
-                if (vers >= 6.94 and vers <= 7.091) or (vers >= 7.23 and vers < 7.29):
+                if (
+                    (vers >= 6.94 and vers <= 7.091)
+                    or (vers >= 7.23 and vers < 7.29)
+                    or (vers >= 7.32 and vers < 7.4)
+                ):
                     self.hasFieldACCS = True
                     self.hasFieldSPAM = True
                     self.hasFieldMFLG = True
