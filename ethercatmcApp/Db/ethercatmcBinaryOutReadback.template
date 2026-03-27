@@ -1,0 +1,10 @@
+record(bo, "$(P)$(R)")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "$(DESC)")
+    field(OUT,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
+    field(ZNAM, "$(ZNAM)")
+    field(ONAM, "$(ONAM)")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}

@@ -1,0 +1,3 @@
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME) Int32
+
+dbLoadRecords("ethercatmcBinaryOutReadback.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), CHNO=$(CHNO), ASYNPARAMNAME=$(ASYNPARAMNAME), DESC=$(DESC), ZNAM=$(ZNAM), ONAM=$(ONAM)")
