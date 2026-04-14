@@ -7,6 +7,7 @@
 #define ADS_READ_DEVICE_INFO 1
 #define ADS_READ 2
 #define ADS_WRITE 3
+#define ADS_READSTATE 4
 #define ADS_READ_WRITE 9
 
 /* AMS/TCP Header */
@@ -99,6 +100,20 @@ typedef struct {
   uint8_t wr_len_3;
   uint8_t data[256];
 } ADS_ReadWrite_req_type;
+
+typedef struct {
+  ams_hdr_type ams_hdr;
+  struct {
+    uint8_t result_0;
+    uint8_t result_1;
+    uint8_t result_2;
+    uint8_t result_3;
+    uint8_t adsState_low;
+    uint8_t adsState_high;
+    uint8_t deviceState_low;
+    uint8_t deviceState_high;
+  } response;
+} ADS_Read_State_rep_type;
 
 typedef struct {
   ams_hdr_type ams_hdr;

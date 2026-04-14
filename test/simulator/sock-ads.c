@@ -83,12 +83,28 @@ size_t handle_ams_request(int fd, char *buf, size_t len, size_t buff_len_max) {
     handleADSwrite(fd, ams_hdr_p);
     indexerHandlePLCcycle();
     return len;
+  } else if (cmdId == ADS_READSTATE) {
+    ADS_Read_State_rep_type *ADS_Read_State_rep_p =
+        (ADS_Read_State_rep_type *)ams_hdr_p;
+    uint32_t total_len_reply;
+    total_len_reply = sizeof(*ADS_Read_State_rep_p);
+    memset(&ADS_Read_State_rep_p->response, 0,
+           sizeof(ADS_Read_State_rep_p->response));
+    /* only adsstate is need and must be run.
+       Leave the rest as 0 */
+    ADS_Read_State_rep_p->response.adsState_low = 5; /* ADSSTATE_RUN */
+    // ADS_Read_State_rep_p->response.adsState_high;
+    // ADS_Read_State_rep_p->response.deviceState_low;
+    // ADS_Read_State_rep_p->response.deviceState_high;
+    send_ams_reply(fd, ams_hdr_p, total_len_reply);
+    return len;
   } else if (cmdId == ADS_READ_WRITE) {
     handleADSreadwrite(fd, ams_hdr_p);
-    RETURN_ERROR_OR_DIE(__LINE__, "%s/%s:%d command not implemented =%u",
+    RETURN_ERROR_OR_DIE(__LINE__,
+                        "%s/%s:%d command readWrite not implemented =%u",
                         __FILE__, __FUNCTION__, __LINE__, cmdId);
   } else {
-    RETURN_ERROR_OR_DIE(__LINE__, "%s/%s:%d command not implemented =%u",
+    RETURN_ERROR_OR_DIE(__LINE__, "%s/%s:%d command not implemented=%u",
                         __FILE__, __FUNCTION__, __LINE__, cmdId);
   }
 
