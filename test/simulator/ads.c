@@ -170,6 +170,7 @@ void handleADSwrite(int fd, ams_hdr_type *ams_hdr_p) {
   }
 }
 
+/* This function is only used by the ads driver */
 void handleADSreadwrite(int fd, ams_hdr_type *ams_hdr_p) {
   ADS_ReadWrite_req_type *ADS_ReadWrite_req_p =
       (ADS_ReadWrite_req_type *)ams_hdr_p;
