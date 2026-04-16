@@ -109,6 +109,9 @@ idleWarnTCs = [
     (20, "0x104C0000", 0x0, 0, "W: InterlockFwdBwd"),
     # homed (bit set), enabled, custom error id
     (21, "0x10420000", 0x10101, 0, "W: MotorNotHomed"),
+    # not homed, enabled, InterlockFwdBwd: both directions blocked, axis cannot
+    # move at all, InterlockFwdBwd must appear before "Axis not homed"
+    (22, "0x10CC0000", 0x0, 0, "W: InterlockFwdBwd"),
 ]
 
 errorTCs = [
@@ -138,6 +141,35 @@ resetTCs = [
     (1, "0x00000000", 0x0, 0, "W: AxisRESET"),
     # Reset state. errorID should be ignored
     (2, "0x00000000", 0x4550, 0, "W: AxisRESET"),
+]
+
+# Test cases for HomProc-aware interlock vs not-homed priority.
+# Tuple: (tc_no, statusReasonAux, errorId, pwrAuto, homProc, expMsgTxt)
+# HomProc values: LimBwd=1, LimFwd=2, HSbwdfromLimBwd=3, HSfwdfromLimFwd=4,
+#                 HSbwd=11, HSfwd=12, IndexNBwd=21, IndexNFwd=22,
+#                 IndexNfromLimBwd=23, IndexNfromLimFwd=24, ManSetPos=15
+interlockHomProcTCs = [
+    # not homed, enabled, InterlockFwd, HomProc goes FWD (LimFwd=2):
+    # homing is blocked by InterlockFwd -> show InterlockFwd before not homed
+    (1, "0x10C40000", 0x0, 0, 2, "W: InterlockFwd"),
+    # not homed, enabled, InterlockBwd, HomProc goes BWD (LimBwd=1):
+    # homing is blocked by InterlockBwd -> show InterlockBwd before not homed
+    (2, "0x10C80000", 0x0, 0, 1, "W: InterlockBwd"),
+    # not homed, enabled, InterlockFwd, HomProc goes BWD (LimBwd=1):
+    # homing direction is free -> show not homed first
+    (3, "0x10C40000", 0x0, 0, 1, "W: Axis not homed"),
+    # not homed, enabled, InterlockBwd, HomProc goes FWD (LimFwd=2):
+    # homing direction is free -> show not homed first
+    (4, "0x10C80000", 0x0, 0, 2, "W: Axis not homed"),
+    # not homed, enabled, InterlockFwd, HomProc unknown (ManSetPos=15):
+    # direction not known -> show not homed first
+    (5, "0x10C40000", 0x0, 0, 15, "W: Axis not homed"),
+    # not homed, enabled, InterlockFwd, HomProc=HSfwd(12) (FWD):
+    # homing is blocked -> show InterlockFwd before not homed
+    (6, "0x10C40000", 0x0, 0, 12, "W: InterlockFwd"),
+    # not homed, enabled, InterlockBwd, HomProc=HSbwd(11) (BWD):
+    # homing is blocked -> show InterlockBwd before not homed
+    (7, "0x10C80000", 0x0, 0, 11, "W: InterlockBwd"),
 ]
 
 
@@ -207,9 +239,7 @@ class Test(unittest.TestCase):
     drvUseEGU_RB = None
     drvUseEGU = 0
     url_string = os.getenv("TESTEDMOTORAXIS")
-    print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}"
-    )
+    print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} url_string={url_string}")
 
     axisCom = AxisCom(url_string, log_debug=False)
     axisMr = AxisMr(axisCom)
@@ -332,6 +362,43 @@ class Test(unittest.TestCase):
                 expSevr=sevrMajor,
                 expStat=STATE_ALARM,
             )
+
+        assert passed
+
+    def test_TC_94104(self):
+        passed = True
+        for tc in interlockHomProcTCs:
+            tc_no = 94104000 + tc[0]
+            statusReasonAux = tc[1]
+            errorId = tc[2]
+            pwrAuto = tc[3]
+            homProc = tc[4]
+            expMsgTxt = tc[5]
+            # reset to clean state first
+            passed = passed and writeBitsReadMsgTxt(
+                self,
+                tc_no=tc_no,
+                statusReasonAux=statusReasonAuxIdlePowerOn,
+                errorId=0,
+                pwrAuto=1,
+                expMsgTxt="",
+                expSevr=sevrNone,
+                expStat=NONE_ALARM,
+            )
+            tc_no = 94104100 + tc[0]
+            oldHomProc = self.axisCom.get("-HomProc")
+            self.axisCom.put("-HomProc", homProc, wait=True)
+            passed = passed and writeBitsReadMsgTxt(
+                self,
+                tc_no=tc_no,
+                statusReasonAux=statusReasonAux,
+                errorId=errorId,
+                pwrAuto=pwrAuto,
+                expMsgTxt=expMsgTxt,
+                expSevr=sevrMinor,
+                expStat=STATE_ALARM,
+            )
+            self.axisCom.put("-HomProc", oldHomProc, wait=True)
 
         assert passed
 
