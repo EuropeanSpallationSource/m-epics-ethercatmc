@@ -28,6 +28,7 @@ record(motor,"$(P)$(R)")
 	field(FOFF,"$(FOFF=0)")
 	field(NTM,"0")
 	field(TWV,"$(TWV=1)")
+	field(HLSV,"$(HLSV=0)")
 }
 
 # The message text
