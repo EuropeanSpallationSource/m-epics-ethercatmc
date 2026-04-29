@@ -1415,6 +1415,73 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   return status;
 }
 
+/* evaluate if "not homed" or (any) interlock are more important */
+
+const char *ethercatmcIndexerAxis::msgTxtFromNotHomedInterlocks(
+    unsigned statusReasonAux, int homed) {
+  /* A moving axis should show moving, homing ...*/
+  const unsigned interlockMask = drvlocal.clean.auxBitsInterlockFwdMask |
+                                 drvlocal.clean.auxBitsInterlockBwdMask;
+  const unsigned interlockBits = statusReasonAux & interlockMask;
+  const int hasInterlockMask = interlockMask != 0;
+  if (hasInterlockMask &&
+      interlockBits == (drvlocal.clean.auxBitsInterlockFwdMask |
+                        drvlocal.clean.auxBitsInterlockBwdMask)) {
+    /* Both Fwd and Bwd interlocked: axis cannot move at all, show before
+    homing */
+    return "InterlockFwdBwd";
+  } else if (!homed) {
+    /* Single-direction interlock: check if it blocks the configured homing
+     * direction. If it does, the interlock message takes priority over
+     * "not homed" since homing will fail. Otherwise homing may still succeed
+     * in the free direction, so "not homed" takes priority. */
+    int homProc = 0;
+    pC_->getIntegerParam(axisNo_, pC_->defAsynPara.ethercatmcHomProc_RB_,
+                         &homProc);
+    /* FWD homing procedures: LimFwd=2, HSfwdfromLimFwd=4, HSfwd=12,
+     *                        IndexNFwd=22, IndexNfromLimFwd=24 */
+    static const int fwdHomProcs[] = {2, 4, 12, 22, 24};
+    /* BWD homing procedures: LimBwd=1, HSbwdfromLimBwd=3, HSbwd=11,
+     *                        IndexNBwd=21, IndexNfromLimBwd=23 */
+    static const int bwdHomProcs[] = {1, 3, 11, 21, 23};
+    static const size_t numFwdHomProcs =
+        sizeof(fwdHomProcs) / sizeof(fwdHomProcs[0]);
+    static const size_t numBwdHomProcs =
+        sizeof(bwdHomProcs) / sizeof(bwdHomProcs[0]);
+    int homingIsFwd = 0, homingIsBwd = 0;
+    for (size_t i = 0; i < numFwdHomProcs; i++) {
+      if (homProc == fwdHomProcs[i]) {
+        homingIsFwd = 1;
+        break;
+      }
+    }
+    for (size_t i = 0; i < numBwdHomProcs; i++) {
+      if (homProc == bwdHomProcs[i]) {
+        homingIsBwd = 1;
+        break;
+      }
+    }
+    if (hasInterlockMask &&
+        interlockBits == drvlocal.clean.auxBitsInterlockFwdMask &&
+        homingIsFwd) {
+      return "InterlockFwd";
+    } else if (hasInterlockMask &&
+               interlockBits == drvlocal.clean.auxBitsInterlockBwdMask &&
+               homingIsBwd) {
+      return "InterlockBwd";
+    } else {
+      return "Axis not homed";
+    }
+  } else if (hasInterlockMask &&
+             interlockBits == drvlocal.clean.auxBitsInterlockFwdMask) {
+    return "InterlockFwd";
+  } else if (hasInterlockMask &&
+             interlockBits == drvlocal.clean.auxBitsInterlockBwdMask) {
+    return "InterlockBwd";
+  }
+  return NULL;
+}
+
 void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
                                        unsigned idxAuxBits, int localMode,
                                        unsigned statusReasonAux) {
@@ -1494,78 +1561,23 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
   is not homed ??? axis can be moved */
   /* continue with msgtxt */
   if (!nowMoving) {
-    /* A moving axis should show moving, homing ...*/
-    const unsigned interlockMask = drvlocal.clean.auxBitsInterlockFwdMask |
-                                   drvlocal.clean.auxBitsInterlockBwdMask;
-    const unsigned interlockBits = statusReasonAux & interlockMask;
-    const int hasInterlockMask = interlockMask != 0;
     if (sErrorMessage[0]) {
       msgTxtFromDriver =
           &sErrorMessage[0]; /* There is an important text already */
     } else if (localMode) {
       charEorW = 'W';
       msgTxtFromDriver = "W: localMode";
-    } else if (hasInterlockMask &&
-               interlockBits == (drvlocal.clean.auxBitsInterlockFwdMask |
-                                 drvlocal.clean.auxBitsInterlockBwdMask)) {
-      /* Both Fwd and Bwd interlocked: axis cannot move at all, show before
-      homing */
-      charEorW = 'W';
-      msgTxtFromDriver = "W: InterlockFwdBwd";
-    } else if (!homed) {
-      /* Single-direction interlock: check if it blocks the configured homing
-       * direction. If it does, the interlock message takes priority over
-       * "not homed" since homing will fail. Otherwise homing may still succeed
-       * in the free direction, so "not homed" takes priority. */
-      int homProc = 0;
-      pC_->getIntegerParam(axisNo_, pC_->defAsynPara.ethercatmcHomProc_RB_,
-                           &homProc);
-      /* FWD homing procedures: LimFwd=2, HSfwdfromLimFwd=4, HSfwd=12,
-       *                        IndexNFwd=22, IndexNfromLimFwd=24 */
-      static const int fwdHomProcs[] = {2, 4, 12, 22, 24};
-      /* BWD homing procedures: LimBwd=1, HSbwdfromLimBwd=3, HSbwd=11,
-       *                        IndexNBwd=21, IndexNfromLimBwd=23 */
-      static const int bwdHomProcs[] = {1, 3, 11, 21, 23};
-      static const size_t numFwdHomProcs =
-          sizeof(fwdHomProcs) / sizeof(fwdHomProcs[0]);
-      static const size_t numBwdHomProcs =
-          sizeof(bwdHomProcs) / sizeof(bwdHomProcs[0]);
-      int homingIsFwd = 0, homingIsBwd = 0;
-      for (size_t i = 0; i < numFwdHomProcs; i++) {
-        if (homProc == fwdHomProcs[i]) {
-          homingIsFwd = 1;
-          break;
-        }
-      }
-      for (size_t i = 0; i < numBwdHomProcs; i++) {
-        if (homProc == bwdHomProcs[i]) {
-          homingIsBwd = 1;
-          break;
-        }
-      }
-      if (hasInterlockMask &&
-          interlockBits == drvlocal.clean.auxBitsInterlockFwdMask &&
-          homingIsFwd) {
-        charEorW = 'W';
-        msgTxtFromDriver = "W: InterlockFwd";
-      } else if (hasInterlockMask &&
-                 interlockBits == drvlocal.clean.auxBitsInterlockBwdMask &&
-                 homingIsBwd) {
-        charEorW = 'W';
-        msgTxtFromDriver = "W: InterlockBwd";
-      } else {
+    } else {
+      const char *msgTxt = msgTxtFromNotHomedInterlocks(statusReasonAux, homed);
+      if (msgTxt) {
         charEorW = 'W';
         snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
-                 "Axis not homed");
+                 msgTxt);
+        msgTxtFromDriver = &sErrorMessage[0];
       }
-    } else if (hasInterlockMask &&
-               interlockBits == drvlocal.clean.auxBitsInterlockFwdMask) {
-      charEorW = 'W';
-      msgTxtFromDriver = "W: InterlockFwd";
-    } else if (hasInterlockMask &&
-               interlockBits == drvlocal.clean.auxBitsInterlockBwdMask) {
-      charEorW = 'W';
-      msgTxtFromDriver = "W: InterlockBwd";
+    }
+    if (msgTxtFromDriver) {
+      ;  // keep it
     } else if (errorID) {
       charEorW = 'W';
       const char *errIdString = errStringFromErrId(errorID);
