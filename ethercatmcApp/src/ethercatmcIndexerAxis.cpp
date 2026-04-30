@@ -855,6 +855,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   unsigned idxReasonBits = 0;
   unsigned idxAuxBits = 0;
   int homed = 0;
+  int hls = 0;
+  int lls = 0;
   int motorRecDirection = -1;
 
   /* Don't leave *moving un-initialized, if we return early */
@@ -1277,8 +1279,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     /* Limit switches and interlocks gives inhibit */
     int inhibitF = 0;
     int inhibitR = 0;
-    int hls = 0;
-    int lls = 0;
     /* When the MCU has an AUX bit for the limit switch (new version):
        use that. If not: Use the reason bit (old version) */
     if (drvlocal.clean.auxBitsLimitSwFwdMask) {
@@ -1396,7 +1396,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
         drvlocal.dirty.idxStatusCodeMsgTxt != idxStatusCode ||
         idxAuxBits != drvlocal.clean.old_idxAuxBitsWritten ||
         idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
-      pollMsgTxt(hasError, errorID, idxAuxBits, localMode, statusReasonAux);
+      pollMsgTxt(hasError, errorID, idxAuxBits, localMode, statusReasonAux, hls,
+                 lls, motorRecDirection > 0);
       drvlocal.dirty.motorPowerAutoOnOff = 0;
       drvlocal.dirty.old_hasError = hasError;
       drvlocal.clean.statusReasonAux = statusReasonAux;
@@ -1482,9 +1483,33 @@ const char *ethercatmcIndexerAxis::msgTxtFromNotHomedInterlocks(
   return NULL;
 }
 
+const char *ethercatmcIndexerAxis::msgTxtFromLimitSwitches(
+    int hls, int lls, int motorRecDirection, int shortMsg) {
+  if (!hls && !lls) {
+    return NULL;  // the most common case
+  } else if (hls && lls) {
+    return shortMsg ? "Both Limit Switches" : "HLS+LLS";
+  } else if (hls) {
+    if (!motorRecDirection) {
+      return shortMsg ? "High Limit Switch" : "HLS";
+    } else {
+      return shortMsg ? "Low Limit Switch" : "LLS";
+    }
+  } else if (lls) {
+    if (!motorRecDirection) {
+      return shortMsg ? "Low Limit Switch" : "LLS";
+    } else {
+      return shortMsg ? "High Limit Switch" : "HLS";
+    }
+  }
+
+  return NULL;
+}
+
 void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
                                        unsigned idxAuxBits, int localMode,
-                                       unsigned statusReasonAux) {
+                                       unsigned statusReasonAux, int hls,
+                                       int lls, int motorRecDirection) {
   const char *msgTxtFromDriver = NULL;
   char sErrorMessage[40];
   char charEorW = '\0';
@@ -1568,11 +1593,22 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
       charEorW = 'W';
       msgTxtFromDriver = "W: localMode";
     } else {
-      const char *msgTxt = msgTxtFromNotHomedInterlocks(statusReasonAux, homed);
-      if (msgTxt) {
+      const char *msgInterlockTxt =
+          msgTxtFromNotHomedInterlocks(statusReasonAux, homed);
+      const char *msgLimitSwitchTxt = msgTxtFromLimitSwitches(
+          hls, lls, motorRecDirection, msgInterlockTxt == NULL);
+      if (msgInterlockTxt || msgLimitSwitchTxt) {
         charEorW = 'W';
-        snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
-                 msgTxt);
+        if (msgInterlockTxt && msgLimitSwitchTxt) {
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s,%s",
+                   charEorW, msgLimitSwitchTxt, msgInterlockTxt);
+        } else if (msgInterlockTxt) {
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
+                   msgInterlockTxt);
+        } else if (msgLimitSwitchTxt) {
+          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
+                   msgLimitSwitchTxt);
+        }
         msgTxtFromDriver = &sErrorMessage[0];
       }
     }
