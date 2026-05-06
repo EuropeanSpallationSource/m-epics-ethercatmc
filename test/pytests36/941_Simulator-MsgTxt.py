@@ -100,19 +100,19 @@ idleWarnTCs = [
     (13, 0x10500000, 0x4460, 0, "W: localMode"),
     (14, 0x10500000, 0x0, 0, "W: localMode"),
     # homed, enabled, InterlockBwd
-    (15, 0x10480000, 0x4460, 0, "W: InterlockBwd"),
-    (16, 0x10480000, 0x0, 0, "W: InterlockBwd"),
+    (15, 0x10480000, 0x4460, 0, "W: LO_Interlock"),
+    (16, 0x10480000, 0x0, 0, "W: LO_Interlock"),
     # homed, enabled, InterlockFwd
-    (17, 0x10440000, 0x4460, 0, "W: InterlockFwd"),
-    (18, 0x10440000, 0x0, 0, "W: InterlockFwd"),
+    (17, 0x10440000, 0x4460, 0, "W: HI_interlock"),
+    (18, 0x10440000, 0x0, 0, "W: HI_interlock"),
     # homed, enabled, InterlockBwd, InterlockFwd
-    (19, 0x104C0000, 0x4460, 0, "W: InterlockFwdBwd"),
-    (20, 0x104C0000, 0x0, 0, "W: InterlockFwdBwd"),
+    (19, 0x104C0000, 0x4460, 0, "W: HI+LO_il"),
+    (20, 0x104C0000, 0x0, 0, "W: HI+LO_il"),
     # homed (bit set), enabled, custom error id
     (21, 0x10420000, 0x10101, 0, "W: MotorNotHomed"),
     # not homed, enabled, InterlockFwdBwd: both directions blocked, axis cannot
     # move at all, InterlockFwdBwd must appear before Axis not homed
-    (22, 0x10CC0000, 0x0, 0, "W: InterlockFwdBwd"),
+    (22, 0x10CC0000, 0x0, 0, "W: HI+LO_il"),
 ]
 
 errorTCs = [
@@ -152,10 +152,10 @@ resetTCs = [
 interlockHomProcTCs = [
     # not homed, enabled, InterlockFwd, HomProc goes FWD (LimFwd=2):
     # homing is blocked by InterlockFwd -> show InterlockFwd before not homed
-    (1, 0x10C40000, 0x0, 0, 2, "W: InterlockFwd"),
+    (1, 0x10C40000, 0x0, 0, 2, "W: HI_interlock"),
     # not homed, enabled, InterlockBwd, HomProc goes BWD (LimBwd=1):
     # homing is blocked by InterlockBwd -> show InterlockBwd before not homed
-    (2, 0x10C80000, 0x0, 0, 1, "W: InterlockBwd"),
+    (2, 0x10C80000, 0x0, 0, 1, "W: LO_Interlock"),
     # not homed, enabled, InterlockFwd, HomProc goes BWD (LimBwd=1):
     # homing direction is free -> show not homed first
     (3, 0x10C40000, 0x0, 0, 1, "W: Axis not homed"),
@@ -167,10 +167,10 @@ interlockHomProcTCs = [
     (5, 0x10C40000, 0x0, 0, 15, "W: Axis not homed"),
     # not homed, enabled, InterlockFwd, HomProc=HSfwd(12) (FWD):
     # homing is blocked -> show InterlockFwd before not homed
-    (6, 0x10C40000, 0x0, 0, 12, "W: InterlockFwd"),
+    (6, 0x10C40000, 0x0, 0, 12, "W: HI_interlock"),
     # not homed, enabled, InterlockBwd, HomProc=HSbwd(11) (BWD):
     # homing is blocked -> show InterlockBwd before not homed
-    (7, 0x10C80000, 0x0, 0, 11, "W: InterlockBwd"),
+    (7, 0x10C80000, 0x0, 0, 11, "W: LO_Interlock"),
 ]
 
 
@@ -180,7 +180,7 @@ interlockHomProcTCs = [
 # homed DIR HLS LLS
 limitSwitchNotHomedTCs = [
     (1, True, False, False, True, "W: Low Limit Switch"),
-    (9, False, False, False, True, "W: LLS,Axis not homed"),
+    (9, False, False, False, True, "W: LO_limSW,NotHomed"),
 ]
 
 

@@ -1419,18 +1419,33 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
 /* evaluate if "not homed" or (any) interlock are more important */
 
 const char *ethercatmcIndexerAxis::msgTxtFromNotHomedInterlocks(
-    unsigned statusReasonAux, int homed) {
+    unsigned statusReasonAux, int homed, int motorRecDirection, int shortMsg) {
   /* A moving axis should show moving, homing ...*/
   const unsigned interlockMask = drvlocal.clean.auxBitsInterlockFwdMask |
                                  drvlocal.clean.auxBitsInterlockBwdMask;
   const unsigned interlockBits = statusReasonAux & interlockMask;
   const int hasInterlockMask = interlockMask != 0;
+  const char *interlockFwdTxtLong = "HI_interlock";
+  const char *interlockBwdTxtLong = "LO_Interlock";
+  const char *interlockFwdTxtShort = "HI_ilock";
+  const char *interlockBwdTxtShort = "LO_ilock";
+  /* Forward and backward are machine coordinates, RAW in EPICS motor speach
+     convert into High- and Low-
+     Revert when the users swap the direction (DIR field in the motorRecord)
+   */
+  if (motorRecDirection) {
+    interlockFwdTxtLong = "LO_interlock";
+    interlockBwdTxtLong = "HI_Interlock";
+    interlockFwdTxtShort = "LO_ilock";
+    interlockBwdTxtShort = "HI_ilock";
+  }
+
   if (hasInterlockMask &&
       interlockBits == (drvlocal.clean.auxBitsInterlockFwdMask |
                         drvlocal.clean.auxBitsInterlockBwdMask)) {
     /* Both Fwd and Bwd interlocked: axis cannot move at all, show before
     homing */
-    return "InterlockFwdBwd";
+    return shortMsg ? "Both interlocks" : "HI+LO_il";
   } else if (!homed) {
     /* Single-direction interlock: check if it blocks the configured homing
      * direction. If it does, the interlock message takes priority over
@@ -1465,20 +1480,20 @@ const char *ethercatmcIndexerAxis::msgTxtFromNotHomedInterlocks(
     if (hasInterlockMask &&
         interlockBits == drvlocal.clean.auxBitsInterlockFwdMask &&
         homingIsFwd) {
-      return "InterlockFwd";
+      return shortMsg ? interlockFwdTxtShort : interlockFwdTxtLong;
     } else if (hasInterlockMask &&
                interlockBits == drvlocal.clean.auxBitsInterlockBwdMask &&
                homingIsBwd) {
-      return "InterlockBwd";
+      return shortMsg ? interlockBwdTxtShort : interlockBwdTxtLong;
     } else {
-      return "Axis not homed";
+      return shortMsg ? "NotHomed" : "Axis not homed";
     }
   } else if (hasInterlockMask &&
              interlockBits == drvlocal.clean.auxBitsInterlockFwdMask) {
-    return "InterlockFwd";
+    return shortMsg ? interlockFwdTxtShort : interlockFwdTxtLong;
   } else if (hasInterlockMask &&
              interlockBits == drvlocal.clean.auxBitsInterlockBwdMask) {
-    return "InterlockBwd";
+    return shortMsg ? interlockBwdTxtShort : interlockBwdTxtLong;
   }
   return NULL;
 }
@@ -1488,18 +1503,18 @@ const char *ethercatmcIndexerAxis::msgTxtFromLimitSwitches(
   if (!hls && !lls) {
     return NULL;  // the most common case
   } else if (hls && lls) {
-    return shortMsg ? "Both Limit Switches" : "HLS+LLS";
+    return shortMsg ? "Both Limit Switches" : "HI+LOlim";
   } else if (hls) {
     if (!motorRecDirection) {
-      return shortMsg ? "High Limit Switch" : "HLS";
+      return shortMsg ? "High Limit Switch" : "HI_limSW";
     } else {
-      return shortMsg ? "Low Limit Switch" : "LLS";
+      return shortMsg ? "Low Limit Switch" : "LO_limSW";
     }
   } else if (lls) {
     if (!motorRecDirection) {
-      return shortMsg ? "Low Limit Switch" : "LLS";
+      return shortMsg ? "Low Limit Switch" : "LO_limSW";
     } else {
-      return shortMsg ? "High Limit Switch" : "HLS";
+      return shortMsg ? "High Limit Switch" : "HI_limSW";
     }
   }
 
@@ -1593,8 +1608,9 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
       charEorW = 'W';
       msgTxtFromDriver = "W: localMode";
     } else {
-      const char *msgInterlockTxt =
-          msgTxtFromNotHomedInterlocks(statusReasonAux, homed);
+      /* When we expect messages from limit switches, use the short text */
+      const char *msgInterlockTxt = msgTxtFromNotHomedInterlocks(
+          statusReasonAux, homed, motorRecDirection, (hls || lls));
       const char *msgLimitSwitchTxt = msgTxtFromLimitSwitches(
           hls, lls, motorRecDirection, msgInterlockTxt == NULL);
       if (msgInterlockTxt || msgLimitSwitchTxt) {
