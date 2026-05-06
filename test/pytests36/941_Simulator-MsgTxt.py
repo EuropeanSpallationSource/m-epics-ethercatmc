@@ -14,29 +14,29 @@ filnam = os.path.basename(__file__)[0:3]
 ###
 
 polltime = 0.05
-idxStatusCodeRESET = "0x00000000"
-idxStatusCodeIDLE = "0x10000000"
-statusReasonAuxIdlePowerOn = "0x10400000"
-statusReasonAuxIdleNotHomedPowerOn = "0x10C00000"
-idxStatusCodePOWEROFF = "0x20000000"
-idxStatusCodeWARN = "0x30000000"
-idxStatusCodeERR4 = "0x40000000"
-idxStatusCodeSTART = "0x50000000"
-idxStatusCodeBUSY = "0x60000000"
-idxStatusCodeSTOP = "0x70000000"
-idxStatusCodeERROR = "0x80000000"
-idxStatusCodeERR9 = "0x90000000"
-idxStatusCodeERR10 = "0xA0000000"
-idxStatusCodeERR11 = "0xB0000000"
-idxStatusCodeERR12 = "0xC0000000"
-idxStatusCodeERR13 = "0xD0000000"
-idxStatusCodeERR14 = "0xE0000000"
-idxStatusCodeERR15 = "0xF0000000"
+idxStatusCodeRESET = 0x00000000
+idxStatusCodeIDLE = 0x10000000
+statusReasonAuxIdlePowerOn = 0x10400000
+statusReasonAuxIdleNotHomedPowerOn = 0x10C00000
+idxStatusCodePOWEROFF = 0x20000000
+idxStatusCodeWARN = 0x30000000
+idxStatusCodeERR4 = 0x40000000
+idxStatusCodeSTART = 0x50000000
+idxStatusCodeBUSY = 0x60000000
+idxStatusCodeSTOP = 0x70000000
+idxStatusCodeERROR = 0x80000000
+idxStatusCodeERR9 = 0x90000000
+idxStatusCodeERR10 = 0xA0000000
+idxStatusCodeERR11 = 0xB0000000
+idxStatusCodeERR12 = 0xC0000000
+idxStatusCodeERR13 = 0xD0000000
+idxStatusCodeERR14 = 0xE0000000
+idxStatusCodeERR15 = 0xF0000000
 
-idxReasonBitHigh = "0x08000000"
-idxReasonBitLow = "0x04000000"
-idxReasonBitTimeout = "0x02000000"
-idxReasonBitInhibit = "0x01000000"
+idxReasonBitHigh = 0x08000000
+idxReasonBitLow = 0x04000000
+idxReasonBitTimeout = 0x02000000
+idxReasonBitInhibit = 0x01000000
 
 
 # EPICS severities
@@ -75,73 +75,73 @@ WRITE_ACCESS_ALARM = 21
 idleWarnTCs = [
     # 1..7: Not homed
     # 1: not homed, not enabled, autopower off
-    (1, "0x10800000", 0x0000, 0, "W: PowerOff"),
+    (1, 0x10800000, 0x0000, 0, "W: PowerOff"),
     # 2: not homed, enabled, autopower off
-    (2, "0x10C00000", 0x0000, 0, "W: Axis not homed"),
+    (2, 0x10C00000, 0x0000, 0, "W: Axis not homed"),
     # 3: not homed, not enabled, autopower on
-    (3, "0x10800000", 0x0000, 1, "W: Axis not homed"),
+    (3, 0x10800000, 0x0000, 1, "W: Axis not homed"),
     # 4: not homed, enabled, autopower on
-    (4, "0x10C00000", 0x0000, 1, "W: Axis not homed"),
+    (4, 0x10C00000, 0x0000, 1, "W: Axis not homed"),
     # 5: not homed, not enabled, autopower off, error Id
-    (5, "0x10800000", 0x4460, 0, "W: PowerOff"),
+    (5, 0x10800000, 0x4460, 0, "W: PowerOff"),
     # 6: not homed, enabled, autopower off, error Id
-    (6, "0x10C00000", 0x4460, 0, "W: Axis not homed"),
+    (6, 0x10C00000, 0x4460, 0, "W: Axis not homed"),
     # 7: not homed, not enabled, autopower on, error Id
-    (7, "0x10800000", 0x4460, 1, "W: Axis not homed"),
+    (7, 0x10800000, 0x4460, 1, "W: Axis not homed"),
     # 8: not homed, enabled, autopower on, error Id
-    (8, "0x10C00000", 0x4460, 1, "W: Axis not homed"),
+    (8, 0x10C00000, 0x4460, 1, "W: Axis not homed"),
     # 9..10 homed, not enabled/enabled, autopower off, error Id
-    (9, "0x10000000", 0x4460, 0, "W: PowerOff"),
-    (10, "0x10400000", 0x4460, 0, "W: Low soft lim 4460"),
+    (9, 0x10000000, 0x4460, 0, "W: PowerOff"),
+    (10, 0x10400000, 0x4460, 0, "W: Low soft lim 4460"),
     # 11..12 homed, not enabled/enabled, autopower on, error Id
-    (11, "0x10000000", 0x4460, 1, "W: Low soft lim 4460"),
-    (12, "0x10400000", 0x4460, 1, "W: Low soft lim 4460"),
+    (11, 0x10000000, 0x4460, 1, "W: Low soft lim 4460"),
+    (12, 0x10400000, 0x4460, 1, "W: Low soft lim 4460"),
     # homed, enabled, localmode
-    (13, "0x10500000", 0x4460, 0, "W: localMode"),
-    (14, "0x10500000", 0x0, 0, "W: localMode"),
+    (13, 0x10500000, 0x4460, 0, "W: localMode"),
+    (14, 0x10500000, 0x0, 0, "W: localMode"),
     # homed, enabled, InterlockBwd
-    (15, "0x10480000", 0x4460, 0, "W: InterlockBwd"),
-    (16, "0x10480000", 0x0, 0, "W: InterlockBwd"),
+    (15, 0x10480000, 0x4460, 0, "W: InterlockBwd"),
+    (16, 0x10480000, 0x0, 0, "W: InterlockBwd"),
     # homed, enabled, InterlockFwd
-    (17, "0x10440000", 0x4460, 0, "W: InterlockFwd"),
-    (18, "0x10440000", 0x0, 0, "W: InterlockFwd"),
+    (17, 0x10440000, 0x4460, 0, "W: InterlockFwd"),
+    (18, 0x10440000, 0x0, 0, "W: InterlockFwd"),
     # homed, enabled, InterlockBwd, InterlockFwd
-    (19, "0x104C0000", 0x4460, 0, "W: InterlockFwdBwd"),
-    (20, "0x104C0000", 0x0, 0, "W: InterlockFwdBwd"),
+    (19, 0x104C0000, 0x4460, 0, "W: InterlockFwdBwd"),
+    (20, 0x104C0000, 0x0, 0, "W: InterlockFwdBwd"),
     # homed (bit set), enabled, custom error id
-    (21, "0x10420000", 0x10101, 0, "W: MotorNotHomed"),
+    (21, 0x10420000, 0x10101, 0, "W: MotorNotHomed"),
     # not homed, enabled, InterlockFwdBwd: both directions blocked, axis cannot
-    # move at all, InterlockFwdBwd must appear before "Axis not homed"
-    (22, "0x10CC0000", 0x0, 0, "W: InterlockFwdBwd"),
+    # move at all, InterlockFwdBwd must appear before Axis not homed
+    (22, 0x10CC0000, 0x0, 0, "W: InterlockFwdBwd"),
 ]
 
 errorTCs = [
     # Error state
-    (1, "0x80000000", 0x4550, 0, "E: Follw errpos 4550"),
-    (2, "0x80400000", 0x4550, 0, "E: Follw errpos 4550"),
-    (3, "0x80000000", 0x4550, 1, "E: Follw errpos 4550"),
-    (4, "0x80400000", 0x4550, 1, "E: Follw errpos 4550"),
-    (5, "0x80000000", 0x4550, 0, "E: Follw errpos 4550"),
-    (6, "0x80400000", 0x4550, 0, "E: Follw errpos 4550"),
+    (1, 0x80000000, 0x4550, 0, "E: Follw errpos 4550"),
+    (2, 0x80400000, 0x4550, 0, "E: Follw errpos 4550"),
+    (3, 0x80000000, 0x4550, 1, "E: Follw errpos 4550"),
+    (4, 0x80400000, 0x4550, 1, "E: Follw errpos 4550"),
+    (5, 0x80000000, 0x4550, 0, "E: Follw errpos 4550"),
+    (6, 0x80400000, 0x4550, 0, "E: Follw errpos 4550"),
     # Error state, no error Id, look at the reason bits.
     # Only bit should be set
-    (7, "0x81400000", 0x0, 0, "E: Inhibit"),
-    (8, "0x82400000", 0x0, 0, "E: Timeout"),
-    (9, "0x84400000", 0x0, 0, "E: LowLimit"),
-    (10, "0x88400000", 0x0, 0, "E: HighLimit"),
+    (7, 0x81400000, 0x0, 0, "E: Inhibit"),
+    (8, 0x82400000, 0x0, 0, "E: Timeout"),
+    (9, 0x84400000, 0x0, 0, "E: LowLimit"),
+    (10, 0x88400000, 0x0, 0, "E: HighLimit"),
     # Error state, no error Id, 2 reason bits set. Hex code of reason bits
-    (11, "0x83400000", 0x0, 0, "E: Error (0x3)"),
+    (11, 0x83400000, 0x0, 0, "E: Error (0x3)"),
     # Error state, no error Id, all reason bits set. Hex code of reason bits
-    (12, "0x8F400000", 0x0, 0, "E: Error (0xF)"),
+    (12, 0x8F400000, 0x0, 0, "E: Error (0xF)"),
     # Error, homed (bit set), enabled, custom error id
-    (13, "0x80420000", 0x10101, 0, "E: MotorNotHomed"),
+    (13, 0x80420000, 0x10101, 0, "E: MotorNotHomed"),
 ]
 
 resetTCs = [
     # Reset state
-    (1, "0x00000000", 0x0, 0, "W: AxisRESET"),
+    (1, 0x00000000, 0x0, 0, "W: AxisRESET"),
     # Reset state. errorID should be ignored
-    (2, "0x00000000", 0x4550, 0, "W: AxisRESET"),
+    (2, 0x00000000, 0x4550, 0, "W: AxisRESET"),
 ]
 
 # Test cases for HomProc-aware interlock vs not-homed priority.
@@ -152,25 +152,25 @@ resetTCs = [
 interlockHomProcTCs = [
     # not homed, enabled, InterlockFwd, HomProc goes FWD (LimFwd=2):
     # homing is blocked by InterlockFwd -> show InterlockFwd before not homed
-    (1, "0x10C40000", 0x0, 0, 2, "W: InterlockFwd"),
+    (1, 0x10C40000, 0x0, 0, 2, "W: InterlockFwd"),
     # not homed, enabled, InterlockBwd, HomProc goes BWD (LimBwd=1):
     # homing is blocked by InterlockBwd -> show InterlockBwd before not homed
-    (2, "0x10C80000", 0x0, 0, 1, "W: InterlockBwd"),
+    (2, 0x10C80000, 0x0, 0, 1, "W: InterlockBwd"),
     # not homed, enabled, InterlockFwd, HomProc goes BWD (LimBwd=1):
     # homing direction is free -> show not homed first
-    (3, "0x10C40000", 0x0, 0, 1, "W: Axis not homed"),
+    (3, 0x10C40000, 0x0, 0, 1, "W: Axis not homed"),
     # not homed, enabled, InterlockBwd, HomProc goes FWD (LimFwd=2):
     # homing direction is free -> show not homed first
-    (4, "0x10C80000", 0x0, 0, 2, "W: Axis not homed"),
+    (4, 0x10C80000, 0x0, 0, 2, "W: Axis not homed"),
     # not homed, enabled, InterlockFwd, HomProc unknown (ManSetPos=15):
     # direction not known -> show not homed first
-    (5, "0x10C40000", 0x0, 0, 15, "W: Axis not homed"),
+    (5, 0x10C40000, 0x0, 0, 15, "W: Axis not homed"),
     # not homed, enabled, InterlockFwd, HomProc=HSfwd(12) (FWD):
     # homing is blocked -> show InterlockFwd before not homed
-    (6, "0x10C40000", 0x0, 0, 12, "W: InterlockFwd"),
+    (6, 0x10C40000, 0x0, 0, 12, "W: InterlockFwd"),
     # not homed, enabled, InterlockBwd, HomProc=HSbwd(11) (BWD):
     # homing is blocked -> show InterlockBwd before not homed
-    (7, "0x10C80000", 0x0, 0, 11, "W: InterlockBwd"),
+    (7, 0x10C80000, 0x0, 0, 11, "W: InterlockBwd"),
 ]
 
 
@@ -209,7 +209,7 @@ def writeBitsReadMsgTxt(
 
     maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
     passed = False
-    self.axisMr.setValueOnSimulator(tc_no, "nStatReasAUX", statusReasonAux)
+    self.axisMr.setValueOnSimulator(tc_no, "nStatReasAUX", hex(statusReasonAux))
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
 
     self.axisMr.setValueOnSimulator(tc_no, "nErrorId", errorId)
@@ -320,7 +320,7 @@ class Test(unittest.TestCase):
                 expStat=STATE_ALARM,
             )
             # turn idle into warning. Both give the same result.
-            statusReasonAux = "0x3" + (tc[1])[3:]
+            statusReasonAux = idxStatusCodeWARN + (tc[1] & 0x0FFFFFFF)
             tc_no = 94102200 + tc[0]
             passed = passed and writeBitsReadMsgTxt(
                 self,
@@ -443,9 +443,7 @@ class Test(unittest.TestCase):
             else:
                 statusReasonAux = statusReasonAuxIdleNotHomedPowerOn
             if lls:
-                statusReasonAux = hex(
-                    int(statusReasonAux, 16) + int(idxReasonBitLow, 16)
-                )
+                statusReasonAux = statusReasonAux + idxReasonBitLow
 
             passed = passed and writeBitsReadMsgTxt(
                 self,
