@@ -177,10 +177,24 @@ interlockHomProcTCs = [
 # Test of "not homed" and limit switces
 # Test both "homed" and "not homed" to see long and short
 # limit switch texts.
-# homed DIR HLS LLS
+# nr homed DIR==Neg HLS LLS
 limitSwitchNotHomedTCs = [
+    (0, True, False, False, False, "W: Axis not homed"),
     (1, True, False, False, True, "W: Low Limit Switch"),
+    (2, True, False, True, False, "W: High Limit Switch"),
+    (3, True, False, True, True, "W: Both Limit Switches"),
+    (4, True, True, False, False, ""),
+    (5, True, True, False, True, "W: High Limit Switch"),
+    (6, True, True, True, False, "W: Low Limit Switch"),
+    (7, True, True, True, True, "W: Both Limit Switches"),
+    (8, False, False, False, False, "W: Axis not homed"),
     (9, False, False, False, True, "W: LO_limSW,NotHomed"),
+    (10, False, False, True, False, "W: HI_limSW,NotHomed"),
+    (11, False, False, True, True, "W: Both Limit Switches"),
+    (12, False, True, False, False, "W: Axis not homed"),
+    (13, False, True, False, True, "W: HI_limSW,NotHomed"),
+    (14, False, True, True, False, "W: LO_limSW,NotHomed"),
+    (15, False, True, True, True, "W: Both Limit Switches"),
 ]
 
 
@@ -434,16 +448,32 @@ class Test(unittest.TestCase):
             )
             tc_no = 94105100 + tc[0]
             homed = tc[1]
-            # dir = tc[2]
-            # hls = tc[3]
+            dir = tc[2]
+            hls = tc[3]
             lls = tc[4]
             expMsgTxt = tc[5]
+            expSevr = sevrNone
+            expStat = NONE_ALARM
             if homed:
                 statusReasonAux = statusReasonAuxIdlePowerOn
             else:
                 statusReasonAux = statusReasonAuxIdleNotHomedPowerOn
+                expSevr = sevrMinor
+                expStat = STATE_ALARM
+            # The DIR field has Pos and Neg. False is Pos (the default)
+            if dir:
+                self.axisCom.put(".DIR", "Neg")
+            else:
+                self.axisCom.put(".DIR", "Pos")
+
+            if hls:
+                statusReasonAux = statusReasonAux + idxReasonBitHigh
+                expSevr = sevrMinor
+                expStat = STATE_ALARM
             if lls:
                 statusReasonAux = statusReasonAux + idxReasonBitLow
+                expSevr = sevrMinor
+                expStat = STATE_ALARM
 
             passed = passed and writeBitsReadMsgTxt(
                 self,
@@ -452,8 +482,8 @@ class Test(unittest.TestCase):
                 errorId=0,
                 pwrAuto=1,
                 expMsgTxt=expMsgTxt,
-                expSevr=sevrMinor,
-                expStat=STATE_ALARM,
+                expSevr=expSevr,
+                expStat=expStat,
             )
             # idxReasonBitHigh = "0x08000000"
             # idxReasonBitLow = "0x04000000"

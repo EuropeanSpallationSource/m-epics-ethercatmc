@@ -1419,8 +1419,13 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
 /* evaluate if "not homed" or (any) interlock are more important */
 
 const char *ethercatmcIndexerAxis::msgTxtFromNotHomedInterlocks(
-    unsigned statusReasonAux, int homed, int motorRecDirection, int shortMsg) {
+    unsigned statusReasonAux, int homed, int motorRecDirection, int hls,
+    int lls) {
   /* A moving axis should show moving, homing ...*/
+  if (hls && lls)
+    return NULL; /* We can not move anyway, msgLimitSwitchTxt() will have a text
+                  */
+  int shortMsg = hls || lls;
   const unsigned interlockMask = drvlocal.clean.auxBitsInterlockFwdMask |
                                  drvlocal.clean.auxBitsInterlockBwdMask;
   const unsigned interlockBits = statusReasonAux & interlockMask;
@@ -1610,7 +1615,7 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
     } else {
       /* When we expect messages from limit switches, use the short text */
       const char *msgInterlockTxt = msgTxtFromNotHomedInterlocks(
-          statusReasonAux, homed, motorRecDirection, (hls || lls));
+          statusReasonAux, homed, motorRecDirection, hls, lls);
       const char *msgLimitSwitchTxt = msgTxtFromLimitSwitches(
           hls, lls, motorRecDirection, msgInterlockTxt == NULL);
       if (msgInterlockTxt || msgLimitSwitchTxt) {
