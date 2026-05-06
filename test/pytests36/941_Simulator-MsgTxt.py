@@ -17,6 +17,7 @@ polltime = 0.05
 idxStatusCodeRESET = "0x00000000"
 idxStatusCodeIDLE = "0x10000000"
 statusReasonAuxIdlePowerOn = "0x10400000"
+statusReasonAuxIdleNotHomedPowerOn = "0x10C00000"
 idxStatusCodePOWEROFF = "0x20000000"
 idxStatusCodeWARN = "0x30000000"
 idxStatusCodeERR4 = "0x40000000"
@@ -170,6 +171,16 @@ interlockHomProcTCs = [
     # not homed, enabled, InterlockBwd, HomProc=HSbwd(11) (BWD):
     # homing is blocked -> show InterlockBwd before not homed
     (7, "0x10C80000", 0x0, 0, 11, "W: InterlockBwd"),
+]
+
+
+# Test of "not homed" and limit switces
+# Test both "homed" and "not homed" to see long and short
+# limit switch texts.
+# homed DIR HLS LLS
+limitSwitchNotHomedTCs = [
+    (1, True, False, False, True, "W: Low Limit Switch"),
+    (9, False, False, False, True, "W: LLS,Axis not homed"),
 ]
 
 
@@ -401,6 +412,53 @@ class Test(unittest.TestCase):
                 expStat=STATE_ALARM,
             )
             self.axisCom.put("-HomProc", oldHomProc, wait=True)
+
+        assert passed
+
+        # 2: not homed, enabled, autopower off
+        # (2, "0x10C00000", 0x0000, 0, "W: Axis not homed"),
+
+    def test_TC_94105(self):
+        passed = True
+        for tc in limitSwitchNotHomedTCs:
+            tc_no = 94105000 + tc[0]
+            passed = passed and writeBitsReadMsgTxt(
+                self,
+                tc_no=tc_no,
+                statusReasonAux=statusReasonAuxIdlePowerOn,
+                errorId=0,
+                pwrAuto=1,
+                expMsgTxt="",
+                expSevr=sevrNone,
+                expStat=NONE_ALARM,
+            )
+            tc_no = 94105100 + tc[0]
+            homed = tc[1]
+            # dir = tc[2]
+            # hls = tc[3]
+            lls = tc[4]
+            expMsgTxt = tc[5]
+            if homed:
+                statusReasonAux = statusReasonAuxIdlePowerOn
+            else:
+                statusReasonAux = statusReasonAuxIdleNotHomedPowerOn
+            if lls:
+                statusReasonAux = hex(
+                    int(statusReasonAux, 16) + int(idxReasonBitLow, 16)
+                )
+
+            passed = passed and writeBitsReadMsgTxt(
+                self,
+                tc_no=tc_no,
+                statusReasonAux=statusReasonAux,
+                errorId=0,
+                pwrAuto=1,
+                expMsgTxt=expMsgTxt,
+                expSevr=sevrMinor,
+                expStat=STATE_ALARM,
+            )
+            # idxReasonBitHigh = "0x08000000"
+            # idxReasonBitLow = "0x04000000"
 
         assert passed
 
