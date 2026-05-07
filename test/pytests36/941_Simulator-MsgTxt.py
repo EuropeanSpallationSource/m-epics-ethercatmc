@@ -106,13 +106,13 @@ idleWarnTCs = [
     (17, 0x10440000, 0x4460, 0, "W: HI_interlock"),
     (18, 0x10440000, 0x0, 0, "W: HI_interlock"),
     # homed, enabled, InterlockBwd, InterlockFwd
-    (19, 0x104C0000, 0x4460, 0, "W: HI+LO_ilock"),
-    (20, 0x104C0000, 0x0, 0, "W: HI+LO_ilock"),
+    (19, 0x104C0000, 0x4460, 0, "W: HI+LO interlocks"),
+    (20, 0x104C0000, 0x0, 0, "W: HI+LO interlocks"),
     # homed (bit set), enabled, custom error id
     (21, 0x10420000, 0x10101, 0, "W: MotorNotHomed"),
     # not homed, enabled, HI+LO_ilock: both directions blocked, axis cannot
     # move at all, HI+LO_ilock must appear before Axis not homed
-    (22, 0x10CC0000, 0x0, 0, "W: HI+LO_ilock"),
+    (22, 0x10CC0000, 0x0, 0, "W: HI+LO interlocks"),
 ]
 
 errorTCs = [
@@ -179,7 +179,7 @@ interlockHomProcTCs = [
 # limit switch texts.
 # nr homed DIR==Neg HLS LLS
 limitSwitchNotHomedTCs = [
-    (0, True, False, False, False, "W: Axis not homed"),
+    (0, True, False, False, False, ""),
     (1, True, False, False, True, "W: Low Limit Switch"),
     (2, True, False, True, False, "W: High Limit Switch"),
     (3, True, False, True, True, "W: Both Limit Switches"),
@@ -274,6 +274,7 @@ class Test(unittest.TestCase):
     # test cases. Ordered after the state from above: reset..error
     def test_TC_94101(self):
         passed = True
+        self.axisCom.put(".DIR", "Pos")
         for tc in resetTCs:
             tc_no = 94101000 + tc[0]
             statusReasonAux = tc[1]
@@ -306,6 +307,7 @@ class Test(unittest.TestCase):
 
     def test_TC_94102(self):
         passed = True
+        self.axisCom.put(".DIR", "Pos")
         for tc in idleWarnTCs:
             tc_no = 94102000 + tc[0]
             statusReasonAux = tc[1]
@@ -362,6 +364,7 @@ class Test(unittest.TestCase):
 
     def test_TC_94103(self):
         passed = True
+        self.axisCom.put(".DIR", "Pos")
         for tc in errorTCs:
             tc_no = 94103000 + tc[0]
             statusReasonAux = tc[1]
@@ -394,6 +397,7 @@ class Test(unittest.TestCase):
 
     def test_TC_94104(self):
         passed = True
+        self.axisCom.put(".DIR", "Pos")
         for tc in interlockHomProcTCs:
             tc_no = 94104000 + tc[0]
             statusReasonAux = tc[1]
@@ -485,9 +489,7 @@ class Test(unittest.TestCase):
                 expSevr=expSevr,
                 expStat=expStat,
             )
-            # idxReasonBitHigh = "0x08000000"
-            # idxReasonBitLow = "0x04000000"
-
+        self.axisCom.put(".DIR", "Pos")
         assert passed
 
     def test_TC_94199999(self):
