@@ -1450,7 +1450,7 @@ const char *ethercatmcIndexerAxis::msgTxtFromNotHomedInterlocks(
                         drvlocal.clean.auxBitsInterlockBwdMask)) {
     /* Both Fwd and Bwd interlocked: axis cannot move at all, show before
     homing */
-    return shortMsg ? "Both interlocks" : "HI+LO_il";
+    return shortMsg ? "Both interlocks" : "HI+LO_ilock";
   } else if (!homed) {
     /* Single-direction interlock: check if it blocks the configured homing
      * direction. If it does, the interlock message takes priority over

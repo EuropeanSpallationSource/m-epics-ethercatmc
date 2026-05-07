@@ -106,13 +106,13 @@ idleWarnTCs = [
     (17, 0x10440000, 0x4460, 0, "W: HI_interlock"),
     (18, 0x10440000, 0x0, 0, "W: HI_interlock"),
     # homed, enabled, InterlockBwd, InterlockFwd
-    (19, 0x104C0000, 0x4460, 0, "W: HI+LO_il"),
-    (20, 0x104C0000, 0x0, 0, "W: HI+LO_il"),
+    (19, 0x104C0000, 0x4460, 0, "W: HI+LO_ilock"),
+    (20, 0x104C0000, 0x0, 0, "W: HI+LO_ilock"),
     # homed (bit set), enabled, custom error id
     (21, 0x10420000, 0x10101, 0, "W: MotorNotHomed"),
-    # not homed, enabled, InterlockFwdBwd: both directions blocked, axis cannot
-    # move at all, InterlockFwdBwd must appear before Axis not homed
-    (22, 0x10CC0000, 0x0, 0, "W: HI+LO_il"),
+    # not homed, enabled, HI+LO_ilock: both directions blocked, axis cannot
+    # move at all, HI+LO_ilock must appear before Axis not homed
+    (22, 0x10CC0000, 0x0, 0, "W: HI+LO_ilock"),
 ]
 
 errorTCs = [
