@@ -39,7 +39,7 @@ record(calcout, "$(P)$(R)-DefPosSELCALC2") {
 #
 record(stringout, "$(P)$(R)-DefPosSetDOL_") {
   field(VAL, "$(P)$(R)-DefPosSEL1")
-  field(OUT, "$(P)$(R).DOL CP")
+  field(OUT, "$(P)$(R).DOL")
 }
 
 #
