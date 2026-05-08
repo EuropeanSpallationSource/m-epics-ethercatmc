@@ -86,10 +86,15 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
                               double paramfValue);
   asynStatus poll(bool *moving);
   asynStatus doThePoll(bool cached, bool *moving);
-  const char *msgTxtFromNotHomedInterlocks(unsigned statusReasonAux, int homed);
+  const char *msgTxtFromNotHomedInterlocks(unsigned statusReasonAux, int homed,
+                                           int motorRecDirection, int hls,
+                                           int lls);
+  const char *msgTxtFromLimitSwitches(int hls, int lls, int motorRecDirection,
+                                      int shortMsg);
 
   void pollMsgTxt(int hasError, int errorID, unsigned idxAuxBits, int localMode,
-                  unsigned statusReasonAux);
+                  unsigned statusReasonAux, int hls, int lls,
+                  int motorRecDirection);
   bool pollPowerIsOn(void);
   asynStatus setClosedLoop(bool closedLoop);
   asynStatus setGenericIntegerParam(int function, int value);
