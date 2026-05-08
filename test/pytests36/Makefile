@@ -53,6 +53,7 @@ ETHERCATMC-PVA = \
   201_Ethercat-JOG-VAL-HOM-CNEN-No-Error.log-pva-m1\
   240_Ethercat-JOGF_stopped.log-pva-m1\
   400_Ethercat-JAR-ACCL-VAL-JOGF-HOMF.log-pva-m1\
+  800_DefinedPositions.log-pva-m1\
 
 #################################
 # The main target
