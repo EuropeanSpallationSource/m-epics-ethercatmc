@@ -46,6 +46,11 @@ epicsEnvSet("AUX_BIT_NAME_R",  "notHomed")
 epicsEnvSet("AUX_BIT_NAME_P",  "AUXBITnotHomed")
 < ethercatmcAuxBitAsBiRecord.iocsh
 
+# Predefined Positions
+# NVL: Input Value Location (INLINK)
+epicsEnvSet("NVL",             "")
+epicsEnvSet("EGU",             "")
+< ethercatmcDefPos.iocsh
 
 
 #
