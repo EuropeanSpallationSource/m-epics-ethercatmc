@@ -989,7 +989,7 @@ class AxisMr:
 
         if (rbv < position - rdbd) or (rbv > position + rdbd):
             print(
-                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: verifyRBVinsideRDBD position={position} rbv={rbv:.2f} rdbd={rdbd}"
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {tc_no}: verifyRBVinsideRDBD position={position:.2f} rbv={rbv:.2f} rdbd={rdbd:.2f}"
             )
             return False
         return True
