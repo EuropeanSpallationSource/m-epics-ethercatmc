@@ -125,7 +125,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
       double old_paramValue;
       unsigned pollNowIdx;
       unsigned iTypCode;
-      unsigned devNum;
+      unsigned pilsDevNum;
       unsigned iOffset;
       unsigned lenInPlcPara;
       unsigned paramIfOffset;

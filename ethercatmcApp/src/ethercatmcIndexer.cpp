@@ -1436,11 +1436,8 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
       }
     }
     if (ctrlLocal.supported.bPILSv2) {
-      newIndexerAxisAuxBitsV2(NULL, /* pAxis */
-                              axisNo, devNum, iAllFlags, functionNamAux0,
-                              0.0,  // fAbsMin,
-                              0.0,  // fAbsMax,
-                              indexOffset);
+      newAuxBitsV2(NULL, /* pAxis */
+                   axisNo, devNum, iAllFlags, functionNamAux0, indexOffset);
     }
   }
   /* Status word */

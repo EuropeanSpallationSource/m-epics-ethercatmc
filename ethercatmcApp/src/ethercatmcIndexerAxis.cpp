@@ -200,7 +200,7 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(
             "%sOffsetTypeCode(%d) devNum=%u iTypCode=0x%X, iOffset=%u "
             "iAuxBits07mask=0x%x\n",
             modNamEMC, axisNo_, devNum, iTypCode, iOffset, iAuxBits07mask);
-  drvlocal.clean.devNum = devNum;
+  drvlocal.clean.pilsDevNum = devNum;
   drvlocal.clean.iTypCode = iTypCode;
   drvlocal.clean.iOffset = iOffset;
   drvlocal.clean.auxBits07mask = iAuxBits07mask;
@@ -886,7 +886,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
         }
         break;
       case 0x5010:
-        status = pC_->indexerReadAxisParameters(this, drvlocal.clean.devNum);
+        status =
+            pC_->indexerReadAxisParameters(this, drvlocal.clean.pilsDevNum);
         break;
       default:
         status = asynSuccess;
