@@ -936,6 +936,19 @@ class AxisMr:
         if initAbsMinMax:
             high_limit = self.axisCom.get("-CfgPMAX-RB")
             low_limit = self.axisCom.get("-CfgPMIN-RB")
+        if low_limit >= high_limit:
+            # They are not valid
+            print(
+                f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit CfgPMAX-RB={low_limit} high_limit CfgPMIN-RB={high_limit} initAbsMinMax={initAbsMinMax}"
+            )
+            high_limit = self.axisCom.get("-CfgDHLM")
+            low_limit = self.axisCom.get("-CfgDLLM")
+            if low_limit >= high_limit:
+                debug_text = f"CfgDHLM={high_limit} CfgDLLM={low_limit}"
+                raise Exception(debug_text)
+
+            self.axisCom.put("-CfgPMAX-RB", high_limit)
+            self.axisCom.put("-CfgPMIN-RB", low_limit)
 
         print(
             f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam} {tc_no}: setSoftLimitsOn low_limit={low_limit} high_limit={high_limit} initAbsMinMax={initAbsMinMax}"
