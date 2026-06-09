@@ -597,3 +597,55 @@ asynStatus ethercatmcController::indexerReadAxisParametersV2(
   }
   return asynSuccess;
 }
+
+int ethercatmcController::readEnumsAndValueAndCallbackIntoMbbi(
+    int axisNo, unsigned maxBitForEnum, int functionNamAux0,
+    int functionAuxBits07) {
+  /* asyn/asyn/devEpics/devAsynInt32.c */
+#define MAX_ENUM_STRING_SIZE 26
+#define MAX_AUX_BIT_FOR_ENUM 16
+
+  struct {
+    char enumChars[MAX_AUX_BIT_FOR_ENUM][MAX_ENUM_STRING_SIZE];
+    char *enumStrings[MAX_AUX_BIT_FOR_ENUM];
+    int enumValues[MAX_AUX_BIT_FOR_ENUM];
+    int enumSeverities[MAX_AUX_BIT_FOR_ENUM];
+  } auxBitEnumsForAsyn;
+  unsigned auxBitIdx;
+  unsigned numsAuxBitsForEnum = 0;
+  if (maxBitForEnum > MAX_AUX_BIT_FOR_ENUM) {
+    asynPrint(
+        pasynUserController_, ASYN_TRACE_ERROR,
+        "%sreadEnumsAndValueAndCallbackIntoMbbi(%d) maxBitForEnum=%u clipped\n",
+        modNamEMC, axisNo, maxBitForEnum);
+
+    maxBitForEnum = MAX_AUX_BIT_FOR_ENUM;
+  }
+  memset(&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
+  for (auxBitIdx = 0; auxBitIdx < maxBitForEnum; auxBitIdx++) {
+    int function = functionNamAux0 + (int)auxBitIdx;
+    asynStatus status;
+    /* Leave one byte for '\0' */
+    int length = (int)sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
+    auxBitEnumsForAsyn.enumStrings[auxBitIdx] =
+        &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
+    status = getStringParam(axisNo, function, length,
+                            auxBitEnumsForAsyn.enumStrings[auxBitIdx]);
+
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+              "%sreadEnumsAndValueAndCallbackIntoMbbi(%d) auxBitIdx=%u "
+              "name='%s' status=%d\n",
+              modNamEMC, axisNo, auxBitIdx,
+              auxBitEnumsForAsyn.enumStrings[auxBitIdx], (int)status);
+
+    if (status) {
+      break;
+    }
+    auxBitEnumsForAsyn.enumValues[auxBitIdx] = 1 << auxBitIdx;
+    numsAuxBitsForEnum++;
+  }
+  doCallbacksEnum(auxBitEnumsForAsyn.enumStrings, auxBitEnumsForAsyn.enumValues,
+                  auxBitEnumsForAsyn.enumSeverities, numsAuxBitsForEnum,
+                  functionAuxBits07, axisNo);
+  return 1;
+}
