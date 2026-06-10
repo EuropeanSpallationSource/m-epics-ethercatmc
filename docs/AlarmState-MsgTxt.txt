@@ -74,15 +74,15 @@ Motor status
       This is a warning, the test will be "W: Low soft lim 4460"
 
   2+3) model 3 (EPICS) driver
-     Because the -MsgTxt record is and was so helpful, other type of information
-     may be shown.
+     Because the -MsgTxt record is and was so helpful,
+     other type of information may be shown.
      If, and only if, there is no information from the MCU.
      For example, "E: Axis not homed", "Homing",
      "Moving abs", "Moving rel" "Moving vel" for the absolute, relative moves
      and moving with constant velocity. For a longer discussion see below.
 
      Power off
-     Sometimes a motor on a sample stage needs to be disconnected and put aside,
+     When a motor on a sample stage needs to be disconnected and put aside,
      and then the amplifier needs to be switched off.
      The -MsgTxt field will show "PowerOff".
 
@@ -118,20 +118,17 @@ Overall status:
     high limit switch.
     The motorRecord can be configured to raise a "low" alarm or a "high" alarm
     (depending on the switch). It can be configured to not raise an alarm.
-    This is depending on the use case: A well tuned, fixed installed axis should
-    not run into a limit switch, so that an alarm state may be usefull for an
-    operator.
-    Running into the limit switch on a sample stage may not be that harmful,
-    and the operator in a 24/7 control room is not interested in this
-    experimental business.
+    This is depending on the use case:
+    A well tuned, fixed, installed axis should not run into a limit switch.
+    However, we found that it is helpful under commissioning.
+    Since ethercatmc v6.2.2 the limit switches are shown in MsgTxt.
 
 
   The NICOS way:
     The basic idea for a motor is like this:
     - is the device fully usable ?  (green)
     - is the device busy (motor moving) (yellow)
-    - is the device partly usable:
-      (green with exclamation mark, or orange?)
+    - is the device partly usable: (orange)
       E.g. sitting on a limit switch:
       you can move into one direction only)
     - is the device not fully usable ?  (red)
@@ -148,11 +145,6 @@ See even StatusBits-alarms.txt
 
 ==============================================================================
 Message texts (-MsgTxt) used today
-  This module (ethercatmc) supports 2 generations of TwinCAT SW:
-  The older one: "FB_drive_virtual" (or so).
-  The new one: "Gvl" in TwinCAT, using the PILS interface.
-  The "older" ones are phased out, we focus on the newer one.
-
   First of all, there are messages from the generic motor driver.
   These are there for all motor drivers, ethercatmc or not.
 
