@@ -677,7 +677,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "",
       "",
       "",
-      "",
+      "Coupled",
       "customErrId",
       "InterlockFwd",
       "InterlockBwd",
