@@ -113,6 +113,8 @@ idleWarnTCs = [
     # not homed, enabled, HI+LO_ilock: both directions blocked, axis cannot
     # move at all, HI+LO_ilock must appear before Axis not homed
     (22, 0x10CC0000, 0x0, 0, "W: HI+LO interlocks"),
+    # homed (bit set), enabled, coupled
+    (23, 0x10410000, 0x0, 0, "Coupled"),
 ]
 
 errorTCs = [
