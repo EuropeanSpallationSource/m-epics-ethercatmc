@@ -283,6 +283,7 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
     } else {
 #ifdef motorMessageTextString
       /* We find the name of the MCU here */
+      setIntegerParam(0, motorStatusCommsError_, 0);
       setStringParam(0, motorMessageText_, descVersAuthors.desc);
 #endif
       ctrlLocal.indexerMaxDataSize =
