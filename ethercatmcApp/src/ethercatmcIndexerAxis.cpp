@@ -1405,7 +1405,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
         drvlocal.dirty.motorPowerAutoOnOff ||
         drvlocal.dirty.idxStatusCodeMsgTxt != idxStatusCode ||
         idxAuxBits != drvlocal.clean.old_idxAuxBitsWritten ||
-        idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
+        idxAuxBits != drvlocal.dirty.old_idxAuxBits || busyNotDone) {
       pollMsgTxt(hasError, errorID, idxAuxBits, localMode, statusReasonAux, hls,
                  lls, motorRecDirection > 0);
       drvlocal.dirty.motorPowerAutoOnOff = 0;
