@@ -60,6 +60,24 @@ record(ao, "$(P)$(R)-CfgRDBD-RB_")
     field(OMSL, "closed_loop")
 }
 
+record(calc, "$(P)$(R)-HalfRDBD_")
+{
+    field(DESC, "Holds RDBD/2")
+    field(INPA, "$(P)$(R).RDBD CP") # include manual changes to RDBD
+    field(CALC, "A/2")
+    field(FLNK, "$(P)$(R)-CfgADEL-MDEL_")
+}
+
+record(dfanout, "$(P)$(R)-CfgADEL-MDEL_")
+{
+  field(DESC, "Sets ADEL and MDEL to HalfRDBD")
+  field(DOL, "$(P)$(R)-HalfRDBD_")
+  field(OMSL, "closed_loop")
+  field(SELM, "All")
+  field(OUTA, "$(P)$(R).MDEL")
+  field(OUTB, "$(P)$(R).ADEL")
+}
+
 record(ao, "$(P)$(R)-CfgSPDB_")
 {
     field(PREC, "$(PREC)")

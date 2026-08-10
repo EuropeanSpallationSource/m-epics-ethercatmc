@@ -37,6 +37,7 @@ RECORD-PVA = \
   131_Record-JOGR_DIR_DLY_LLM.log-pva-m1\
   140_Record-VAL_VMAX.log-pva-m1\
   141_Record_NTM.log-pva-m1\
+  142_Record-RDBD_ADEL_MDEL.log-pva-m1\
   220_Ethercat-auto-power.log-pva-m1\
   500_Record-DLY-STOP.log-pva-m1\
 
