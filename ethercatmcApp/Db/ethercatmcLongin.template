@@ -1,0 +1,9 @@
+record(longin, "$(P)$(R)")
+{
+    field(DTYP, "asynInt32")
+    field(DESC, "$(DESC=DESC)")
+    field(EGU,  "$(EGU=EGU)")
+    field(INP,  "@asyn($(MOTOR_PORT),$(CHNO))$(ASYNPARAMNAME)")
+    field(SCAN, "I/O Intr")
+    field(TSE,  "$(TSE=0)")
+}
