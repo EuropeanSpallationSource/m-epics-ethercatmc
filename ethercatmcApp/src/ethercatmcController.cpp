@@ -156,6 +156,17 @@ extern "C" const char *errStringFromErrId(int nErrorId) {
       return "Carrousel motor error";
     case 0x10108:
       return "Electromagnet error";
+    // Custom: others
+    case 0x10201:
+      return "Temp sensor error";
+    case 0x10202:
+      return "Airpad pressure error";
+    case 0x10203:
+      return "External brake error";
+    case 0x10204:
+      return "External brake timeout";
+    case 0x10205:
+      return "Command handler timeout";
     default:
       return "";
   }
