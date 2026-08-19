@@ -38,7 +38,7 @@ idxReasonBitInhibit = "0x01000000"
 
 
 aux07TCs = [
-    #    (944020, "0x10000000", "E: Extract Timeout", "E: Extract Timeout"),
+    #    (944020, "0x10000000", "E: Extend timeout", "E: Extend timeout"),
     (944021, "0x10000001", "OutOfCarousel"),
     (944022, "0x10000002", "Position1"),
     (944023, "0x10000004", "Position2"),

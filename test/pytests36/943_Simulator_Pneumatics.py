@@ -56,31 +56,31 @@ idxReasonBitInhibit = "0x01000000"
 #   Test case number, error, autoPower
 #   tc_no     e            errId  au   MsgTxt
 errTCs = [
-    (943001, "0x80000000", 0x10001, "E: Extract Timeout"),
-    (943002, "0x80000000", 0x10002, "E: Retract Timeout"),
-    (943003, "0x80000000", 0x10003, "E: Not Moving Extract"),
-    (943004, "0x80000000", 0x10004, "E: Not Moving Retract"),
-    (943005, "0x80000000", 0x10005, "E: No PSS Permit"),
-    (943006, "0x80000000", 0x10006, "E: Retract Interlocked"),
+    (943001, "0x80000000", 0x10001, "E: Extend timeout"),
+    (943002, "0x80000000", 0x10002, "E: Retract timeout"),
+    (943003, "0x80000000", 0x10003, "E: Not moving extend"),
+    (943004, "0x80000000", 0x10004, "E: Not moving retract"),
+    (943005, "0x80000000", 0x10005, "E: No PSS permit"),
+    (943006, "0x80000000", 0x10006, "E: Retract interlocked"),
     (943007, "0x80000000", 0x10007, "E: Extract Interlocked"),
-    (943008, "0x80000000", 0x10008, "E: Air Pressure Low"),
+    (943008, "0x80000000", 0x10008, "E: Air pressure low"),
     (943009, "0x80000000", 0x10009, "E: Air Pressure High"),
     (
         943010,
         "0x80000000",
         0x1000A,
-        "E: NoSignalEndSwitchBwd",
+        "E: No signal EndSwitch neg.",
     ),
     (
         943011,
         "0x80000000",
         0x1000B,
-        "E: NoSignalEndSwitchFwd",
+        "E: No signal EndSwitch pos.",
     ),
 ]
 
 aux07TCs = [
-    #    (943020, "0x10000000", "E: Extract Timeout", "E: Extract Timeout"),
+    #    (943020, "0x10000000", "E: Extend timeout", "E: Extend timeout"),
     (943021, "0x10000001", "Closed"),
     (943022, "0x10000002", "Closing"),
     (943023, "0x10000004", "InTheMiddle"),

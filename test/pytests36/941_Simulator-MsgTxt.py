@@ -92,10 +92,10 @@ idleWarnTCs = [
     (8, 0x10C00000, 0x4460, 1, "W: Axis not homed"),
     # 9..10 homed, not enabled/enabled, autopower off, error Id
     (9, 0x10000000, 0x4460, 0, "W: PowerOff"),
-    (10, 0x10400000, 0x4460, 0, "W: Low soft lim 4460"),
+    (10, 0x10400000, 0x4460, 0, "W: Target pos. below soft. limit 4460"),
     # 11..12 homed, not enabled/enabled, autopower on, error Id
-    (11, 0x10000000, 0x4460, 1, "W: Low soft lim 4460"),
-    (12, 0x10400000, 0x4460, 1, "W: Low soft lim 4460"),
+    (11, 0x10000000, 0x4460, 1, "W: Target pos. below soft. limit 4460"),
+    (12, 0x10400000, 0x4460, 1, "W: Target pos. below soft. limit 4460"),
     # homed, enabled, localmode
     (13, 0x10500000, 0x4460, 0, "W: localMode"),
     (14, 0x10500000, 0x0, 0, "W: localMode"),
@@ -109,7 +109,7 @@ idleWarnTCs = [
     (19, 0x104C0000, 0x4460, 0, "W: HI+LO interlocks"),
     (20, 0x104C0000, 0x0, 0, "W: HI+LO interlocks"),
     # homed (bit set), enabled, custom error id
-    (21, 0x10420000, 0x10101, 0, "W: MotorNotHomed"),
+    (21, 0x10420000, 0x10101, 0, "W: Motor not homed"),
     # not homed, enabled, HI+LO_ilock: both directions blocked, axis cannot
     # move at all, HI+LO_ilock must appear before Axis not homed
     (22, 0x10CC0000, 0x0, 0, "W: HI+LO interlocks"),
@@ -119,12 +119,12 @@ idleWarnTCs = [
 
 errorTCs = [
     # Error state
-    (1, 0x80000000, 0x4550, 0, "E: Follw errpos 4550"),
-    (2, 0x80400000, 0x4550, 0, "E: Follw errpos 4550"),
-    (3, 0x80000000, 0x4550, 1, "E: Follw errpos 4550"),
-    (4, 0x80400000, 0x4550, 1, "E: Follw errpos 4550"),
-    (5, 0x80000000, 0x4550, 0, "E: Follw errpos 4550"),
-    (6, 0x80400000, 0x4550, 0, "E: Follw errpos 4550"),
+    (1, 0x80000000, 0x4550, 0, "E: Following error position 4550"),
+    (2, 0x80400000, 0x4550, 0, "E: Following error position 4550"),
+    (3, 0x80000000, 0x4550, 1, "E: Following error position 4550"),
+    (4, 0x80400000, 0x4550, 1, "E: Following error position 4550"),
+    (5, 0x80000000, 0x4550, 0, "E: Following error position 4550"),
+    (6, 0x80400000, 0x4550, 0, "E: Following error position 4550"),
     # Error state, no error Id, look at the reason bits.
     # Only bit should be set
     (7, 0x81400000, 0x0, 0, "E: Inhibit"),
@@ -136,7 +136,7 @@ errorTCs = [
     # Error state, no error Id, all reason bits set. Hex code of reason bits
     (12, 0x8F400000, 0x0, 0, "E: Error (0xF)"),
     # Error, homed (bit set), enabled, custom error id
-    (13, 0x80420000, 0x10101, 0, "E: MotorNotHomed"),
+    (13, 0x80420000, 0x10101, 0, "E: Motor not homed"),
 ]
 
 resetTCs = [
