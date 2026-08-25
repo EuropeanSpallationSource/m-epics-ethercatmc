@@ -7,3 +7,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/ruff-action@v3
+        with:
+          # temporarily pin until migration to ruff > 0.16 is possible (see https://github.com/EuropeanSpallationSource/m-epics-ethercatmc/issues/107)
+          version: 0.15.22

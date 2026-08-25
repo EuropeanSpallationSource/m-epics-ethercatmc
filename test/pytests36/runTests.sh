@@ -248,10 +248,10 @@ fi
 TERM=dumb black *.py || exit
 
 #Check ruff, the fast Python linter and code formatter
-# Note: The version without 'v'. 'v' is used when installing
-RUFF_VERSION=0.1.7
+# Pin exact Ruff version to avoid 0.16+ behavior changes for now
+RUFF_VERSION=0.15.22
 if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
-  pip install git+https://github.com/charliermarsh/ruff-pre-commit@v$RUFF_VERSION
+  pip install ruff==$RUFF_VERSION
 fi
 if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
   echo >&2 ruff not found or wrong version
