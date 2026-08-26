@@ -258,7 +258,7 @@ if ! ruff --version | grep -q "[^0-9]${RUFF_VERSION}$"; then
   exit 1
 fi
 # shellcheck disable=SC2035
-NO_COLOR=1 ruff *.py || exit
+NO_COLOR=1 ruff check *.py || exit
 
 if ! type pre-commit >/dev/null 2>&1; then
   pip install pre-commit
