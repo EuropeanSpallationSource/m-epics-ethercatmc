@@ -44,21 +44,19 @@ Motor status
     - The error ID is put as a string into a a different record,
       Labs-ESSIIP:MC-MCU-01:m1-MsgTxt
 
-      Well-understood errorIds will get a short message,
-      what the error is about.
-      Short because we don't have too much space on the display.
-      And short, because even a longer text doesn't tell you more -
-      https://infosys.beckhoff.com is the source of truth.
-      Because there is an error, an "E:" is added in front of it,
-      add the short text and always append the error code (in hex),
-      so that the result may look like this:
-      "E: Enc inv pos 4467"
-      Other errors may be caused by issuing invalid data.
-      Trying to move below the low-soft limit may cause:
-      "E: Low soft lim 4460"
-      Note that an attempt to move the motor outside the driving range
-      to provoke this error is typically blocked by the motorRecord.
-      So it may be hard to provoke errorId 4460 (in a production system).
+      Well-understood errorIds will get a short description on what the error 
+      is about. More details can be found on https://infosys.beckhoff.com by 
+      searching for the error code, as described below.
+      An "E:" is prepended to the message to indicate error state, while the 
+      error code (in hex) is appended to it. 
+      With that, a controller error may look like this:
+      "E: Encoder invalid pos. 4467"
+      Other errors may be caused by issuing invalid data. For example, trying 
+      to move below the low-soft limit may cause:
+      "E: Target pos. below soft. limit 4460"
+      Note: An attempt to move the motor outside the driving range
+      to provoke this error is typically blocked by the motorRecord, so it may
+      be hard to provoke errorId 4460 (in a production system).
 
       But once we got there, the error can (and must be) be reset:
       pvput Labs-ESSIIP:MC-MCU-01:m1-ErrRst 1
@@ -191,7 +189,7 @@ Message texts (-MsgTxt) used today
   Errors from the controller are shown like this:
     "E: TwinCAT Err %X" (followed by a 4 digit hex number
     Or, if we know a little bit more, what the hex number means:
-    "E: Enc inv pos 4467"
+    "E: Encoder invalid pos. 4467"
     In future, we will have texts like
     "localmode" or
     "interlock"

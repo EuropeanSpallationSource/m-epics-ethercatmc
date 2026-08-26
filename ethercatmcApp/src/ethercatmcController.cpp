@@ -59,97 +59,114 @@ extern "C" double ethercatmcgetNowTimeSecs(void) {
 }
 
 extern "C" const char *errStringFromErrId(int nErrorId) {
+  /*
+   * String should be no longer than 33 characters to allow adding "E: xxxx" to
+   * MsgTxt without surpassing the 40 character limit.
+   */
   switch (nErrorId) {
     case 0x0707:
-      return "Dev notrdyST";
+      return "ADS device not ready";
     case 0x4221:
-      return "Velo illegal";
+      return "Target velocity not allowed";
     case 0x4223:
-      return "Axis pos en";
+      return "No enable or no feeds";
     case 0x4225:
-      return "Drv not en";
+      return "Drive HW not enabled";
     case 0x4257:
-      return "Fn not allwd";
+      return "Function not allowed";
     case 0x4450:
-      return "Enc undeflw";
+      return "Encoder underflow";
     case 0x4451:
-      return "Enc overflw";
+      return "Encoder overflow";
     case 0x4260:
-      return "Amplifie off";
+      return "Axis disabled during move";
     case 0x4263:
-      return "Still proce";
+      return "Waiting for task to finish";
     case 0x42A0:
-      return "Consequ Err";
+      return "Axis group error";
     case 0x42EF:
-      return "Locked Stop";
+      return "Stop command still active";
     case 0x4359:
-      return "Velo unaccep";
+      return "Target velocity not allowed";
     case 0x4460:
-      return "Low soft lim";
+      return "Target pos. below soft. limit";
     case 0x4461:
-      return "High softlim";
+      return "Target pos. above soft. limit";
     case 0x4462:
-      return "Min position";
+      return "Pos. below soft. limit";
     case 0x4463:
-      return "Max position";
+      return "Pos. above soft. limit";
     case 0x4464:
-      return "Enc HW error";
+      return "Encoder HW error";
     case 0x4466:
-      return "Enc IO data";
+      return "Encoder invalid IO data";
     case 0x4467:
-      return "Enc inv pos";
+      return "Encoder invalid pos.";
     case 0x4550:
-      return "Follw errpos";
+      return "Following error position";
     case 0x4551:
-      return "Follw errvel";
+      return "Following error velocity";
     case 0x4650:
-      return "DrvHW notrdy";
+      return "Drive HW not enabled";
     case 0x4655:
-      return "Inv IO data";
+      return "Drive invalid IO data";
     case 0x4B07:
-      return "Timo axis FB";
+      return "Timeout axis FB";
     case 0x4B09:
-      return "Axis not rdy";
+      return "Axis not ready";
     case 0x4B0A:
-      return "Homing faild";
+      return "Homing error";
+    // pneumatics
     case 0x10001:
-      return "Extract Timeout";
+      return "Extend timeout";
     case 0x10002:
-      return "Retract Timeout";
+      return "Retract timeout";
     case 0x10003:
-      return "Not Moving Extract";
+      return "Not moving extend";
     case 0x10004:
-      return "Not Moving Retract";
+      return "Not moving retract";
     case 0x10005:
-      return "No PSS Permit";
+      return "No PSS permit";
     case 0x10006:
-      return "Retract Interlocked";
+      return "Retract interlocked";
     case 0x10007:
       return "Extract Interlocked";
     case 0x10008:
-      return "Air Pressure Low";
+      return "Air pressure low";
     case 0x10009:
       return "Air Pressure High";
     case 0x1000A:
-      return "NoSignalEndSwitchBwd";
+      return "No signal EndSwitch neg.";
     case 0x1000B:
-      return "NoSignalEndSwitchFwd";
+      return "No signal EndSwitch pos.";
+    // Custom: Pinhole
     case 0x10101:
-      return "MotorNotHomed";
+      return "Motor not homed";
     case 0x10102:
-      return "NoPinholeInCarousel";
+      return "No pinhole in carrousel";
     case 0x10103:
-      return "NotTakenFromCarrousel";
+      return "Not taken from carrousel";
     case 0x10104:
-      return "NotInsertInToCarrousel";
+      return "Not inserted into carrousel";
     case 0x10105:
-      return "LiftCylinderError";
+      return "Lift cylinder error";
     case 0x10106:
-      return "ArmCylinderError";
+      return "Arm cylinder error";
     case 0x10107:
-      return "CarouselMotorError";
+      return "Carrousel motor error";
     case 0x10108:
-      return "ElectromagnetError";
+      return "Electromagnet error";
+    // Custom: others
+    case 0x10201:
+      return "Temp sensor error";
+    case 0x10202:
+      return "Airpad pressure error";
+    case 0x10203:
+      return "External brake error";
+    case 0x10204:
+      return "External brake timeout";
+    case 0x10205:
+      return "Command handler timeout";
     default:
       return "";
   }
