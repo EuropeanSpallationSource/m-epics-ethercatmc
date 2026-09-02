@@ -1640,7 +1640,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>ethercatmcaxis.opi</path>
@@ -1712,7 +1712,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M1).STOP</pv_name>
@@ -2242,7 +2242,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M1)-ErrRst</pv_name>
@@ -3501,7 +3501,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>ethercatmcaxis.opi</path>
@@ -3573,7 +3573,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M2).STOP</pv_name>
@@ -4103,7 +4103,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M2)-ErrRst</pv_name>
@@ -5362,7 +5362,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>ethercatmcaxis.opi</path>
@@ -5434,7 +5434,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M3).STOP</pv_name>
@@ -5964,7 +5964,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>226</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M3)-ErrRst</pv_name>

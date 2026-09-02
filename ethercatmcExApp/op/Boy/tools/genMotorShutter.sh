@@ -4,7 +4,7 @@ echo genMotorShutter.sh "$@"
 # Number of motors in Y direction
 Y=1
 # Hight of one "motor widget"
-MOTORHIGHT=204
+MOTORHIGHT=224
 # Width of one "motor widget"
 WIDTH=120
 # hight of a temperature wdget
