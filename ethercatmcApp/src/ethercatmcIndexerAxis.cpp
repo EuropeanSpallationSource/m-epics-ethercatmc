@@ -304,11 +304,11 @@ void ethercatmcIndexerAxis::setAuxBitsCustomErrIdMask(
   drvlocal.clean.auxBitsCustomErrIdMask = auxBitsCustomErrIdMask;
 }
 
-void ethercatmcIndexerAxis::setAuxBitsCoupledMask(unsigned auxBitsCoupledMask) {
+void ethercatmcIndexerAxis::setAuxBitsModeLockedMask(unsigned auxBitsModeLockedMask) {
   asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-            "%s(%d) auxBitsCoupledMask=0x%X\n", modNamEMC, axisNo_,
-            auxBitsCoupledMask);
-  drvlocal.clean.auxBitsCoupledMask = auxBitsCoupledMask;
+            "%s(%d) auxBitsModeLockedMask=0x%X\n", modNamEMC, axisNo_,
+            auxBitsModeLockedMask);
+  drvlocal.clean.auxBitsModeLockedMask = auxBitsModeLockedMask;
 }
 
 void ethercatmcIndexerAxis::addPollNowParam(uint8_t paramIndex) {
@@ -1112,7 +1112,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   }
   if (idxStatusCode != idxStatusCodeRESET) {
     setIntegerParam(pC_->defAsynPara.ethercatmcErrRst_, 0);
-    if (statusReasonAux & drvlocal.clean.auxBitsCoupledMask) {
+    if (statusReasonAux & drvlocal.clean.auxBitsModeLockedMask) {
       busyNotDone = true;
     }
   }
@@ -1615,8 +1615,8 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
   reset state axis can be partly moved: Limit switch, interlock Fwd/Bwd axis
   is not homed ??? axis can be moved */
   /* continue with msgtxt */
-  if (statusReasonAux & drvlocal.clean.auxBitsCoupledMask) {
-    msgTxtFromDriver = "Coupled";
+  if (statusReasonAux & drvlocal.clean.auxBitsModeLockedMask) {
+    msgTxtFromDriver = "ModeLocked";
     charEorW = 'W';
   }
   if (!nowMoving) {
