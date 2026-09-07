@@ -109,8 +109,12 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
   setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
 #endif
 
+#ifdef motorFlagsNotHomedWarningString
+  setIntegerParam(pC_->motorFlagsNotHomedWarning_, 1);
+#else
 #ifdef motorFlagsNotHomedProblemString
-  setIntegerParam(pC_->motorFlagsNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
+  setIntegerParam(pC_->motorFlagsNotHomedProblem_, 1);
+#endif
 #endif
 #ifdef motorNotHomedProblemString
   setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
