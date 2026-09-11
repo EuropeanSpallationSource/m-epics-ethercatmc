@@ -2,127 +2,127 @@ record(mbbiDirect, "$(P)$(R)-StatusBits")
 {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "$(DESC)")
-    field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO=0) 0x0FFFFFFF)$(PARAM_NAME)")
+    field(INP,  "@asynMask($(MOTOR_PORT),$(AXIS_NO=0) 0x0FFFFFFF)$(ASYNPARAMNAME)")
     field(SCAN, "I/O Intr")
 }
 
 record(stringin, "$(P)$(R)-NamBit0") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit0")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit0")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit1") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit1")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit1")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit2") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit2")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit2")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit3") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit3")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit3")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit4") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit4")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit4")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit5") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit5")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit5")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit6") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit6")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit6")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit7") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit7")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit7")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit8") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit8")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit8")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit9") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit9")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit9")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit10") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit10")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit10")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit11") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit11")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit11")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit12") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit12")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit12")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit13") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit13")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit13")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit14") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit14")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit14")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit15") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit15")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit15")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit16") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit16")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit16")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit17") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit17")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit17")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit18") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit18")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit18")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit19") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit19")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit19")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit20") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit20")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit20")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit21") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit21")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit21")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit22") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit22")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit22")
     field(SCAN, "I/O Intr")
 }
 record(stringin, "$(P)$(R)-NamBit23") {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(PARAM_NAME)_NamBit23")
+    field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO=0))$(ASYNPARAMNAME)_NamBit23")
     field(SCAN, "I/O Intr")
 }
