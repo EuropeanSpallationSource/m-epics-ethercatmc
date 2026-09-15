@@ -2006,6 +2006,23 @@ unsigned ethercatmcIndexerAxis::paramIndexFromFunction(int function) {
   return 0;
 }
 
+asynStatus ethercatmcIndexerAxis::setGenericDoubleParam(int function,
+                                                        double value) {
+  pilsAsynDevInfo_type *pPilsAsynDevInfo;
+  pPilsAsynDevInfo =
+      pC_->findIndexerOutputDevice(axisNo_, function, asynParamFloat64);
+  if (pPilsAsynDevInfo) {
+    const char *paramName = NULL;
+    if (pC_->getParamName(axisNo_, function, &paramName)) paramName = "";
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetGenericDoubleParam(%d %s offset=%u)=%g\n", modNamEMC,
+              axisNo_, paramName, pPilsAsynDevInfo->outputOffset, value);
+    return pC_->setPlcMemoryDouble(pPilsAsynDevInfo->outputOffset, value,
+                                   pPilsAsynDevInfo->lenInPLC);
+  }
+  return asynSuccess;
+}
+
 asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
   asynStatus status;
   if (function == pC_->defAsynPara.ethercatmcCfgDHLM_) {
@@ -2105,11 +2122,13 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
                 "%ssetDoubleParam(%d function=%d paramIndex=%u =%g\n",
                 modNamEMC, axisNo_, function, paramIndex, value);
       status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
-      if (status == asynSuccess) {
-        status = asynMotorAxis::setDoubleParam(function, value);
-      }
-      return status;
+    } else {
+      status = setGenericDoubleParam(function, value);
     }
+    if (status == asynSuccess) {
+      status = asynMotorAxis::setDoubleParam(function, value);
+    }
+    return status;
   }
 
   // Call the base class method

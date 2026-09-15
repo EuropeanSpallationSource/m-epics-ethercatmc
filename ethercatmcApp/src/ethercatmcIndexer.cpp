@@ -1402,6 +1402,16 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
       statusOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamFloat64;
       break;
+    case 0x1F0C:
+      lenInPLC = 8;
+      /* 1F0C has "current value, target value, followed by extended status
+       * word; errorID is ignored */
+      inputOffset =
+          indexOffset + lenInPLC;  // Look at the target value for readback
+      outputOffset = indexOffset + lenInPLC;
+      statusOffset = indexOffset + 2 * lenInPLC;
+      myAsynParamType = asynParamFloat64;
+      break;
   }
   /* 24 Aux bits. Flags bit 0..23 indicate which aux bit is used and has a
    * name
