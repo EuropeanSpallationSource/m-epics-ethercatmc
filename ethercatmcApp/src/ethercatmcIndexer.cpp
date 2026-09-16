@@ -1750,6 +1750,7 @@ asynStatus ethercatmcController::indexerPoll(void) {
                   break;
                 case 0x1B04:
                 case 0x1B08:
+                case 0x1F0C:
                   newValue = (double)netToDouble(pDataInPlc, lenInPLC);
                   break;
                 default:

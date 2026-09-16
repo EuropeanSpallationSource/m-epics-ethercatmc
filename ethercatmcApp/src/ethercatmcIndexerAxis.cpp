@@ -2013,12 +2013,31 @@ asynStatus ethercatmcIndexerAxis::setGenericDoubleParam(int function,
       pC_->findIndexerOutputDevice(axisNo_, function, asynParamFloat64);
   if (pPilsAsynDevInfo) {
     const char *paramName = NULL;
+    unsigned lenInPLC = pPilsAsynDevInfo->lenInPLC;
     if (pC_->getParamName(axisNo_, function, &paramName)) paramName = "";
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetGenericDoubleParam(%d %s offset=%u)=%g\n", modNamEMC,
-              axisNo_, paramName, pPilsAsynDevInfo->outputOffset, value);
-    return pC_->setPlcMemoryDouble(pPilsAsynDevInfo->outputOffset, value,
-                                   pPilsAsynDevInfo->lenInPLC);
+              "%ssetGenericDoubleParam(%d) '%s' outputOffset=%u "
+              "statusOffset=%u value=%g\n",
+              modNamEMC, axisNo_, paramName, pPilsAsynDevInfo->outputOffset,
+              pPilsAsynDevInfo->statusOffset, value);
+
+    if (pPilsAsynDevInfo->statusOffset && lenInPLC == 8) {
+      /* 1F0C will have a START command */
+      unsigned cmdReason = idxStatusCodeSTART << (12 + 16);
+      struct {
+        uint8_t targetValueRaw[8];
+        uint8_t cmdReason[4];
+      } targetCmd;
+      doubleToNet(value, &targetCmd.targetValueRaw, lenInPLC);
+      UINTTONET(cmdReason, targetCmd.cmdReason);
+      return pC_->setPlcMemoryViaADS(
+          drvlocal.clean.iOffset + drvlocal.clean.lenInPlcPara, &targetCmd,
+          sizeof(targetCmd));
+
+    } else {
+      return pC_->setPlcMemoryDouble(pPilsAsynDevInfo->outputOffset, value,
+                                     pPilsAsynDevInfo->lenInPLC);
+    }
   }
   return asynSuccess;
 }
@@ -2119,7 +2138,7 @@ asynStatus ethercatmcIndexerAxis::setDoubleParam(int function, double value) {
     if (paramIndex) {
       double valueRB = -1;
       asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-                "%ssetDoubleParam(%d function=%d paramIndex=%u =%g\n",
+                "%ssetDoubleParam(%d function=%d paramIndex=%u value=%g\n",
                 modNamEMC, axisNo_, function, paramIndex, value);
       status = pC_->indexerParamWrite(this, paramIndex, value, &valueRB);
     } else {
