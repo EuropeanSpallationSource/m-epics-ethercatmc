@@ -123,11 +123,23 @@ epicsEnvSet("AXIS_NO",         "7")
 < ethercatmcAxisdebug.iocsh
 
 #
-# CHNO 1: analog output with readback.
+# CHNO 1: analog output with readback and status
 #
 epicsEnvSet("AXISCONFIG",      "")
-epicsEnvSet("R",               "AnalogOutput")
+epicsEnvSet("R",               "AnalogOutput1")
 epicsEnvSet("CHNO",            "1")
+epicsEnvSet("ASYNPARAMNAME",   "ANALOGOUTPUT")
+epicsEnvSet("PREC",            "3")
+epicsEnvSet("DESC",            "AnalogOutput")
+epicsEnvSet("EGU",             "mm")
+< ethercatmcAnalogOutputReadback.iocsh
+
+#
+# CHNO 2: analog output with readback.
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "AnalogOutput2")
+epicsEnvSet("CHNO",            "2")
 epicsEnvSet("ASYNPARAMNAME",   "ANALOGOUTPUT")
 epicsEnvSet("PREC",            "3")
 epicsEnvSet("DESC",            "AnalogOutput")

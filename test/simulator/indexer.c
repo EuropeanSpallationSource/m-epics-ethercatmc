@@ -23,6 +23,7 @@
    probably netInfoType4_type with 34 byte */
 #define TYPECODE_SPECIALDEVICE_0518 0x0518
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
+#define TYPECODE_ANALOGOUTPUT_1708 0x1708
 #define TYPECODE_STATUSWORD_1802 0x1802
 #define TYPECODE_DISCRETEINPUT_1A04 0x1A04
 #define TYPECODE_ANALOGINPUT_1B04 0x1B04
@@ -36,6 +37,7 @@
 #define WORDS_SPECIALDEVICE_0518 0x18
 #define WORDS_DISCRETEINPUT_1202 0x2
 #define WORDS_DISCRETEOUTPUT_1604 0x4
+#define WORDS_ANALOGOUTPUT_1708 0x8
 #define WORDS_STATUSWORD_1802 0x2
 #define WORDS_DISCRETEINPUT_1A04 0x4
 #define WORDS_ANALOGINPUT_1B04 0x4
@@ -51,12 +53,6 @@
 
 #define AXISNO_NONE 0
 
-/* axis1 .. axis4 */
-#define NUM_MOTORS5010 4
-
-#define NUM_1802 1
-#define NUM_1604 NUM_MOTORS5010
-
 /*
    Devices for the indexer:
    + the indexer itself
@@ -70,10 +66,18 @@
    + 1 1E04
    + 1 1E0C
    + 1 1B04 (anlog input)
-   + 1 1F0C (analog output)
+   + 1 1F0C (analog output with status)
+   + 1 1708 (analog output, simple)
 */
+
+/* axis1 .. axis4 */
+#define NUM_MOTORS5010 4
+
 #define NUM_INDEXERS 1
 #define NUM_0518 1
+#define NUM_1802 1
+#define NUM_1604 NUM_MOTORS5010
+#define NUM_1708 1
 #define NUM_1E04 1
 #define NUM_1E0C 2
 #define NUM_1F0C 1
@@ -81,10 +85,10 @@
 #define NUM_DISCRET_IN 1
 #define NUM_DISCRET_OUT 1
 #define NUM_ANALOG_IN 1
-#define NUM_DEVICES                                                         \
-  (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1802 +    \
-   NUM_1E04 + NUM_1E0C + NUM_DISCRET_IN + NUM_DISCRET_OUT + NUM_ANALOG_IN + \
-   NUM_1F0C)
+#define NUM_DEVICES                                                      \
+  (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1708 + \
+   NUM_1802 + NUM_1E04 + NUM_1E0C + NUM_DISCRET_IN + NUM_DISCRET_OUT +   \
+   NUM_ANALOG_IN + NUM_1F0C)
 
 typedef enum {
   idxStatusCodeRESET = 0,
@@ -241,6 +245,11 @@ typedef struct {
   uint8_t actualValue[4];
   uint8_t targetValue[4];
 } netDevice1604interface_type;
+
+typedef struct {
+  uint8_t actualValue[8];
+  uint8_t targetValue[8];
+} netDevice1708interface_type;
 
 typedef struct {
   uint8_t statusReasonAux32[4];
@@ -1626,6 +1635,18 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      180.0}
+    /* device for analog input */
+    ,
+    {TYPECODE_ANALOGOUTPUT_1708,
+     2 * WORDS_ANALOGOUTPUT_1708,
+     UNITCODE_NONE,
+     9,
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+     "ANALOGOUTPUT#2",
+     {"", "", "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", "", "", "", "", ""},
+     0.0,
+     180.0}
 #if 0
     ,{ 0, 0,
        UNITCODE_NONE, 0,
@@ -1684,6 +1705,7 @@ static union {
     netDevice1E0Cinterface_type motors1E0C[NUM_1E0C];
     netDevice1B04interface_type analogInput1B04[1];
     netDevice1F0Cinterface_type analogOutput1F0C[1];
+    netDevice1708interface_type analogOutput1708[NUM_1708];
   } memoryStruct;
 } netData;
 
@@ -3010,6 +3032,28 @@ void indexerHandlePLCcycle(void) {
           LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName);
+        }
+      } break;
+      case TYPECODE_ANALOGOUTPUT_1708: {
+        unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
+        if (axisNo) {
+          int motor_axis_no = (int)axisNo;
+          double actualPosition =
+              NETTODOUBLE(netData.memoryStruct.analogOutput1708[0].actualValue);
+          double targetPosition =
+              NETTODOUBLE(netData.memoryStruct.analogOutput1708[0].targetValue);
+          if (targetPosition != actualPosition) {
+            init_axis(motor_axis_no);
+            motorStop(motor_axis_no);
+            set_bError(motor_axis_no, 0);
+            set_nErrorId(motor_axis_no, 0);
+            movePosition(axisNo, targetPosition, 0, /* int relative, */
+                         getNxtMoveVelocity(axisNo),
+                         getNxtMoveAcceleration(axisNo));
+            DOUBLETONET(
+                targetPosition,
+                netData.memoryStruct.analogOutput1708[0].actualValue[0]);
+          }
         }
       } break;
       case TYPECODE_STATUSWORD_1802: {
