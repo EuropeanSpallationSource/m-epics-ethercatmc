@@ -21,30 +21,27 @@
 #define TYPECODE_INDEXER 0
 /* The lenght of the indexer data, the longest is
    probably netInfoType4_type with 34 byte */
-#define WORDS_SIZE_INDEXER_DATA 17
 #define TYPECODE_SPECIALDEVICE_0518 0x0518
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
 #define TYPECODE_STATUSWORD_1802 0x1802
 #define TYPECODE_DISCRETEINPUT_1A04 0x1A04
 #define TYPECODE_ANALOGINPUT_1B04 0x1B04
 #define TYPECODE_DISCRETEOUTPUT_1604 0x1604
-
-#define TYPECODE_DISCRETEOTPUT_1E04 0x1E04
-#define WORDS_DISCRETEOTPUT_1E04 4
-#define TYPECODE_DISCRETEOTPUT_1E0C 0x1E0C
-#define WORDS_DISCRETEOTPUT_1E0C 0xC
-
-#define TYPECODE_DISCRETEOTPUT_1E0C 0x1E0C
-#define WORDS_DISCRETEOTPUT_1E0C 0xC
+#define TYPECODE_DISCRETEOUTPUT_1E04 0x1E04
+#define TYPECODE_DISCRETEOUTPUT_1E0C 0x1E0C
 #define TYPECODE_ANALOGOUTPUT_1F0C 0x1F0C
-#define WORDS_ANALOGOUTPUT_1F0C 0xC
 #define TYPECODE_PARAMDEVICE_5010 0x5010
+
+#define WORDS_SIZE_INDEXER_DATA 17
 #define WORDS_SPECIALDEVICE_0518 0x18
 #define WORDS_DISCRETEINPUT_1202 0x2
 #define WORDS_DISCRETEOUTPUT_1604 0x4
 #define WORDS_STATUSWORD_1802 0x2
 #define WORDS_DISCRETEINPUT_1A04 0x4
 #define WORDS_ANALOGINPUT_1B04 0x4
+#define WORDS_DISCRETEOUTPUT_1E04 0x4
+#define WORDS_DISCRETEOUTPUT_1E0C 0xC
+#define WORDS_ANALOGOUTPUT_1F0C 0xC
 #define WORDS_PARAMDEVICE_5010 0x10
 
 /* Well known unit codes */
@@ -1536,8 +1533,8 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
      1.0}
     /* device for shutter, motor 5 */
     ,
-    {TYPECODE_DISCRETEOTPUT_1E04,
-     2 * WORDS_DISCRETEOTPUT_1E04,
+    {TYPECODE_DISCRETEOUTPUT_1E04,
+     2 * WORDS_DISCRETEOUTPUT_1E04,
      UNITCODE_NONE,
      5,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1554,8 +1551,8 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
      5.0}
     /* device for shutter, motor 6 */
     ,
-    {TYPECODE_DISCRETEOTPUT_1E0C,
-     2 * WORDS_DISCRETEOTPUT_1E0C,
+    {TYPECODE_DISCRETEOUTPUT_1E0C,
+     2 * WORDS_DISCRETEOUTPUT_1E0C,
      UNITCODE_NONE,
      6,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1572,8 +1569,8 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
      5.0}
     /* device for carousel, motor 7 */
     ,
-    {TYPECODE_DISCRETEOTPUT_1E0C,
-     2 * WORDS_DISCRETEOTPUT_1E0C,
+    {TYPECODE_DISCRETEOUTPUT_1E0C,
+     2 * WORDS_DISCRETEOUTPUT_1E0C,
      UNITCODE_NONE,
      7,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -3060,7 +3057,7 @@ void indexerHandlePLCcycle(void) {
                   indexerDeviceAbsStraction[devNum].typeCode);
         }
       } break;
-      case TYPECODE_DISCRETEOTPUT_1E04: {
+      case TYPECODE_DISCRETEOUTPUT_1E04: {
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
           /*
@@ -3083,7 +3080,7 @@ void indexerHandlePLCcycle(void) {
                   indexerDeviceAbsStraction[devNum].devName);
         }
       } break;
-      case TYPECODE_DISCRETEOTPUT_1E0C: {
+      case TYPECODE_DISCRETEOUTPUT_1E0C: {
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
           /*
