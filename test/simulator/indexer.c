@@ -1628,7 +1628,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
     {TYPECODE_ANALOGOUTPUT_1F0C,
      2 * WORDS_ANALOGOUTPUT_1F0C,
      UNITCODE_NONE,
-     8,
+     1,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
      "ANALOGOUTPUT#1",
      {"", "", "", "", "", "", "", "", "", "", "", "",
@@ -1640,7 +1640,7 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
     {TYPECODE_ANALOGOUTPUT_1708,
      2 * WORDS_ANALOGOUTPUT_1708,
      UNITCODE_NONE,
-     9,
+     1,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
      "ANALOGOUTPUT#2",
      {"", "", "", "", "", "", "", "", "", "", "", "",
@@ -2176,7 +2176,7 @@ static void indexerWriteRead1F0C(
     case idxStatusCodeSTART:
       movePosition(motor_axis_no,
                    /* Note: We can only move inside the positive range */
-                   (double)NETTOUINT(pIndexerDevice1F0Cinterface->targetValue),
+                   NETTODOUBLE(pIndexerDevice1F0Cinterface->targetValue),
                    0,    /* int relative, */
                    1.0,  // getNxtMoveVelocity(motor_axis_no),
                    getNxtMoveAcceleration(motor_axis_no));
@@ -2264,6 +2264,14 @@ static void indexerWriteRead1F0C(
   UINTTONET(statusReasonAux32, pIndexerDevice1F0Cinterface->statusReasonAux32);
   UINTTONET((int)getMotorPos(motor_axis_no),
             pIndexerDevice1F0Cinterface->actualValue);
+  {
+    /* Synchronize the target value (with the other analogoutput that moves
+       the motor or movements towards the motor itself */
+    // unsigned motor5010Num = motor_axis_no - 1;
+    double targetPosition = getMotorTargetPos((int)motor_axis_no);
+    //    netData.memoryStruct.motors5010_1202[motor5010Num].dev5010.targetValue);
+    DOUBLETONET(targetPosition, pIndexerDevice1F0Cinterface->targetValue);
+  }
 }
 
 static void indexerMotorStatusRead5010(
@@ -3043,6 +3051,12 @@ void indexerHandlePLCcycle(void) {
           double targetPosition =
               NETTODOUBLE(netData.memoryStruct.analogOutput1708[0].targetValue);
           if (targetPosition != actualPosition) {
+            LOGTIME3(
+                "%s/%s:%d ANALOGOUTPUT_1708 devNum=%u axisNo=%u "
+                "actualPosition=%f targetPosition=%f\n",
+                __FILE__, __FUNCTION__, __LINE__, devNum, axisNo,
+                actualPosition, targetPosition);
+
             init_axis(motor_axis_no);
             motorStop(motor_axis_no);
             set_bError(motor_axis_no, 0);
@@ -3050,10 +3064,22 @@ void indexerHandlePLCcycle(void) {
             movePosition(axisNo, targetPosition, 0, /* int relative, */
                          getNxtMoveVelocity(axisNo),
                          getNxtMoveAcceleration(axisNo));
-            DOUBLETONET(
-                targetPosition,
-                netData.memoryStruct.analogOutput1708[0].actualValue[0]);
+          } else {
+            /* we didn't write anything new: Sync from the setpoint of the motor
+             */
+#if 0
+            unsigned motor5010Num = axisNo - 1;
+            targetPosition =
+                NETTODOUBLE(netData.memoryStruct.motors5010_1202[motor5010Num]
+                                .dev5010.targetValue);
+#else
+            targetPosition = getMotorTargetPos(axisNo);
+#endif
           }
+          DOUBLETONET(targetPosition,
+                      netData.memoryStruct.analogOutput1708[0].actualValue);
+          DOUBLETONET(targetPosition,
+                      netData.memoryStruct.analogOutput1708[0].targetValue);
         }
       } break;
       case TYPECODE_STATUSWORD_1802: {

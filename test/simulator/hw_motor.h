@@ -96,6 +96,7 @@ double getMRES_24(int axis_no);
 int setMRES_24(int axis_no, double value);
 
 double getMotorPos(int axis_no);
+double getMotorTargetPos(int axis_no);
 void setPosHome_fl(int axis_no, double value, const char *file, int line_no);
 #define setPosHome(a, b) setPosHome_fl(a, b, __FILE__, __LINE__)
 void simFastMove_fl(int axis_no, double value, const char *file, int line_no);
