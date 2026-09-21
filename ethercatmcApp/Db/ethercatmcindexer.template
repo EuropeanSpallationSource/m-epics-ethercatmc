@@ -35,7 +35,7 @@ record(ai,"$(P)$(R)-RBV-TSE") {
 record(mbbo,"$(P)$(R)-PollScaling") {
     field(DESC,"PollScaling")
     field(DTYP, "asynInt32")
-    field(VAL,  "$(VAL=2)")
+    field(VAL,  "$(VAL=1)")
     field(PINI, "YES")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))PollScaling")
     field(ZRVL,  "0")
