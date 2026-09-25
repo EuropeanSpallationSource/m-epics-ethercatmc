@@ -1647,11 +1647,21 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
           snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s,%s",
                    charEorW, msgLimitSwitchTxt, msgInterlockTxt);
         } else if (msgInterlockTxt) {
-          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
-                   msgInterlockTxt);
+          if (errorID > 0) {
+            snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s,%04X",
+                     charEorW, msgInterlockTxt, errorID);
+          } else {
+            snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s",
+                     charEorW, msgInterlockTxt);
+          }
         } else if (msgLimitSwitchTxt) {
-          snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s", charEorW,
-                   msgLimitSwitchTxt);
+          if (errorID > 0) {
+            snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s,%04X",
+                     charEorW, msgLimitSwitchTxt, errorID);
+          } else {
+            snprintf(sErrorMessage, sizeof(sErrorMessage) - 1, "%c: %s",
+                     charEorW, msgLimitSwitchTxt);
+          }
         }
         msgTxtFromDriver = &sErrorMessage[0];
       }

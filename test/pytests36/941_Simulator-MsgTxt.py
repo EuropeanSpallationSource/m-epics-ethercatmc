@@ -85,11 +85,11 @@ idleWarnTCs = [
     # 5: not homed, not enabled, autopower off, error Id
     (5, 0x10800000, 0x4460, 0, "W: PowerOff"),
     # 6: not homed, enabled, autopower off, error Id
-    (6, 0x10C00000, 0x4460, 0, "W: Axis not homed"),
+    (6, 0x10C00000, 0x4460, 0, "W: Axis not homed,4460"),
     # 7: not homed, not enabled, autopower on, error Id
-    (7, 0x10800000, 0x4460, 1, "W: Axis not homed"),
+    (7, 0x10800000, 0x4460, 1, "W: Axis not homed,4460"),
     # 8: not homed, enabled, autopower on, error Id
-    (8, 0x10C00000, 0x4460, 1, "W: Axis not homed"),
+    (8, 0x10C00000, 0x4460, 1, "W: Axis not homed,4460"),
     # 9..10 homed, not enabled/enabled, autopower off, error Id
     (9, 0x10000000, 0x4460, 0, "W: PowerOff"),
     (10, 0x10400000, 0x4460, 0, "W: Target pos. below soft. limit 4460"),
@@ -100,13 +100,13 @@ idleWarnTCs = [
     (13, 0x10500000, 0x4460, 0, "W: localMode"),
     (14, 0x10500000, 0x0, 0, "W: localMode"),
     # homed, enabled, InterlockBwd
-    (15, 0x10480000, 0x4460, 0, "W: LO_Interlock"),
+    (15, 0x10480000, 0x4460, 0, "W: LO_Interlock,4460"),
     (16, 0x10480000, 0x0, 0, "W: LO_Interlock"),
     # homed, enabled, InterlockFwd
-    (17, 0x10440000, 0x4460, 0, "W: HI_interlock"),
+    (17, 0x10440000, 0x4460, 0, "W: HI_interlock,4460"),
     (18, 0x10440000, 0x0, 0, "W: HI_interlock"),
     # homed, enabled, InterlockBwd, InterlockFwd
-    (19, 0x104C0000, 0x4460, 0, "W: HI+LO interlocks"),
+    (19, 0x104C0000, 0x4460, 0, "W: HI+LO interlocks,4460"),
     (20, 0x104C0000, 0x0, 0, "W: HI+LO interlocks"),
     # homed (bit set), enabled, custom error id
     (21, 0x10420000, 0x10101, 0, "W: Motor not homed"),
