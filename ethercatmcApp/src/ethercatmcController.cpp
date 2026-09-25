@@ -922,6 +922,24 @@ void ethercatmcController::report(FILE *fp, int level) {
           "Twincat motor driver %s, numAxes=%d, moving poll period=%f, idle "
           "poll period=%f\n",
           this->portName, numAxes_, movingPollPeriod_, idlePollPeriod_);
+  if (level > 1) {
+    /*  PilsAsynDevInfo */
+    for (unsigned numPilsAsynDevInfo = 0;
+         numPilsAsynDevInfo < ctrlLocal.numPilsAsynDevInfo;
+         numPilsAsynDevInfo++) {
+      pilsAsynDevInfo_type *pPilsAsynDevInfo =
+          &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
+      fprintf(fp,
+              "PilsAsynDevInfo[%u] axisNo=%d function=%d EPICSParamType=%s(%d) "
+              "inputOffset=%u "
+              "outputOffset=%u TypCode=0x%04x\n",
+              numPilsAsynDevInfo, pPilsAsynDevInfo->axisNo,
+              pPilsAsynDevInfo->function,
+              stringFromAsynParamType(pPilsAsynDevInfo->myEPICSParamType),
+              pPilsAsynDevInfo->myEPICSParamType, pPilsAsynDevInfo->inputOffset,
+              pPilsAsynDevInfo->outputOffset, pPilsAsynDevInfo->iTypCode);
+    }
+  }
 
   // Call the base class method
   asynMotorController::report(fp, level);

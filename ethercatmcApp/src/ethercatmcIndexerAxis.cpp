@@ -79,45 +79,46 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
                                              const char *axisOptionsStr)
     : asynMotorAxis(pC, axisNo), pC_(pC) {
 #ifdef motorFlagsDriverUsesEGUString
-  setIntegerParam(pC_->motorFlagsDriverUsesEGU_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsDriverUsesEGU_, 1);
 #endif
 #ifdef motorFlagsAdjAfterHomedString
-  setIntegerParam(pC_->motorFlagsAdjAfterHomed_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsAdjAfterHomed_, 1);
 #endif
   memset(&drvlocal, 0, sizeof(drvlocal));
   memset(&drvlocal.dirty, 0xFF, sizeof(drvlocal.dirty));
   drvlocal.pollScaling = PollScalingCyclic;
   /* We pretend to have an encoder (fActPosition) */
-  setIntegerParam(pC_->motorStatusHasEncoder_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorStatusHasEncoder_, 1);
 #ifdef motorFlagsNoStopProblemString
-  setIntegerParam(pC_->motorFlagsNoStopProblem_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsNoStopProblem_, 1);
 #endif
 #ifdef motorFlagsNoStopOnLsString
-  setIntegerParam(pC_->motorFlagsNoStopOnLS_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsNoStopOnLS_, 1);
 #endif
 #ifdef motorFlagsLSrampDownString
-  setIntegerParam(pC_->motorFlagsLSrampDown_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsLSrampDown_, 1);
 #endif
 #ifdef motorFlagsPwrWaitForOnString
-  setIntegerParam(pC_->motorFlagsPwrWaitForOn_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsPwrWaitForOn_, 1);
 #endif
 
 #ifdef motorShowPowerOffString
-  setIntegerParam(pC_->motorShowPowerOff_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorShowPowerOff_, 1);
 #endif
 #ifdef motorFlagsHomeOnLsString
-  setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsHomeOnLs_, 1);
 #endif
 
 #ifdef motorFlagsNotHomedWarningString
-  setIntegerParam(pC_->motorFlagsNotHomedWarning_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsNotHomedWarning_, 1);
 #else
 #ifdef motorFlagsNotHomedProblemString
-  setIntegerParam(pC_->motorFlagsNotHomedProblem_, 1);
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsNotHomedProblem_, 1);
 #endif
 #endif
 #ifdef motorNotHomedProblemString
-  setIntegerParam(pC_->motorNotHomedProblem_, MOTORNOTHOMEDPROBLEM_ERROR);
+  asynMotorAxis::setIntegerParam(pC_->motorNotHomedProblem_,
+                                 MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
 
   /* Set the module name to "" if we have FILE/LINE enabled by asyn */
@@ -179,9 +180,9 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
       status = pC->findParam(motorPowerAutoOnOffString, &function);
       if (!status) {
 #ifdef POWERAUTOONOFFMODE2
-        pAxis->setIntegerParam(function, POWERAUTOONOFFMODE2);
+        pAxis->asynMotorAxis::setIntegerParam(function, POWERAUTOONOFFMODE2);
 #else
-        pAxis->setIntegerParam(function, 1);
+        pAxis->asynMotorAxis::setIntegerParam(function, 1);
 #endif
       }
       status = pC->findParam(motorPowerOnDelayString, &function);
@@ -232,7 +233,7 @@ void ethercatmcIndexerAxis::setIndexerDevNumOffsetTypeCode(
 #endif
 #ifdef motorFlagsNoTweakOnLsString
   if (pC_->ctrlLocal.specialDbgStrToMcuDeviceOffset) {
-    setIntegerParam(pC_->motorFlagsNoTweakOnLs_, 1);
+    asynMotorAxis::setIntegerParam(pC_->motorFlagsNoTweakOnLs_, 1);
   }
 #endif
 }
@@ -650,7 +651,7 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function, int newValue,
               "%ssetIntegerParam(%d) %s=%d\n", modNamEMC, axisNo_, name,
               newValue);
   }
-  return setIntegerParam(function, newValue);
+  return asynMotorAxis::setIntegerParam(function, newValue);
 }
 
 int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
@@ -711,11 +712,11 @@ void ethercatmcIndexerAxis::newMotorPosition(double actPosition) {
     /* Use previous fActPosition and
        current fActPosition to calculate direction.*/
     if (actPosition > oldPositionValue) {
-      setIntegerParam(pC_->motorStatusDirection_, 1);
-      setIntegerParam(pC_->motorStatusMoving_, 1);
+      asynMotorAxis::setIntegerParam(pC_->motorStatusDirection_, 1);
+      asynMotorAxis::setIntegerParam(pC_->motorStatusMoving_, 1);
     } else if (actPosition < oldPositionValue) {
-      setIntegerParam(pC_->motorStatusDirection_, 0);
-      setIntegerParam(pC_->motorStatusMoving_, 1);
+      asynMotorAxis::setIntegerParam(pC_->motorStatusDirection_, 0);
+      asynMotorAxis::setIntegerParam(pC_->motorStatusMoving_, 1);
     }
   }
 }
@@ -905,7 +906,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     }
     if (!status) {
       drvlocal.dirty.initialPollNeeded = 0;
-      setIntegerParam(pC_->motorStatusCommsError_, 0);
+      asynMotorAxis::setIntegerParam(pC_->motorStatusCommsError_, 0);
       pC_->setAlarmStatusSeverityWrapper(
           axisNo_, pC_->defAsynPara.ethercatmcStatusBits_, asynSuccess);
       pC_->setAlarmStatusSeverityWrapper(
@@ -961,7 +962,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     if (statusReasonAux & drvlocal.clean.auxBitsCustomErrIdMask) {
       errorID += 0x10000; /* custom error id is 0x10000..0x1FFFF */
     }
-    setIntegerParam(pC_->defAsynPara.ethercatmcErrId_, errorID);
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.ethercatmcErrId_, errorID);
 
     idxStatusCode = (idxStatusCodeType)(statusReasonAux >> 28);
     idxReasonBits = (statusReasonAux >> 24) & 0x0F;
@@ -1016,12 +1017,12 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     errorID = 0;
     homed = 1;
     actPosition = (double)NETTOUINT(readback.currentValue);
-    setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
-                    NETTOUINT(readback.currentValue));
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
+                                   NETTOUINT(readback.currentValue));
     pC_->setAlarmStatusSeverityWrapper(
         axisNo_, pC_->defAsynPara.pilsLonginActual_, asynSuccess);
-    setIntegerParam(pC_->defAsynPara.pilsLonginTarget_,
-                    NETTOUINT(readback.targetValue));
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.pilsLonginTarget_,
+                                   NETTOUINT(readback.targetValue));
     pC_->setAlarmStatusSeverityWrapper(
         axisNo_, pC_->defAsynPara.pilsLonginTarget_, asynSuccess);
 
@@ -1053,15 +1054,15 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     }
     // Use bit 0 of reserved as errorID bit 16
     errorID = (int)NETTOUINT(readback.errorID) & 0x1FFFF;
-    setIntegerParam(pC_->defAsynPara.ethercatmcErrId_, errorID);
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.ethercatmcErrId_, errorID);
     homed = 1;
     actPosition = (double)NETTOUINT(readback.currentValue);
-    setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
-                    NETTOUINT(readback.currentValue));
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.pilsLonginActual_,
+                                   NETTOUINT(readback.currentValue));
     pC_->setAlarmStatusSeverityWrapper(
         axisNo_, pC_->defAsynPara.pilsLonginActual_, asynSuccess);
-    setIntegerParam(pC_->defAsynPara.pilsLonginTarget_,
-                    NETTOUINT(readback.targetValue));
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.pilsLonginTarget_,
+                                   NETTOUINT(readback.targetValue));
     pC_->setAlarmStatusSeverityWrapper(
         axisNo_, pC_->defAsynPara.pilsLonginTarget_, asynSuccess);
 
@@ -1081,7 +1082,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     return asynError;
   }
   drvlocal.clean.hasProblem = 0;
-  setIntegerParam(pC_->defAsynPara.ethercatmcStatusCode_, idxStatusCode);
+  asynMotorAxis::setIntegerParam(pC_->defAsynPara.ethercatmcStatusCode_,
+                                 idxStatusCode);
   switch (idxStatusCode) {
       /* After RESET, START, STOP the bits are not valid */
     case idxStatusCodeIDLE:
@@ -1115,7 +1117,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
       drvlocal.clean.hasProblem = 1;
   }
   if (idxStatusCode != idxStatusCodeRESET) {
-    setIntegerParam(pC_->defAsynPara.ethercatmcErrRst_, 0);
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.ethercatmcErrRst_, 0);
     if (statusReasonAux & drvlocal.clean.auxBitsCoupledMask) {
       busyNotDone = true;
     }
@@ -1123,7 +1125,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   *moving = busyNotDone;
   /* These is important to inform the motorRecord
      when a motion is completed */
-  setIntegerParam(pC_->motorStatusDone_, !busyNotDone);
+  asynMotorAxis::setIntegerParam(pC_->motorStatusDone_, !busyNotDone);
   if (positionValid) {
     if (busyNotDone) {
       newMotorPosition(actPosition);
@@ -1264,7 +1266,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
           idxAuxBits != drvlocal.dirty.old_idxAuxBits) {
         {
           int function = pC_->defAsynPara.ethercatmcAuxBits07_;
-          setIntegerParam(function, idxAuxBits & drvlocal.clean.auxBits07mask);
+          asynMotorAxis::setIntegerParam(
+              function, idxAuxBits & drvlocal.clean.auxBits07mask);
           pC_->setAlarmStatusSeverityWrapper(axisNo_, function, asynSuccess);
         }
         for (unsigned auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD;
@@ -1275,7 +1278,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
             asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
                       "%spoll(%d) auxBitIdx=%u function=%d value=%d\n",
                       modNamEMC, axisNo_, auxBitIdx, function, value);
-            setIntegerParam(function, value);
+            asynMotorAxis::setIntegerParam(function, value);
             if (drvlocal.clean.old_idxAuxBitsWritten !=
                 drvlocal.dirty.old_idxAuxBits) {
               /* In the first cycle:
@@ -1310,8 +1313,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
       ;
     }
     /* Set the integer parameter, 0 or 1, using !! */
-    setIntegerParam(pC_->motorStatusLowLimit_, !!lls);
-    setIntegerParam(pC_->motorStatusHighLimit_, !!hls);
+    asynMotorAxis::setIntegerParam(pC_->motorStatusLowLimit_, !!lls);
+    asynMotorAxis::setIntegerParam(pC_->motorStatusHighLimit_, !!hls);
 
     pC_->setUIntDigitalParam(axisNo_, pC_->defAsynPara.ethercatmcStatusBits_,
                              (epicsUInt32)statusReasonAux, 0x0FFFFFFF,
@@ -1366,7 +1369,8 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     /* dynamic problem */
     asynMotorAxis::setIntegerParam(pC_->motorStatusFollowingError_,
                                    idxReasonBits & 0x2 ? 1 : 0);
-    setIntegerParam(pC_->defAsynPara.ethercatmcMcuErr_, hasError);
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.ethercatmcMcuErr_,
+                                   hasError);
     if (drvlocal.clean.auxBitsNotHomedMask) {
       homed = idxAuxBits & drvlocal.clean.auxBitsNotHomedMask ? 0 : 1;
       setIntegerParamLog(pC_->motorStatusHomed_, homed, "homed");
@@ -1384,9 +1388,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
     if (drvlocal.clean.auxBitsEnabledMask) {
       powerIsOn = idxAuxBits & drvlocal.clean.auxBitsEnabledMask ? 1 : 0;
     }
-    setIntegerParam(pC_->defAsynPara.ethercatmcStatusCode_, idxStatusCode);
-    setIntegerParam(pC_->motorStatusProblem_,
-                    drvlocal.clean.hasProblem | localMode);
+    asynMotorAxis::setIntegerParam(pC_->defAsynPara.ethercatmcStatusCode_,
+                                   idxStatusCode);
+    asynMotorAxis::setIntegerParam(pC_->motorStatusProblem_,
+                                   drvlocal.clean.hasProblem | localMode);
     setIntegerParamLog(pC_->motorStatusPowerOn_, powerIsOn, "powerOn");
   } /* auxbitsValid */
   if (idxStatusCode == idxStatusCodeRESET) {
@@ -1820,16 +1825,20 @@ asynStatus ethercatmcIndexerAxis::setClosedLoop(bool closedLoop) {
 asynStatus ethercatmcIndexerAxis::setGenericIntegerParam(int function,
                                                          int value) {
   pilsAsynDevInfo_type *pPilsAsynDevInfo;
+  const char *paramName = NULL;
+  if (pC_->getParamName(axisNo_, function, &paramName)) paramName = "";
   pPilsAsynDevInfo =
       pC_->findIndexerOutputDevice(axisNo_, function, asynParamInt32);
   if (pPilsAsynDevInfo) {
-    const char *paramName = NULL;
-    if (pC_->getParamName(axisNo_, function, &paramName)) paramName = "";
     asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
               "%ssetGenericIntegerParam(%d %s offset=%u)=%d\n", modNamEMC,
               axisNo_, paramName, pPilsAsynDevInfo->outputOffset, value);
     return pC_->setPlcMemoryInteger(pPilsAsynDevInfo->outputOffset, value,
                                     pPilsAsynDevInfo->lenInPLC);
+  } else {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetGenericIntegerParam(%d %s) function=%d value=%d\n",
+              modNamEMC, axisNo_, paramName, function, value);
   }
   return asynSuccess;
 }
