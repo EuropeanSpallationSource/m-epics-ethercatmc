@@ -938,7 +938,7 @@ asynStatus ethercatmcController::indexerReadAxisParameters(
       switch (paramIndex) {
         case PARAM_IDX_OPMODE_AUTO_UINT:
           /* CNEN for EPICS */
-          pAxis->setIntegerParam(motorStatusGainSupport_, 1);
+          pAxis->asynMotorAxis::setIntegerParam(motorStatusGainSupport_, 1);
           break;
         case PARAM_IDX_SETPOINT_FLOAT: {
           asynStatus tmpstatus =
@@ -959,15 +959,15 @@ asynStatus ethercatmcController::indexerReadAxisParameters(
         } break;
         case PARAM_IDX_FUN_REFERENCE:
 #ifdef motorNotHomedProblemString
-          pAxis->setIntegerParam(motorNotHomedProblem_,
-                                 MOTORNOTHOMEDPROBLEM_ERROR);
+          pAxis->asynMotorAxis::setIntegerParam(motorNotHomedProblem_,
+                                                MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
           updateCfgValue(axisNo, defAsynPara.ethercatmcHomeVis_, 1, "homeVis");
           break;
         case PARAM_IDX_FUN_SET_POSITION:
 #ifdef motorNotHomedProblemString
-          pAxis->setIntegerParam(motorNotHomedProblem_,
-                                 MOTORNOTHOMEDPROBLEM_ERROR);
+          pAxis->asynMotorAxis::setIntegerParam(motorNotHomedProblem_,
+                                                MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
           updateCfgValue(axisNo, defAsynPara.ethercatmcFoffVis_, 1, "foffVis");
           break;

@@ -1835,10 +1835,6 @@ asynStatus ethercatmcIndexerAxis::setGenericIntegerParam(int function,
               axisNo_, paramName, pPilsAsynDevInfo->outputOffset, value);
     return pC_->setPlcMemoryInteger(pPilsAsynDevInfo->outputOffset, value,
                                     pPilsAsynDevInfo->lenInPLC);
-  } else {
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
-              "%ssetGenericIntegerParam(%d %s) function=%d value=%d\n",
-              modNamEMC, axisNo_, paramName, function, value);
   }
   return asynSuccess;
 }
