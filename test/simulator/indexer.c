@@ -17,40 +17,33 @@
 #include "hw_motor.h"
 #include "logerr_info.h"
 
-#define HAS_1604_OPEN_CLUTCH
-#define HAS_1E04_SHUTTER
-#define HAS_1E0C_SHUTTER_CAROUSEL
-
 /* type codes and sizes */
 #define TYPECODE_INDEXER 0
 /* The lenght of the indexer data, the longest is
    probably netInfoType4_type with 34 byte */
-#define WORDS_SIZE_INDEXER_DATA 17
-#define HAS_0518
-#ifdef HAS_0518
 #define TYPECODE_SPECIALDEVICE_0518 0x0518
-#endif
 #define TYPECODE_DISCRETEINPUT_1202 0x1202
+#define TYPECODE_ANALOGOUTPUT_1708 0x1708
 #define TYPECODE_STATUSWORD_1802 0x1802
 #define TYPECODE_DISCRETEINPUT_1A04 0x1A04
 #define TYPECODE_ANALOGINPUT_1B04 0x1B04
 #define TYPECODE_DISCRETEOUTPUT_1604 0x1604
-
-#ifdef HAS_1E04_SHUTTER
-#define TYPECODE_DISCRETEOTPUT_1E04 0x1E04
-#define WORDS_DISCRETEOTPUT_1E04 4
-#endif
-#ifdef HAS_1E0C_SHUTTER_CAROUSEL
-#define TYPECODE_DISCRETEOTPUT_1E0C 0x1E0C
-#define WORDS_DISCRETEOTPUT_1E0C 0xC
-#endif
+#define TYPECODE_DISCRETEOUTPUT_1E04 0x1E04
+#define TYPECODE_DISCRETEOUTPUT_1E0C 0x1E0C
+#define TYPECODE_ANALOGOUTPUT_1F0C 0x1F0C
 #define TYPECODE_PARAMDEVICE_5010 0x5010
+
+#define WORDS_SIZE_INDEXER_DATA 17
 #define WORDS_SPECIALDEVICE_0518 0x18
 #define WORDS_DISCRETEINPUT_1202 0x2
 #define WORDS_DISCRETEOUTPUT_1604 0x4
+#define WORDS_ANALOGOUTPUT_1708 0x8
 #define WORDS_STATUSWORD_1802 0x2
 #define WORDS_DISCRETEINPUT_1A04 0x4
 #define WORDS_ANALOGINPUT_1B04 0x4
+#define WORDS_DISCRETEOUTPUT_1E04 0x4
+#define WORDS_DISCRETEOUTPUT_1E0C 0xC
+#define WORDS_ANALOGOUTPUT_1F0C 0xC
 #define WORDS_PARAMDEVICE_5010 0x10
 
 /* Well known unit codes */
@@ -59,17 +52,6 @@
 #define UNITCODE_DEGREE 0x000C
 
 #define AXISNO_NONE 0
-
-/* axis1 .. axis4 */
-#define NUM_MOTORS5010 4
-
-#define NUM_1802 1
-
-#ifdef HAS_1604_OPEN_CLUTCH
-#define NUM_1604 NUM_MOTORS5010
-#else
-#define NUM_1604 0
-#endif
 
 /*
    Devices for the indexer:
@@ -84,33 +66,29 @@
    + 1 1E04
    + 1 1E0C
    + 1 1B04 (anlog input)
+   + 1 1F0C (analog output with status)
+   + 1 1708 (analog output, simple)
 */
+
+/* axis1 .. axis4 */
+#define NUM_MOTORS5010 4
+
 #define NUM_INDEXERS 1
-
-#ifdef HAS_0518
 #define NUM_0518 1
-#else
-#define NUM_0518 0
-#endif
-
-#ifdef HAS_1E04_SHUTTER
+#define NUM_1802 1
+#define NUM_1604 NUM_MOTORS5010
+#define NUM_1708 1
 #define NUM_1E04 1
-#else
-#define NUM_1E04 0
-#endif
-#ifdef HAS_1E0C_SHUTTER_CAROUSEL
 #define NUM_1E0C 2
-#else
-#define NUM_1E0C 0
-#endif
-
+#define NUM_1F0C 1
 #define NUM_5010 4
 #define NUM_DISCRET_IN 1
 #define NUM_DISCRET_OUT 1
 #define NUM_ANALOG_IN 1
 #define NUM_DEVICES                                                      \
-  (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1802 + \
-   NUM_1E04 + NUM_1E0C + NUM_DISCRET_IN + NUM_DISCRET_OUT + NUM_ANALOG_IN)
+  (NUM_INDEXERS + NUM_0518 + NUM_5010 + NUM_5010 + NUM_1604 + NUM_1708 + \
+   NUM_1802 + NUM_1E04 + NUM_1E0C + NUM_DISCRET_IN + NUM_DISCRET_OUT +   \
+   NUM_ANALOG_IN + NUM_1F0C)
 
 typedef enum {
   idxStatusCodeRESET = 0,
@@ -269,6 +247,11 @@ typedef struct {
 } netDevice1604interface_type;
 
 typedef struct {
+  uint8_t actualValue[8];
+  uint8_t targetValue[8];
+} netDevice1708interface_type;
+
+typedef struct {
   uint8_t statusReasonAux32[4];
 } netDevice1802interface_type;
 
@@ -282,21 +265,23 @@ typedef struct {
   uint8_t statusReasonAux32[4];
 } netDevice1B04interface_type;
 
-#ifdef HAS_1E04_SHUTTER
 typedef struct {
   uint8_t actualValue[2];
   uint8_t targetValue[2];
   uint8_t statusReasonAux32[4];
 } netDevice1E04interface_type;
-#endif
-#ifdef HAS_1E0C_SHUTTER_CAROUSEL
 typedef struct {
   uint8_t actualValue[8];
   uint8_t targetValue[8];
   uint8_t statusReasonAux32[4];
   uint8_t errorID[4];  // The spec says 2 byte errorID, 2 bytes reserved
 } netDevice1E0Cinterface_type;
-#endif
+typedef struct {
+  uint8_t actualValue[8];
+  uint8_t targetValue[8];
+  uint8_t statusReasonAux32[4];
+  uint8_t errorID[4];  // The spec says 2 byte errorID, 2 bytes reserved
+} netDevice1F0Cinterface_type;
 
 /* struct as seen on the network = in memory
  * data must be stored using  uintToNet/doubleToNet
@@ -313,9 +298,7 @@ typedef struct {
 typedef struct {
   netDevice5010interface_type dev5010;
   netDevice1202interface_type dev1202encoderRaw;
-#ifdef HAS_1604_OPEN_CLUTCH
   netDevice1604interface_type dev1604openClutch;
-#endif
 } netDevice5010_1202_Interface_type;
 
 /* Info type as seen here locally in memory */
@@ -398,7 +381,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      0.0},
-#ifdef HAS_0518
     /* special device */
     {TYPECODE_SPECIALDEVICE_0518,
      2 * WORDS_SPECIALDEVICE_0518,
@@ -410,7 +392,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      0.0},
-#endif
     {TYPECODE_PARAMDEVICE_5010,
      2 * WORDS_PARAMDEVICE_5010,
      UNITCODE_MM,
@@ -698,7 +679,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      0.0},
-#ifdef HAS_1604_OPEN_CLUTCH
     /* device for openClutch */
     {TYPECODE_DISCRETEOUTPUT_1604,
      2 * WORDS_DISCRETEOUTPUT_1604,
@@ -710,7 +690,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      1.0},
-#endif
     {TYPECODE_PARAMDEVICE_5010,
      2 * WORDS_PARAMDEVICE_5010,
      UNITCODE_DEGREE,
@@ -998,7 +977,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      0.0},
-#ifdef HAS_1604_OPEN_CLUTCH
     /* device for openClutch */
     {TYPECODE_DISCRETEOUTPUT_1604,
      2 * WORDS_DISCRETEOUTPUT_1604,
@@ -1010,7 +988,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      1.0},
-#endif
     {TYPECODE_PARAMDEVICE_5010,
      2 * WORDS_PARAMDEVICE_5010,
      UNITCODE_MM,
@@ -1276,7 +1253,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      0.0},
-#ifdef HAS_1604_OPEN_CLUTCH
     /* device for openClutch */
     {TYPECODE_DISCRETEOUTPUT_1604,
      2 * WORDS_DISCRETEOUTPUT_1604,
@@ -1288,7 +1264,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      1.0},
-#endif
     {TYPECODE_PARAMDEVICE_5010,
      2 * WORDS_PARAMDEVICE_5010,
      UNITCODE_MM,
@@ -1554,7 +1529,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      0.0},
-#ifdef HAS_1604_OPEN_CLUTCH
     /* device for openClutch */
     {TYPECODE_DISCRETEOUTPUT_1604,
      2 * WORDS_DISCRETEOUTPUT_1604,
@@ -1566,12 +1540,10 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      0.0,
      1.0}
-#endif
-#ifdef HAS_1E04_SHUTTER
     /* device for shutter, motor 5 */
     ,
-    {TYPECODE_DISCRETEOTPUT_1E04,
-     2 * WORDS_DISCRETEOTPUT_1E04,
+    {TYPECODE_DISCRETEOUTPUT_1E04,
+     2 * WORDS_DISCRETEOUTPUT_1E04,
      UNITCODE_NONE,
      5,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1586,12 +1558,10 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "",        "",        ""},
      1.0,
      5.0}
-#endif
-#ifdef HAS_1E0C_SHUTTER_CAROUSEL
     /* device for shutter, motor 6 */
     ,
-    {TYPECODE_DISCRETEOTPUT_1E0C,
-     2 * WORDS_DISCRETEOTPUT_1E0C,
+    {TYPECODE_DISCRETEOUTPUT_1E0C,
+     2 * WORDS_DISCRETEOUTPUT_1E0C,
      UNITCODE_NONE,
      6,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1606,12 +1576,10 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "",        "",        ""},
      1.0,
      5.0}
-#endif
-#ifdef HAS_1E0C_SHUTTER_CAROUSEL
     /* device for carousel, motor 7 */
     ,
-    {TYPECODE_DISCRETEOTPUT_1E0C,
-     2 * WORDS_DISCRETEOTPUT_1E0C,
+    {TYPECODE_DISCRETEOUTPUT_1E0C,
+     2 * WORDS_DISCRETEOUTPUT_1E0C,
      UNITCODE_NONE,
      7,
      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1642,7 +1610,6 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       ""},
      0.0,
      10.0}
-#endif
     /* device for analog input with status word */
     ,
     {TYPECODE_ANALOGINPUT_1B04,
@@ -1656,6 +1623,30 @@ indexerDeviceAbsStraction_type indexerDeviceAbsStraction[NUM_DEVICES] = {
       "", "", "", "", "", "", "", "", "", "", "", ""},
      180.0,
      -1.0}
+    /* device for analog input with status word */
+    ,
+    {TYPECODE_ANALOGOUTPUT_1F0C,
+     2 * WORDS_ANALOGOUTPUT_1F0C,
+     UNITCODE_NONE,
+     1,
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+     "ANALOGOUTPUT#1",
+     {"", "", "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", "", "", "", "", ""},
+     0.0,
+     180.0}
+    /* device for analog input */
+    ,
+    {TYPECODE_ANALOGOUTPUT_1708,
+     2 * WORDS_ANALOGOUTPUT_1708,
+     UNITCODE_NONE,
+     1,
+     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+     "ANALOGOUTPUT#2",
+     {"", "", "", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", "", "", "", "", "", "", "", ""},
+     0.0,
+     180.0}
 #if 0
     ,{ 0, 0,
        UNITCODE_NONE, 0,
@@ -1706,15 +1697,15 @@ static union {
     netDevice1802interface_type statusWord1802[NUM_1802];
     netDevice1A04interface_type discreteInput1A04[1];
     netDevice1604interface_type discreteOutput1604[1];
-#ifdef HAS_0518
     netDevice0518interface_type
         special0518; /* 42 bytes for ASCII to the simulator */
-#endif
     /* Remember that motor[0] is defined, but never used */
     netDevice5010_1202_Interface_type motors5010_1202[NUM_MOTORS5010];
     netDevice1E04interface_type motors1E04[NUM_1E04];
     netDevice1E0Cinterface_type motors1E0C[NUM_1E0C];
     netDevice1B04interface_type analogInput1B04[1];
+    netDevice1F0Cinterface_type analogOutput1F0C[1];
+    netDevice1708interface_type analogOutput1708[NUM_1708];
   } memoryStruct;
 } netData;
 
@@ -1929,7 +1920,6 @@ static void init_axis(int axis_no) {
   }
 }
 
-#ifdef HAS_1E04_SHUTTER
 static void indexerMotorStatusRead1E04(
     unsigned devNum, unsigned motor_axis_no, unsigned numAuxBits,
     netDevice1E04interface_type *pIndexerDevice1E04interface) {
@@ -2037,8 +2027,6 @@ static void indexerMotorStatusRead1E04(
   UINTTONET((int)getMotorPos(motor_axis_no),
             pIndexerDevice1E04interface->actualValue);
 }
-#endif
-#ifdef HAS_1E0C_SHUTTER_CAROUSEL
 static void indexerMotorStatusRead1E0C(
     unsigned devNum, unsigned motor_axis_no, unsigned numAuxBits,
     netDevice1E0Cinterface_type *pIndexerDevice1E0Cinterface,
@@ -2163,7 +2151,128 @@ static void indexerMotorStatusRead1E0C(
   UINTTONET((int)getMotorPos(motor_axis_no),
             pIndexerDevice1E0Cinterface->actualValue);
 }
+
+static void indexerWriteRead1F0C(
+    unsigned devNum, unsigned motor_axis_no, unsigned numAuxBits,
+    netDevice1F0Cinterface_type *pIndexerDevice1F0Cinterface) {
+  unsigned statusReasonAux32;
+  idxStatusCodeType idxStatusCode;
+  statusReasonAux32 = NETTOUINT(pIndexerDevice1F0Cinterface->statusReasonAux32);
+
+  idxStatusCode = (idxStatusCodeType)(statusReasonAux32 >> 28);
+  LOGTIME6(
+      "%s/%s:%d devNum=%u motor_axis_no=%u numAuxBits=%u "
+      "statusReasonAux32=0x%08x\n" __FILE__,
+      __FILE__, __FUNCTION__, __LINE__, devNum, motor_axis_no, numAuxBits,
+      statusReasonAux32);
+
+  switch (idxStatusCode) {
+    case idxStatusCodeRESET:
+      init_axis((int)motor_axis_no);
+      motorStop(motor_axis_no);
+      set_bError(motor_axis_no, 0);
+      set_nErrorId(motor_axis_no, 0);
+      break;
+    case idxStatusCodeSTART:
+      movePosition(motor_axis_no,
+                   /* Note: We can only move inside the positive range */
+                   NETTODOUBLE(pIndexerDevice1F0Cinterface->targetValue),
+                   0,    /* int relative, */
+                   1.0,  // getNxtMoveVelocity(motor_axis_no),
+                   getNxtMoveAcceleration(motor_axis_no));
+      LOGTIME3(
+          "%s/%s:%d motor_axis_no=%u idxStatusCodeSTART isMotorMoving=%d\n",
+          __FILE__, __FUNCTION__, __LINE__, motor_axis_no,
+          isMotorMoving(motor_axis_no));
+      break;
+    case idxStatusCodeSTOP:
+      motorStop(motor_axis_no);
+      break;
+    default:;
+  }
+  /* Build a new status word, start with 0 and fill in
+     the bits */
+  statusReasonAux32 = 0;
+  /*
+    if (getPosLimitSwitch(motor_axis_no))
+      statusReasonAux32 |= 0x08000000;
+    if (getNegLimitSwitch(motor_axis_no))
+      statusReasonAux32 |= 0x04000000;
+  */
+
+  /* reason bits */
+  {
+    double motorVelocity = getMotorVelocity(motor_axis_no);
+    int posLimitSwitch = getPosLimitSwitch(motor_axis_no);
+    int negLimitSwitch = getNegLimitSwitch(motor_axis_no);
+
+    unsigned auxBitIdx = 0;
+    if (motorVelocity) {
+      /* While moving: Ignore the limits */
+      posLimitSwitch = 0;
+      negLimitSwitch = 0;
+    }
+    for (auxBitIdx = 0; auxBitIdx < numAuxBits; auxBitIdx++) {
+      const char *auxBitName =
+          (const char *)&indexerDeviceAbsStraction[devNum].auxName[auxBitIdx];
+      LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u auxBitName=%s\n",
+               __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+               auxBitName);
+
+      if (!strcmp("enabled", auxBitName)) {
+        int bValue = getAmplifierOn(motor_axis_no);
+        LOGTIME6("%s/%s:%d motor_axis_no=%u auxBitIdx=%u enabled=%d\n",
+                 __FILE__, __FUNCTION__, __LINE__, motor_axis_no, auxBitIdx,
+                 bValue);
+        if (bValue) {
+          statusReasonAux32 |= 1 << auxBitIdx;
+        }
+      } else if (!strcmp("Closed", auxBitName)) {
+        if (negLimitSwitch) statusReasonAux32 |= 1 << auxBitIdx;
+      } else if (!strcmp("Opened", auxBitName)) {
+        if (posLimitSwitch) statusReasonAux32 |= 1 << auxBitIdx;
+      } else if (!strcmp("Opening", auxBitName)) {
+        if (motorVelocity > 0.0) statusReasonAux32 |= 1 << auxBitIdx;
+      } else if (!strcmp("Closing", auxBitName)) {
+        if (motorVelocity < 0.0) statusReasonAux32 |= 1 << auxBitIdx;
+      } else if (!strcmp("InTheMiddle", auxBitName)) {
+        if (!motorVelocity && !posLimitSwitch && !negLimitSwitch)
+          statusReasonAux32 |= 1 << auxBitIdx;
+      }
+    }
+  }
+
+  /* the status bits */
+  if (idxStatusCode == idxStatusCodeSTART) {
+    idxStatusCode = idxStatusCodeBUSY;
+  } else if (get_bError(motor_axis_no)) {
+    idxStatusCode = idxStatusCodeERROR;
+  }
+#ifdef USE_IDXSTATUSCODEPOWEROFF
+  else if (!getAmplifierOn(motor_axis_no))
+    idxStatusCode = idxStatusCodePOWEROFF;
 #endif
+  else if (isMotorMoving(motor_axis_no))
+    idxStatusCode = idxStatusCodeBUSY;
+  else if (statusReasonAux32 & 0x0C000000)
+    idxStatusCode = idxStatusCodeWARN;
+  else
+    idxStatusCode = idxStatusCodeIDLE;
+
+  statusReasonAux32 &= 0x0FFFFFFF;
+  statusReasonAux32 |= ((unsigned)idxStatusCode << 28);
+  UINTTONET(statusReasonAux32, pIndexerDevice1F0Cinterface->statusReasonAux32);
+  UINTTONET((int)getMotorPos(motor_axis_no),
+            pIndexerDevice1F0Cinterface->actualValue);
+  {
+    /* Synchronize the target value (with the other analogoutput that moves
+       the motor or movements towards the motor itself */
+    // unsigned motor5010Num = motor_axis_no - 1;
+    double targetPosition = getMotorTargetPos((int)motor_axis_no);
+    //    netData.memoryStruct.motors5010_1202[motor5010Num].dev5010.targetValue);
+    DOUBLETONET(targetPosition, pIndexerDevice1F0Cinterface->targetValue);
+  }
+}
 
 static void indexerMotorStatusRead5010(
     unsigned devNum, unsigned motor_axis_no, unsigned numAuxBits,
@@ -2933,6 +3042,46 @@ void indexerHandlePLCcycle(void) {
                   indexerDeviceAbsStraction[devNum].devName);
         }
       } break;
+      case TYPECODE_ANALOGOUTPUT_1708: {
+        unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
+        if (axisNo) {
+          int motor_axis_no = (int)axisNo;
+          double actualPosition =
+              NETTODOUBLE(netData.memoryStruct.analogOutput1708[0].actualValue);
+          double targetPosition =
+              NETTODOUBLE(netData.memoryStruct.analogOutput1708[0].targetValue);
+          if (targetPosition != actualPosition) {
+            LOGTIME3(
+                "%s/%s:%d ANALOGOUTPUT_1708 devNum=%u axisNo=%u "
+                "actualPosition=%f targetPosition=%f\n",
+                __FILE__, __FUNCTION__, __LINE__, devNum, axisNo,
+                actualPosition, targetPosition);
+
+            init_axis(motor_axis_no);
+            motorStop(motor_axis_no);
+            set_bError(motor_axis_no, 0);
+            set_nErrorId(motor_axis_no, 0);
+            movePosition(axisNo, targetPosition, 0, /* int relative, */
+                         getNxtMoveVelocity(axisNo),
+                         getNxtMoveAcceleration(axisNo));
+          } else {
+            /* we didn't write anything new: Sync from the setpoint of the motor
+             */
+#if 0
+            unsigned motor5010Num = axisNo - 1;
+            targetPosition =
+                NETTODOUBLE(netData.memoryStruct.motors5010_1202[motor5010Num]
+                                .dev5010.targetValue);
+#else
+            targetPosition = getMotorTargetPos(axisNo);
+#endif
+          }
+          DOUBLETONET(targetPosition,
+                      netData.memoryStruct.analogOutput1708[0].actualValue);
+          DOUBLETONET(targetPosition,
+                      netData.memoryStruct.analogOutput1708[0].targetValue);
+        }
+      } break;
       case TYPECODE_STATUSWORD_1802: {
         if (!strcmp("Cabinet#0", indexerDeviceAbsStraction[devNum].devName)) {
           unsigned value = getCabinetStatus();
@@ -2978,10 +3127,9 @@ void indexerHandlePLCcycle(void) {
                   indexerDeviceAbsStraction[devNum].typeCode);
         }
       } break;
-      case TYPECODE_DISCRETEOTPUT_1E04: {
+      case TYPECODE_DISCRETEOUTPUT_1E04: {
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
-#ifdef HAS_1E04_SHUTTER
           /*
            * motor1E04Num starts at 0
            * all hw_motor axes start at 1, and we need to jump over
@@ -2996,22 +3144,15 @@ void indexerHandlePLCcycle(void) {
           indexerMotorStatusRead1E04(
               devNum, axisNo, numAuxBits,
               &netData.memoryStruct.motors1E04[motor1E04Num]);
-#else
-          LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
-                  __FUNCTION__, __LINE__, devNum,
-                  indexerDeviceAbsStraction[devNum].devName);
-
-#endif
         } else {
           LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName);
         }
       } break;
-      case TYPECODE_DISCRETEOTPUT_1E0C: {
+      case TYPECODE_DISCRETEOUTPUT_1E0C: {
         unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
         if (axisNo) {
-#ifdef HAS_1E0C_SHUTTER_CAROUSEL
           /*
            * motor1E0CNum starts at 0
            * all hw_motor axes start at 1, and we need to jump over
@@ -3027,17 +3168,19 @@ void indexerHandlePLCcycle(void) {
               devNum, axisNo, numAuxBits,
               &netData.memoryStruct.motors1E0C[motor1E0CNum],
               indexerDeviceAbsStraction[devNum].devName);
-#else
-          LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
-                  __FUNCTION__, __LINE__, devNum,
-                  indexerDeviceAbsStraction[devNum].devName);
-
-#endif
         } else {
           LOGTIME("%s/%s:%d devNum=%u '%s' not handled\n", __FILE__,
                   __FUNCTION__, __LINE__, devNum,
                   indexerDeviceAbsStraction[devNum].devName);
         }
+      } break;
+      case TYPECODE_ANALOGOUTPUT_1F0C: {
+        unsigned axisNo = indexerDeviceAbsStraction[devNum].axisNo;
+        unsigned ao1F0CNum = 0;
+        static const unsigned numAuxBits = 24;
+        indexerWriteRead1F0C(devNum, axisNo, numAuxBits,
+                             &netData.memoryStruct.analogOutput1F0C[ao1F0CNum]);
+
       } break;
       case TYPECODE_PARAMDEVICE_5010: {
         double fRet;
@@ -3089,7 +3232,6 @@ void indexerHandlePLCcycle(void) {
           indexerHandleIndexerCmd(offsetIndexer, lenInPlc, indexer_ack);
         }
       } break;
-#ifdef HAS_0518
       case TYPECODE_SPECIALDEVICE_0518: {
         uint16_t ctrl_word =
             NETTOUINT(netData.memoryStruct.special0518.control);
@@ -3149,7 +3291,6 @@ void indexerHandlePLCcycle(void) {
           UINTTONET(ctrl_word, netData.memoryStruct.special0518.control);
         }
       } break;
-#endif
       default:
         LOGTIME("%s/%s:%d devNum=%u '%s' '0x%04X' not handled\n", __FILE__,
                 __FUNCTION__, __LINE__, devNum,

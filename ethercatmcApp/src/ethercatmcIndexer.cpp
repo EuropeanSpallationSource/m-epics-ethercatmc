@@ -1359,6 +1359,15 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
       outputOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamInt32;
       break;
+    case 0x1708:
+      lenInPLC = 8;
+      /* 1708 analog output has "current value, target value */
+      inputOffset =
+          indexOffset + lenInPLC;  // Look at the target value for readback
+      outputOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamFloat64;
+      break;
+
     case 0x1802:
       /* 1802 has only a 32 bit status word */
       statusOffset = indexOffset;
@@ -1400,6 +1409,16 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
        * ignored */
       inputOffset = indexOffset;
       statusOffset = indexOffset + lenInPLC;
+      myAsynParamType = asynParamFloat64;
+      break;
+    case 0x1F0C:
+      lenInPLC = 8;
+      /* 1F0C has "current value, target value, followed by extended status
+       * word; errorID is ignored */
+      inputOffset =
+          indexOffset + lenInPLC;  // Look at the target value for readback
+      outputOffset = indexOffset + lenInPLC;
+      statusOffset = indexOffset + 2 * lenInPLC;
       myAsynParamType = asynParamFloat64;
       break;
   }
@@ -1738,8 +1757,10 @@ asynStatus ethercatmcController::indexerPoll(void) {
                   newValue =
                       (double)(epicsInt64)netToSint64(pDataInPlc, lenInPLC);
                   break;
+                case 0x1708:
                 case 0x1B04:
                 case 0x1B08:
+                case 0x1F0C:
                   newValue = (double)netToDouble(pDataInPlc, lenInPLC);
                   break;
                 default:

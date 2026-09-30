@@ -7,8 +7,8 @@ epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
 epicsEnvSet("P",               "$(SM_P=IOC:)")
 epicsEnvSet("R",               "")
 epicsEnvSet("PREC",            "$(SM_PREC=3)")
-# 6 axes: 4 motors, axis 5 is shutter, 6 is pneumatic, 7 is carousel
-epicsEnvSet("ECM_NUMAXES",     "7")
+# 6 axes: 4 motors, axis 5 is shutter, 6 is pneumatic, 7 is carousel, 8 is analog output
+epicsEnvSet("ECM_NUMAXES",     "8")
 epicsEnvSet("ADSPORT",         "$(ECM_ADSPORT=852)")
 epicsEnvSet("ECM_OPTIONS",     "adsPort=$(ADSPORT);amsNetIdRemote=127.0.0.1.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
 
@@ -121,6 +121,30 @@ epicsEnvSet("AXIS_NO",         "7")
 # Motorrecord and debug needed for the automatic tests/943
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+
+#
+# CHNO 1: analog output with readback and status
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "AnalogOutput1")
+epicsEnvSet("CHNO",            "1")
+epicsEnvSet("ASYNPARAMNAME",   "ANALOGOUTPUT")
+epicsEnvSet("PREC",            "3")
+epicsEnvSet("DESC",            "AnalogOutput")
+epicsEnvSet("EGU",             "mm")
+< ethercatmcAnalogOutputReadback.iocsh
+
+#
+# CHNO 2: analog output with readback.
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "AnalogOutput2")
+epicsEnvSet("CHNO",            "2")
+epicsEnvSet("ASYNPARAMNAME",   "ANALOGOUTPUT")
+epicsEnvSet("PREC",            "3")
+epicsEnvSet("DESC",            "AnalogOutput")
+epicsEnvSet("EGU",             "mm")
+< ethercatmcAnalogOutputReadback.iocsh
 
 
 # Faster polling

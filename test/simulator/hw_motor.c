@@ -799,6 +799,11 @@ double getMotorPos(int axis_no) {
   return motor_axis[axis_no].MotorPosReported;
 }
 
+double getMotorTargetPos(int axis_no) {
+  AXIS_CHECK_RETURN_ZERO(axis_no);
+  return motor_axis[axis_no].MotorPosWanted;
+}
+
 void setPosHome_fl(int axis_no, double value, const char *file, int line_no) {
   LOGTIME3("setPosHome(%d) (%s:%d) value=%g n", axis_no, file, line_no, value);
   AXIS_CHECK_RETURN(axis_no);

@@ -101,6 +101,7 @@ class epicsShareClass ethercatmcIndexerAxis : public asynMotorAxis {
   asynStatus setGenericIntegerParam(int function, int value);
   asynStatus setIntegerParam(int function, int value);
   unsigned paramIndexFromFunction(int function);
+  asynStatus setGenericDoubleParam(int function, double value);
   asynStatus setDoubleParam(int function, double value);
   asynStatus setStringParamDbgStrToMcu(const char *value);
   asynStatus setStringParam(int function, const char *value);
