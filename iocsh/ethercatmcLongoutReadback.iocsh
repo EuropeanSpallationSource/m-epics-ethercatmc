@@ -1,0 +1,3 @@
+ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME) Int32
+
+dbLoadRecords("ethercatmcLongoutReadback.template", "P=$(P), R=$(R), MOTOR_PORT=$(MOTOR_PORT), ASYNPARAMNAME=$(ASYNPARAMNAME), CHNO=$(CHNO=0), DESC=$(DESC), EGU=$(EGU) ")
