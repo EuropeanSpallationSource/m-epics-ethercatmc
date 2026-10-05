@@ -14,6 +14,7 @@ GNERATEDOPIS = \
   ../motor-3-pils.opi \
   ../motor-3-ptp.opi \
   ../motor-4-pils.opi \
+  ../motor-4-pils-homfcnen.opi \
   ../motor-4-ptp.opi \
   ../motor-4-shutter-1-pils.opi \
   ../motor-4-ecmc.opi \
@@ -62,13 +63,21 @@ DEPENDENCIES_FOR_MOTORX_HXPD_OPI = \
 
 DEPENDENCIES_FOR_MOTORX_PILS_OPI = \
 	m-motor.mid \
-	m-more-stop-buttons.mid \
 	m-alarm-sevr.mid \
         m-slip-problem-not-homed-poweroff.mid \
 	m-errrst.mid \
 	m-inhibit.mid \
+	m-more-stop-buttons.mid \
 	m-msgtxt.mid \
 
+FILES_FOR_MOTORX_PILS_HOMFCNEN_OPI = \
+	m-motor.mid \
+	m-alarm-sevr.mid \
+        m-slip-problem-not-homed-poweroff.mid \
+	m-errrst.mid \
+	m-inhibit.mid \
+        m-homf-cnen-buttons.mid \
+	m-msgtxt.mid \
 
 DEPENDENCIES_FOR_CONFIG_OPI = \
         ethercatmcaxisConfig.start \
@@ -207,6 +216,10 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	echo $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) '>$@'
 	cat $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) >$@
 
+./motorx-pils-homfcnen.mid: $(FILES_FOR_MOTORX_PILS_HOMFCNEN_OPI) Makefile m-more-stop-buttons.mid
+	cat $(FILES_FOR_MOTORX_PILS_HOMFCNEN_OPI) >$@
+	cat m-more-stop-buttons.mid | sed -e 's/<y>174/<y>194/' >>$@
+
 ../motor-0-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils ptp
 
@@ -236,6 +249,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-4-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 4 x 1
+
+../motor-4-pils-homfcnen.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-pils-homfcnen.mid
+	./genMotorShutter.sh $@ pils homfcnen 4 x 1
 
 ../motor-4-ecmc.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ ecmc 4 x 1
