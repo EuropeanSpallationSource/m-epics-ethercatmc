@@ -54,6 +54,7 @@ clean:
 
 DEPENDENCIES_FOR_MOTORX_HXPD_OPI = \
 	m-motor.mid \
+	m-more-stop-buttons.mid \
 	m-alarm-sevr.mid \
         m-slip-problem-not-homed-poweroff.mid \
 	m-homf.mid \
@@ -61,6 +62,7 @@ DEPENDENCIES_FOR_MOTORX_HXPD_OPI = \
 
 DEPENDENCIES_FOR_MOTORX_PILS_OPI = \
 	m-motor.mid \
+	m-more-stop-buttons.mid \
 	m-alarm-sevr.mid \
         m-slip-problem-not-homed-poweroff.mid \
 	m-errrst.mid \
