@@ -14,7 +14,6 @@ EXT=opi
 
 HAS_ECMC=""
 HAS_HXPD=""
-HAS_PIEZO=""
 HAS_PILS=""
 HAS_PTP=""
 OPIMID_MOT_SHT=motorx-pils.mid
