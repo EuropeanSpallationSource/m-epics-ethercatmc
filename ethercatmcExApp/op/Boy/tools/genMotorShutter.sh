@@ -164,9 +164,9 @@ elif test "$1" = "hxpd"; then
   export HAS_HXPD
 fi &&
   if test "$1" = "homfcnen"; then
-  shift
-  OPIMID_MOT_SHT=motorx-pils-homfcnen.mid
-  MOTORHIGHT=$((MOTORHIGHT + 20))
+    shift
+    OPIMID_MOT_SHT=motorx-pils-homfcnen.mid
+    MOTORHIGHT=$((MOTORHIGHT + 20))
   fi &&
   if test "$1" = "ptp"; then
     #shift keep it for genMatrix below
