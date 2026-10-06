@@ -14,8 +14,8 @@ EXT=opi
 
 HAS_ECMC=""
 HAS_HXPD=""
-HAS_PIEZO=""
 HAS_PILS=""
+HAS_HOMF_CNEN=""
 HAS_PTP=""
 OPIMID_MOT_SHT=motorx-pils.mid
 OPIMID_EGU_OR_TEMP_AND_RBV=m-egu-rbv.mid
@@ -46,7 +46,7 @@ genMatrix() {
           echo genMatrix YCNTMAX=$YCNTMAX
           # loop x times y
           cntx=0
-          echo genMatrix y=$y cnty=$cnty YCNTMAX=$YCNTMAX cntx=$cntx XCNTMAX=$XCNTMAX OPIMID_EGU_OR_TEMP_AND_RBV=$OPIMID_EGU_OR_TEMP_AND_RBV
+          echo genMatrix y=$y cnty=$cnty YCNTMAX=$YCNTMAX cntx=$cntx XCNTMAX=$XCNTMAX OPIMID_EGU_OR_TEMP_AND_RBV=$OPIMID_EGU_OR_TEMP_AND_RBV HAS_HOMF_CNEN=$HAS_HOMF_CNEN
           while test $cnty -lt $YCNTMAX; do
             while test $cntx -lt $XCNTMAX; do
               x=$(($cntx * $WIDTH))
@@ -163,6 +163,11 @@ elif test "$1" = "hxpd"; then
   HAS_HXPD=y
   export HAS_HXPD
 fi &&
+  if test "$1" = "homfcnen"; then
+    shift
+    OPIMID_MOT_SHT=motorx-pils-homfcnen.mid
+    MOTORHIGHT=$((MOTORHIGHT + 20))
+  fi &&
   if test "$1" = "ptp"; then
     #shift keep it for genMatrix below
     HAS_PTP="-ptp"
