@@ -1370,7 +1370,7 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
     case 0x1802:
       /* 1802 has only a 32 bit status word */
       statusOffset = indexOffset;
-      //myAsynParamType Note: newIndexerAxisAuxBitsV2() will create an
+      // myAsynParamType Note: newIndexerAxisAuxBitsV2() will create an
       break;
     case 0x1A02:
       lenInPLC = 2;

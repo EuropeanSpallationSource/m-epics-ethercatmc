@@ -654,51 +654,6 @@ asynStatus ethercatmcIndexerAxis::setIntegerParamLog(int function, int newValue,
   return asynMotorAxis::setIntegerParam(function, newValue);
 }
 
-int ethercatmcIndexerAxis::readEnumsAndValueAndCallbackIntoMbbi(void) {
-  /* Our internal maximumum for AUX bits resulting in an mbbi */
-#define MAX_AUX_BIT_FOR_ENUM 8
-
-  /* asyn/asyn/devEpics/devAsynInt32.c */
-#define MAX_ENUM_STRING_SIZE 26
-
-  struct {
-    char enumChars[MAX_AUX_BIT_FOR_ENUM][MAX_ENUM_STRING_SIZE];
-    char *enumStrings[MAX_AUX_BIT_FOR_ENUM];
-    int enumValues[MAX_AUX_BIT_FOR_ENUM];
-    int enumSeverities[MAX_AUX_BIT_FOR_ENUM];
-  } auxBitEnumsForAsyn;
-  unsigned auxBitIdx;
-  unsigned numsAuxBitsForEnum = 0;
-  memset(&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
-  for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_FOR_ENUM; auxBitIdx++) {
-    int function = pC_->defAsynPara.ethercatmcNamAux0_ + (int)auxBitIdx;
-    asynStatus status;
-    /* Leave one byte for '\0' */
-    int length = (int)sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
-    auxBitEnumsForAsyn.enumStrings[auxBitIdx] =
-        &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
-    status = pC_->getStringParam(axisNo_, function, length,
-                                 auxBitEnumsForAsyn.enumStrings[auxBitIdx]);
-
-    asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
-              "%sreadEnumsAndValueAndCallbackIntoMbbi(%d) auxBitIdx=%u "
-              "name='%s' status=%d\n",
-              modNamEMC, axisNo_, auxBitIdx,
-              auxBitEnumsForAsyn.enumStrings[auxBitIdx], (int)status);
-
-    if (status) {
-      break;
-    }
-    auxBitEnumsForAsyn.enumValues[auxBitIdx] = 1 << auxBitIdx;
-    numsAuxBitsForEnum++;
-  }
-  pC_->doCallbacksEnum(auxBitEnumsForAsyn.enumStrings,
-                       auxBitEnumsForAsyn.enumValues,
-                       auxBitEnumsForAsyn.enumSeverities, numsAuxBitsForEnum,
-                       pC_->defAsynPara.ethercatmcAuxBits07_, axisNo_);
-  return 1;
-}
-
 void ethercatmcIndexerAxis::newMotorPosition(double actPosition) {
   double oldPositionValue;
   asynStatus oldPositionStatus;
@@ -1202,7 +1157,10 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
   if (drvlocal.clean.iTypCode == 0x5010 || drvlocal.clean.iTypCode == 0x1E04 ||
       drvlocal.clean.iTypCode == 0x1E0C) {
     if (!drvlocal.clean.hasPolledAllEnums) {
-      drvlocal.clean.hasPolledAllEnums = readEnumsAndValueAndCallbackIntoMbbi();
+      drvlocal.clean.hasPolledAllEnums =
+          pC_->readEnumsAndValueAndCallbackIntoMbbi(
+              axisNo_, pC_->defAsynPara.ethercatmcAuxBits07_,
+              pC_->defAsynPara.ethercatmcNamAux0_);
     }
   }
 
@@ -1696,7 +1654,7 @@ void ethercatmcIndexerAxis::pollMsgTxt(int hasError, int errorID,
     } else {
       int function = 0;
       const char *functionName = __FUNCTION__;
-      asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+      asynPrint(pC_->pasynUserController_, ASYN_TRACE_FLOW,
                 "%s%s axisNo=%d statusReasonAux=0x%x "
                 "drvlocal.clean.auxBits07mask=0x%x\n",
                 modNamEMC, functionName, axisNo_, statusReasonAux,

@@ -402,14 +402,20 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
     ethercatmcIndexerAxis *pAxis, unsigned axisNo, unsigned devNum,
     unsigned iAllFlags, int functionNamAux0, double fAbsMin, double fAbsMax,
     unsigned iOffsBytes) {
+  const static char *const functionName = __FUNCTION__;
   asynStatus status = asynSuccess;
+  asynPrint(
+      pasynUserController_, ASYN_TRACE_INFO,
+      "%s%s(%d) devNum=%u iAllFlags=0x%x functionNamAux0=%d iOffsBytes=%u\n",
+      modNamEMC, functionName, axisNo, devNum, iAllFlags, functionNamAux0,
+      iOffsBytes);
   /* AUX bits */
   {
     unsigned auxBitIdx = 0;
     for (auxBitIdx = 0; auxBitIdx < NUM_AUX_BITS; auxBitIdx++) {
       int function = functionNamAux0 + auxBitIdx;
       if ((iAllFlags >> auxBitIdx) & 1) {
-        char auxBitName[34];
+        char auxBitName[40];
         unsigned infoType16 = 16;
         memset(&auxBitName, 0, sizeof(auxBitName));
         status = readDeviceIndexerV2(devNum, infoType16 + auxBitIdx, auxBitName,
@@ -417,7 +423,7 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
         if (status) return status;
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sauxBitName(%d) auxBitName@%03u[%02u]=%s\n", modNamEMC,
-                  axisNo, functionNamAux0 + auxBitIdx, auxBitIdx, auxBitName);
+                  axisNo, function, auxBitIdx, auxBitName);
         if (function < functionNamAux0 + NUM_AUX_BITS) {
           setStringParam(axisNo, function, auxBitName);
           setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
@@ -483,6 +489,61 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
 #endif
   }
   return status;
+}
+int ethercatmcController::readEnumsAndValueAndCallbackIntoMbbiFL(
+    int axisNo, int mbbiFunction, int functionNamAux0_, const char *fileName,
+    int lineNo) {
+  const static char *const functionName = __FUNCTION__;
+  /* Our internal maximumum for AUX bits resulting in an mbbi */
+#define MAX_AUX_BIT_FOR_ENUM 8
+
+  /* asyn/asyn/devEpics/devAsynInt32.c */
+#define MAX_ENUM_STRING_SIZE 26
+
+  struct {
+    char enumChars[MAX_AUX_BIT_FOR_ENUM][MAX_ENUM_STRING_SIZE];
+    char *enumStrings[MAX_AUX_BIT_FOR_ENUM];
+    int enumValues[MAX_AUX_BIT_FOR_ENUM];
+    int enumSeverities[MAX_AUX_BIT_FOR_ENUM];
+  } auxBitEnumsForAsyn;
+  unsigned auxBitIdx;
+  unsigned numsAuxBitsForEnum = 0;
+  memset(&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s%s:%d %s(%d) mbbiFunction=%d functionNamAux0_=%d\n", modNamEMC,
+            fileName, lineNo, functionName, axisNo, mbbiFunction,
+            functionNamAux0_);
+  if (!mbbiFunction) {
+    asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+              "%s%s(%d) mbbiFunction=0\n", modNamEMC, functionName, axisNo);
+    return 0;
+  }
+  for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_FOR_ENUM; auxBitIdx++) {
+    int function = functionNamAux0_ + (int)auxBitIdx;
+    asynStatus status;
+    /* Leave one byte for '\0' */
+    int length = (int)sizeof(auxBitEnumsForAsyn.enumChars[auxBitIdx]) - 1;
+    auxBitEnumsForAsyn.enumStrings[auxBitIdx] =
+        &auxBitEnumsForAsyn.enumChars[auxBitIdx][0];
+    status = getStringParam(axisNo, function, length,
+                            auxBitEnumsForAsyn.enumStrings[auxBitIdx]);
+
+    asynPrint(pasynUserController_, ASYN_TRACE_FLOW,
+              "%sreadEnumsAndValueAndCallbackIntoMbbi(%d) auxBitIdx=%u "
+              "name='%s' status=%d\n",
+              modNamEMC, axisNo, auxBitIdx,
+              auxBitEnumsForAsyn.enumStrings[auxBitIdx], (int)status);
+
+    if (status) {
+      break;
+    }
+    auxBitEnumsForAsyn.enumValues[auxBitIdx] = 1 << auxBitIdx;
+    numsAuxBitsForEnum++;
+  }
+  doCallbacksEnum(auxBitEnumsForAsyn.enumStrings, auxBitEnumsForAsyn.enumValues,
+                  auxBitEnumsForAsyn.enumSeverities, numsAuxBitsForEnum,
+                  mbbiFunction, axisNo);
+  return 1;
 }
 
 asynStatus ethercatmcController::indexerReadAxisParametersV2(

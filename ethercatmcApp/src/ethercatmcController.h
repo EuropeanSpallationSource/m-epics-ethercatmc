@@ -372,6 +372,11 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                        unsigned devNum);
   asynStatus indexerReadAxisParametersV2(ethercatmcIndexerAxis *pAxis,
                                          unsigned devNum);
+  int readEnumsAndValueAndCallbackIntoMbbiFL(int axisNo, int mbbiFunction,
+                                             int functionNamAux0_,
+                                             const char *fileName, int lineNo);
+#define readEnumsAndValueAndCallbackIntoMbbi(a, b, c) \
+  readEnumsAndValueAndCallbackIntoMbbiFL(a, b, c, __FILE__, __LINE__)
   asynStatus poll(void);
   void indexerParseAwayDollarInDesc(int axisNo, char *pDesc,
                                     unsigned *pAuxBits07mask);
