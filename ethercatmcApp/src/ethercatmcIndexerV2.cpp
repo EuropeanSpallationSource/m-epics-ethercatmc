@@ -315,10 +315,9 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
           goto endPollIndexer;
         }
         int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
-        status =
-            newIndexerAxisAuxBitsV2(NULL, /* pAxis */
-                                    axisNo, devNum, iAllFlags, functionNamAux0,
-                                    fAbsMin, fAbsMax, iOffsBytes);
+        status = newIndexerAxisAuxBitsV2(NULL, /* pAxis */
+                                         axisNo, devNum, iAllFlags,
+                                         functionNamAux0, iOffsBytes);
       } break;
       case 0x1E04:
       case 0x1E0C:
@@ -335,15 +334,23 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
         /* Now we have an axis */
         int functionNamAux0 =
             defAsynPara.ethercatmcNamAux0_; /* Default for an Axis */
-        status = newIndexerAxisAuxBitsV2(pAxis, pAxis->axisNo_, devNum,
-                                         iAllFlags, functionNamAux0, fAbsMin,
-                                         fAbsMax, iOffsBytes);
+        status =
+            newIndexerAxisAuxBitsV2(pAxis, pAxis->axisNo_, devNum, iAllFlags,
+                                    functionNamAux0, iOffsBytes);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sTypeCode axisNo=%d iTypCode=%x pAxis=%p status=%s (%d)\n",
                   modNamEMC, axisNo, iTypCode, pAxis,
                   ethercatmcstrStatus(status), (int)status);
         if (status) goto endPollIndexer;
-
+        /* Limits */
+        updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMAX_RB_, fAbsMax,
+                       "CfgPMAX");
+        updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMIN_RB_, fAbsMin,
+                       "CfgPMIN");
+#ifdef motorHighLimitROString
+        udateMotorLimitsRO(axisNo, (fAbsMin > fABSMIN && fAbsMax < fABSMAX),
+                           fAbsMax, fAbsMin);
+#endif
         pAxis->setIndexerDevNumOffsetTypeCode(devNum, iOffsBytes, iTypCode,
                                               iAuxBits07mask);
         setStringParam(axisNo, defAsynPara.ethercatmcCfgDESC_RB_,
@@ -400,8 +407,7 @@ endPollIndexer:
 
 asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
     ethercatmcIndexerAxis *pAxis, unsigned axisNo, unsigned devNum,
-    unsigned iAllFlags, int functionNamAux0, double fAbsMin, double fAbsMax,
-    unsigned iOffsBytes) {
+    unsigned iAllFlags, int functionNamAux0, unsigned iOffsBytes) {
   const static char *const functionName = __FUNCTION__;
   asynStatus status = asynSuccess;
   asynPrint(
@@ -476,17 +482,6 @@ asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
         setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
       }
     }
-  }
-  if (pAxis) {
-    /* Limits */
-    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMAX_RB_, fAbsMax,
-                   "CfgPMAX");
-    updateCfgValue(axisNo, defAsynPara.ethercatmcCfgPMIN_RB_, fAbsMin,
-                   "CfgPMIN");
-#ifdef motorHighLimitROString
-    udateMotorLimitsRO(axisNo, (fAbsMin > fABSMIN && fAbsMax < fABSMAX),
-                       fAbsMax, fAbsMin);
-#endif
   }
   return status;
 }
