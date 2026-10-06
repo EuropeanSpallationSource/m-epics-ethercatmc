@@ -1300,6 +1300,11 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
         sscanf(paramName, "%[^#]#%u#%[^#]", &splitedParamNameNumberDesc.name[0],
                &splitedParamNameNumberDesc.axisNoOrIndex,
                &splitedParamNameNumberDesc.desc[0]);
+    if (nvals >= 2) {
+      int newAxisNo = (int)splitedParamNameNumberDesc.axisNoOrIndex;
+      paramName = &splitedParamNameNumberDesc.name[0];
+      axisNo = newAxisNo;
+    }
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
               "%s%s axisNo=%d iTypCode=0x%04X nvals=%d name='%s' "
               "axisNoOrIndex=%u desc='%s'\n",
@@ -1307,11 +1312,6 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
               &splitedParamNameNumberDesc.name[0],
               splitedParamNameNumberDesc.axisNoOrIndex,
               &splitedParamNameNumberDesc.desc[0]);
-    if (nvals >= 2) {
-      int newAxisNo = (int)splitedParamNameNumberDesc.axisNoOrIndex;
-      paramName = &splitedParamNameNumberDesc.name[0];
-      axisNo = newAxisNo;
-    }
   }
 
   if (!iTypCode) return -1;
@@ -1367,10 +1367,10 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
       outputOffset = indexOffset + lenInPLC;
       myAsynParamType = asynParamFloat64;
       break;
-
     case 0x1802:
       /* 1802 has only a 32 bit status word */
       statusOffset = indexOffset;
+      //myAsynParamType Note: newIndexerAxisAuxBitsV2() will create an
       break;
     case 0x1A02:
       lenInPLC = 2;

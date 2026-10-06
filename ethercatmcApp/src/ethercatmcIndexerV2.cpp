@@ -235,16 +235,28 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
       case 0x5010: {
         axisNo++;
       }
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%sPilsDevice axisNo=%i devNumPILS=%d \"%s\" TypCode=0x%X "
+                  "OffsBytes=%u "
+                  "SizeBytes=%u UnitCode=0x%X (%s%s) AllFlags=0x%X AbsMin=%e "
+                  "AbsMax=%e\n",
+                  modNamEMC, axisNo, devNum, descVersAuthors.desc, iTypCode,
+                  iOffsBytes, iSizeBytes, iUnit,
+                  plcUnitPrefixTxtV2(((int8_t)((iUnit & 0xFF00) >> 8))),
+                  plcUnitTxtFromUnitCodeV2(iUnit & 0xFF), iAllFlags, fAbsMin,
+                  fAbsMax);
+        break;
       default:;
+        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                  "%sPilsDevice devNumPILS=%d \"%s\" TypCode=0x%X OffsBytes=%u "
+                  "SizeBytes=%u UnitCode=0x%X (%s%s) AllFlags=0x%X AbsMin=%e "
+                  "AbsMax=%e\n",
+                  modNamEMC, devNum, descVersAuthors.desc, iTypCode, iOffsBytes,
+                  iSizeBytes, iUnit,
+                  plcUnitPrefixTxtV2(((int8_t)((iUnit & 0xFF00) >> 8))),
+                  plcUnitTxtFromUnitCodeV2(iUnit & 0xFF), iAllFlags, fAbsMin,
+                  fAbsMax);
     }
-    asynPrint(
-        pasynUserController_, ASYN_TRACE_INFO,
-        "%sPilsDevice axisNo=%i devNumPILS=%d \"%s\" TypCode=0x%X OffsBytes=%u "
-        "SizeBytes=%u UnitCode=0x%X (%s%s) AllFlags=0x%X AbsMin=%e AbsMax=%e\n",
-        modNamEMC, axisNo, devNum, descVersAuthors.desc, iTypCode, iOffsBytes,
-        iSizeBytes, iUnit,
-        plcUnitPrefixTxtV2(((int8_t)((iUnit & 0xFF00) >> 8))),
-        plcUnitTxtFromUnitCodeV2(iUnit & 0xFF), iAllFlags, fAbsMin, fAbsMax);
 
     if (!iTypCode && !iSizeBytes && !iOffsBytes) {
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
