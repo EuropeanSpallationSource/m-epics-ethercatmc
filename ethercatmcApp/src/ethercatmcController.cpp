@@ -932,12 +932,13 @@ void ethercatmcController::report(FILE *fp, int level) {
       fprintf(fp,
               "PilsAsynDevInfo[%u] axisNo=%d function=%d EPICSParamType=%s(%d) "
               "inputOffset=%u "
-              "outputOffset=%u TypCode=0x%04x\n",
+              "outputOffset=%u statusOffset=%u TypCode=0x%04x\n",
               numPilsAsynDevInfo, pPilsAsynDevInfo->axisNo,
               pPilsAsynDevInfo->function,
               stringFromAsynParamType(pPilsAsynDevInfo->myEPICSParamType),
               pPilsAsynDevInfo->myEPICSParamType, pPilsAsynDevInfo->inputOffset,
-              pPilsAsynDevInfo->outputOffset, pPilsAsynDevInfo->iTypCode);
+              pPilsAsynDevInfo->outputOffset, pPilsAsynDevInfo->statusOffset,
+              pPilsAsynDevInfo->iTypCode);
     }
   }
 
