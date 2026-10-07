@@ -5,6 +5,8 @@ GNERATEDOPIS = \
   ./e-homf-homr.mid \
   ./motorx-hxpd.mid \
   ./motorx-pils.mid \
+  ./motorx-pils-homfcnen.mid \
+  ./motorx-pils-plcopenstate-homfcnen.mid \
   ../motor-0-ptp.opi \
   ../motor-1.opi \
   ../motor-1-ptp.opi \
@@ -15,6 +17,7 @@ GNERATEDOPIS = \
   ../motor-3-ptp.opi \
   ../motor-4-pils.opi \
   ../motor-4-pils-homfcnen.opi \
+  ../motor-4-pils-plcopenstate-homfcnen.opi \
   ../motor-4-ptp.opi \
   ../motor-4-shutter-1-pils.opi \
   ../motor-4-ecmc.opi \
@@ -74,9 +77,15 @@ FILES_FOR_MOTORX_PILS_HOMFCNEN_OPI = \
 	m-motor.mid \
 	m-alarm-sevr.mid \
         m-slip-problem-not-homed-poweroff.mid \
-	m-button-errrst.mid \
 	m-inhibit.mid \
         m-homf-cnen-buttons.mid \
+	m-msgtxt.mid \
+
+FILES_FOR_MOTORX_PILS_PLCOPENSTATE_HOMFCNEN_OPI = \
+	m-motor.mid \
+	m-alarm-sevr.mid \
+        m-slip-problem-not-homed-poweroff.mid \
+	m-inhibit.mid \
 	m-msgtxt.mid \
 
 DEPENDENCIES_FOR_CONFIG_OPI = \
@@ -216,9 +225,24 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 	echo $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) '>$@'
 	cat $(DEPENDENCIES_FOR_MOTORX_PILS_OPI) >$@
 
-./motorx-pils-homfcnen.mid: $(FILES_FOR_MOTORX_PILS_HOMFCNEN_OPI) Makefile m-buttons-more-stop.mid
+
+./motorx-pils-homfcnen.mid: $(FILES_FOR_MOTORX_PILS_HOMFCNEN_OPI) \
+    Makefile \
+    m-buttons-more-stop.mid m-button-errrst.mid
 	cat $(FILES_FOR_MOTORX_PILS_HOMFCNEN_OPI) >$@
-	cat m-buttons-more-stop.mid | sed -e 's/<y>174/<y>194/' >>$@
+	cat m-buttons-more-stop.mid m-button-errrst.mid | sed -e 's/<y>174/<y>194/' >>$@
+
+./motorx-pils-plcopenstate-homfcnen.mid: \
+  $(FILES_FOR_MOTORX_PILS_PLCOPENSTATE_HOMFCNEN_OPI) \
+    Makefile \
+    m-buttons-more-stop.mid \
+    m-button-errrst.mid \
+    m-plcopenstate.mid \
+    m-homf-cnen-buttons.mid
+	cat $(FILES_FOR_MOTORX_PILS_PLCOPENSTATE_HOMFCNEN_OPI) >$@
+	cat m-plcopenstate.mid >>$@
+	cat m-buttons-more-stop.mid m-button-errrst.mid | sed -e 's/<y>174/<y>214/' >>$@
+	cat m-homf-cnen-buttons.mid | sed -e 's/<y>174/<y>194/' >>$@
 
 ../motor-0-ptp.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils ptp
@@ -252,6 +276,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-4-pils-homfcnen.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-pils-homfcnen.mid
 	./genMotorShutter.sh $@ pils homfcnen 4 x 1
+
+../motor-4-pils-plcopenstate-homfcnen.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-pils-plcopenstate-homfcnen.mid
+	./genMotorShutter.sh $@ pils plcopenstatehomfcnen 4 x 1
 
 ../motor-4-ecmc.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ ecmc 4 x 1

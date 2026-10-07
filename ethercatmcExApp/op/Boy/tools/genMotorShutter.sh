@@ -163,7 +163,11 @@ elif test "$1" = "hxpd"; then
   HAS_HXPD=y
   export HAS_HXPD
 fi &&
-  if test "$1" = "homfcnen"; then
+  if test "$1" = "plcopenstatehomfcnen"; then
+    shift
+    OPIMID_MOT_SHT=motorx-pils-plcopenstate-homfcnen.mid
+    MOTORHIGHT=$((MOTORHIGHT + 40))
+  elif test "$1" = "homfcnen"; then
     shift
     OPIMID_MOT_SHT=motorx-pils-homfcnen.mid
     MOTORHIGHT=$((MOTORHIGHT + 20))
