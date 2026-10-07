@@ -302,23 +302,6 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
           iSizeBytes - 2; /* 2 bytes for device num */
     }
     switch (iTypCode) {
-      case 0x1802: {
-        const char *paramName = descVersAuthors.desc;
-        unsigned numPilsAsynDevInfo = ctrlLocal.numPilsAsynDevInfo;
-        /* Hack: save the pointer to the "new, now to be created" device */
-        pilsAsynDevInfo_type *pPilsAsynDevInfo =
-            &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
-        int function = newPilsAsynDevice(axisNo, devNum, iOffsBytes, iTypCode,
-                                         iAllFlags, paramName);
-        if (function < 0) {
-          status = asynError;
-          goto endPollIndexer;
-        }
-        int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
-        status =
-            indexerNewAuxBitsV2(NULL, /* pAxis */
-                                axisNo, devNum, iAllFlags, functionNamAux0);
-      } break;
       case 0x1E04:
       case 0x1E0C:
       case 0x5010: {
@@ -332,10 +315,11 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
         indexerParseAwayDollarInDesc(axisNo, &descVersAuthors.desc[0],
                                      &iAuxBits07mask);
         /* Now we have an axis */
+        int mbbiFunction = 0;
         int functionNamAux0 =
             defAsynPara.ethercatmcNamAux0_; /* Default for an Axis */
         status = indexerNewAuxBitsV2(pAxis, pAxis->axisNo_, devNum, iAllFlags,
-                                     functionNamAux0);
+                                     mbbiFunction, functionNamAux0);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sTypeCode axisNo=%d iTypCode=%x pAxis=%p status=%s (%d)\n",
                   modNamEMC, axisNo, iTypCode, pAxis,
@@ -406,86 +390,86 @@ endPollIndexer:
 
 asynStatus ethercatmcController::indexerNewAuxBitsV2(
     ethercatmcIndexerAxis *pAxis, unsigned axisNo, unsigned devNum,
-    unsigned iAllFlags, int functionNamAux0) {
+    unsigned iAllFlags, int functionStatusBits, int functionNamAux0) {
   const static char *const functionName = __FUNCTION__;
-  asynStatus status = asynSuccess;
-  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s%s(%d) pAxis=%p devNum=%u iAllFlags=0x%x functionNamAux0=%d\n",
-            modNamEMC, functionName, axisNo, pAxis, devNum, iAllFlags,
-            functionNamAux0);
   /* AUX bits */
-  {
-    unsigned auxBitIdx = 0;
-    for (auxBitIdx = 0; auxBitIdx < NUM_AUX_BITS; auxBitIdx++) {
-      int function = functionNamAux0 + auxBitIdx;
-      if ((iAllFlags >> auxBitIdx) & 1) {
-        char auxBitName[40];
-        unsigned infoType16 = 16;
-        memset(&auxBitName, 0, sizeof(auxBitName));
-        status = readDeviceIndexerV2(devNum, infoType16 + auxBitIdx, auxBitName,
-                                     sizeof(auxBitName) - 1);
-        if (status) return status;
-        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%sauxBitName(%d) auxBitName@%03u[%02u]=%s\n", modNamEMC,
-                  axisNo, function, auxBitIdx, auxBitName);
-        if (function < functionNamAux0 + NUM_AUX_BITS) {
-          setStringParam(axisNo, function, auxBitName);
-          setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
-        }
-        if (!pAxis) {
-          ; /* Do nothing */
-        } else {
-          if (auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD) {
-            char paramName[64];
-
-            int function;
-            /* construct a parameter name, that is unique by starting
-               with AUXBIT */
-            snprintf(paramName, sizeof(paramName), "AUXBIT%s", auxBitName);
-            asynStatus status = findParam(paramName, &function);
-            if (status == asynSuccess) {
-              /* There is an existing asyn parameter with that name,
-                 some record is using it */
-              pAxis->drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx] =
-                  function;
-              asynPrint(
-                  pasynUserController_, ASYN_TRACE_INFO,
-                  "%sauxBitName(%d) auxBitIdx=%u paramName=%s function=%d\n",
-                  modNamEMC, axisNo, auxBitIdx, paramName, function);
-            }
-          }
-          if (!strcmp("notHomed", auxBitName)) {
-            pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
-          } else if (!strcmp("enabled", auxBitName)) {
-            pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
-          } else if (!strcmp("localMode", auxBitName)) {
-            pAxis->setAuxBitsLocalModeMask(1 << auxBitIdx);
-          } else if (!strcmp("homeSwitch", auxBitName)) {
-            pAxis->setAuxBitsHomeSwitchMask(1 << auxBitIdx);
-          } else if (!strcmp("InterlockFwd", auxBitName)) {
-            pAxis->setAuxBitsInterlockFwdMask(1 << auxBitIdx);
-          } else if (!strcmp("InterlockBwd", auxBitName)) {
-            pAxis->setAuxBitsInterlockBwdMask(1 << auxBitIdx);
-          } else if (!strcmp("LimitSwFwd", auxBitName)) {
-            pAxis->setAuxBitsLimitSwFwdMask(1 << auxBitIdx);
-          } else if (!strcmp("LimitSwBwd", auxBitName)) {
-            pAxis->setAuxBitsLimitSwBwdMask(1 << auxBitIdx);
-          } else if (!strcmp("customErrId", auxBitName)) {
-            pAxis->setAuxBitsCustomErrIdMask(1 << auxBitIdx);
-          } else if (!strcmp("Coupled", auxBitName)) {
-            pAxis->setAuxBitsCoupledMask(1 << auxBitIdx);
-          }
-        }
-      } else {
-        setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s%s(%d) pAxis=%p devNum=%u iAllFlags=0x%x functionStatusBits=%d "
+            "functionNamAux0=%d\n",
+            modNamEMC, functionName, axisNo, pAxis, devNum, iAllFlags,
+            functionStatusBits, functionNamAux0);
+  asynStatus status = asynSuccess;
+  unsigned auxBitIdx = 0;
+  for (auxBitIdx = 0; auxBitIdx < NUM_AUX_BITS; auxBitIdx++) {
+    int function = functionNamAux0 + auxBitIdx;
+    if ((iAllFlags >> auxBitIdx) & 1) {
+      char auxBitName[40];
+      unsigned infoType16 = 16;
+      memset(&auxBitName, 0, sizeof(auxBitName));
+      status = readDeviceIndexerV2(devNum, infoType16 + auxBitIdx, auxBitName,
+                                   sizeof(auxBitName) - 1);
+      if (status) return status;
+      asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                "%sauxBitName(%d) auxBitName@%03u[%02u]=%s\n", modNamEMC,
+                axisNo, function, auxBitIdx, auxBitName);
+      if (function < functionNamAux0 + NUM_AUX_BITS) {
+        setStringParam(axisNo, function, auxBitName);
+        setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
       }
+      if (!pAxis) {
+        /* todo */
+        ; /* Do nothing */
+      } else {
+        if (auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD) {
+          char paramName[64];
+
+          int function;
+          /* construct a parameter name, that is unique by starting
+             with AUXBIT */
+          snprintf(paramName, sizeof(paramName), "AUXBIT%s", auxBitName);
+          asynStatus status = findParam(paramName, &function);
+          if (status == asynSuccess) {
+            /* There is an existing asyn parameter with that name,
+               some record is using it */
+            pAxis->drvlocal.clean.asynFunctionAuxBitAsBiRecord[auxBitIdx] =
+                function;
+            asynPrint(
+                pasynUserController_, ASYN_TRACE_INFO,
+                "%sauxBitName(%d) auxBitIdx=%u paramName=%s function=%d\n",
+                modNamEMC, axisNo, auxBitIdx, paramName, function);
+          }
+        }
+        if (!strcmp("notHomed", auxBitName)) {
+          pAxis->setAuxBitsNotHomedMask(1 << auxBitIdx);
+        } else if (!strcmp("enabled", auxBitName)) {
+          pAxis->setAuxBitsEnabledMask(1 << auxBitIdx);
+        } else if (!strcmp("localMode", auxBitName)) {
+          pAxis->setAuxBitsLocalModeMask(1 << auxBitIdx);
+        } else if (!strcmp("homeSwitch", auxBitName)) {
+          pAxis->setAuxBitsHomeSwitchMask(1 << auxBitIdx);
+        } else if (!strcmp("InterlockFwd", auxBitName)) {
+          pAxis->setAuxBitsInterlockFwdMask(1 << auxBitIdx);
+        } else if (!strcmp("InterlockBwd", auxBitName)) {
+          pAxis->setAuxBitsInterlockBwdMask(1 << auxBitIdx);
+        } else if (!strcmp("LimitSwFwd", auxBitName)) {
+          pAxis->setAuxBitsLimitSwFwdMask(1 << auxBitIdx);
+        } else if (!strcmp("LimitSwBwd", auxBitName)) {
+          pAxis->setAuxBitsLimitSwBwdMask(1 << auxBitIdx);
+        } else if (!strcmp("customErrId", auxBitName)) {
+          pAxis->setAuxBitsCustomErrIdMask(1 << auxBitIdx);
+        } else if (!strcmp("Coupled", auxBitName)) {
+          pAxis->setAuxBitsCoupledMask(1 << auxBitIdx);
+        }
+      }
+    } else {
+      setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
     }
   }
   return status;
 }
 int ethercatmcController::readEnumsAndValueAndCallbackIntoMbbiFL(
-    int axisNo, int mbbiFunction, int functionNamAux0_, const char *fileName,
-    int lineNo) {
+    int axisNo, int functionStatusBits, int functionNamAux0_,
+    const char *fileName, int lineNo) {
   const static char *const functionName = __FUNCTION__;
   /* Our internal maximumum for AUX bits resulting in an mbbi */
 #define MAX_AUX_BIT_FOR_ENUM 8
@@ -503,12 +487,13 @@ int ethercatmcController::readEnumsAndValueAndCallbackIntoMbbiFL(
   unsigned numsAuxBitsForEnum = 0;
   memset(&auxBitEnumsForAsyn, 0, sizeof(auxBitEnumsForAsyn));
   asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-            "%s%s:%d %s(%d) mbbiFunction=%d functionNamAux0_=%d\n", modNamEMC,
-            fileName, lineNo, functionName, axisNo, mbbiFunction,
-            functionNamAux0_);
-  if (!mbbiFunction) {
+            "%s%s:%d %s(%d) functionStatusBits=%d functionNamAux0_=%d\n",
+            modNamEMC, fileName, lineNo, functionName, axisNo,
+            functionStatusBits, functionNamAux0_);
+  if (!functionStatusBits) {
     asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-              "%s%s(%d) mbbiFunction=0\n", modNamEMC, functionName, axisNo);
+              "%s%s(%d) functionStatusBits=0\n", modNamEMC, functionName,
+              axisNo);
     return 0;
   }
   for (auxBitIdx = 0; auxBitIdx < MAX_AUX_BIT_FOR_ENUM; auxBitIdx++) {
@@ -535,7 +520,7 @@ int ethercatmcController::readEnumsAndValueAndCallbackIntoMbbiFL(
   }
   doCallbacksEnum(auxBitEnumsForAsyn.enumStrings, auxBitEnumsForAsyn.enumValues,
                   auxBitEnumsForAsyn.enumSeverities, numsAuxBitsForEnum,
-                  mbbiFunction, axisNo);
+                  functionStatusBits, axisNo);
   return 1;
 }
 

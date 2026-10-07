@@ -1281,8 +1281,8 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
   unsigned inputOffset = 0;
   unsigned outputOffset = 0;
   unsigned statusOffset = 0;
-  int functionNamAux0 = 0;
   int functionStatusBits = 0;
+  int functionNamAux0 = 0;
   asynParamType myAsynParamType = asynParamNotDefined;
   struct {
     char name[80]; /* 34 + some spare */
@@ -1422,46 +1422,8 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
       myAsynParamType = asynParamFloat64;
       break;
   }
-  /* 24 Aux bits. Flags bit 0..23 indicate which aux bit is used and has a
-   * name
-   */
-  if (iAllFlags & 0x00FFFFFF) {
-    unsigned i;
-    for (i = 0; i < NUM_AUX_BITS; i++) {
-      int function;
-      asynStatus status;
-      char auxBitname[64];
-      snprintf(auxBitname, sizeof(auxBitname), "%s_NamBit%i", paramName, i);
-      status = findParam(auxBitname, &function);
-      if (status == asynSuccess) {
-        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s exist function=%d\n", modNamEMC, auxBitname, function);
-      } else {
-        status = createParam(auxBitname, asynParamOctet, &function);
-      }
-      if (status == asynSuccess) {
-        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s(%u) numPilsAsynDevInfo=%d created function=%d "
-                  "auxBitname=%s\n",
-                  modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
-                  auxBitname);
-        if (i == 0) functionNamAux0 = function;
-      } else {
-        asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                  "%s%s(%u) numPilsAsynDevInfo=%d not created function=%d "
-                  "auxBitname=%s status=%s (%d)\n",
-                  modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
-                  auxBitname, ethercatmcstrStatus(status), (int)status);
-      }
-    }
-    if (ctrlLocal.supported.bPILSv2) {
-      indexerNewAuxBitsV2(NULL, /* pAxis */
-                          axisNo, devNum, iAllFlags, functionNamAux0);
-    }
-  }
   /* Status word */
   if (statusOffset) {
-    int function;
     asynStatus status;
     char statusBitsName[64];
     if (inputOffset) {
@@ -1471,25 +1433,73 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
       /* probably an 1802 which is only a status word: use the name as is */
       snprintf(statusBitsName, sizeof(statusBitsName), "%s", paramName);
     }
-    status = findParam(statusBitsName, &function);
+    status = findParam(statusBitsName, &functionStatusBits);
     if (status == asynSuccess) {
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s exist function=%d\n", modNamEMC, statusBitsName,
-                function);
+                "%s%s exist functionStatusBits=%d\n", modNamEMC, statusBitsName,
+                functionStatusBits);
     } else {
-      status = createParam(statusBitsName, asynParamUInt32Digital, &function);
+      status = createParam(statusBitsName, asynParamUInt32Digital,
+                           &functionStatusBits);
       asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                "%s%s(%u) numPilsAsynDevInfo=%d created function=%d "
+                "%s%s(%u) numPilsAsynDevInfo=%d created functionStatusBits=%d "
                 "statusBitsName=%s status=%s (%d)\n",
-                modNamEMC, statusBitsName, axisNo, numPilsAsynDevInfo, function,
-                statusBitsName, ethercatmcstrStatus(status), (int)status);
+                modNamEMC, statusBitsName, axisNo, numPilsAsynDevInfo,
+                functionStatusBits, statusBitsName, ethercatmcstrStatus(status),
+                (int)status);
     }
     if (status == asynSuccess) {
-      functionStatusBits = function;
-      // Needed to set the alarm state in poll (and trigger an alarm handling
-      // ?)
       setAlarmStatusSeverityWrapper(axisNo, functionStatusBits,
                                     asynDisconnected);
+    }
+
+    /* 24 Aux bits.
+       Flags bit 0..23 indicate which aux bit is used and has a name
+       functionNamAux0 is the first one.
+       functionNamAux23 is the last one.
+       We always create all 24 parameters for the name, since 0..23 must
+       be in a sequence, like this:
+       Parameter 170 type=string, name=PLCopenState_NamBit0, value=Disabled,
+       status=0
+       ..
+       Parameter 193 type=string, name=PLCopenState_NamBit23, value is undefined
+       See readEnumsAndValueAndCallbackIntoMbbi (uses only 16) and others
+     */
+    if (iAllFlags & 0x00FFFFFF) {
+      unsigned i;
+      for (i = 0; i < NUM_AUX_BITS; i++) {
+        int function;
+        asynStatus status;
+        char auxBitname[64];
+        snprintf(auxBitname, sizeof(auxBitname), "%s_NamBit%i", paramName, i);
+        status = findParam(auxBitname, &function);
+        if (status == asynSuccess) {
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                    "%s%s exist function=%d\n", modNamEMC, auxBitname,
+                    function);
+        } else {
+          status = createParam(auxBitname, asynParamOctet, &function);
+        }
+        if (status == asynSuccess) {
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                    "%s%s(%u) numPilsAsynDevInfo=%d created function=%d "
+                    "auxBitname=%s\n",
+                    modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
+                    auxBitname);
+          if (i == 0) functionNamAux0 = function;
+        } else {
+          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                    "%s%s(%u) numPilsAsynDevInfo=%d not created function=%d "
+                    "auxBitname=%s status=%s (%d)\n",
+                    modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
+                    auxBitname, ethercatmcstrStatus(status), (int)status);
+        }
+      }
+      if (ctrlLocal.supported.bPILSv2) {
+        indexerNewAuxBitsV2(NULL, /* pAxis */
+                            axisNo, devNum, iAllFlags, functionStatusBits,
+                            functionNamAux0);
+      }
     }
   }
 

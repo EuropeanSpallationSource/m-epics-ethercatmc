@@ -382,7 +382,7 @@ class epicsShareClass ethercatmcController : public asynMotorController {
                                     unsigned *pAuxBits07mask);
   asynStatus indexerNewAuxBitsV2(ethercatmcIndexerAxis *pAxis, unsigned axisNo,
                                  unsigned devNum, unsigned iAllFlags,
-                                 int functionNamAux0);
+                                 int mbbiFunction, int functionNamAux0);
   asynStatus updateCfgValue(int axisNo_, int function, double newValue,
                             const char *name);
   asynStatus updateCfgValue(int axisNo_, int function, int newValue,
