@@ -315,9 +315,9 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
           goto endPollIndexer;
         }
         int functionNamAux0 = pPilsAsynDevInfo->functionNamAux0;
-        status = newIndexerAxisAuxBitsV2(NULL, /* pAxis */
-                                         axisNo, devNum, iAllFlags,
-                                         functionNamAux0, iOffsBytes);
+        status =
+            indexerNewAuxBitsV2(NULL, /* pAxis */
+                                axisNo, devNum, iAllFlags, functionNamAux0);
       } break;
       case 0x1E04:
       case 0x1E0C:
@@ -334,9 +334,8 @@ asynStatus ethercatmcController::indexerInitialPollv2(void) {
         /* Now we have an axis */
         int functionNamAux0 =
             defAsynPara.ethercatmcNamAux0_; /* Default for an Axis */
-        status =
-            newIndexerAxisAuxBitsV2(pAxis, pAxis->axisNo_, devNum, iAllFlags,
-                                    functionNamAux0, iOffsBytes);
+        status = indexerNewAuxBitsV2(pAxis, pAxis->axisNo_, devNum, iAllFlags,
+                                     functionNamAux0);
         asynPrint(pasynUserController_, ASYN_TRACE_INFO,
                   "%sTypeCode axisNo=%d iTypCode=%x pAxis=%p status=%s (%d)\n",
                   modNamEMC, axisNo, iTypCode, pAxis,
@@ -405,16 +404,15 @@ endPollIndexer:
   return status;
 }
 
-asynStatus ethercatmcController::newIndexerAxisAuxBitsV2(
+asynStatus ethercatmcController::indexerNewAuxBitsV2(
     ethercatmcIndexerAxis *pAxis, unsigned axisNo, unsigned devNum,
-    unsigned iAllFlags, int functionNamAux0, unsigned iOffsBytes) {
+    unsigned iAllFlags, int functionNamAux0) {
   const static char *const functionName = __FUNCTION__;
   asynStatus status = asynSuccess;
-  asynPrint(
-      pasynUserController_, ASYN_TRACE_INFO,
-      "%s%s(%d) devNum=%u iAllFlags=0x%x functionNamAux0=%d iOffsBytes=%u\n",
-      modNamEMC, functionName, axisNo, devNum, iAllFlags, functionNamAux0,
-      iOffsBytes);
+  asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+            "%s%s(%d) pAxis=%p devNum=%u iAllFlags=0x%x functionNamAux0=%d\n",
+            modNamEMC, functionName, axisNo, pAxis, devNum, iAllFlags,
+            functionNamAux0);
   /* AUX bits */
   {
     unsigned auxBitIdx = 0;
