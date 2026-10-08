@@ -1,4 +1,4 @@
-record(mbbiDirect, "$(P)$(R)-StatusBits")
+record(mbbiDirect, "$(P)$(R)$(Q)")
 {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "$(DESC)")
