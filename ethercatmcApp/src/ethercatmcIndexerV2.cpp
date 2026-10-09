@@ -416,10 +416,7 @@ asynStatus ethercatmcController::indexerNewAuxBitsV2(
         setStringParam(axisNo, function, auxBitName);
         setAlarmStatusSeverityWrapper(axisNo, function, asynSuccess);
       }
-      if (!pAxis) {
-        /* todo */
-        ; /* Do nothing */
-      } else {
+      if (pAxis) {
         if (auxBitIdx < MAX_AUX_BIT_AS_BI_RECORD) {
           char paramName[64];
 
@@ -464,6 +461,10 @@ asynStatus ethercatmcController::indexerNewAuxBitsV2(
     } else {
       setAlarmStatusSeverityWrapper(axisNo, function, asynDisconnected);
     }
+  }
+  if (!pAxis) {
+    readEnumsAndValueAndCallbackIntoMbbi(axisNo, functionStatusBits,
+                                         functionNamAux0);
   }
   return status;
 }

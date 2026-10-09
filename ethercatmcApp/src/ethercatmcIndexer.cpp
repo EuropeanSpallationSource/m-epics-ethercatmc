@@ -1479,21 +1479,20 @@ int ethercatmcController::newPilsAsynDevice(int axisNo, unsigned devNum,
                     function);
         } else {
           status = createParam(auxBitname, asynParamOctet, &function);
+          if (status == asynSuccess) {
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%s%s(%u) numPilsAsynDevInfo=%d created function=%d\n",
+                      modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo,
+                      function);
+          } else {
+            asynPrint(pasynUserController_, ASYN_TRACE_INFO,
+                      "%s%s(%u) numPilsAsynDevInfo=%d not created "
+                      "status=%s (%d)\n",
+                      modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo,
+                      ethercatmcstrStatus(status), (int)status);
+          }
         }
-        if (status == asynSuccess) {
-          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%s%s(%u) numPilsAsynDevInfo=%d created function=%d "
-                    "auxBitname=%s\n",
-                    modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
-                    auxBitname);
-          if (i == 0) functionNamAux0 = function;
-        } else {
-          asynPrint(pasynUserController_, ASYN_TRACE_INFO,
-                    "%s%s(%u) numPilsAsynDevInfo=%d not created function=%d "
-                    "auxBitname=%s status=%s (%d)\n",
-                    modNamEMC, auxBitname, axisNo, numPilsAsynDevInfo, function,
-                    auxBitname, ethercatmcstrStatus(status), (int)status);
-        }
+        if (i == 0 && status == asynSuccess) functionNamAux0 = function;
       }
       if (ctrlLocal.supported.bPILSv2) {
         indexerNewAuxBitsV2(NULL, /* pAxis */
