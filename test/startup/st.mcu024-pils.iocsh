@@ -12,18 +12,34 @@ epicsEnvSet("ECM_OPTIONS",     "adsPort=852;amsNetIdRemote=172.30.41.141.1.1;ams
 < ethercatmcController.iocsh
 
 
+# All axes
+epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+
 #
 # Axis 1
 #
 epicsEnvSet("AXISCONFIG",      "")
 epicsEnvSet("R",               "$(SM_R=m1)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
-epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+
+epicsEnvSet("ASYNPARAMNAME",   "PLCopenState")
+epicsEnvSet("R",               "m1-PLCopenState")
+epicsEnvSet("Q",               "")
+#< ethercatmcGenericStatusWord.iocsh
+< ethercatmcGenericStatusMbbi.iocsh
+
+# Aux bits as bi records;
+# R:Record name
+# P: asynParam name
+epicsEnvSet("AUX_BIT_NAME_R",  "bBusy")
+epicsEnvSet("AUX_BIT_NAME_P",  "AUXBITbBusy")
+< ethercatmcAuxBitAsBiRecord.iocsh
+
 
 #
 # Axis 2
@@ -31,10 +47,13 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 epicsEnvSet("AXISCONFIG",      "")
 epicsEnvSet("R",               "$(SM_R=m2)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+epicsEnvSet("ASYNPARAMNAME",   "PLCopenState")
+epicsEnvSet("R",               "m2-PLCopenState")
+epicsEnvSet("Q",               "")
+#< ethercatmcGenericStatusWord.iocsh
+< ethercatmcGenericStatusMbbi.iocsh
 
 
 #
@@ -43,12 +62,13 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 epicsEnvSet("AXISCONFIG",      "")
 epicsEnvSet("R",               "$(SM_R=m3)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=3)")
-epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
-epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+epicsEnvSet("ASYNPARAMNAME",   "PLCopenState")
+epicsEnvSet("R",               "m3-PLCopenState")
+epicsEnvSet("Q",               "")
+#< ethercatmcGenericStatusWord.iocsh
+< ethercatmcGenericStatusMbbi.iocsh
 
 #
 # Axis 4
@@ -56,8 +76,22 @@ epicsEnvSet("RAWENCSTEP_MDEL", 0)
 epicsEnvSet("AXISCONFIG",      "")
 epicsEnvSet("R",               "$(SM_R=m4)")
 epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=4)")
-epicsEnvSet("RAWENCSTEP_ADEL", 0)
-epicsEnvSet("RAWENCSTEP_MDEL", 0)
 < ethercatmcIndexerAxis.iocsh
 < ethercatmcAxisdebug.iocsh
+epicsEnvSet("ASYNPARAMNAME",   "PLCopenState")
+epicsEnvSet("R",               "m4-PLCopenState")
+epicsEnvSet("Q",               "")
+#< ethercatmcGenericStatusWord.iocsh
+< ethercatmcGenericStatusMbbi.iocsh
 
+#
+# Slit version
+#UseSlitV3#1
+#
+epicsEnvSet("R",               "UseSlitV3")
+epicsEnvSet("ASYNPARAMNAME",   "UseSlitV3")
+epicsEnvSet("CHNO",            "1")
+epicsEnvSet("DESC",            "UseSlitV3")
+epicsEnvSet("EGU",             "UseSlitV3")
+
+< ethercatmcLongoutReadback.iocsh
