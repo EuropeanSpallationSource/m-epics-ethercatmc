@@ -16,16 +16,16 @@ History of this driver.
 
 
 1 History
-  Before going into details, this SW package still supports different
-  "generations" of "motion control unit" (MCU) firmware.
+  Before going into details, this SW package did support different
+  "generations" of "motion control unit" (MCU) firmware until v5.1.0
 
   The first generation
     The first generation uses a function block called FB_DriveVirtual
     as an interface towards the different movements inside the MCU.
     This supports "move absolute", "move relative",
     "move (constant) velocity", "home" (sometimes called reference).
-    "move absolute" is "the" use case for a motor: Move to a position,
-    and stay there.
+    "move absolute" is the most used case for a motor:
+    Move to a position and stay there.
     "move relative" is not exposed by the motorRecord,
     but used if there is a readback through another EPICS device,
     like an interferometer.
@@ -49,7 +49,7 @@ History of this driver.
     This follows the classical motion-controller-interface approach.
     On the MCU side a communication software is used to convert
     the binary data into ASCII forth and back.
-    In absense of a better idea, it is called "epicscommodule" [3]
+    In absense of a better idea, it is called "epicscommodule" [3].
     There is no dependency on EPICS at all.
     It can be used to interface with EPICS (this driver, Streamdevice),
     Tango, python programs or telnet.
@@ -117,6 +117,47 @@ History of this driver.
     large arrays, "waveforms".
     PILS is for control only, data acquisition needs other interfaces.
 
+  The second generation, the cleanup phase
+    After setting the v5.1.0 all "not at ESS used code" was removed,
+    since not used code causes more confusion than good.
+    However, the simulator still supports all versions.
+    Only the EPICS code has been cleaned up.
+
+  The second generation, experiences
+    The seconds generation has so far fulfilled all requirements:
+    - can retrieve all hardware status and values in "one go".
+      The received data is consistent, there are no timing glitches
+      between values and  status/alarms.
+    - can add a timestamp when the the data was adquired in the PLC
+      for neutron instrumensts we will need the "facility time,
+      keyword "precise time stamping of motor positions".
+      A prove of concept is using the precise timing protocol.
+    - handshake with the PLC code
+      when a parameter is changed, a handshake is done to make sure
+      that the request has been picked up by the PLC code.
+      Set the execute bit of the appropriate function block in TwinCAT.
+      Once the PLC program has picked up and processed the request
+      we can complete the EPICS operation.
+    - Defines a clean interface between the PLC code and the EPICS IOC.
+      This allows the TwinCAT developpers to do code changes
+      without affecting the communication (interface).
+    - self-enumerating which hardware is exposed from the PLC.
+      When the IOC starts, the PLC is asked for all devices.
+      When the PLC restarts the EPICS IOC sets all records into
+      SEVR = INAVLID_ALARM and STAT = COMM_ALARM.
+      After re-reading the exposed hardware list,
+      all records connected to a PLC hardware are set into no alarm.
+    - alarms from the PLC into EPICS
+      Background: When EPICS talks to dumb hardware,
+      all alarms are configured inside an EPICS IOC.
+      When having a PLC it makes sense to monitor e.g. a motor
+      temperature and make the decision if it is HIGH inside the PLC.
+      And take actions like stopping and powering off a motor,
+      which is overheated. Now we want to see this as an alarm in
+      EPICS as well.
+      This is done in setAlarmStatusSeverityFromStatusBits()
+
+
 2 Commissioning workflow
   The EPICS motor module was designed to drive stepper motor cards.
   It later learned to deal with more advanced controllers as well.
@@ -138,18 +179,22 @@ History of this driver.
   Other records are there just to double check the commissioned values
   from a CSS screen,like "-CfgPOSLAG-Tim-RB".
 
+Note: Some repositories have been moved around.
+This is the list of today.
 
 [1] https://github.com/EuropeanSpallationSource/MCAG_Base_Project/
     https://github.com/EuropeanSpallationSource/MCAG_Base_Project/commit/05654246a2417f6bc6adc3bde7d288e1483a3c43
 
 [2] https://indico.fnal.gov/event/9718/contributions/115186/
 
-[3] https://bitbucket.org/europeanspallationsource/tc_epicscommodule.git
+[3] https://github.com/EuropeanSpallationSource/tc_epicscommodule
 
 [4] https://github.com/Beckhoff/ADS
 
-[5] https://github.com/EuropeanSpallationSource/epics-twincat-ads
+[5] https://github.com/epics-modules/twincat-ads/
 
 [6] https://bitbucket.org/europeanspallationsource/tc_mca_std_lib.git
 
 [7] https://forge.frm2.tum.de/public/doc/plc/v2.0/singlehtml/
+
+[8] https://gitlab.esss.lu.se/nice/support-scripts/pils-epics-generator/
