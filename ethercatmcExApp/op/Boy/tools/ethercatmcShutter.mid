@@ -459,7 +459,7 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)StatusBits</pv_name>
+    <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="ReasonBitLED25-Visible" prop_id="visible" out_exp="false">
@@ -469,7 +469,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit25.SEVR</pv>
+        <pv trig="true">$(P)$(M)-NamBit25.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -523,7 +523,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit25</pv_name>
+    <pv_name>$(P)$(M)-NamBit25</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -534,7 +534,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit25.SEVR</pv>
+        <pv trig="true">$(P)$(M)-NamBit25.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -595,7 +595,7 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)$(M)StatusBits</pv_name>
+    <pv_name>$(P)$(M)-StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="ReasonBitLED24-Visible" prop_id="visible" out_exp="false">
@@ -605,7 +605,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit24.SEVR</pv>
+        <pv trig="true">$(P)$(M)-NamBit24.SEVR</pv>
       </rule>
     </rules>
     <scale_options>
@@ -659,7 +659,7 @@ $(pv_value)</tooltip>
     <name>Text Input Template_52</name>
     <precision>0</precision>
     <precision_from_pv>true</precision_from_pv>
-    <pv_name>$(P)$(M)NamBit24</pv_name>
+    <pv_name>$(P)$(M)-NamBit24</pv_name>
     <pv_value />
     <rotation_angle>0.0</rotation_angle>
     <rules>
@@ -670,7 +670,7 @@ $(pv_value)</tooltip>
         <exp bool_exp="pv0!=3">
           <value>true</value>
         </exp>
-        <pv trig="true">$(P)$(M)NamBit24.SEVR</pv>
+        <pv trig="true">$(P)$(M)-NamBit24.SEVR</pv>
       </rule>
     </rules>
     <scale_options>

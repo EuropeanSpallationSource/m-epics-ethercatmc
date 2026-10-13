@@ -13,22 +13,22 @@ shift
 # Default for the majority
 STATUSCODE='$(M)-StatusCode'
 STATUSBITS='$(M)-StatusBits'
-NAMAUXBIT='$(M)-NamAuxBit'
+NAMAUXBIT='$(M)-NamBit'
 case $BASENAME in
   ethercatmcCabinet)
-    NAMAUXBIT='$(M)-CabinetNamBit'
+    NAMAUXBIT='$(M)-NamBit'
     yaux=18
     ;;
   ethercatmcMBBO_1E0C)
     STATUSCODE='$(M)StatusCode'
-    STATUSBITS='$(M)StatusBits'
-    NAMAUXBIT='$(M)NamAuxBit'
+    STATUSBITS='$(M)-StatusBits'
+    NAMAUXBIT='$(M)-NamBit'
     yaux=298
     ;;
   ethercatmcShutter)
     STATUSCODE='$(M)StatusCode'
-    STATUSBITS='$(M)StatusBits'
-    NAMAUXBIT='$(M)NamAuxBit'
+    STATUSBITS='$(M)-StatusBits'
+    NAMAUXBIT='$(M)-NamBit'
     yaux=298
     ;;
   ethercatmcaxisExpert)
@@ -38,7 +38,7 @@ case $BASENAME in
     yaux=18
     STATUSCODE=StatusCode
     STATUSBITS=PTPErrorStatus
-    NAMAUXBIT=PTPErrNamBit
+    NAMAUXBIT=PTPErr-NamBit
     ;;
   ethercatmcStatusWord1802)
     yaux=18

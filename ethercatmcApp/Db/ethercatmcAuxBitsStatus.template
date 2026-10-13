@@ -6,125 +6,173 @@ record(mbbiDirect, "$(P)$(R)-StatusBits")
     field(SCAN, "I/O Intr")
 }
 
-record(stringin, "$(P)$(R)-NamAuxBit0") {
+record(stringin, "$(P)$(R)-NamBit0") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit0")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit0")
 }
-record(stringin, "$(P)$(R)-NamAuxBit1") {
+record(stringin, "$(P)$(R)-NamBit1") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit1")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit1")
 }
-record(stringin, "$(P)$(R)-NamAuxBit2") {
+record(stringin, "$(P)$(R)-NamBit2") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit2")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit2")
 }
-record(stringin, "$(P)$(R)-NamAuxBit3") {
+record(stringin, "$(P)$(R)-NamBit3") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit3")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit3")
 }
-record(stringin, "$(P)$(R)-NamAuxBit4") {
+record(stringin, "$(P)$(R)-NamBit4") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit4")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit4")
 }
-record(stringin, "$(P)$(R)-NamAuxBit5") {
+record(stringin, "$(P)$(R)-NamBit5") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit5")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit5")
 }
-record(stringin, "$(P)$(R)-NamAuxBit6") {
+record(stringin, "$(P)$(R)-NamBit6") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit6")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit6")
 }
-record(stringin, "$(P)$(R)-NamAuxBit7") {
+record(stringin, "$(P)$(R)-NamBit7") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit7")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit7")
 }
-record(stringin, "$(P)$(R)-NamAuxBit8") {
+record(stringin, "$(P)$(R)-NamBit8") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit8")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit8")
 }
-record(stringin, "$(P)$(R)-NamAuxBit9") {
+record(stringin, "$(P)$(R)-NamBit9") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit9")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit9")
 }
-record(stringin, "$(P)$(R)-NamAuxBit10") {
+record(stringin, "$(P)$(R)-NamBit10") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit10")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit10")
 }
-record(stringin, "$(P)$(R)-NamAuxBit11") {
+record(stringin, "$(P)$(R)-NamBit11") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit11")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit11")
 }
-record(stringin, "$(P)$(R)-NamAuxBit12") {
+record(stringin, "$(P)$(R)-NamBit12") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit12")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit12")
 }
-record(stringin, "$(P)$(R)-NamAuxBit13") {
+record(stringin, "$(P)$(R)-NamBit13") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit13")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit13")
 }
-record(stringin, "$(P)$(R)-NamAuxBit14") {
+record(stringin, "$(P)$(R)-NamBit14") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit14")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit14")
 }
-record(stringin, "$(P)$(R)-NamAuxBit15") {
+record(stringin, "$(P)$(R)-NamBit15") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit15")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit15")
 }
-record(stringin, "$(P)$(R)-NamAuxBit16") {
+record(stringin, "$(P)$(R)-NamBit16") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit16")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit16")
 }
-record(stringin, "$(P)$(R)-NamAuxBit17") {
+record(stringin, "$(P)$(R)-NamBit17") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit17")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit17")
 }
-record(stringin, "$(P)$(R)-NamAuxBit18") {
+record(stringin, "$(P)$(R)-NamBit18") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit18")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit18")
 }
-record(stringin, "$(P)$(R)-NamAuxBit19") {
+record(stringin, "$(P)$(R)-NamBit19") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit19")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit19")
 }
-record(stringin, "$(P)$(R)-NamAuxBit20") {
+record(stringin, "$(P)$(R)-NamBit20") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit20")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit20")
 }
-record(stringin, "$(P)$(R)-NamAuxBit21") {
+record(stringin, "$(P)$(R)-NamBit21") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit21")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit21")
 }
-record(stringin, "$(P)$(R)-NamAuxBit22") {
+record(stringin, "$(P)$(R)-NamBit22") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit22")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit22")
 }
-record(stringin, "$(P)$(R)-NamAuxBit23") {
+record(stringin, "$(P)$(R)-NamBit23") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),$(AXIS_NO))NamAuxBit23")
     field(SCAN, "I/O Intr")
+    
+    alias("$(P)$(R)-NamAuxBit23")
 }
 # bit 24 and 25: give reason bits a value
 record(stringout, "$(P)$(R)-NamBit24") {
