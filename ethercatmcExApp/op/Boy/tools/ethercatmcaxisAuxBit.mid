@@ -36,7 +36,7 @@
       <color red="0" green="0" blue="255" />
     </on_color>
     <on_label></on_label>
-    <pv_name>$(P)StatusBits</pv_name>
+    <pv_name>$(P)-StatusBits</pv_name>
     <pv_value />
     <rules>
       <rule name="AuxBitLEDNNN-Visible" prop_id="visible" out_exp="false">
