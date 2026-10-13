@@ -210,128 +210,171 @@ record(longin, "$(P)$(R)PTPErrorStatus-StatusBits")
     field(SCAN, "I/O Intr")
 }
 
-record(stringin, "$(P)$(R)PTPErrNamBit0") {
+record(stringin, "$(P)$(R)PTPErr-NamBit0") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit0")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit0")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit1") {
+record(stringin, "$(P)$(R)PTPErr-NamBit1") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit1")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit1")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit2") {
+record(stringin, "$(P)$(R)PTPErr-NamBit2") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit2")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit2")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit3") {
+record(stringin, "$(P)$(R)PTPErr-NamBit3") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit3")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit3")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit4") {
+record(stringin, "$(P)$(R)PTPErr-NamBit4") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit4")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit4")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit5") {
+record(stringin, "$(P)$(R)PTPErr-NamBit5") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit5")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit5")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit6") {
+record(stringin, "$(P)$(R)PTPErr-NamBit6") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit6")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit6")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit7") {
+record(stringin, "$(P)$(R)PTPErr-NamBit7") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit7")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit7")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit8") {
+record(stringin, "$(P)$(R)PTPErr-NamBit8") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit8")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit8")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit9") {
+record(stringin, "$(P)$(R)PTPErr-NamBit9") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit9")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit9")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit10") {
+record(stringin, "$(P)$(R)PTPErr-NamBit10") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit10")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit10")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit10") {
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit10")
-    field(SCAN, "I/O Intr")
-}
-record(stringin, "$(P)$(R)PTPErrNamBit11") {
+record(stringin, "$(P)$(R)PTPErr-NamBit11") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit11")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit11")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit12") {
+record(stringin, "$(P)$(R)PTPErr-NamBit12") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit12")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit12")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit13") {
+record(stringin, "$(P)$(R)PTPErr-NamBit13") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit13")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit13")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit14") {
+record(stringin, "$(P)$(R)PTPErr-NamBit14") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit14")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit14")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit15") {
+record(stringin, "$(P)$(R)PTPErr-NamBit15") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit15")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit15")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit16") {
+record(stringin, "$(P)$(R)PTPErr-NamBit16") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit16")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit16")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit17") {
+record(stringin, "$(P)$(R)PTPErr-NamBit17") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit17")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit17")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit18") {
+record(stringin, "$(P)$(R)PTPErr-NamBit18") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit18")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit18")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit19") {
+record(stringin, "$(P)$(R)PTPErr-NamBit19") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit19")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit19")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit20") {
+record(stringin, "$(P)$(R)PTPErr-NamBit20") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit20")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit20")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit21") {
+record(stringin, "$(P)$(R)PTPErr-NamBit21") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit21")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit21")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit22") {
+record(stringin, "$(P)$(R)PTPErr-NamBit22") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit22")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit22")
 }
-record(stringin, "$(P)$(R)PTPErrNamBit23") {
+record(stringin, "$(P)$(R)PTPErr-NamBit23") {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(MOTOR_PORT),0)PTPErrorStatus_NamBit23")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)PTPErrNamBit23")
 }

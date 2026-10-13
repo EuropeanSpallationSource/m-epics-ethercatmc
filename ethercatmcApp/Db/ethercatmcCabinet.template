@@ -1,152 +1,202 @@
-record(mbbiDirect, "$(P)$(R)")
+record(mbbiDirect, "$(P)$(R)-StatusBits")
 {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "Cabinet 32 bit status")
     field(INP,  "@asynMask($(MOTOR_PORT),0 0x3FFFFFF)Cabinet")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)")
 }
 
-record(stringin, "$(P)$(R)BitNam0") {
+record(stringin, "$(P)$(R)-NamBit0") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 0 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit0")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam0")
 }
-record(stringin, "$(P)$(R)BitNam1") {
+record(stringin, "$(P)$(R)-NamBit1") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 1 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit1")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam1")
 }
-record(stringin, "$(P)$(R)BitNam2") {
+record(stringin, "$(P)$(R)-NamBit2") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 2 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit2")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam2")
 }
-record(stringin, "$(P)$(R)BitNam3") {
+record(stringin, "$(P)$(R)-NamBit3") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 3 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit3")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam3")
 }
-record(stringin, "$(P)$(R)BitNam4") {
+record(stringin, "$(P)$(R)-NamBit4") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 4 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit4")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam4")
 }
-record(stringin, "$(P)$(R)BitNam5") {
+record(stringin, "$(P)$(R)-NamBit5") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 5 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit5")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam5")
 }
-record(stringin, "$(P)$(R)BitNam6") {
+record(stringin, "$(P)$(R)-NamBit6") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 6 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit6")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam6")
 }
-record(stringin, "$(P)$(R)BitNam7") {
+record(stringin, "$(P)$(R)-NamBit7") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 7 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit7")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam7")
 }
-record(stringin, "$(P)$(R)BitNam8") {
+record(stringin, "$(P)$(R)-NamBit8") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 8 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit8")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam8")
 }
-record(stringin, "$(P)$(R)BitNam9") {
+record(stringin, "$(P)$(R)-NamBit9") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 9 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit9")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam9")
 }
-record(stringin, "$(P)$(R)BitNam10") {
+record(stringin, "$(P)$(R)-NamBit10") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 10 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit10")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam10")
 }
-record(stringin, "$(P)$(R)BitNam11") {
+record(stringin, "$(P)$(R)-NamBit11") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 11 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit11")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam11")
 }
-record(stringin, "$(P)$(R)BitNam12") {
+record(stringin, "$(P)$(R)-NamBit12") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 12 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit12")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam12")
 }
-record(stringin, "$(P)$(R)BitNam13") {
+record(stringin, "$(P)$(R)-NamBit13") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 13 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit13")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam13")
 }
-record(stringin, "$(P)$(R)BitNam14") {
+record(stringin, "$(P)$(R)-NamBit14") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 14 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit14")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam14")
 }
-record(stringin, "$(P)$(R)BitNam15") {
+record(stringin, "$(P)$(R)-NamBit15") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 15 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit15")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam15")
 }
-record(stringin, "$(P)$(R)BitNam16") {
+record(stringin, "$(P)$(R)-NamBit16") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 16 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit16")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam16")
 }
-record(stringin, "$(P)$(R)BitNam17") {
+record(stringin, "$(P)$(R)-NamBit17") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 17 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit17")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam17")
 }
-record(stringin, "$(P)$(R)BitNam18") {
+record(stringin, "$(P)$(R)-NamBit18") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 18 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit18")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam18")
 }
-record(stringin, "$(P)$(R)BitNam19") {
+record(stringin, "$(P)$(R)-NamBit19") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 19 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit19")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam19")
 }
-record(stringin, "$(P)$(R)BitNam20") {
+record(stringin, "$(P)$(R)-NamBit20") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 20 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit20")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam20")
 }
-record(stringin, "$(P)$(R)BitNam21") {
+record(stringin, "$(P)$(R)-NamBit21") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 21 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit21")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam21")
 }
-record(stringin, "$(P)$(R)BitNam22") {
+record(stringin, "$(P)$(R)-NamBit22") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 22 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit22")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam22")
 }
-record(stringin, "$(P)$(R)BitNam23") {
+record(stringin, "$(P)$(R)-NamBit23") {
     field(DTYP, "asynOctetRead")
     field(DESC, "Cabinet status bit 23 name")
     field(INP,  "@asyn($(MOTOR_PORT),0)Cabinet_NamBit23")
     field(SCAN, "I/O Intr")
+
+    alias("$(P)$(R)BitNam23")
 }
