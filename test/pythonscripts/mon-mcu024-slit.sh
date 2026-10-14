@@ -16,7 +16,6 @@ done
 
 #export EPICS_PVA_ADDR_LIST="idmz-ro-epics-gw-tn.esss.lu.se 172.30.38.12"
 
-PVSEGU=""
 for PV in $PVS; do
   pvget $PV || {
     echo >&2 $PV not found
