@@ -922,6 +922,8 @@ void ethercatmcController::report(FILE *fp, int level) {
           "Twincat motor driver %s, numAxes=%d, moving poll period=%f, idle "
           "poll period=%f\n",
           this->portName, numAxes_, movingPollPeriod_, idlePollPeriod_);
+  // Call the base class method
+  asynMotorController::report(fp, level);
   if (level > 1) {
     /*  PilsAsynDevInfo */
     for (unsigned numPilsAsynDevInfo = 0;
@@ -930,19 +932,18 @@ void ethercatmcController::report(FILE *fp, int level) {
       pilsAsynDevInfo_type *pPilsAsynDevInfo =
           &ctrlLocal.pilsAsynDevInfo[numPilsAsynDevInfo];
       fprintf(fp,
-              "PilsAsynDevInfo[%u] axisNo=%d function=%d EPICSParamType=%s(%d) "
+              "PilsAsynDevInfo[%u] axisNo=%d function=%d functionStatusBits=%d "
+              "EPICSParamType=%s(%d) "
               "inputOffset=%u "
-              "outputOffset=%u TypCode=0x%04x\n",
+              "outputOffset=%u statusOffset=%u TypCode=0x%04x\n",
               numPilsAsynDevInfo, pPilsAsynDevInfo->axisNo,
-              pPilsAsynDevInfo->function,
+              pPilsAsynDevInfo->function, pPilsAsynDevInfo->functionStatusBits,
               stringFromAsynParamType(pPilsAsynDevInfo->myEPICSParamType),
               pPilsAsynDevInfo->myEPICSParamType, pPilsAsynDevInfo->inputOffset,
-              pPilsAsynDevInfo->outputOffset, pPilsAsynDevInfo->iTypCode);
+              pPilsAsynDevInfo->outputOffset, pPilsAsynDevInfo->statusOffset,
+              pPilsAsynDevInfo->iTypCode);
     }
   }
-
-  // Call the base class method
-  asynMotorController::report(fp, level);
 }
 
 /** Code for iocsh registration */
