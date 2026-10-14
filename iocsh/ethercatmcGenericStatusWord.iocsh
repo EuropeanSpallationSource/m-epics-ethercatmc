@@ -25,4 +25,4 @@ ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME)_NamBit21  Octet
 ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME)_NamBit22  Octet
 ethercatmcCreateAsynParam $(MOTOR_PORT) $(ASYNPARAMNAME)_NamBit23  Octet
 
-dbLoadRecords("ethercatmcGenericStatusWord.template", "P=$(P), R=$(R), Q=$(Q=-StatusWord), MOTOR_PORT=$(MOTOR_PORT), ASYNPARAMNAME=$(ASYNPARAMNAME), AXIS_NO=$(AXIS_NO=0), DESC=$(DESC)")
+dbLoadRecords("ethercatmcGenericStatusWord.template", "P=$(P), R=$(R), Q=$(Q=-StatusBits), MOTOR_PORT=$(MOTOR_PORT), ASYNPARAMNAME=$(ASYNPARAMNAME), AXIS_NO=$(AXIS_NO=0), DESC=$(DESC)")
