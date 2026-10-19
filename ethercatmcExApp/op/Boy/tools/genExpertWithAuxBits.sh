@@ -237,12 +237,29 @@ cmd=$(echo ./shiftopi.py --shiftx $x --shifty $y --shiftm $im) &&
     eval $cmd <e-foff-vis.mid >>/tmp/$$
     eval $cmd <e-homf-homr-vis.mid >>/tmp/$$
   fi &&
-  for n in $@; do
-    yaux=$(($yaux + 20))
-    cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux)
-    echo cmd=$cmd
-    eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>/tmp/$$
-  done
+  xaux=0
+yauxstart=$yaux
+
+for n in $@; do
+  case $n in
+    [0-9]*)
+      yaux=$(($yaux + 20))
+      cmd=$(echo ./genExpertWithAuxBits.py --shiftn $n --shifty $yaux --shiftx $xaux)
+      echo cmd=$cmd
+      eval $cmd <ethercatmcaxisAuxBit.mid | sed -e "s/StatusBits/$STATUSBITS/g" -e "s/NamBit/$NAMAUXBIT/g" -e "s/StatusCode/$STATUSCODE/g" >>/tmp/$$
+      ;;
+    AllBusyBits)
+      STATUSBITS="AllBusyBits"
+      NAMAUXBIT=AllBusyBits-NamBit
+      yaux=$yauxstart
+      xaux=$((xaux + 125))
+      ;;
+    *)
+      echo >&2 "illegal paramer: $n"
+      exit 1
+      ;;
+  esac
+done
 touch "$FILE" &&
   chmod +w "$FILE" &&
   cat $BASENAME.end >>/tmp/$$ &&
