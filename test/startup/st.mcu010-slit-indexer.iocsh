@@ -1,0 +1,108 @@
+epicsEnvSet("MOTOR_PORT",      "$(SM_MOTOR_PORT=MCU1)")
+
+epicsEnvSet("IPADDR",          "$(SM_IPADDR=127.0.0.1)")
+epicsEnvSet("IPPORT",          "$(SM_IPPORT=48898)")
+epicsEnvSet("AMSNETIDIOC",     "$(SM_AMSNETID=127.0.0.1.1.1)")
+epicsEnvSet("ASYN_PORT",       "$(SM_ASYN_PORT=MC_CPU1)")
+epicsEnvSet("P",               "$(SM_P=LabS-MCAG:MC-MCU-010:)")
+epicsEnvSet("R",               "")
+epicsEnvSet("PREC",            "$(SM_PREC=3)")
+epicsEnvSet("SM_NOAXES",       "4")
+epicsEnvSet("ADSPORT",         "$(ECM_ADSPORT=852)")
+epicsEnvSet("ECM_OPTIONS",     "adsPort=$(ADSPORT);amsNetIdRemote=127.0.0.1.1.1;amsNetIdLocal=$(AMSNETIDIOC)"
+
+# Do not start the poller yet
+epicsEnvSet("ECM_MOVINGPOLLPERIOD", "0")
+epicsEnvSet("ECM_IDLEPOLLPERIOD", "0")
+< ethercatmcController.iocsh
+
+
+# All axes
+epicsEnvSet("DESC",            "$(SM_DESC=DESC)")
+epicsEnvSet("EGU",             "$(SM_EGU=EGU)")
+epicsEnvSet("RAWENCSTEP_ADEL", 0)
+epicsEnvSet("RAWENCSTEP_MDEL", 0)
+
+#
+# Axis 1
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m1)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=1)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+
+epicsEnvSet("ASYNPARAMNAME",   "PLCopenState")
+epicsEnvSet("R",               "m1-PLCopenState")
+epicsEnvSet("Q",               "")
+#< ethercatmcGenericStatusWord.iocsh
+< ethercatmcGenericStatusMbbi.iocsh
+
+# Aux bits as bi records;
+# R:Record name
+# P: asynParam name
+epicsEnvSet("AUX_BIT_NAME_R",  "bBusy")
+epicsEnvSet("AUX_BIT_NAME_P",  "AUXBITbBusy")
+< ethercatmcAuxBitAsBiRecord.iocsh
+
+
+#
+# Axis 2
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m2)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=2)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+epicsEnvSet("ASYNPARAMNAME",   "PLCopenState")
+epicsEnvSet("R",               "m2-PLCopenState")
+epicsEnvSet("Q",               "")
+#< ethercatmcGenericStatusWord.iocsh
+< ethercatmcGenericStatusMbbi.iocsh
+
+
+#
+# Axis 3
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m3)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=3)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+epicsEnvSet("ASYNPARAMNAME",   "PLCopenState")
+epicsEnvSet("R",               "m3-PLCopenState")
+epicsEnvSet("Q",               "")
+#< ethercatmcGenericStatusWord.iocsh
+< ethercatmcGenericStatusMbbi.iocsh
+
+#
+# Axis 4
+#
+epicsEnvSet("AXISCONFIG",      "")
+epicsEnvSet("R",               "$(SM_R=m4)")
+epicsEnvSet("AXIS_NO",         "$(SM_AXIS_NO=4)")
+< ethercatmcIndexerAxis.iocsh
+< ethercatmcAxisdebug.iocsh
+epicsEnvSet("ASYNPARAMNAME",   "PLCopenState")
+epicsEnvSet("R",               "m4-PLCopenState")
+epicsEnvSet("Q",               "")
+#< ethercatmcGenericStatusWord.iocsh
+< ethercatmcGenericStatusMbbi.iocsh
+
+#
+# Slit version
+#UseSlitV3#1
+#
+epicsEnvSet("R",               "UseSlitV3")
+epicsEnvSet("ASYNPARAMNAME",   "UseSlitV3")
+epicsEnvSet("CHNO",            "1")
+epicsEnvSet("DESC",            "UseSlitV3")
+epicsEnvSet("EGU",             "UseSlitV3")
+
+< ethercatmcLongoutReadback.iocsh
+
+
+# Faster polling
+epicsEnvSet("MOVINGPOLLPERIOD",  "9")
+epicsEnvSet("IDLEPOLLPERIOD",    "200")
+ethercatmcStartPoller("$(MOTOR_PORT)", "$(MOVINGPOLLPERIOD)", "$(IDLEPOLLPERIOD)")
