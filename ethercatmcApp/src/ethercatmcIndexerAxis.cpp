@@ -672,6 +672,8 @@ void ethercatmcIndexerAxis::newMotorPosition(double actPosition) {
     } else if (actPosition < oldPositionValue) {
       asynMotorAxis::setIntegerParam(pC_->motorStatusDirection_, 0);
       asynMotorAxis::setIntegerParam(pC_->motorStatusMoving_, 1);
+    } else {
+      asynMotorAxis::setIntegerParam(pC_->motorStatusMoving_, 0);
     }
   }
 }
@@ -1082,11 +1084,7 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
      when a motion is completed */
   asynMotorAxis::setIntegerParam(pC_->motorStatusDone_, !busyNotDone);
   if (positionValid) {
-    if (busyNotDone) {
-      newMotorPosition(actPosition);
-    } else {
-      asynMotorAxis::setIntegerParam(pC_->motorStatusMoving_, 0);
-    }
+    newMotorPosition(actPosition);
     // Do that on the base class to avoid searching for paramIndex
     asynMotorAxis::setDoubleParam(pC_->motorPosition_, actPosition);
     asynMotorAxis::setDoubleParam(pC_->motorEncoderPosition_, actPosition);
