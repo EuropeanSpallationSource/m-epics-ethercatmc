@@ -430,10 +430,13 @@ record(longin,"$(P)$(R)-CnenVis") {
 }
 
 #Power handling
+# The default is 2, auto-power-on. never-off if the power off time is < 0.0
 record(longout, "$(P)$(R)-PwrAuto")
 {
     field(DESC, "power automatic on")
     field(DTYP, "asynInt32")
+    field(VAL,  2)
+    field(PINI, "Running")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_AUTO_ONOFF")
-    info(asyn:READBACK,"1")
+    info(autosaveFields, "VAL")
 }

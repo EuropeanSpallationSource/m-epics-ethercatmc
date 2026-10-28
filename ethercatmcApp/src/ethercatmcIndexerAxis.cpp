@@ -179,9 +179,8 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
       int function;
       status = pC->findParam(motorPowerAutoOnOffString, &function);
       if (!status) {
-#ifdef POWERAUTOONOFFMODE2
-        pAxis->asynMotorAxis::setIntegerParam(function, POWERAUTOONOFFMODE2);
-#else
+#ifndef POWERAUTOONOFFMODE2
+        /* upstream motor has only 0 or 1 as allowed values */
         pAxis->asynMotorAxis::setIntegerParam(function, 1);
 #endif
       }
