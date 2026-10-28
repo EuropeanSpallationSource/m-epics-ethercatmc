@@ -1323,9 +1323,6 @@ asynStatus ethercatmcIndexerAxis::doThePoll(bool cached, bool *moving) {
       pC_->setAlarmStatusSeverityFromStatusBits(
           axisNo_, pC_->defAsynPara.ethercatmcStatusCode_, statusReasonAux32);
     }
-    /* dynamic problem */
-    asynMotorAxis::setIntegerParam(pC_->motorStatusFollowingError_,
-                                   idxReasonBits & 0x2 ? 1 : 0);
     asynMotorAxis::setIntegerParam(pC_->defAsynPara.ethercatmcMcuErr_,
                                    hasError);
     if (drvlocal.clean.auxBitsNotHomedMask) {
