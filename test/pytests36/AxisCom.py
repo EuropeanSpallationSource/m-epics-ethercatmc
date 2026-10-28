@@ -31,6 +31,7 @@ class AxisCom:
         self.sub = None  # needed for monitor in pva/p4p
 
         self.change_cnts = {}  # count number of callbacks
+        self.change_timestamps = {}  # timestamp of the latest change
         self.init_change_cnts()
 
         if url_string.startswith("pva://"):
@@ -110,18 +111,25 @@ class AxisCom:
     def get_change_cnts(self, counterName):
         return self.change_cnts[counterName]
 
+    def get_change_timestamp(self, counterName):
+        return self.change_timestamps[counterName]
+
     def init_change_cnts(self):
         self.change_cnts["dmov_value"] = 1  # the .DMOV field is true
         self.change_cnts["dmov_false"] = 0  # the .DMOV field went false
         self.change_cnts["dmov_true"] = 0  # the .DMOV field went true
+        self.change_timestamps["dmov_false"] = None
+        self.change_timestamps["dmov_true"] = None
 
     def onChangesCA(self, pvname=None, value=None, char_value=None, **kwx):
         old_val = int(self.change_cnts["dmov_value"])
         if value != old_val:
             if int(value) == 0:
                 self.change_cnts["dmov_false"] += 1
+                self.change_timestamps["dmov_false"] = kwx.get("timestamp")
             elif int(value) == 1:
                 self.change_cnts["dmov_true"] += 1
+                self.change_timestamps["dmov_true"] = kwx.get("timestamp")
             self.change_cnts["dmov_value"] = int(value)
         if self.log_debug:
             print(
@@ -133,8 +141,10 @@ class AxisCom:
         if value != old_val:
             if int(value) == 0:
                 self.change_cnts["dmov_false"] += 1
+                self.change_timestamps["dmov_false"] = value.timestamp
             elif int(value) == 1:
                 self.change_cnts["dmov_true"] += 1
+                self.change_timestamps["dmov_true"] = value.timestamp
             self.change_cnts["dmov_value"] = int(value)
 
         if self.log_debug:
