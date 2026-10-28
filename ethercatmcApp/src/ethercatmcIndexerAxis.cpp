@@ -177,14 +177,6 @@ extern "C" int ethercatmcCreateIndexerAxis(const char *ethercatmcName,
     if (pAxis) {
       asynStatus status;
       int function;
-      status = pC->findParam(motorPowerAutoOnOffString, &function);
-      if (!status) {
-#ifdef POWERAUTOONOFFMODE2
-        pAxis->asynMotorAxis::setIntegerParam(function, POWERAUTOONOFFMODE2);
-#else
-        pAxis->asynMotorAxis::setIntegerParam(function, 1);
-#endif
-      }
       status = pC->findParam(motorPowerOnDelayString, &function);
       if (!status) {
         pAxis->setDoubleParam(function, 6.0);
@@ -1948,6 +1940,13 @@ asynStatus ethercatmcIndexerAxis::setIntegerParam(int function, int value) {
               "%ssetIntegerParam(%d PollScaling_)=%d\n", modNamEMC, axisNo_,
               value);
     drvlocal.pollScaling = value;
+  } else if (function == pC_->defAsynPara.ethercatmcPwrAuto_) {
+    asynPrint(pC_->pasynUserController_, ASYN_TRACE_INFO,
+              "%ssetIntegerParam(%d PwrAuto_)=%d\n", modNamEMC, axisNo_, value);
+#ifndef POWERAUTOONOFFMODE2
+    value = value ? 1 : 0;
+#endif
+    asynMotorAxis::setIntegerParam(pC_->motorPowerAutoOnOff_, value);
   } else if (function == pC_->defAsynPara.ethercatmcHomProc_RB_) {
     static const unsigned paramIndex = PARAM_IDX_HOMPROC_FLOAT;
     double valueRB = -1;
