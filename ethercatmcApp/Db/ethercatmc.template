@@ -435,8 +435,9 @@ record(longout, "$(P)$(R)-PwrAuto")
 {
     field(DESC, "power automatic on")
     field(DTYP, "asynInt32")
-    field(VAL,  2)
-    field(PINI, "Running")
-    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_POWER_AUTO_ONOFF")
+    field(VAL,  "$(PwrAutoVAL=2)")
+    field(PINI, "RUNNING")
+    #field(PINI, "YES")
+    field(OUT, "@asyn($(MOTOR_PORT),$(AXIS_NO))PwrAuto")
     info(autosaveFields, "VAL")
 }

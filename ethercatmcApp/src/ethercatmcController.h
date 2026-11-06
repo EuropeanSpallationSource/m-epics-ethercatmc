@@ -94,6 +94,7 @@ FILENAME...   ethercatmcController.h
 #define pilsLongoutRecordString "pilsLongoutRecord"
 #define pilsBoMinMaxString "pilsBoMinMax"
 #define ethercatmcPollScalingString "PollScaling"
+#define ethercatmcPwrAutoString "PwrAuto"
 #define ethercatmcCfgVELO_RBString "CfgVELO-RB"
 #define ethercatmcCfgVMAX_RBString "CfgVMAX-RB"
 #define ethercatmcCfgJVEL_RBString "CfgJVEL-RB"
@@ -556,6 +557,7 @@ class epicsShareClass ethercatmcController : public asynMotorController {
     int pilsLongoutRecord_;
     int pilsBoMinMax_; /* bo record: Binary Out, driving to minimum/maximum */
     int ethercatmcPollScaling_; /* When to poll the scaling */
+    int ethercatmcPwrAuto_;     /* Power automatic on/off */
     int ethercatmcCfgVELO_RB_;  /* configuration values from the MCU */
     int ethercatmcCfgVMAX_RB_;
     int ethercatmcCfgJVEL_RB_;
