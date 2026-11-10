@@ -48,11 +48,14 @@ IOC_NC_PORT=5001
 
 killExitIocSimulator() {
   # exit IOC
-  IOC_NC_PARAM=""
+  KILL_NC_PARAM=""
   if nc -h 2>&1 | grep -q '\-\-send-only'; then
-    IOC_NC_PARAM="--send-only"
+    KILL_NC_PARAM="--send-only"
   fi
-  echo "exit" | nc $IOC_NC_PARAM localhost ${IOC_NC_PORT} || :
+  if nc -h 2>&1 | grep -q '\-q.*quit after EOF'; then
+    KILL_NC_PARAM="-q 2"
+  fi
+  echo "exit" | nc $KILL_NC_PARAM localhost ${IOC_NC_PORT} || :
   sleep 2
   # terminate simulator
   echo "kill" | nc localhost ${SIM_NC_PORT} || :
