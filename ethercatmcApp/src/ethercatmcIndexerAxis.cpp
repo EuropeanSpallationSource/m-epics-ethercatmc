@@ -120,7 +120,12 @@ ethercatmcIndexerAxis::ethercatmcIndexerAxis(ethercatmcController *pC,
   asynMotorAxis::setIntegerParam(pC_->motorNotHomedProblem_,
                                  MOTORNOTHOMEDPROBLEM_ERROR);
 #endif
-
+#ifdef motorFlagsSlipStallWarningString
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsSlipStallWarning_, 1);
+#endif
+#ifdef motorFlagsJogToTheEndString
+  asynMotorAxis::setIntegerParam(pC_->motorFlagsJogToTheEnd_, 1);
+#endif
   /* Set the module name to "" if we have FILE/LINE enabled by asyn */
   if (pasynTrace->getTraceInfoMask(pC_->pasynUserController_) &
       ASYN_TRACEINFO_SOURCE) {

@@ -181,6 +181,22 @@ record(longin,"$(P)$(R)-DrvUseEGU-RB") {
     field(SCAN, "I/O Intr")
 }
 
+record(bo,"$(P)$(R)-SlipStallWarning") {
+    field(DESC, "Skip/Stall is a warning - not error")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_SLIP_STALL_WARNING")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
+record(bo,"$(P)$(R)-JogToTheEnd") {
+    field(DESC, "JOG: do not stop 1 seconds before soft limit")
+    field(DTYP, "asynInt32")
+    field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_JOG_TO_THE_END")
+    info(asyn:READBACK,"1")
+    info(asyn:INITIAL_READBACK,"1")
+}
+
 # Help records, to read what the record sends to the model 3 driver
 record(ai,"$(P)$(R)-M3RHLM") {
     field(DESC, "Driver High Soft Limit")
