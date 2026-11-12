@@ -146,6 +146,19 @@ resetTCs = [
     (2, 0x00000000, 0x4550, 0, "W: AxisRESET"),
 ]
 
+motorWarnTCs = [
+    # homed, idle, power on, no alarm
+    (1, 0x10400000, 0, sevrNone, NONE_ALARM),
+    # homed, idle, timeout, alarm
+    (2, 0x12400000, 0, sevrMajor, STATE_ALARM),
+    # homed, warn, timeout, alarm
+    (3, 0x32400000, 0, sevrMajor, STATE_ALARM),
+    # homed, idle, timeout, alarm
+    (4, 0x12400000, 1, sevrMinor, STATE_ALARM),
+    # homed, warn, timeout, alarm
+    (5, 0x32400000, 1, sevrMinor, STATE_ALARM),
+]
+
 # Test cases for HomProc-aware interlock vs not-homed priority.
 # Tuple: (tc_no, statusReasonAux, errorId, pwrAuto, homProc, expMsgTxt)
 # HomProc values: LimBwd=1, LimFwd=2, HSbwdfromLimBwd=3, HSfwdfromLimFwd=4,
@@ -225,8 +238,8 @@ def writeBitsReadMsgTxt(
 
     maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
     passed = False
-    self.axisMr.setValueOnSimulator(tc_no, "nStatReasAUX", hex(statusReasonAux))
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
+    self.axisMr.setValueOnSimulator(tc_no, "nStatReasAUX", hex(statusReasonAux))
 
     self.axisMr.setValueOnSimulator(tc_no, "nErrorId", errorId)
     oldPwrAuto = self.axisCom.get("-PwrAuto")
@@ -250,9 +263,51 @@ def writeBitsReadMsgTxt(
             maxTime = maxTime - polltime
 
     print(
-        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} passed={passed} statusReasonAux={statusReasonAux} errorId={errorId:x} pwrAuto={pwrAuto} ampliexpMsgTxt='{expMsgTxt}' actMsgTxt={actMsgTxt!r} expSevr={expSevr!r} actSevr={actSevr!r} expStat={expStat!r} actStat={actStat!r}"
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} passed={passed} statusReasonAux={statusReasonAux:x} errorId={errorId:x} pwrAuto={pwrAuto} ampliexpMsgTxt='{expMsgTxt}' actMsgTxt={actMsgTxt!r} expSevr={expSevr!r} actSevr={actSevr!r} expStat={expStat!r} actStat={actStat!r}"
     )
     self.axisCom.put("-PwrAuto", oldPwrAuto)
+    self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
+    if passed:
+        self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
+    else:
+        self.axisCom.putDbgStrToLOG("Failed " + str(tc_no), wait=True)
+    return passed
+
+
+def writeBitsReadMotorAlarm(
+    self,
+    tc_no=0,
+    statusReasonAux=None,
+    expSevr=None,
+    expStat=None,
+):
+    self.axisCom.putDbgStrToLOG("Start " + str(tc_no), wait=True)
+    assert tc_no != 0
+    assert statusReasonAux is not None
+    assert expSevr is not None
+    assert expStat is not None
+
+    maxTime = 5  # 5 seconds maximum to let read only parameters ripple through
+    passed = False
+    self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 1)
+    self.axisMr.setValueOnSimulator(tc_no, "nStatReasAUX", hex(statusReasonAux))
+    while maxTime > 0:
+        actSevr = int(self.axisCom.get(".SEVR"))
+        actStat = int(self.axisCom.get(".STAT"))
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} maxTime={maxTime:.2f} expSevr={expSevr!r} actSevr={actSevr!r} expStat={expStat!r} actStat={actStat!r}"
+        )
+
+        if actSevr == expSevr and actStat == expStat:
+            passed = True
+            maxTime = 0
+        else:
+            time.sleep(polltime)
+            maxTime = maxTime - polltime
+
+    print(
+        f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S} {filnam}:{lineno()} tc_no={tc_no} passed={passed} statusReasonAux={statusReasonAux:x} expSevr={expSevr!r} actSevr={actSevr!r} expStat={expStat!r} actStat={actStat!r}"
+    )
     self.axisMr.setValueOnSimulator(tc_no, "bManualSimulatorMode", 0)
     if passed:
         self.axisCom.putDbgStrToLOG("Passed " + str(tc_no), wait=True)
@@ -492,6 +547,43 @@ class Test(unittest.TestCase):
                 expStat=expStat,
             )
         self.axisCom.put(".DIR", "Pos")
+        assert passed
+
+    def test_TC_94106(self):
+        tc_no = 94106000
+        passed = True
+        self.axisCom.put(".DIR", "Pos")
+        oldSPAM = self.axisMr.getFieldSPAM(tc_no)
+        self.axisMr.setFieldSPAM(tc_no, -1)
+        oldSlipStallWarning = self.axisCom.get("-SlipStallWarning")
+
+        for tc in motorWarnTCs:
+            tc_no = 94106000 + tc[0]
+            statusReasonAux = tc[1]
+            slipStallWarning = tc[2]
+            expSevr = tc[3]
+            expStat = tc[4]
+
+            self.axisCom.put("-SlipStallWarning", slipStallWarning)
+            self.axisMr.doSTUPandSYNC(tc_no)
+
+            passed = passed and writeBitsReadMotorAlarm(
+                self,
+                tc_no=tc_no,
+                statusReasonAux=statusReasonAuxIdlePowerOn,
+                expSevr=sevrNone,
+                expStat=NONE_ALARM,
+            )
+            tc_no = 94106100 + tc[0]
+            passed = passed and writeBitsReadMotorAlarm(
+                self,
+                tc_no=tc_no,
+                statusReasonAux=statusReasonAux,
+                expSevr=expSevr,
+                expStat=expStat,
+            )
+        self.axisCom.put("-SlipStallWarning", oldSlipStallWarning)
+        self.axisMr.setFieldSPAM(tc_no, oldSPAM)
         assert passed
 
     def test_TC_94199999(self):

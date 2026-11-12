@@ -59,6 +59,11 @@ if test "$1" = "-k" && test "$2" != ""; then
   shift 2
 fi
 
+if test "$1" = "-s"; then
+  MOREARGS="$MOREARGS -s"
+  shift 1
+fi
+
 if test -n "$1" && test "$1" -ne 0; then
   numruns=$1
   shift 1
