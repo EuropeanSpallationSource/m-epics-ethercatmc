@@ -565,6 +565,7 @@ class Test(unittest.TestCase):
             expStat = tc[4]
 
             self.axisCom.put("-SlipStallWarning", slipStallWarning)
+            self.axisMr.doSTUPandSYNC(tc_no)
 
             passed = passed and writeBitsReadMotorAlarm(
                 self,
