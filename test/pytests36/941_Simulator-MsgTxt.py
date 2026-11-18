@@ -564,7 +564,7 @@ class Test(unittest.TestCase):
             expSevr = tc[3]
             expStat = tc[4]
 
-            self.axisCom.put("-SlipStallWarning", slipStallWarning)
+            self.axisCom.put("-SlipStallWarning", slipStallWarning, wait=True)
             self.axisMr.doSTUPandSYNC(tc_no)
 
             passed = passed and writeBitsReadMotorAlarm(
@@ -582,7 +582,7 @@ class Test(unittest.TestCase):
                 expSevr=expSevr,
                 expStat=expStat,
             )
-        self.axisCom.put("-SlipStallWarning", oldSlipStallWarning)
+        self.axisCom.put("-SlipStallWarning", oldSlipStallWarning, wait=True)
         self.axisMr.setFieldSPAM(tc_no, oldSPAM)
         assert passed
 
