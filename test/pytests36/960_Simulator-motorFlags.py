@@ -21,12 +21,12 @@ def lineno():
 polltime = 0.1
 
 
-def readBackParamVerify(self, tc_no, field_name, expVal):
+def readBackParamVerify(self, tc_no, field_name, expVal, bit_mask):
     maxTime = 5  # 5 seconds maximum to poll all parameters
     while maxTime > 0:
         actVal = int(self.axisCom.get(field_name))
         print(
-            f"{tc_no}:{int(lineno())} {field_name} expVal={expVal:f} actVal={actVal:f}"
+            f"{tc_no}:{int(lineno())} {field_name} expVal=0x{expVal:x} actVal=0x{actVal:x} bit_mask=0x{bit_mask:x}"
         )
 
         res = False
@@ -62,10 +62,10 @@ def writeReadMotorFlag(self, tc_no, field_name="invalid_field_name", bit_mask=0)
         mflgExpFirst = mflg_orig | bit_mask
 
     self.axisCom.put(field_name, pv_val_first)
-    testPassedFirst = readBackParamVerify(self, tc_no, ".MFLG", mflgExpFirst)
+    testPassedFirst = readBackParamVerify(self, tc_no, ".MFLG", mflgExpFirst, bit_mask)
 
     self.axisCom.put(field_name, pv_val_last)
-    testPassedLast = readBackParamVerify(self, tc_no, ".MFLG", mflg_orig)
+    testPassedLast = readBackParamVerify(self, tc_no, ".MFLG", mflg_orig, bit_mask)
 
     testPassed = testPassedFirst and testPassedLast
     if testPassed:
@@ -129,6 +129,24 @@ class Test(unittest.TestCase):
 
         field_name = "-AdjAfterHomed"
         bit_mask = 0x10
+        testPassed = writeReadMotorFlag(
+            self, tc_no, field_name=field_name, bit_mask=bit_mask
+        )
+        assert testPassed
+
+    def test_TC_9606(self):
+        tc_no = 9606
+        field_name = "-SlipStallWarning"
+        bit_mask = 0x400
+        testPassed = writeReadMotorFlag(
+            self, tc_no, field_name=field_name, bit_mask=bit_mask
+        )
+        assert testPassed
+
+    def test_TC_9607(self):
+        tc_no = 9607
+        field_name = "-JogToTheEnd"
+        bit_mask = 0x800
         testPassed = writeReadMotorFlag(
             self, tc_no, field_name=field_name, bit_mask=bit_mask
         )
