@@ -13,6 +13,16 @@ def parse_command_line():
 
     parser.add_option(
         "",
+        "--shiftx",
+        help="shift the X values",
+        metavar="X",
+        action="store",
+        dest="shiftX",
+        type="int",
+        default=0,
+    )
+    parser.add_option(
+        "",
         "--shifty",
         help="shift the Y values",
         metavar="Y",
@@ -48,12 +58,23 @@ def parse_command_line():
     sys.exit(1)
 
 
-def shiftY_NNN(options, line):
+def shiftXY_NNN(options, line):
+    matchX = re.compile(r"^( *<x>)([0-9]+)(</x> *)$")
     matchY = re.compile(r"^( *<y>)([0-9]+)(</y> *)$")
     matchN = re.compile(r"(.*)(NNN)(.*)")
 
+    isMatchX = matchX.match(line)
     isMatchY = matchY.match(line)
     isMatchN = matchN.match(line)
+
+    if isMatchX is not None:
+        pfx = matchX.sub(r"\1", line)
+        xPos = int(matchX.sub(r"\2", line))
+        sfx = matchX.sub(r"\3", line)
+        xPos += options.shiftX
+        if pfx[-1] == "\n":
+            pfx = pfx[0:-1]
+        line = pfx + str(xPos) + sfx
 
     if isMatchY is not None:
         pfx = matchY.sub(r"\1", line)
@@ -82,5 +103,5 @@ options = parse_command_line()
 
 
 for lineIn in sys.stdin:
-    lineOut = shiftY_NNN(options, lineIn)
+    lineOut = shiftXY_NNN(options, lineIn)
     sys.stdout.write(lineOut)

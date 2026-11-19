@@ -254,17 +254,6 @@ if ! test -f startup/st.${MOTORCFG}.iocsh; then
 fi
 shift
 
-# motor port is different for indexer
-case $MOTORCFG in
-  *sim-indexer) ;;
-  *-indexer)
-    MOTORPORT=48898
-    ;;
-  *)
-    MOTORPORT=5000
-    ;;
-esac
-
 PARAM="$1"
 while test "$PARAM" != ""; do
   case $1 in
