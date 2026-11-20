@@ -190,7 +190,7 @@ record(bo,"$(P)$(R)-SlipStallWarning") {
 }
 
 record(bo,"$(P)$(R)-JogToTheEnd") {
-    field(DESC, "JOG: do not stop 1 seconds before soft limit")
+    field(DESC, "JOG: do not stop 1 seconds before limit")
     field(DTYP, "asynInt32")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_JOG_TO_THE_END")
     info(asyn:READBACK,"1")
