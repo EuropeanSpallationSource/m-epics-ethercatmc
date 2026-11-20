@@ -190,7 +190,7 @@ record(longout,"$(P)$(R)-SlipStallWarning") {
 }
 
 record(longout,"$(P)$(R)-JogToTheEnd") {
-    field(DESC, "Jog to the Soft limt in MCU")
+    field(DESC, "Jog to the Soft limit in MCU")
     field(DTYP, "asynInt32")
     field(OUT,"@asyn($(MOTOR_PORT),$(AXIS_NO))MOTOR_FLAGS_JOG_TO_THE_END")
     info(asyn:READBACK,"1")
