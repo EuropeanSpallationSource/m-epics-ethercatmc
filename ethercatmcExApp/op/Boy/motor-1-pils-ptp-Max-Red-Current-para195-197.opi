@@ -325,7 +325,7 @@ $(pv_value)</tooltip>
   <border_color>
     <color red="0" green="0" blue="255" />
   </border_color>
-  <y>190</y>
+  <y>174</y>
   <actions hook="false" hook_all="false">
     <action type="OPEN_DISPLAY">
       <path>ethercatmcPTPErrBits.opi</path>
@@ -338,7 +338,7 @@ $(pv_value)</tooltip>
       <description>$(P) (PTPErrorStatus)</description>
     </action>
   </actions>
-  <y>16</y>
+  <y>0</y>
   <tooltip>$(pv_name)
     $(pv_value)</tooltip>
   <x>0</x>
@@ -408,8 +408,8 @@ $(pv_value)</tooltip>
   <widget_type>LED</widget_type>
   <width>40</width>
   <wuid>-68918818:158524ceeb4:-7584</wuid>
-  <x>100</x>
-  <y>16</y>
+  <x>0</x>
+  <y>0</y>
 </widget>
 
 
@@ -459,11 +459,11 @@ $(pv_value)</tooltip>
   </border_color>
   <horizontal_alignment>1</horizontal_alignment>
   <actions hook="false" hook_all="false" />
-  <y>16</y>
+  <y>0</y>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>116</x>
+  <x>16</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -511,11 +511,11 @@ $(pv_value)</tooltip>
   </border_color>
   <horizontal_alignment>1</horizontal_alignment>
   <actions hook="false" hook_all="false" />
-  <y>16</y>
+  <y>0</y>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>200</x>
+  <x>100</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -563,11 +563,11 @@ $(pv_value)</tooltip>
   </border_color>
   <horizontal_alignment>1</horizontal_alignment>
   <actions hook="false" hook_all="false" />
-  <y>16</y>
+  <y>0</y>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>222</x>
+  <x>122</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -615,11 +615,11 @@ $(pv_value)</tooltip>
   </border_color>
   <horizontal_alignment>1</horizontal_alignment>
   <actions hook="false" hook_all="false" />
-  <y>16</y>
+  <y>0</y>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>302</x>
+  <x>202</x>
 </widget>
 <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
   <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -676,11 +676,11 @@ $(pv_value)</tooltip>
   </border_color>
   <horizontal_alignment>1</horizontal_alignment>
   <actions hook="false" hook_all="false" />
-  <y>16</y>
+  <y>0</y>
   <wrap_words>false</wrap_words>
   <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-  <x>382</x>
+  <x>0</x>
 </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -743,7 +743,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>97</y>
+    <y>65</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>6</x>
@@ -800,7 +800,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>132</y>
+    <y>100</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>0</x>
@@ -867,7 +867,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>77</y>
+    <y>45</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>0</x>
@@ -934,7 +934,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>77</y>
+    <y>45</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>110</x>
@@ -991,7 +991,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>52</y>
+    <y>20</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>0</x>
@@ -1042,7 +1042,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>32</y>
+    <y>0</y>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1094,7 +1094,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>153</y>
+    <y>121</y>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>28</x>
@@ -1144,7 +1144,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>169</y>
+    <y>137</y>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1195,7 +1195,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>169</y>
+    <y>137</y>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1249,7 +1249,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>132</y>
+    <y>100</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M1).TWR</pv_name>
@@ -1313,7 +1313,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>132</y>
+    <y>100</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>28</x>
@@ -1366,7 +1366,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>132</y>
+    <y>100</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M1).TWF</pv_name>
@@ -1440,7 +1440,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>99</y>
+    <y>67</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>9</x>
@@ -1506,7 +1506,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>99</y>
+    <y>67</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>9</x>
@@ -1547,7 +1547,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>53</y>
+    <y>21</y>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>0</x>
@@ -1598,7 +1598,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>151</y>
+    <y>119</y>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>28</x>
@@ -1664,7 +1664,7 @@ $(pv_value)</tooltip>
       <color red="127" green="0" blue="127" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>95</y>
+    <y>63</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>6</x>
@@ -1731,7 +1731,7 @@ $(pv_value)</tooltip>
       <color red="255" green="0" blue="0" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>95</y>
+    <y>63</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>40</x>
@@ -1798,7 +1798,7 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>95</y>
+    <y>63</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>74</x>
@@ -1865,7 +1865,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>128</y>
+    <y>96</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>6</x>
@@ -1932,7 +1932,7 @@ $(pv_value)</tooltip>
       <color red="255" green="0" blue="0" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>128</y>
+    <y>96</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>31</x>
@@ -1999,7 +1999,7 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>128</y>
+    <y>96</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>56</x>
@@ -2066,7 +2066,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>128</y>
+    <y>96</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>81</x>
@@ -2120,7 +2120,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M1)-ErrRst</pv_name>
@@ -2194,7 +2194,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>102</y>
+    <y>70</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>0</x>
@@ -2261,7 +2261,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" hook_all="false" />
-    <y>102</y>
+    <y>70</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>110</x>
@@ -2304,7 +2304,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>ethercatmcaxis.opi</path>
@@ -2376,7 +2376,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>206</y>
+    <y>174</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M1).STOP</pv_name>
@@ -2439,7 +2439,7 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <wuid>39872d87:13e14015f61:-2f6b</wuid>
     <x>0</x>
-    <y>186</y>
+    <y>154</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -2486,7 +2486,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>64</y>
+    <y>32</y>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -2537,7 +2537,7 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" hook_all="false" />
-    <y>77</y>
+    <y>45</y>
     <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
