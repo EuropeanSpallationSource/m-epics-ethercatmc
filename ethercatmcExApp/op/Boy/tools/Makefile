@@ -13,6 +13,7 @@ GNERATEDOPIS = \
   ../motor-1-pils-ptp-Max-Red-Current-para195-197.opi \
   ../motor-2.opi \
   ../motor-2-pils.opi \
+  ../motor-2-pils-homfcnen.opi \
   ../motor-3-pils.opi \
   ../motor-3-ptp.opi \
   ../motor-4-pils.opi \
@@ -264,6 +265,9 @@ AUXBITS_PTPERRORSTATUS="15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0"
 
 ../motor-2-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 2 x 1
+
+../motor-2-pils-homfcnen.opi: $(DEPENDENCIES_FOR_MOTOR_OPI) motorx-pils-homfcnen.mid
+	./genMotorShutter.sh $@ pils homfcnen 2 x 1
 
 ../motor-3-pils.opi: $(DEPENDENCIES_FOR_MOTOR_OPI)
 	./genMotorShutter.sh $@ pils 3 x 1

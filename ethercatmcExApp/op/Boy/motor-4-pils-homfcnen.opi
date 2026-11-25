@@ -313,10 +313,10 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <pv_name></pv_name>
     <background_color>
-      <color red="30" green="144" blue="255" />
+      <color  red="115" green="255" blue="0" />
     </background_color>
     <foreground_color>
-      <color  red="115" green="255" blue="107" />
+      <color  red="115" green="255" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -1834,7 +1834,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
-    <text>HOMF</text>
+    <text>HOME</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
@@ -1851,6 +1851,17 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>190</y>
+    <rules>
+      <rule name="HOME-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M1)-HomeVis</pv>
+      </rule>
+    </rules>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M1).HOMF</pv_name>
@@ -2270,10 +2281,10 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <pv_name></pv_name>
     <background_color>
-      <color red="30" green="144" blue="255" />
+      <color  red="115" green="255" blue="0" />
     </background_color>
     <foreground_color>
-      <color  red="115" green="255" blue="107" />
+      <color  red="115" green="255" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -3791,7 +3802,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
-    <text>HOMF</text>
+    <text>HOME</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
@@ -3808,6 +3819,17 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>190</y>
+    <rules>
+      <rule name="HOME-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M2)-HomeVis</pv>
+      </rule>
+    </rules>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M2).HOMF</pv_name>
@@ -4227,10 +4249,10 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <pv_name></pv_name>
     <background_color>
-      <color red="30" green="144" blue="255" />
+      <color  red="115" green="255" blue="0" />
     </background_color>
     <foreground_color>
-      <color  red="115" green="255" blue="107" />
+      <color  red="115" green="255" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -5748,7 +5770,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
-    <text>HOMF</text>
+    <text>HOME</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
@@ -5765,6 +5787,17 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>190</y>
+    <rules>
+      <rule name="HOME-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M3)-HomeVis</pv>
+      </rule>
+    </rules>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M3).HOMF</pv_name>
@@ -6184,10 +6217,10 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <pv_name></pv_name>
     <background_color>
-      <color red="30" green="144" blue="255" />
+      <color  red="115" green="255" blue="0" />
     </background_color>
     <foreground_color>
-      <color  red="115" green="255" blue="107" />
+      <color  red="115" green="255" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
@@ -7705,7 +7738,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
-    <text>HOMF</text>
+    <text>HOME</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
@@ -7722,6 +7755,17 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>190</y>
+    <rules>
+      <rule name="HOME-Visible" prop_id="visible" out_exp="false">
+        <exp bool_exp="pv0 == 0">
+          <value>false</value>
+        </exp>
+        <exp bool_exp="pv0 != 0">
+          <value>true</value>
+        </exp>
+        <pv trig="true">$(P)$(M4)-HomeVis</pv>
+      </rule>
+    </rules>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
         <pv_name>$(P)$(M4).HOMF</pv_name>
