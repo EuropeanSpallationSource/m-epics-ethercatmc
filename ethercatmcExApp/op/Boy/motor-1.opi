@@ -56,10 +56,10 @@
     <transparent>false</transparent>
     <pv_name></pv_name>
     <background_color>
-      <color red="30" green="144" blue="255" />
+      <color  red="115" green="255" blue="0" />
     </background_color>
     <foreground_color>
-      <color  red="115" green="255" blue="107" />
+      <color  red="115" green="255" blue="0" />
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
